@@ -2,7 +2,7 @@ name: Migrate production database
 
 # Applies new migrations to the production Supabase project once CI has
 # passed on main, then deploys the site, so the site never runs ahead of
-# its database (owner, Nov 8, 2026). Vercel doesn't deploy main by itself
+# its database. Vercel doesn't deploy main by itself
 # (apps/web/vercel.json, git.deploymentEnabled); pull requests still get
 # their previews. Runs in the protected `production` environment, which
 # holds the secrets (Settings → Environments → production):

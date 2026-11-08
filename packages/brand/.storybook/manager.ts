@@ -3,7 +3,7 @@ import { addons, types } from "storybook/manager-api";
 import { create } from "storybook/theming";
 
 // The SAL Design System (the Diwan's /diwan/media/design, served whole on the
-// site's sign-in; owner, Nov 8, 2026): brand book colors (packages/brand/assets/tokens.json) and the
+// site's sign-in): brand book colors (packages/brand/assets/tokens.json) and the
 // supplied lockup in place of Storybook's own logo and name.
 addons.setConfig({
   // Read-only: no add-on panel, and the sections in their own order

@@ -79,7 +79,7 @@ const MARK_FIRST = /(^|\s)(\p{M}+)(\p{L})/gu;
 const RTL_CHAR = /[֐-ࣿיִ-﷿ﹰ-ﻼ]/u;
 const LTR_CHAR = /[\p{Script=Latin}\p{Nd}]/u;
 const PAGE_NUMBER =
-  /^[\s\-–—]*(page\s*)?[\d٠-٩۰-۹]+([\s/]*(of|من)?[\s/]*[\d٠-٩۰-۹]+)?[\s\-–—]*$/iu;
+  /^[\s\-–—]*(?:page ?)?[\d٠-٩۰-۹]+(?: ?(?:\/|of|من) ?[\d٠-٩۰-۹]+)?[\s\-–—]*$/iu;
 const DIGITS = /[\d٠-٩۰-۹]+/gu;
 const HAS_DIGIT = /[\d٠-٩۰-۹]/u;
 const HYPHEN_END = /[-­‐]$/u;
@@ -87,11 +87,19 @@ const HYPHEN_TAIL = /[-­‐]((<\/(em|strong)>)*)$/u;
 const LOWER_START = /^\p{Ll}/u;
 const SPACE_EDGE = /^\s|\s$/u;
 const SPACES = /\s+/u;
-const EDGES = /^(\s*)([\s\S]*?)(\s*)$/u;
 const ITALIC_FACE = /italic|oblique|slanted/iu;
 const BOLD_FACE = /bold|black|heavy|semibold|demi/iu;
-const BLOCK = /<(p|h[1-6]|li|blockquote)>([\s\S]*?)<\/\1>/gu;
-const TAG = /<[^>]+>/gu;
+const BLOCK_TAGS = [
+  "p",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "li",
+  "blockquote",
+];
 const LEADING = /(^|<br \/>|<br>)([ \t]{2,}|\t)/gu;
 const EM_SPACE = " ";
 
@@ -296,7 +304,11 @@ const htmlOf = (line: Line, heading: boolean) =>
   line.runs
     .map((r) => {
       // Spaces at a run's edges stay outside its <em> and <strong>.
-      const [, before = "", inner = "", after = ""] = EDGES.exec(r.text) ?? [];
+      const inner = r.text.trim();
+      const before = inner ? r.text.slice(0, r.text.indexOf(inner)) : r.text;
+      const after = inner
+        ? r.text.slice(r.text.indexOf(inner) + inner.length)
+        : "";
       let html = escapeHtml(inner);
       if (r.italic && inner) {
         html = `<em>${html}</em>`;
@@ -577,17 +589,70 @@ export const textItem = (item: PdfItem, fontName = ""): TextItem => {
 };
 
 /**
- * Word's paragraphs with their direction (Arabic right to left, by most
- * of their letters) and verse indents kept as em spaces: a tab, or every
- * four spaces, one em.
+ * Text without its tags, by a scan rather than a pattern, so a file's text
+ * can't make it slow (CodeQL js/polynomial-redos).
  */
-export const withDirection = (html: string) =>
-  html.replace(BLOCK, (_, tag: string, inner: string) => {
-    const dir = mostlyRtl(inner.replace(TAG, "")) ? "rtl" : "ltr";
-    const indented = inner.replace(
-      LEADING,
-      (__, br: string, space: string) =>
-        `${br}${EM_SPACE.repeat(space.includes("\t") ? space.length : Math.round(space.length / 4))}`
-    );
-    return `<${tag} dir="${dir}">${indented}</${tag}>`;
-  });
+const textOfHtml = (html: string) => {
+  let out = "";
+  let inTag = false;
+  for (const char of html) {
+    if (char === "<") {
+      inTag = true;
+    } else if (char === ">") {
+      inTag = false;
+    } else if (!inTag) {
+      out += char;
+    }
+  }
+  return out;
+};
+
+/** A block's verse indents as em spaces: a tab, or every four spaces, one em. */
+const indentsOf = (inner: string) =>
+  inner.replace(
+    LEADING,
+    (_, br: string, space: string) =>
+      `${br}${EM_SPACE.repeat(space.includes("\t") ? space.length : Math.round(space.length / 4))}`
+  );
+
+/** The next block element (as mammoth writes them, never nested) at or after `from`. */
+const nextBlock = (html: string, from: number) => {
+  let best: { end: number; inner: string; start: number; tag: string } | null =
+    null;
+  for (const tag of BLOCK_TAGS) {
+    const start = html.indexOf(`<${tag}>`, from);
+    if (start < 0 || (best && start >= best.start)) {
+      continue;
+    }
+    const open = start + tag.length + 2;
+    const close = html.indexOf(`</${tag}>`, open);
+    if (close >= 0) {
+      best = {
+        end: close + tag.length + 3,
+        inner: html.slice(open, close),
+        start,
+        tag,
+      };
+    }
+  }
+  return best;
+};
+
+/**
+ * Word's paragraphs with their direction (Arabic right to left, by most
+ * of their letters) and their verse indents kept.
+ */
+export const withDirection = (html: string) => {
+  let out = "";
+  let from = 0;
+  for (
+    let block = nextBlock(html, from);
+    block;
+    block = nextBlock(html, from)
+  ) {
+    const dir = mostlyRtl(textOfHtml(block.inner)) ? "rtl" : "ltr";
+    out += `${html.slice(from, block.start)}<${block.tag} dir="${dir}">${indentsOf(block.inner)}</${block.tag}>`;
+    from = block.end;
+  }
+  return out + html.slice(from);
+};
