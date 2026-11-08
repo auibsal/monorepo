@@ -9,6 +9,8 @@ import {
 import { describe, expect, test } from "vitest";
 import { themeScript } from "@/lib/theme";
 
+const BASE64_128 = /^[A-Za-z0-9+/]{22}==$/;
+
 const directive = (policy: string, name: string) =>
   policy
     .split("; ")
@@ -39,7 +41,7 @@ describe("the Content Security Policy", () => {
 
   test("each nonce is new, 128 bits in base64", () => {
     const first = createNonce();
-    expect(first).toMatch(/^[A-Za-z0-9+/]{22}==$/);
+    expect(first).toMatch(BASE64_128);
     expect(createNonce()).not.toBe(first);
   });
 
