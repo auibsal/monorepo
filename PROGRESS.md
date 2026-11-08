@@ -51,6 +51,13 @@ Part A first).
 
 ## For the owner: dashboards and secrets
 
+- [ ] **Before merging PR #250: the Deploy Hook.** Main now deploys
+  only after its migrations (`apps/web/vercel.json` turns off Vercel's
+  own main deploys; `migrate.yml` calls the hook). In Vercel → the web
+  project → Settings → Git → Deploy Hooks, create one named "After
+  migrations" for the branch `main`; copy its URL into GitHub → Settings
+  → Environments → production as the secret `VERCEL_DEPLOY_HOOK`.
+  Without it the migrate run fails and nothing deploys.
 - [ ] **GitHub → Environments → production:** add `BACKUP_PASSPHRASE`.
   The nightly backup fails without it. Run it once from Actions to check.
 - [ ] **GitHub → Actions secrets:** add `NOTION_TOKEN`, then the
@@ -61,8 +68,8 @@ Part A first).
   - requires the checks "Lint, typecheck, test", "Build apps", "Database
     (migrations, RLS, integration)" and "End-to-end (Playwright + axe)";
   - blocks force pushes and deletion.
-- [ ] **GitHub → Code security:** turn on the dependency graph, secret
-  scanning and push protection. Then add the repository variable
+- [ ] **GitHub → Code security:** the dependency graph, secret scanning
+  and push protection are on (Nov 8). Add the repository variable
   `DEPENDENCY_REVIEW` = `on`.
 - [ ] **Now that PR #249 is merged, reconnect Hudhud** (Diwan → Desk →
   Connected → Hudhud), so Telegram calls `/api/hooks/telegram`. Wallet
@@ -136,8 +143,8 @@ Part A first).
   role has made a set (still one on Nov 8). Each makes one on Membership → Settings and keeps
   it away from their phone.
 - [ ] **Arabic name parts.** Each officer sets their four Arabic name
-  parts on Profile. Fajer Ezzet's and Mohammed-Ali Ohmaid's are not on
-  record.
+  parts on Profile. Fajer Ezzet's and Mohammed-Ali Ohmaid's are on record
+  (Nov 8); the General Secretary's and the Next Stop host's are not.
 - [ ] **Roles on the site.** Assign every holder on record (decisions §4)
   on their member page, the Managing Editor and the Next Stop host among
   them. The Council page and the masthead come only from roles.
@@ -147,11 +154,8 @@ Part A first).
     settings;
   - Student Life's two admins, titled "Student Life", with no
     permissions.
-- [ ] **Old Telegram columns:** `core.telegram_word_plays`,
-  `core.telegram_groups.join_policy`, `core.telegram_members.warnings`
-  and `joined_at`, and the settings `telegram.rules_en`/`_ar` are unused
-  in production. Dropping them deletes their data, so it waits for the
-  owner's go-ahead.
+- [x] **Old Telegram columns** (owner's go, Nov 8): dropped by
+  `20261108003900_old_telegram_columns.sql`.
 - [ ] **The partner memorandum.** The memorandum a partner signs at
   `/partners/apply` is its own words and the Policy Manual's lines. If the
   Society adopts a standard text, it replaces them.
@@ -166,6 +170,15 @@ Part A first).
 - [x] **The design system is the Diwan's own page** (owner, Nov 8):
   Storybook is served whole at `/diwan/media/design`, not framed, to staff
   only on the site's sign-in, with a way back to the Diwan.
+- [x] **Readers read the work, never the file** (owner, Nov 8): the
+  readers' pledge before the text; the text on the page and Gallery
+  images marked with the reader's card number and the day; no file,
+  download or file address to readers; copy, the context menu and print
+  off on that page; originals by role, each opening in the submission's
+  History (`20261108004100_reader_protections.sql`).
+- [x] **Manuscripts read as written** (owner, Nov 8): PDF and Word text
+  keeps verse lines, stanzas, paragraphs, headings, italics and Arabic
+  order (`lib/text-layout.ts`); test manuscripts read word for word.
 - [x] **Gallery images on acceptance** (PR #250): a piece accepted from a
   submission takes the writer's images, stripped of their metadata, with
   one button on its page (`/api/qirtas/images`).
@@ -181,8 +194,9 @@ Part A first).
   - F4: moving DataTable, Field, ChoiceInput, Table, NavTabs, EmptyState,
     ErrorState and ActionBar into `packages/brand` with stories, and
     message namespaces per route segment (a large move, best on its own).
-  - F5: Cache Components for published reads; deploying only after
-    migrations (needs a Vercel deploy hook, owner side). The bundle-size
+  - F5: Cache Components for published reads. Deploying only after
+    migrations is done (Nov 8; the Deploy Hook is the owner's step
+    above). The bundle-size
     check is the performance budget the journeys already enforce on a
     mid-range phone (`apps/e2e/tests/performance.spec.ts`).
   - F6: dropping the `charity` schema (empty; after it leaves the exposed
