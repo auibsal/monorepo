@@ -35,7 +35,7 @@ const insertsAt = (table: string) =>
         "g"
       )
     ),
-  ].map((m) => ({ at: m.index ?? 0, body: m[1] }));
+  ].map((m) => ({ at: m.index ?? 0, body: m[1] ?? "" }));
 /** The bodies of every `insert into <table> (...) values ...;` statement. */
 const inserts = (table: string) => insertsAt(table).map((i) => i.body);
 /** A role row or grant written before the role was last retired is gone. */
@@ -49,8 +49,8 @@ const roleRetiredAt = new Map<string, number>();
 for (const m of sql.matchAll(
   /delete from access\.roles where key in \(([^)]*)\)/g
 )) {
-  for (const k of m[1].matchAll(/'([a-z_]+)'/g)) {
-    roleRetiredAt.set(k[1], m.index ?? 0);
+  for (const k of (m[1] ?? "").matchAll(/'([a-z_]+)'/g)) {
+    roleRetiredAt.set(k[1] ?? "", m.index ?? 0);
   }
 }
 const retiredPermissions = new Set(
@@ -58,7 +58,9 @@ const retiredPermissions = new Set(
     ...sql.matchAll(
       /delete from access\.permissions where key in \(([^)]*)\)/g
     ),
-  ].flatMap((m) => [...m[1].matchAll(/'([a-z_.]+)'/g)].map((k) => k[1]))
+  ].flatMap((m) =>
+    [...(m[1] ?? "").matchAll(/'([a-z_.]+)'/g)].map((k) => k[1] ?? "")
+  )
 );
 /** Old key to new, from the migrations that renamed a permission. */
 const renamed = new Map(
@@ -92,7 +94,7 @@ describe("mirror of the reference data in the migrations", () => {
   test("permission keys match", () => {
     const keys = inserts("access.permissions")
       .flatMap((body) =>
-        [...body.matchAll(/\('([a-z_.]+)', '/g)].map((m) => current(m[1]))
+        [...body.matchAll(/\('([a-z_.]+)', '/g)].map((m) => current(m[1] ?? ""))
       )
       .filter((key) => !retiredPermissions.has(key));
     expect(keys.sort()).toEqual([...permissions].sort());
@@ -108,7 +110,7 @@ describe("mirror of the reference data in the migrations", () => {
       ].map((m) => ({ at, m }))
     );
     const live = rows
-      .filter(({ at, m }) => !retiredAfter(m[1], at))
+      .filter(({ at, m }) => !retiredAfter(m[1] ?? "", at))
       .map(({ m }) => m);
     expect(live.map((m) => m[1]).sort()).toEqual([...roleKeys].sort());
     for (const [, key, council] of live) {
@@ -135,15 +137,15 @@ describe("mirror of the reference data in the migrations", () => {
     };
     for (const { at, body } of insertsAt("access.role_permissions")) {
       // Bundles: ('role', array['a', 'b']).
-      for (const [, role, list] of body.matchAll(
+      for (const [, role = "", list = ""] of body.matchAll(
         /\('([a-z_]+)', array\[([^\]]+)\]\)/g
       )) {
-        for (const [, permission] of list.matchAll(/'([a-z_.]+)'/g)) {
+        for (const [, permission = ""] of list.matchAll(/'([a-z_.]+)'/g)) {
           grant(role, permission, at);
         }
       }
       // Single grants: ('role', 'permission').
-      for (const [, role, permission] of body.matchAll(
+      for (const [, role = "", permission = ""] of body.matchAll(
         /\('([a-z_]+)', '([a-z_.]+)'\)/g
       )) {
         grant(role, permission, at);

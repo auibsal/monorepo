@@ -706,9 +706,12 @@ export const NewElection = () => {
         form.voting_opens_at,
         form.voting_closes_at,
       ];
-      const [no, nc, vo, vc] = times.map((v) =>
-        v ? new Date(v).getTime() : Number.NaN
-      );
+      const [
+        no = Number.NaN,
+        nc = Number.NaN,
+        vo = Number.NaN,
+        vc = Number.NaN,
+      ] = times.map((v) => (v ? new Date(v).getTime() : Number.NaN));
       if (!(nc > no && vo >= nc && vc > vo)) {
         setProblem(t("dateError"));
         throw new Error("invalid");

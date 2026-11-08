@@ -63,7 +63,7 @@ const toInstant = (
   if (!time) {
     return null;
   }
-  const [, y, mo, d, h, mi, s, z] = time;
+  const [, y = "", mo = "", d = "", h = "", mi = "", s = "", z] = time;
   const naive = Date.UTC(+y, +mo - 1, +d, +h, +mi, +s);
   if (z) {
     return { allDay: false, iso: new Date(naive).toISOString() };

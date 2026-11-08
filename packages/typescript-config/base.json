@@ -17,6 +17,7 @@
     "strict": true,
     "target": "ES2022",
     "types": ["node"],
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true
   }
 }

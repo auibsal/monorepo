@@ -9,7 +9,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   const local = `e2e-${Date.now()}`;
   // One person, one name: each run's new member has a grandfather's name of
   // their own (letters from the clock).
-  const grandfather = `Hasan${String(Date.now()).replace(/\d/g, (d) => "abcdefghij"[Number(d)])}`;
+  const grandfather = `Hasan${String(Date.now()).replace(/\d/g, (d) => "abcdefghij"[Number(d)] ?? "")}`;
   const email = `${local}@auib.edu.iq`;
   // A phone's screen: the next screen must start at the top, not in the
   // footer where the button left the page.
@@ -56,7 +56,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page
     .getByLabel("Grandfather’s name")
     .fill(
-      `حسن${grandfather.slice(5).replace(/[a-j]/g, (c) => "ابتثجحخدذر"[c.charCodeAt(0) - 97])}`
+      `حسن${grandfather.slice(5).replace(/[a-j]/g, (c) => "ابتثجحخدذر"[c.charCodeAt(0) - 97] ?? "")}`
     );
   await page.getByLabel("Family name").fill("جديد");
   // The browser's Back goes to the last screen, answers kept.

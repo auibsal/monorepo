@@ -38,15 +38,15 @@ describe("what happened", () => {
         ...sql.matchAll(
           /alter table ([a-z_]+)\.([a-z_]+) rename to ([a-z_]+);/g
         ),
-      ].map((m) => [`${m[1]}.${m[2]}`, `${m[1]}.${m[3]}`])
+      ].map((m): [string, string] => [`${m[1]}.${m[2]}`, `${m[1]}.${m[3]}`])
     );
     const logged = [
       ...sql.matchAll(/log_activity after [a-z ,]+ on ([a-z_]+\.[a-z_]+)/g),
     ]
-      .map((m) => renamed.get(m[1]) ?? m[1])
+      .map((m) => renamed.get(m[1] ?? "") ?? m[1] ?? "")
       .filter(
         (table) =>
-          !(dropped.has(table) || droppedSchemas.has(table.split(".")[0]))
+          !(dropped.has(table) || droppedSchemas.has(table.split(".")[0] ?? ""))
       );
     const source = readFileSync(
       join(

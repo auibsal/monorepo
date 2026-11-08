@@ -73,7 +73,7 @@ const sync = async (request: Request) => {
   }
   const earliest = events.reduce(
     (min, e) => (e.start < min ? e.start : min),
-    events[0].start
+    events[0]?.start ?? new Date().toISOString()
   );
   await admin
     .schema("core")

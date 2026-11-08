@@ -144,10 +144,10 @@ describe("outbox and the email sending limit", () => {
     sendEmail.mockResolvedValue({ id: "e1" });
     const rows = [submissionRow(7)];
     expect(await processRow(fakeAdmin(rows), 7)).toBe(true);
-    expect(sendEmail.mock.calls[0][0].idempotencyKey).toBe(
+    expect(sendEmail.mock.calls[0]?.[0].idempotencyKey).toBe(
       "outbox-7-m@auib.edu.iq"
     );
-    expect(rows[0].processed_at).toBeTruthy();
+    expect(rows[0]?.processed_at).toBeTruthy();
   });
 
   test("a spent daily limit gives the try back instead of using it up", async () => {
@@ -165,8 +165,8 @@ describe("outbox and the email sending limit", () => {
     sendEmail.mockRejectedValue(new Error("invalid address"));
     const rows = [submissionRow(3)];
     expect(await processRow(fakeAdmin(rows), 3)).toBe(false);
-    expect(rows[0].attempts).toBe(1);
-    expect(rows[0].last_error).toBe("invalid address");
+    expect(rows[0]?.attempts).toBe(1);
+    expect(rows[0]?.last_error).toBe("invalid address");
   });
 
   test("members also get the notice on their devices, after the email", async () => {
@@ -174,7 +174,7 @@ describe("outbox and the email sending limit", () => {
     pushToUser.mockResolvedValue(1);
     await processRow(fakeAdmin([submissionRow(8)]), 8);
     expect(pushToUser).toHaveBeenCalledTimes(1);
-    const [, userId, notice] = pushToUser.mock.calls[0];
+    const [, userId, notice] = pushToUser.mock.calls[0] ?? [];
     expect(userId).toBe("u1");
     expect(notice).toMatchObject({ lang: "en", tag: "outbox-8" });
     expect(notice.title).toContain("The paper and the pen");

@@ -117,6 +117,7 @@ describe.skipIf(!enabled)("two-step recovery", () => {
     auth: { persistSession: false },
   });
   const ids: Record<string, string> = {};
+  const idOf = (email: string) => ids[email] ?? "";
   let codes: string[] = [];
   let routes: {
     codes: typeof import("@/app/api/two-step/recovery-codes/route");
@@ -143,11 +144,14 @@ describe.skipIf(!enabled)("two-step recovery", () => {
       }
       ids[data.user.email ?? ""] = data.user.id;
     }
-    await admin.schema("access").from("role_assignments").insert({
-      role: "president",
-      scope_type: "global",
-      user_id: ids[president],
-    });
+    await admin
+      .schema("access")
+      .from("role_assignments")
+      .insert({
+        role: "president",
+        scope_type: "global",
+        user_id: idOf(president),
+      });
     routes = {
       codes: await import("@/app/api/two-step/recovery-codes/route"),
       recover: await import("@/app/api/two-step/recover/route"),
@@ -171,13 +175,13 @@ describe.skipIf(!enabled)("two-step recovery", () => {
     expect(
       (await post(routes.recover, bearer, { code: "AAAA-BBBB-CCCC" })).status
     ).toBe(400);
-    expect(await factors(ids[officer])).toHaveLength(1);
+    expect(await factors(idOf(officer))).toHaveLength(1);
 
     const typed = (codes[0] ?? "").toLowerCase().replace(/-/g, " ");
     expect((await post(routes.recover, bearer, { code: typed })).status).toBe(
       200
     );
-    expect(await factors(ids[officer])).toHaveLength(0);
+    expect(await factors(idOf(officer))).toHaveLength(0);
     expect(
       (await post(routes.recover, bearer, { code: codes[0] })).status
     ).toBe(400);
@@ -186,47 +190,47 @@ describe.skipIf(!enabled)("two-step recovery", () => {
       .schema("access")
       .from("two_step_resets")
       .select("via, reset_by")
-      .eq("user_id", ids[officer]);
+      .eq("user_id", idOf(officer));
     expect(resets).toEqual([{ reset_by: null, via: "recovery_code" }]);
     const { count } = await admin
       .schema("core")
       .from("outbox")
       .select("id", { count: "exact", head: true })
       .eq("kind", "access.two_step_reset")
-      .eq("payload->>user_id", ids[officer]);
+      .eq("payload->>user_id", idOf(officer));
     expect(count).toBe(1);
   });
 
   test("only whoever assigns roles resets someone else's", async () => {
     await enrollTotp(await signIn(officer));
-    expect(await factors(ids[officer])).toHaveLength(1);
+    expect(await factors(idOf(officer))).toHaveLength(1);
 
     const plain = await signIn(member);
     expect(
-      (await post(routes.reset, await token(plain), { userId: ids[officer] }))
+      (await post(routes.reset, await token(plain), { userId: idOf(officer) }))
         .status
     ).toBe(403);
 
     // The president's role counts only after their own second step.
     const chair = await signIn(president);
     expect(
-      (await post(routes.reset, await token(chair), { userId: ids[officer] }))
+      (await post(routes.reset, await token(chair), { userId: idOf(officer) }))
         .status
     ).toBe(403);
     await enrollTotp(chair);
     const bearer = await token(chair);
     expect(
-      (await post(routes.reset, bearer, { userId: ids[president] })).status
+      (await post(routes.reset, bearer, { userId: idOf(president) })).status
     ).toBe(400);
     expect(
-      (await post(routes.reset, bearer, { userId: ids[officer] })).status
+      (await post(routes.reset, bearer, { userId: idOf(officer) })).status
     ).toBe(200);
-    expect(await factors(ids[officer])).toHaveLength(0);
+    expect(await factors(idOf(officer))).toHaveLength(0);
     const { count } = await admin
       .schema("access")
       .from("recovery_codes")
       .select("id", { count: "exact", head: true })
-      .eq("user_id", ids[officer]);
+      .eq("user_id", idOf(officer));
     expect(count).toBe(0);
   });
 });
