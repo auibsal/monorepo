@@ -191,12 +191,16 @@ Part A first).
   public pages on a Pixel and an iPhone; keyboard journeys; signed share
   images; the Notion webhook; webhooks under `/api/hooks/*`.
 - [ ] **Audit F, left open on purpose:**
-  - F4: moving DataTable, Field, ChoiceInput, Table, NavTabs, EmptyState,
-    ErrorState and ActionBar into `packages/brand` with stories, and
-    message namespaces per route segment (a large move, best on its own).
-  - F5: Cache Components for published reads. Deploying only after
-    migrations is done (Nov 8; the Deploy Hook is the owner's step
-    above). The bundle-size
+  - F4 (after V1): moving DataTable, Field, ChoiceInput, Table, NavTabs,
+    EmptyState, ErrorState and ActionBar into `packages/brand` with
+    stories. They read the app's messages, auth and API helpers in 73
+    files, so each must first take its labels as props: its own change.
+  - F5: deploying only after migrations is done (Nov 8; the Deploy Hook
+    is the owner's step above). Cache Components waits until after V1:
+    published reads are already cached by tag and refreshed on publish;
+    turning it on (tried Nov 8) needs the theme cookie out of the root
+    layout and a real record for every dynamic route at build time, or
+    the build fails on an empty table (Editions today). The bundle-size
     check is the performance budget the journeys already enforce on a
     mid-range phone (`apps/e2e/tests/performance.spec.ts`).
   - F6: dropping the `charity` schema (empty; after it leaves the exposed
@@ -204,8 +208,9 @@ Part A first).
     in the lockfile.
   - F7: coverage minimums are set (PR #250, `vitest.config.ts`): two
     points under Nov 8's coverage.
-  - F1: AGENTS.md cut to code conventions; the decisions.md date-line
-    check (needs the attached copy's line).
+  - F1: AGENTS.md is cut to the conventions (Nov 8; the domain is in
+    `docs/platform/domain.md`). Left: the decisions.md date-line check
+    (needs the attached copy's line).
 
 ## Content still needed
 
