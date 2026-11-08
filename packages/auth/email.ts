@@ -211,8 +211,8 @@ export const signUpWithEmail = async (
     return { code: toEmailAuthError(error), ok: false };
   }
   // An address that already has an account comes back with no identities
-  // (Supabase hides it so as not to say so); here it is said (owner, Oct
-  // 31, 2026): sign in instead.
+  // (Supabase hides it so as not to say so); here it is said
+  // (decisions.md): sign in instead.
   if (data.user && (data.user.identities ?? []).length === 0) {
     return { code: "user_exists", ok: false };
   }

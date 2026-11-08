@@ -210,8 +210,10 @@ Part A first).
   - F7: coverage minimums are set (PR #250, `vitest.config.ts`): two
     points under Nov 8's coverage.
   - F1: AGENTS.md is cut to the conventions (Nov 8; the domain is in
-    `docs/platform/domain.md`). Left: the decisions.md date-line check
-    (needs the attached copy's line).
+    `docs/platform/domain.md`). The decisions.md date line is checked in
+    CI (`bun run check:decisions`): a real day, its weekday right, not in
+    the future, no later "decided" date, and a new date whenever the file
+    changes.
 
 ## Content still needed
 

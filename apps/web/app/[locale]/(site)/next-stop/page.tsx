@@ -25,8 +25,8 @@ export const generateMetadata = async ({
 };
 
 /**
- * Next Stop, the Society's video show, under the Director of Media (owner,
- * Nov 7, 2026: out of Qirtas, at /next-stop; episodes on YouTube):
+ * Next Stop, the Society's video show, under the Director of Media (decisions.md:
+ * out of Qirtas, at /next-stop; episodes on YouTube):
  * its episodes on a shelf (the same as a plain list at
  * /next-stop/episodes), the team from the roles people hold, how to
  * send a reel, and its promise to the people it films.

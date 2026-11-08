@@ -194,8 +194,8 @@ export const searchWords = {
 } as const;
 
 /**
- * Words with their clues, for the daily crossword and anagrams (owner, Nov
- * 5, 2026). Plain dictionary senses; at most nine letters each. The Arabic
+ * Words with their clues, for the daily crossword and anagrams
+ * (decisions.md). Plain dictionary senses; at most nine letters each. The Arabic
  * clues are needs-native-review.
  */
 export const clueWords = {

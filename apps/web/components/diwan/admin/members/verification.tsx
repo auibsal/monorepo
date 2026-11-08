@@ -266,8 +266,8 @@ const EarlierRequests = () => {
 };
 
 /**
- * The Society verifies partners; partners verify their own people (owner,
- * Oct 31, 2026). What waits here is partner applications: the first view
+ * The Society verifies partners; partners verify their own people (decisions.md).
+ * What waits here is partner applications: the first view
  * of Partners (/partnerships/applications; Nov 4, 2026, one place for
  * partners).
  */

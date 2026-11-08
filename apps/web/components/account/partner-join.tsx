@@ -103,8 +103,8 @@ const ApplicationForm = () => {
     reach: "iraq" as (typeof REACHES)[number],
     url: "",
   });
-  // A signature is the signer's name on the platform, dated today (owner,
-  // Oct 31, 2026); the database signs in that name whatever is sent.
+  // A signature is the signer's name on the platform, dated today (decisions.md);
+  // the database signs in that name whatever is sent.
   const signatory = profile.data
     ? localized(profile.data, "full_name", locale)
     : "";
