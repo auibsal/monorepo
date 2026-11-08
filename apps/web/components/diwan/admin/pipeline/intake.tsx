@@ -24,6 +24,8 @@ import {
   Field,
   SelectInput,
 } from "../kit";
+import { useMemberNames } from "../member-picker";
+import { memberName } from "../members/directory";
 import {
   type Category,
   openSubmissionFile,
@@ -318,7 +320,7 @@ export const SubmissionView = () => {
   const submission = useQuery({
     enabled: Boolean(id),
     queryFn: async () => {
-      const [row, files, history] = await Promise.all([
+      const [row, files, history, openings] = await Promise.all([
         supabase
           .schema("journal")
           .from("submissions")
@@ -337,16 +339,26 @@ export const SubmissionView = () => {
           .select("id, from_status, to_status, note, changed_at")
           .eq("submission_id", id ?? "")
           .order("changed_at"),
+        supabase
+          .schema("journal")
+          .from("original_openings")
+          .select("id, file_id, opened_by, opened_at")
+          .eq("submission_id", id ?? "")
+          .order("opened_at"),
       ]);
       return {
         files: unwrap(files) ?? [],
         history: unwrap(history) ?? [],
+        openings: unwrap(openings) ?? [],
         row: unwrap(row),
       };
     },
     queryKey: [...pipelineKey, "submission", id],
   });
   const row = submission.data?.row;
+  const openers = useMemberNames(
+    (submission.data?.openings ?? []).map((o) => o.opened_by)
+  );
   const queue = useIntakeQueue(row?.call?.issue_id ?? null);
   const author = queue.data?.find((s) => s.submission_id === id);
 
@@ -392,6 +404,20 @@ export const SubmissionView = () => {
   }
   const inIntake = INTAKE.includes(row.status);
   const open = !journal.finalStatuses.some((s) => s === row.status);
+  // Originals open in intake and once accepted (journal.open_original).
+  const originals = inIntake || row.status === "accepted";
+  const files = submission.data?.files ?? [];
+  const fileLabel = (fileId: string) => {
+    const index = files.findIndex((f) => f.id === fileId);
+    const file = files[index];
+    return file
+      ? `${t(`fileKinds.${file.kind as "manuscript" | "image" | "source"}`)} ${formatNumber(index + 1)}`
+      : "";
+  };
+  const opener = (userId: string | null) => {
+    const person = openers.data?.find((n) => n.id === userId);
+    return person ? memberName(person, locale) : "";
+  };
 
   return (
     <div className="grid gap-8">
@@ -488,6 +514,7 @@ export const SubmissionView = () => {
 
       <section className="grid gap-3">
         <h2 className="type-subheading">{t("submission.files")}</h2>
+        <p className="type-caption">{t("openings.note")}</p>
         {submission.data?.files.length ? (
           <ul className="grid gap-2">
             {submission.data.files.map((f, index) => (
@@ -498,14 +525,16 @@ export const SubmissionView = () => {
                   )}{" "}
                   {formatNumber(index + 1)}
                 </span>
-                <Button
-                  disabled={openFile.isPending}
-                  onClick={() => openFile.mutate(f.id)}
-                  size="sm"
-                  variant="outline"
-                >
-                  {tk("open")}
-                </Button>
+                {originals ? (
+                  <Button
+                    disabled={openFile.isPending}
+                    onClick={() => openFile.mutate(f.id)}
+                    size="sm"
+                    variant="outline"
+                  >
+                    {tk("open")}
+                  </Button>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -545,6 +574,15 @@ export const SubmissionView = () => {
             <li key={h.id}>
               {formatLongDate(h.changed_at, locale, true)}: {ts(h.to_status)}
               {h.note ? ` (${h.note})` : ""}
+            </li>
+          ))}
+          {submission.data?.openings.map((o) => (
+            <li key={`opening-${o.id}`}>
+              {t("openings.line", {
+                date: formatLongDate(o.opened_at, locale, true),
+                file: fileLabel(o.file_id),
+                name: opener(o.opened_by),
+              })}
             </li>
           ))}
         </ol>

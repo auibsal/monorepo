@@ -57,20 +57,6 @@ export const readTotals = (entry: Pick<BlindEntryRow, "assignments">) =>
 export const entryAverage = (entry: Pick<BlindEntryRow, "assignments">) =>
   journal.averageTotal(readTotals(entry));
 
-export interface BlindFile {
-  kind: string;
-  mimeType: string;
-  name: string;
-  url: string | null;
-}
-
-/** Links to the metadata-stripped copies (the API routes check access by RLS). */
-export const useBlindFiles = () => {
-  const { supabase } = useAuth();
-  return (entry: string) =>
-    callApi<{ files: BlindFile[] }>(supabase, "/files/blind", { entry });
-};
-
 export const openSubmissionFile = async (
   supabase: ReturnType<typeof useAuth>["supabase"],
   id: string

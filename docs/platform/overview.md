@@ -28,6 +28,7 @@ The platform is one repository, [auibsal/monorepo](https://github.com/auibsal/mo
 - **Secrets live only in the API and CI.** The Diwan bundle is public by design; CI fails if a secret's name or value appears in it.
 - **Multi-step rules are database functions.** Ballots, the election count, waitlist promotion and Qirtas decisions are single atomic functions.
 - **Blind review.** Readers never receive an author's identity before a decision; the database withholds it.
+- **Readers read the work, never the file.** A reader takes the readers' pledge once (`journal.reader_pledges`), then reads a blind entry's text on the page (`journal.entry_text`; the columns aren't selectable by themselves) and a Gallery entry's images as copies marked with their card number and the day (`/api/files/blind`). Selecting, copying, the context menu and printing are off on that page, a speed bump that keeps the keyboard and screen readers working. Originals open only for the writer, the Submissions Manager in intake, and the section's editor or the Editor-in-Chief once accepted (`journal.open_original`); every opening shows in the submission's History.
 
 ## Scheduled jobs
 

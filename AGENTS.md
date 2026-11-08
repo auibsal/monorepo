@@ -186,7 +186,11 @@ any schema change. Integration tests run against a local stack with
   publicly.
 - **Blind review.** Readers never receive an author's identity before a
   decision; verify against network responses, not the UI. Clients never
-  read `contributors.user_id`, so a pen name can't be traced.
+  read `contributors.user_id`, so a pen name can't be traced. Readers
+  read the work, never the file: after the readers' pledge, the text on
+  the page (`journal.entry_text`) and images marked with their card
+  number (`/api/files/blind`); originals open by role through
+  `journal.open_original`, each opening kept.
 - **No third-party monitoring or protection.** Errors and logs go to the
   Vercel runtime log (`@repo/observability` prints only); the security
   headers are the app's own (`@repo/security`; your account and the Diwan

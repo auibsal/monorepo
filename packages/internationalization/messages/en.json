@@ -1991,12 +1991,6 @@
           "notFound": "No piece with this link, or your roles don’t cover it.",
           "text": "Text",
           "noText": "Submitted as a file.",
-          "files": "Files",
-          "filesNote": "Copies with the author’s details removed from the file properties. Links last five minutes.",
-          "getFiles": "Get the files",
-          "preparing": "Preparing…",
-          "noFiles": "No files attached.",
-          "fileUnavailable": "this file couldn’t be prepared; ask the Submissions Manager.",
           "yourRead": "Your read (read {number})",
           "rubricNote": "Rubric v2: each criterion from 1 to 5, weighted to a total out of 100.",
           "scoresClosed": "Scoring has closed for this piece.",
@@ -2042,6 +2036,27 @@
           "back": "The Edition",
           "missing": "This call is not here",
           "title": "A call"
+        },
+        "pledge": {
+          "title": "The readers’ pledge",
+          "intro": "Before you read work sent to Qirtas, you agree that:",
+          "points": {
+            "confidential": "What you read here is confidential until it is published, and so is everything said about it.",
+            "noCopies": "You keep no copy of it: no screenshots, photos, downloads, or notes that quote it.",
+            "noSharing": "You don’t share, describe, or discuss it with anyone outside the review.",
+            "stepAside": "If you know or can tell whose work it is, you step aside from it and tell the Editor-in-Chief."
+          },
+          "agree": "I agree"
+        },
+        "room": {
+          "note": "Read it here only. Your card number and today’s date are set across the work.",
+          "notPrinted": "Work under review isn’t printed.",
+          "image": "Image {number}",
+          "imageUnavailable": "This image can’t be shown here. The Submissions Manager has the original."
+        },
+        "openings": {
+          "line": "{date}: {name} opened the original ({file})",
+          "note": "Originals open for the Submissions Manager during intake, and for the section’s editor or the Editor-in-Chief once the work is accepted. Each opening is recorded here."
         }
       },
       "partners": {

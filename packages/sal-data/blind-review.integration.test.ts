@@ -159,9 +159,18 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
 
     const reader = await as(people.reader.email);
     const rj = reader.schema("journal");
+    // The text is not a column readers select; it comes after the pledge.
+    const closed = await rj.from("blind_entries").select("body_html");
+    expect(closed.error?.code).toBe("42501");
+    const beforePledge = await rj.rpc("entry_text", { entry: entryId });
+    expect(beforePledge.error?.hint).toBe("reader_pledge");
+    expect((await rj.rpc("take_reader_pledge")).error).toBeNull();
+
+    const columns = "id, blind_id, title, category, language, status";
     const responses = await Promise.all([
-      rj.from("blind_entries").select("*"),
-      rj.from("assignments").select("*, entry:blind_entries(*)"),
+      rj.from("blind_entries").select(columns),
+      rj.from("assignments").select(`*, entry:blind_entries(${columns})`),
+      rj.rpc("entry_text", { entry: entryId }),
       rj.from("submissions").select("*"),
       rj.from("blind_keys").select("*"),
       rj.from("status_history").select("*"),

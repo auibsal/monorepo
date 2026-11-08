@@ -3825,6 +3825,46 @@ export type Database = {
         };
         Relationships: [];
       };
+      original_openings: {
+        Row: {
+          file_id: string;
+          id: number;
+          opened_at: string;
+          opened_by: string | null;
+          submission_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          file_id: string;
+          id?: never;
+          opened_at?: string;
+          opened_by?: string | null;
+          submission_id: string;
+        };
+        Update: {
+          file_id?: string;
+          id?: never;
+          opened_at?: string;
+          opened_by?: string | null;
+          submission_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "original_openings_file_id_fkey";
+            columns: ["file_id"];
+            isOneToOne: false;
+            referencedRelation: "submission_files";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "original_openings_submission_id_fkey";
+            columns: ["submission_id"];
+            isOneToOne: false;
+            referencedRelation: "submissions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       piece_bodies: {
         Row: {
           body_ar: string | null;
@@ -4405,6 +4445,25 @@ export type Database = {
           },
         ];
       };
+      reader_pledges: {
+        Row: {
+          agreed_at: string;
+          user_id: string;
+          version: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          agreed_at?: string;
+          user_id: string;
+          version: number;
+        };
+        Update: {
+          agreed_at?: string;
+          user_id?: string;
+          version?: number;
+        };
+        Relationships: [];
+      };
       saved_pieces: {
         Row: {
           piece_id: string;
@@ -4834,6 +4893,14 @@ export type Database = {
           author_name_en: string;
         }[];
       };
+      entry_text: {
+        Args: { entry: string };
+        Returns: {
+          body_html: string;
+          mark: string;
+          source_text: string;
+        }[];
+      };
       expired_submissions: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4898,6 +4965,14 @@ export type Database = {
           slug: string;
         }[];
       };
+      my_reader_pledge: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          agreed_at: string;
+          current: boolean;
+          version: number;
+        }[];
+      };
       next_stop_team: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4907,6 +4982,7 @@ export type Database = {
           title_en: string;
         }[];
       };
+      open_original: { Args: { file: string }; Returns: string };
       open_prize_round: { Args: Record<PropertyKey, never>; Returns: string };
       piece_from_entry: { Args: { blind_entry_id: string }; Returns: string };
       piece_thread: {
@@ -5007,6 +5083,7 @@ export type Database = {
           name_en: string;
         }[];
       };
+      take_reader_pledge: { Args: Record<PropertyKey, never>; Returns: string };
       transition_submission: {
         Args: {
           id: string;
