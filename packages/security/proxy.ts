@@ -39,6 +39,51 @@ export const telegramMiniApp = (options: SecurityOptions): SecurityOptions => ({
   frameable: true,
 });
 
+/** A fresh nonce for one response: 128 random bits, base64. */
+export const createNonce = () =>
+  btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+
+/** The SHA-256 source (`'sha256-…'`) for an inline script the page carries. */
+export const scriptHash = async (script: string) => {
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(script)
+  );
+  return `'sha256-${btoa(String.fromCharCode(...new Uint8Array(digest)))}'`;
+};
+
+/**
+ * The policy for a page rendered for one request (your account, the
+ * Diwan): a script runs only with this response's nonce, or if one that
+ * did loaded it ('strict-dynamic': Next's chunks, Turnstile), or if its
+ * hash is listed (the theme script in the shared <head>). 'unsafe-inline'
+ * and the hosts stay for browsers older than CSP 3; newer ones ignore them
+ * once a nonce is present.
+ */
+export const withNonce = (
+  options: SecurityOptions,
+  nonce: string,
+  hashes: readonly string[] = []
+): SecurityOptions => {
+  const script = options.csp["script-src"];
+  return {
+    ...options,
+    csp: {
+      ...options.csp,
+      "script-src": [
+        ...(script === true || script === undefined ? [] : script),
+        `'nonce-${nonce}'`,
+        "'strict-dynamic'",
+        ...hashes,
+      ],
+    },
+  };
+};
+
+/** The Content-Security-Policy header's value. */
+export const contentSecurityPolicy = (options: SecurityOptions) =>
+  serializeCsp(options.csp);
+
 /** Every header, in the order they are sent. */
 const securityHeaders = (
   options: SecurityOptions = securityOptionsWith()

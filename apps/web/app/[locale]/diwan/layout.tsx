@@ -7,6 +7,10 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { AppProviders } from "@/components/diwan/providers";
 
+// Rendered for each request, so Next can put the request's CSP nonce on
+// its scripts (apps/web/proxy.ts).
+export const dynamic = "force-dynamic";
+
 interface DiwanLayoutProperties {
   readonly children: ReactNode;
   readonly params: Promise<{
