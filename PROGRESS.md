@@ -145,9 +145,12 @@ Part A first).
 - [ ] **Recovery codes.** Only one of the six people holding a Council
   role has made a set (still one on Nov 8). Each makes one on Membership → Settings and keeps
   it away from their phone.
-- [ ] **Arabic name parts.** Each officer sets their four Arabic name
-  parts on Profile. Fajer Ezzet's and Mohammed-Ali Ohmaid's are on record
-  (Nov 8); the General Secretary's and the Next Stop host's are not.
+- [ ] **Officers' official names.** Once PR #250 is live, whoever holds
+  `members.manage` (the President or the General Secretary) enters the
+  officers' official four-part names, given by the owner on Nov 8, on
+  each member page (Diwan → Membership → the person → Their name). The
+  names are not kept in the repository. Mohammed-Ali Ohmaid's English
+  parts are still empty.
 - [ ] **Roles on the site.** Assign every holder on record (decisions §4)
   on their member page, the Managing Editor and the Next Stop host among
   them. The Council page and the masthead come only from roles.
@@ -221,10 +224,11 @@ Part A first).
 
 ## Content still needed
 
-- [ ] TODO(content): official logo files for AUIB, the Office of Student
-  Life, the College of Arts and Sciences and AUIB Press
-  (`apps/web/public/institutions/`, then `apps/web/lib/institutions.ts`).
-  Their names show until then.
+- [x] The institutions' logos (Nov 8): AUIB, the Office of Student Life,
+  the College of Arts and Sciences, AUIB Press and the AUIB Library, in
+  `apps/web/public/institutions/`. AUIB Press's was cut from a photo and
+  the Library's file is small: replace both when the offices send their
+  own files.
 - [ ] The dated events of decisions §7 (the pilots on Nov 17 and Dec 1,
   spring 2027's Tuesdays, the al-Mutanabbi Street trip on Apr 23) go into
   Notion's Events once the room and times are confirmed with Student Life.

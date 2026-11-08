@@ -1,11 +1,12 @@
+import { cn } from "@repo/brand/lib/utils";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations } from "next-intl/server";
 import { INSTITUTIONS } from "@/lib/institutions";
 
 /**
  * The home institution, the recognition and the institutional partners,
- * as a row of tiles: the official logo when one is supplied, the name
- * otherwise.
+ * as a row of tiles, each with its official logo on the ground it was
+ * made for.
  */
 export const Institutions = async ({
   showAll = false,
@@ -27,24 +28,29 @@ export const Institutions = async ({
         ) : null}
       </div>
       <p className="type-body max-w-3xl">{t("lede")}</p>
-      <ul className="gap-space-4 grid sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="gap-space-4 grid sm:grid-cols-2 lg:grid-cols-3">
         {INSTITUTIONS.map((item) => {
           const name = t(`names.${item.key}`);
           const body = (
             <>
               <span className="type-label">{t(`roles.${item.role}`)}</span>
-              {item.logo ? (
-                // biome-ignore lint/performance/noImgElement: a static logo file, as supplied
+              <span
+                className={cn(
+                  "p-space-3 grid h-24 place-items-center",
+                  item.ground === "ink" ? "bg-footer" : "bg-surface"
+                )}
+                // A color logo keeps its paper in the dark theme too.
+                data-theme={item.ground === "paper" ? "light" : undefined}
+              >
+                {/* biome-ignore lint/performance/noImgElement: a static logo file, as supplied */}
                 <img
                   alt={name}
-                  className="h-12 w-auto justify-self-start object-contain"
-                  height={48}
+                  className="h-14 w-auto max-w-full object-contain"
+                  height={56}
                   src={item.logo}
-                  width={160}
+                  width={180}
                 />
-              ) : (
-                <span className="type-subheading">{name}</span>
-              )}
+              </span>
             </>
           );
           return (

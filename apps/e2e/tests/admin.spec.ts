@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { admin, editor, event } from "../fixtures";
+import { admin, editor, editor2, event, PASSWORD } from "../fixtures";
 import { urls } from "../playwright.config";
-import { expectAccessible, signInWithPassword } from "./helpers";
+import { expectAccessible, setUpTwoStep, signInWithPassword } from "./helpers";
 
 test("a News desk editor starts a piece, and it waits in Editing, unpublished", async ({
   page,
@@ -205,4 +205,75 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
   await page.emulateMedia({ media: "screen" });
   await expectAccessible(page);
   expect(fileAddresses).toEqual([]);
+});
+
+test("an officer who manages members corrects a member's name to the official one", async ({
+  browser,
+}) => {
+  const db = admin();
+  const stamp = Date.now();
+  const created = await db.auth.admin.createUser({
+    email: `e2e-name-${stamp}@auib.edu.iq`,
+    email_confirm: true,
+    password: PASSWORD,
+    user_metadata: { full_name_en: "Mariam AlHakimi" },
+  });
+  expect(created.error).toBeNull();
+  const memberId = created.data.user?.id ?? "";
+
+  // The General Secretary covers Membership and signs in with two steps.
+  const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
+  const secretaryId = users.users.find((u) => u.email === editor2.email)?.id;
+  if (secretaryId) {
+    const factors = await db.auth.admin.mfa.listFactors({
+      userId: secretaryId,
+    });
+    for (const factor of factors.data?.factors ?? []) {
+      await db.auth.admin.mfa.deleteFactor({
+        id: factor.id,
+        userId: secretaryId,
+      });
+    }
+  }
+  const page = await (await browser.newContext()).newPage();
+  await signInWithPassword(page, editor2.email);
+  await page.goto(`${urls.app}/membership/${memberId}`);
+  await setUpTwoStep(page);
+  await expect(page.getByRole("heading", { name: "Their name" })).toBeVisible();
+
+  const english = page.getByRole("group", { name: "In English" });
+  const arabic = page.getByRole("group", { name: "In Arabic" });
+  const fill = async (
+    group: typeof english,
+    parts: [string, string, string, string]
+  ) => {
+    const labels = [
+      "Name",
+      "Father’s name",
+      "Grandfather’s name",
+      "Family name",
+    ];
+    for (const [index, label] of labels.entries()) {
+      await group.getByLabel(label, { exact: true }).fill(parts[index] ?? "");
+    }
+  };
+  // The grandfather's name is unique per run: one person, one full name.
+  await fill(english, ["Mariam", "Tariq", `Ziyad${stamp}`, "Jabbir"]);
+  await fill(arabic, ["مريم", "طارق", `زياد${stamp}`, "جابر"]);
+  await page.getByRole("button", { name: "Save the name" }).click();
+  await expect(
+    page.getByText("Saved. The site now shows Mariam Jabbir.")
+  ).toBeVisible();
+
+  const saved = await db
+    .schema("core")
+    .from("profiles")
+    .select("full_name_en, full_name_ar")
+    .eq("id", memberId)
+    .single();
+  expect(saved.data).toEqual({
+    full_name_ar: "مريم جابر",
+    full_name_en: "Mariam Jabbir",
+  });
+  await expectAccessible(page);
 });

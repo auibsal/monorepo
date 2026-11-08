@@ -5725,6 +5725,20 @@ export type Database = {
         Args: { approve: boolean; reason?: string; record_id: string };
         Returns: undefined;
       };
+      correct_name: {
+        Args: {
+          father_ar: string;
+          father_en: string;
+          first_ar: string;
+          first_en: string;
+          grandfather_ar: string;
+          grandfather_en: string;
+          last_ar: string;
+          last_en: string;
+          member: string;
+        };
+        Returns: undefined;
+      };
       current_pledge_version: {
         Args: { kind: Database["membership"]["Enums"]["pledge_type"] };
         Returns: string;

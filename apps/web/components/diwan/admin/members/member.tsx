@@ -13,12 +13,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { access, localized, membership, unwrap } from "@/lib/data";
+import { access, localized, membership, names, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
+import { isNameTaken } from "@/lib/diwan/errors";
 import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { hasPermission, type ScopeType, scopeTypes } from "@/lib/rbac";
+import { NamePartsFields } from "../../setup-form";
 import { ErrorState, SectionSpinner } from "../../states";
 import {
   AddInPlace,
@@ -709,6 +711,113 @@ const Departure = ({ name, userId }: { name: string; userId: string }) => {
   );
 };
 
+/**
+ * The member's name as on their papers (decisions.md), in four parts and
+ * both languages. The member writes it themselves; an officer who manages
+ * members corrects it here (`membership.correct_name`), and the activity
+ * log keeps which parts changed, never the names.
+ */
+const NameCorrection = ({ userId }: { userId: string }) => {
+  const t = useTranslations("diwan.admin.member.name");
+  const locale = useLocale();
+  const ts = useTranslations("diwan.setup.name");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const current = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .from("profiles")
+          .select(
+            "full_name_en, full_name_ar, first_name_en, father_name_en, grandfather_name_en, last_name_en, first_name_ar, father_name_ar, grandfather_name_ar, last_name_ar"
+          )
+          .eq("id", userId)
+          .single()
+      ),
+    queryKey: ["admin", "member-name", userId],
+  });
+  const [draft, setDraft] = useState<names.FourPartNames | null>(null);
+  const parts: names.FourPartNames = draft ?? {
+    ar: names.partsFrom(current.data, "ar"),
+    en: names.partsFrom(current.data, "en"),
+  };
+  const save = useMutation({
+    mutationFn: async () => {
+      unwrap(
+        await supabase.schema("membership").rpc("correct_name", {
+          father_ar: parts.ar.father.trim(),
+          father_en: parts.en.father.trim(),
+          first_ar: parts.ar.first.trim(),
+          first_en: parts.en.first.trim(),
+          grandfather_ar: parts.ar.grandfather.trim(),
+          grandfather_en: parts.en.grandfather.trim(),
+          last_ar: parts.ar.last.trim(),
+          last_en: parts.en.last.trim(),
+          member: userId,
+        })
+      );
+      // The name as the site now shows it, in this page's language.
+      return names.displayName(parts[locale === "ar" ? "ar" : "en"]);
+    },
+    onSuccess: async () => {
+      setDraft(null);
+      await queryClient.invalidateQueries({ queryKey: ["admin"] });
+    },
+  });
+  if (current.isPending) {
+    return <SectionSpinner />;
+  }
+  const complete =
+    names.partsComplete(parts.en) && names.partsComplete(parts.ar);
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (complete) {
+      save.mutate();
+    }
+  };
+  return (
+    <section className="grid gap-3">
+      <h2 className="type-heading">{t("title")}</h2>
+      <p className="type-body text-text-secondary max-w-2xl">{t("body")}</p>
+      <form className="grid gap-4" onSubmit={submit}>
+        {(["en", "ar"] as const).map((lang) => (
+          <fieldset className="grid gap-3" key={lang}>
+            <legend className="mb-2 text-sm font-medium">{t(lang)}</legend>
+            <NamePartsFields
+              language={lang}
+              onChange={(next) => setDraft({ ...parts, [lang]: next })}
+              parts={parts[lang]}
+            />
+          </fieldset>
+        ))}
+        <p className="type-caption">{ts("hint")}</p>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <Button
+            disabled={!(complete && draft) || save.isPending}
+            type="submit"
+            variant="outline"
+          >
+            {t("save")}
+          </Button>
+          {save.data && !draft ? (
+            <p className="type-body" role="status">
+              {t("saved", { name: save.data })}
+            </p>
+          ) : null}
+        </div>
+        {isNameTaken(save.error) ? (
+          <p className="type-body" role="alert">
+            {t("taken")}
+          </p>
+        ) : (
+          <ErrorLine error={save.error} />
+        )}
+      </form>
+    </section>
+  );
+};
+
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export const MemberDetail = () => {
@@ -782,6 +891,7 @@ export const MemberDetail = () => {
       {canManage && row.tier ? (
         <TierForm tier={row.tier} userId={userId} />
       ) : null}
+      {canManage ? <NameCorrection userId={userId} /> : null}
       {canManage ? <ActivitySection userId={userId} /> : null}
       {canManage && row.tier === "member" ? (
         <Departure name={name} userId={userId} />

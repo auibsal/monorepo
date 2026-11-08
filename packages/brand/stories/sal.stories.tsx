@@ -303,7 +303,10 @@ export const LetterStory: Story = {
       greeting="Dear Ms. Hassan:"
       recipient={["Lina Hassan", "American University of Iraq – Baghdad"]}
       reference="LTR-2026-001"
-      signer={{ name: "Yaqoob Ghassan Al-Azzawi", role: "General Secretary" }}
+      signer={{
+        name: "Yaqoob Ghassan Mahmood Hussein",
+        role: "General Secretary",
+      }}
       subject="Service letter"
       verify={{
         code: "SVC-2027-4K8P",
