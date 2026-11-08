@@ -32,7 +32,7 @@ Part A first).
   staff type in the paper sign-ups, send the test to the President, and
   the President says go. That list is deleted thirty days after its own
   send.
-- [ ] **Merge PR #238 before joining opens.** Its migrations, applied by
+- [x] **Merge PR #238 before joining opens** (merged Nov 7). Its migrations, applied by
   CI, change production data once:
   - every published event without a place goes back to draft, and the
     Nov 17 writing workshop is canceled;
@@ -43,10 +43,11 @@ Part A first).
   - the President's Qirtas and Prize permissions and the Acting
     President role go; the Vice President acts while the President is
     recorded absent.
-- [ ] **The Library re-sync**, then a check:
-  - run `/api/cron/notion-sync?documents=all` until it reports done;
-  - check every public page for retired names and codes;
-  - rename any Notion event that still carries a retired name.
+- [x] **The Library re-sync**, then a check (Nov 8): the sync runs clean
+  (its one error, the retired Programs database, is gone with PR #250);
+  all 86 pages in the sitemap were read for retired names and codes, and
+  the one found, "open nights" in the Company's line, is fixed by a
+  migration.
 
 ## For the owner: dashboards and secrets
 
@@ -63,7 +64,7 @@ Part A first).
 - [ ] **GitHub → Code security:** turn on the dependency graph, secret
   scanning and push protection. Then add the repository variable
   `DEPENDENCY_REVIEW` = `on`.
-- [ ] **After PR #249 merges, reconnect Hudhud** (Diwan → Desk →
+- [ ] **Now that PR #249 is merged, reconnect Hudhud** (Diwan → Desk →
   Connected → Hudhud), so Telegram calls `/api/hooks/telegram`. Wallet
   moves by itself to `/api/hooks/wallet`, unless its callback was set by
   hand in the Google Pay console: then change it there.
@@ -78,14 +79,13 @@ Part A first).
 - [ ] **Supabase → Realtime → Settings:** turn off "Allow public access".
 - [ ] **Supabase → Authentication → Emails:** confirm the eight templates
   and subjects match `packages/database/supabase/templates`.
-- [ ] **Cloudflare DNS for auibsal.org:** add CAA records (none are set
-  today):
+- [ ] **Cloudflare DNS for auibsal.org:** add CAA records (still none on
+  Nov 8):
   - `0 issue "letsencrypt.org"`
   - `0 issue "pki.goog"`
   - `0 issue "sectigo.com"`
   - `0 iodef "mailto:hello@auibsal.org"`
-  Then submit auibsal.org at hstspreload.org (the header already carries
-  `preload`).
+  (auibsal.org is already on the HSTS preload list.)
 - [ ] **Cloudflare:** turn off Web Analytics' automatic setup if it is
   still on (the CSP blocks its beacon).
 - [ ] **Vercel, auibsal:** remove the Sentry and Arcjet variables if they
@@ -111,8 +111,9 @@ Part A first).
   remove `RESEND_FROM` and any Google Tag Manager or Analytics variables.
   Turn on Web Analytics in the project.
 - [ ] **Resend → Webhooks:** add `https://auibsal.org/api/hooks/resend` for
-  `email.bounced` and `email.complained`; its signing secret is
-  `RESEND_WEBHOOK_SECRET`.
+  `email.bounced` and `email.complained` (none is set up on Nov 8); its
+  signing secret goes in Vercel as `RESEND_WEBHOOK_SECRET`. Until then a
+  bounced address is written to again.
 - [ ] **Telegram:** run the webhook setup again (Diwan → Media → Channels)
   so Hudhud receives `chat_member` updates (people leaving a group).
 - [ ] **Backups:** add `RESEND_TOKEN` to the production environment (the
@@ -132,7 +133,7 @@ Part A first).
 ## For the owner: the Society
 
 - [ ] **Recovery codes.** Only one of the six people holding a Council
-  role has made a set. Each makes one on Membership → Settings and keeps
+  role has made a set (still one on Nov 8). Each makes one on Membership → Settings and keeps
   it away from their phone.
 - [ ] **Arabic name parts.** Each officer sets their four Arabic name
   parts on Profile. Fajer Ezzet's and Mohammed-Ali Ohmaid's are not on
@@ -166,9 +167,9 @@ Part A first).
   load without one; the Diwan's page around them is for staff. Nothing in
   them is private (the press kit shows the same brand), so this stays as
   it is unless the owner wants it gated.
-- [ ] **Gallery images on acceptance.** Copy accepted Gallery images from
-  the private submissions bucket to the piece; for now editors upload them
-  on the piece's page.
+- [x] **Gallery images on acceptance** (PR #250): a piece accepted from a
+  submission takes the writer's images, stripped of their metadata, with
+  one button on its page (`/api/qirtas/images`).
 
 - [x] **Audit F and E5** (PRs #244, #246, #248 and #249): one error
   shape and Bearer helper; Knip with exports and types;
@@ -181,13 +182,15 @@ Part A first).
   - F4: moving DataTable, Field, ChoiceInput, Table, NavTabs, EmptyState,
     ErrorState and ActionBar into `packages/brand` with stories, and
     message namespaces per route segment (a large move, best on its own).
-  - F5: Cache Components for published reads; a bundle-size check on
-    pull requests; deploying only after migrations (needs a Vercel deploy
-    hook, owner side).
-  - F6: `supabase/setup-cli` in CI (the CLI is pinned through the
-    lockfile already); dropping the `charity` schema (after it leaves the
-    exposed schemas).
-  - F7: coverage minimums.
+  - F5: Cache Components for published reads; deploying only after
+    migrations (needs a Vercel deploy hook, owner side). The bundle-size
+    check is the performance budget the journeys already enforce on a
+    mid-range phone (`apps/e2e/tests/performance.spec.ts`).
+  - F6: dropping the `charity` schema (empty; after it leaves the exposed
+    schemas). `supabase/setup-cli` is not needed: CI runs the CLI pinned
+    in the lockfile.
+  - F7: coverage minimums are set (PR #250, `vitest.config.ts`): two
+    points under Nov 8's coverage.
   - F1: AGENTS.md cut to code conventions; the decisions.md date-line
     check (needs the attached copy's line).
 
