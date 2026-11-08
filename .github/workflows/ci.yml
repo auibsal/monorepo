@@ -199,7 +199,7 @@ jobs:
         run: bunx supabase test db
       - name: Generated types are up to date
         run: |
-          (cd packages/database && bunx supabase gen types typescript --local --schema public,core,access,membership,events,journal,programmes,governance,content) \
+          (cd packages/database && bunx supabase gen types typescript --schema public,core,access,membership,events,journal,programmes,governance,content) \
             | bunx biome format --stdin-file-path=packages/database/types.ts > "$RUNNER_TEMP/types.ts"
           diff -u packages/database/types.ts "$RUNNER_TEMP/types.ts" \
             || (echo "Run 'bun run db:types' and commit the result." && exit 1)
@@ -278,9 +278,8 @@ jobs:
           bunx turbo build --filter=web
       - name: Journeys (sign up, sign in, book, submit, publish, co-edit) and axe checks
         run: |
-          eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY|SECRET_KEY|MAILPIT_URL|INBUCKET_URL)=' | sed 's/^/export /')"
+          eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY|SECRET_KEY|MAILPIT_URL)=' | sed 's/^/export /')"
           export SUPABASE_URL="$API_URL" SUPABASE_SECRET_KEY="$SECRET_KEY"
-          export MAILPIT_URL="${MAILPIT_URL:-$INBUCKET_URL}"
           export NEXT_PUBLIC_SUPABASE_URL="$API_URL" NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="$PUBLISHABLE_KEY"
           E2E_START=start bun run --cwd apps/e2e e2e
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

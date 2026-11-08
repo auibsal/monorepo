@@ -11,8 +11,9 @@ routes and Hudhud, as described in `claude/decisions.md`, `AGENTS.md` and
 `docs/platform`.
 
 - **Runtime:** Node.js 26 (LTS) on Vercel, Bun 1.4 for installs and
-  scripts, every package at its latest stable release (the Supabase CLI
-  stays on 2.x until the migration and backup workflows move to 3.x).
+  scripts, every package at its latest stable release, the Supabase CLI 3
+  among them (the migration and backup workflows use its `--remote` and
+  `--yes`).
 - **Code:** TypeScript 7 targeting ES2024 with `noUncheckedIndexedAccess`;
   Biome with Ultracite 8; Knip on exports and types.
 - **Security:** a nonce-based Content Security Policy for your account and

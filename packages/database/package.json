@@ -19,7 +19,7 @@
     "db:stop": "supabase stop",
     "db:test": "bun scripts/sync-test-preamble.ts --check && supabase test db",
     "db:test:sync": "bun scripts/sync-test-preamble.ts",
-    "db:types": "supabase gen types typescript --local --schema public,core,access,membership,events,journal,programmes,governance,content | biome format --stdin-file-path=types.ts > types.ts.tmp && mv types.ts.tmp types.ts",
+    "db:types": "supabase gen types typescript --schema public,core,access,membership,events,journal,programmes,governance,content | biome format --stdin-file-path=types.ts > types.ts.tmp && mv types.ts.tmp types.ts",
     "migration:new": "supabase migration new",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
@@ -32,7 +32,7 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/node": "26.6.6",
-    "supabase": "2.122.1",
+    "supabase": "3.0.0",
     "typescript": "^7.0.2"
   }
 }

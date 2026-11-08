@@ -56,15 +56,16 @@ jobs:
           done
       - name: Link the project
         working-directory: packages/database
-        run: bunx supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+        # The password comes from SUPABASE_DB_PASSWORD (CLI 3 ignores link --password).
+        run: bunx supabase link --project-ref "$PROJECT_REF"
       - name: Dump
         working-directory: packages/database
         run: |
           stamp="$(date -u +%Y-%m-%d)"
           mkdir -p "$RUNNER_TEMP/backup"
-          bunx supabase db dump --linked --role-only -f "$RUNNER_TEMP/backup/roles.sql" --password "$SUPABASE_DB_PASSWORD"
-          bunx supabase db dump --linked -f "$RUNNER_TEMP/backup/schema.sql" --password "$SUPABASE_DB_PASSWORD"
-          bunx supabase db dump --linked --data-only --use-copy -f "$RUNNER_TEMP/backup/data.sql" --password "$SUPABASE_DB_PASSWORD"
+          bunx supabase db dump --role-only -f "$RUNNER_TEMP/backup/roles.sql" --password "$SUPABASE_DB_PASSWORD" --remote
+          bunx supabase db dump -f "$RUNNER_TEMP/backup/schema.sql" --password "$SUPABASE_DB_PASSWORD" --remote
+          bunx supabase db dump --data-only --use-copy -f "$RUNNER_TEMP/backup/data.sql" --password "$SUPABASE_DB_PASSWORD" --remote
           echo "STAMP=$stamp" >> "$GITHUB_ENV"
       - name: Storage (the 1st of the month, or when asked)
         if: github.event_name == 'schedule' || inputs.storage
@@ -74,9 +75,9 @@ jobs:
             echo "Storage is backed up on the 1st."
             exit 0
           fi
-          for bucket in $(bunx supabase --experimental storage ls --linked ss:/// | tr -d '/'); do
+          for bucket in $(bunx supabase --experimental storage ls ss:/// --remote | tr -d '/'); do
             mkdir -p "$RUNNER_TEMP/backup/storage/$bucket"
-            bunx supabase --experimental storage cp -r --linked -j 4 "ss:///$bucket" "$RUNNER_TEMP/backup/storage/$bucket"
+            bunx supabase --experimental storage cp -r -j 4 --yes "ss:///$bucket" "$RUNNER_TEMP/backup/storage/$bucket" --remote
           done
       - name: Encrypt
         run: |

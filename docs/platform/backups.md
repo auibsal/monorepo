@@ -45,7 +45,7 @@ Practice this on a scratch Supabase project first. Restoring over production rep
 3. **Restore Storage** (when the file has `storage/`), one bucket at a time, linked to the target project:
 
    ```sh
-   bunx supabase --experimental storage cp -r storage/<bucket> ss:///<bucket> --linked
+   bunx supabase --experimental storage cp -r --yes storage/<bucket> ss:///<bucket> --remote
    ```
 
 4. **Check.** Sign in to a Diwan pointed at the target, open a member, an event and a submission, and compare row counts with the source.

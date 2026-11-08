@@ -14,6 +14,7 @@ export type Database = {
           description: string;
           key: string;
         };
+        ComputedFields: never;
         Insert: {
           description: string;
           key: string;
@@ -32,6 +33,7 @@ export type Database = {
           used_at: string | null;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           code_hash: string;
           created_at?: string;
@@ -69,6 +71,7 @@ export type Database = {
           title_en: string | null;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           assigned_by?: string | null;
           confirmed_at?: string | null;
@@ -124,6 +127,7 @@ export type Database = {
           permission: string;
           role: string;
         };
+        ComputedFields: never;
         Insert: {
           permission: string;
           role: string;
@@ -161,6 +165,7 @@ export type Database = {
           requires_mfa: boolean;
           sort: number;
         };
+        ComputedFields: never;
         Insert: {
           description?: string | null;
           hiring_owner?: string | null;
@@ -193,6 +198,7 @@ export type Database = {
           user_id: string;
           via: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           id?: string;
@@ -312,6 +318,7 @@ export type Database = {
           unsubscribe_token: string;
           unsubscribed_at: string | null;
         };
+        ComputedFields: never;
         Insert: {
           confirm_sends?: number;
           confirm_sent_at?: string | null;
@@ -349,6 +356,7 @@ export type Database = {
           recipients: number;
           sent_on: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           month: string;
@@ -404,6 +412,7 @@ export type Database = {
           table_name: string;
           table_schema: string;
         };
+        ComputedFields: never;
         Insert: {
           actor_id?: string | null;
           changed?: string[] | null;
@@ -443,6 +452,7 @@ export type Database = {
           stage: string;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           broadcast_id?: string | null;
           created_at?: string;
@@ -475,6 +485,7 @@ export type Database = {
           prefix: string;
           year: number;
         };
+        ComputedFields: never;
         Insert: {
           last?: number;
           prefix: string;
@@ -494,6 +505,7 @@ export type Database = {
           event_id: string | null;
           reason: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           email: string;
@@ -521,6 +533,7 @@ export type Database = {
           uid: string;
           url: string | null;
         };
+        ComputedFields: never;
         Insert: {
           all_day?: boolean;
           ends_at?: string | null;
@@ -567,6 +580,7 @@ export type Database = {
           user_id: string;
           volunteer: boolean;
         };
+        ComputedFields: never;
         Insert: {
           affiliation?: string | null;
           birth_year?: number | null;
@@ -615,6 +629,7 @@ export type Database = {
           record_key: string;
           synced_at: string;
         };
+        ComputedFields: never;
         Insert: {
           content_hash?: string | null;
           kind: string;
@@ -641,6 +656,7 @@ export type Database = {
           payload: NonNullable<Json>;
           processed_at: string | null;
         };
+        ComputedFields: never;
         Insert: {
           attempts?: number;
           created_at?: string;
@@ -668,6 +684,7 @@ export type Database = {
           token: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           email: string;
           requested_at?: string;
@@ -709,6 +726,7 @@ export type Database = {
           updated_at: string;
           verified_at: string | null;
         };
+        ComputedFields: never;
         Insert: {
           agreed_at?: string | null;
           avatar_path?: string | null;
@@ -779,6 +797,7 @@ export type Database = {
           summary_en: string | null;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           id?: string;
@@ -821,6 +840,7 @@ export type Database = {
           p256dh: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           auth: string;
           created_at?: string;
@@ -851,6 +871,7 @@ export type Database = {
           name_en: string;
           starts_on: string;
         };
+        ComputedFields: never;
         Insert: {
           code: string;
           created_at?: string;
@@ -880,6 +901,7 @@ export type Database = {
           updated_by: string | null;
           value: NonNullable<Json>;
         };
+        ComputedFields: never;
         Insert: {
           description?: string | null;
           is_public?: boolean;
@@ -908,6 +930,7 @@ export type Database = {
           username: string | null;
           word_sent_on: string | null;
         };
+        ComputedFields: never;
         Insert: {
           daily_word?: boolean;
           linked_at?: string;
@@ -935,6 +958,7 @@ export type Database = {
           purpose: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           code_hash: string;
           expires_at?: string;
@@ -960,6 +984,7 @@ export type Database = {
           title: string | null;
           topics: NonNullable<Json>;
         };
+        ComputedFields: never;
         Insert: {
           audience?: string;
           chat_id: number;
@@ -992,6 +1017,7 @@ export type Database = {
           warned_at: string | null;
           warnings: number;
         };
+        ComputedFields: never;
         Insert: {
           chat_id: number;
           joined_at?: string;
@@ -1028,6 +1054,7 @@ export type Database = {
           posted_at: string;
           ref: string;
         };
+        ComputedFields: never;
         Insert: {
           chat_id: number;
           kind: string;
@@ -1060,6 +1087,7 @@ export type Database = {
           lang: string;
           telegram_id: number;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           day: number;
@@ -1302,6 +1330,7 @@ export type Database = {
           rsvp_id: string | null;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           checked_in_at?: string;
           checked_in_by?: string | null;
@@ -1343,6 +1372,7 @@ export type Database = {
           updated_at: string;
           url: string;
         };
+        ComputedFields: never;
         Insert: {
           event_id: string;
           updated_at?: string;
@@ -1370,6 +1400,7 @@ export type Database = {
           event_id: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           added_by?: string | null;
           duty?: string | null;
@@ -1424,6 +1455,7 @@ export type Database = {
           venue_ar: string | null;
           venue_en: string | null;
         };
+        ComputedFields: never;
         Insert: {
           body_ar?: string | null;
           body_en?: string | null;
@@ -1495,6 +1527,7 @@ export type Database = {
           invited_by: string | null;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           event_id: string;
@@ -1529,6 +1562,7 @@ export type Database = {
           label: string;
           side: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           created_by?: string | null;
@@ -1567,6 +1601,7 @@ export type Database = {
           event_id: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           event_id: string;
@@ -1599,6 +1634,7 @@ export type Database = {
           ticket_code: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           answers?: NonNullable<Json>;
           cancelled_at?: string | null;
@@ -1641,6 +1677,7 @@ export type Database = {
           label_en: string;
           url: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           created_by?: string | null;
@@ -1679,6 +1716,7 @@ export type Database = {
           updated_at: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           answers?: NonNullable<Json>;
           created_at?: string;
@@ -1808,6 +1846,7 @@ export type Database = {
           election_id: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           election_id: string;
           user_id: string;
@@ -1832,6 +1871,7 @@ export type Database = {
           election_id: string;
           id: string;
         };
+        ComputedFields: never;
         Insert: {
           choices: NonNullable<Json>;
           election_id: string;
@@ -1867,6 +1907,7 @@ export type Database = {
           student_life_answered_at: string | null;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           decided_at?: string | null;
@@ -1918,6 +1959,7 @@ export type Database = {
           updated_at: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           id?: string;
@@ -1956,6 +1998,7 @@ export type Database = {
           partner_id: string | null;
           what: string;
         };
+        ComputedFields: never;
         Insert: {
           affects?: string | null;
           closed_on?: string | null;
@@ -2004,6 +2047,7 @@ export type Database = {
           name_en: string;
           starts_on: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           ends_on: string;
@@ -2035,6 +2079,7 @@ export type Database = {
           runoff_candidate_ids: string[] | null;
           winner_candidate_id: string | null;
         };
+        ComputedFields: never;
         Insert: {
           abstained?: number;
           ballots_counted: number;
@@ -2107,6 +2152,7 @@ export type Database = {
           voting_point_at: string | null;
           voting_point_en: string | null;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           created_by?: string | null;
@@ -2176,6 +2222,7 @@ export type Database = {
           token_hash: string;
           used_at: string | null;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           created_by?: string | null;
@@ -2245,6 +2292,7 @@ export type Database = {
           submitted_by: string | null;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           acknowledged_at?: string | null;
           closed_at?: string | null;
@@ -2330,6 +2378,7 @@ export type Database = {
           title_en: string;
           version: number;
         };
+        ComputedFields: never;
         Insert: {
           acknowledge_days?: number | null;
           anonymous_ok?: boolean;
@@ -2388,6 +2437,7 @@ export type Database = {
           title_en: string;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           adopted_on?: string | null;
           body?: string;
@@ -2432,6 +2482,7 @@ export type Database = {
           updated_at: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           decided_at?: string | null;
@@ -2499,6 +2550,7 @@ export type Database = {
           student_life_informed_on: string | null;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           applied_by?: string | null;
           asked_grants?: string[] | null;
@@ -2601,6 +2653,7 @@ export type Database = {
           resolution_id: string | null;
           revoked_at: string | null;
         };
+        ComputedFields: never;
         Insert: {
           accepted_at?: string | null;
           accepted_by?: string | null;
@@ -2673,6 +2726,7 @@ export type Database = {
           updated_at: string;
           url: string | null;
         };
+        ComputedFields: never;
         Insert: {
           contact_email?: string | null;
           contact_name?: string | null;
@@ -2728,6 +2782,7 @@ export type Database = {
           title_ar: string;
           title_en: string;
         };
+        ComputedFields: never;
         Insert: {
           election_id: string;
           id?: string;
@@ -2763,6 +2818,7 @@ export type Database = {
           recorded_by: string | null;
           starts_on: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           ends_on: string;
@@ -2800,6 +2856,7 @@ export type Database = {
           votes_against: number | null;
           votes_for: number | null;
         };
+        ComputedFields: never;
         Insert: {
           adopted_on?: string | null;
           body?: string;
@@ -2872,6 +2929,7 @@ export type Database = {
           version: string | null;
           vote: string | null;
         };
+        ComputedFields: never;
         Insert: {
           adopted_on?: string | null;
           audience?: string;
@@ -2929,6 +2987,7 @@ export type Database = {
           election_id: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           election_id: string;
           user_id: string;
@@ -3256,6 +3315,7 @@ export type Database = {
           submission_id: string;
           version: string;
         };
+        ComputedFields: never;
         Insert: {
           id?: string;
           signed_at?: string;
@@ -3289,6 +3349,7 @@ export type Database = {
           kind: string;
           piece_id: string;
         };
+        ComputedFields: never;
         Insert: {
           approved_at?: string;
           approved_by?: string;
@@ -3320,6 +3381,7 @@ export type Database = {
           read_number: number;
           reader_id: string;
         };
+        ComputedFields: never;
         Insert: {
           assigned_at?: string;
           assigned_by?: string | null;
@@ -3365,6 +3427,7 @@ export type Database = {
           title: string;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           blind_id: string;
           body_html?: string | null;
@@ -3423,6 +3486,7 @@ export type Database = {
           blind_entry_id: string;
           submission_id: string;
         };
+        ComputedFields: never;
         Insert: {
           blind_entry_id: string;
           submission_id: string;
@@ -3453,6 +3517,7 @@ export type Database = {
           created_at: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           user_id?: string;
@@ -3470,6 +3535,7 @@ export type Database = {
           created_at: string;
           partner_id: string;
         };
+        ComputedFields: never;
         Insert: {
           added_by?: string | null;
           call_id: string;
@@ -3511,6 +3577,7 @@ export type Database = {
           title_en: string;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           closes_at: string;
           created_at?: string;
@@ -3571,6 +3638,7 @@ export type Database = {
           updated_at: string;
           user_id: string | null;
         };
+        ComputedFields: never;
         Insert: {
           bio_ar?: string | null;
           bio_en?: string | null;
@@ -3608,6 +3676,7 @@ export type Database = {
           note_en: string | null;
           piece_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           created_by?: string | null;
@@ -3644,6 +3713,7 @@ export type Database = {
           notes: string | null;
           submission_id: string | null;
         };
+        ComputedFields: never;
         Insert: {
           blind_entry_id?: string | null;
           decided_at?: string;
@@ -3688,6 +3758,7 @@ export type Database = {
           lang: string;
           note: string | null;
         };
+        ComputedFields: never;
         Insert: {
           checked_at?: string;
           checked_by?: string | null;
@@ -3733,6 +3804,7 @@ export type Database = {
           updated_at: string;
           volume: number;
         };
+        ComputedFields: never;
         Insert: {
           cover_path?: string | null;
           created_at?: string;
@@ -3796,6 +3868,7 @@ export type Database = {
           piece_id: string;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           body_ar?: string | null;
           body_en?: string | null;
@@ -3829,6 +3902,7 @@ export type Database = {
           role: string;
           sort: number;
         };
+        ComputedFields: never;
         Insert: {
           contributor_id: string;
           piece_id: string;
@@ -3873,6 +3947,7 @@ export type Database = {
           unit_en: string | null;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           id?: string;
@@ -3925,6 +4000,7 @@ export type Database = {
           storage_path: string;
           width: number | null;
         };
+        ComputedFields: never;
         Insert: {
           alt_ar?: string;
           alt_en?: string;
@@ -3969,6 +4045,7 @@ export type Database = {
           id: number;
           piece_id: string;
         };
+        ComputedFields: never;
         Insert: {
           author_id?: string;
           body: string;
@@ -3999,6 +4076,7 @@ export type Database = {
           piece_id: string;
           topic_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           piece_id: string;
@@ -4064,6 +4142,7 @@ export type Database = {
           updated_at: string;
           video_url: string | null;
         };
+        ComputedFields: never;
         Insert: {
           author_approved_at?: string | null;
           author_requested_at?: string | null;
@@ -4182,6 +4261,7 @@ export type Database = {
           round_id: string;
           winner_named: boolean;
         };
+        ComputedFields: never;
         Insert: {
           category: string;
           created_at?: string;
@@ -4231,6 +4311,7 @@ export type Database = {
           reason: string | null;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           entry_id: string;
@@ -4271,6 +4352,7 @@ export type Database = {
           vote_opens_at: string | null;
           year: number;
         };
+        ComputedFields: never;
         Insert: {
           awarded_on?: string | null;
           count_checked_by_eic?: string | null;
@@ -4310,6 +4392,7 @@ export type Database = {
           user_id: string;
           voted_at: string;
         };
+        ComputedFields: never;
         Insert: {
           category: string;
           round_id: string;
@@ -4337,6 +4420,7 @@ export type Database = {
           entry_id: string;
           id: string;
         };
+        ComputedFields: never;
         Insert: {
           entry_id: string;
           id?: string;
@@ -4361,6 +4445,7 @@ export type Database = {
           saved_at: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           piece_id: string;
           saved_at?: string;
@@ -4394,6 +4479,7 @@ export type Database = {
           updated_at: string;
           voice: number;
         };
+        ComputedFields: never;
         Insert: {
           archive_factor: number;
           assignment_id: string;
@@ -4438,6 +4524,7 @@ export type Database = {
           submission_id: string;
           to_status: Database["journal"]["Enums"]["submission_status"];
         };
+        ComputedFields: never;
         Insert: {
           changed_at?: string;
           changed_by?: string | null;
@@ -4480,6 +4567,7 @@ export type Database = {
           updated_at: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           category: Database["journal"]["Enums"]["category"];
           content?: NonNullable<Json>;
@@ -4511,6 +4599,7 @@ export type Database = {
           storage_path: string;
           submission_id: string;
         };
+        ComputedFields: never;
         Insert: {
           blind_path?: string | null;
           created_at?: string;
@@ -4570,6 +4659,7 @@ export type Database = {
           updated_at: string;
           video_url: string | null;
         };
+        ComputedFields: never;
         Insert: {
           anonymous?: boolean;
           author_id?: string;
@@ -4645,6 +4735,7 @@ export type Database = {
           name_en: string;
           slug: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           created_by?: string | null;
@@ -5052,6 +5143,7 @@ export type Database = {
           recorded_by: string | null;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           event_id?: string | null;
@@ -5088,6 +5180,7 @@ export type Database = {
           relation: string;
           status: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           decided_at?: string | null;
@@ -5122,6 +5215,7 @@ export type Database = {
           token: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           token?: string;
@@ -5142,6 +5236,7 @@ export type Database = {
           secret: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           code?: string;
           issued_at?: string;
@@ -5184,6 +5279,7 @@ export type Database = {
           user_id: string | null;
           verification_code: string;
         };
+        ComputedFields: never;
         Insert: {
           citation_ar?: string | null;
           citation_en?: string | null;
@@ -5243,6 +5339,7 @@ export type Database = {
           invited_by: string | null;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           ended_at?: string | null;
@@ -5266,6 +5363,7 @@ export type Database = {
           title_ar: string;
           title_en: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           sent_at?: string | null;
@@ -5298,6 +5396,7 @@ export type Database = {
           station: string | null;
           words: string | null;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           email: string;
@@ -5343,6 +5442,7 @@ export type Database = {
           updated_at: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           in_directory?: boolean;
@@ -5369,6 +5469,7 @@ export type Database = {
           user_id: string;
           version: string;
         };
+        ComputedFields: never;
         Insert: {
           accepted_at?: string;
           id?: string;
@@ -5406,6 +5507,7 @@ export type Database = {
           user_id: string;
           verification_code: string;
         };
+        ComputedFields: never;
         Insert: {
           body?: string | null;
           hours?: number | null;
@@ -5466,6 +5568,7 @@ export type Database = {
           user_id: string;
           what: string | null;
         };
+        ComputedFields: never;
         Insert: {
           activity: string;
           confirmed_at?: string | null;
@@ -5514,6 +5617,7 @@ export type Database = {
           status: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           decided_at?: string | null;
@@ -5547,6 +5651,7 @@ export type Database = {
           updated_at: string;
           user_id: string | null;
         };
+        ComputedFields: never;
         Insert: {
           code: string;
           created_at?: string;
@@ -5811,6 +5916,7 @@ export type Database = {
           note: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           audition_id: string;
           author_id?: string;
@@ -5846,6 +5952,7 @@ export type Database = {
           updated_at: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           audition_id: string;
           created_at?: string;
@@ -5885,6 +5992,7 @@ export type Database = {
           production_id: string;
           starts_at: string;
         };
+        ComputedFields: never;
         Insert: {
           capacity?: number;
           created_at?: string;
@@ -5936,6 +6044,7 @@ export type Database = {
           updated_at: string;
           youtube_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           id?: string;
@@ -5987,6 +6096,7 @@ export type Database = {
           status: string;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           created_by?: string | null;
@@ -6033,6 +6143,7 @@ export type Database = {
           updated_at: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           note?: string | null;
@@ -6085,6 +6196,7 @@ export type Database = {
           title_en: string;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           body_ar?: string | null;
           body_en?: string | null;
@@ -6139,6 +6251,7 @@ export type Database = {
           sort: number;
           user_id: string | null;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           department: string;
@@ -6180,6 +6293,7 @@ export type Database = {
           event_id: string;
           production_id: string;
         };
+        ComputedFields: never;
         Insert: {
           event_id: string;
           production_id: string;
@@ -6231,6 +6345,7 @@ export type Database = {
           title_en: string;
           updated_at: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           created_by?: string | null;
@@ -6315,6 +6430,7 @@ export type Database = {
           updated_at: string;
           year: number;
         };
+        ComputedFields: never;
         Insert: {
           consent_form_id?: string | null;
           created_at?: string;
@@ -6363,6 +6479,7 @@ export type Database = {
           published_at: string | null;
           url: string;
         };
+        ComputedFields: never;
         Insert: {
           caption_ar?: string | null;
           caption_en?: string | null;
@@ -6407,6 +6524,7 @@ export type Database = {
           production_id: string;
           starts_at: string;
         };
+        ComputedFields: never;
         Insert: {
           called?: string | null;
           created_at?: string;
@@ -6458,6 +6576,7 @@ export type Database = {
           requester_name: string;
           status: string;
         };
+        ComputedFields: never;
         Insert: {
           action_taken?: string | null;
           closed_at?: string | null;
@@ -6504,6 +6623,7 @@ export type Database = {
           updated_at: string;
           user_id: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           shift_id: string;
@@ -6543,6 +6663,7 @@ export type Database = {
           starts_at: string;
           station: boolean;
         };
+        ComputedFields: never;
         Insert: {
           capacity?: number;
           created_at?: string;
@@ -6601,6 +6722,7 @@ export type Database = {
           visibility: string;
           writer_name: string | null;
         };
+        ComputedFields: never;
         Insert: {
           associate_request_id?: string | null;
           claimed_at?: string | null;

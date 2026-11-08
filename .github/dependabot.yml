@@ -22,10 +22,6 @@ updates:
       # Types follow the Node.js runtime (26 LTS, .nvmrc), not the newest Node.
       - dependency-name: "@types/node"
         update-types: [ "version-update:semver-major" ]
-      # CLI 3 changes the flags migrate.yml and backup.yml use against
-      # production (--linked, link --password); it moves with those workflows.
-      - dependency-name: "supabase"
-        update-types: [ "version-update:semver-major" ]
     groups:
       next:
         patterns: [ "next", "@next/*", "eslint-config-next" ]

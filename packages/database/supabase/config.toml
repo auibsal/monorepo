@@ -230,8 +230,8 @@ web3 = 30
 # secret = "env(SUPABASE_AUTH_CAPTCHA_SECRET)"
 
 [auth.email]
-# Allow/disallow new user signups via email to your project.
-enable_signup = true
+# Email sign-in on or off; new sign-ups are [auth] enable_signup.
+enabled = true
 # If enabled, a user will be required to confirm any email change on both the old, and new email
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
@@ -304,7 +304,7 @@ content_path = "./supabase/templates/mfa_factor_unenrolled_notification.html"
 
 [auth.sms]
 # SAL signs in by email only (AUIB address first); phone OTP is off.
-enable_signup = false
+enabled = false
 enable_confirmations = false
 template = "Your code is {{ .Code }}"
 max_frequency = "5s"
