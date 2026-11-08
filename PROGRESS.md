@@ -52,8 +52,9 @@ Part A first).
 
 - [ ] **GitHub → Environments → production:** add `BACKUP_PASSPHRASE`.
   The nightly backup fails without it. Run it once from Actions to check.
-- [ ] **GitHub → Actions secrets:** add `NOTION_TOKEN`. Without it, CI
-  skips the forms register check (`bun run check:forms`).
+- [ ] **GitHub → Actions secrets:** add `NOTION_TOKEN`, then the
+  repository variable `REQUIRE_FORMS_REGISTER` = `1`. Until both are set,
+  CI skips the forms register check (`bun run check:forms`).
 - [ ] **GitHub → Rules:** a ruleset on `main` that:
   - requires a pull request;
   - requires the checks "Lint, typecheck, test", "Build apps", "Database
