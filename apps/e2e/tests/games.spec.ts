@@ -32,7 +32,9 @@ test.describe("Qirtas games", () => {
   test("a finished word guess offers a result that keeps the word", async ({
     page,
   }) => {
-    await page.goto(`${urls.web}/qirtas/games/word`);
+    await page.goto(`${urls.web}/qirtas/games/word`, {
+      waitUntil: "networkidle",
+    });
     await expect(page.getByRole("button", { name: "Enter" })).toBeVisible();
     // Six wrong guesses end the game.
     for (const _ of Array.from({ length: 6 })) {
@@ -47,7 +49,11 @@ test.describe("Qirtas games", () => {
   test("a guess in the daily word guess is marked letter by letter", async ({
     page,
   }) => {
-    await page.goto(`${urls.web}/qirtas/games/word`);
+    // The keyboard listens only once the game has hydrated: the button is
+    // in the server's HTML before then, and keys typed early are lost.
+    await page.goto(`${urls.web}/qirtas/games/word`, {
+      waitUntil: "networkidle",
+    });
     await expect(page.getByRole("button", { name: "Enter" })).toBeVisible();
     await page.keyboard.type("VERSE");
     await page.keyboard.press("Enter");

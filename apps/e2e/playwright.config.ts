@@ -13,6 +13,10 @@ const web = site;
 // site; members' pages are on the site itself.
 const app = `${site}/diwan`;
 const script = process.env.E2E_START === "start" ? "start" : "dev";
+const launchOptions = process.env.PLAYWRIGHT_CHROMIUM
+  ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM }
+  : {};
+const PHONE_SPECS = /(public|games|keyboard)\.spec\.ts/;
 
 export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
@@ -21,11 +25,25 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      use: { ...devices["Desktop Chrome"], launchOptions },
+    },
+    // The public pages and the games on the phones most visitors use, in
+    // both languages (the journeys that sign in run on the desktop only).
+    {
+      name: "pixel",
+      testMatch: PHONE_SPECS,
+      use: { ...devices["Pixel 7"], launchOptions },
+    },
+    {
+      name: "iphone",
+      testMatch: PHONE_SPECS,
+      // iPhone's size, touch and user agent, in Chromium (the one browser
+      // CI installs).
       use: {
-        ...devices["Desktop Chrome"],
-        launchOptions: process.env.PLAYWRIGHT_CHROMIUM
-          ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM }
-          : {},
+        ...devices["iPhone 14"],
+        browserName: "chromium",
+        defaultBrowserType: "chromium",
+        launchOptions,
       },
     },
   ],
