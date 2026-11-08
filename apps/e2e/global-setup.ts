@@ -49,6 +49,7 @@ export default async function globalSetup() {
     [memberId]: ["Auto", "آلي"],
     [presidentId]: ["Chair", "رئيس"],
   };
+  const grandfatherOf = (id: string) => grandfathers[id] ?? ["", ""];
   for (const id of [memberId, editorId, editor2Id, presidentId]) {
     const versions = await db
       .schema("core")
@@ -82,8 +83,8 @@ export default async function globalSetup() {
         father_name_en: "Test",
         first_name_ar: "اختبار",
         first_name_en: "E2E",
-        grandfather_name_ar: grandfathers[id]?.[1] ?? "",
-        grandfather_name_en: grandfathers[id]?.[0] ?? "",
+        grandfather_name_ar: grandfatherOf(id)[1],
+        grandfather_name_en: grandfatherOf(id)[0],
         last_name_ar: "تجريبي",
         last_name_en: "Tester",
         setup_completed_at: new Date().toISOString(),

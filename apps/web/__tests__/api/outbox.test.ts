@@ -147,7 +147,7 @@ describe("outbox and the email sending limit", () => {
     expect(sendEmail.mock.calls[0]?.[0].idempotencyKey).toBe(
       "outbox-7-m@auib.edu.iq"
     );
-    expect(rows[0]?.processed_at).toBeTruthy();
+    expect(rows.at(0)?.processed_at).toBeTruthy();
   });
 
   test("a spent daily limit gives the try back instead of using it up", async () => {
@@ -165,8 +165,8 @@ describe("outbox and the email sending limit", () => {
     sendEmail.mockRejectedValue(new Error("invalid address"));
     const rows = [submissionRow(3)];
     expect(await processRow(fakeAdmin(rows), 3)).toBe(false);
-    expect(rows[0]?.attempts).toBe(1);
-    expect(rows[0]?.last_error).toBe("invalid address");
+    expect(rows.at(0)?.attempts).toBe(1);
+    expect(rows.at(0)?.last_error).toBe("invalid address");
   });
 
   test("members also get the notice on their devices, after the email", async () => {
