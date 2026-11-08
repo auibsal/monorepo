@@ -24,9 +24,7 @@ export type CacheTag = (typeof cacheTags)[number];
  * RLS mean it can only see public rows; responses are cached by tag and
  * refreshed when content is published.
  */
-export const publicClient = (
-  ...tags: CacheTag[]
-): SupabaseClient<Database> | null => {
+const publicClient = (...tags: CacheTag[]): SupabaseClient<Database> | null => {
   if (
     !(env.NEXT_PUBLIC_SUPABASE_URL && env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)
   ) {

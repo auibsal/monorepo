@@ -67,7 +67,10 @@ const THINGS = {
 /**
  * Logged, but not news to officers: permission bundles and settings change
  * with the platform, terms come from the AUIB calendar, and judges and call
- * partners are recorded with their award or call.
+ * partners are recorded with their award or call. The activity test reads
+ * this list, so every logged table is either described or named here.
+ *
+ * @public
  */
 export const LEFT_OUT = [
   "access.role_permissions",

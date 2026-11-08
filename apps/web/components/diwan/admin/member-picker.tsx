@@ -39,7 +39,7 @@ export const useMemberNames = (ids: readonly (string | null | undefined)[]) => {
 const FILTER_SYNTAX = /[%,()"\\*.:]/g;
 
 /** Drops characters that mean something in a PostgREST filter. */
-export const safe = (value: string) => value.replace(FILTER_SYNTAX, " ").trim();
+const safe = (value: string) => value.replace(FILTER_SYNTAX, " ").trim();
 
 interface MemberPickerProps {
   readonly excludeId?: string;

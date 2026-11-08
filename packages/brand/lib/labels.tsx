@@ -21,7 +21,7 @@ export interface UiLabels {
   toggleSidebar: string;
 }
 
-export const defaultUiLabels: UiLabels = {
+const defaultUiLabels: UiLabels = {
   close: "Close",
   loading: "Loading",
   more: "More",

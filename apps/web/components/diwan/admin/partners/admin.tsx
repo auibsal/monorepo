@@ -989,7 +989,7 @@ export const Declarations = () => {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-export const partnerViews = ["applications", "register", "agreements"] as const;
+const partnerViews = ["applications", "register", "agreements"] as const;
 export type PartnerView = (typeof partnerViews)[number];
 
 const viewPath = (view: PartnerView) =>

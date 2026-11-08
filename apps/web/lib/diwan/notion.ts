@@ -14,7 +14,7 @@ import { useGrants } from "./queries";
 
 const NOTION_URL = /^https:\/\/(app\.notion\.com|www\.notion\.so)\//;
 
-export const isNotionUrl = (value: unknown): value is string =>
+const isNotionUrl = (value: unknown): value is string =>
   typeof value === "string" && NOTION_URL.test(value);
 
 const useSetting = (key: string, enabled: boolean) => {

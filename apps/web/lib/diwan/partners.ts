@@ -24,7 +24,7 @@ export const useMyPartners = () => {
   });
 };
 
-export interface GuestOf extends Record<string, unknown> {
+interface GuestOf extends Record<string, unknown> {
   name_ar: string | null;
   name_en: string;
   status: string;

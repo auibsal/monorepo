@@ -9,7 +9,7 @@
  * https://developers.google.com/wallet/generic/use-cases/use-callbacks-for-saves-and-deletions
  */
 
-export const KEYS_URL = "https://pay.google.com/gp/m/issuer/keys";
+const KEYS_URL = "https://pay.google.com/gp/m/issuer/keys";
 const SENDER = "GooglePayPasses";
 const PROTOCOL = "ECv2SigningOnly";
 

@@ -476,7 +476,7 @@ export const RehearsalsTab = ({
 };
 
 /** A new audition slot, added in place on the production's tab. */
-export const NewAuditionSlot = ({
+const NewAuditionSlot = ({
   onDone,
   production,
 }: {
@@ -570,7 +570,7 @@ export const NewAuditionSlot = ({
 };
 
 /** A new credit, added in place on the production's tab. */
-export const NewCredit = ({
+const NewCredit = ({
   onDone,
   production,
 }: {
@@ -683,7 +683,7 @@ export const NewCredit = ({
 };
 
 /** A new rehearsal, added in place on the production's tab. */
-export const NewRehearsal = ({
+const NewRehearsal = ({
   onDone,
   production,
 }: {

@@ -40,7 +40,8 @@ fails a build whose client bundle names one.
 | `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | secret | `production` | backup (the second copy) |
 | `RESEND_TOKEN` | secret | `production` | backup (the failure email) |
 | `VERCEL_DEPLOY_HOOK` | secret, optional | `production` | migrate |
-| `NOTION_TOKEN` | secret | repository | CI (the forms register; required on `main`) |
+| `NOTION_TOKEN` | secret | repository | CI (the forms register) |
+| `REQUIRE_FORMS_REGISTER` | variable, `1` once `NOTION_TOKEN` is set | repository | CI (a missing token then fails) |
 | `TURBO_TOKEN` | secret, optional | repository | CI (remote cache) |
 | `SUPABASE_PROJECT_REF` | variable | repository | migrate, backup |
 | `TURBO_TEAM` | variable, optional | repository | CI |

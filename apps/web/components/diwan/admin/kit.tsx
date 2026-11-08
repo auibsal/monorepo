@@ -429,7 +429,7 @@ const namedReason = (error: unknown, code: string) => {
   return null;
 };
 
-export const useErrorReason = () => {
+const useErrorReason = () => {
   const t = useTranslations("diwan.admin.kit");
   return (error: unknown) => {
     const code = error instanceof DataError ? error.code : "";

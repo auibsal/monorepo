@@ -15,7 +15,7 @@ import { EmptyLine, SectionSpinner } from "../states";
 type FormType = Awaited<ReturnType<typeof forms.formTypes>>[number];
 
 /** Whether the person may start this form (the database checks again). */
-export const useMayStart = () => {
+const useMayStart = () => {
   const grants = useGrants();
   const status = useMemberStatus();
   return (type: FormType) => {
@@ -98,7 +98,7 @@ interface Sent {
 }
 
 /** What this person has sent, or what was sent about them. */
-export const useMySent = () => {
+const useMySent = () => {
   const { supabase, user } = useAuth();
   return useQuery({
     enabled: Boolean(user),
@@ -118,7 +118,7 @@ export const useMySent = () => {
 };
 
 /** The rows of what was sent: a draft reopens, the rest open read-only. */
-export const SentList = ({ limit }: { readonly limit?: number }) => {
+const SentList = ({ limit }: { readonly limit?: number }) => {
   const t = useTranslations("diwan.forms");
   const locale = useLocale() as Locale;
   const { user } = useAuth();

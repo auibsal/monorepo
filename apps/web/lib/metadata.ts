@@ -15,7 +15,7 @@ interface PageMetadata {
 }
 
 /** The drawn share image for a page (apps/web/app/[locale]/og). */
-export const ogImagePath = (
+const ogImagePath = (
   locale: Locale,
   { title }: Pick<PageMetadata, "title">
 ) => {

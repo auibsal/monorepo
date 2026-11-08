@@ -19,8 +19,6 @@ export const db = () => {
   return client;
 };
 
-export type Db = Admin;
-
 /**
  * The publishable-key client for public reads (events, Qirtas pieces): RLS
  * runs as a guest, so nothing members-only or unpublished can reach a group
@@ -144,15 +142,4 @@ export const isStaffAccount = async (telegramId: number) => {
     throw error;
   }
   return data === true;
-};
-
-/** A public setting's value, or null. */
-export const setting = async (key: string) => {
-  const { data } = await db()
-    .schema("core")
-    .from("settings")
-    .select("value")
-    .eq("key", key)
-    .maybeSingle();
-  return data?.value ?? null;
 };

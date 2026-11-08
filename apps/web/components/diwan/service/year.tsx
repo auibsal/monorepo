@@ -18,8 +18,7 @@ import { ErrorState, SectionSpinner } from "../states";
 /** The platform's first year: nothing is on record before it. */
 export const FIRST_YEAR = 2026;
 
-export const yearLabel = (year: number) =>
-  `${year}–${String(year + 1).slice(2)}`;
+const yearLabel = (year: number) => `${year}–${String(year + 1).slice(2)}`;
 
 const yearPath = (year: number) => `/account/record/year/${year}`;
 

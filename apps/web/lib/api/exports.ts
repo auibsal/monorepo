@@ -10,7 +10,7 @@ import type { ApiSession } from "./permissions";
  * so Row Level Security and the SQL functions decide the rows; the
  * permission here is re-checked first, in any scope.
  */
-export interface ExportTable {
+interface ExportTable {
   header: string[];
   rows: unknown[][];
 }

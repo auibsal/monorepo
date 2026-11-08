@@ -70,7 +70,7 @@ const PieceFigure = async ({
 };
 
 /** Figures the text does not place, for after it. */
-export const unplacedFigures = (piece: Full) => {
+const unplacedFigures = (piece: Full) => {
   const placed = new Set(
     texts(piece).flatMap((text) =>
       splitAtFigures(sanitizeRichText(text.html)).flatMap((part) =>

@@ -38,7 +38,7 @@ type PledgeKind = "human_authorship" | "member";
  */
 export type Names = nameParts.FourPartNames;
 
-export type SetupStep =
+type SetupStep =
   | { kind: "nameEn" }
   | { kind: "nameAr" }
   | { kind: "pledge"; pledge: PledgeKind }

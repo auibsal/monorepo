@@ -16,7 +16,7 @@ import { PageHeader } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
-export interface SearchProps {
+interface SearchProps {
   readonly params: Promise<{ locale: Locale }>;
   readonly searchParams: Promise<{ q?: string }>;
 }

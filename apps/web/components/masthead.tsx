@@ -9,7 +9,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
 
-export interface MastheadSection {
+interface MastheadSection {
   readonly current: boolean;
   /** The full path, with the language prefix (localizedPath). */
   readonly href: string;

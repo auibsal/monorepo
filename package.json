@@ -26,7 +26,6 @@
     "db:types": "bun run --cwd packages/database db:types",
     "dev": "turbo dev",
     "fix": "ultracite fix",
-    "gen:package": "turbo gen package",
     "test": "turbo test",
     "test:coverage": "vitest run --coverage",
     "typecheck": "turbo typecheck"
@@ -41,7 +40,6 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
     "@repo/typescript-config": "workspace:*",
-    "@turbo/gen": "^2.8.14",
     "@types/node": "24.19.1",
     "@vitest/coverage-v8": "^5.0.3",
     "knip": "^6.40.0",

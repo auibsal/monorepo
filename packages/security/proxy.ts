@@ -40,7 +40,7 @@ export const telegramMiniApp = (options: SecurityOptions): SecurityOptions => ({
 });
 
 /** Every header, in the order they are sent. */
-export const securityHeaders = (
+const securityHeaders = (
   options: SecurityOptions = securityOptionsWith()
 ): [string, string][] => [
   ["Content-Security-Policy", serializeCsp(options.csp)],

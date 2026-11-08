@@ -19,7 +19,7 @@ export interface SectionView {
   readonly permission?: Permission | readonly Permission[];
 }
 
-export type ViewKey =
+type ViewKey =
   | "desk"
   | "events"
   | "company"

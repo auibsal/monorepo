@@ -33,7 +33,7 @@ const write = (slugs: string[]) => {
 };
 
 /** A selection's address: the pieces themselves, in order (A10). */
-export const selectionPath = (slugs: readonly string[]) =>
+const selectionPath = (slugs: readonly string[]) =>
   `/qirtas/selection/${slugs.join("/")}`;
 
 /** The selection being made, kept in this browser until it is shared. */

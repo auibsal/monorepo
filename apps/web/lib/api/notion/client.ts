@@ -6,7 +6,7 @@ import "server-only";
  * "SAL Platform" connection) acts for the workspace, never as a person.
  */
 const BASE = "https://api.notion.com/v1";
-export const NOTION_VERSION = "2026-03-11";
+const NOTION_VERSION = "2026-03-11";
 const MAX_RETRIES = 3;
 
 export class NotionError extends Error {

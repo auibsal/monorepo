@@ -11,7 +11,7 @@ import {
 import { cn } from "../../lib/utils";
 import { Icon } from "./icon";
 
-export interface ShelfItem {
+interface ShelfItem {
   readonly key: string;
   readonly node: ReactNode;
 }

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useAuthError } from "@/lib/diwan/auth-messages";
 
 /** Seconds before the confirmation email may be sent again. */
-export const RESEND_WAIT = 60;
+const RESEND_WAIT = 60;
 
 /**
  * "Send it again" on the check-your-inbox screen, available after a

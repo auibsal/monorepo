@@ -73,7 +73,7 @@ const Choices = <T extends string>({
  * optional; the last choice says whether the answers may be counted in
  * anonymous reports. Only the member and the Membership officers read them.
  */
-export const DetailsFields = ({ onChange, value }: DetailsFieldsProps) => {
+const DetailsFields = ({ onChange, value }: DetailsFieldsProps) => {
   const t = useTranslations("diwan.details");
   const id = useId();
   const set = <K extends keyof Details>(key: K, next: Details[K]) =>

@@ -194,9 +194,11 @@ jobs:
       - name: Forms match the register in Notion
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          # On main a missing token fails; on a pull request (a fork has no
-          # secrets) it is skipped.
-          REQUIRE_FORMS_REGISTER: ${{ github.ref == 'refs/heads/main' && '1' || '' }}
+          # A missing token fails once the repository variable
+          # REQUIRE_FORMS_REGISTER is 1 (set it with NOTION_TOKEN); until
+          # then the comparison is skipped with a warning, so a missing
+          # secret never holds back main's migrations.
+          REQUIRE_FORMS_REGISTER: ${{ vars.REQUIRE_FORMS_REGISTER }}
         run: |
           eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|SECRET_KEY)=' | sed 's/^/export /')"
           export SUPABASE_URL="$API_URL" SUPABASE_SECRET_KEY="$SECRET_KEY"
