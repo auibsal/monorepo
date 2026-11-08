@@ -86,7 +86,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -290,7 +290,7 @@ insert into programmes.production_events values
   ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-00000000e001');
 select ok(
   not exists (select 1 from pg_proc where proname in ('record_production_service', 'draft_production_certificates')),
-  'No hours from credits and no production certificates (owner, Nov 7, 2026)'
+  'No hours from credits and no production certificates (decisions.md)'
 );
 select pg_temp.login_anon();
 select is((select count(*)::int from programmes.public_production_events('00000000-0000-0000-0000-00000000f001')), 1,

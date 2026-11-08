@@ -53,7 +53,7 @@ export const MinutesEditor = () => {
         await supabase
           .schema("governance")
           .from("minutes")
-          .update({ adopted_on: adoptedOn, status: "adopted" })
+          .update({ adopted_on: adoptedOn, status: "approved" })
           .eq("id", minutesId ?? "")
       ),
     onSuccess: () =>
@@ -72,7 +72,7 @@ export const MinutesEditor = () => {
       <p className="type-body text-text-secondary">{t("minutes.notFound")}</p>
     );
   }
-  const adopted = minutes.status === "adopted";
+  const adopted = minutes.status === "approved";
 
   return (
     <div className="grid gap-8">

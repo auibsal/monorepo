@@ -149,10 +149,10 @@ export type ChoiceInputProps = Omit<
 };
 
 /**
- * Choosing one of several, on the page itself (owner, Oct 31, 2026: never a
+ * Choosing one of several, on the page itself (decisions.md: never a
  * dialog or the browser's own pop-up list). It takes the same option and
  * optgroup children, `value` and `onChange` as a select. Choices are always
- * a vertical list, one per line (owner, Nov 5, 2026: menus and buttons sit
+ * a vertical list, one per line (decisions.md: menus and buttons sit
  * in rows, choices in lists): a few short ones are listed open with the
  * chosen one marked; more open as a list under the field, pushing the page
  * down rather than covering it, with a line to type in once there are many. Hairlines, square corners, no

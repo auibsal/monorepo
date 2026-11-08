@@ -23,7 +23,7 @@ export const loadEditions = async () =>
   ).filter((e) => e.status === "published" && e.published_at);
 
 /**
- * An Edition's cover (owner, Nov 4, 2026, D5): the scan or photo of the
+ * An Edition's cover (decisions.md, D5): the scan or photo of the
  * printed Edition, or, without one, a plain typographic cover: the paper's
  * name and the number, inside a hairline (the title is printed under it). Never a drawn 3D book.
  */

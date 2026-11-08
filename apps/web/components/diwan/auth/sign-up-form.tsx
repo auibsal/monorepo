@@ -28,7 +28,7 @@ import { useHumanCheck } from "./human-check";
 import { ResendConfirmation } from "./resend-confirmation";
 
 /**
- * Why someone without an AUIB address may sign up (owner, Oct 31, 2026):
+ * Why someone without an AUIB address may sign up (decisions.md):
  * a partner's invitation (its address, when it names one, is fixed) or an
  * application to partner. Without one, the form takes AUIB addresses only.
  */
@@ -58,7 +58,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
     email: outside?.email ?? "",
     password: "",
   });
-  // Membership is for AUIB addresses (owner, Oct 31, 2026): the field takes
+  // Membership is for AUIB addresses (decisions.md): the field takes
   // what goes before @auib.edu.iq. Those invited by a partner, or applying
   // for one, give their own address and, since no AUIB record names them,
   // their name in four parts in each language as on their papers.

@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { withinRateLimit } from "@/lib/api/rate-limit";
+import { isHuman } from "@/lib/api/turnstile";
 
 export const OPTIONS = preflight;
 
@@ -14,6 +15,8 @@ const requestSchema = z.object({
   note: z.string().trim().max(1000).optional(),
   relation: z.enum(["faculty", "staff", "alumni"]),
   /** Left empty by people; filled by bots (the form hides it). */
+  /** Cloudflare Turnstile's token (none locally). */
+  token: z.string().max(4096).nullish(),
   website: z.string().max(500).optional(),
 });
 
@@ -35,12 +38,15 @@ export const POST = async (request: Request) => {
   if (!parsed.success) {
     return json({ error: "invalid_request" }, 400);
   }
-  const { website, ...fields } = parsed.data;
+  const { token, website, ...fields } = parsed.data;
   if (website) {
     return json({ ok: true });
   }
   if (!(await withinRateLimit(request, "associate-request", { max: 10 }))) {
     return json({ error: "rate_limited" }, 429);
+  }
+  if (!(await isHuman(request, token))) {
+    return json({ error: "human_check_failed" }, 403);
   }
 
   const admin = createAdminClient();

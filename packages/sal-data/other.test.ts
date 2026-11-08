@@ -39,11 +39,11 @@ describe("schemas", () => {
     ).toBe(false);
   });
 
-  test("a ballot ranks each choice once", () => {
-    expect(ballotSchema.safeParse({ [id(1)]: [id(2), "RON"] }).success).toBe(
-      true
-    );
-    expect(ballotSchema.safeParse({ [id(1)]: [id(2), id(2)] }).success).toBe(
+  test("a ballot has one choice per seat, or none to abstain", () => {
+    expect(ballotSchema.safeParse({ [id(1)]: [id(2)] }).success).toBe(true);
+    expect(ballotSchema.safeParse({ [id(1)]: ["RON"] }).success).toBe(true);
+    expect(ballotSchema.safeParse({ [id(1)]: [] }).success).toBe(true);
+    expect(ballotSchema.safeParse({ [id(1)]: [id(2), id(3)] }).success).toBe(
       false
     );
   });

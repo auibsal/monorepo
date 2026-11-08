@@ -1,4 +1,4 @@
--- No third-party apps (owner, Oct 30, 2026): a token issued to an app (it
+-- No third-party apps (decisions.md): a token issued to an app (it
 -- carries a client_id) reaches nothing; the Society's own tokens are unaffected.
 -- until the founding year ends; Honorary and Alumni Members never do.
 begin;
@@ -86,7 +86,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)

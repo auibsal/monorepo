@@ -31,7 +31,7 @@ const cardProblem = (error: unknown) => {
 };
 
 /**
- * Pages from the Typewriter Tour (owner, Nov 7, 2026: not part of Qirtas).
+ * Pages from the Typewriter Tour (decisions.md: not part of Qirtas).
  * Whoever runs the Tour types each page as written, then either scans the
  * writer's membership card, which makes it theirs, or saves it unsigned
  * and attaches it later: by card, or (a claim through Help Desk) to the

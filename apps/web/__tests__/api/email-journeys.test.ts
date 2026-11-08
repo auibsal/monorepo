@@ -33,7 +33,7 @@ const event = {
 
 /** One sample of every email added or reshaped in the audit. */
 const every = (l: Lang): Built[] => [
-  eventChanged(l, event, "cancelled", APP),
+  eventChanged(l, event, "canceled", APP),
   eventChanged(l, event, "moved", APP),
   applicationReceived(l, "The Book Club", APP),
   applicationWaiting(l, "The Book Club", APP),
@@ -90,7 +90,7 @@ describe("the email journeys", () => {
   });
 
   test("an event canceled says the booking is canceled; one moved gives the new time", () => {
-    const canceled = eventChanged("en", event, "cancelled", APP);
+    const canceled = eventChanged("en", event, "canceled", APP);
     expect(canceled.subject).toBe("Canceled: Writing workshop");
     const moved = eventChanged("en", event, "moved", APP);
     expect(moved.blocks[0]?.paragraphs).toContain("The library");

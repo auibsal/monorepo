@@ -2,6 +2,7 @@
   "name": "@repo/internationalization",
   "version": "0.0.0",
   "private": true,
+  "license": "UNLICENSED",
   "exports": {
     ".": "./index.ts",
     "./config": "./config.ts",

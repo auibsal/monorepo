@@ -97,6 +97,29 @@ Part A first).
   "Read user information including email addresses" is allowed. Without
   it the sync can't tell who set Ready to publish.
 
+- [ ] **Vercel → Environment Variables (Production):** add
+  `TURNSTILE_SECRET_KEY` (the widget's secret) and `RESEND_WEBHOOK_SECRET`;
+  remove `RESEND_FROM` and any Google Tag Manager or Analytics variables.
+  Turn on Web Analytics in the project.
+- [ ] **Resend → Webhooks:** add `https://auibsal.org/api/hooks/resend` for
+  `email.bounced` and `email.complained`; its signing secret is
+  `RESEND_WEBHOOK_SECRET`.
+- [ ] **Telegram:** run the webhook setup again (Diwan → Media → Channels)
+  so Hudhud receives `chat_member` updates (people leaving a group).
+- [ ] **Backups:** add `RESEND_TOKEN` to the production environment (the
+  failure email), and for the second copy a private Cloudflare R2 bucket
+  with a write-only token: `R2_ACCOUNT_ID`, `R2_BUCKET`,
+  `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` (lifecycle: 12 months). Add
+  the repository variable `SUPABASE_PROJECT_REF`. Run the first quarterly
+  restore test (`docs/platform/backups.md`).
+- [ ] **Privacy Notice (SAL-GOV-04):** the Governance chat adds the vendor
+  list (`docs/platform/vendors.md`), the three cookies and the retention
+  rows (`docs/platform/retention.md`), and confirms the periods
+  decisions.md doesn't set (drafts, replies, removal requests, devices,
+  guest accounts, Prize voters) in SAL-GOV-03.
+- [ ] **Channels:** the YouTube and LinkedIn addresses, once they exist,
+  go in `packages/config/project.json` (`channels`).
+
 ## For the owner: the Society
 
 - [ ] **Recovery codes.** Only one of the six people holding a Council
@@ -137,6 +160,25 @@ Part A first).
 - [ ] **Gallery images on acceptance.** Copy accepted Gallery images from
   the private submissions bucket to the piece; for now editors upload them
   on the piece's page.
+
+- [ ] **Audit F, still open** (each its own pull request):
+  - F2: one error shape (RFC 9457 problem+json) and one Bearer helper
+    across the routes; public feeds on the publishable key.
+  - F4: move DataTable, Field, ChoiceInput, Table, NavTabs, EmptyState,
+    ErrorState and ActionBar from apps/web into `packages/brand` with
+    stories; `aria-invalid`/`aria-describedby` and focus on the first
+    error; message namespaces per route segment.
+  - F5: Cache Components for published reads; a bundle-size check on pull
+    requests; Notion webhooks with a nightly reconcile.
+  - F6: Knip with exports and types; `noUncheckedIndexedAccess`;
+    `supabase/setup-cli` in CI; caching Playwright; the template leftovers
+    (generators, `.vscode`, unused env names).
+  - F7: the e2e journeys on desktop, Pixel and iPhone in both languages
+    for every flow the audit lists, axe on all WCAG 2.1 A/AA rules, and
+    coverage minimums.
+  - F1: AGENTS.md cut to code conventions; ADRs in `docs/adr/`; the
+    decisions.md date-line check (needs the attached copy's line).
+  - E5: a nonce or `strict-dynamic` CSP for your account and the Diwan.
 
 ## Content still needed
 

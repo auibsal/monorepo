@@ -297,7 +297,14 @@ any schema change. Integration tests run against a local stack with
   Verification codes are random and separate. Nobody types a number.
 - **Forms** are at `/forms/<number>` on one standard page, signed in the
   signer's platform name and kept as the signed copy; staff forms are
-  Notion templates. The forms register in SAL-EXB-01 is the one source of
+  Notion templates. The signer agrees to sign electronically; the copy
+  keeps the time, IP address, version and SHA-256 fingerprint, and the
+  signer is emailed theirs (`forms.signed_copy`). Signing without an
+  account, and anonymous concerns, go through `/api/forms/sign`
+  (Turnstile, `TURNSTILE_SECRET_KEY`, and a limit per address); parents
+  sign Qalam's F-38 and F-39 by a single-use link the Qalam lead sends
+  to the teacher (`governance.form_links`). Every public form that sends
+  email checks Turnstile (`lib/api/turnstile.ts`). The forms register in SAL-EXB-01 is the one source of
   every form's number, title and fields; `bun run check:forms` compares
   `governance.form_types` and the registry with it. Where the site already
   does the job (joining, RSVPs, Write for Qirtas, Get involved,
@@ -414,7 +421,7 @@ any schema change. Integration tests run against a local stack with
   writer's alone. Every decision carries its reason (`journal.decide`).
   Bylines are a Register name, a pen name or "Anonymous" (the
   Editor-in-Chief knows the writer). Unpublished submissions are deleted
-  twelve months after the decision (the keep-alive cron).
+  twelve months after the decision (the retention job, `docs/platform/retention.md`).
 - **The Newsroom** is the Diwan's Qirtas section: staff write and publish
   directly, and read what members send on the same pages
   (`/diwan/qirtas/submissions/<id>`).
@@ -501,16 +508,19 @@ any schema change. Integration tests run against a local stack with
   Mail to many people at once (the Sunday Paper, the invitation) goes as
   a Resend Broadcast to a fresh segment, deleted once sent, so it doesn't
   count against the free plan's 100 a day; unsubscribes made in Resend are
-  read back first. Each email has Reply-To hello@auibsal.org, a preview
+  read back first. Every email comes from one sender, set in code
+  (`SENDER`); bounces and complaints arrive by Resend's webhook
+  (`/api/hooks/resend`) and are never written to again
+  (`core.email_suppressions`). Each email has Reply-To hello@auibsal.org, a preview
   line that isn't the subject, a tag with its kind and a footer saying
   why it came (service, optional with a stop link, officer, direct) and
   the sustainability line. A new journey adds its row to
   `docs/platform/email.md` and its story in
   `packages/brand/stories/emails.stories.tsx`.
-- **Analytics** on `apps/web` only: Google Tag Manager with GA4, consent
-  from the site's own card (cookie `sal_consent`) through consent mode,
-  analytics only (the ad signals stay denied). Record events with
-  `track()` from `@repo/analytics/client`
+- **Analytics** on the public site only: Vercel Web Analytics, cookieless
+  (decisions, Nov 7): no Google Tag Manager or Analytics and no cookie
+  banner. The site sets only the cookies it needs (the session, the
+  language and the theme), listed in the Privacy Notice
   (`docs/platform/analytics.md`).
 
 ## The site's practice

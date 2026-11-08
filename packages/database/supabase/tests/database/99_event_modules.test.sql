@@ -84,7 +84,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -94,7 +94,7 @@ as $$
 $$;
 -- </preamble>
 
--- One kind of event, with add-ons (owner, Nov 5, 2026, evening).
+-- One kind of event, with add-ons (decisions.md, evening).
 select plan(4);
 
 select hasnt_column('events', 'events', 'occasion', 'No occasions: every event is a standard event');

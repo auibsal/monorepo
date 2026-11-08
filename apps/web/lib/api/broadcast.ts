@@ -2,9 +2,8 @@ import "server-only";
 
 import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
-import { resend } from "@repo/email";
+import { resend, SENDER } from "@repo/email";
 import type { Built } from "@repo/email/copy";
-import { keys } from "@repo/email/keys";
 import {
   Notice,
   type NoticeFooterLine,
@@ -13,7 +12,7 @@ import {
 
 /**
  * Resend Broadcasts for the emails that go to many people at once: the
- * Sunday Paper and the one-time invitation (owner, Nov 7, 2026). One email
+ * Sunday Paper and the one-time invitation (decisions.md). One email
  * per person counts against the free plan's 100 a day, which sign-in emails
  * share; a Broadcast doesn't.
  *
@@ -44,7 +43,7 @@ export interface BroadcastJob {
   readonly contacts: readonly BroadcastContact[];
   /**
    * Leave the Broadcast as a draft in Resend for a person to send (the
-   * invitation, owner, Nov 7, 2026); otherwise it goes at once.
+   * invitation, decisions.md); otherwise it goes at once.
    */
   readonly draft?: boolean;
   readonly footer: NoticeFooterLine[];
@@ -243,6 +242,31 @@ const importDone = async (importId: string) => {
  * Takes one Broadcast as far as it can go: a segment, the contact import,
  * then the Broadcast itself. Throws BroadcastPending while the import runs.
  */
+/** Leaves out addresses that bounced or complained (core.email_suppressions). */
+const withoutSuppressed = async (
+  admin: AdminClient,
+  contacts: readonly BroadcastContact[]
+) => {
+  const emails = contacts.map((c) => c.email.toLowerCase());
+  const chunks = Array.from(
+    { length: Math.ceil(emails.length / 500) },
+    (_, i) => emails.slice(i * 500, i * 500 + 500)
+  );
+  const found = await Promise.all(
+    chunks.map((chunk) =>
+      admin
+        .schema("core")
+        .from("email_suppressions")
+        .select("email")
+        .in("email", chunk)
+    )
+  );
+  const suppressed = new Set(
+    found.flatMap((r) => (r.data ?? []).map((x) => x.email))
+  );
+  return contacts.filter((c) => !suppressed.has(c.email.toLowerCase()));
+};
+
 export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
   await admin
     .schema("core")
@@ -275,7 +299,7 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
 
   if (row.stage === "segment" && row.segment_id) {
     await ensureProperties();
-    const csv = contactsCsv(job.contacts);
+    const csv = contactsCsv(await withoutSuppressed(admin, job.contacts));
     const started = ok(
       await client().contacts.imports.create({
         columnMap: {
@@ -304,13 +328,9 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
     if (!(await importDone(row.import_id))) {
       throw new BroadcastPending(`${job.key}: the contact import is running.`);
     }
-    const { RESEND_FROM } = keys();
-    if (!RESEND_FROM) {
-      throw new Error("Email is not configured: set RESEND_FROM.");
-    }
     const sent = ok(
       await client().broadcasts.create({
-        from: RESEND_FROM,
+        from: SENDER,
         name: job.key,
         react: Notice({
           blocks: job.built.blocks,

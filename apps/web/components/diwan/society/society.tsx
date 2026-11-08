@@ -32,7 +32,7 @@ const Minutes = () => {
           .select(
             "id, body, meeting_on, adopted_on, title_en, title_ar, text_en, text_ar"
           )
-          .eq("status", "adopted")
+          .eq("status", "approved")
           .order("meeting_on", { ascending: false })
           .limit(30)
       ) ?? [],
@@ -87,7 +87,7 @@ const Minutes = () => {
 };
 
 /**
- * The members directory (owner, Nov 7, 2026): members only, and only those
+ * The members directory (decisions.md): members only, and only those
  * who chose to be listed; the Register itself is private. A member joins or
  * leaves it here.
  */

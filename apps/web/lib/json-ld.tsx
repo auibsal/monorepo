@@ -34,6 +34,7 @@ export const organization = (): Thing => ({
     "@type": "CollegeOrUniversity",
     name: "American University of Iraq – Baghdad",
   },
+  sameAs: project.channels.map((channel) => channel.url),
   url: project.url,
 });
 
@@ -55,7 +56,7 @@ export const eventLd = (
   endDate: e.ends_at ?? undefined,
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   eventStatus:
-    e.status === "cancelled"
+    e.status === "canceled"
       ? "https://schema.org/EventCancelled"
       : "https://schema.org/EventScheduled",
   image: e.image ?? undefined,

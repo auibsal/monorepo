@@ -68,7 +68,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
       adopted_on: new Date().toISOString().slice(0, 10),
       body: "council",
       meeting_on: new Date().toISOString().slice(0, 10),
-      status: "adopted",
+      status: "approved",
       text_en: "<p>Minutes.</p>",
       title_en: "Council meeting",
     })
@@ -198,7 +198,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
 });
 
 /**
- * A member may lead their club's partnership (owner, Oct 31, 2026): they
+ * A member may lead their club's partnership (decisions.md): they
  * apply signed in as themselves, the President signs, and they keep every
  * member's page and a Member card, with the dashboard beside Membership.
  */

@@ -36,12 +36,12 @@ export interface OpeningEditorProps {
 }
 
 /**
- * One opening, on its own page (owner, Oct 31, 2026: editing in the Diwan
+ * One opening, on its own page (decisions.md: editing in the Diwan
  * opens its own address, one step under its list). Every opening edits the
  * same way, whichever list it is on: its title and description, the
  * skills it wants, when it closes, and for an event team or Qalam mentors
  * the number of places. Its kind (and a role opening's role or an event
- * team's event) stays as posted (owner, Nov 7, 2026: open roles only). Closing takes it off Get involved; reopening puts it back.
+ * team's event) stays as posted (decisions.md: open roles only). Closing takes it off Get involved; reopening puts it back.
  */
 export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
   const t = useTranslations("diwan.admin.programmes.openings");

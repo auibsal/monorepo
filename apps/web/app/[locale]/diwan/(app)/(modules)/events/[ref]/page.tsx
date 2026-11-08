@@ -4,7 +4,7 @@ import { titleFrom } from "@/lib/diwan/metadata";
 export const generateMetadata = titleFrom((t) => t("diwan.admin.events.title"));
 
 /**
- * One address for an event or a program (owner, Oct 31, 2026: What's on is
+ * One address for an event or a program (decisions.md: What's on is
  * one thing): a program is an event series, at /diwan/events/<slug> like
  * its public page; a slug names one or the other, never both.
  */

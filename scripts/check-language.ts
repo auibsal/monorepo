@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Checks the platform's copy against the language standard (Guide → Voice,
- * "Language standard"; owner, Nov 4, 2026). It reads the messages files,
+ * "Language standard"; decisions.md). It reads the messages files,
  * the email copy and Hudhud's copy.
  *
  *   bun run check:i18n   (runs this after check-i18n.ts)
@@ -9,7 +9,7 @@
  * Arabic: tanween on the letter before the alif (ـًا, not ـاً), Latin
  * digits, the Iraqi month names the ar-IQ formatter uses, Arabic
  * punctuation (، ؛ ؟) and «» quotes, and Iraqi Arabic only in Hudhud.
- * English (owner, Nov 7, 2026: the Chicago Manual of Style for prose,
+ * English (decisions.md: the Chicago Manual of Style for prose,
  * sentence case for interface labels): American spelling, curly quotes and
  * apostrophes, "for example" over "e.g.", the ellipsis character, no
  * exclamation marks, no retired names and no retired document codes.
@@ -22,6 +22,18 @@ const COPY_FILES = [
   "packages/email/copy.ts",
   "apps/web/lib/api/outbox.ts",
   "apps/web/lib/api/bot/copy.ts",
+  // Supabase's auth emails (audit D4).
+  ...[
+    "confirmation",
+    "email_change",
+    "email_changed_notification",
+    "magic_link",
+    "mfa_factor_enrolled_notification",
+    "mfa_factor_unenrolled_notification",
+    "password_changed_notification",
+    "recovery",
+  ].map((name) => `packages/database/supabase/templates/${name}.html`),
+  "packages/database/supabase/templates/subjects.txt",
 ];
 // The one place Iraqi Arabic is written (decisions, Nov 4, 2026).
 const IRAQI_HOME = "apps/web/lib/api/bot/copy.ts";
@@ -73,7 +85,7 @@ const ENGLISH: Rule[] = [
       /\b(the Salon|Book Circle|Open Pages|Listening Room|Launch Night|[Oo]pen nights?|[Ss]tation days?|Candidates’ Reading|the Ribbon|[Ww]orst-poem contest|Apprenticeships?|First Ink|[Tt]rial term|General Assembly|AGM|Qirtas Awards?|(Tabari|Jahiz|Nazik|Wasiti|Ibn al-Haytham) Award|Qirtas Prizes|[Cc]hapbook|Fellows?|Fellowship|Life Members?|Majlis|Munazara|Mutanabbi Friday|Bad Poetry Night|Open Stage|Scratch Night|Motion Night|Mutanabbi Walk|Productions|Gallery Wall|Month in Qirtas|Side Quest|BusTalks|Waraq|Nexus|Book of (Members|Fellows)|Charter (Night|Day)|Director of (the Company|Letters|Stage and Arts|Programs)|Editor of Qirtas|(Deputy )?Treasurer|Green Room|AUIB SAL HQ|Callboard|Program Leads?|Salon|[Ll]edgers?|[Rr]otas?|[Bb]ook votes?|[Pp]rompt cards?|[Ss]ix programs|Standing Programs?|[Ff]lagships?|the Evenings|the Specials|[Ww]eekly evenings?|[Ff]our-week cycle|[Ee]very fourth week)\b/,
     why: "a retired name",
   },
-  // Document codes (owner, Nov 7, 2026): GOV, EXB, EVT, MEM, PTN, MED, ART
+  // Document codes (decisions.md): GOV, EXB, EVT, MEM, PTN, MED, ART
   // and EDT; the old families are retired everywhere.
   {
     pattern: /\bSAL-(POL|HBK|STR|PRP|BRD|PLT|QRT|CMP|OPS)-/,

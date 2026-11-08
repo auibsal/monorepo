@@ -33,7 +33,7 @@ const typing = (target: EventTarget | null) =>
     ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
 
 /**
- * Find anything in the Diwan (design review A38; owner, Nov 4, 2026: it
+ * Find anything in the Diwan (design review A38; decisions.md: it
  * pushes the page down and is never a dialog). Opened with "/" or Ctrl+K
  * (⌘K), or its own link under the row; Escape closes it. It lists the
  * Diwan's views the officer's roles open, then records from the Society's

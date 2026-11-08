@@ -5,9 +5,13 @@
 export interface IcsEvent {
   /** A whole day (or days): written as dates, not times. */
   allDay?: boolean;
+  /** Canceled: kept in feeds as STATUS:CANCELLED so calendars remove it. */
+  canceled?: boolean;
   description?: string | null;
   end?: string | null;
   location?: string | null;
+  /** The record's last change: LAST-MODIFIED, and the SEQUENCE derived from it. */
+  modified?: string | null;
   start: string;
   /** Marked in the summary, e.g. "[RSVP]" or "[AUIB]". */
   tag?: string;
@@ -42,6 +46,7 @@ const day = (value: string | Date) =>
   new Date(value).toISOString().slice(0, 10).replace(DASH_OR_COLON, "");
 
 const DAY = 86_400_000;
+const SEQUENCE_EPOCH = Date.UTC(2026, 0, 1);
 
 const encoder = new TextEncoder();
 
@@ -81,6 +86,19 @@ export const renderCalendar = (
   ];
   for (const event of events) {
     lines.push("BEGIN:VEVENT", `UID:${event.uid}`, `DTSTAMP:${stamp(now)}`);
+    if (event.modified) {
+      // Seconds since 2026 rise with every change, as RFC 5545 asks of
+      // SEQUENCE, and fit its integer.
+      const sequence = Math.max(
+        0,
+        Math.floor((Date.parse(event.modified) - SEQUENCE_EPOCH) / 1000)
+      );
+      lines.push(
+        `LAST-MODIFIED:${stamp(event.modified)}`,
+        `SEQUENCE:${sequence}`
+      );
+    }
+    lines.push(`STATUS:${event.canceled ? "CANCELLED" : "CONFIRMED"}`);
     if (event.allDay) {
       // DTEND of a date is exclusive (as the AUIB feed gives it); a day
       // without an end runs to the next day.

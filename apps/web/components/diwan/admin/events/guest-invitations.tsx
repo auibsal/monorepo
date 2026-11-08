@@ -5,8 +5,12 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import {
+  type InviteeLanguage,
+  InviteeLanguageField,
+} from "../invitee-language";
 import { ErrorLine, Field } from "../kit";
 
 /**
@@ -20,6 +24,9 @@ export const GuestInvitations = ({ eventId }: { eventId: string }) => {
   const queryClient = useQueryClient();
   const queryKey = ["admin", "event-guest-invitations", eventId];
   const [email, setEmail] = useState("");
+  const [lang, setLang] = useState<InviteeLanguage>(
+    useLocale() === "ar" ? "ar" : "en"
+  );
   const sent = useQuery({
     queryFn: async () =>
       unwrap(
@@ -36,10 +43,12 @@ export const GuestInvitations = ({ eventId }: { eventId: string }) => {
   const invite = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase
-          .schema("governance")
-          .from("partner_invitations")
-          .insert({ email: email.trim(), event_id: eventId, kind: "guest" })
+        await supabase.schema("governance").from("partner_invitations").insert({
+          email: email.trim(),
+          event_id: eventId,
+          kind: "guest",
+          lang,
+        })
       ),
     onSuccess: async () => {
       setEmail("");
@@ -104,6 +113,7 @@ export const GuestInvitations = ({ eventId }: { eventId: string }) => {
             />
           )}
         </Field>
+        <InviteeLanguageField onChange={setLang} value={lang} />
         <Button disabled={invite.isPending} type="submit" variant="outline">
           {t("invite")}
         </Button>

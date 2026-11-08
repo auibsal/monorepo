@@ -408,13 +408,13 @@
       "leaveWaitlist": "Leave the waitlist",
       "questions": "The organizers ask a few questions before booking.",
       "state": {
-        "cancelled": "This event was canceled.",
         "booked": "You have a place.",
         "waiting": "You’re on the waitlist. We’ll email you if a place opens.",
         "noBooking": "No booking needed: just come.",
         "open": "Places available.",
         "full": "Full. Join the waitlist and we’ll email you if a place opens.",
-        "left": "{count, plural, one {{places} place left} other {{places} places left}}"
+        "left": "{count, plural, one {{places} place left} other {{places} places left}}",
+        "canceled": "This event was canceled."
       },
       "notice": {
         "booked": "Booked. Your ticket is in your account, and a confirmation email is on its way.",
@@ -475,7 +475,7 @@
       },
       "elections": {
         "title": "Elections",
-        "lede": "Stand for a seat, rank the candidates, and read the results. Ballots are secret: who voted is kept apart from how.",
+        "lede": "Stand for a seat, vote, and read the results. Ballots are secret: who voted is kept apart from how.",
         "empty": "No election has been announced.",
         "status": {
           "notice": "Notice given",
@@ -497,32 +497,36 @@
           "rejected": "Your nomination was not approved.",
           "withdrawn": "You withdrew your nomination."
         },
-        "ballotHelp": "Rank as many candidates as you like: your first choice first. Leave a rank empty to stop there.",
-        "rank": "Choice {rank}",
-        "noChoice": "No choice",
-        "ron": "Re-open nominations",
+        "ballotHelp": "Choose one candidate for each seat, or abstain. A candidate needs a majority of the votes cast; otherwise the top two go to a runoff within a week.",
+        "ron": "Reopen nominations",
         "cast": "Cast my ballot",
         "youVoted": "You have voted in this election. Thank you.",
         "notEligible": "Only members on this election’s voter list can vote.",
         "pending": "Not yet counted",
-        "ronWon": "Re-open nominations",
+        "ronWon": "Nominations reopen",
         "notice": {
           "nominated": "Nomination received. The Elections Committee reviews every one.",
           "voted": "Ballot cast. It’s recorded without your name.",
           "already": "You have already voted in this election.",
           "notEligible": "You’re not on this election’s voter list.",
           "closed": "That window has closed.",
-          "duplicate": "Each candidate can be ranked only once.",
-          "failed": "That didn’t work. Try again in a moment."
+          "failed": "That didn’t work. Try again in a moment.",
+          "gpaConsent": "Tick the GPA consent to stand."
         },
         "onList": "You’re on the voter list for this election.",
         "notOnList": "You’re not on this election’s voter list. It is the register of Voting Members on the day notice was given.",
-        "auibOnly": "Online voting needs your AUIB account (@auib.edu.iq). Sign in with it, or ask the Elections Committee whether there will be a paper ballot box.",
+        "auibOnly": "Online voting needs your AUIB account (@auib.edu.iq). Sign in with it, or vote at the voting point at the meeting.",
         "backToSociety": "Society",
         "standFor": "Stand for {position}",
         "alreadyStanding": "You’re already standing for this seat.",
         "notOpen": "Nominations for this seat aren’t open.",
-        "gpaConsent": "I consent to Student Life checking that my cumulative GPA is at least 2.0. Student Life answers only “eligible” or “not eligible”; the Society never sees my grades."
+        "gpaConsent": "I consent to Student Life checking that my cumulative GPA is at least 2.0. Student Life answers only “eligible” or “not eligible”; the Society never sees my grades.",
+        "abstain": "Abstain",
+        "runoff": "No majority: a runoff follows",
+        "tied": "Tied: decided by lot at a public meeting",
+        "byLot": "{name} (decided by lot)",
+        "votingPoint": "In person: {place}.",
+        "votingPointAt": "In person: {place}, {when}."
       },
       "takePart": {
         "title": "Take part",
@@ -901,9 +905,9 @@
         "statuses": {
           "draft": "Draft",
           "published": "Published",
-          "cancelled": "Canceled",
           "scheduled": "Scheduled",
-          "archived": "Archived"
+          "archived": "Archived",
+          "canceled": "Canceled"
         },
         "addressProgram": "That address belongs to the Company or Qirtas; choose another.",
         "addressEvent": "That address belongs to an event; choose another.",
@@ -919,6 +923,12 @@
           "chosen": "{count, plural, one {{countText} chosen} other {{countText} chosen}}",
           "clear": "Clear the choice",
           "row": "Choose {name}"
+        },
+        "inviteeLanguage": {
+          "label": "Their language",
+          "hint": "The invitation is written in this language only.",
+          "en": "English",
+          "ar": "Arabic"
         }
       },
       "overview": {
@@ -1120,7 +1130,10 @@
           "leftDescription": "{name} left AUIB without graduating: their account becomes a guest account with the same number, and any role they hold ends.",
           "nowGuest": "{name} is now a guest.",
           "nowAssociate": "{name} is now an Associate Member."
-        }
+        },
+        "studentLife": "Student Life",
+        "studentLifeIsEligible": "Eligible",
+        "recoveryBy": "Not eligible; must recover by {date}"
       },
       "verification": {
         "title": "Partner applications",
@@ -1399,7 +1412,7 @@
             "signed_up": "Signed up",
             "confirmed": "Confirmed",
             "swap_requested": "Asked to swap",
-            "cancelled": "Canceled"
+            "canceled": "Canceled"
           },
           "confirm": "Confirm",
           "release": "Release",
@@ -1573,11 +1586,11 @@
         "statuses": {
           "draft": "Draft, not yet adopted",
           "adopted": "Adopted",
-          "rejected": "Rejected",
           "withdrawn": "Withdrawn",
-          "superseded": "Superseded",
           "pending": "Pending",
-          "approved": "Approved"
+          "approved": "Approved",
+          "failed": "Failed",
+          "rescinded": "Rescinded"
         },
         "minutes": {
           "body": "Body",
@@ -1627,7 +1640,7 @@
             "published": "Results published"
           },
           "positions": "Positions",
-          "addPositions": "Add the four Executive Board positions",
+          "addPositions": "Add the three Executive Board positions",
           "candidates": "Candidates",
           "noCandidates": "No nominations yet.",
           "approveCandidate": "Approve",
@@ -1643,16 +1656,14 @@
           "openVoting": "Open voting",
           "openVotingConfirm": "Open voting now? Everyone on the voter list can vote online with their AUIB account until voting closes.",
           "count": "Count the ballots",
-          "countConfirm": "Count now? Polls must have closed. The round-by-round results are stored.",
+          "countConfirm": "Count now? Polls must have closed. Each seat needs a majority of the votes cast.",
           "publish": "Publish results",
           "publishConfirm": "Publish the results to members?",
           "turnout": "Turnout: {voted} of {eligible}",
           "results": "Results",
-          "round": "Round {number}",
           "winner": "Elected: {name}",
-          "ronWon": "Re-open nominations won: the post is filled by new nominations.",
-          "ron": "Re-open nominations",
-          "exhausted": "{count} exhausted",
+          "ronWon": "Reopen nominations won: the seat is filled by new nominations.",
+          "ron": "Reopen nominations",
           "notFound": "No election with this link.",
           "dateError": "Check the dates: nominations close after they open, voting opens after nominations close, and closes after it opens.",
           "giveNotice": "Give notice",
@@ -1665,7 +1676,19 @@
             "not_eligible": "Student Life: not eligible",
             "markEligible": "Student Life says eligible",
             "markNotEligible": "Student Life says not eligible"
-          }
+          },
+          "tally": "{tallies} · {abstained} abstained",
+          "runoffDue": "No majority. Runoff: {names}.",
+          "startRunoff": "Open the runoff",
+          "startRunoffConfirm": "Open the runoff now? It has the same voter list and these candidates, and closes in two days (within a week of this election).",
+          "tiedDraw": "Tied: draw lots at a public meeting, then record the result.",
+          "recordLot": "Drawn by lot: {name}",
+          "recordLotConfirm": "Record that {name} won the draw at a public meeting?",
+          "byLot": "Elected by lot: {name}",
+          "studentLifeList": "Candidates for Student Life (CSV)",
+          "councilList": "The Council for Student Life (CSV)",
+          "votingPoint": "The voting point in person",
+          "votingPointAt": "When the voting point is open"
         },
         "bodies": {
           "council": "The Council",
@@ -2331,7 +2354,7 @@
           "tech": "Technical week",
           "performances": "Performances",
           "closed": "Closed",
-          "cancelled": "Canceled"
+          "canceled": "Canceled"
         },
         "rights": {
           "pending": "Not cleared",
@@ -2507,8 +2530,8 @@
         },
         "statuses": {
           "adopted": "Adopted",
-          "superseded": "Superseded",
-          "proposed": "Proposed"
+          "proposed": "Proposed",
+          "rescinded": "Rescinded"
         },
         "fields": {
           "status": "Status",
@@ -3141,7 +3164,25 @@
         "empty": "No students for this summer yet.",
         "add": "Add a student",
         "firstName": "First name",
-        "lastName": "Last name"
+        "lastName": "Last name",
+        "links": {
+          "title": "Parents’ links",
+          "lede": "A parent signs the consent (F-38) or the publishing release (F-39) through a single-use link, valid for 14 days. The link goes to the teacher, who passes it on: the Society reaches parents only through the teacher.",
+          "form": "Form",
+          "f38": "F-38, parent’s consent",
+          "f39": "F-39, publishing release",
+          "teacher": "The teacher’s email",
+          "teacherHint": "The link is sent here, to pass on to the parent.",
+          "note": "For",
+          "noteHint": "The student’s first name and last initial, to tell the links apart.",
+          "sentTo": "Sent to",
+          "state": "Status",
+          "signed": "Signed",
+          "expired": "Expired",
+          "waiting": "Waiting",
+          "empty": "No links sent yet.",
+          "send": "Send a link"
+        }
       },
       "games": {
         "title": "Check the coming games",
@@ -3339,7 +3380,7 @@
         "tech": "Technical week",
         "performances": "Performances",
         "closed": "Closed",
-        "cancelled": "Canceled"
+        "canceled": "Canceled"
       },
       "kinds": {
         "staged_reading": "Staged reading",
@@ -3347,10 +3388,10 @@
       },
       "statuses": {
         "signed_up": "Signed up",
-        "cancelled": "Canceled",
         "called_back": "Called back",
         "cast": "Cast",
-        "not_cast": "Not cast this time"
+        "not_cast": "Not cast this time",
+        "canceled": "Canceled"
       },
       "showName": "Show my name on the public page",
       "rehearsalsTitle": "Upcoming rehearsals",
@@ -3652,7 +3693,17 @@
       "contact": "How to reach you (email or phone)",
       "signAndSend": "Sign and send",
       "date": "Date",
-      "kept": "The site keeps the signed copy. A printed copy is this page printed from the browser."
+      "kept": "The site keeps the signed copy. A printed copy is this page printed from the browser.",
+      "esignAgree": "I agree to sign electronically. My typed name is my signature, and I’ll get a copy by email.",
+      "esignField": "Agreement to sign electronically",
+      "needsLink": "This form is signed through the link sent to you. Ask the person who sent it for a new one.",
+      "refusals": {
+        "esign_agreement_required": "Tick the agreement to sign electronically.",
+        "human_check_failed": "The check that you’re a person didn’t pass. Try again.",
+        "link_not_valid": "This link has been used or has expired. Ask for a new one.",
+        "rate_limited": "Too many tries from here. Wait a few minutes and try again.",
+        "sign_in_required": "Sign in to send this form."
+      }
     },
     "qirtas": {
       "pieceTitle": "Your piece",
@@ -4147,7 +4198,6 @@
       "privacy": "Privacy and photo policy",
       "partners": "Partners",
       "newsletter": "The Sunday Paper",
-      "cookieSettings": "Cookie settings",
       "governance": "The Council",
       "terms": "Terms of use",
       "accessibility": "Accessibility",
@@ -4159,22 +4209,6 @@
       },
       "verify": "Verify a card or certificate",
       "nextStop": "Next Stop"
-    },
-    "consent": {
-      "title": "Cookies",
-      "body": "auibsal.org counts visits with Google Analytics only if you allow it.",
-      "privacy": "Privacy policy",
-      "allow": "Allow",
-      "allowAll": "Allow all",
-      "decline": "Decline",
-      "choose": "Choose",
-      "choices": "Your choices",
-      "save": "Save my choices",
-      "close": "Close cookie settings",
-      "analytics": {
-        "name": "Analytics",
-        "description": "Counting visits with Google Analytics."
-      }
     },
     "home": {
       "metaTitle": "The paper and the pen",
@@ -4238,7 +4272,7 @@
         "rsvp": "Book a place",
         "members": "For members",
         "invite": "By invitation",
-        "cancelled": "Canceled"
+        "canceled": "Canceled"
       },
       "remind": "Remind me",
       "remindHint": "No booking needed. Members can ask for a reminder the day before.",
@@ -4925,7 +4959,10 @@
       "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
       "colophon": "Set in Ubuntu and Ubuntu Arabic. Written in Baghdad.",
       "paperless": "Paperless by default. Books reused through Second Chapter.",
-      "instagram": "Instagram"
+      "instagram": "Instagram",
+      "telegram": "Telegram",
+      "youtube": "YouTube",
+      "linkedin": "LinkedIn"
     },
     "games": {
       "title": "Games",

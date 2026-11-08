@@ -1,5 +1,5 @@
 /**
- * The forms register check (owner, Nov 7, 2026; decisions §6, "One source
+ * The forms register check (decisions.md; decisions §6, "One source
  * for every form, letter, card and certificate"): the register in
  * SAL-EXB-01 (the Leadership Handbook, in Notion's Documents) is the one
  * source of every form's number, title, fields and wording. This compares

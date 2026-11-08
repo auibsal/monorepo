@@ -8,7 +8,7 @@ export const generateMetadata = sectionMetadata("web.about", "/about");
 
 const PILLARS = ["connecting", "fostering", "celebrating", "building"] as const;
 
-/** The Society's own pages, in a row of six (owner, Oct 30, 2026: threes). */
+/** The Society's own pages, in a row of six (decisions.md: threes). */
 const HUB = [
   ["council", "/about/council"],
   ["library", "/library"],

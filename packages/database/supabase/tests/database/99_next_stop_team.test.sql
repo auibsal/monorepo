@@ -84,7 +84,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -111,7 +111,7 @@ select ok(
     select 1 from journal.next_stop_team() t
     where t.title_en = (select name_en from access.roles where key = 'next_stop_producer')
   ),
-  'whoever holds the Next Stop producer role is on it, under its title (Media, owner, Nov 7, 2026)'
+  'whoever holds the Next Stop producer role is on it, under its title (Media, decisions.md)'
 );
 select is(
   (select count(*)::int from journal.next_stop_team() t

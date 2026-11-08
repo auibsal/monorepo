@@ -402,7 +402,7 @@ export const DateTimeField = ({
 
 /** A native select, styled like the inputs (works with keyboards and RTL). */
 /**
- * One of several choices, on the page (owner, Oct 31, 2026: never the
+ * One of several choices, on the page (decisions.md: never the
  * browser's pop-up list or a dialog). See `ChoiceInput`.
  */
 export const SelectInput = ChoiceInput;
@@ -538,6 +538,8 @@ export const SaveButton = ({
 
 interface ExportButtonProps {
   readonly fileName: string;
+  /** What the file is, when "Export" alone wouldn't say. */
+  readonly label?: string;
   /** the API routes export name (apps/web/lib/api/exports.ts). */
   readonly name: string;
   readonly params?: Record<string, string>;
@@ -546,6 +548,7 @@ interface ExportButtonProps {
 /** Downloads a CSV from the API routes, which re-checks the permission. */
 export const ExportButton = ({
   fileName,
+  label,
   name,
   params = {},
 }: ExportButtonProps) => {
@@ -579,7 +582,7 @@ export const ExportButton = ({
         size="sm"
         variant="outline"
       >
-        {state === "busy" ? t("exporting") : t("export")}
+        {state === "busy" ? t("exporting") : (label ?? t("export"))}
       </Button>
       {state === "failed" ? (
         <p className="text-text text-xs" role="alert">

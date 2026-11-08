@@ -28,8 +28,21 @@ const projectSchema = z
      * What's on, and its semesters are the Society's terms.
      */
     campusCalendar: z.url(),
+    /**
+     * The Society's channels, in the footer and the Organization's sameAs
+     * (one list). YouTube and LinkedIn join it once their addresses exist.
+     */
+    channels: z.array(
+      z
+        .object({
+          handle: z.string().min(1),
+          kind: z.enum(["instagram", "telegram", "youtube", "linkedin"]),
+          url: z.url(),
+        })
+        .strict()
+    ),
     domain: z.string().min(1),
-    /** Qirtas, the Society's paper (owner, Oct 30, 2026: set, not a setting). */
+    /** Qirtas, the Society's paper (decisions.md: set, not a setting). */
     journal: z.object({
       name_ar: z.string().min(1),
       name_en: z.string().min(1),

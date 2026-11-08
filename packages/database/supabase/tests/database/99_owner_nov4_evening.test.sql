@@ -87,7 +87,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -125,7 +125,7 @@ select ok(
     select 1 from access.role_permissions
     where role = 'president' and permission = 'programs.manage'
   ),
-  'the President holds programs.manage (owner, Nov 5, 2026)'
+  'the President holds programs.manage (decisions.md)'
 );
 
 select lives_ok(

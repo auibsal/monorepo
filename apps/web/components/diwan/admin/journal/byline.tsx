@@ -57,7 +57,7 @@ export const useBylineFor = () => {
 };
 
 /**
- * Who a piece is by (owner, Oct 31, 2026): a member chosen from the
+ * Who a piece is by (decisions.md): a member chosen from the
  * register, under their own name or a pen name.
  */
 export const BylinePicker = ({

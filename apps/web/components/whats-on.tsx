@@ -33,12 +33,12 @@ export const rowHref = (row: Row) =>
     ? `/account/calendar#${row.slug}`
     : `/events/${row.slug}`;
 
-type WayKey = "cancelled" | "members" | "open" | "rsvp" | "invite";
+type WayKey = "canceled" | "members" | "open" | "rsvp" | "invite";
 
 /** The one line under each title: how to come. */
 export const wayOf = (row: Row): WayKey => {
-  if (row.status === "cancelled") {
-    return "cancelled";
+  if (row.status === "canceled") {
+    return "canceled";
   }
   if (row.entry === "invite") {
     return "invite";
@@ -69,7 +69,7 @@ export const nextAfter = async (
   return (
     rows.find(
       (row) =>
-        row.status !== "cancelled" &&
+        row.status !== "canceled" &&
         (!programmeId || row.programme_id === programmeId)
     ) ?? null
   );

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { type Client, unwrap } from "./client";
 
 /**
- * A page typed at the Typewriter Tour (owner, Nov 7, 2026): kept as the
+ * A page typed at the Typewriter Tour (decisions.md): kept as the
  * writer typed it. Six words is the invitation, not a rule the record
  * enforces; pages from spring 2026 hold what was typed.
  */
@@ -153,7 +153,7 @@ export const openings = async (client: Client) =>
   ) ?? [];
 
 /**
- * Every open role, for anyone (owner, Nov 7, 2026: Get involved lists open
+ * Every open role, for anyone (decisions.md: Get involved lists open
  * roles only): Council and team roles, event teams, Qalam mentors and the
  * Company's auditions.
  */

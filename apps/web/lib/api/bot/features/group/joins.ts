@@ -120,6 +120,15 @@ export const admitPending = async (api: Api, telegramId: number) => {
 };
 
 // Added to a group that isn't connected yet: say how to connect it.
+// Someone left the group or was removed: their row for it goes (audit D5),
+// so nothing about them stays once they are gone.
+joins.on("chat_member", async (ctx) => {
+  const update = ctx.chatMember;
+  if (["left", "kicked"].includes(update.new_chat_member.status)) {
+    await forget(update.chat.id, update.new_chat_member.user.id);
+  }
+});
+
 joins.on("my_chat_member", async (ctx) => {
   const update = ctx.myChatMember;
   const added =

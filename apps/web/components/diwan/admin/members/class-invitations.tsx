@@ -9,6 +9,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { OpenInvitations } from "@/components/diwan/partner/workspace";
+import {
+  type InviteeLanguage,
+  InviteeLanguageField,
+} from "../invitee-language";
 import { ErrorLine, Field, SelectInput } from "../kit";
 
 type ClassKind = "associate" | "honorary";
@@ -27,6 +31,9 @@ export const ClassInvitations = () => {
   const queryClient = useQueryClient();
   const [kind, setKind] = useState<ClassKind>("associate");
   const [email, setEmail] = useState("");
+  const [lang, setLang] = useState<InviteeLanguage>(
+    locale === "ar" ? "ar" : "en"
+  );
   const [resolution, setResolution] = useState("");
   const resolutions = useQuery({
     enabled: kind === "honorary",
@@ -42,6 +49,7 @@ export const ClassInvitations = () => {
           .insert({
             email: email.trim(),
             kind,
+            lang,
             resolution_id: kind === "honorary" ? resolution : null,
           })
       ),
@@ -104,6 +112,7 @@ export const ClassInvitations = () => {
             />
           )}
         </Field>
+        <InviteeLanguageField onChange={setLang} value={lang} />
         <Button
           className="justify-self-start"
           disabled={invite.isPending || (kind === "honorary" && !resolution)}

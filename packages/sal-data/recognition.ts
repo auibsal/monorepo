@@ -4,7 +4,7 @@ import { type Client, unwrap } from "./client";
 /**
  * Recognition: staff service (hours for service letters, staff only) and
  * certificates, only for finishing Qalam and for the Mutanabbi Prize
- * (owner, Nov 7, 2026). Row Level Security and the RPCs decide who may
+ * (decisions.md). Row Level Security and the RPCs decide who may
  * confirm, sign and revoke.
  */
 
@@ -12,7 +12,7 @@ export const certificateKinds = ["qalam", "prize"] as const;
 
 export type CertificateKind = (typeof certificateKinds)[number];
 
-/** The Prize's two categories (owner, Nov 7, 2026). */
+/** The Prize's two categories (decisions.md). */
 export const prizeCategories = ["qirtas", "qalam"] as const;
 
 /** A certificate's one language, the one its recipient chose. */
@@ -21,7 +21,7 @@ export const certificateLanguages = ["en", "ar"] as const;
 type Lang = (typeof certificateLanguages)[number];
 
 /**
- * A certificate's words, in its own language (owner, Nov 7, 2026: one
+ * A certificate's words, in its own language (decisions.md: one
  * language per certificate, the one its recipient chose, whatever the
  * page's). The lead line is "This certifies that" («تشهد الجمعية بأن»), the
  * date line "Given on April 27, 2028" («مُنحت في 27 نيسان 2028»).
@@ -86,7 +86,7 @@ export const certificateCopy: Record<
 };
 
 /**
- * A service letter's words (SAL-EXB-01 · F-05; owner, Nov 7, 2026), in the
+ * A service letter's words (SAL-EXB-01 · F-05; decisions.md), in the
  * letter's own language: an American business letter, "To whom it may
  * concern:", signed by the Director of Membership.
  */
@@ -207,7 +207,7 @@ export const certificateSchema = z
   });
 
 /**
- * Who signs each certificate, in order (owner, Nov 7, 2026): Qalam, the
+ * Who signs each certificate, in order (decisions.md): Qalam, the
  * Qalam lead and the Editor-in-Chief; the Prize, the Editor-in-Chief and
  * the President. The database checks the same (`sign_certificate`).
  */

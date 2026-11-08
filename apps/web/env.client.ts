@@ -1,11 +1,10 @@
-import { keys as analytics } from "@repo/analytics/keys";
 import { keys as auth } from "@repo/auth/keys";
 import { envPresets, withPresets } from "@repo/next-config/env";
 import { keys as core } from "@repo/next-config/keys";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-const presets = envPresets(analytics(), auth(), core());
+const presets = envPresets(auth(), core());
 
 /**
  * The public half of the environment, for client components, Membership and the Diwan:

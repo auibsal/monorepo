@@ -11,7 +11,7 @@ export interface RoleDefinition {
 
 /** Role bundles, mirrored from the reference-data migration. */
 export const roles = {
-  // While the President is abroad (owner, Nov 5, 2026), events.
+  // While the President is abroad (decisions.md), events.
   advisory_board_member: {
     defaultScope: "global",
     isCouncil: false,
@@ -174,7 +174,7 @@ export const roles = {
       "library.council",
       "audit.read",
       "certificates.prepare",
-      // Membership, the Typewriter Tour (owner, Nov 5, 2026).
+      // Membership, the Typewriter Tour (decisions.md).
       "tour.run",
       "events.checkin",
       "members.register",
@@ -276,7 +276,7 @@ export const roles = {
     nameEn: "Onboarding Lead",
     permissions: ["events.checkin", "library.read"],
   },
-  // A partner's team (owner, Oct 31, 2026), scoped to the partner: the
+  // A partner's team (decisions.md), scoped to the partner: the
   // Lead invites and removes; Team keeps the page.
   partner_lead: {
     defaultScope: "partner",
@@ -343,7 +343,7 @@ export const roles = {
       "productions.manage",
       "concerns.handle",
       "concerns.about_vp",
-      // Everything else too (owner, Oct 15, 2026), except the checks on the
+      // Everything else too (decisions.md), except the checks on the
       // President that stay with other officers and Qirtas (decisions §1:
       // the President never selects work; rbac.test.ts lists them). While
       // the President is recorded absent, the Vice President holds these
@@ -440,7 +440,7 @@ export const roles = {
       "content.manage",
     ],
   },
-  // The General Secretary's team (owner, Nov 5, 2026).
+  // The General Secretary's team (decisions.md).
   tour_lead: {
     defaultScope: "global",
     isCouncil: false,
@@ -460,7 +460,7 @@ export const roles = {
     isCouncil: true,
     nameAr: "نائب الرئيس",
     nameEn: "Vice President",
-    // Partnerships, charities among them (owner, Nov 5, 2026).
+    // Partnerships, charities among them (decisions.md).
     permissions: [
       "events.checkin",
       "content.manage",

@@ -80,7 +80,7 @@ export const publicEvent = async (client: Client, eventSlug: string) =>
       .select(`${eventColumns}, body_en, body_ar, questions`)
       .eq("slug", eventSlug)
       .eq("members_only", false)
-      .in("status", ["published", "cancelled"])
+      .in("status", ["published", "canceled"])
       .maybeSingle()
   );
 
@@ -95,7 +95,7 @@ const NAME_AR = /اسم/;
 
 /**
  * Whether a booking question asks for the person's name. A booking carries
- * the member's name on the platform (owner, Oct 31, 2026), so such a question
+ * the member's name on the platform (decisions.md), so such a question
  * is answered with it rather than typed.
  */
 export const asksForName = (question: {

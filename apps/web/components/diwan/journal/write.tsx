@@ -89,7 +89,7 @@ const HowItWorks = () => {
 };
 
 /**
- * /qirtas/write (owner, Oct 31, 2026; the gateway revised Nov 5, 2026):
+ * /qirtas/write (decisions.md; the gateway revised Nov 5, 2026):
  * one door, readable by anyone. Visitors learn what Qirtas takes and how it
  * is read, then sign in (and come back here) or join; members and guests
  * see their work first. Every section but Games takes work all year, read
@@ -110,7 +110,7 @@ export const WriteHome = () => {
   return (
     <div className="grid gap-8">
       <AdminHeading title={tw("title")}>{tw("lede")}</AdminHeading>
-      {/* Private work lives here alone, as drafts (owner, Oct 31, 2026):
+      {/* Private work lives here alone, as drafts (decisions.md):
           what the member sent and what is edited with them. Their author
           page shows only what is published. */}
       {door}
@@ -204,7 +204,7 @@ const missingReason = (pledged: boolean, work: boolean) => {
 
 /**
  * The form for one type, at /qirtas/write/<type>; a saved draft opens at
- * /qirtas/write/<type>/<draft> (owner, Nov 4, 2026: drafts in their work).
+ * /qirtas/write/<type>/<draft> (decisions.md: drafts in their work).
  */
 export const WriteType = ({
   draftId,
@@ -511,7 +511,7 @@ const TranslationFields = ({
 };
 
 /**
- * Publish under a pen name (owner, Oct 31, 2026): the byline shows it in
+ * Publish under a pen name (decisions.md): the byline shows it in
  * place of the author's name; only the Submissions Manager knows whose it is.
  */
 const PenNameField = ({
@@ -679,8 +679,7 @@ const DeckAndVideo = ({
 };
 
 /**
- * The files, and the manuscript read into the editor (owner, Oct 31,
- * 2026): a Word file or a PDF fills the editor when it is empty, or offers
+ * The files, and the manuscript read into the editor (decisions.md): a Word file or a PDF fills the editor when it is empty, or offers
  * to; the file itself goes with the work as the original.
  */
 const FilesField = ({

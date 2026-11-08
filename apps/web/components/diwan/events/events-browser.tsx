@@ -56,7 +56,7 @@ const useUpcomingEvents = () => {
             .schema("events")
             .from("events")
             .select(`${events.eventColumns}, questions`)
-            .in("status", ["published", "cancelled"])
+            .in("status", ["published", "canceled"])
             .gte(
               "starts_at",
               new Date(Date.now() - 6 * 3_600_000).toISOString()
@@ -103,7 +103,7 @@ type NoticeKey =
   | "closed"
   | "failed";
 type StateKey =
-  | "cancelled"
+  | "canceled"
   | "booked"
   | "waiting"
   | "noBooking"
@@ -151,7 +151,7 @@ export const EventsBrowser = () => {
   const ta = useTranslations("diwan.next");
   const locale = useLocale() as "en" | "ar";
   // A booking is in the member's name on the platform; a question asking for
-  // a name is answered with it (owner, Oct 31, 2026).
+  // a name is answered with it (decisions.md).
   const profile = useProfile();
   const myName = profile.data
     ? localized(profile.data, "full_name", locale)
@@ -389,8 +389,8 @@ const stateOf = (
   isWaiting: boolean
 ): StateKey => {
   const left = placesLeft(event);
-  if (event.status === "cancelled") {
-    return "cancelled";
+  if (event.status === "canceled") {
+    return "canceled";
   }
   if (isBooked) {
     return "booked";

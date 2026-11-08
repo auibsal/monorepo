@@ -256,7 +256,7 @@ const Figure = ({
 
 /**
  * News, interviews, features, reviews: a column after the photo, in the
- * site's own type (owner, Oct 24, 2026: news reads like the rest of the
+ * site's own type (decisions.md: news reads like the rest of the
  * site; Literata stays for stories and poems).
  */
 const NewsBody = ({ locale, piece }: { locale: Locale; piece: Full }) => {

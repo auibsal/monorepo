@@ -328,7 +328,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   // A signature is the author's name on the platform, dated when signed
-  // (owner, Oct 31, 2026); the database signs in that name.
+  // (decisions.md); the database signs in that name.
   const profile = useProfile();
   const name = profile.data ? localized(profile.data, "full_name", locale) : "";
   const agreement = useQuery({

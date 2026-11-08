@@ -6,7 +6,7 @@ import { titleFrom } from "@/lib/diwan/metadata";
 export const generateMetadata = titleFrom((t) => t("diwan.admin.events.title"));
 
 /**
- * What's on, one page (owner, Oct 31, 2026): the events, with the programs
+ * What's on, one page (decisions.md): the events, with the programs
  * linked under the title (each an event series at /diwan/events/<slug>),
  * then the pitches for new ones.
  */

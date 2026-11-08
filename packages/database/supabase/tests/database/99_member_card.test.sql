@@ -85,7 +85,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -223,7 +223,7 @@ select is(((core.member_insights()) ->> 'counted')::integer, 1,
 
 -- The card's record: hidden unless the member turns it on.
 -- The card's check shows the name, class, status and member since only
--- (owner, Nov 7, 2026): it lists no certificates.
+-- (decisions.md): it lists no certificates.
 select hasnt_function('membership', 'card_record', array['text'],
   'A card''s check page lists no certificates');
 select hasnt_column('core', 'profiles', 'show_certificates_on_card',

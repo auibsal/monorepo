@@ -288,7 +288,7 @@ const AuditionSlot = ({
   const [interest, setInterest] = useState("");
   const where = localized(audition, "location", locale);
   const prepare = localized(audition, "prepare", locale);
-  const active = status && status !== "cancelled";
+  const active = status && status !== "canceled";
 
   return (
     <li className="grid gap-2 border-line border-t pt-3">

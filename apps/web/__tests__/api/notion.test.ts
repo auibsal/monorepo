@@ -291,7 +291,7 @@ describe("publishing rules", () => {
       ok: true,
       values: { audience: "public", code: "SAL-GOV-04", slug: "privacy" },
     });
-    // The retired families (owner, Nov 7, 2026) are refused.
+    // The retired families (decisions.md) are refused.
     expect(
       checkDocument(
         page({
@@ -303,7 +303,7 @@ describe("publishing rules", () => {
       ).ok
     ).toBe(false);
     // An Arabic edition leaves Audience and Slug blank: the English row's
-    // Audience is given to it (owner, Nov 7, 2026).
+    // Audience is given to it (decisions.md).
     const arabic = page({
       Code: text("SAL-GOV-04"),
       Language: { select: { name: "Arabic" }, type: "select" },

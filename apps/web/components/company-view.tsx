@@ -11,7 +11,7 @@ import { monthFrom } from "@/lib/whats-on";
 
 /**
  * The Company, the Society's theater company, on its own page beside
- * Qirtas (owner, Oct 30, 2026; not a program, not under What's on): what
+ * Qirtas (decisions.md; not a program, not under What's on): what
  * it is, auditions, then a link to its dates on What's on
  * (/events?host=company). Performances are ordinary events.
  */

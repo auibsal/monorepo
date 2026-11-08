@@ -180,7 +180,7 @@ const NeedRow = ({
   );
 };
 
-/** Whose list a need is on: an event's (owner, Nov 5, 2026) or Qirtas's row. */
+/** Whose list a need is on: an event's (decisions.md) or Qirtas's row. */
 type NeedOwner =
   | { readonly column: "event_id"; readonly id: string }
   | { readonly column: "programme_id"; readonly id: string };
@@ -295,7 +295,7 @@ export const NewNeed = ({
 };
 
 /**
- * A needs list (owner, Oct 30, 2026): what an event or Qirtas needs from
+ * A needs list (decisions.md): what an event or Qirtas needs from
  * Student Life (item, quantity, date needed, purpose), never a cost. With
  * neither, every list: the General Secretary's log of requests to Student
  * Life.

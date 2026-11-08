@@ -26,7 +26,7 @@ export const publicSetting = async (client: Client, key: string) =>
 /**
  * The Sunday Paper's issues as sent, newest first: the month ("2026-12") and
  * the Sunday it went out. Written only by the job that sends them, so the
- * archive never lists a month that was not sent (owner, Nov 7, 2026).
+ * archive never lists a month that was not sent (decisions.md).
  */
 export const sundayPaperIssues = async (client: Client) =>
   unwrap(

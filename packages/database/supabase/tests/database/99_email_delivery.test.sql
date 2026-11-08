@@ -1,4 +1,4 @@
--- Site emails (owner, Oct 31, 2026): the API address is set, and the
+-- Site emails (decisions.md): the API address is set, and the
 -- Desk reads how email is flowing without seeing any secret.
 begin;
 -- <preamble>
@@ -85,7 +85,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)

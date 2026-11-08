@@ -1,15 +1,22 @@
 name: Back up production database
 
-# Nightly logical backup of production (roles, schema, data), encrypted
-# before it leaves the runner: the repository is public, so the artifact is
-# useless without BACKUP_PASSPHRASE. Kept for 30 days. Restore steps are in
-# the Master Configuration Guide ("Restore a backup").
+# Nightly logical backup of production (roles, schema, data), and on the
+# 1st of each month the Storage buckets too, encrypted before they leave
+# the runner: the repository is public, so the files are useless without
+# BACKUP_PASSPHRASE. Kept 30 days as an artifact and, when the R2 secrets
+# are set, copied to a second place (Cloudflare R2). A failed run emails
+# hello@auibsal.org. Restore steps: docs/platform/backups.md.
 
 on:
   schedule:
     # 23:20 UTC is 2:20 AM in Baghdad.
     - cron: "20 23 * * *"
   workflow_dispatch:
+    inputs:
+      storage:
+        description: Also back up the Storage buckets
+        type: boolean
+        default: false
 
 concurrency:
   group: backup-production
@@ -28,10 +35,14 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
-      PROJECT_REF: fghzahtzgelqnpwdhwjo
+      PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'fghzahtzgelqnpwdhwjo' }}
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
       - run: bun install --frozen-lockfile
@@ -46,7 +57,7 @@ jobs:
       - name: Link the project
         working-directory: packages/database
         run: bunx supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
-      - name: Dump and encrypt
+      - name: Dump
         working-directory: packages/database
         run: |
           stamp="$(date -u +%Y-%m-%d)"
@@ -54,14 +65,54 @@ jobs:
           bunx supabase db dump --linked --role-only -f "$RUNNER_TEMP/backup/roles.sql" --password "$SUPABASE_DB_PASSWORD"
           bunx supabase db dump --linked -f "$RUNNER_TEMP/backup/schema.sql" --password "$SUPABASE_DB_PASSWORD"
           bunx supabase db dump --linked --data-only --use-copy -f "$RUNNER_TEMP/backup/data.sql" --password "$SUPABASE_DB_PASSWORD"
-          tar -C "$RUNNER_TEMP/backup" -czf "$RUNNER_TEMP/sal-$stamp.tar.gz" .
-          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" \
-            --symmetric --cipher-algo AES256 -o "$RUNNER_TEMP/sal-$stamp.tar.gz.gpg" "$RUNNER_TEMP/sal-$stamp.tar.gz"
-          rm -rf "$RUNNER_TEMP/backup" "$RUNNER_TEMP/sal-$stamp.tar.gz"
           echo "STAMP=$stamp" >> "$GITHUB_ENV"
-      - uses: actions/upload-artifact@v6
+      - name: Storage (the 1st of the month, or when asked)
+        if: github.event_name == 'schedule' || inputs.storage
+        working-directory: packages/database
+        run: |
+          if [ "${{ inputs.storage }}" != "true" ] && [ "$(date -u +%d)" != "01" ]; then
+            echo "Storage is backed up on the 1st."
+            exit 0
+          fi
+          for bucket in $(bunx supabase --experimental storage ls --linked ss:/// | tr -d '/'); do
+            mkdir -p "$RUNNER_TEMP/backup/storage/$bucket"
+            bunx supabase --experimental storage cp -r --linked -j 4 "ss:///$bucket" "$RUNNER_TEMP/backup/storage/$bucket"
+          done
+      - name: Encrypt
+        run: |
+          tar -C "$RUNNER_TEMP/backup" -czf "$RUNNER_TEMP/sal-$STAMP.tar.gz" .
+          # The passphrase goes through stdin, never the command line.
+          printf '%s' "$BACKUP_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 \
+            --symmetric --cipher-algo AES256 -o "$RUNNER_TEMP/sal-$STAMP.tar.gz.gpg" "$RUNNER_TEMP/sal-$STAMP.tar.gz"
+          rm -rf "$RUNNER_TEMP/backup" "$RUNNER_TEMP/sal-$STAMP.tar.gz"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: sal-backup-${{ env.STAMP }}
           path: ${{ runner.temp }}/sal-${{ env.STAMP }}.tar.gz.gpg
           retention-days: 30
           if-no-files-found: error
+      - name: A second copy (Cloudflare R2)
+        run: |
+          if [ -z "$R2_ACCOUNT_ID" ] || [ -z "$R2_BUCKET" ] || [ -z "$AWS_ACCESS_KEY_ID" ]; then
+            echo "::warning::No second copy: add R2_ACCOUNT_ID, R2_BUCKET, R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY."
+            exit 0
+          fi
+          aws s3 cp "$RUNNER_TEMP/sal-$STAMP.tar.gz.gpg" "s3://$R2_BUCKET/sal-$STAMP.tar.gz.gpg" \
+            --endpoint-url "https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com" --region auto
+      - name: Email on failure
+        if: failure()
+        env:
+          RESEND_TOKEN: ${{ secrets.RESEND_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$RESEND_TOKEN" ]; then
+            echo "::error::The backup failed and RESEND_TOKEN is not set, so no email went."
+            exit 0
+          fi
+          jq -n --arg url "$RUN_URL" '{
+            from: "AUIB Society of Arts and Letters <hello@auibsal.org>",
+            to: ["hello@auibsal.org"],
+            subject: "The nightly backup failed",
+            text: ("Tonight’s backup of the production database did not finish. See the run: " + $url)
+          }' | curl -sS --fail -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer $RESEND_TOKEN" -H "Content-Type: application/json" -d @-

@@ -6,7 +6,7 @@ import { siteUrl } from "@repo/internationalization";
 import type { IcsEvent } from "./ics";
 
 const eventColumns =
-  "id, slug, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, entry";
+  "id, slug, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, entry, status, updated_at";
 
 interface EventRow {
   ends_at: string | null;
@@ -15,10 +15,12 @@ interface EventRow {
   members_only: boolean;
   slug: string;
   starts_at: string;
+  status: string;
   summary_ar: string | null;
   summary_en: string | null;
   title_ar: string;
   title_en: string;
+  updated_at: string;
   venue_ar: string | null;
   venue_en: string | null;
 }
@@ -28,6 +30,7 @@ const toIcs = (
   locale: "en" | "ar",
   tag?: string
 ): IcsEvent => ({
+  canceled: event.status === "canceled",
   description:
     locale === "ar"
       ? (event.summary_ar ?? event.summary_en)
@@ -37,6 +40,7 @@ const toIcs = (
     locale === "ar"
       ? (event.venue_ar ?? event.venue_en)
       : (event.venue_en ?? event.venue_ar),
+  modified: event.updated_at,
   start: event.starts_at,
   tag,
   title: locale === "ar" ? event.title_ar : event.title_en,
@@ -54,7 +58,7 @@ export const publicEvents = async (admin: AdminClient, locale: "en" | "ar") => {
     .schema("events")
     .from("events")
     .select(eventColumns)
-    .eq("status", "published")
+    .in("status", ["published", "canceled"])
     .eq("members_only", false)
     .gte("starts_at", since())
     .order("starts_at");
@@ -128,7 +132,7 @@ export const memberFeed = async (admin: AdminClient, token: string) => {
     .schema("events")
     .from("events")
     .select(eventColumns)
-    .eq("status", "published")
+    .in("status", ["published", "canceled"])
     .gte("starts_at", since())
     .order("starts_at");
   if (!isMember) {

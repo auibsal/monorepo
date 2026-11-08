@@ -17,7 +17,7 @@ import localFont from "next/font/local";
  * brand's own files, packages/brand/assets/fonts.
  * Never another Arabic face. It has no Light: Arabic display is Regular.
  *
- * One more face, for signatures only (owner, Oct 31, 2026): a person's
+ * One more face, for signatures only (decisions.md): a person's
  * name, signed, is set in Mrs Saint Delafield (`font-signature`, the
  * `Signature` component), never for text.
  */

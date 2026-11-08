@@ -13,7 +13,7 @@ import { readWays, type Ways } from "@/lib/staff";
 import { Masthead, mastheadLink } from "./masthead";
 
 // The header's sections, the same on the site, the members' pages and the
-// Diwan (owner, Oct 30, 2026); the rest are in the footer, never both.
+// Diwan (decisions.md); the rest are in the footer, never both.
 type SectionKey =
   | "about"
   | "company"
@@ -154,12 +154,11 @@ export const SiteHeader = ({
     }
   }, [pathname]);
   const known = ways ?? waysHint;
-  // One Membership for everyone (owner, Oct 31, 2026).
+  // One Membership for everyone (decisions.md).
   const way: Way = signedIn
     ? { href: localizedPath(locale, "/account"), label: t("account") }
     : { href: localizedPath(locale, "/sign-in"), label: t("signIn") };
-  // The Diwan sits under Membership, for staff only (owner, Oct 30,
-  // 2026); a partner's people have their dashboard there instead (Oct 31).
+  // The Diwan sits under Membership, for staff only (decisions.md); a partner's people have their dashboard there instead (Oct 31).
   const extras: Way[] = signedIn
     ? [
         ...(known?.diwan

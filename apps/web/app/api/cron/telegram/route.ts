@@ -9,8 +9,7 @@ export const maxDuration = 60;
 /**
  * Every ten minutes (pg_cron `sal-telegram-posts`): the bot's posts to the
  * connected Telegram groups (new events, starting soon, Qirtas, the daily
- * word), and the removals a week after Hudhud's warning (owner, Nov 7,
- * 2026). Does nothing without TELEGRAM_BOT_TOKEN.
+ * word), and the removals a week after Hudhud's warning (decisions.md). Does nothing without TELEGRAM_BOT_TOKEN.
  */
 const run = async (request: Request) => {
   if (!hasBearer(request, env.CRON_SECRET)) {

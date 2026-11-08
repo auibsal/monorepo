@@ -10,7 +10,7 @@ export const generateMetadata = sectionMetadata(
 );
 
 /**
- * The Typewriter Tour (owner, Nov 5 and Nov 7, 2026): the Society's
+ * The Typewriter Tour (decisions.md): the Society's
  * welcome to new students, under Join, run by the Director of Membership
  * and the Tour Lead, once a year in the spring club fair week. No paper
  * is kept: writers join by QR code, their typed page is photographed into

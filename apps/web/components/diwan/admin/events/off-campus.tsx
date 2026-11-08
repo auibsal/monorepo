@@ -25,7 +25,7 @@ interface OffCampusEvent {
 }
 
 /**
- * Off campus, a standard field of every event (owner, Nov 7, 2026): an event
+ * Off campus, a standard field of every event (decisions.md): an event
  * away from campus is published only once Student Life's written approval,
  * its date and who approved, is on record, which the General Secretary
  * records (governance.manage); participants sign the trip consent form

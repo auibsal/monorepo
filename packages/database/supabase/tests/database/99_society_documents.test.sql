@@ -86,7 +86,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -115,7 +115,7 @@ select is((select count(*)::int from governance.society_documents), 2,
   'Visitors read the public documents');
 select is((select count(*)::int from governance.society_documents
   where status = 'proposed' and adopted_on is null), 2,
-  'Every document is proposed until the Founding Meeting adopts it (owner, Nov 7, 2026)');
+  'Every document is proposed until the Founding Meeting adopts it (decisions.md)');
 select is((select count(*)::int from governance.society_documents where audience = 'internal'), 0,
   'No internal documents are kept here: they stay in Notion');
 select ok((select body_en like '%<strong>6.6</strong>%' from governance.society_documents where slug = 'constitution'),

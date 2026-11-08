@@ -114,6 +114,11 @@ test("a member books on the event's own page", async ({ page }) => {
     await expect(book).toBeVisible();
   }
   await book.click();
+  await expect(
+    page.getByText("Booked. A confirmation is on its way.")
+  ).toBeVisible();
+  await expect(giveBack).toBeVisible();
+  await page.reload();
   await expect(page.getByText("You have a place.")).toBeVisible();
   await giveBack.click();
   await expect(book).toBeVisible();

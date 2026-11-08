@@ -1,32 +1,23 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Something is wrong
+about: A page, email, the Diwan or Hudhud does not do what it should
 title: ''
 labels: bug
 assignees: ''
-
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**What happened**
 
-**Where does it happen?**
-App(s) affected (web, app, api, iOS, Android) and the commit or release.
+**What should have happened**
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**Where**
+The address (for example auibsal.org/events or /diwan/membership), the email's subject, or the Hudhud chat. English or Arabic. Phone or computer, and the browser.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**Steps**
+1.
+2.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Screenshot**
+Leave out names, addresses and card numbers.
 
-**Desktop (please complete the following information):**
- - OS / device: [e.g. iOS 19, Android 16, macOS]
- - Browser or app version: [e.g. Chrome 140, Safari, native app 1.2.0]
- - Language / direction: [e.g. Arabic (RTL), English (LTR)]
+Security problems are reported privately: see SECURITY.md, never an issue.

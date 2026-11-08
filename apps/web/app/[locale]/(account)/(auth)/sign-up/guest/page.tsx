@@ -7,7 +7,7 @@ import { titleFrom } from "@/lib/diwan/metadata";
 export const generateMetadata = titleFrom((t) => t("auth.signUp.guestTitle"));
 
 /**
- * A guest account (owner, Nov 7, 2026): anyone outside AUIB may make one to
+ * A guest account (decisions.md): anyone outside AUIB may make one to
  * book a place at the Society's open events. A guest isn't a member: no
  * vote, no office and no place in the Register.
  */

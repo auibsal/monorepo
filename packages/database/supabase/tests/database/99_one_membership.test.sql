@@ -86,7 +86,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -239,7 +239,7 @@ select results_eq(
   'A visitor reads the open roles'
 );
 
--- Get involved is one list (owner, Oct 31, 2026): the Company's coming
+-- Get involved is one list (decisions.md): the Company's coming
 -- auditions are in it, for a public production that is auditioning only.
 select pg_temp.logout();
 insert into programmes.productions (slug, programme_id, title_en, title_ar, stage, is_public, rights_status)

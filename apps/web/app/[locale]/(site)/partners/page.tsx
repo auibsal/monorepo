@@ -22,7 +22,7 @@ const SIDES = {
 } as const;
 
 /**
- * The partners' front door (owner, Oct 31, 2026: /partners, in place of
+ * The partners' front door (decisions.md: /partners, in place of
  * /about/partners): what partnering with the Society means, the way to
  * apply (/partners/apply) and in for a partner's team, then the partners
  * (Policy Manual P11). Only partners that are active and have a signed
@@ -86,7 +86,7 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           </Link>
         </p>
       </Section>
-      {/* Second Chapter (owner, Nov 7, 2026): kept by the Director of
+      {/* Second Chapter (decisions.md): kept by the Director of
           Partnerships; its collection's record is a Notion page. */}
       <Section id="second-chapter" title={t("secondChapter.title")}>
         <p className="type-body max-w-[60ch]">{t("secondChapter.body")}</p>

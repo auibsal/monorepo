@@ -83,7 +83,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -103,8 +103,8 @@ select lives_ok(
   'Queuing still works when dispatch is not configured'
 );
 
-select is((select count(*)::integer from cron.job where jobname like 'sal-%'), 14,
-  'The fourteen scheduled jobs exist (with the Wallet passes kept up with roles, decisions §11)');
+select is((select count(*)::integer from cron.job where jobname like 'sal-%'), 11,
+  'The eleven scheduled jobs exist (retention is one job, audit E2)');
 
 -- Scheduled publishing.
 insert into journal.issues (volume, number, slug, title_en, title_ar, status, publish_at) values

@@ -30,8 +30,7 @@ describe.skipIf(
           email,
           email_confirm: true,
           password,
-          // An outside address signs up only with a reason (owner, Oct 31,
-          // 2026): here, an application to partner.
+          // An outside address signs up only with a reason (decisions.md): here, an application to partner.
           user_metadata: {
             full_name_en: "Integration",
             partner_applicant: "true",
@@ -76,7 +75,7 @@ describe.skipIf(
     const { data } = await supabase.schema("membership").rpc("my_status");
     expect(data?.[0]).toMatchObject({ is_member: false, verified: false });
 
-    // Partners verify their own people (owner, Oct 31, 2026): no request
+    // Partners verify their own people (decisions.md): no request
     // waits in the Society's queue.
     const { data: requests } = await supabase
       .schema("membership")

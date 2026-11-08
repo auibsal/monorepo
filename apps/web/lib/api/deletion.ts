@@ -98,6 +98,16 @@ export const deleteAccount = async (
   if (error) {
     throw error;
   }
+  // The activity log keeps no lines by or about someone who has gone
+  // (audit E1).
+  await Promise.all([
+    admin.schema("core").from("activity_log").delete().eq("actor_id", userId),
+    admin
+      .schema("core")
+      .from("activity_log")
+      .delete()
+      .or(`new_row->>user_id.eq.${userId},old_row->>user_id.eq.${userId}`),
+  ]);
   const email = user?.user?.email;
   if (email) {
     await admin

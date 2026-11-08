@@ -7,8 +7,23 @@ import { Label } from "@repo/brand/components/ui/label";
 import { apiPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useId, useState } from "react";
+import {
+  type FormEvent,
+  lazy,
+  Suspense,
+  useEffect,
+  useId,
+  useState,
+} from "react";
 import { ResultLine } from "@/components/frame/result-line";
+
+// The human check loads once someone starts typing an address: the sign-up
+// shows on many pages, and readers should never load the script.
+const HumanCheck = lazy(() =>
+  import("@/components/diwan/auth/human-check").then((m) => ({
+    default: m.HumanCheck,
+  }))
+);
 
 type State =
   | "idle"
@@ -22,7 +37,7 @@ type State =
  * Signs up for the Sunday Paper; the API routes send the confirmation
  * email. Compact, where the page already has its one solid button, the
  * submit is a text link. A signed-in member already gets it while email
- * notices are on (owner, Nov 5, 2026: never ask them to subscribe again),
+ * notices are on (decisions.md: never ask them to subscribe again),
  * so they see where to turn it on or off instead. Read after the first
  * render, so the cached page is the same for everyone.
  */
@@ -36,6 +51,9 @@ export const NewsletterSignup = ({
   const id = useId();
   const [state, setState] = useState<State>("idle");
   const [member, setMember] = useState(false);
+  const [started, setStarted] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [round, setRound] = useState(0);
   useEffect(() => {
     if (!hasSessionCookie(document.cookie)) {
       return;
@@ -69,6 +87,7 @@ export const NewsletterSignup = ({
         body: JSON.stringify({
           email: data.get("email"),
           lang: locale === "ar" ? "ar" : "en",
+          token,
           website: data.get("website") || undefined,
         }),
         headers: { "content-type": "application/json" },
@@ -88,6 +107,10 @@ export const NewsletterSignup = ({
       }
     } catch {
       setState("failed");
+    } finally {
+      // A token is good once: a fresh check for the next try.
+      setToken(null);
+      setRound((n) => n + 1);
     }
   };
 
@@ -116,17 +139,23 @@ export const NewsletterSignup = ({
           dir="ltr"
           id={`${id}-email`}
           name="email"
+          onFocus={() => setStarted(true)}
           required
           type="email"
         />
         <Button
-          disabled={state === "sending"}
+          disabled={state === "sending" || (started && token === null)}
           type="submit"
           variant={compact ? "link" : "default"}
         >
           {state === "sending" ? t("sending") : t("submit")}
         </Button>
       </div>
+      {started ? (
+        <Suspense fallback={null}>
+          <HumanCheck action="newsletter" key={round} onToken={setToken} />
+        </Suspense>
+      ) : null}
       {/* Hidden from people; bots fill it in. */}
       <div aria-hidden className="hidden">
         <label>

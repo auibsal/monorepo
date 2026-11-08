@@ -83,7 +83,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -93,7 +93,7 @@ as $$
 $$;
 -- </preamble>
 
--- The spring 2026 Tour's import and the invitation Broadcast (owner, Nov 7, 2026).
+-- The spring 2026 Tour's import and the invitation Broadcast (decisions.md).
 
 select plan(24);
 

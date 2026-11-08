@@ -42,7 +42,7 @@ type Outcome =
   | { kind: "error" };
 
 /**
- * The door (owner, Oct 31, 2026: one door per event, at
+ * The door (decisions.md: one door per event, at
  * /events/<slug>/check-in). The Desk's quick action opens today's or the next
  * event's door; each door lists the events after it, to switch.
  */

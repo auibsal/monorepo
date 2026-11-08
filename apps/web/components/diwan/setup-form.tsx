@@ -34,7 +34,7 @@ type PledgeKind = "human_authorship" | "member";
 
 /**
  * The name in each language, in four parts as on the person's papers
- * (owner, Oct 31, 2026): name, father's, grandfather's and last.
+ * (decisions.md): name, father's, grandfather's and last.
  */
 export type Names = nameParts.FourPartNames;
 
@@ -181,7 +181,7 @@ export const SetupForm = () => {
     heading.current?.focus({ preventScroll: true });
   }, [index, welcome]);
 
-  // Everyone goes on to Membership (owner, Oct 31, 2026).
+  // Everyone goes on to Membership (decisions.md).
   const leave = () =>
     router.replace(next ? stripLocale(next) : "/account", {
       locale: profile.data?.locale === "ar" ? "ar" : "en",

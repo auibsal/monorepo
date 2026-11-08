@@ -13,7 +13,7 @@ const BEARER = /^Bearer\s+(.+)$/i;
  * header, how the site's own pages (client-rendered) call the API routes.
  * Returns the verified claims and a client that acts as that user, so Row
  * Level Security applies to its queries. There are no third-party apps
- * (owner, Oct 30, 2026): a token issued to one (it carries a client_id) is
+ * (decisions.md): a token issued to one (it carries a client_id) is
  * refused.
  */
 export const authenticateRequest = async (request: Request) => {

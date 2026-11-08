@@ -1,4 +1,4 @@
--- Six programs, no groupings (migration 20261029000100, owner, Oct 29, 2026).
+-- Six programs, no groupings (migration 20261029000100, decisions.md).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -84,7 +84,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -98,7 +98,7 @@ select plan(12);
 select is(
   (select array_agg(slug order by sort) from core.programmes where is_active),
   array['typewriter-tour', 'company'],
-  'No series (owner, Nov 5, 2026): only the Tour''s row (membership) and the Company stay active'
+  'No series (decisions.md): only the Tour''s row (membership) and the Company stay active'
 );
 select ok(
   not exists (select 1 from core.programmes where is_active and (rhythm_en is null or rhythm_ar is null)),
@@ -123,7 +123,7 @@ select ok(
   exists (select 1 from core.programmes where slug = 'next-stop' and not is_active),
   'Next Stop is Qirtas''s video show: its program row is unpublished, not deleted'
 );
-select hasnt_table('events', 'series_rules', 'No repeat rules: the term calendar is plain events (owner, Nov 5, 2026)');
+select hasnt_table('events', 'series_rules', 'No repeat rules: the term calendar is plain events (decisions.md)');
 select is(
   (select count(*)::integer from events.events e
     where e.programme_id is null and e.status = 'published'
@@ -141,7 +141,7 @@ select is(
 select is(
   (select count(*)::int from events.events where slug = 'book-circle-2027-04-09'),
   0,
-  'The April 9 trip, canceled in Notion, is gone (owner, Nov 7, 2026)'
+  'The April 9 trip, canceled in Notion, is gone (decisions.md)'
 );
 
 select is(

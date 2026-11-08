@@ -22,7 +22,7 @@ export interface SignatureProps {
 }
 
 /**
- * A signature on the platform (owner, Oct 31, 2026): the signer's name in
+ * A signature on the platform (decisions.md): the signer's name in
  * the signature face, their card number and the date, beside a guilloche
  * rosette drawn from the number (or the name) and a short seal, so it
  * reads as a digital signature and no two look alike. Nobody types it:

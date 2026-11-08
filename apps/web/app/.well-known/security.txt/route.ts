@@ -1,6 +1,6 @@
 import { project } from "@repo/config";
 
-// RFC 9116: where to report a security problem (SAL-GOV-05). Expires a year
+// RFC 9116: where to report a security problem (the Terms). Expires a year
 // from each build, so a stale file never outlives the policy.
 export const dynamic = "force-static";
 
@@ -11,7 +11,7 @@ export const GET = () =>
     [
       `Contact: mailto:${project.supportEmail}`,
       `Expires: ${new Date(Date.now() + YEAR_MS).toISOString()}`,
-      `Policy: ${project.url}/library/security`,
+      `Policy: ${project.url}/terms`,
       "Preferred-Languages: en, ar",
       `Canonical: ${project.url}/.well-known/security.txt`,
       "",

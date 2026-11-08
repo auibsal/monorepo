@@ -35,7 +35,12 @@ const fakeAdmin = (deleteError: Error | null = null) => {
         }),
     }),
   };
+  const logDelete = {
+    eq: () => Promise.resolve({ error: null }),
+    or: () => Promise.resolve({ error: null }),
+  };
   const tables: Record<string, unknown> = {
+    activity_log: { delete: () => logDelete },
     outbox: { insert },
     profiles: { select: () => profile },
     six_words: { select: () => pages },

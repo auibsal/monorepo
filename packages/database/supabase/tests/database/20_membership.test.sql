@@ -1,5 +1,5 @@
 -- Membership: sign-up verification, pledges, profile visibility and the
--- voting member rule (owner, Nov 7, 2026: two events or general meetings in
+-- voting member rule (decisions.md: two events or general meetings in
 -- the academic year, from September 1).
 begin;
 -- <preamble>
@@ -86,7 +86,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)

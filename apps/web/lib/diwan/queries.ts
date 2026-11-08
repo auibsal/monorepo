@@ -85,7 +85,7 @@ export const useProfile = () => {
 };
 
 /**
- * Both names in all four parts (owner, Oct 31, 2026): anyone without them
+ * Both names in all four parts (decisions.md): anyone without them
  * is asked at /welcome the next time they come in.
  */
 export const hasAllNames = names.hasFourPartNames;
@@ -192,7 +192,7 @@ export const useMyShifts = () => {
         .select(
           "shift_id, status, shift:shifts(id, role_en, role_ar, starts_at, ends_at, location_en, location_ar)"
         )
-        .neq("status", "cancelled")
+        .neq("status", "canceled")
     )
   );
 };

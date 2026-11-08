@@ -136,7 +136,7 @@ const copyImage = async (
 };
 
 /**
- * Notion's linked rows the site still knows (owner, Nov 5, 2026: no event
+ * Notion's linked rows the site still knows (decisions.md: no event
  * series): only active rows, the Company's and the Tour's, so an event
  * linked to a former series in Notion is published as an event of its own.
  */
@@ -185,7 +185,7 @@ const cancelEvent = async (
   const { error } = await ctx.admin
     .schema("events")
     .from("events")
-    .update({ status: "cancelled" })
+    .update({ status: "canceled" })
     .eq("id", id);
   if (error) {
     throw error;
@@ -246,7 +246,7 @@ const publishEvent = async (
     return;
   }
   const image = await copyImage(ctx, page, "Image", "events");
-  // Off campus (owner, Nov 5, 2026): published only once the General
+  // Off campus (decisions.md): published only once the General
   // Secretary records Student Life's approval on the event's page in the
   // Diwan; until then it is kept there as a draft. Only the General
   // Secretary brings an event back on campus, so Notion never unsets it.
@@ -460,7 +460,7 @@ const publishArabicEvent = async (
   await saveLink(ctx, "event_ar", page.id, eventId, null);
   await ctx.notion.updatePage(page.id, {
     // The way in and off campus are the event's, set on the English row
-    // (owner, Nov 7, 2026): the edition shows them as they are there.
+    // (decisions.md): the edition shows them as they are there.
     ...(event
       ? {
           "Off campus": prop.checkbox(event.off_campus),

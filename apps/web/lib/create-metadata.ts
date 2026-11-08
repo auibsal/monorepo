@@ -20,8 +20,6 @@ const author: Metadata["authors"] = {
   url: project.url,
 };
 const publisher = project.orgName;
-const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 
 type Plain = Record<string, unknown>;
 
@@ -45,13 +43,9 @@ const deepMerge = <T extends object>(base: T, extra: object): T => {
   return out as T;
 };
 
-const getMetadataBase = () => {
-  if (productionUrl) {
-    return new URL(`${protocol}://${productionUrl}`);
-  }
-
-  return project.url ? new URL(project.url) : undefined;
-};
+// Always the canonical address, previews included, so shared links and
+// images never point at a deployment URL.
+const getMetadataBase = () => new URL(project.url);
 
 export const createMetadata = ({
   title,

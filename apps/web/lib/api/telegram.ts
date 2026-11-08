@@ -2,7 +2,8 @@ import "server-only";
 
 import type { AdminClient } from "@repo/database/admin";
 import { log } from "@repo/observability/log";
-import { callTelegram, noticeMessage, TelegramError } from "@repo/telegram";
+import { noticeMessage } from "@repo/telegram";
+import { Api, GrammyError } from "grammy";
 import { env } from "@/env";
 import { type Sticker, type StickerSet, stickerId } from "./bot/stickers";
 import type { PushNotice } from "./push";
@@ -11,7 +12,8 @@ const OPEN = { ar: "افتح", en: "Open" } as const;
 
 /**
  * Copies of the Diwan notices in Telegram, for members who linked it with
- * Hudhud (lib/bot) and left notices on. Email stays the record: a failure
+ * Hudhud (lib/bot) and left notices on, through grammY's client, the one
+ * Hudhud uses (audit D5). Email stays the record: a failure
  * is logged and never fails the outbox row. A member who blocked the bot
  * (403) has their Telegram notices turned off.
  */
@@ -35,8 +37,11 @@ export const telegramToUser = async (
   if (!account?.notify) {
     return false;
   }
+  // The platform's fetch (as the rest of the API routes use), not grammY's
+  // Node shim.
+  const api = new Api(token, { fetch: globalThis.fetch as never });
   try {
-    await callTelegram(token, "sendMessage", {
+    await api.raw.sendMessage({
       chat_id: account.telegram_id,
       ...noticeMessage({
         body: notice.body,
@@ -45,19 +50,19 @@ export const telegramToUser = async (
       }),
     });
     const id = sticker
-      ? await stickerId(sticker, (name) =>
-          callTelegram<StickerSet>(token, "getStickerSet", { name })
+      ? await stickerId(
+          sticker,
+          (name) => api.raw.getStickerSet({ name }) as Promise<StickerSet>
         ).catch(() => null)
       : null;
     if (id) {
-      await callTelegram(token, "sendSticker", {
-        chat_id: account.telegram_id,
-        sticker: id,
-      }).catch(() => undefined);
+      await api.raw
+        .sendSticker({ chat_id: account.telegram_id, sticker: id })
+        .catch(() => undefined);
     }
     return true;
   } catch (error) {
-    if (error instanceof TelegramError && error.code === 403) {
+    if (error instanceof GrammyError && error.error_code === 403) {
       await admin
         .schema("core")
         .from("telegram_accounts")
@@ -65,7 +70,7 @@ export const telegramToUser = async (
         .eq("user_id", userId);
     } else {
       log.warn("Telegram notice failed", {
-        code: error instanceof TelegramError ? error.code : 0,
+        code: error instanceof GrammyError ? error.error_code : 0,
       });
     }
     return false;

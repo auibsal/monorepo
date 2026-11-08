@@ -58,6 +58,7 @@ export type Database = {
           exception_resolution_id: string | null;
           id: string;
           note: string | null;
+          recovery_by: string | null;
           role: string;
           scope_id: string | null;
           scope_type: string;
@@ -77,6 +78,7 @@ export type Database = {
           exception_resolution_id?: string | null;
           id?: string;
           note?: string | null;
+          recovery_by?: string | null;
           role: string;
           scope_id?: string | null;
           scope_type?: string;
@@ -96,6 +98,7 @@ export type Database = {
           exception_resolution_id?: string | null;
           id?: string;
           note?: string | null;
+          recovery_by?: string | null;
           role?: string;
           scope_id?: string | null;
           scope_type?: string;
@@ -296,8 +299,10 @@ export type Database = {
     Tables: {
       newsletter_subscribers: {
         Row: {
+          confirm_sends: number;
           confirm_sent_at: string | null;
           confirm_token: string | null;
+          confirm_window_at: string | null;
           confirmed_at: string | null;
           created_at: string;
           email: string;
@@ -308,8 +313,10 @@ export type Database = {
           unsubscribed_at: string | null;
         };
         Insert: {
+          confirm_sends?: number;
           confirm_sent_at?: string | null;
           confirm_token?: string | null;
+          confirm_window_at?: string | null;
           confirmed_at?: string | null;
           created_at?: string;
           email: string;
@@ -320,8 +327,10 @@ export type Database = {
           unsubscribed_at?: string | null;
         };
         Update: {
+          confirm_sends?: number;
           confirm_sent_at?: string | null;
           confirm_token?: string | null;
+          confirm_window_at?: string | null;
           confirmed_at?: string | null;
           created_at?: string;
           email?: string;
@@ -385,6 +394,7 @@ export type Database = {
       activity_log: {
         Row: {
           actor_id: string | null;
+          changed: string[] | null;
           id: number;
           new_row: Json | null;
           occurred_at: string;
@@ -396,6 +406,7 @@ export type Database = {
         };
         Insert: {
           actor_id?: string | null;
+          changed?: string[] | null;
           id?: never;
           new_row?: Json | null;
           occurred_at?: string;
@@ -407,6 +418,7 @@ export type Database = {
         };
         Update: {
           actor_id?: string | null;
+          changed?: string[] | null;
           id?: never;
           new_row?: Json | null;
           occurred_at?: string;
@@ -472,6 +484,27 @@ export type Database = {
           last?: number;
           prefix?: string;
           year?: number;
+        };
+        Relationships: [];
+      };
+      email_suppressions: {
+        Row: {
+          created_at: string;
+          email: string;
+          event_id: string | null;
+          reason: string;
+        };
+        Insert: {
+          created_at?: string;
+          email: string;
+          event_id?: string | null;
+          reason: string;
+        };
+        Update: {
+          created_at?: string;
+          email?: string;
+          event_id?: string | null;
+          reason?: string;
         };
         Relationships: [];
       };
@@ -1174,6 +1207,22 @@ export type Database = {
         Returns: undefined;
       };
       request_personal_email: { Args: { email: string }; Returns: undefined };
+      retention_due: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          kind: string;
+          ref: string;
+        }[];
+      };
+      retention_schedule: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          keeps: string;
+          rule: string;
+          runs: string;
+        }[];
+      };
+      run_retention: { Args: Record<PropertyKey, never>; Returns: Json };
       save_push_subscription: {
         Args: {
           auth: string;
@@ -1975,30 +2024,39 @@ export type Database = {
       };
       election_results: {
         Row: {
+          abstained: number;
           ballots_counted: number;
           computed_at: string;
+          decided_by_lot: boolean;
           election_id: string;
           position_id: string;
           ron_won: boolean;
           rounds: NonNullable<Json>;
+          runoff_candidate_ids: string[] | null;
           winner_candidate_id: string | null;
         };
         Insert: {
+          abstained?: number;
           ballots_counted: number;
           computed_at?: string;
+          decided_by_lot?: boolean;
           election_id: string;
           position_id: string;
           ron_won?: boolean;
           rounds: NonNullable<Json>;
+          runoff_candidate_ids?: string[] | null;
           winner_candidate_id?: string | null;
         };
         Update: {
+          abstained?: number;
           ballots_counted?: number;
           computed_at?: string;
+          decided_by_lot?: boolean;
           election_id?: string;
           position_id?: string;
           ron_won?: boolean;
           rounds?: NonNullable<Json>;
+          runoff_candidate_ids?: string[] | null;
           winner_candidate_id?: string | null;
         };
         Relationships: [
@@ -2038,6 +2096,7 @@ export type Database = {
           notice_given_at: string | null;
           question_ar: string | null;
           question_en: string | null;
+          runoff_of: string | null;
           status: string;
           title_ar: string;
           title_en: string;
@@ -2060,6 +2119,7 @@ export type Database = {
           notice_given_at?: string | null;
           question_ar?: string | null;
           question_en?: string | null;
+          runoff_of?: string | null;
           status?: string;
           title_ar: string;
           title_en: string;
@@ -2082,6 +2142,7 @@ export type Database = {
           notice_given_at?: string | null;
           question_ar?: string | null;
           question_en?: string | null;
+          runoff_of?: string | null;
           status?: string;
           title_ar?: string;
           title_en?: string;
@@ -2092,7 +2153,69 @@ export type Database = {
           voting_point_at?: string | null;
           voting_point_en?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "elections_runoff_of_fkey";
+            columns: ["runoff_of"];
+            isOneToOne: false;
+            referencedRelation: "elections";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      form_links: {
+        Row: {
+          created_at: string;
+          created_by: string | null;
+          expires_at: string;
+          form_key: string;
+          id: string;
+          note: string | null;
+          sent_to: string;
+          submission_id: string | null;
+          token_hash: string;
+          used_at: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          created_by?: string | null;
+          expires_at?: string;
+          form_key: string;
+          id?: string;
+          note?: string | null;
+          sent_to: string;
+          submission_id?: string | null;
+          token_hash: string;
+          used_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          expires_at?: string;
+          form_key?: string;
+          id?: string;
+          note?: string | null;
+          sent_to?: string;
+          submission_id?: string | null;
+          token_hash?: string;
+          used_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "form_links_form_key_fkey";
+            columns: ["form_key"];
+            isOneToOne: false;
+            referencedRelation: "form_types";
+            referencedColumns: ["key"];
+          },
+          {
+            foreignKeyName: "form_links_submission_id_fkey";
+            columns: ["submission_id"];
+            isOneToOne: false;
+            referencedRelation: "form_submissions";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       form_submissions: {
         Row: {
@@ -2100,6 +2223,8 @@ export type Database = {
           closed_at: string | null;
           created_at: string;
           data: NonNullable<Json>;
+          document_sha256: string | null;
+          esign_agreed: boolean;
           form_key: string;
           form_version: number;
           handled_by: string | null;
@@ -2111,6 +2236,7 @@ export type Database = {
           second_signer_name: string | null;
           signed_at: string | null;
           signer_contact: string | null;
+          signer_ip: string | null;
           signer_name: string | null;
           status: string;
           subject_id: string | null;
@@ -2124,6 +2250,8 @@ export type Database = {
           closed_at?: string | null;
           created_at?: string;
           data?: NonNullable<Json>;
+          document_sha256?: string | null;
+          esign_agreed?: boolean;
           form_key: string;
           form_version?: number;
           handled_by?: string | null;
@@ -2135,6 +2263,7 @@ export type Database = {
           second_signer_name?: string | null;
           signed_at?: string | null;
           signer_contact?: string | null;
+          signer_ip?: string | null;
           signer_name?: string | null;
           status?: string;
           subject_id?: string | null;
@@ -2148,6 +2277,8 @@ export type Database = {
           closed_at?: string | null;
           created_at?: string;
           data?: NonNullable<Json>;
+          document_sha256?: string | null;
+          esign_agreed?: boolean;
           form_key?: string;
           form_version?: number;
           handled_by?: string | null;
@@ -2159,6 +2290,7 @@ export type Database = {
           second_signer_name?: string | null;
           signed_at?: string | null;
           signer_contact?: string | null;
+          signer_ip?: string | null;
           signer_name?: string | null;
           status?: string;
           subject_id?: string | null;
@@ -2182,6 +2314,7 @@ export type Database = {
           acknowledge_days: number | null;
           anonymous_ok: boolean;
           answer_days: number | null;
+          by_link: boolean;
           code: string;
           filled: string;
           handle_permission: string;
@@ -2201,6 +2334,7 @@ export type Database = {
           acknowledge_days?: number | null;
           anonymous_ok?: boolean;
           answer_days?: number | null;
+          by_link?: boolean;
           code: string;
           filled?: string;
           handle_permission: string;
@@ -2220,6 +2354,7 @@ export type Database = {
           acknowledge_days?: number | null;
           anonymous_ok?: boolean;
           answer_days?: number | null;
+          by_link?: boolean;
           code?: string;
           filled?: string;
           handle_permission?: string;
@@ -2461,6 +2596,7 @@ export type Database = {
           expires_at: string;
           id: string;
           kind: string;
+          lang: string | null;
           partner_id: string | null;
           resolution_id: string | null;
           revoked_at: string | null;
@@ -2476,6 +2612,7 @@ export type Database = {
           expires_at?: string;
           id?: string;
           kind: string;
+          lang?: string | null;
           partner_id?: string | null;
           resolution_id?: string | null;
           revoked_at?: string | null;
@@ -2491,6 +2628,7 @@ export type Database = {
           expires_at?: string;
           id?: string;
           kind?: string;
+          lang?: string | null;
           partner_id?: string | null;
           resolution_id?: string | null;
           revoked_at?: string | null;
@@ -2876,6 +3014,10 @@ export type Database = {
         Args: { partner: string; reason?: string };
         Returns: undefined;
       };
+      form_link_open: {
+        Args: { form_key: string; token: string };
+        Returns: boolean;
+      };
       form_queue: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -2892,6 +3034,10 @@ export type Database = {
       handle_form: {
         Args: { office?: Json; status: string; submission_id: string };
         Returns: undefined;
+      };
+      issue_form_link: {
+        Args: { form_key: string; note?: string; sent_to: string };
+        Returns: string;
       };
       my_partner_application: {
         Args: Record<PropertyKey, never>;
@@ -3019,6 +3165,14 @@ export type Database = {
         Args: { candidate_id: string; eligible: boolean };
         Returns: undefined;
       };
+      record_lot: {
+        Args: {
+          candidate_id: string;
+          election_id: string;
+          position_id: string;
+        };
+        Returns: undefined;
+      };
       record_partner_vote: {
         Args: { agreement_id: string; resolution: string };
         Returns: undefined;
@@ -3039,13 +3193,35 @@ export type Database = {
         Args: {
           anonymous?: boolean;
           data: Json;
+          esign_agreed?: boolean;
           form_key: string;
+          link_token?: string;
           routing?: string;
           signer_contact?: string;
+          signer_ip?: string;
           signer_name: string;
           subject_id?: string;
         };
         Returns: string;
+      };
+      start_runoff: {
+        Args: {
+          closes_at: string;
+          election_id: string;
+          opens_at: string;
+          position_id: string;
+        };
+        Returns: string;
+      };
+      student_life_list: {
+        Args: { election_id?: string };
+        Returns: {
+          email: string;
+          full_name_ar: string;
+          full_name_en: string;
+          seat_ar: string;
+          seat_en: string;
+        }[];
       };
       turnout: {
         Args: { election_id: string };

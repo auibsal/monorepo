@@ -39,7 +39,7 @@ const migrations = join(
   "supabase",
   "migrations"
 );
-// Flexible types (owner, Nov 7, 2026), and the publish rule from before.
+// Flexible types (decisions.md), and the publish rule from before.
 const sectionsSql = readFileSync(
   join(migrations, "20261107000600_qirtas_and_the_prize.sql"),
   "utf8"
@@ -67,7 +67,7 @@ describe("six sections, flexible types", () => {
       "games",
     ]);
     // Each section ends with its "other" type; Games has its four daily
-    // kinds (owner, Nov 7, 2026).
+    // kinds (decisions.md).
     for (const desk of desks) {
       const types = deskCategories(desk);
       expect(types.at(-1), desk).toBe(

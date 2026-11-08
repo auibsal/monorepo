@@ -59,3 +59,29 @@ test("writes AUIB's whole days as dates, the end exclusive", () => {
   expect(ics).toContain("DTEND;VALUE=DATE:20261111\r\n");
   expect(ics).not.toContain("DTSTART:20261101");
 });
+
+test("a canceled event stays in the feed, marked, with its change dated", () => {
+  const body = renderCalendar("SAL", [
+    {
+      canceled: true,
+      modified: "2026-11-07T10:00:00Z",
+      start: "2026-11-18T11:30:00Z",
+      title: "Reading",
+      uid: "e1@auibsal.org",
+    },
+    {
+      modified: "2026-11-07T10:00:05Z",
+      start: "2026-11-19T11:30:00Z",
+      title: "Workshop",
+      uid: "e2@auibsal.org",
+    },
+  ]);
+  expect(body).toContain("STATUS:CANCELLED");
+  expect(body).toContain("STATUS:CONFIRMED");
+  expect(body).toContain("LAST-MODIFIED:20261107T100000Z");
+  const sequences = [...body.matchAll(/SEQUENCE:(\d+)/g)].map((m) =>
+    Number(m[1])
+  );
+  expect(sequences).toHaveLength(2);
+  expect(sequences[1]).toBe(Number(sequences[0]) + 5);
+});

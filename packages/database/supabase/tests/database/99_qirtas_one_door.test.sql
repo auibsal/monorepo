@@ -1,4 +1,4 @@
--- Qirtas, one door, and one name per language (owner, Oct 31, 2026):
+-- Qirtas, one door, and one name per language (decisions.md):
 -- everything members send is read blind through a call (the standing call
 -- when none is named), bylines and judges are people from the register
 -- (under their name or a pen name), and a member's name is one name in
@@ -88,7 +88,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)

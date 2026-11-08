@@ -84,7 +84,7 @@ export const DetailsTab = ({ production }: { production: ProductionRow }) => {
     next !== null &&
     productions.needsRights(next) &&
     production.rights_status !== "cleared";
-  const finished = stage === "closed" || stage === "cancelled";
+  const finished = stage === "closed" || stage === "canceled";
 
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
@@ -110,7 +110,7 @@ export const DetailsTab = ({ production }: { production: ProductionRow }) => {
               disabled={save.isPending}
               onConfirm={() =>
                 save.mutate({
-                  changes: { stage: "cancelled" },
+                  changes: { stage: "canceled" },
                   id: production.id,
                 })
               }

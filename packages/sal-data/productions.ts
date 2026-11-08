@@ -21,7 +21,7 @@ export const productionStages = [
   "performances",
   "closed",
 ] as const;
-export type ProductionStage = (typeof productionStages)[number] | "cancelled";
+export type ProductionStage = (typeof productionStages)[number] | "canceled";
 
 export const scriptOrigins = ["original", "public_domain", "licensed"] as const;
 export type ScriptOrigin = (typeof scriptOrigins)[number];
@@ -31,7 +31,7 @@ export type Department = (typeof departments)[number];
 
 export const auditionStatuses = [
   "signed_up",
-  "cancelled",
+  "canceled",
   "called_back",
   "cast",
   "not_cast",

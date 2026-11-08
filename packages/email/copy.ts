@@ -560,7 +560,7 @@ const invitationLines = (
 };
 
 /**
- * A partner's invitation (owner, Oct 31, 2026): to join its team on the
+ * A partner's invitation (decisions.md): to join its team on the
  * platform, or to be its guest. The link is the invitation.
  */
 export const partnerInvitation = (
@@ -619,7 +619,7 @@ const PAPER_TITLES = {
 } as const;
 
 /**
- * The Sunday Paper (owner, Oct 29, 2026): monthly, on the first Sunday, to
+ * The Sunday Paper (decisions.md): monthly, on the first Sunday, to
  * members and to the public list alike: the month's pieces, What's on and
  * the open places on Get involved, each a list of links. The stop link is
  * in the footer and the List-Unsubscribe header.
@@ -768,17 +768,17 @@ export const pushTest = (lang: Lang) =>
         title: "Notifications are on",
       };
 
-// ── Journeys added in the email audit (owner, Nov 4, 2026) ────────────────
+// ── Journeys added in the email audit (decisions.md) ────────────────
 
 /** An event that is canceled, or moved to another day, time or place. */
 export const eventChanged = (
   lang: Lang,
   e: EventInfo,
-  change: "cancelled" | "moved",
+  change: "canceled" | "moved",
   app: string
 ) =>
   build(lang, (l) =>
-    change === "cancelled"
+    change === "canceled"
       ? {
           action: account(app, l, MY_CALENDAR),
           heading:
@@ -1045,7 +1045,79 @@ export const serviceLetterWritten = (
     ],
   }));
 
-/** The register's numbers (SAL-EXB-01; owner, Nov 7, 2026). */
+/**
+ * The signer's copy of a form signed on the site (decisions §11, E-SIGN and
+ * UETA): what was signed, by whom, when, and its fingerprint.
+ */
+export const formSignedCopy = (
+  lang: Lang,
+  form: {
+    answers: { label: string; value: string }[];
+    code: string;
+    fingerprint: string;
+    signedAt: string;
+    signer: string;
+    title: string;
+    url: string | null;
+  }
+) =>
+  build(lang, (l) => ({
+    ...(form.url
+      ? {
+          action: {
+            href: form.url,
+            label: l === "ar" ? "افتح النسخة الموقّعة" : "Open the signed copy",
+          },
+        }
+      : {}),
+    heading:
+      l === "ar"
+        ? `نسختك الموقّعة: ${form.title}`
+        : `Your signed copy: ${form.title}`,
+    lists: form.answers.length
+      ? [
+          {
+            items: form.answers.map((a) => ({ meta: a.value, title: a.label })),
+            title: l === "ar" ? "ما وقّعته" : "What you signed",
+          },
+        ]
+      : [],
+    paragraphs: [
+      l === "ar"
+        ? `وقّعتَ ${form.title} (${form.code}) باسم ${form.signer} في ${when(form.signedAt, l)}. يحتفظ الموقع بالنسخة الموقّعة، وهذه نسختك.`
+        : `You signed ${form.title} (${form.code}) as ${form.signer} on ${when(form.signedAt, l)}. The site keeps the signed copy; this one is yours.`,
+      l === "ar"
+        ? `البصمة (SHA-256): ${form.fingerprint}`
+        : `Fingerprint (SHA-256): ${form.fingerprint}`,
+    ],
+  }));
+
+/**
+ * A single-use link to sign a form without an account (a parent's consent
+ * for Qalam), sent to the teacher, who passes it on: the Society reaches
+ * parents only through the teacher.
+ */
+export const formLink = (
+  lang: Lang,
+  link: { code: string; title: string; url: string }
+) =>
+  build(lang, (l) => ({
+    action: {
+      href: link.url,
+      label: l === "ar" ? "افتح النموذج" : "Open the form",
+    },
+    heading:
+      l === "ar"
+        ? `رابط للتوقيع: ${link.title}`
+        : `A link to sign: ${link.title}`,
+    paragraphs: [
+      l === "ar"
+        ? `أرسِل هذا الرابط إلى ولي الأمر ليوقّع ${link.title} (${link.code}). يعمل الرابط مرة واحدة خلال 14 يومًا، ولا يحتاج إلى حساب.`
+        : `Please pass this link to the parent or guardian to sign ${link.title} (${link.code}). It works once, within 14 days, and needs no account.`,
+    ],
+  }));
+
+/** The register's numbers (SAL-EXB-01; decisions.md). */
 const REQUEST_NAMES: Record<string, Record<Lang, string>> = {
   f10: {
     ar: "مقترحك لاجتماع الأعضاء",
@@ -1629,7 +1701,7 @@ export const invitationBroadcast = (
 };
 
 /**
- * The one-time invitation to join (owner, Nov 7, 2026): a letter from the
+ * The one-time invitation to join (decisions.md): a letter from the
  * President, signed with their signature on the platform, made as a draft
  * Broadcast on their go and sent from Resend, from hello@auibsal.org, with
  * a stop link. A Typewriter

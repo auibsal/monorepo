@@ -82,8 +82,7 @@ export const myCard = async (client: Client) =>
   unwrap(await membership(client).rpc("my_card"))?.[0] ?? null;
 
 /**
- * The one kind of membership the signed-in account holds (owner, Oct 31,
- * 2026): a member (an AUIB address), a guest, or a partner's; null when it
+ * The one kind of membership the signed-in account holds (decisions.md): a member (an AUIB address), a guest, or a partner's; null when it
  * holds none yet. Staff: a member holding a Society role.
  */
 export type MembershipKind = "member" | "guest" | "partner";
@@ -316,7 +315,7 @@ export const memberInsights = async (client: Client) =>
 
 // ── Admin (members.manage / members.verify / roles.assign) ──────────────────
 
-/** Member, Associate Member, Honorary Member (owner, Nov 7, 2026). */
+/** Member, Associate Member, Honorary Member (decisions.md). */
 export const tiers = ["member", "associate", "honorary"] as const;
 export type Tier = (typeof tiers)[number];
 

@@ -600,10 +600,10 @@ export const NewReelPage = () => {
 
 // ── Shifts ────────────────────────────────────────────────────────
 
-type SignupStatus = "signed_up" | "confirmed" | "swap_requested" | "cancelled";
+type SignupStatus = "signed_up" | "confirmed" | "swap_requested" | "canceled";
 
 /**
- * An event's volunteer shifts (owner, Nov 7, 2026: shifts live only on an
+ * An event's volunteer shifts (decisions.md: shifts live only on an
  * event and log no hours; there are no rotas).
  */
 export const Shifts = ({ eventId }: { eventId: string }) => {
@@ -678,7 +678,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
       <ul className="grid gap-3">
         {data.data?.shifts.map((shift) => {
           const signups = (data.data?.signups ?? []).filter(
-            (s) => s.shift_id === shift.id && s.status !== "cancelled"
+            (s) => s.shift_id === shift.id && s.status !== "canceled"
           );
           return (
             <li className="grid gap-2 border-line border-b pb-3" key={shift.id}>
@@ -727,7 +727,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
                       <Button
                         disabled={setStatus.isPending}
                         onClick={() =>
-                          setStatus.mutate({ ...s, status: "cancelled" })
+                          setStatus.mutate({ ...s, status: "canceled" })
                         }
                         size="sm"
                         variant="ghost"
@@ -1069,7 +1069,7 @@ const Removals = () => {
 export const ProgramPitches = () => {
   const t = useTranslations("diwan.admin.programmes");
   const grants = useGrants();
-  // Only those who answer pitches see them (the President, owner, Nov 5, 2026).
+  // Only those who answer pitches see them (the President, decisions.md).
   if (!hasPermissionAnywhere(grants.data, "programs.manage")) {
     return null;
   }

@@ -63,7 +63,7 @@ const atEnd = (list: HTMLElement) =>
   Math.abs(list.scrollLeft) + list.clientWidth >= list.scrollWidth - 2;
 
 /**
- * A shelf (owner, Nov 4, 2026; design review A1): one row of items that
+ * A shelf (decisions.md; design review A1): one row of items that
  * scrolls sideways and snaps to each, swiped on a phone and moved with the
  * arrow keys, Home and End. It is a plain list for screen readers. The item
  * at the start carries an ink hairline above it, the others the usual rule.

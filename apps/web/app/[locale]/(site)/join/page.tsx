@@ -92,7 +92,7 @@ const JoinPage = async ({ params }: LocaleParams) => {
             </tbody>
           </table>
         </div>
-        {/* Not at AUIB (owner, Oct 31, 2026): a guest's membership, by
+        {/* Not at AUIB (decisions.md): a guest's membership, by
             invitation, or a partner's, by applying. */}
         <p className="type-body max-w-[60ch] text-text-secondary">
           {t("others")}{" "}
@@ -111,7 +111,7 @@ const JoinPage = async ({ params }: LocaleParams) => {
 
       <Section id="first-month" title={t("firstMonthTitle")}>
         <p className="type-lede max-w-[60ch]">{t("firstMonth")}</p>
-        {/* The Typewriter Tour belongs to membership (owner, Nov 5, 2026). */}
+        {/* The Typewriter Tour belongs to membership (decisions.md). */}
         <p className="type-body">
           <Link className="link" href="/join/typewriter-tour">
             {t("tourLine")}

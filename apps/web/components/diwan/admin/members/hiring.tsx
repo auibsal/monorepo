@@ -192,7 +192,7 @@ const useHiredRoles = () => {
 };
 
 /**
- * Posting a role (owner, Oct 31, 2026): the role is chosen from the
+ * Posting a role (decisions.md): the role is chosen from the
  * Society's roles, never typed; it decides who picks the person, and
  * whoever is onboarded holds it. Membership posts any role; owners post
  * their own. A program role names its program and may carry its own title

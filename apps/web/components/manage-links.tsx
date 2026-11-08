@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { readWays, type Ways } from "@/lib/staff";
 
 /**
- * From a public page to where the same thing is kept (owner, Oct 31, 2026:
+ * From a public page to where the same thing is kept (decisions.md:
  * every public page links to the Diwan, the partner's dashboard or
  * Membership, for whoever has them): officers see "Manage in the Diwan", a
  * partner's team their dashboard, a signed-in reader their own page.

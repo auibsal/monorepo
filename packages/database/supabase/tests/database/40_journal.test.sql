@@ -85,7 +85,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -159,7 +159,7 @@ select is(
   (select count(*)::integer from unnest(enum_range(null::journal.category)) c
    where journal.is_current_category(c)),
   36,
-  'Thirty-six types: each section''s, with its other, and four daily games (owner, Nov 7, 2026)'
+  'Thirty-six types: each section''s, with its other, and four daily games (decisions.md)'
 );
 
 select lives_ok($$ select pg_temp.submit(1, 'poetry') $$, 'Poetry is accepted');

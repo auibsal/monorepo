@@ -145,7 +145,7 @@ One project from this repository:
 
 Every push to `main` builds it; only a commit whose subject carries the
 skip marker builds nothing (`scripts/vercel-ignore.mjs`, the Ignored Build
-Step). The daily keep-alive cron is in `apps/web/vercel.json`.
+Step). The daily retention cron (`/api/cron/retention`) is in `apps/web/vercel.json`.
 
 Environment variables are listed in `apps/web/.env.example`. The server-only
 ones (`SUPABASE_SECRET_KEY`, `RESEND_TOKEN`, `CRON_SECRET`,

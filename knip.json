@@ -2,8 +2,6 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "include": ["files", "dependencies", "unlisted"],
   "ignoreDependencies": [
-    "import-in-the-middle",
-    "require-in-the-middle",
     "tailwindcss",
     "@tailwindcss/postcss",
     "postcss-load-config"

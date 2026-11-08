@@ -1,0 +1,7 @@
+# Every change is reviewed by the platform's maintainer (the Site, part of
+# Media; decisions.md "Claude chats"). Add an officer's GitHub login beside
+# a path when they keep it.
+*                                   @shaheenfarjo
+/packages/database/supabase/        @shaheenfarjo
+/.github/                           @shaheenfarjo
+/claude/decisions.md                @shaheenfarjo

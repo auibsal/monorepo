@@ -8,7 +8,7 @@ export const generateMetadata = titleFrom((t) =>
 );
 
 /**
- * The Typewriter Tour in the Diwan (owner, Nov 5, 2026): it belongs to
+ * The Typewriter Tour in the Diwan (decisions.md): it belongs to
  * membership, so its Six Words are kept under People by the General
  * Secretary and the Tour Lead (`tour.run`), with the spring 2026 import
  * and the invitations the President sends.

@@ -118,7 +118,7 @@ export const EventsList = () => {
       key: "rsvps",
     },
     {
-      cell: (e) => ts(e.status as "draft" | "published" | "cancelled"),
+      cell: (e) => ts(e.status as "draft" | "published" | "canceled"),
       header: t("columns.status"),
       key: "status",
     },

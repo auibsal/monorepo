@@ -305,7 +305,7 @@ const Handle = ({ submission }: { submission: Submission }) => {
 };
 
 /**
- * One request, on its own page under its queue (owner, Nov 4, 2026: every
+ * One request, on its own page under its queue (decisions.md: every
  * record opens its own page): what was sent, and the office's part.
  */
 export const RequestPage = ({

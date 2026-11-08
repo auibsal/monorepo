@@ -84,7 +84,7 @@ language sql
 as $$
   with m as (
     insert into governance.minutes (title_en, text_en, meeting_on, body, status, adopted_on)
-    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'adopted', current_date)
+    values ('Council meeting', '<p>Minutes.</p>', current_date - 1, 'council', 'approved', current_date)
     returning id
   )
   insert into governance.resolutions (id, code, title_en, text_en, body, status, adopted_on, minutes_id)
@@ -105,7 +105,7 @@ select is(
     select count(*)::integer as n from unnest(enum_range(null::journal.category)) c
     where journal.is_current_category(c) group by journal.desk_of(c)) t),
   array[4, 5, 6, 7, 7, 7],
-  'Each section''s types with its "other", and Games its four daily kinds (owner, Nov 7, 2026)'
+  'Each section''s types with its "other", and Games its four daily kinds (decisions.md)'
 );
 select is(journal.desk_of('review'), 'voices'::journal.desk, 'The review is in Voices now');
 select is(journal.desk_of('event_coverage'), 'news'::journal.desk, 'Event coverage is News');

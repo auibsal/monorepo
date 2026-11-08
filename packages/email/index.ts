@@ -2,7 +2,13 @@ import type { ReactElement } from "react";
 import { Resend } from "resend";
 import { keys } from "./keys";
 
-const { RESEND_FROM, RESEND_TOKEN } = keys();
+const { RESEND_TOKEN } = keys();
+
+/**
+ * The one sender, in code (audit D1): every email and Broadcast comes from
+ * the Society by its full name, at the address people reply to.
+ */
+export const SENDER = "AUIB Society of Arts and Letters <hello@auibsal.org>";
 
 export const resend = RESEND_TOKEN ? new Resend(RESEND_TOKEN) : undefined;
 
@@ -36,7 +42,7 @@ const QUOTA_ERRORS = new Set([
   "monthly_quota_exceeded",
 ]);
 
-/** Sends a transactional email from `RESEND_FROM`. Throws on failure. */
+/** Sends a transactional email from `SENDER`. Throws on failure. */
 export const sendEmail = async ({
   to,
   subject,
@@ -46,15 +52,13 @@ export const sendEmail = async ({
   tags,
   ...content
 }: SendEmailOptions) => {
-  if (!(resend && RESEND_FROM)) {
-    throw new Error(
-      "Email is not configured: set RESEND_TOKEN and RESEND_FROM."
-    );
+  if (!resend) {
+    throw new Error("Email is not configured: set RESEND_TOKEN.");
   }
 
   const { data, error } = await resend.emails.send(
     {
-      from: RESEND_FROM,
+      from: SENDER,
       headers,
       replyTo,
       subject,

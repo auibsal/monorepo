@@ -27,7 +27,7 @@ const SIGN_OFF: Record<Lang, string> = {
 };
 
 /**
- * One letter template for every letter (owner, Nov 7, 2026; F-03, F-30,
+ * One letter template for every letter (decisions.md; F-03, F-30,
  * F-32, F-33, F-34, F-42): the officer picks the letter, writes it from the
  * register's template in the recipient's language, and prints it or saves
  * it as PDF from the browser. Nothing is stored here: the record stays in

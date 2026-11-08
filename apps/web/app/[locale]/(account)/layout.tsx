@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * The members' pages on the public site (owner, Oct 24, 2026): signing in
+ * The members' pages on the public site (decisions.md): signing in
  * and up, the account, and what members do (booking, shifts, writing for
  * Qirtas, the Society). The site's own header and footer; client-rendered,
  * so every read and write goes to Supabase with the member's token (Row
@@ -50,7 +50,7 @@ const AccountLayout = async ({ children, params }: AccountLayoutProperties) => {
       <AppProviders>
         <div className="flex min-h-svh flex-col">
           <AccountFrame>{children}</AccountFrame>
-          <Footer consent={false} />
+          <Footer />
         </div>
       </AppProviders>
     </NextIntlClientProvider>

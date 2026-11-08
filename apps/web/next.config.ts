@@ -62,11 +62,31 @@ const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 // The design system (packages/brand, `bun run build:site`) is built into
 // apps/web/design and shown inside the Diwan at /diwan/design, which frames
 // it. /_design is a rewrite (not a redirect) to the API route that serves
-// those files to staff only (owner, Nov 7, 2026); only the site may frame
+// those files to staff only (decisions.md); only the site may frame
 // it, and search engines never index it.
 let nextConfig: NextConfig = {
   ...config,
   headers: async () => [
+    // The API routes answer with JSON, CSV or a calendar (audit E5): the
+    // transport and sniffing headers the pages get, and never framed or
+    // indexed. The design system's files keep their own rule below.
+    {
+      headers: [
+        {
+          key: "Strict-Transport-Security",
+          value: "max-age=63072000; includeSubDomains; preload",
+        },
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+        { key: "X-Robots-Tag", value: "noindex, nofollow" },
+      ],
+      source: "/api/:path*",
+    },
+    {
+      headers: [{ key: "X-Frame-Options", value: "DENY" }],
+      source: "/api/:path((?!design/).*)",
+    },
     {
       headers: [
         { key: "X-Robots-Tag", value: "noindex, nofollow" },

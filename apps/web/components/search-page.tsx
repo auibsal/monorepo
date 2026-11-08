@@ -21,7 +21,7 @@ export interface SearchProps {
   readonly searchParams: Promise<{ q?: string }>;
 }
 
-/** The order results are grouped in (owner, Oct 31, 2026). */
+/** The order results are grouped in (decisions.md). */
 const KINDS: readonly Kind[] = ["piece", "event", "production", "document"];
 
 export const generateMetadata = async ({

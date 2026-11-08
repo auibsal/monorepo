@@ -84,7 +84,7 @@ const publishEnglish = async (
     ]);
     return;
   }
-  // No series on the site (owner, Nov 5, 2026): a row keeps its state,
+  // No series on the site (decisions.md): a row keeps its state,
   // and a new one is not published; the Company's row keeps its page.
   const values = {
     name_en: v.name,

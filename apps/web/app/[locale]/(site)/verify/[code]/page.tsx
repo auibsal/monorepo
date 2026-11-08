@@ -32,7 +32,7 @@ export const generateMetadata = async ({
 };
 
 /**
- * One check for codes (owner, Nov 7, 2026): a certificate (issued or
+ * One check for codes (decisions.md): a certificate (issued or
  * revoked), what was awarded and when; a service letter (F-05), who it is
  * for, for what and when; a membership card's code goes on to the card's
  * own check.

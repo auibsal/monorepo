@@ -74,7 +74,7 @@ const useMyDesks = () => {
 // ── A new staff piece ───────────────────────────────────────────────────────
 
 /**
- * A staff piece written from the start on one page (owner, Oct 31, 2026:
+ * A staff piece written from the start on one page (decisions.md:
  * never a first step for the name and a second for the text): the same
  * form as an existing piece, with its section, created when saved.
  */

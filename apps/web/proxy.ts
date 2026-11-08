@@ -11,7 +11,7 @@ export const config = {
   // API routes, the design system's build (/_design, framed by the Diwan),
   // the service worker, the manifest, the feeds or static files.
   matcher: [
-    "/((?!api/|_design/|_next/static|_next/image|ingest|favicon.ico|robots.txt|calendar.ics|sw.js|manifest.webmanifest|icons/|\\.well-known|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
+    "/((?!api/|_design/|_next/static|_next/image|favicon.ico|robots.txt|calendar.ics|sw.js|manifest.webmanifest|icons/|\\.well-known|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
   ],
 };
 

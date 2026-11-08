@@ -1,5 +1,5 @@
-import { AnalyticsProvider } from "@repo/analytics/provider";
 import { routing } from "@repo/internationalization/routing";
+import { Analytics } from "@vercel/analytics/next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import {
@@ -8,11 +8,9 @@ import {
   setRequestLocale,
 } from "next-intl/server";
 import type { ReactNode } from "react";
-import { ConsentBanner } from "@/components/consent-banner";
 import { ConsoleNote } from "@/components/console-note";
 import { Footer } from "@/components/footer";
 import { SiteHeader } from "@/components/site-header";
-import { askedConsent } from "@/lib/consent";
 import { JsonLd, organization } from "@/lib/json-ld";
 
 interface SiteLayoutProperties {
@@ -22,7 +20,10 @@ interface SiteLayoutProperties {
   }>;
 }
 
-/** The public site: header, footer, analytics and the consent card. */
+/**
+ * The public site: header, footer and cookieless analytics (Vercel Web
+ * Analytics; decisions, Nov 7: no Google tags, no cookie banner).
+ */
 const SiteLayout = async ({ children, params }: SiteLayoutProperties) => {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
@@ -32,7 +33,6 @@ const SiteLayout = async ({ children, params }: SiteLayoutProperties) => {
   const t = await getTranslations({ locale, namespace: "common" });
   // Client components only need the shared and public-site texts.
   const { common, web } = await getMessages();
-  const consentPurposes = askedConsent();
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -44,17 +44,13 @@ const SiteLayout = async ({ children, params }: SiteLayoutProperties) => {
       </a>
       <JsonLd data={organization()} />
       <NextIntlClientProvider messages={{ common, web }}>
-        <AnalyticsProvider>
-          <SiteHeader />
-          <main className="flex-1" id="main">
-            {children}
-          </main>
-          <Footer />
-          <ConsoleNote />
-          {consentPurposes.analytics ? (
-            <ConsentBanner purposes={consentPurposes} />
-          ) : null}
-        </AnalyticsProvider>
+        <SiteHeader />
+        <main className="flex-1" id="main">
+          {children}
+        </main>
+        <Footer />
+        <ConsoleNote />
+        <Analytics />
       </NextIntlClientProvider>
     </div>
   );

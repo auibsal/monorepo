@@ -25,7 +25,7 @@ interface PartsEvent {
 }
 
 /**
- * The standard parts of every event (owner, Nov 7, 2026: one standard page,
+ * The standard parts of every event (decisions.md: one standard page,
  * standard parts only, no add-ons): off campus with Student Life's approval,
  * a partner and its checklist, needs, volunteer shifts and links; a
  * meeting's minutes for those who keep them. Booking and check-in are on

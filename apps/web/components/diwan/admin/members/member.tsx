@@ -67,8 +67,7 @@ const useScopeOptions = () => {
             .from("partners")
             .select("id, name_en, name_ar")
             .order("name_en"),
-          // An event lead may hold the role for one event (owner, Nov 5,
-          // 2026): the events from a month ago on.
+          // An event lead may hold the role for one event (decisions.md): the events from a month ago on.
           supabase
             .schema("events")
             .from("events")
@@ -265,7 +264,7 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
   const state = (a: Assignment) => {
     if (access.isActiveAssignment(a, now)) {
       // New team members and appointees serve their first term on
-      // probation, then are confirmed (owner, Nov 7, 2026).
+      // probation, then are confirmed (decisions.md).
       return a.confirmed_at ? t("active") : t("probation");
     }
     return new Date(a.starts_at) > now ? t("upcoming") : t("ended");
@@ -303,6 +302,22 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
       key: "ends",
     },
     { cell: state, header: "", key: "state" },
+    {
+      // Student Life's GPA answer for a Council seat; not eligible gives
+      // one term to recover (Bylaws 4.6).
+      cell: (a) => {
+        if (a.student_life_answer === "not_eligible" && a.recovery_by) {
+          return t("recoveryBy", {
+            date: formatLongDate(a.recovery_by, locale, true),
+          });
+        }
+        return a.student_life_answer === "eligible"
+          ? t("studentLifeIsEligible")
+          : "";
+      },
+      header: t("studentLife"),
+      key: "student_life",
+    },
     {
       cell: (a) =>
         canAssign && access.isActiveAssignment(a, now) && !a.confirmed_at ? (
@@ -384,8 +399,7 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
 };
 
 /**
- * A role assigned on its own page under the member's page (owner, Nov 4,
- * 2026; added in place since §26); confirmed before it counts.
+ * A role assigned on its own page under the member's page (decisions.md; added in place since §26); confirmed before it counts.
  */
 const AssignRole = ({
   name,

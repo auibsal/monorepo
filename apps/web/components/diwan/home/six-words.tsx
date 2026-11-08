@@ -9,7 +9,7 @@ import { PagePhoto } from "../tour-station";
 import { Section } from "./section";
 
 /**
- * The member's pages from the Typewriter Tour (owner, Nov 7, 2026): typed on
+ * The member's pages from the Typewriter Tour (decisions.md): typed on
  * the Tour, never on the site, and added to their account when they join
  * with the email they gave. Each stays private until they choose whether it
  * also appears on their profile or on the Tour's page: that choice is the

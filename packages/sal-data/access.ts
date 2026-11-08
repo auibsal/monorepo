@@ -78,8 +78,7 @@ export const endRoleAssignment = async (client: Client, assignmentId: string) =>
   );
 
 /**
- * Confirms someone after their first term on probation (owner, Nov 7,
- * 2026); a Council seat needs Student Life's "eligible" first.
+ * Confirms someone after their first term on probation (decisions.md); a Council seat needs Student Life's "eligible" first.
  */
 export const confirmAssignment = async (client: Client, assignmentId: string) =>
   unwrap(
@@ -116,7 +115,7 @@ export const assignmentsFor = async (client: Client, userId: string) =>
       .schema("access")
       .from("role_assignments")
       .select(
-        "id, role, scope_type, scope_id, title_en, title_ar, starts_at, ends_at, note, created_at, confirmed_at, student_life_answer"
+        "id, role, scope_type, scope_id, title_en, title_ar, starts_at, ends_at, note, created_at, confirmed_at, student_life_answer, recovery_by"
       )
       .eq("user_id", userId)
       .order("starts_at", { ascending: false })

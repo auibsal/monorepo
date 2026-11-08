@@ -95,9 +95,24 @@ const fakeAdmin = (rows: Row[]) => {
       },
     },
     schema: () => ({
-      from: (table: string) => (table === "outbox" ? query() : profileQuery()),
+      from: (table: string) => {
+        if (table === "outbox") {
+          return query();
+        }
+        return table === "email_suppressions" ? noRows() : profileQuery();
+      },
     }),
   } as never;
+};
+
+/** No address is suppressed. */
+const noRows = () => {
+  const api = {
+    eq: () => api,
+    maybeSingle: () => Promise.resolve({ data: null }),
+    select: () => api,
+  };
+  return api;
 };
 
 const profileQuery = () => {
@@ -115,7 +130,7 @@ const profileQuery = () => {
 const submissionRow = (id: number): Row => ({
   attempts: 0,
   id,
-  kind: "journal.submission_received",
+  kind: "qirtas.submission_received",
   payload: { submission_id: "s1", user_id: "u1" },
 });
 

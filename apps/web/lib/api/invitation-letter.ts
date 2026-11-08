@@ -6,7 +6,7 @@ import { presidentSigner } from "@/lib/api/signer";
 import { api } from "@/lib/api/urls";
 
 /**
- * The invitation is the President's letter (owner, Nov 7, 2026): it closes
+ * The invitation is the President's letter (decisions.md): it closes
  * with their signature on the platform and, like every email the site
  * sends, comes from hello@auibsal.org (decisions §6). The draft Broadcast
  * and the test a sender mails themselves share these.
