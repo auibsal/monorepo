@@ -94,6 +94,11 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
       - run: bun install --frozen-lockfile
       # Known vulnerabilities in the lockfile (high or critical) fail the build.
       - run: bun audit --audit-level=high
@@ -142,6 +147,11 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
       # Bun installs and runs scripts; Next.js itself runs on Node.
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -169,6 +179,11 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
       - run: bun install --frozen-lockfile
       - name: Start Supabase (applies migrations and seed)
         working-directory: packages/database
@@ -206,7 +221,9 @@ jobs:
       - name: Integration tests (auth, storage, data, Notion sync)
         run: |
           eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY|SECRET_KEY)=' | sed 's/^/export /')"
-          SUPABASE_INTEGRATION=1 bunx turbo test --force --filter=@repo/auth --filter=@repo/storage --filter=@repo/sal-data --filter=web
+          SUPABASE_INTEGRATION=1 bunx vitest run integration --reporter=default --reporter=json --outputFile.json=integration.json
+          # A suite skips itself without the keys; none may run zero tests.
+          bun scripts/check-integration.ts integration.json
 
   e2e:
     name: End-to-end (Playwright + axe)
@@ -217,6 +234,11 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
@@ -224,9 +246,22 @@ jobs:
       - name: Start Supabase (with Mailpit for confirmation emails and Realtime for co-editing)
         working-directory: packages/database
         run: bunx supabase start -x studio,imgproxy,logflare,vector,supavisor,edge-runtime,postgres-meta
+      # Chromium is downloaded once per Playwright version; the system
+      # libraries it needs are installed every run (they are not cached).
+      - name: Cache Playwright's browsers
+        id: browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('apps/e2e/package.json') }}
       - name: Browsers
         working-directory: apps/e2e
-        run: bunx playwright install --with-deps chromium
+        run: |
+          if [ "${{ steps.browsers.outputs.cache-hit }}" = "true" ]; then
+            bunx playwright install-deps chromium
+          else
+            bunx playwright install --with-deps chromium
+          fi
       # The journeys run against production builds (next start), not the dev
       # server: faster, and what actually ships. Their data is seeded first:
       # the build caches what it reads (What's on's current month, for one),
