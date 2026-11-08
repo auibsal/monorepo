@@ -21,7 +21,7 @@ export const SkillsPicker = ({
   const id = useId();
   return (
     <fieldset className="grid gap-2">
-      <legend className="font-medium text-sm">{t("skills")}</legend>
+      <legend className="text-sm font-medium">{t("skills")}</legend>
       <div className="flex flex-wrap gap-x-5 gap-y-2">
         {membership.skills.map((skill) => (
           <div className="flex items-center gap-2" key={skill}>

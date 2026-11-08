@@ -10,24 +10,24 @@ import { clientEnv as env } from "@/env.client";
 
 const WORKER = "/sw.js";
 
-const APPLE_MOBILE = /iPad|iPhone|iPod/;
-const PLUS = /\+/g;
-const SLASH = /\//g;
-const DASH = /-/g;
-const UNDERSCORE = /_/g;
-const PADDING = /[=]+$/;
+const APPLE_MOBILE = /iPad|iPhone|iPod/u;
+const PLUS = /\+/gu;
+const SLASH = /\//gu;
+const DASH = /-/gu;
+const UNDERSCORE = /_/gu;
+const PADDING = /[=]+$/u;
 
 // First match wins: Edge and Chrome both say "Safari", Edge also says "Chrome".
 const DEVICES: [RegExp, string][] = [
-  [/iPhone/, "iPhone"],
-  [/iPad/, "iPad"],
-  [/Android/, "Android"],
+  [/iPhone/u, "iPhone"],
+  [/iPad/u, "iPad"],
+  [/Android/u, "Android"],
 ];
 const BROWSERS: [RegExp, string][] = [
-  [/Edg\//, "Edge"],
-  [/Firefox\//, "Firefox"],
-  [/Chrome\//, "Chrome"],
-  [/Safari\//, "Safari"],
+  [/Edg\//u, "Edge"],
+  [/Firefox\//u, "Firefox"],
+  [/Chrome\//u, "Chrome"],
+  [/Safari\//u, "Safari"],
 ];
 
 export type PushState =

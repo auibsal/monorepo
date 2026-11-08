@@ -162,7 +162,7 @@ export const PlacesBoard = () => {
       lede={tc("lede")}
       title={tc("title")}
     >
-      <p className="type-body max-w-3xl text-text-secondary">
+      <p className="type-body text-text-secondary max-w-3xl">
         {skills.length > 0 ? tc("matched") : tc("noSkills")}{" "}
         <Link className="link" href="/account/settings/profile#details">
           {skills.length > 0 ? tc("editSkills") : tc("addSkills")}

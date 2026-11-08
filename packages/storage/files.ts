@@ -14,8 +14,8 @@ export class StorageError extends Error {
 
 // Characters Supabase Storage accepts in keys, minus "!" (our escape) and
 // "/" (the folder separator).
-const SAFE = /^[\w .()+,-]$/;
-const ESCAPED = /!([0-9A-F]{2})/g;
+const SAFE = /^[\w .()+,-]$/u;
+const ESCAPED = /!([0-9A-F]{2})/gu;
 const MAX_ENCODED_NAME = 600;
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();

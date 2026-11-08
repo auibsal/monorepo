@@ -92,7 +92,7 @@ export const PieceCardView = async ({
       ) : null}
       <Heading
         className={
-          large ? "type-title text-balance font-light!" : "type-heading"
+          large ? "type-title font-light! text-balance" : "type-heading"
         }
         dir="auto"
         lang={lang}
@@ -109,7 +109,7 @@ export const PieceCardView = async ({
         <p
           className={
             large
-              ? "type-lede max-w-[40ch] text-text-secondary"
+              ? "type-lede text-text-secondary max-w-[40ch]"
               : "type-caption text-text-secondary"
           }
           dir="auto"
@@ -131,7 +131,7 @@ export const PieceColumn = async ({
   locale: Locale;
   pieces: readonly Card[];
 }) => (
-  <ul className="grid content-start divide-y divide-line">
+  <ul className="divide-line grid content-start divide-y">
     {pieces.map((piece) => (
       <li className="py-space-4 first:pt-0" key={piece.id}>
         <PieceCardView locale={locale} piece={piece} />
@@ -169,7 +169,7 @@ export const LeadStory = async ({
       </p>
       {deck ? (
         <p
-          className="type-lede max-w-[44ch] text-text-secondary"
+          className="type-lede text-text-secondary max-w-[44ch]"
           dir="auto"
           lang={lang}
         >

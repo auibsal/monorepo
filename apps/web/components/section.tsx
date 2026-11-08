@@ -16,7 +16,7 @@ export const Section = ({
   id: string;
   title: string;
 }) => (
-  <section aria-labelledby={id} className="grid gap-space-5">
+  <section aria-labelledby={id} className="gap-space-5 grid">
     <SectionHead action={action} title={title} titleId={id} />
     {children}
   </section>
@@ -34,7 +34,7 @@ export const PageHeader = ({
 }) => (
   <header className="grid gap-6">
     <h1 className="type-display max-w-4xl text-balance">{title}</h1>
-    <p className="type-lede max-w-[34ch] text-text-secondary">{lede}</p>
+    <p className="type-lede text-text-secondary max-w-[34ch]">{lede}</p>
     {children}
   </header>
 );
@@ -64,18 +64,18 @@ export const RuledList = ({
     <List className={`grid gap-x-10 ${grid}`}>
       {items.map((item, index) => (
         <li
-          className="grid content-start gap-2 border-line border-t py-space-4"
+          className="border-line py-space-4 grid content-start gap-2 border-t"
           key={item.key}
         >
           <Heading className="type-heading">
             {numbered ? (
-              <span className="me-3 font-light text-text-secondary">
+              <span className="text-text-secondary me-3 font-light">
                 {String(index + 1).padStart(2, "0")}
               </span>
             ) : null}
             {item.title}
           </Heading>
-          <div className="type-body max-w-[52ch] text-text-secondary">
+          <div className="type-body text-text-secondary max-w-[52ch]">
             {item.body}
           </div>
         </li>

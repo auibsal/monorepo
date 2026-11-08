@@ -11,7 +11,7 @@ import { problem } from "@/lib/api/problem";
 import { presidentSigner } from "@/lib/api/signer";
 import { cardNumber, sealOf } from "@/lib/signature-seal";
 
-const DATE = /^\d{4}-\d{2}-\d{2}$/;
+const DATE = /^\d{4}-\d{2}-\d{2}$/u;
 const CRIMSON = "#9c213e";
 const INK = "#273236";
 const ASH = "#5c6568";

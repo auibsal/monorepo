@@ -20,12 +20,12 @@ export interface IcsEvent {
   url?: string | null;
 }
 
-const BACKSLASH = /\\/g;
-const SEMICOLON = /;/g;
-const COMMA = /,/g;
-const NEWLINE = /\r?\n/g;
-const DASH_OR_COLON = /[-:]/g;
-const MILLISECONDS = /\.\d{3}/;
+const BACKSLASH = /\\/gu;
+const SEMICOLON = /;/gu;
+const COMMA = /,/gu;
+const NEWLINE = /\r?\n/gu;
+const DASH_OR_COLON = /[-:]/gu;
+const MILLISECONDS = /\.\d{3}/u;
 
 // RFC 5545 §3.3.11: backslash, semicolon and comma are escaped with "\".
 const escapeText = (value: string) =>

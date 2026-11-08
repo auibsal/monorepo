@@ -46,7 +46,7 @@ export const SixWords = () => {
           <li className="grid gap-3" key={page.id}>
             {page.text ? (
               <blockquote
-                className="type-heading whitespace-pre-line font-light"
+                className="type-heading font-light whitespace-pre-line"
                 dir="auto"
                 lang={page.language === "other" ? undefined : page.language}
               >

@@ -515,7 +515,7 @@ const Media = ({ record }: { record: PieceRecord }) => {
           const alt = captions[m.id]?.alt ?? { ar: m.alt_ar, en: m.alt_en };
           return (
             <li
-              className="grid gap-3 border-line border-t p-3 sm:grid-cols-[10rem_1fr]"
+              className="border-line grid gap-3 border-t p-3 sm:grid-cols-[10rem_1fr]"
               key={m.id}
             >
               {/* biome-ignore lint/performance/noImgElement: the Diwan serves images unoptimized (next.config.ts) */}

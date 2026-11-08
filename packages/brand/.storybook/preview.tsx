@@ -20,7 +20,7 @@ const preview: Preview = {
       const dir = context.globals.direction === "rtl" ? "rtl" : "ltr";
       return (
         <div
-          className="bg-surface p-4 text-text"
+          className="bg-surface text-text p-4"
           dir={dir}
           lang={dir === "rtl" ? "ar" : "en"}
         >
@@ -54,8 +54,8 @@ const preview: Preview = {
     },
     controls: {
       matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
+        color: /(background|color)$/iu,
+        date: /Date$/iu,
       },
     },
     // The kit's sections, in the owner's order (Nov 4, 2026).

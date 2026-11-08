@@ -93,7 +93,7 @@ const ReadingError = ({ error }: { error: Error | null }) => {
   const t = useTranslations("diwan.admin.qirtas.extras.problems");
   const known = READING_PROBLEMS.find((p) => error?.message.includes(p));
   return known ? (
-    <p className="text-sm text-text" role="alert">
+    <p className="text-text text-sm" role="alert">
       {t(known as "readings_full")}
     </p>
   ) : (
@@ -152,7 +152,7 @@ const ReadingFile = ({ record }: { record: PieceRecord }) => {
     <div className="grid max-w-xl gap-3">
       {path ? (
         <div className="grid gap-2">
-          <p className="font-medium text-sm">{t("reading")}</p>
+          <p className="text-sm font-medium">{t("reading")}</p>
           {/* biome-ignore lint/a11y/useMediaCaption: a reading of the piece's own text */}
           <audio
             className="w-full"

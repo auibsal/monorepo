@@ -14,7 +14,7 @@ import {
 // The card's QR is a link (…/verify/member/<code>?t=<digits>, in any
 // language); the digits change every 30 seconds.
 const CARD =
-  /^https?:\/\/[^/]+(?:\/[a-z]{2})?\/verify\/member\/([0-9a-f]{20})\/?(?:\?t=([0-9]{8}))?$/;
+  /^https?:\/\/[^/]+(?:\/[a-z]{2})?\/verify\/member\/([0-9a-f]{20})\/?(?:\?t=([0-9]{8}))?$/u;
 
 /** A membership card's code and live digits, from what its QR holds. */
 export const parseCard = (value: string) => {
@@ -122,7 +122,7 @@ export const CardScanner = ({
     <div className="grid gap-3">
       <video
         aria-label={t("video")}
-        className={camera === "on" ? "w-full border-line border-t" : "hidden"}
+        className={camera === "on" ? "border-line w-full border-t" : "hidden"}
         muted
         playsInline
         ref={videoRef}

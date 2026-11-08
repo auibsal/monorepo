@@ -20,7 +20,7 @@ page accept either.
   If the member already holds it, the route brings it up to date through
   the Wallet API (name, tier, active again after a renewal) before
   returning the link, which only creates passes.
-- Google tells `POST /api/wallet/google/callback` when a member saves or
+- Google tells `POST /api/hooks/wallet` when a member saves or
   removes the pass. The message is signed by Google (Google Pay
   `ECv2SigningOnly`: sender `GooglePayPasses`, recipient our issuer id, keys
   from pay.google.com/gp/m/issuer/keys) and checked in
@@ -55,7 +55,7 @@ page accept either.
    issuer for the Society and note the issuer id. Create a Generic class
    with the class id `sal-membership`, "Multiple devices and holders"
    `ONE_USER_ALL_DEVICES`, no modules, Smart Tap off, no redemption
-   issuers, callback URL `https://auibsal.org/api/wallet/google/callback`
+   issuers, callback URL `https://auibsal.org/api/hooks/wallet`
    and no update request URL. (If the class doesn't exist, the first saved
    pass creates it with these settings.) Add test accounts; ask for
    publishing access for the Generic pass when a test pass looks right

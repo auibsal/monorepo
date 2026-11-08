@@ -10,7 +10,7 @@ import { authenticateCookies } from "@repo/auth/verify";
  * from its cookies; anyone else is told the file isn't there.
  */
 const ROOT = path.resolve(process.cwd(), "design");
-const SEGMENT = /^[\w-][\w.-]*$/;
+const SEGMENT = /^[\w-][\w.-]*$/u;
 
 const TYPES: Record<string, string> = {
   ".css": "text/css; charset=utf-8",

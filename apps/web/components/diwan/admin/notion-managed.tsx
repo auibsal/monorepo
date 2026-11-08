@@ -48,7 +48,7 @@ export const NotionManaged = ({
     return null;
   }
   return (
-    <p className="border-line border-t pt-space-4 text-sm" role="note">
+    <p className="border-line pt-space-4 border-t text-sm" role="note">
       {t(kind === "officer" ? "mirror" : kind)}{" "}
       <a
         className="inline-flex items-center gap-1 underline underline-offset-4"

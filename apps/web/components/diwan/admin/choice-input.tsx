@@ -93,7 +93,7 @@ const OptionRow = ({
 }: OptionRowProps) => (
   <>
     {heading ? (
-      <span className="type-label border-line border-t px-3 pt-4 pb-1 text-text-secondary">
+      <span className="type-label border-line text-text-secondary border-t px-3 pt-4 pb-1">
         {heading}
       </span>
     ) : null}
@@ -253,7 +253,7 @@ export const ChoiceInput = ({
         aria-describedby={describedBy}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabel ? undefined : `${baseId}-label`}
-        className={cn("relative grid border-line border-y", className)}
+        className={cn("border-line relative grid border-y", className)}
         id={baseId}
         role="radiogroup"
       >
@@ -268,7 +268,7 @@ export const ChoiceInput = ({
                 index > 0 ? "border-line border-t" : "",
                 on
                   ? "border-s-accent text-text"
-                  : "border-s-transparent text-text-secondary hover:text-text",
+                  : "text-text-secondary hover:text-text border-s-transparent",
                 "disabled:opacity-50"
               )}
               disabled={disabled || choice.disabled}
@@ -343,7 +343,7 @@ export const ChoiceInput = ({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
         className={cn(
-          "flex h-12 w-full items-center justify-between gap-3 border border-input bg-surface px-3 text-start text-base",
+          "border-input bg-surface flex h-12 w-full items-center justify-between gap-3 border px-3 text-start text-base",
           "focus-visible:outline-2 disabled:opacity-50",
           chosen && chosen.value !== "" ? "text-text" : "text-text-secondary"
         )}
@@ -369,10 +369,10 @@ export const ChoiceInput = ({
       </button>
       {carrier}
       {open ? (
-        <div className="grid border-line border-x border-b bg-surface">
+        <div className="border-line bg-surface grid border-x border-b">
           {choices.length >= FIND ? (
-            <div className="flex items-center gap-2 border-line border-b px-3">
-              <Icon className="size-4 text-text-secondary" name="search" />
+            <div className="border-line flex items-center gap-2 border-b px-3">
+              <Icon className="text-text-secondary size-4" name="search" />
               <input
                 aria-controls={listId}
                 aria-label={t("find")}
@@ -410,7 +410,7 @@ export const ChoiceInput = ({
             tabIndex={-1}
           >
             {listed.length === 0 ? (
-              <p className="px-3 py-3 text-text-secondary">{t("none")}</p>
+              <p className="text-text-secondary px-3 py-3">{t("none")}</p>
             ) : null}
             {listed.map((choice, index) => {
               const heading =

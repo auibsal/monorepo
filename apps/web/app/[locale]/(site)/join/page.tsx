@@ -76,15 +76,15 @@ const JoinPage = async ({ params }: LocaleParams) => {
               {TIERS.map((key) => (
                 <tr className="border-line border-b align-top" key={key}>
                   <th
-                    className="py-4 pe-4 text-start font-normal text-xl"
+                    className="py-4 pe-4 text-start text-xl font-normal"
                     scope="row"
                   >
                     {t(`tiers.${key}.name`)}
                   </th>
-                  <td className="py-4 pe-4 text-text-secondary">
+                  <td className="text-text-secondary py-4 pe-4">
                     {t(`tiers.${key}.if`)}
                   </td>
-                  <td className="py-4 text-text-secondary">
+                  <td className="text-text-secondary py-4">
                     {t(`tiers.${key}.can`)}
                   </td>
                 </tr>
@@ -94,7 +94,7 @@ const JoinPage = async ({ params }: LocaleParams) => {
         </div>
         {/* Not at AUIB (decisions.md): a guest's membership, by
             invitation, or a partner's, by applying. */}
-        <p className="type-body max-w-[60ch] text-text-secondary">
+        <p className="type-body text-text-secondary max-w-[60ch]">
           {t("others")}{" "}
           <Link className="link" href="/partners">
             {t("othersLink")}

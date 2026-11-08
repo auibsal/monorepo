@@ -60,7 +60,7 @@ media do.
     the outbox, Resend Broadcasts (`lib/api/broadcast.ts`), cron, calendar
     feeds, exports, signed URLs, account deletion, Google Wallet, the
     Notion sync (`lib/api/notion`) and Hudhud, the Society's Telegram bot
-    (`lib/api/bot`, grammY; webhook `/api/telegram`;
+    (`lib/api/bot`, grammY; webhook `/api/hooks/telegram`;
     `docs/platform/telegram.md`). The only code that reads the secret key.
     The bot acts for a member only through the `core.telegram_*`
     functions, which run the Diwan functions under the member's claims so
@@ -188,7 +188,9 @@ any schema change. Integration tests run against a local stack with
   read `contributors.user_id`, so a pen name can't be traced.
 - **No third-party monitoring or protection.** Errors and logs go to the
   Vercel runtime log (`@repo/observability` prints only); the security
-  headers are the app's own (`@repo/security`); public forms are rate
+  headers are the app's own (`@repo/security`; your account and the Diwan
+  render per request with a nonce-based CSP, `apps/web/proxy.ts`, so a new
+  page there stays under their layouts and never adds an inline script); public forms are rate
   limited in the database (`withinRateLimit`, `core.take_rate`).
 - **Files:** use `@repo/storage`. Private buckets are reached only through
   signed URLs issued by the API routes.

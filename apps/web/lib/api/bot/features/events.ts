@@ -15,7 +15,7 @@ import { linkKeyboard } from "./account";
 export const events = new Composer<BotContext>();
 
 const UUID = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-export const EVENT_PAYLOAD = new RegExp(`^ev_(${UUID})$`);
+export const EVENT_PAYLOAD = new RegExp(`^ev_(${UUID})$`, "u");
 const MAX_LABEL = 48;
 
 const short = (text: string) =>
@@ -108,7 +108,7 @@ dm.callbackQuery("evs", async (ctx) => {
   }
 });
 
-dm.callbackQuery(new RegExp(`^ev:(${UUID})$`), async (ctx) => {
+dm.callbackQuery(new RegExp(`^ev:(${UUID})$`, "u"), async (ctx) => {
   await ctx.answerCallbackQuery();
   await showEvent(ctx, ctx.match[1] ?? "");
 });
@@ -132,7 +132,7 @@ const rsvpError = (
   return ctx.t.generic;
 };
 
-dm.callbackQuery(new RegExp(`^(rsvp|unrsvp):(${UUID})$`), async (ctx) => {
+dm.callbackQuery(new RegExp(`^(rsvp|unrsvp):(${UUID})$`, "u"), async (ctx) => {
   const me = await ctx.account();
   if (!me) {
     await ctx.answerCallbackQuery();

@@ -23,7 +23,7 @@ import { articleLd, JsonLd } from "@/lib/json-ld";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 type Piece = Awaited<ReturnType<typeof journal.qirtasPiece>>;
 
 /**
@@ -190,7 +190,7 @@ export const PieceArticle = async ({
             ) : null}
           </p>
           {deck ? (
-            <p className="type-lede max-w-[44ch] text-text-secondary">{deck}</p>
+            <p className="type-lede text-text-secondary max-w-[44ch]">{deck}</p>
           ) : null}
           <Byline locale={locale} piece={piece} />
           {piece.credits.length > 0 ? (
@@ -232,10 +232,10 @@ export const PieceArticle = async ({
           ) : null}
         </header>
         {lockedText ? (
-          <div className="mx-auto grid w-full max-w-3xl gap-3 border-line border-t px-4 pt-6">
+          <div className="border-line mx-auto grid w-full max-w-3xl gap-3 border-t px-4 pt-6">
             <p className="type-body">{t("membersOnlyBody")}</p>
             <a
-              className="inline-flex h-12 items-center justify-self-start bg-accent px-6 font-medium text-[0.9375rem] text-on-accent hover:bg-accent/90"
+              className="bg-accent text-on-accent hover:bg-accent/90 inline-flex h-12 items-center justify-self-start px-6 text-[0.9375rem] font-medium"
               href={localizedPath(locale, `/qirtas/read/${piece.slug}`)}
             >
               {t("readInDiwan")}
@@ -284,7 +284,7 @@ const ReadOn = async ({
   return (
     <nav
       aria-label={t("reading.after")}
-      className="mx-auto grid w-full max-w-3xl gap-4 border-text border-t px-4 pt-6 sm:grid-cols-2 print:hidden"
+      className="border-text mx-auto grid w-full max-w-3xl gap-4 border-t px-4 pt-6 sm:grid-cols-2 print:hidden"
     >
       {next ? (
         <Link className="group grid gap-1" href={pieceHref(next)}>

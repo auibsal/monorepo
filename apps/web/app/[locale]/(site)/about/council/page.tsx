@@ -95,7 +95,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
         ) : (
           <ul className="grid gap-4">
             {resolutions.map((r) => (
-              <li className="grid gap-1 border-line border-b pb-4" key={r.id}>
+              <li className="border-line grid gap-1 border-b pb-4" key={r.id}>
                 <p className="type-caption text-text-secondary">
                   <span dir="ltr">{r.code}</span> ·{" "}
                   {t(`body.${r.body as governance.MeetingBody}`)}
@@ -147,7 +147,7 @@ const GovernancePage = async ({ params }: LocaleParams) => {
                 <dl className="grid gap-2 sm:grid-cols-2">
                   {offices.map((office) => (
                     <div
-                      className="grid gap-1 border-line border-t py-space-4"
+                      className="border-line py-space-4 grid gap-1 border-t"
                       key={office.position_title_en}
                     >
                       <dt className="type-label">

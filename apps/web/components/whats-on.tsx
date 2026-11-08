@@ -152,7 +152,7 @@ export const MonthCalendar = async ({
           <tr>
             {weekdayColumns().map((day) => (
               <th
-                className="type-label pb-space-2 text-start font-medium text-text-secondary"
+                className="type-label pb-space-2 text-text-secondary text-start font-medium"
                 key={day.toISOString()}
                 scope="col"
               >
@@ -167,16 +167,16 @@ export const MonthCalendar = async ({
               {week.map((day, index) => (
                 <td className="h-28 align-top" key={day ?? `empty-${index}`}>
                   {day ? (
-                    <div className="grid content-start gap-1 py-space-2 pe-space-2">
+                    <div className="py-space-2 pe-space-2 grid content-start gap-1">
                       <span
                         aria-current={day === today ? "date" : undefined}
-                        className="font-light text-2xl leading-none aria-[current=date]:text-accent"
+                        className="aria-[current=date]:text-accent text-2xl leading-none font-light"
                       >
                         {Number(day.slice(8))}
                       </span>
                       {(days.get(day) ?? []).map((row) => (
                         <Link
-                          className="grid text-sm leading-snug hover:text-accent"
+                          className="hover:text-accent grid text-sm leading-snug"
                           href={rowHref(row)}
                           key={row.id}
                         >
@@ -190,7 +190,7 @@ export const MonthCalendar = async ({
                       {(universityDays.get(day) ?? []).map((row) => (
                         <a
                           aria-label={t("auibLink", { title: row.title })}
-                          className="grid text-sm text-text-secondary leading-snug hover:text-accent"
+                          className="text-text-secondary hover:text-accent grid text-sm leading-snug"
                           href={row.url ?? "https://auib.edu.iq/events/"}
                           key={row.id}
                           rel="noopener"
@@ -237,8 +237,8 @@ export const MonthSection = async ({
   const previous = shiftMonth(month, -1);
   const following = shiftMonth(month, 1);
   return (
-    <section aria-labelledby="month" className="grid gap-space-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-4 border-line border-t pt-space-4">
+    <section aria-labelledby="month" className="gap-space-5 grid">
+      <div className="border-line pt-space-4 flex flex-wrap items-baseline justify-between gap-4 border-t">
         <h2 className="type-title font-light" id="month">
           {formatMonth(month.from, locale)}
         </h2>

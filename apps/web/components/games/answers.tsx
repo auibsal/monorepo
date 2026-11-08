@@ -46,7 +46,7 @@ const Answer = ({
     }
   };
   return (
-    <li className="grid gap-3 border-line border-t pt-space-4">
+    <li className="border-line pt-space-4 grid gap-3 border-t">
       {letters ? (
         <>
           <p className="sr-only">
@@ -55,7 +55,7 @@ const Answer = ({
           <p aria-hidden className="flex flex-wrap gap-2 font-mono text-2xl">
             {letters.map((letter, i) => (
               <span
-                className="grid size-10 place-items-center border-line border-b"
+                className="border-line grid size-10 place-items-center border-b"
                 // biome-ignore lint/suspicious/noArrayIndexKey: letters repeat; positions don't
                 key={i}
               >

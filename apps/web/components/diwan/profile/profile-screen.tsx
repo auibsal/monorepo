@@ -113,7 +113,7 @@ export const ProfileScreen = () => {
         <form className="grid gap-4" onSubmit={submit}>
           {(["en", "ar"] as const).map((lang) => (
             <fieldset className="grid gap-3" key={lang}>
-              <legend className="mb-2 font-medium text-sm">
+              <legend className="mb-2 text-sm font-medium">
                 {t(`setup.name.${lang}`)}
               </legend>
               <NamePartsFields
@@ -172,7 +172,7 @@ export const ProfileScreen = () => {
               names you, on the Council page, the masthead, your card and
               letters. */}
           <fieldset className="grid gap-2">
-            <legend className="mb-2 font-medium text-sm">
+            <legend className="mb-2 text-sm font-medium">
               {t("profile.titleForm")}
             </legend>
             <p className="type-caption">{t("profile.titleFormHint")}</p>

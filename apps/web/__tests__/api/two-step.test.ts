@@ -5,7 +5,7 @@ vi.mock("server-only", () => ({}));
 process.env.SKIP_ENV_VALIDATION = "true";
 process.env.SUPABASE_SECRET_KEY = "test-secret";
 
-const CODE = /^[0-9A-HJKMNP-TV-Z]{4}(-[0-9A-HJKMNP-TV-Z]{4}){2}$/;
+const CODE = /^[0-9A-HJKMNP-TV-Z]{4}(-[0-9A-HJKMNP-TV-Z]{4}){2}$/u;
 
 const { hashRecoveryCode, newRecoveryCode, normalizeRecoveryCode } =
   await import("@/lib/api/two-step");

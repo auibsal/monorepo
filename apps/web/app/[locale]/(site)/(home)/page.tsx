@@ -100,7 +100,7 @@ const Home = async ({ params }: HomeProps) => {
 
       <section
         aria-labelledby="this-term"
-        className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16 [&_h2]:scroll-mt-28"
+        className="gap-space-5 mx-auto grid w-full max-w-6xl px-4 py-16 [&_h2]:scroll-mt-28"
       >
         <SectionHead
           action={
@@ -120,11 +120,11 @@ const Home = async ({ params }: HomeProps) => {
 
       {lead ? (
         <section aria-labelledby="paper" className="bg-surface-reading">
-          <div className="mx-auto grid w-full max-w-6xl gap-space-5 px-4 py-16">
-            <header className="flex flex-wrap items-end justify-between gap-x-8 gap-y-2 border-text border-b pb-3">
+          <div className="gap-space-5 mx-auto grid w-full max-w-6xl px-4 py-16">
+            <header className="border-text flex flex-wrap items-end justify-between gap-x-8 gap-y-2 border-b pb-3">
               <h2 id="paper">
                 <Link
-                  className="font-medium text-4xl tracking-tight hover:text-accent sm:text-5xl"
+                  className="hover:text-accent text-4xl font-medium tracking-tight sm:text-5xl"
                   href="/qirtas"
                 >
                   {tj("title")}
@@ -146,7 +146,7 @@ const Home = async ({ params }: HomeProps) => {
 
       <section
         aria-labelledby="sunday-paper"
-        className="mx-auto grid w-full max-w-6xl gap-4 border-line border-t px-4 py-16 md:grid-cols-[1fr_1.4fr] md:items-start"
+        className="border-line mx-auto grid w-full max-w-6xl gap-4 border-t px-4 py-16 md:grid-cols-[1fr_1.4fr] md:items-start"
       >
         <div className="grid gap-2">
           <h2 className="type-heading" id="sunday-paper">

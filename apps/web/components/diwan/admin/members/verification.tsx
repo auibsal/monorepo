@@ -42,7 +42,7 @@ const RequestCard = ({ request, name }: { request: Request; name: string }) => {
     <SalCard>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <p className="font-medium">{name}</p>
-        <p className="break-all text-sm" dir="ltr">
+        <p className="text-sm break-all" dir="ltr">
           {request.email}
         </p>
       </div>
@@ -248,7 +248,7 @@ const EarlierRequests = () => {
   return (
     <DiwanSection id="earlier" title={t("earlier")}>
       <p className="type-body">{t("earlierLede")}</p>
-      <ul className="grid gap-space-4">
+      <ul className="gap-space-4 grid">
         {requests.data.map((request) => {
           const profile = profiles.data?.find((p) => p.id === request.user_id);
           return (
@@ -308,7 +308,7 @@ export const VerificationQueue = () => {
       {applications.data.length === 0 ? (
         <p className="type-body text-text-secondary">{t("empty")}</p>
       ) : (
-        <ul className="grid gap-space-4">
+        <ul className="gap-space-4 grid">
           {applications.data.map((application) => (
             <li key={application.partner_id}>
               <ApplicationCard

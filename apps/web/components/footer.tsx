@@ -59,7 +59,7 @@ export const Footer = async () => {
           >
             <BrandLogo className="h-14" height={56} locale={locale} />
           </NextLink>
-          <p className="max-w-[34ch] text-text-secondary">
+          <p className="text-text-secondary max-w-[34ch]">
             {tx("recognition")}
           </p>
         </div>
@@ -117,7 +117,7 @@ export const Footer = async () => {
             ))}
           </ul>
         </div>
-        <div className="col-span-2 flex flex-col gap-3 border-line border-t pt-5 text-[0.8125rem] text-text-secondary lg:col-span-4 lg:flex-row lg:flex-wrap lg:items-baseline lg:justify-between">
+        <div className="border-line text-text-secondary col-span-2 flex flex-col gap-3 border-t pt-5 text-[0.8125rem] lg:col-span-4 lg:flex-row lg:flex-wrap lg:items-baseline lg:justify-between">
           <p>{tx("copyright", { year: String(new Date().getFullYear()) })}</p>
           <ul className="flex flex-wrap gap-x-5 gap-y-1">
             {fine.map(([href, label]) => (

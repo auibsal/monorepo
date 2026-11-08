@@ -58,7 +58,7 @@ export const TextSize = () => {
           aria-pressed={size === s}
           className={
             size === s
-              ? "font-medium text-text underline decoration-1 underline-offset-4"
+              ? "text-text font-medium underline decoration-1 underline-offset-4"
               : "text-text-secondary hover:text-text"
           }
           key={s}

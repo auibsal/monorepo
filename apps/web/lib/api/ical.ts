@@ -13,16 +13,16 @@ export interface FeedEvent {
   url: string | null;
 }
 
-const FOLDED = /\r?\n[ \t]/g;
-const LINES = /\r?\n/;
-const DATE = /^(\d{4})(\d{2})(\d{2})$/;
-const DATE_TIME = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)$/;
-const TZID = /TZID=([^;:]+)/;
+const FOLDED = /\r?\n[ \t]/gu;
+const LINES = /\r?\n/u;
+const DATE = /^(\d{4})(\d{2})(\d{2})$/u;
+const DATE_TIME = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)$/u;
+const TZID = /TZID=([^;:]+)/u;
 
 const unescapeText = (value: string) =>
   value
-    .replace(/\\n/gi, "\n")
-    .replace(/\\([,;\\])/g, "$1")
+    .replace(/\\n/giu, "\n")
+    .replace(/\\([,;\\])/gu, "$1")
     .trim();
 
 /** Offset of a time zone at an instant, in minutes (e.g. +180 for Baghdad). */
@@ -63,7 +63,7 @@ const toInstant = (
   if (!time) {
     return null;
   }
-  const [, y, mo, d, h, mi, s, z] = time;
+  const [, y = "", mo = "", d = "", h = "", mi = "", s = "", z] = time;
   const naive = Date.UTC(+y, +mo - 1, +d, +h, +mi, +s);
   if (z) {
     return { allDay: false, iso: new Date(naive).toISOString() };

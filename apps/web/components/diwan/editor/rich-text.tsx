@@ -83,7 +83,7 @@ const ToolbarButton = ({
     aria-pressed={active}
     className={cn(
       "h-7 px-2 text-xs",
-      active && "border-line border-t font-medium text-text"
+      active && "border-line text-text border-t font-medium"
     )}
     onClick={onClick}
     size="sm"
@@ -311,7 +311,7 @@ const Frame = ({
   undo: boolean;
 }) => (
   <div
-    className="border border-input bg-surface"
+    className="border-input bg-surface border"
     dir={journal.textDirection(lang)}
     lang={lang}
   >

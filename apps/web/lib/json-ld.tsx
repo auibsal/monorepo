@@ -14,7 +14,7 @@ export const JsonLd = ({ data }: { readonly data: Thing }) => (
       __html: JSON.stringify({
         "@context": "https://schema.org",
         ...data,
-      }).replace(/</g, "\\u003c"),
+      }).replace(/</gu, "\\u003c"),
     }}
     type="application/ld+json"
   />

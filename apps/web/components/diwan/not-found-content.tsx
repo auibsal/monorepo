@@ -29,7 +29,7 @@ export const NotFoundContent = () => {
     >
       <title>{t.title}</title>
       <h1 className="type-title">{t.title}</h1>
-      <p className="max-w-md text-text-secondary">{t.description}</p>
+      <p className="text-text-secondary max-w-md">{t.description}</p>
       <Button asChild>
         <Link href={localizedPath(locale, diwanPath())}>{t.home}</Link>
       </Button>

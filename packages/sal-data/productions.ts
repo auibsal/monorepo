@@ -47,10 +47,10 @@ export const nextStage = (stage: ProductionStage): ProductionStage | null => {
   const index = productionStages.indexOf(stage as never);
   return index < 0 || index === productionStages.length - 1
     ? null
-    : productionStages[index + 1];
+    : (productionStages[index + 1] ?? null);
 };
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 
 const optionalText = (max: number) =>
   z

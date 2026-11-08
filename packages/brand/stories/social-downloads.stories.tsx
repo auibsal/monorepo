@@ -29,14 +29,14 @@ const Downloads = ({
   size: string;
 }) => (
   <div className="grid max-w-5xl gap-4">
-    <p className="text-sm text-text-secondary">{size}</p>
+    <p className="text-text-secondary text-sm">{size}</p>
     <ul className="grid grid-cols-2 gap-6 md:grid-cols-3">
       {items.map(({ file, name }) => (
         <li className="border-line border-t pt-3" key={file}>
           {/* biome-ignore lint/performance/noImgElement: the rendered PNG, as posted */}
           <img
             alt={name}
-            className="w-full border border-line"
+            className="border-line w-full border"
             height={400}
             loading="lazy"
             src={`brand-kit/social/${dir}/${file}.png`}

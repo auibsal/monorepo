@@ -31,7 +31,7 @@ export const DeskNav = ({
     desks.map((d) => d.key)
   );
   return (
-    <nav aria-label={label} className="-mx-4 border-line border-b px-4 pb-3">
+    <nav aria-label={label} className="border-line -mx-4 border-b px-4 pb-3">
       <ul className="flex flex-wrap justify-center gap-x-8 gap-y-2">
         {desks.map((d) => (
           <li key={d.key}>

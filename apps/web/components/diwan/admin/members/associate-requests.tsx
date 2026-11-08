@@ -61,7 +61,7 @@ export const AssociateRequests = () => {
       {requests.data?.length === 0 ? (
         <p className="type-caption">{t("empty")}</p>
       ) : null}
-      <ul className="grid divide-y divide-line">
+      <ul className="divide-line grid divide-y">
         {(requests.data ?? []).map((r) => (
           <li className="grid gap-2 py-3" key={r.id}>
             <p className="font-medium">

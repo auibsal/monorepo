@@ -68,7 +68,7 @@ const Clause = ({
   readonly number: number;
 }) => (
   <li className="grid grid-cols-[2rem_1fr] gap-2">
-    <span className="type-label pt-1 text-text-secondary">
+    <span className="type-label text-text-secondary pt-1">
       {formatNumber(number)}.
     </span>
     <div className="type-body leading-relaxed">{children}</div>
@@ -159,10 +159,10 @@ const ApplicationForm = () => {
       {/* Paper, like a certificate: light whatever the theme. */}
       <article
         aria-labelledby="memorandum-title"
-        className="grid gap-8 border border-line bg-surface-reading p-6 text-text sm:p-10"
+        className="border-line bg-surface-reading text-text grid gap-8 border p-6 sm:p-10"
         data-theme="light"
       >
-        <header className="grid gap-2 border-line border-b pb-6 text-center">
+        <header className="border-line grid gap-2 border-b pb-6 text-center">
           <p className="type-label text-text-secondary">{tm("society")}</p>
           <h2 className="type-title" id="memorandum-title">
             {tm("title")}
@@ -320,7 +320,7 @@ const ApplicationForm = () => {
           )}
         </ol>
 
-        <footer className="grid gap-8 border-line border-t pt-6 sm:grid-cols-2">
+        <footer className="border-line grid gap-8 border-t pt-6 sm:grid-cols-2">
           <div className="grid content-start gap-3">
             <p className="type-label">{tm("forPartner", { name: partner })}</p>
             <MySignature />
@@ -344,8 +344,8 @@ const ApplicationForm = () => {
           </div>
           <div className="grid content-start gap-3">
             <p className="type-label">{tm("forSociety")}</p>
-            <div className="flex h-24 items-end border-line border-b border-dashed">
-              <span className="type-caption pb-1 text-text-secondary">
+            <div className="border-line flex h-24 items-end border-b border-dashed">
+              <span className="type-caption text-text-secondary pb-1">
                 {tm("presidentSigns")}
               </span>
             </div>

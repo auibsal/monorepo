@@ -35,7 +35,8 @@ export const Printables: Story = {
         </a>
       </p>
       <iframe
-        className="h-[80vh] w-full border border-line bg-white"
+        className="border-line h-[80vh] w-full border bg-white"
+        sandbox="allow-modals allow-popups allow-same-origin allow-scripts"
         src={HTML}
         title="SAL-MED-02 Printables"
       />
@@ -105,7 +106,7 @@ export const StickerPack: Story = {
     <div className="grid gap-10 bg-[#d9d9d9] p-10">
       {[...new Set(STICKER_PACK.map(({ family }) => family))].map((family) => (
         <section className="grid gap-4" key={family}>
-          <h2 className="font-light text-2xl">{family}</h2>
+          <h2 className="text-2xl font-light">{family}</h2>
           <div className="flex flex-wrap items-end gap-8">
             {STICKER_PACK.filter((s) => s.family === family).map(
               ({ id, name, size: [w, h] }) => (
@@ -163,6 +164,7 @@ export const Posters: Story = {
           <div className="h-[149mm] w-[105mm] overflow-hidden">
             <iframe
               className="origin-top-left border-0"
+              sandbox="allow-same-origin"
               src={`brand-kit/print/posters/${file}.html`}
               style={{
                 height: `${594 * sides}mm`,
@@ -192,7 +194,7 @@ export const Sizes: Story = {
   render: () => (
     <table className="w-full max-w-3xl text-sm">
       <thead>
-        <tr className="text-start text-text-secondary">
+        <tr className="text-text-secondary text-start">
           <th className="py-2 text-start font-medium">Piece</th>
           <th className="py-2 text-start font-medium">Size</th>
         </tr>

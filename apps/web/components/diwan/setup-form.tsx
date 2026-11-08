@@ -107,8 +107,8 @@ const usePledgeVersions = () => {
 };
 
 /** The step in the address, so the browser's Back button goes back. */
-const STEP_PATH = /\/welcome(?:\/\d+)?$/;
-const STEP_NUMBER = /\/welcome\/(\d+)$/;
+const STEP_PATH = /\/welcome(?:\/\d+)?$/u;
+const STEP_NUMBER = /\/welcome\/(\d+)$/u;
 
 /** Each screen at its own address: /welcome/1, /welcome/2 … */
 const stepUrl = (index: number) =>
@@ -301,9 +301,9 @@ export const SetupForm = () => {
           step: String(index + 1),
         })}
       </FormHeader>
-      <div aria-hidden="true" className="-mt-4 h-1 w-full bg-line">
+      <div aria-hidden="true" className="bg-line -mt-4 h-1 w-full">
         <div
-          className="h-full bg-band transition-[width]"
+          className="bg-band h-full transition-[width]"
           style={{ width: `${((index + 1) / plan.steps.length) * 100}%` }}
         />
       </div>
@@ -489,7 +489,7 @@ const PledgeStep = ({
         <StepHeading heading={heading}>{t(`${key}.title`)}</StepHeading>
         <p className="type-body text-text-secondary">{t(`${key}.why`)}</p>
       </div>
-      <blockquote className="type-body border-line border-s-2 ps-space-4">
+      <blockquote className="type-body border-line ps-space-4 border-s-2">
         {t(`${key}.body`)}
       </blockquote>
       <p className="type-caption type-code">v{version}</p>

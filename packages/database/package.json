@@ -1,6 +1,6 @@
 {
   "name": "@repo/database",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "UNLICENSED",
   "exports": {
     ".": "./index.ts",
@@ -19,20 +19,20 @@
     "db:stop": "supabase stop",
     "db:test": "bun scripts/sync-test-preamble.ts --check && supabase test db",
     "db:test:sync": "bun scripts/sync-test-preamble.ts",
-    "db:types": "supabase gen types typescript --local --schema public,core,access,membership,events,journal,programmes,governance,content | biome format --stdin-file-path=types.ts > types.ts.tmp && mv types.ts.tmp types.ts",
+    "db:types": "supabase gen types typescript --schema public,core,access,membership,events,journal,programmes,governance,content | biome format --stdin-file-path=types.ts > types.ts.tmp && mv types.ts.tmp types.ts",
     "migration:new": "supabase migration new",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.117.3",
-    "@t3-oss/env-nextjs": "^0.13.10",
+    "@supabase/supabase-js": "^2.119.0",
+    "@t3-oss/env-nextjs": "^0.13.11",
     "server-only": "^0.0.1",
-    "zod": "^4.3.6"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "24.19.1",
-    "supabase": "2.119.0",
+    "@types/node": "26.6.6",
+    "supabase": "3.0.0",
     "typescript": "^7.0.2"
   }
 }

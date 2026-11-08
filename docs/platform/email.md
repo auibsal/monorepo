@@ -152,7 +152,7 @@ are in: the next outbox row or scheduled run calls the route again.
 **Cloudflare**
 
 - Turnstile → the widget: hostnames `auibsal.org` and `www.auibsal.org`;
-  mode Managed. A widget made for `nexus.auibsal.org` fails on the site
+  mode Managed. A widget made for another hostname fails on the site
   (error 110200, shown under the form).
 - Security: the sign-in pages must not get a full-page challenge. If Bot
   Fight Mode or a WAF rule challenges visitors from Iraq, members see

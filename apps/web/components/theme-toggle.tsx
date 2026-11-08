@@ -16,7 +16,7 @@ export const ThemeToggle = ({ className }: { className?: string }) => {
   return (
     <button
       className={cn(
-        "inline-flex items-center py-1.5 font-medium text-[0.90625rem] hover:text-accent",
+        "hover:text-accent inline-flex items-center py-1.5 text-[0.90625rem] font-medium",
         className
       )}
       onClick={() => chooseTheme(currentTheme() === "dark" ? "light" : "dark")}

@@ -4,7 +4,7 @@
  * empty lines are skipped. Read in the browser, so a file of personal data
  * goes straight from the officer's computer to the database.
  */
-const BOM = /^﻿/;
+const BOM = /^﻿/u;
 
 /** A quoted field from its opening quote: its text and where it ends. */
 const quotedField = (text: string, open: number): [string, number] => {

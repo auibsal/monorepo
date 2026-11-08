@@ -40,7 +40,7 @@ export const useProgrammeOptions = (
     canChooseNone: scopes === "all",
     isPending: programmes.isPending || grants.isPending,
     label: (id: string | null) =>
-      (programmes.data ?? []).find((p) => p.id === id)
+      (programmes.data ?? []).some((p) => p.id === id)
         ? localized(
             (programmes.data ?? []).find((p) => p.id === id) as Record<
               string,

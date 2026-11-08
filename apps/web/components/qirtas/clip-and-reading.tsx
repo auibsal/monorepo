@@ -58,7 +58,7 @@ export const PairedClip = async ({
   return (
     <aside
       aria-labelledby="clip"
-      className="mx-auto grid w-full max-w-3xl gap-3 border-line border-t px-4 pt-6 print:hidden"
+      className="border-line mx-auto grid w-full max-w-3xl gap-3 border-t px-4 pt-6 print:hidden"
     >
       <h2 className="type-heading" id="clip">
         {clip.category === "next_stop_episode"
@@ -73,6 +73,7 @@ export const PairedClip = async ({
             className="h-full w-full"
             loading="lazy"
             referrerPolicy="strict-origin-when-cross-origin"
+            sandbox="allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"
             src={`https://www.youtube-nocookie.com/embed/${id}`}
             title={title}
           />

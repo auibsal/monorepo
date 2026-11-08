@@ -36,7 +36,7 @@ const Tile = ({ file, note }: Logo) => {
         />
       </div>
       <p className="mt-3 font-mono text-sm">{file}</p>
-      <p className="text-sm text-text-secondary">
+      <p className="text-text-secondary text-sm">
         {note}{" "}
         <a className="underline" download href={`brand/${file}`}>
           Download SVG

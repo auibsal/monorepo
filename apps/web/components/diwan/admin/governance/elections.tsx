@@ -259,7 +259,7 @@ const ElectionCard = ({
         <h3 className="type-subheading">
           {localized(election, "title", locale)}
         </h3>
-        <p className="font-medium text-text">{t(`statuses.${status}`)}</p>
+        <p className="text-text font-medium">{t(`statuses.${status}`)}</p>
       </div>
       <p className="type-caption">
         {t("nominationsOpen")}:{" "}
@@ -288,7 +288,7 @@ const ElectionCard = ({
       {data.isPending ? <SectionSpinner /> : null}
       <ErrorLine error={check.error ?? decide.error} />
       <section className="grid gap-3">
-        <h4 className="font-medium text-sm">{t("positions")}</h4>
+        <h4 className="text-sm font-medium">{t("positions")}</h4>
         {data.data && data.data.positions.length === 0 && status === "draft" ? (
           <Button
             className="justify-self-start"
@@ -309,7 +309,7 @@ const ElectionCard = ({
           );
           return (
             <div
-              className="grid gap-2 border-line border-b pb-3"
+              className="border-line grid gap-2 border-b pb-3"
               key={position.id}
             >
               <p className="font-medium">
@@ -541,7 +541,7 @@ const VotingPoint = ({
   });
   return (
     <form
-      className="grid gap-3 border-line border-t pt-3"
+      className="border-line grid gap-3 border-t pt-3"
       onSubmit={(event) => {
         event.preventDefault();
         save.mutate();
@@ -607,7 +607,7 @@ const ElectionResult = ({
   }
   return (
     <div className="grid gap-2">
-      <p className="font-medium text-text">{outcome}</p>
+      <p className="text-text font-medium">{outcome}</p>
       {counts.map((count) => (
         <p className="type-caption" key="count">
           {t("tally", {
@@ -706,9 +706,12 @@ export const NewElection = () => {
         form.voting_opens_at,
         form.voting_closes_at,
       ];
-      const [no, nc, vo, vc] = times.map((v) =>
-        v ? new Date(v).getTime() : Number.NaN
-      );
+      const [
+        no = Number.NaN,
+        nc = Number.NaN,
+        vo = Number.NaN,
+        vc = Number.NaN,
+      ] = times.map((v) => (v ? new Date(v).getTime() : Number.NaN));
       if (!(nc > no && vo >= nc && vc > vo)) {
         setProblem(t("dateError"));
         throw new Error("invalid");
@@ -782,7 +785,7 @@ export const NewElection = () => {
           />
         </div>
         {problem ? (
-          <p className="text-sm text-text" role="alert">
+          <p className="text-text text-sm" role="alert">
             {problem}
           </p>
         ) : null}

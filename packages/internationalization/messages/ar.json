@@ -5,7 +5,6 @@
     "motto": "والقرطاسُ والقلمُ",
     "programmeLine": "أحد برامج جمعية الفنون والآداب",
     "language": "اللغة",
-    "switchLanguage": "تغيير اللغة",
     "otherLanguage": "English",
     "theme": {
       "dark": "الوضع الداكن",
@@ -4188,7 +4187,6 @@
       "involved": "شارك",
       "search": "بحث",
       "diwan": "الديوان",
-      "accountMenu": "قائمة العضوية",
       "company": "الفرقة",
       "partner": "لوحة الشريك"
     },

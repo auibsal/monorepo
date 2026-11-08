@@ -99,10 +99,10 @@ const PrizePage = async ({ params }: PrizeProps) => {
                   <h3 className="type-subheading">
                     {t(`categories.${category}`)}
                   </h3>
-                  <ol className="grid border-line border-b">
+                  <ol className="border-line grid border-b">
                     {ranked.map((r) => (
                       <li
-                        className="grid gap-0.5 border-line border-t py-3"
+                        className="border-line grid gap-0.5 border-t py-3"
                         key={r.entry_id}
                       >
                         <span className="type-body">

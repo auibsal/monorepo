@@ -158,7 +158,7 @@ export const FindPanel = () => {
                     {views.map((v) => (
                       <li className="border-line border-t" key={v.href}>
                         <Link
-                          className="block py-2 hover:text-accent"
+                          className="hover:text-accent block py-2"
                           href={v.href}
                         >
                           {v.label}
@@ -172,7 +172,7 @@ export const FindPanel = () => {
                     {found.map((r) => (
                       <li className="border-line border-t" key={r.key}>
                         <Link
-                          className="flex items-baseline justify-between gap-4 py-2 hover:text-accent"
+                          className="hover:text-accent flex items-baseline justify-between gap-4 py-2"
                           href={r.href}
                         >
                           <span>{r.title}</span>
@@ -196,7 +196,7 @@ export const FindPanel = () => {
           </search>
         ) : (
           <button
-            className="type-caption flex items-center gap-2 py-2 text-text-secondary hover:text-text"
+            className="type-caption text-text-secondary hover:text-text flex items-center gap-2 py-2"
             onClick={() => setOpen(true)}
             type="button"
           >

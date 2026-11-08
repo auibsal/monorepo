@@ -104,7 +104,7 @@ export const documentBody = (
   return { english: !arabic, html: arabic ?? doc.body_en ?? "" };
 };
 
-const HEADING = /<h2>([\s\S]*?)<\/h2>/g;
+const HEADING = /<h2>([\s\S]*?)<\/h2>/gu;
 const ENTITIES: Record<string, string> = {
   "&#39;": "'",
   "&#x27;": "'",
@@ -113,7 +113,7 @@ const ENTITIES: Record<string, string> = {
   "&lt;": "<",
   "&quot;": '"',
 };
-const ENTITY = /&(?:#x27|#39|amp|gt|lt|quot);/g;
+const ENTITY = /&(?:#x27|#39|amp|gt|lt|quot);/gu;
 
 // Tags are stripped by the sanitizer (never by a regex); the entities it
 // leaves are decoded for the table of contents, which React escapes again.
@@ -125,7 +125,7 @@ const anchor = (text: string, index: number) =>
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[^\p{L}\p{N}]+/gu, "-")
-    .replace(/^-|-$/g, "")
+    .replace(/^-|-$/gu, "")
     .slice(0, 60)}`;
 
 /** Another public document a document's text may point to. */
@@ -134,21 +134,21 @@ export interface DocumentRef {
   title: string;
 }
 
-const CODE = /SAL-[A-Z]{3}-\d{2}/;
-const CODES = /SAL-[A-Z]{3}-\d{2}/g;
-const OPENING_PARAGRAPH = /^\s*<p>([\s\S]*?)<\/p>/;
+const CODE = /SAL-[A-Z]{3}-\d{2}/u;
+const CODES = /SAL-[A-Z]{3}-\d{2}/gu;
+const OPENING_PARAGRAPH = /^\s*<p>([\s\S]*?)<\/p>/u;
 // The lines a Notion page opens with for its editors: the other edition's
 // page, and the code, version and owner (the Library shows its own).
 const EDITORS_LINE =
-  /^(?:English edition|Arabic edition|النسخة العربية|النسخة الإنجليزية)\s*:|^SAL-[A-Z]{3}-\d{2}\s*·/;
+  /^(?:English edition|Arabic edition|النسخة العربية|النسخة الإنجليزية)\s*:|^SAL-[A-Z]{3}-\d{2}\s*·/u;
 const NOTION_LINK =
-  /(\s*)<a\b[^>]*href="https:\/\/(?:app\.|www\.)?notion\.(?:so|com|site)[^"]*"[^>]*>([\s\S]*?)<\/a>/g;
-const TAG = /(<[^>]+>)/;
-const OPEN_LINK = /^<a\b/i;
-const CLOSE_LINK = /^<\/a>/i;
+  /(\s*)<a\b[^>]*href="https:\/\/(?:app\.|www\.)?notion\.(?:so|com|site)[^"]*"[^>]*>([\s\S]*?)<\/a>/gu;
+const TAG = /(<[^>]+>)/u;
+const OPEN_LINK = /^<a\b/iu;
+const CLOSE_LINK = /^<\/a>/iu;
 
 const escapeHtml = (text: string) =>
-  text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  text.replace(/&/gu, "&amp;").replace(/</gu, "&lt;").replace(/>/gu, "&gt;");
 
 const dropEditorsLines = (html: string) => {
   let rest = html;
@@ -186,8 +186,8 @@ const dropNotionLinks = (
     }
   );
 
-const NOTION_ID = /([0-9a-f]{32})(?:[?#"]|$)/;
-const DASHES = /-/g;
+const NOTION_ID = /([0-9a-f]{32})(?:[?#"]|$)/u;
+const DASHES = /-/gu;
 
 /** A Notion page's id (32 hex digits) from a link or page address. */
 export const notionPageId = (link: string | null | undefined) => {

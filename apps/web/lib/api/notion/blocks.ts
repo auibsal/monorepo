@@ -15,11 +15,11 @@ const ESCAPES: Record<string, string> = {
   "<": "&lt;",
   ">": "&gt;",
 };
-const ESCAPE = /[&<>"']/g;
+const ESCAPE = /[&<>"']/gu;
 const escapeHtml = (text: string) =>
   text.replace(ESCAPE, (c) => ESCAPES[c] ?? c);
 
-const WEB_LINK = /^https?:\/\//i;
+const WEB_LINK = /^https?:\/\//iu;
 
 const inline = (parts: RichText[]) =>
   parts

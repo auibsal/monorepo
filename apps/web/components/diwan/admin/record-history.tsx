@@ -44,7 +44,7 @@ const FIELDS = [
 ] as const;
 type Field = (typeof FIELDS)[number];
 
-const LANGUAGE_SUFFIX = /_(en|ar)$/;
+const LANGUAGE_SUFFIX = /_(en|ar)$/u;
 
 /** The changed columns as the fields officers know, each once. */
 const fieldsOf = (changed: readonly string[]) => {

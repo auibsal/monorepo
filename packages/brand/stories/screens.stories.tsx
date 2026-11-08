@@ -97,7 +97,7 @@ const List = ({ lang }: { lang: Lang }) => {
           }
           title={t.thisTerm}
         />
-        <ul className="grid divide-y divide-line">
+        <ul className="divide-line grid divide-y">
           <li className="grid gap-2 py-4">
             <h3 className="type-heading">{t.title}</h3>
             <p className="type-body text-text-secondary">{t.line}</p>
@@ -106,7 +106,7 @@ const List = ({ lang }: { lang: Lang }) => {
             </p>
           </li>
           <li className="grid gap-2 py-4">
-            <p className="font-light text-5xl text-text tabular-nums">128</p>
+            <p className="text-text text-5xl font-light tabular-nums">128</p>
             <p className="type-body">{t.members}</p>
           </li>
         </ul>

@@ -4,9 +4,9 @@ import type { AuthError, SupabaseClient } from "@supabase/supabase-js";
 /** AUIB addresses are verified automatically once confirmed. */
 export const AUIB_DOMAIN = "auib.edu.iq";
 
-const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-const SPACES = /\s/g;
-const DOMAIN_TAIL = /\.?auib\.edu\.iq$/;
+const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/u;
+const SPACES = /\s/gu;
+const DOMAIN_TAIL = /\.?auib\.edu\.iq$/u;
 
 export const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
@@ -265,7 +265,7 @@ export const sendMagicLink = async (
   return { ok: true, value: undefined };
 };
 
-const CODE = /^\d{6,10}$/;
+const CODE = /^\d{6,10}$/u;
 
 /**
  * The code in a sign-in or confirmation email, typed in where the link
@@ -277,7 +277,7 @@ export const verifyEmailCode = async (
   email: string,
   code: string
 ): Promise<AuthResult> => {
-  const token = code.replace(/\s/g, "");
+  const token = code.replace(/\s/gu, "");
   if (!CODE.test(token)) {
     return { code: "invalid_code", ok: false };
   }

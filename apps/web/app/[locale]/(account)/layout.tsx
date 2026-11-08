@@ -9,6 +9,10 @@ import { AccountFrame } from "@/components/account/frame";
 import { AppProviders } from "@/components/diwan/providers";
 import { Footer } from "@/components/footer";
 
+// Rendered for each request, so Next can put the request's CSP nonce on
+// its scripts (apps/web/proxy.ts).
+export const dynamic = "force-dynamic";
+
 interface AccountLayoutProperties {
   readonly children: ReactNode;
   readonly params: Promise<{

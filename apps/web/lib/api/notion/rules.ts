@@ -147,7 +147,7 @@ export const checkEvent = (page: NotionPage): Checked<EventValues> => {
   };
 };
 
-const THE_SOCIETY = /^the society$/i;
+const THE_SOCIETY = /^the society$/iu;
 
 /**
  * What an event row says beyond the event itself (decisions §13): its
@@ -235,11 +235,11 @@ export const checkProgram = (page: NotionPage): Checked<ProgramValues> => {
   };
 };
 
-const CODE = /^SAL-(GOV|EXB|EVT|MEM|PTN|MED|ART|EDT)-\d{2}$/;
+const CODE = /^SAL-(GOV|EXB|EVT|MEM|PTN|MED|ART|EDT)-\d{2}$/u;
 
 /** The code families retired on Nov 7, 2026. */
 export const RETIRED_DOCUMENT_FAMILY =
-  /^SAL-(POL|HBK|STR|PRP|BRD|PLT|QRT|CMP|OPS)-/;
+  /^SAL-(POL|HBK|STR|PRP|BRD|PLT|QRT|CMP|OPS)-/u;
 
 export interface DocumentValues {
   audience: "internal" | "public";

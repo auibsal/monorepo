@@ -13,7 +13,7 @@ interface SelectionProps {
   readonly params: Promise<{ locale: Locale; slugs: string[] }>;
 }
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 
 /** The pieces the address names, published and public, in its order. */
 const loadSelection = async (locale: Locale, slugs: readonly string[]) => {

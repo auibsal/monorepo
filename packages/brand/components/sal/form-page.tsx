@@ -16,11 +16,11 @@ interface FormFieldProps {
 /** One field of a form page: the label above, the input, an optional hint. */
 export const FormField = ({ children, hint, id, label }: FormFieldProps) => (
   <div className="grid gap-2">
-    <label className="font-medium text-sm text-text" htmlFor={id}>
+    <label className="text-text text-sm font-medium" htmlFor={id}>
       {label}
     </label>
     {children}
-    {hint ? <p className="text-sm text-text-secondary">{hint}</p> : null}
+    {hint ? <p className="text-text-secondary text-sm">{hint}</p> : null}
   </div>
 );
 
@@ -87,7 +87,7 @@ export const FormPage = ({
   title,
 }: FormPageProps) => (
   <form
-    className={cn("grid max-w-2xl gap-space-6 print:max-w-none", className)}
+    className={cn("gap-space-6 grid max-w-2xl print:max-w-none", className)}
     noValidate
     onSubmit={onSubmit}
   >
@@ -97,9 +97,9 @@ export const FormPage = ({
     {notice ? (
       <div className="bg-surface-reading p-space-5 text-text">{notice}</div>
     ) : null}
-    <div className="grid gap-space-5">{children}</div>
+    <div className="gap-space-5 grid">{children}</div>
     {signature.omit ? null : (
-      <fieldset className="grid gap-space-3 border-line border-t pt-space-5">
+      <fieldset className="gap-space-3 border-line pt-space-5 grid border-t">
         <legend className="sr-only">{signature.label}</legend>
         <FormField
           hint={signature.hint}
@@ -109,7 +109,7 @@ export const FormPage = ({
           <input
             aria-invalid={signature.invalid}
             autoComplete="name"
-            className="h-11 w-full border-text border-b bg-transparent font-signature text-2xl text-text outline-none focus-visible:border-accent"
+            className="border-text font-signature text-text focus-visible:border-accent h-11 w-full border-b bg-transparent text-2xl outline-none"
             id="form-signature"
             maxLength={200}
             name="signature"
@@ -123,18 +123,18 @@ export const FormPage = ({
             value={signature.value}
           />
         </FormField>
-        <p className="text-sm text-text-secondary">
+        <p className="text-text-secondary text-sm">
           {dateLabel} <span className="text-text">{date}</span>
         </p>
       </fieldset>
     )}
-    <div className="grid gap-space-3">
-      <div className="flex flex-wrap items-center gap-space-4 print:hidden">
+    <div className="gap-space-3 grid">
+      <div className="gap-space-4 flex flex-wrap items-center print:hidden">
         <Button disabled={pending} type="submit">
           {submit}
         </Button>
       </div>
-      <p className="text-sm text-text-secondary">{kept}</p>
+      <p className="text-text-secondary text-sm">{kept}</p>
     </div>
   </form>
 );

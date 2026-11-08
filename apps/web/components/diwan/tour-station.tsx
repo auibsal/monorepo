@@ -216,7 +216,7 @@ export const PagePhoto = ({ id }: { id: string }) => {
       // biome-ignore lint/performance/noImgElement: a signed, five-minute link
       <img
         alt={t("photoAlt")}
-        className="max-h-96 w-auto border border-line"
+        className="border-line max-h-96 w-auto border"
         height={600}
         src={link.data.url}
         width={800}

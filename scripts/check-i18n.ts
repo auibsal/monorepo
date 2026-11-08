@@ -18,12 +18,12 @@ const ROOTS = ["apps/web/app", "apps/web/components"];
 // only, like the API it describes and the runbooks (decisions.md).
 const IGNORED_DIRECTORIES = new Set([".next", "node_modules", "developers"]);
 // Latin or Arabic-script letters.
-const LETTERS = /[A-Za-z؀-ۿ]{2,}/;
+const LETTERS = /[A-Za-z؀-ۿ]{2,}/u;
 // Text between a closing ">" and the next "<" on the same line.
-const JSX_TEXT = />([^<>{}]+)</g;
-const TEXT_ATTRIBUTE = /\b(?:placeholder|title|alt|aria-label)="([^"]*)"/g;
+const JSX_TEXT = />([^<>{}]+)</gu;
+const TEXT_ATTRIBUTE = /\b(?:placeholder|title|alt|aria-label)="([^"]*)"/gu;
 // "=> value <" and generics like Array<string> are code, not JSX text.
-const CODE_LIKE = /[=]>|[;=]|^\s*\w+\s*$/;
+const CODE_LIKE = /[=]>|[;=]|^\s*\w+\s*$/u;
 
 interface Finding {
   file: string;

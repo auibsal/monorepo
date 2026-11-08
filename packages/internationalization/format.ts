@@ -175,11 +175,11 @@ export const formatPlainDate = (
     year: "numeric",
   }).format(toDate(value));
 
-const FIELD_VALUE = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/;
+const FIELD_VALUE = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/u;
 
 /** "6:00 PM" → "6:00 p.m." (Chicago 10.41, decisions §13); Arabic as is. */
-const MORNING = /\s?AM$/;
-const EVENING = /\s?PM$/;
+const MORNING = /\s?AM$/u;
+const EVENING = /\s?PM$/u;
 const chicagoTime = (time: string, locale: Locale) =>
   locale === "ar"
     ? time
@@ -285,7 +285,7 @@ export const toZonedInputValue = (value: DateInput | null | undefined) => {
   return `${zoned.getFullYear()}-${pad(zoned.getMonth() + 1)}-${pad(zoned.getDate())}T${pad(zoned.getHours())}:${pad(zoned.getMinutes())}`;
 };
 
-const ZONED_INPUT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/;
+const ZONED_INPUT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/u;
 
 /** "YYYY-MM-DDTHH:mm" in Baghdad → an ISO UTC string; null when empty or invalid. */
 export const fromZonedInputValue = (value: string) => {

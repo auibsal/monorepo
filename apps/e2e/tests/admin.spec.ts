@@ -19,7 +19,7 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
     .or(page.getByRole("button", { name: "New staff piece" }))
     .first()
     .click();
-  await expect(page).toHaveURL(/\/diwan\/qirtas\/pieces\/new$/);
+  await expect(page).toHaveURL(/\/diwan\/qirtas\/pieces\/new$/u);
   await expect(
     page.getByRole("button", { name: "Create the piece" })
   ).toBeVisible();
@@ -36,7 +36,7 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
   await page.getByRole("button", { name: "Use this byline" }).click();
   await expect(page.getByText("The Night Editor")).toBeVisible();
   await page.getByRole("button", { name: "Create the piece" }).click();
-  await expect(page).toHaveURL(/\/diwan\/qirtas\/pieces\/(?!new)[^/?]+$/);
+  await expect(page).toHaveURL(/\/diwan\/qirtas\/pieces\/(?!new)[^/?]+$/u);
 
   // The publish rule keeps it off the site until it is approved.
   await page.goto(`${urls.web}/qirtas/news`);
@@ -51,7 +51,7 @@ test("each event has its own check-in, and the Desk opens the next one", async (
   // The Desk's quick action goes straight to the next event's check-in.
   await expect(
     page.getByRole("link", { name: "Open check-in" })
-  ).toHaveAttribute("href", /\/diwan\/events\/[^/]+\/check-in$/);
+  ).toHaveAttribute("href", /\/diwan\/events\/[^/]+\/check-in$/u);
   await page.goto(`${urls.app}/events/${event.slug}/check-in`);
   await expect(page.getByRole("status")).toContainText("checked in");
   await expectAccessible(page);
@@ -66,7 +66,7 @@ test("editing in the Diwan opens its own page, one step under its list", async (
     .getByRole("link", { name: "The Night Editor" })
     .first();
   await contributor.click();
-  await expect(page).toHaveURL(/\/diwan\/qirtas\/contributors\/[^/]+$/);
+  await expect(page).toHaveURL(/\/diwan\/qirtas\/contributors\/[^/]+$/u);
   await expect(
     page.getByRole("heading", { level: 1, name: "The Night Editor" })
   ).toBeVisible();
@@ -76,7 +76,7 @@ test("editing in the Diwan opens its own page, one step under its list", async (
     .fill("Writes the Society's notes at night.");
   await page.getByRole("button", { name: "Save" }).click();
   // Saving returns to the list it came from.
-  await expect(page).toHaveURL(/\/diwan\/qirtas$/);
+  await expect(page).toHaveURL(/\/diwan\/qirtas$/u);
 });
 
 test("the design system's files open for officers only", async ({

@@ -11,7 +11,7 @@ import { keys } from "@repo/database/keys";
  * reminders for events booked. Emails about the member's own requests,
  * work and account still come.
  */
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 
 const sign = (userId: string) =>
   createHmac("sha256", `sal-email-stop:${keys().SUPABASE_SECRET_KEY ?? ""}`)

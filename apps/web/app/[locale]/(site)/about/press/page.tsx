@@ -49,7 +49,7 @@ const MediaKitPage = async ({ params }: LocaleParams) => {
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {LOGOS.map(([key, file, reversed]) => (
             <li
-              className="grid gap-3 border-line border-t py-space-4"
+              className="border-line py-space-4 grid gap-3 border-t"
               key={key}
             >
               <div
@@ -89,7 +89,7 @@ const MediaKitPage = async ({ params }: LocaleParams) => {
             <li className="grid gap-2" key={hex}>
               <span
                 aria-hidden="true"
-                className="h-16 border border-line"
+                className="border-line h-16 border"
                 style={{ background: hex }}
               />
               <span className="text-sm" dir="ltr" lang="en">

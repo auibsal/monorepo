@@ -45,50 +45,50 @@ interface Rule {
 
 const ARABIC: Rule[] = [
   {
-    pattern: /[ء-ي]ّ?اً/,
+    pattern: /[ء-ي]ّ?اً/u,
     why: "tanween goes on the letter before the alif (ـًا)",
   },
-  { pattern: /[٠-٩۰-۹]/, why: "Latin digits (0-9), as the formatter writes" },
+  { pattern: /[٠-٩۰-۹]/u, why: "Latin digits (0-9), as the formatter writes" },
   {
     pattern:
-      /(يناير|فبراير|أبريل|إبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)/,
+      /(يناير|فبراير|أبريل|إبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)/u,
     why: "Iraqi month names (كانون الثاني … كانون الأول), as ar-IQ formats dates",
   },
   {
-    pattern: /[ء-ي][,;?]|[,;?] ?[ء-ي]/,
+    pattern: /[ء-ي][,;?]|[,;?] ?[ء-ي]/u,
     why: "Arabic punctuation: ، ؛ ؟",
   },
-  { pattern: /[ء-ي][^\n]*[“”]|[“”][^\n]*[ء-ي]/, why: "«» quotes in Arabic" },
+  { pattern: /[ء-ي][^\n]*[“”]|[“”][^\n]*[ء-ي]/u, why: "«» quotes in Arabic" },
 ];
 
 // Iraqi spellings and words (گ, چ, پ and common colloquial words).
 const IRAQI =
-  /[گچپ]|(^|[\s،.])(شلون|هسه|هسّه|ماكو|اكو|شكو|هواية|راح يـ|دا يـ|ليش|شنو)(?=$|[\s،.؟])/;
+  /[گچپ]|(^|[\s،.])(شلون|هسه|هسّه|ماكو|اكو|شكو|هواية|راح يـ|دا يـ|ليش|شنو)(?=$|[\s،.؟])/u;
 
 const ENGLISH: Rule[] = [
   // Chicago: curly quotes and apostrophes ("it’s", “a quote”).
   {
-    pattern: /[A-Za-z]'[A-Za-z]|"/,
+    pattern: /[A-Za-z]'[A-Za-z]|"/u,
     why: "curly quotes and apostrophes (’ “ ”)",
   },
-  { pattern: /\.\.\./, why: "the ellipsis character (…)" },
-  { pattern: /\b(e\.g\.|i\.e\.)/, why: '"for example" or "that is"' },
-  { pattern: /!/, why: "no exclamation marks" },
+  { pattern: /\.\.\./u, why: "the ellipsis character (…)" },
+  { pattern: /\b(e\.g\.|i\.e\.)/u, why: '"for example" or "that is"' },
+  { pattern: /!/u, why: "no exclamation marks" },
   {
     pattern:
-      /\b(colour|centre|programmes?\b|cancelled|cancelling|organis|behaviour|catalogue|travelled|judgement|favourite|honour|theatre|licence|recognis|apologis|labelled|modelling|enrolment|analyse)/i,
+      /\b(colour|centre|programmes?\b|cancelled|cancelling|organis|behaviour|catalogue|travelled|judgement|favourite|honour|theatre|licence|recognis|apologis|labelled|modelling|enrolment|analyse)/iu,
     why: "American spelling",
   },
   // Owner, Nov 7, 2026 (decisions.md, "Retired names"): never use these.
   {
     pattern:
-      /\b(the Salon|Book Circle|Open Pages|Listening Room|Launch Night|[Oo]pen nights?|[Ss]tation days?|Candidates’ Reading|the Ribbon|[Ww]orst-poem contest|Apprenticeships?|First Ink|[Tt]rial term|General Assembly|AGM|Qirtas Awards?|(Tabari|Jahiz|Nazik|Wasiti|Ibn al-Haytham) Award|Qirtas Prizes|[Cc]hapbook|Fellows?|Fellowship|Life Members?|Majlis|Munazara|Mutanabbi Friday|Bad Poetry Night|Open Stage|Scratch Night|Motion Night|Mutanabbi Walk|Productions|Gallery Wall|Month in Qirtas|Side Quest|BusTalks|Waraq|Nexus|Book of (Members|Fellows)|Charter (Night|Day)|Director of (the Company|Letters|Stage and Arts|Programs)|Editor of Qirtas|(Deputy )?Treasurer|Green Room|AUIB SAL HQ|Callboard|Program Leads?|Salon|[Ll]edgers?|[Rr]otas?|[Bb]ook votes?|[Pp]rompt cards?|[Ss]ix programs|Standing Programs?|[Ff]lagships?|the Evenings|the Specials|[Ww]eekly evenings?|[Ff]our-week cycle|[Ee]very fourth week)\b/,
+      /\b(the Salon|Book Circle|Open Pages|Listening Room|Launch Night|[Oo]pen nights?|[Ss]tation days?|Candidates’ Reading|the Ribbon|[Ww]orst-poem contest|Apprenticeships?|First Ink|[Tt]rial term|General Assembly|AGM|Qirtas Awards?|(Tabari|Jahiz|Nazik|Wasiti|Ibn al-Haytham) Award|Qirtas Prizes|[Cc]hapbook|Fellows?|Fellowship|Life Members?|Majlis|Munazara|Mutanabbi Friday|Bad Poetry Night|Open Stage|Scratch Night|Motion Night|Mutanabbi Walk|Productions|Gallery Wall|Month in Qirtas|Side Quest|BusTalks|Waraq|Nexus|Book of (Members|Fellows)|Charter (Night|Day)|Director of (the Company|Letters|Stage and Arts|Programs)|Editor of Qirtas|(Deputy )?Treasurer|Green Room|AUIB SAL HQ|Callboard|Program Leads?|Salon|[Ll]edgers?|[Rr]otas?|[Bb]ook votes?|[Pp]rompt cards?|[Ss]ix programs|Standing Programs?|[Ff]lagships?|the Evenings|the Specials|[Ww]eekly evenings?|[Ff]our-week cycle|[Ee]very fourth week)\b/u,
     why: "a retired name",
   },
   // Document codes (decisions.md): GOV, EXB, EVT, MEM, PTN, MED, ART
   // and EDT; the old families are retired everywhere.
   {
-    pattern: /\bSAL-(POL|HBK|STR|PRP|BRD|PLT|QRT|CMP|OPS)-/,
+    pattern: /\bSAL-(POL|HBK|STR|PRP|BRD|PLT|QRT|CMP|OPS)-/u,
     why: "a retired document code",
   },
 ];
@@ -126,7 +126,7 @@ for (const [key, value] of await readMessages("en")) {
   check(`en.json ${key}`, value, ENGLISH);
 }
 
-const HAS_ARABIC = /[ء-ي]/;
+const HAS_ARABIC = /[ء-ي]/u;
 const copies = await Promise.all(
   COPY_FILES.map(async (file) => ({
     file,

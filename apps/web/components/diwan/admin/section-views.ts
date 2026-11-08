@@ -160,7 +160,7 @@ export const allowedViews = (
   });
 };
 
-const TRAILING_SLASH = /\/$/;
+const TRAILING_SLASH = /\/$/u;
 
 /** The view a Diwan path is, when it is one of a section's own views. */
 export const viewOfPath = (pathname: string): SectionView | undefined => {

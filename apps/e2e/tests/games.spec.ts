@@ -9,21 +9,21 @@ test.describe("Qirtas games", () => {
     await page.goto(`${urls.web}/qirtas/games`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Games");
     await expect(
-      page.getByRole("heading", { level: 2, name: /Today’s word/ })
+      page.getByRole("heading", { level: 2, name: /Today’s word/u })
     ).toBeVisible();
     await expect(page.getByRole("button", { name: "Enter" })).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Play it on its own page" })
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /Find the eight hidden words/ })
+      page.getByRole("link", { name: /Find the eight hidden words/u })
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /Fill the grid from the clues/ })
+      page.getByRole("link", { name: /Fill the grid from the clues/u })
     ).toBeVisible();
     await expect(
       page.getByRole("link", {
-        name: /Five words with their letters scrambled/,
+        name: /Five words with their letters scrambled/u,
       })
     ).toBeVisible();
     await expectAccessible(page);
@@ -32,7 +32,9 @@ test.describe("Qirtas games", () => {
   test("a finished word guess offers a result that keeps the word", async ({
     page,
   }) => {
-    await page.goto(`${urls.web}/qirtas/games/word`);
+    await page.goto(`${urls.web}/qirtas/games/word`, {
+      waitUntil: "networkidle",
+    });
     await expect(page.getByRole("button", { name: "Enter" })).toBeVisible();
     // Six wrong guesses end the game.
     for (const _ of Array.from({ length: 6 })) {
@@ -47,14 +49,18 @@ test.describe("Qirtas games", () => {
   test("a guess in the daily word guess is marked letter by letter", async ({
     page,
   }) => {
-    await page.goto(`${urls.web}/qirtas/games/word`);
+    // The keyboard listens only once the game has hydrated: the button is
+    // in the server's HTML before then, and keys typed early are lost.
+    await page.goto(`${urls.web}/qirtas/games/word`, {
+      waitUntil: "networkidle",
+    });
     await expect(page.getByRole("button", { name: "Enter" })).toBeVisible();
     await page.keyboard.type("VERSE");
     await page.keyboard.press("Enter");
     await expect(
       page
         .getByRole("listitem", { name: "Guess 1" })
-        .getByRole("img", { name: /right place|elsewhere|not in the word/ })
+        .getByRole("img", { name: /right place|elsewhere|not in the word/u })
     ).toHaveCount(5);
     await expectAccessible(page);
   });
@@ -72,7 +78,7 @@ test.describe("Qirtas games", () => {
     page,
   }) => {
     await page.goto(`${urls.web}/qirtas/games/crossword`);
-    await expect(page.getByText(/No\. \d+/)).toBeVisible();
+    await expect(page.getByText(/No\. \d+/u)).toBeVisible();
     const square = page.getByRole("textbox").first();
     await square.click();
     await page.keyboard.type("x");

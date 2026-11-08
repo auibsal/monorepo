@@ -46,7 +46,7 @@ export interface BrandTokens {
   };
 }
 
-const REFERENCE = /^\{([a-z0-9-]+)\}$/;
+const REFERENCE = /^\{([a-z0-9-]+)\}$/u;
 
 const reference = (value: string) => {
   const match = REFERENCE.exec(value);

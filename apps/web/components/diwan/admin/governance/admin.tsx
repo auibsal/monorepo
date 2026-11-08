@@ -378,7 +378,7 @@ const ResolutionEditor = ({
         value={form.text}
       />
       <fieldset className="grid gap-3 sm:grid-cols-3">
-        <legend className="mb-2 font-medium text-sm">
+        <legend className="mb-2 text-sm font-medium">
           {t("resolutions.votes")}
         </legend>
         {(["for", "against", "abstain"] as const).map((vote) => (
@@ -437,7 +437,7 @@ const ResolutionEditor = ({
         </Field>
       </div>
       {problem ? (
-        <p className="text-sm text-text" role="alert">
+        <p className="text-text text-sm" role="alert">
           {problem}
         </p>
       ) : null}

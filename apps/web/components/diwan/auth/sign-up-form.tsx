@@ -174,14 +174,14 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
                 onChange={(event) =>
                   setValues((current) => ({
                     ...current,
-                    email: event.target.value.replace(/\s/g, ""),
+                    email: event.target.value.replace(/\s/gu, ""),
                   }))
                 }
                 required
                 spellCheck={false}
                 value={values.email}
               />
-              <span className="flex items-center border-line border-y border-e px-3 text-sm text-text-secondary">
+              <span className="border-line text-text-secondary flex items-center border-y border-e px-3 text-sm">
                 @{AUIB_DOMAIN}
               </span>
             </div>
@@ -212,7 +212,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
             </p>
             {(["en", "ar"] as const).map((lang) => (
               <fieldset className="grid gap-3" key={lang}>
-                <legend className="mb-2 font-medium text-sm">
+                <legend className="mb-2 text-sm font-medium">
                   {lang === "en" ? t("signUp.nameEn") : t("signUp.nameAr")}
                 </legend>
                 <NamePartsFields

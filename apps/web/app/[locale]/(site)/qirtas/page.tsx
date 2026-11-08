@@ -231,7 +231,7 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
         {edition ? (
           <section
             aria-labelledby="edition"
-            className="grid gap-6 border-line border-t pt-space-4 md:grid-cols-[1fr_2fr]"
+            className="border-line pt-space-4 grid gap-6 border-t md:grid-cols-[1fr_2fr]"
           >
             {cover ? (
               // biome-ignore lint/performance/noImgElement: a published image from the media bucket
@@ -265,7 +265,7 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
       <div className="mx-auto w-full max-w-6xl px-4 py-12">
         <section
           aria-labelledby="newsletter"
-          className="grid gap-4 border-line border-t pt-space-4 md:grid-cols-[1fr_1.4fr] md:items-start"
+          className="border-line pt-space-4 grid gap-4 border-t md:grid-cols-[1fr_1.4fr] md:items-start"
         >
           <div className="grid gap-2">
             <h2 className="type-heading" id="newsletter">

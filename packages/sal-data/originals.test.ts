@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ORIGINAL_LANGUAGES, textDirection } from "./journal";
 
-const CODE = /^[a-z]{2,3}$/;
+const CODE = /^[a-z]{2,3}$/u;
 
 describe("an original's direction", () => {
   it("is right to left for the Arabic-script and Hebrew languages", () => {

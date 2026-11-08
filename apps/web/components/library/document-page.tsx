@@ -9,7 +9,7 @@ import { getTranslations } from "next-intl/server";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 
 const load = (slug: string) =>
   SLUG.test(slug)

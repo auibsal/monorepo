@@ -31,8 +31,8 @@ flowchart LR
 
 One app since October 24, 2026 (owner's decision): the public site, the
 Diwan and the API share one Next.js project, one deployment and one origin.
-The old hosts (nexus.auibsal.org, api.auibsal.org, design.auibsal.org) and
-their Vercel projects are gone.
+Every address is under auibsal.org: the Diwan at `/diwan`, the API at
+`/api`, the design system at `/diwan/media/design`.
 
 ### Principles
 
@@ -49,8 +49,8 @@ their Vercel projects are gone.
    verifies the JWT (`authenticateRequest`) and re-checks the permission
    (`hasPermission`) before using the admin client.
 3. **Multi-step rules are Postgres functions.** RSVPs and waitlist promotion,
-   check-ins, Journal transitions and decisions, ledger sign-off, spending
-   approvals, ballots and the ranked-choice count are `SECURITY DEFINER`
+   check-ins, Qirtas transitions and decisions, ballots and the election
+   count are `SECURITY DEFINER`
    functions with `search_path = ''` in the `private` schema, each checking
    permissions itself; the name the apps call, in the exposed schema, is a
    `SECURITY INVOKER` wrapper with the same signature (migration
@@ -73,13 +73,12 @@ Schemas (all exposed to the Data API, all with RLS on every table):
 | Schema | Contents |
 | --- | --- |
 | `core` | profiles, semesters, blackouts, programmes, settings, activity log, outbox |
-| `access` | permissions, roles (with spending limits), role bundles, role assignments, `has_permission`, `assign_role` |
+| `access` | permissions, roles, role bundles, role assignments, `has_permission`, `assign_role` |
 | `membership` | memberships (tiers), pledges (versioned), verification queue, activity records, calendar tokens, `is_voting_member` |
 | `events` | events, RSVPs, waitlist, staff, check-ins, cached AUIB campus calendar |
 | `journal` | issues, contributors, pieces and their text, calls, submissions, files, blind entries, blind keys, assignments, scores, decisions, agreements, status history |
-| `charity` | partners, campaigns, append-only ledger and sign-offs, receipts, impact metrics |
-| `programmes` | Next Stop episodes and reels, Six Words, rotas, shifts, removal requests |
-| `governance` | Council terms, minutes, resolutions, spending approvals, library, elections, positions, candidates, voters, ballot receipts, ballots, results |
+| `programmes` | Next Stop episodes and reels, Tour pages (Six Words), needs, shifts, openings and replies, removal requests |
+| `governance` | minutes, resolutions, partners and memoranda, forms and signed copies, library, elections, positions, candidates, voters, ballot receipts, ballots, results |
 | `content` | pages, news, media, homepage slots, announcements, document search index, `search()` |
 
 Key designs:
@@ -89,9 +88,6 @@ Key designs:
   `journal.blind_entries` (no author) through their assignments; the mapping
   is `journal.blind_keys`. `journal.entry_author()` reveals the author only
   after a decision.
-- **Ledger.** No update or delete grants for anyone and a trigger that refuses
-  them; corrections are reversing entries. `charity.campaign_progress()`
-  counts signed-off entries only (the signer is never the recorder).
 - **Elections.** `governance.cast_ballot()` writes a receipt (who) and a
   ballot (what) with no shared key, timestamp or order; no client role can
   read ballots. Voters are snapshotted when voting opens. RON is offered on
@@ -118,7 +114,8 @@ indexes on policy columns, and pgTAP tests. Regenerate types and commit them.
 1. Link the project: `cd packages/database && bunx supabase link --project-ref <ref>`.
 2. Apply migrations: `bunx supabase db push` (CI does this on merge to `main`).
 3. **Exposed schemas** (Settings → API): add `core, access, membership, events,
-   journal, charity, programmes, governance, content`.
+   journal, programmes, governance, content`. (The empty `charity` schema
+   is retired: take it out of the list.)
 4. **Auth → URL configuration:** site URL `https://auibsal.org`; redirect
    URLs `https://auibsal.org/**` and `http://localhost:3000/**`. OAuth
    Server: authorization path `/oauth/consent`.

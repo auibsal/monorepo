@@ -41,7 +41,7 @@ export const Signature = ({
   return (
     <figure
       className={cn(
-        "relative flex max-w-md items-center gap-4 overflow-hidden border-line border-y py-3",
+        "border-line relative flex max-w-md items-center gap-4 overflow-hidden border-y py-3",
         className
       )}
     >
@@ -52,13 +52,13 @@ export const Signature = ({
       />
       <div className="grid min-w-0 gap-1">
         <span
-          className="truncate font-signature text-4xl text-text leading-tight"
+          className="font-signature text-text truncate text-4xl leading-tight"
           dir="ltr"
           lang="en"
         >
           {name}
         </span>
-        <figcaption className="type-caption flex flex-wrap gap-x-3 text-text-secondary">
+        <figcaption className="type-caption text-text-secondary flex flex-wrap gap-x-3">
           {number === null ? null : (
             <span>{t("number", { number: cardNumber(number) })}</span>
           )}

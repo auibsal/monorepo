@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 const KEY = "sal_gallery_selection";
 const CHANGED = "sal-gallery-selection";
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 /** As `journal.SELECTION_MAX`, kept here so the toggle stays small. */
 const MAX = 12;
 

@@ -118,7 +118,7 @@ describe.skipIf(
     const stored = await uploadSubmissionFile(author, submissionId, pdf());
     filePath = stored.path;
     expect(filePath).toMatch(
-      new RegExp(`^${submissionId}/[0-9a-f-]{36}\\.pdf$`)
+      new RegExp(`^${submissionId}/[0-9a-f-]{36}\\.pdf$`, "u")
     );
     expect(filePath).not.toContain("Name");
   });

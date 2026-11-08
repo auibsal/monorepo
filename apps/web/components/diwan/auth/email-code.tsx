@@ -45,7 +45,7 @@ export const EmailCode = ({ email }: { email: string }) => {
         <Input
           aria-describedby={`${id}-code-hint`}
           autoComplete="one-time-code"
-          className="max-w-48 tabular-nums tracking-widest"
+          className="max-w-48 tracking-widest tabular-nums"
           dir="ltr"
           id={`${id}-code`}
           inputMode="numeric"

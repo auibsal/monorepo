@@ -42,7 +42,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await applicant.goto(`${urls.web}/partners/apply`);
   await applicant.getByLabel("Name in English").fill(organization);
   await applicant
-    .getByLabel(/What the partnership is for/)
+    .getByLabel(/What the partnership is for/u)
     .fill("Joint poetry readings each term.");
   // A club is at AUIB: where it works is not asked.
   await expect(applicant.getByLabel("Where", { exact: true })).toHaveCount(0);
@@ -52,7 +52,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     applicant.getByRole("figure").filter({ hasText: "E2E Partner" })
   ).toBeVisible();
   await applicant
-    .getByRole("checkbox", { name: /I sign this memorandum/ })
+    .getByRole("checkbox", { name: /I sign this memorandum/u })
     .click();
   await applicant.getByRole("button", { name: "Apply and sign" }).click();
   await expect(
@@ -89,7 +89,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     .single();
   expect(resolved.error).toBeNull();
   const code = resolved.data?.code ?? "";
-  expect(code).toMatch(/^RES-\d{4}-\d{3}$/);
+  expect(code).toMatch(/^RES-\d{4}-\d{3}$/u);
 
   // The President's two-step sign-in is set up afresh.
   const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
@@ -113,7 +113,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await signer
     .getByRole("button", { name: "The Council’s resolution" })
     .click();
-  await signer.getByRole("option", { name: new RegExp(code) }).click();
+  await signer.getByRole("option", { name: new RegExp(code, "u") }).click();
   await signer
     .getByRole("button", { name: "Countersign for the Society" })
     .click();
@@ -170,19 +170,19 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     await group.getByLabel("Grandfather’s name").fill(parts[2]);
     await group.getByLabel("Family name").fill(parts[3]);
   }
-  await guest.getByRole("checkbox", { name: /18 or older/ }).check();
+  await guest.getByRole("checkbox", { name: /18 or older/u }).check();
   const sentAt = Date.now();
   await guest.getByRole("button", { name: "Create account" }).click();
   await expect(guest.getByText("Check your inbox")).toBeVisible();
   const mail = await latestMail(guestEmail, sentAt);
-  const link = /href="([^"]*\/auth\/confirm\?[^"]+)"/.exec(mail.HTML)?.[1];
+  const link = /href="([^"]*\/auth\/confirm\?[^"]+)"/u.exec(mail.HTML)?.[1];
   expect(link).toBeTruthy();
   await guest.goto((link ?? "").replaceAll("&amp;", "&"));
-  await guest.getByRole("button", { name: /continue/i }).click();
+  await guest.getByRole("button", { name: /continue/iu }).click();
   await guest.getByRole("button", { name: "Accept the invitation" }).click();
   // A guest makes the pledges and answers the photo question, like a
   // member, then meets their card.
-  await expect(guest).toHaveURL(/\/welcome/);
+  await expect(guest).toHaveURL(/\/welcome/u);
   await guest
     .getByRole("button", { name: "I make the Human Authorship pledge" })
     .click();
@@ -212,9 +212,9 @@ test("a member who leads their club's partnership stays a member", async ({
   await page.goto(`${urls.web}/partners/apply`);
   await page.getByLabel("Name in English").fill(organization);
   await page
-    .getByLabel(/What the partnership is for/)
+    .getByLabel(/What the partnership is for/u)
     .fill("Readings with the club.");
-  await page.getByRole("checkbox", { name: /I sign this memorandum/ }).click();
+  await page.getByRole("checkbox", { name: /I sign this memorandum/u }).click();
   await page.getByRole("button", { name: "Apply and sign" }).click();
   await expect(
     page.getByRole("heading", { name: "Application received" })
@@ -266,10 +266,10 @@ test("a member who leads their club's partnership stays a member", async ({
       await expect(row.getByRole("link", { name })).toBeVisible();
     }
     await page.goto(`${urls.web}/account/elections`);
-    await expect(page).toHaveURL(/\/account\/elections$/);
+    await expect(page).toHaveURL(/\/account\/elections$/u);
     // Leading a partner is not an officer's role: no Diwan.
     await page.goto(`${urls.app}`);
-    await expect(page).toHaveURL(/\/partners\/dashboard$/);
+    await expect(page).toHaveURL(/\/partners\/dashboard$/u);
     await expect(
       page.getByRole("heading", { level: 1, name: organization })
     ).toBeVisible();

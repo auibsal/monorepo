@@ -11,7 +11,7 @@ import { PageHeader } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
-const CODE = /^[a-z0-9]{6,32}$/;
+const CODE = /^[a-z0-9]{6,32}$/u;
 
 interface CertificateParams {
   readonly params: Promise<{ code: string; locale: Locale }>;
@@ -38,7 +38,7 @@ export const generateMetadata = async ({
  * own check.
  */
 const Rows = ({ rows }: { rows: [string, string][] }) => (
-  <dl className="grid gap-3 border-line border-t p-5">
+  <dl className="border-line grid gap-3 border-t p-5">
     {rows.map(([label, value]) => (
       <div className="grid gap-1 sm:grid-cols-[10rem_1fr]" key={label}>
         <dt className="type-label">{label}</dt>
@@ -91,7 +91,7 @@ const CertificatePage = async ({ params }: CertificateParams) => {
     return (
       <div className="mx-auto grid w-full max-w-xl gap-8 px-4 py-16">
         <PageHeader lede={t("lede")} title={t("title")} />
-        <p className="font-bold text-text" role="status">
+        <p className="text-text font-bold" role="status">
           {letter.revoked_at
             ? t("letterRevoked", { date: date(letter.revoked_at) })
             : t("letterValid")}
@@ -139,7 +139,7 @@ const CertificatePage = async ({ params }: CertificateParams) => {
   return (
     <div className="mx-auto grid w-full max-w-xl gap-8 px-4 py-16">
       <PageHeader lede={t("lede")} title={t("title")} />
-      <p className="font-bold text-text" role="status">
+      <p className="text-text font-bold" role="status">
         {certificate.status === "revoked"
           ? t("revoked", { date: date(certificate.revoked_at) })
           : t("valid")}

@@ -68,7 +68,7 @@ export const Masthead = ({
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-40 border-line border-b bg-surface text-text print:hidden">
+    <header className="border-line bg-surface text-text sticky top-0 z-40 border-b print:hidden">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6 lg:h-[4.75rem] lg:gap-10">
         <NextLink className="flex shrink-0 items-center gap-3" href={home}>
           <BrandLogo className="h-10 lg:h-14" height={56} locale={locale} />
@@ -112,7 +112,7 @@ export const Masthead = ({
         </div>
       </div>
       {open ? (
-        <div className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-line border-t bg-surface px-4 pb-8 text-text sm:px-6 lg:hidden">
+        <div className="border-line bg-surface text-text max-h-[calc(100dvh-4rem)] overflow-y-auto border-t px-4 pb-8 sm:px-6 lg:hidden">
           <nav aria-label={navLabel}>
             <ul className="grid">
               {sections.map((section) => (
@@ -120,7 +120,7 @@ export const Masthead = ({
                   <NextLink
                     aria-current={section.current ? "page" : undefined}
                     className={cn(
-                      "block py-4 font-light text-[1.75rem] leading-tight tracking-[-0.02em]",
+                      "block py-4 text-[1.75rem] leading-tight font-light tracking-[-0.02em]",
                       section.current && "text-accent"
                     )}
                     href={section.href}
@@ -133,7 +133,7 @@ export const Masthead = ({
             </ul>
           </nav>
           {menu ? <div className="mt-6 grid gap-4">{menu(close)}</div> : null}
-          <div className="mt-6 flex items-center gap-6 border-line border-t pt-5">
+          <div className="border-line mt-6 flex items-center gap-6 border-t pt-5">
             {search}
             {language}
             <ThemeToggle />

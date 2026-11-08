@@ -31,16 +31,16 @@ const Row = ({
   name: string;
   usage: string;
 }) => (
-  <li className="grid grid-cols-[5rem_10rem_1fr] items-start gap-4 border-line border-t py-4">
+  <li className="border-line grid grid-cols-[5rem_10rem_1fr] items-start gap-4 border-t py-4">
     {children ?? <span />}
     <code className="font-mono text-sm">{name}</code>
-    <span className="text-sm text-text-secondary">{usage}</span>
+    <span className="text-text-secondary text-sm">{usage}</span>
   </li>
 );
 
 const Swatch = ({ color }: { color: string }) => (
   <span
-    className="block h-12 w-20 border border-line"
+    className="border-line block h-12 w-20 border"
     style={{ background: color }}
   />
 );
@@ -52,7 +52,7 @@ const hex = new Map(brandColors.map((t) => [t.name, t.value as string]));
 /** A role's value in one mode: "{white}" names a brand color. */
 const resolve = (t: Token, mode: string) => {
   const v = typeof t.value === "string" ? t.value : (t.value[mode] ?? "");
-  return hex.get(v.replace(/[{}]/g, "")) ?? v;
+  return hex.get(v.replace(/[{}]/gu, "")) ?? v;
 };
 
 /** The six colors, the reserved two, and the roles components use. */
@@ -125,7 +125,7 @@ export const Type: Story = {
                     {s.sample}
                   </p>
                   <p
-                    className="mt-2 text-sm text-text-secondary"
+                    className="text-text-secondary mt-2 text-sm"
                     dir="ltr"
                     lang="en"
                   >
@@ -151,7 +151,7 @@ export const SpaceAndShape: Story = {
         {tokens.spacing.tokens.map((t) => (
           <Row key={t.name} name={`${t.name} ${t.value}`} usage={t.usage}>
             <span
-              className="block h-3 bg-text"
+              className="bg-text block h-3"
               style={{ width: `min(${t.value}, 5rem)` }}
             />
           </Row>
@@ -179,7 +179,7 @@ export const Icons: Story = {
     <ul className="grid max-w-4xl grid-cols-2 gap-x-6 sm:grid-cols-4">
       {(Object.keys(iconData) as IconName[]).map((name) => (
         <li
-          className="flex items-center justify-between gap-3 border-line border-t py-3 text-sm"
+          className="border-line flex items-center justify-between gap-3 border-t py-3 text-sm"
           key={name}
         >
           <span className="flex items-center gap-3">

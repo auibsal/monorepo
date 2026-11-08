@@ -266,7 +266,7 @@ export const submissionSchema = z
     source_text: z.string().max(200_000).optional(),
     title: z.string().trim().min(1).max(300),
     video_url: z
-      .url({ protocol: /^https$/ })
+      .url({ protocol: /^https$/u })
       .max(500)
       .optional(),
   })
@@ -671,7 +671,7 @@ export const typeNeeds = (category: Category) => {
 const SPACE = /\s+/u;
 const PUNCTUATION = /[\p{P}\p{S}]+/gu;
 const YOUTUBE =
-  /^https:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
+  /^https:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/u;
 
 /** Words in rich text or plain text, for limits and reading time. */
 export const wordCount = (text: string) => {
@@ -893,8 +893,8 @@ export const figureRows = (rows: unknown): FigureRow[] => {
   return parsed.success ? parsed.data : [];
 };
 
-const FIGURE_NUMBER = /^-?\d+(?:[.,]\d+)?$/;
-const FIGURE_LINE = /\r?\n/;
+const FIGURE_NUMBER = /^-?\d+(?:[.,]\d+)?$/u;
+const FIGURE_LINE = /\r?\n/u;
 
 /**
  * A figure's rows as the editor types them, one a line: the English label,

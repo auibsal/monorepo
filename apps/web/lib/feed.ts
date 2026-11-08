@@ -10,13 +10,13 @@ const ESCAPES: Record<string, string> = {
   "<": "&lt;",
   ">": "&gt;",
 };
-const SPECIAL = /["&'<>]/g;
+const SPECIAL = /["&'<>]/gu;
 
 /** Text made safe for XML. */
 const xml = (text: string) => text.replace(SPECIAL, (c) => ESCAPES[c] ?? c);
 
 const LIMIT = 30;
-const FEED = /\/feed\.xml$/;
+const FEED = /\/feed\.xml$/u;
 
 /** The newest published pieces of one section, or of all six, in this language. */
 const latest = async (locale: Locale, desk: journal.Desk | null) => {

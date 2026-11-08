@@ -139,17 +139,17 @@ export const RemovalForm = () => {
         {state.kind === "sending" ? t("sending") : t("send")}
       </Button>
       {state.kind === "failed" ? (
-        <p className="text-sm text-text" role="alert">
+        <p className="text-text text-sm" role="alert">
           {t("failed")}
         </p>
       ) : null}
       {state.kind === "rate_limited" ? (
-        <p className="text-sm text-text" role="alert">
+        <p className="text-text text-sm" role="alert">
           {t("rateLimited")}
         </p>
       ) : null}
       {state.kind === "invalid_email" ? (
-        <p className="text-sm text-text" role="alert">
+        <p className="text-text text-sm" role="alert">
           {t("invalidEmail")}
         </p>
       ) : null}

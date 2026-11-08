@@ -5,7 +5,7 @@ import {
   zonedYearMonth,
 } from "@repo/internationalization/format";
 
-const MONTH = /^(\d{4})-(\d{2})$/;
+const MONTH = /^(\d{4})-(\d{2})$/u;
 
 export interface Month {
   /** First instant of the month (Baghdad midnight). */

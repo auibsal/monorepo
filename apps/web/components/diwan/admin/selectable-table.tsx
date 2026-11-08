@@ -75,7 +75,7 @@ export const SelectableTable = <T,>({
     <div className="grid gap-3">
       {chosen.length > 0 ? (
         <div
-          className="flex flex-wrap items-center gap-x-4 gap-y-2 border-line border-y py-2"
+          className="border-line flex flex-wrap items-center gap-x-4 gap-y-2 border-y py-2"
           role="toolbar"
         >
           <p className="type-caption" role="status">

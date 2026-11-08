@@ -21,12 +21,12 @@ const paths = (value: unknown, prefix = ""): string[] => {
 };
 
 // Simple arguments ({name}) and ICU arguments ({count, plural, …}).
-const PLACEHOLDER = /\{(\w+)(?=[,}])/g;
-const PATH_SEGMENT = /\.|\[(\d+)\]/;
+const PLACEHOLDER = /\{(\w+)(?=[,}])/gu;
+const PATH_SEGMENT = /\.|\[(\d+)\]/u;
 const placeholders = (text: string) =>
   [...new Set([...text.matchAll(PLACEHOLDER)].map((match) => match[1]))].sort();
 
-const TAG = /<([a-z]+)>/g;
+const TAG = /<([a-z]+)>/gu;
 
 describe("messages", () => {
   test("every enabled locale has a messages file", () => {

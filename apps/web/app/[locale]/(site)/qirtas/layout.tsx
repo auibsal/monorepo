@@ -15,7 +15,7 @@ const PaperLayout = async ({
 }) => {
   const { locale } = await params;
   return (
-    <div className="h-full bg-surface-reading">
+    <div className="bg-surface-reading h-full">
       <div className="mx-auto w-full max-w-6xl px-4 pt-10 print:hidden">
         <Nameplate locale={locale as Locale} />
       </div>

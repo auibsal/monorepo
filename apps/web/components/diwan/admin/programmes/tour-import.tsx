@@ -148,7 +148,7 @@ export const TourImport = () => {
       <ErrorLine error={load.error} />
 
       {counts ? (
-        <div className="grid gap-3 border-line border-t pt-4">
+        <div className="border-line grid gap-3 border-t pt-4">
           <p className="type-body">
             {t("status", {
               joined: formatNumber(counts.joined),

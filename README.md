@@ -21,7 +21,7 @@ Playwright and axe journeys.
 
 ## Stack
 
-Next.js 16 and React on Node.js 24, Bun workspaces with Turborepo,
+Next.js 16 and React on Node.js 26 (LTS), Bun workspaces with Turborepo,
 TypeScript, Tailwind CSS and shadcn/ui, next-intl. Supabase (Postgres with
 Row Level Security on every table, Auth, Storage, pg_cron), Vercel
 (hosting, cookieless Web Analytics), Resend (email), Notion (the officers’
@@ -30,7 +30,7 @@ Playwright with axe. Lint and format: Biome (Ultracite).
 
 ## Setup
 
-Prerequisites: Node.js 24 (`.nvmrc`), [Bun](https://bun.sh) and Docker
+Prerequisites: Node.js 26 (`.nvmrc`), [Bun](https://bun.sh) and Docker
 (for the local Supabase stack).
 
 ```sh
@@ -80,6 +80,7 @@ hand. The nightly backup and how to restore it: `docs/platform/backups.md`.
 - `AGENTS.md`: the code conventions for people and AI agents
 - `packages/brand/BRAND-BOOK.md`: the brand rules
 - `ARCHITECTURE_AND_INTEGRATIONS.md`: how the pieces fit together
+- `docs/adr/`: the technical decisions and why
 - `docs/platform/`: the runbooks (email, backups, retention, secrets, vendors, releases, incidents)
 - `PROGRESS.md`: what is done and what is open
 

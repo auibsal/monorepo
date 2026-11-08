@@ -43,7 +43,7 @@ const Choices = <T extends string>({
   const id = useId();
   return (
     <fieldset className="grid gap-3">
-      <legend className="mb-2 font-medium text-sm">{label}</legend>
+      <legend className="mb-2 text-sm font-medium">{label}</legend>
       <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3">
         {options.map((option) => (
           <div className="flex items-center gap-2" key={option}>

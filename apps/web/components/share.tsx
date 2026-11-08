@@ -55,7 +55,7 @@ export const ShareLink = ({
   return (
     <span className="inline-flex flex-wrap items-baseline gap-x-3 gap-y-1 print:hidden">
       <button
-        className="inline-flex items-center gap-1.5 text-text underline decoration-1 underline-offset-4 transition-colors duration-quick ease-standard hover:text-accent"
+        className="text-text duration-quick ease-standard hover:text-accent inline-flex items-center gap-1.5 underline decoration-1 underline-offset-4 transition-colors"
         onClick={share}
         type="button"
       >

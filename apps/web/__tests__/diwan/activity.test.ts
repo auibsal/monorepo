@@ -22,31 +22,31 @@ describe("what happened", () => {
     const dropped = new Set(
       [
         ...sql.matchAll(
-          /drop table (?:if exists )?([a-z_., ]+?)(?: cascade)?;/g
+          /drop table (?:if exists )?([a-z_., ]+?)(?: cascade)?;/gu
         ),
       ]
         .flatMap((m) => (m[1] ?? "").split(","))
         .map((table) => table.trim())
     );
     const droppedSchemas = new Set(
-      [...sql.matchAll(/drop schema ([a-z_]+) cascade/g)].map((m) => m[1])
+      [...sql.matchAll(/drop schema ([a-z_]+) cascade/gu)].map((m) => m[1])
     );
     // A renamed table (`alter table s.old rename to new`) is logged under
     // its new name.
     const renamed = new Map(
       [
         ...sql.matchAll(
-          /alter table ([a-z_]+)\.([a-z_]+) rename to ([a-z_]+);/g
+          /alter table ([a-z_]+)\.([a-z_]+) rename to ([a-z_]+);/gu
         ),
-      ].map((m) => [`${m[1]}.${m[2]}`, `${m[1]}.${m[3]}`])
+      ].map((m): [string, string] => [`${m[1]}.${m[2]}`, `${m[1]}.${m[3]}`])
     );
     const logged = [
-      ...sql.matchAll(/log_activity after [a-z ,]+ on ([a-z_]+\.[a-z_]+)/g),
+      ...sql.matchAll(/log_activity after [a-z ,]+ on ([a-z_]+\.[a-z_]+)/gu),
     ]
-      .map((m) => renamed.get(m[1]) ?? m[1])
+      .map((m) => renamed.get(m[1] ?? "") ?? m[1] ?? "")
       .filter(
         (table) =>
-          !(dropped.has(table) || droppedSchemas.has(table.split(".")[0]))
+          !(dropped.has(table) || droppedSchemas.has(table.split(".")[0] ?? ""))
       );
     const source = readFileSync(
       join(

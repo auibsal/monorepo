@@ -22,10 +22,10 @@ import { formKeys, registerFields } from "../packages/sal-data/forms";
 const NOTION = "https://api.notion.com/v1";
 const VERSION = "2026-03-11";
 const CODE = "SAL-EXB-01";
-const ENTRY = /^SAL-EXB-01 · (F-\d{2})\s*(.*?)\s*(?:·|$)/;
-const SINGLE_QUOTES = /[‘’]/g;
-const DOUBLE_QUOTES = /[“”]/g;
-const SPACES = /\s+/g;
+const ENTRY = /^SAL-EXB-01 · (F-\d{2})\s*(.*?)\s*(?:·|$)/u;
+const SINGLE_QUOTES = /[‘’]/gu;
+const DOUBLE_QUOTES = /[“”]/gu;
+const SPACES = /\s+/gu;
 
 interface Block {
   has_children?: boolean;

@@ -176,7 +176,9 @@ export const EventsBrowser = () => {
   useEffect(() => {
     const slug = decodeURIComponent(window.location.hash.slice(1));
     if (loaded && slug) {
-      document.getElementById(slug)?.scrollIntoView({ block: "start" });
+      document
+        .querySelector(`#${CSS.escape(slug)}`)
+        ?.scrollIntoView({ block: "start" });
     }
   }, [loaded]);
 
@@ -467,7 +469,7 @@ const EventCard = ({
 
   return (
     <li className="scroll-mt-28" id={event.slug}>
-      <article className="grid h-full content-start gap-3 border-line border-t pt-space-4">
+      <article className="border-line pt-space-4 grid h-full content-start gap-3 border-t">
         <h2 className="type-heading">{localized(event, "title", locale)}</h2>
         <p className="type-caption">
           {formatLongDate(event.starts_at, locale)} ·{" "}

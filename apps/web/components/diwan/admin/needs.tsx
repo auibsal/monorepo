@@ -151,7 +151,7 @@ const NeedRow = ({
   ].filter(Boolean);
 
   return (
-    <li className="grid gap-2 border-line border-t py-space-4">
+    <li className="border-line py-space-4 grid gap-2 border-t">
       <p className="type-subheading">{need.item}</p>
       <p className="type-caption">{facts.join(" · ")}</p>
       <p className="type-body">{need.purpose}</p>

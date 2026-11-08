@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import { isSignedOgTitle } from "@/lib/og-signature";
 
 // The brand's post on the white ground (packages/brand/assets/components/previews/
 // SocialPost.md), at the Open Graph size: the lockup in the page's language
@@ -14,7 +15,7 @@ const INK = "#273236";
 const ASH = "#5c6568";
 
 const SIZE = { height: 630, width: 1200 };
-const WHITESPACE = /\s+/;
+const WHITESPACE = /\s+/u;
 
 /** Words with their position in the text (a stable key). */
 const wordsOf = (text: string) => {
@@ -74,7 +75,12 @@ export const GET = async (
   const lang = locale === "ar" ? "ar" : "en";
   const rtl = lang === "ar";
   const search = new URL(request.url).searchParams;
-  const title = (search.get("title") ?? NAME[lang]).slice(0, 120);
+  // A title is drawn only with the site's signature (lib/og-signature.ts).
+  const asked = (search.get("title") ?? "").slice(0, 120);
+  const title =
+    asked && isSignedOgTitle(lang, asked, search.get("sig"))
+      ? asked
+      : NAME[lang];
   const [light, arabic, lockup] = await Promise.all([
     asset("Ubuntu-Light.ttf"),
     asset("UbuntuArabic-Regular.ttf"),

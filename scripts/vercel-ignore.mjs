@@ -14,7 +14,7 @@
 import { execSync } from "node:child_process";
 
 const message = execSync("git log -1 --pretty=%s", { encoding: "utf8" });
-if (/\[(skip ci|vercel skip)\]/i.test(message)) {
+if (/\[(skip ci|vercel skip)\]/iu.test(message)) {
   console.log("Skipping the build: the commit message says so.");
   process.exit(0);
 }

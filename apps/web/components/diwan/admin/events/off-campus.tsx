@@ -89,7 +89,7 @@ export const EventOffCampus = ({
       </div>
       <ErrorLine error={toggle.error} />
       {event.off_campus ? (
-        <div className="grid gap-4 border-line border-t pt-4">
+        <div className="border-line grid gap-4 border-t pt-4">
           <p className="type-body">
             {approvedOn
               ? t("approvedBy", {

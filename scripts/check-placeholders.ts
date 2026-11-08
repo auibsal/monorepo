@@ -7,7 +7,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { extname, join, relative } from "node:path";
 
 const root = process.cwd();
-const TOKEN = /\{\{([A-Z][A-Z0-9_]*)\}\}/g;
+const TOKEN = /\{\{([A-Z][A-Z0-9_]*)\}\}/gu;
 
 const IGNORED_DIRECTORIES = new Set([
   ".git",

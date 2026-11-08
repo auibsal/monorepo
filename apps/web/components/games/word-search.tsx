@@ -107,7 +107,7 @@ export const WordSearchGame = ({
       lang={lang}
     >
       <fieldset
-        className="m-0 grid w-full min-w-0 max-w-lg gap-1 border-0 p-0"
+        className="m-0 grid w-full max-w-lg min-w-0 gap-1 border-0 p-0"
         style={{
           gridTemplateColumns: `repeat(${search.size}, minmax(0, 1fr))`,
         }}
@@ -127,9 +127,9 @@ export const WordSearchGame = ({
                 })}
                 aria-pressed={isStart}
                 className={cn(
-                  "aspect-square rounded-sm border font-semibold text-base uppercase sm:text-lg",
+                  "aspect-square rounded-sm border text-base font-semibold uppercase sm:text-lg",
                   isFound
-                    ? "border-line border-t text-text"
+                    ? "border-line text-text border-t"
                     : "border-transparent",
                   isStart && "border-text bg-text text-surface"
                 )}

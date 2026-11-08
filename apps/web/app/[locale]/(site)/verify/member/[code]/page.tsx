@@ -104,7 +104,7 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
         <p className="type-heading">{t("live")}</p>
         <p className="type-body">{card.active ? t("valid") : t("lapsed")}</p>
       </div>
-      <dl className="grid gap-3 border-line border-t pt-5">
+      <dl className="border-line grid gap-3 border-t pt-5">
         {rows.map(([label, value, dir]) => (
           <div className="grid gap-1 sm:grid-cols-[10rem_1fr]" key={label}>
             <dt className="type-label">{label}</dt>

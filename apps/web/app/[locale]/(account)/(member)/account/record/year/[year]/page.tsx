@@ -7,7 +7,7 @@ export const generateMetadata = titleFrom((t) =>
   t("diwan.service.year.section")
 );
 
-const YEAR = /^\d{4}$/;
+const YEAR = /^\d{4}$/u;
 
 /** A member's year at the Society, to keep or print (the design review C23). */
 const Page = async ({

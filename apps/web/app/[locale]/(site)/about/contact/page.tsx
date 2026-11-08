@@ -33,7 +33,7 @@ const ContactPage = async ({ params }: LocaleParams) => {
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")} />
       <dl className="grid gap-4 sm:grid-cols-3">
-        <div className="grid gap-1 border-line border-t py-space-4">
+        <div className="border-line py-space-4 grid gap-1 border-t">
           <dt className="type-caption">{t("instagram")}</dt>
           <dd>
             <a
@@ -47,7 +47,7 @@ const ContactPage = async ({ params }: LocaleParams) => {
             </a>
           </dd>
         </div>
-        <div className="grid gap-1 border-line border-t py-space-4">
+        <div className="border-line py-space-4 grid gap-1 border-t">
           <dt className="type-caption">{t("telegram")}</dt>
           <dd className="type-subheading" dir="ltr" lang="en">
             {telegram ? (
@@ -64,7 +64,7 @@ const ContactPage = async ({ params }: LocaleParams) => {
             )}
           </dd>
         </div>
-        <div className="grid gap-1 border-line border-t py-space-4">
+        <div className="border-line py-space-4 grid gap-1 border-t">
           <dt className="type-caption">{t("email")}</dt>
           <dd>
             <a
@@ -78,7 +78,7 @@ const ContactPage = async ({ params }: LocaleParams) => {
         </div>
       </dl>
       <Section id="concern" title={t("concernTitle")}>
-        <blockquote className="grid gap-1 border-accent border-s-2 ps-4">
+        <blockquote className="border-accent grid gap-1 border-s-2 ps-4">
           <p className="type-body">{t("concern")}</p>
           <footer className="type-caption">{t("concernSource")}</footer>
         </blockquote>

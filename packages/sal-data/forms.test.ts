@@ -19,7 +19,7 @@ describe("forms", () => {
   test("every form here is in the database registry, and only those", () => {
     const registered = [
       ...migration.matchAll(
-        /\('(f\d{2})', 'F-\d{2}', '[^']+', '[^']+', 'site'/g
+        /\('(f\d{2})', 'F-\d{2}', '[^']+', '[^']+', 'site'/gu
       ),
     ].map((m) => m[1]);
     expect(registered.sort()).toEqual([...formKeys].sort());

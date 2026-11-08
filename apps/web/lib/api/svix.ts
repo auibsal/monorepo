@@ -4,7 +4,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 /** How old a delivery may be (Svix's own tolerance). */
 const TOLERANCE_S = 5 * 60;
-const SECRET_PREFIX = /^whsec_/;
+const SECRET_PREFIX = /^whsec_/u;
 
 /**
  * Verifies a webhook signed the Svix way, as Resend signs its webhooks:

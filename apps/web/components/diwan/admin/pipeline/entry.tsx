@@ -266,7 +266,7 @@ const EditorPanel = ({ entry }: { entry: EntryData }) => {
       {reads.length === 0 ? <p>{t("entry.noReads")}</p> : null}
       <ul className="grid gap-3">
         {reads.map((a) => (
-          <li className="grid gap-1 border-line border-t p-4" key={a.id}>
+          <li className="border-line grid gap-1 border-t p-4" key={a.id}>
             <p className="font-medium">
               {t("readNumber", { number: formatNumber(a.read_number) })}:{" "}
               {typeof a.score?.total === "number"
@@ -454,7 +454,7 @@ export const EntryView = () => {
       </AdminHeading>
 
       {decision ? (
-        <section className="grid gap-2 border-line border-t p-4">
+        <section className="border-line grid gap-2 border-t p-4">
           <p className="font-medium">
             {t(`decisions.${decision.decision as Decision}`)}
           </p>

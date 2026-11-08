@@ -45,8 +45,8 @@ export const AdminHeading = ({
   title,
 }: AdminHeadingProps) => (
   <header className="grid gap-3">
-    <div className="flex flex-wrap items-end justify-between gap-x-space-4 gap-y-3">
-      <h1 className="type-title text-balance font-light">{title}</h1>
+    <div className="gap-x-space-4 flex flex-wrap items-end justify-between gap-y-3">
+      <h1 className="type-title font-light text-balance">{title}</h1>
       {actions ? (
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           {actions}
@@ -54,7 +54,7 @@ export const AdminHeading = ({
       ) : null}
     </div>
     {children ? (
-      <div className="type-lede max-w-[60ch] text-text-secondary">
+      <div className="type-lede text-text-secondary max-w-[60ch]">
         {children}
       </div>
     ) : null}
@@ -126,12 +126,12 @@ export const AddInPlace = ({
   return (
     <section
       aria-label={label}
-      className="grid max-w-3xl gap-4 border-line border-t pt-space-4"
+      className="border-line pt-space-4 grid max-w-3xl gap-4 border-t"
       ref={region}
     >
       {children(close)}
       <button
-        className="link justify-self-start text-text-secondary"
+        className="link text-text-secondary justify-self-start"
         onClick={close}
         type="button"
       >
@@ -212,7 +212,7 @@ export const DataTable = <T,>({
 
   if (rows.length === 0) {
     return (
-      <p className="type-body py-6 text-text-secondary">
+      <p className="type-body text-text-secondary py-6">
         {empty ?? t("empty")}
       </p>
     );
@@ -227,7 +227,7 @@ export const DataTable = <T,>({
             {columns.map((column) => (
               <th
                 className={cn(
-                  "type-label whitespace-nowrap px-2 py-3 text-start align-bottom",
+                  "type-label px-2 py-3 text-start align-bottom whitespace-nowrap",
                   column.className
                 )}
                 key={column.key}
@@ -238,7 +238,7 @@ export const DataTable = <T,>({
             ))}
           </tr>
         </thead>
-        <tbody className="max-md:block max-md:border-line max-md:border-t">
+        <tbody className="max-md:border-line max-md:block max-md:border-t">
           {rows.map((row) => (
             <tr
               className="border-line border-b max-md:grid max-md:gap-1.5 max-md:py-3"
@@ -249,9 +249,9 @@ export const DataTable = <T,>({
                   className={cn(
                     "px-2 py-3 align-top",
                     column.className,
-                    "max-md:whitespace-normal max-md:px-0 max-md:py-0 max-md:text-start",
+                    "max-md:px-0 max-md:py-0 max-md:text-start max-md:whitespace-normal",
                     index === 0
-                      ? "max-md:block max-md:font-medium max-md:text-base"
+                      ? "max-md:block max-md:text-base max-md:font-medium"
                       : "max-md:grid max-md:grid-cols-[minmax(6rem,35%)_1fr] max-md:items-baseline max-md:gap-3"
                   )}
                   key={column.key}
@@ -336,7 +336,7 @@ export const BilingualField = ({
   const Control = multiline ? Textarea : Input;
   return (
     <fieldset className="grid gap-3 sm:grid-cols-2">
-      <legend className="mb-2 font-medium text-sm">{label}</legend>
+      <legend className="mb-2 text-sm font-medium">{label}</legend>
       <Field label={t("english")}>
         {(id) => (
           <Control
@@ -452,7 +452,7 @@ const useErrorReason = () => {
 export const ErrorLine = ({ error }: { error: unknown }) => {
   const reason = useErrorReason();
   return error ? (
-    <p className="text-sm text-text" role="alert">
+    <p className="text-text text-sm" role="alert">
       {reason(error)}
     </p>
   ) : null;

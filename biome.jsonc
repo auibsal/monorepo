@@ -15,6 +15,11 @@
         // Inline handlers are idiomatic React; the re-render cost is negligible
         // and the React Compiler memoizes them where it matters.
         "noJsxPropsBind": "off"
+      },
+      "style": {
+        // Short patterns (dates, slugs, codes) read best with numbered
+        // groups; named groups are used where a match has several parts.
+        "useNamedCaptureGroup": "off"
       }
     }
   },
@@ -47,6 +52,14 @@
         "rules": {
           "performance": { "noAwaitInLoops": "off", "useTopLevelRegex": "off" }
         }
+      }
+    },
+    {
+      // Each Tailwind @utility is its own scope, so the same :lang(ar)
+      // selector in two utilities is not a duplicate.
+      "includes": ["packages/brand/styles/**"],
+      "linter": {
+        "rules": { "suspicious": { "noDuplicateSelectors": "off" } }
       }
     },
     {

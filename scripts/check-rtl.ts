@@ -50,7 +50,7 @@ const LOGICAL: Record<string, string> = {
   "text-right": "text-end",
 };
 
-const STRING_LITERAL = /"[^"\n]*"|'[^'\n]*'|`[^`]*`/g;
+const STRING_LITERAL = /"[^"\n]*"|'[^'\n]*'|`[^`]*`/gu;
 const VALUE = String.raw`-[\w[\]()./%,#-]+`;
 // Insets, margins and paddings take spacing values (0, 1/2, px, auto, full,
 // [10px]…), so prose like "left-to-right" isn't mistaken for a class.
@@ -60,15 +60,15 @@ const SPACING = String.raw`-(?:\[[^\]\s]*\]|px|auto|full|screen|\d[\w./%]*)`;
 // paddings need a value (left-0, ml-2); borders, corners, floats and text
 // alignment also exist bare (border-l, rounded-r, text-left).
 const PHYSICAL = new RegExp(
-  String.raw`(?<=^|[\s"'\`])((?:(?:[\w-]|\[[^\]\s]*\])+:)*)(!?-?)` +
+  String.raw`(?<=^|[\s"'\x60])((?:(?:[\w-]|\[[^\]\s]*\])+:)*)(!?-?)` +
     `(?:(left|right|scroll-[mp][lr]|[mp][lr])(${SPACING})` +
     `|(border-[lr]|rounded-(?:[tb][lr]|[lr])|float-(?:left|right)|text-(?:left|right))(${VALUE})?)` +
-    String.raw`(?=[\s"'\`!]|$)`,
-  "g"
+    String.raw`(?=[\s"'\x60!]|$)`,
+  "gu"
 );
-const CENTERING = /^-(1\/2|\[50%\])$/;
+const CENTERING = /^-(1\/2|\[50%\])$/u;
 // Variants that already pick a side on purpose.
-const DIRECTIONAL_VARIANT = /(^|:)(rtl|ltr):|side=/;
+const DIRECTIONAL_VARIANT = /(^|:)(rtl|ltr):|side=/u;
 
 interface Finding {
   column: number;

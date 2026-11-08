@@ -368,7 +368,7 @@ export const registerFields: Record<FormKey, readonly string[]> = {
   ],
 };
 
-const FORM_PREFIX = /^f-?/i;
+const FORM_PREFIX = /^f-?/iu;
 
 /** "F-06" → "f06": the address of a form is its number. */
 export const keyFromNumber = (number: string) =>
@@ -411,7 +411,7 @@ const outOfRange = (field: FormField, value: unknown) => {
   );
 };
 
-const URL_PATTERN = /^https?:\/\//;
+const URL_PATTERN = /^https?:\/\//u;
 
 const badChoice = (field: FormField, value: unknown) => {
   if (isBlank(value)) {

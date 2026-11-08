@@ -50,7 +50,14 @@ blanks what the site already has.
 
 The route `/api/cron/notion-sync`, called by pg_cron (`sal-notion-sync`)
 every fifteen minutes with the cron secret, runs these steps in order
-(`apps/web/lib/api/notion/run.ts`):
+(`apps/web/lib/api/notion/run.ts`). Notion's webhook (`/api/hooks/notion`)
+starts the same run within a minute of a change, at most once a minute;
+the fifteen-minute run stays as the reconcile. To turn the webhook on: in
+the “SAL Platform” connection's Webhooks tab, subscribe
+`https://auibsal.org/api/hooks/notion` to page events; Notion's first call
+puts the verification token in the Vercel runtime log; paste it into
+Notion to verify, and set it as `NOTION_WEBHOOK_SECRET` in Vercel
+(Production).
 
 1. **Officers** (`mirrors.ts`): `access.officer_directory()`, the nine
    seats by full title (Editor-in-Chief, Director of Media, …), matched to
@@ -121,7 +128,7 @@ the workspace (Notion's API cannot invite people).
 - Volunteers (rotas, crews) are added as **guests** on their project's pages
   only.
 - Never put member records, RSVPs by name, ballots, submissions or authors,
-  ledger entries, certificates or confidential forms in Notion.
+  certificates or confidential forms in Notion.
 
 ## When something is wrong
 

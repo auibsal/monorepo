@@ -36,9 +36,9 @@ export const newRecoveryCode = () =>
 export const normalizeRecoveryCode = (code: string) =>
   code
     .toUpperCase()
-    .replace(/[\s-]/g, "")
-    .replace(/O/g, "0")
-    .replace(/[IL]/g, "1");
+    .replace(/[\s-]/gu, "")
+    .replace(/O/gu, "0")
+    .replace(/[IL]/gu, "1");
 
 /** What is stored: a hash keyed with the server's secret, never the code. */
 export const hashRecoveryCode = (code: string) =>

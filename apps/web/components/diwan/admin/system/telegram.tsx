@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { callApi } from "@/lib/diwan/api";
 import { ErrorLine, Field, SaveButton } from "../kit";
 
-const LEADING_AT = /^@/;
+const LEADING_AT = /^@/u;
 
 interface BotStatus {
   configured: boolean;

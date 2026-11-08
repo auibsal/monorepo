@@ -88,7 +88,7 @@ export const FigureChart = ({
             <li key={row.label}>
               <button
                 aria-label={`${row.label}: ${withUnit(row)}`}
-                className="grid w-full grid-cols-[minmax(6rem,10rem)_1fr] items-center gap-3 text-start outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="focus-visible:ring-accent grid w-full grid-cols-[minmax(6rem,10rem)_1fr] items-center gap-3 text-start outline-none focus-visible:ring-2"
                 onBlur={() => setActive(null)}
                 onFocus={() => setActive(index)}
                 onMouseEnter={() => setActive(index)}
@@ -98,7 +98,7 @@ export const FigureChart = ({
                 <span className="truncate text-sm">{row.label}</span>
                 <span className="relative flex h-6 items-center">
                   <span
-                    className={`block h-full transition-colors duration-quick ease-standard ${
+                    className={`duration-quick ease-standard block h-full transition-colors ${
                       on ? "bg-accent" : "bg-text"
                     }`}
                     // Room is kept at the end for the value beside the longest bar.
@@ -107,7 +107,7 @@ export const FigureChart = ({
                     }}
                   />
                   {on ? (
-                    <span className="ms-2 whitespace-nowrap text-sm tabular-nums">
+                    <span className="ms-2 text-sm whitespace-nowrap tabular-nums">
                       {withUnit(row)}
                     </span>
                   ) : null}

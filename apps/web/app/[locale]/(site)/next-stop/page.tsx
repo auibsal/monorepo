@@ -76,10 +76,10 @@ const NextStopPage = async ({ params }: NextStopProps) => {
           <h2 className="type-heading" id="crew">
             {t("nextStop.team")}
           </h2>
-          <ul className="grid border-line border-b sm:grid-cols-2 sm:gap-x-10">
+          <ul className="border-line grid border-b sm:grid-cols-2 sm:gap-x-10">
             {team.map((person) => (
               <li
-                className="grid gap-1 border-line border-t py-3"
+                className="border-line grid gap-1 border-t py-3"
                 key={`${person.full_name_en}-${person.title_en}`}
               >
                 <span className="type-subheading">

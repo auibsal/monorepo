@@ -3,8 +3,8 @@ import { memberFeed } from "@/lib/api/calendar";
 import { icsResponse, renderCalendar } from "@/lib/api/ics";
 import { problem } from "@/lib/api/problem";
 
-const TOKEN = /^[0-9a-f]{48}$/;
-const ICS_SUFFIX = /\.ics$/;
+const TOKEN = /^[0-9a-f]{48}$/u;
+const ICS_SUFFIX = /\.ics$/u;
 
 /** GET /calendar/feed/<token>.ics — a member's private iCal feed. */
 export const GET = async (

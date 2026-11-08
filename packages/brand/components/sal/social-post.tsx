@@ -97,8 +97,8 @@ export const SocialPost = ({
           className={cn(
             "absolute m-0",
             arabic
-              ? "font-normal leading-[1.3]"
-              : "font-light leading-none tracking-[-0.03em]"
+              ? "leading-[1.3] font-normal"
+              : "leading-none font-light tracking-[-0.03em]"
           )}
           style={{
             fontSize: u(arabic ? 132 : 160),
@@ -126,7 +126,7 @@ export const SocialPost = ({
         <p
           className={cn(
             "absolute m-0",
-            arabic ? "leading-[1.7]" : "font-medium leading-[1.4]",
+            arabic ? "leading-[1.7]" : "leading-[1.4] font-medium",
             style.meta
           )}
           style={{

@@ -63,6 +63,14 @@ Part A first).
 - [ ] **GitHub → Code security:** turn on the dependency graph, secret
   scanning and push protection. Then add the repository variable
   `DEPENDENCY_REVIEW` = `on`.
+- [ ] **After PR #249 merges, reconnect Hudhud** (Diwan → Desk →
+  Connected → Hudhud), so Telegram calls `/api/hooks/telegram`. Wallet
+  moves by itself to `/api/hooks/wallet`, unless its callback was set by
+  hand in the Google Pay console: then change it there.
+- [ ] **The Notion webhook** (optional; the 15-minute sync runs anyway):
+  subscribe `https://auibsal.org/api/hooks/notion` in the “SAL Platform”
+  connection, copy the verification token from the Vercel log into Notion
+  and into `NOTION_WEBHOOK_SECRET` (`docs/platform/notion.md`).
 - [ ] **Supabase → API → Exposed schemas:** remove `charity`. The schema
   has been empty since Nov 7; a later migration drops it.
 - [ ] **Supabase → Authentication → OAuth Server:** off. The database
@@ -162,24 +170,26 @@ Part A first).
   the private submissions bucket to the piece; for now editors upload them
   on the piece's page.
 
-- [ ] **Audit F, still open** (each its own pull request):
-  - F2: one error shape (RFC 9457 problem+json) and one Bearer helper
-    across the routes; public feeds on the publishable key.
-  - F4: move DataTable, Field, ChoiceInput, Table, NavTabs, EmptyState,
-    ErrorState and ActionBar from apps/web into `packages/brand` with
-    stories; `aria-invalid`/`aria-describedby` and focus on the first
-    error; message namespaces per route segment.
-  - F5: Cache Components for published reads; a bundle-size check on pull
-    requests; Notion webhooks with a nightly reconcile.
-  - F6: Knip with exports and types; `noUncheckedIndexedAccess`;
-    `supabase/setup-cli` in CI; caching Playwright; the template leftovers
-    (generators, `.vscode`, unused env names).
-  - F7: the e2e journeys on desktop, Pixel and iPhone in both languages
-    for every flow the audit lists, axe on all WCAG 2.1 A/AA rules, and
-    coverage minimums.
-  - F1: AGENTS.md cut to code conventions; ADRs in `docs/adr/`; the
-    decisions.md date-line check (needs the attached copy's line).
-  - E5: a nonce or `strict-dynamic` CSP for your account and the Diwan.
+- [x] **Audit F and E5** (PRs #244, #246, #248 and #249): one error
+  shape and Bearer helper; Knip with exports and types;
+  `noUncheckedIndexedAccess`; Bun and Playwright cached in CI; integration
+  suites fail when they run no tests; ADRs in `docs/adr/`; a nonce-based
+  CSP for your account and the Diwan; axe on every WCAG 2.1 A/AA rule; the
+  public pages on a Pixel and an iPhone; keyboard journeys; signed share
+  images; the Notion webhook; webhooks under `/api/hooks/*`.
+- [ ] **Audit F, left open on purpose:**
+  - F4: moving DataTable, Field, ChoiceInput, Table, NavTabs, EmptyState,
+    ErrorState and ActionBar into `packages/brand` with stories, and
+    message namespaces per route segment (a large move, best on its own).
+  - F5: Cache Components for published reads; a bundle-size check on
+    pull requests; deploying only after migrations (needs a Vercel deploy
+    hook, owner side).
+  - F6: `supabase/setup-cli` in CI (the CLI is pinned through the
+    lockfile already); dropping the `charity` schema (after it leaves the
+    exposed schemas).
+  - F7: coverage minimums.
+  - F1: AGENTS.md cut to code conventions; the decisions.md date-line
+    check (needs the attached copy's line).
 
 ## Content still needed
 

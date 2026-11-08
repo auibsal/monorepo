@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [ main ]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -34,7 +34,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: high
 
@@ -94,6 +94,11 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
       - run: bun install --frozen-lockfile
       # Known vulnerabilities in the lockfile (high or critical) fail the build.
       - run: bun audit --audit-level=high
@@ -108,7 +113,7 @@ jobs:
       - run: bun run --cwd packages/brand tokens --check
       - name: Upload coverage artifact
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-report-typescript
           path: coverage/cobertura-coverage.xml
@@ -142,6 +147,11 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
       # Bun installs and runs scripts; Next.js itself runs on Node.
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -155,7 +165,7 @@ jobs:
         run: |
           set -e
           test -d apps/web/.next/static || { echo "Missing apps/web/.next/static"; exit 1; }
-          if grep -rqE "sb_secret_[A-Za-z0-9_-]{8,}|SUPABASE_SECRET_KEY|RESEND_TOKEN|CRON_SECRET|REVALIDATE_SECRET|DATABASE_WEBHOOK_SECRET|TELEGRAM_BOT_TOKEN|VAPID_PRIVATE_KEY|GOOGLE_WALLET_PRIVATE_KEY|TURNSTILE_SECRET_KEY|RESEND_WEBHOOK_SECRET|sk_(dev|prod)_[A-Za-z0-9_-]{8,}" apps/web/.next/static; then
+          if grep -rqE "sb_secret_[A-Za-z0-9_-]{8,}|SUPABASE_SECRET_KEY|RESEND_TOKEN|CRON_SECRET|REVALIDATE_SECRET|DATABASE_WEBHOOK_SECRET|TELEGRAM_BOT_TOKEN|VAPID_PRIVATE_KEY|GOOGLE_WALLET_PRIVATE_KEY|TURNSTILE_SECRET_KEY|RESEND_WEBHOOK_SECRET|NOTION_WEBHOOK_SECRET|sk_(dev|prod)_[A-Za-z0-9_-]{8,}" apps/web/.next/static; then
             echo "A secret name or value reached a client bundle."
             exit 1
           fi
@@ -169,6 +179,11 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
       - run: bun install --frozen-lockfile
       - name: Start Supabase (applies migrations and seed)
         working-directory: packages/database
@@ -184,7 +199,7 @@ jobs:
         run: bunx supabase test db
       - name: Generated types are up to date
         run: |
-          (cd packages/database && bunx supabase gen types typescript --local --schema public,core,access,membership,events,journal,programmes,governance,content) \
+          (cd packages/database && bunx supabase gen types typescript --schema public,core,access,membership,events,journal,programmes,governance,content) \
             | bunx biome format --stdin-file-path=packages/database/types.ts > "$RUNNER_TEMP/types.ts"
           diff -u packages/database/types.ts "$RUNNER_TEMP/types.ts" \
             || (echo "Run 'bun run db:types' and commit the result." && exit 1)
@@ -206,7 +221,9 @@ jobs:
       - name: Integration tests (auth, storage, data, Notion sync)
         run: |
           eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY|SECRET_KEY)=' | sed 's/^/export /')"
-          SUPABASE_INTEGRATION=1 bunx turbo test --force --filter=@repo/auth --filter=@repo/storage --filter=@repo/sal-data --filter=web
+          SUPABASE_INTEGRATION=1 bunx vitest run integration --reporter=default --reporter=json --outputFile.json=integration.json
+          # A suite skips itself without the keys; none may run zero tests.
+          bun scripts/check-integration.ts integration.json
 
   e2e:
     name: End-to-end (Playwright + axe)
@@ -217,6 +234,11 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
@@ -224,9 +246,22 @@ jobs:
       - name: Start Supabase (with Mailpit for confirmation emails and Realtime for co-editing)
         working-directory: packages/database
         run: bunx supabase start -x studio,imgproxy,logflare,vector,supavisor,edge-runtime,postgres-meta
+      # Chromium is downloaded once per Playwright version; the system
+      # libraries it needs are installed every run (they are not cached).
+      - name: Cache Playwright's browsers
+        id: browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('apps/e2e/package.json') }}
       - name: Browsers
         working-directory: apps/e2e
-        run: bunx playwright install --with-deps chromium
+        run: |
+          if [ "${{ steps.browsers.outputs.cache-hit }}" = "true" ]; then
+            bunx playwright install-deps chromium
+          else
+            bunx playwright install --with-deps chromium
+          fi
       # The journeys run against production builds (next start), not the dev
       # server: faster, and what actually ships. Their data is seeded first:
       # the build caches what it reads (What's on's current month, for one),
@@ -243,12 +278,11 @@ jobs:
           bunx turbo build --filter=web
       - name: Journeys (sign up, sign in, book, submit, publish, co-edit) and axe checks
         run: |
-          eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY|SECRET_KEY|MAILPIT_URL|INBUCKET_URL)=' | sed 's/^/export /')"
+          eval "$(cd packages/database && bunx supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY|SECRET_KEY|MAILPIT_URL)=' | sed 's/^/export /')"
           export SUPABASE_URL="$API_URL" SUPABASE_SECRET_KEY="$SECRET_KEY"
-          export MAILPIT_URL="${MAILPIT_URL:-$INBUCKET_URL}"
           export NEXT_PUBLIC_SUPABASE_URL="$API_URL" NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="$PUBLISHABLE_KEY"
           E2E_START=start bun run --cwd apps/e2e e2e
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
           name: playwright-traces

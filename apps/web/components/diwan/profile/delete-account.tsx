@@ -20,7 +20,7 @@ import { ApiError, callApi } from "@/lib/diwan/api";
 import { DiwanSection } from "../page";
 
 const normalize = (value: string) =>
-  value.trim().replace(/\s+/g, " ").toLowerCase();
+  value.trim().replace(/\s+/gu, " ").toLowerCase();
 
 /** True when the typed text matches the confirmation phrase. */
 export const matchesConfirmation = (typed: string, phrase: string) =>

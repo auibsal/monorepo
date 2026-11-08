@@ -72,7 +72,7 @@ export const GameChecks = () => {
         {t("title")}
       </h2>
       <p className="type-caption">{t("hint")}</p>
-      <ul className="grid divide-y divide-line">
+      <ul className="divide-line grid divide-y">
         {days.flatMap((day) =>
           games.gameLangs.map((lang) => {
             const id = `${day}-${lang}`;

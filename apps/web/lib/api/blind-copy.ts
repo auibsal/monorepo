@@ -83,9 +83,9 @@ const EMPTY_PARTS: Record<string, string> = {
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w15:people xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml"/>',
 };
 
-const AUTHOR_ATTRIBUTE = /\b(w:author|w15:author)="[^"]*"/g;
-const INITIALS_ATTRIBUTE = /\bw:initials="[^"]*"/g;
-const WORD_XML = /^word\/.+\.xml$/;
+const AUTHOR_ATTRIBUTE = /\b(w:author|w15:author)="[^"]*"/gu;
+const INITIALS_ATTRIBUTE = /\bw:initials="[^"]*"/gu;
+const WORD_XML = /^word\/.+\.xml$/u;
 
 export const stripDocx = (bytes: Uint8Array) => {
   let files: Record<string, Uint8Array>;

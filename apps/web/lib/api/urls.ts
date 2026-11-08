@@ -1,7 +1,7 @@
 import { apiUrl, diwanUrl, siteUrl } from "@repo/internationalization";
 import { env } from "@/env";
 
-const TRAILING_SLASH = /\/$/;
+const TRAILING_SLASH = /\/$/u;
 
 /** This deployment's origin (production, a preview or localhost). */
 export const origin = () =>

@@ -44,7 +44,7 @@ describe("platform email", () => {
     const html = await Promise.all(built.map((b) => render(Notice(b))));
     for (const page of html) {
       // The lockup in the email's language heads it, and nothing else.
-      const images = page.match(/<img[^>]*>/g) ?? [];
+      const images = page.match(/<img[^>]*>/gu) ?? [];
       expect(images).toHaveLength(1);
       expect(images[0]).toContain("/brand/sal-lockup-horizontal-email.png");
     }

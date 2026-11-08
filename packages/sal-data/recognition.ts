@@ -218,7 +218,7 @@ export const certificateSigners = {
 
 export type CertificateInput = z.input<typeof certificateSchema>;
 
-const TRAILING_SLASH = /\/$/;
+const TRAILING_SLASH = /\/$/u;
 
 /**
  * Where a certificate is checked, from the verify page's path in the

@@ -97,7 +97,7 @@ export const PerformancesTab = ({
         <ul className="grid gap-2">
           {linked.map((e) => (
             <li
-              className="flex flex-wrap items-center justify-between gap-2 border-line border-b pb-2"
+              className="border-line flex flex-wrap items-center justify-between gap-2 border-b pb-2"
               key={e.id}
             >
               <span>

@@ -34,7 +34,7 @@ interface Counts {
 }
 
 /** Between an address and a name: a comma, a tab, a semicolon or spaces. */
-const SEPARATOR = /[,\t;]+|\s+/;
+const SEPARATOR = /[,\t;]+|\s+/u;
 
 /**
  * Typed paper sign-ups, one person a line: the AUIB address, then the
@@ -126,7 +126,7 @@ const SignUps = ({ list, refresh }: { list: List; refresh: Refresh }) => {
       </div>
       <ErrorLine error={add.error} />
       {(people.data ?? []).length > 0 ? (
-        <ul className="grid divide-y divide-line">
+        <ul className="divide-line grid divide-y">
           {(people.data ?? []).map((person) => (
             <li
               className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2"
@@ -205,7 +205,7 @@ const Sending = ({
   }
 
   return (
-    <div className="grid gap-3 border-line border-t pt-4">
+    <div className="border-line grid gap-3 border-t pt-4">
       <div className="flex flex-wrap items-center gap-3">
         <Button
           disabled={test.isPending || waiting === 0}
@@ -277,7 +277,7 @@ const ListCard = ({ canSend, list }: { canSend: boolean; list: List }) => {
   return (
     <section
       aria-labelledby={headingId}
-      className="grid gap-4 border-line border-t pt-6"
+      className="border-line grid gap-4 border-t pt-6"
     >
       <h3 className="type-subheading" id={headingId}>
         {locale === "ar" ? list.title_ar : list.title_en}

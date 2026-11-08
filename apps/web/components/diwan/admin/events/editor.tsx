@@ -203,7 +203,7 @@ export const EventEditor = () => {
           <p className="type-caption">{t("questionsHint")}</p>
           {questions.map((question, index) => (
             <div
-              className="grid gap-3 border-line border-t pt-space-4"
+              className="border-line pt-space-4 grid gap-3 border-t"
               key={question.id}
             >
               <BilingualField
@@ -264,7 +264,7 @@ export const EventEditor = () => {
             <SaveButton pending={save.isPending} success={save.isSuccess} />
           </div>
           {problem ? (
-            <p className="text-sm text-text" role="alert">
+            <p className="text-text text-sm" role="alert">
               {problem}
             </p>
           ) : null}

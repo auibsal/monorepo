@@ -156,11 +156,11 @@ export const Shelf = ({
   };
 
   return (
-    <div className={cn("grid gap-space-3", className)}>
+    <div className={cn("gap-space-3 grid", className)}>
       {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: the shelf's list moves with the arrow keys, like any scrolling region */}
       <ul
         aria-label={label}
-        className="m-0 flex snap-x snap-mandatory list-none gap-space-4 overflow-x-auto p-0 pb-space-2 outline-offset-4 [scrollbar-width:thin]"
+        className="gap-space-4 pb-space-2 m-0 flex snap-x snap-mandatory [scrollbar-width:thin] list-none overflow-x-auto p-0 outline-offset-4"
         onKeyDown={onKeyDown}
         ref={list}
         // The list takes the arrow keys, so it is in the tab order.
@@ -170,7 +170,7 @@ export const Shelf = ({
         {items.map((item, index) => (
           <li
             className={cn(
-              "w-[min(15rem,72vw)] shrink-0 snap-start border-t pt-space-3 transition-colors duration-base ease-standard",
+              "pt-space-3 duration-base ease-standard w-[min(15rem,72vw)] shrink-0 snap-start border-t transition-colors",
               index === active ? "border-text" : "border-line",
               itemClassName
             )}
@@ -180,13 +180,13 @@ export const Shelf = ({
           </li>
         ))}
       </ul>
-      <div className="flex items-center justify-between gap-space-4">
+      <div className="gap-space-4 flex items-center justify-between">
         <div className="type-caption">{listLink}</div>
         {items.length > 1 ? (
-          <div className="flex items-center gap-space-2">
+          <div className="gap-space-2 flex items-center">
             <button
               aria-label={previousLabel}
-              className="inline-flex size-11 items-center justify-center text-text transition-colors duration-quick ease-standard hover:text-accent disabled:text-text-secondary"
+              className="text-text duration-quick ease-standard hover:text-accent disabled:text-text-secondary inline-flex size-11 items-center justify-center transition-colors"
               disabled={active === 0}
               onClick={() => go(active - 1)}
               type="button"
@@ -195,7 +195,7 @@ export const Shelf = ({
             </button>
             <button
               aria-label={nextLabel}
-              className="inline-flex size-11 items-center justify-center text-text transition-colors duration-quick ease-standard hover:text-accent disabled:text-text-secondary"
+              className="text-text duration-quick ease-standard hover:text-accent disabled:text-text-secondary inline-flex size-11 items-center justify-center transition-colors"
               disabled={end}
               onClick={() => go(active + 1)}
               type="button"

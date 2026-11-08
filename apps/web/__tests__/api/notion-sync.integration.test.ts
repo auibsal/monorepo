@@ -36,7 +36,7 @@ interface FakePage {
 const asRead = (props: Record<string, Record<string, unknown>>) =>
   Object.fromEntries(
     Object.entries(props).map(([name, value]) => {
-      const [type] = Object.keys(value);
+      const [type = ""] = Object.keys(value);
       const v = value[type];
       if (type === "title" || type === "rich_text") {
         return [
@@ -191,7 +191,10 @@ describe.skipIf(!enabled)("Notion sync", () => {
     ReturnType<typeof import("@repo/database/admin").createAdminClient>
   >;
   let run: typeof import("@/lib/api/notion/run").runNotionSync;
-  let sources: Record<string, string>;
+  let sources: Record<
+    "documents" | "events" | "officers" | "programmes",
+    string
+  >;
   let leadId = "";
   let memberId = "";
   let salonId = "";
@@ -213,7 +216,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
       .select("value")
       .eq("key", "notion.data_sources")
       .single();
-    sources = data?.value as Record<string, string>;
+    sources = data?.value as typeof sources;
     // The stand-in starts empty, so start from no links (local stack only).
     await admin.schema("core").from("notion_links").delete().neq("kind", "");
     for (const email of [lead, member]) {

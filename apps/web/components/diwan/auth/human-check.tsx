@@ -26,7 +26,7 @@ const SLOW_MS = 12_000;
 
 /** Browsers built into apps, where the check most often stalls. */
 const IN_APP =
-  /Instagram|FBAN|FBAV|FB_IAB|Snapchat|TikTok|musical_ly|Line\/|Twitter|LinkedInApp|Telegram|; wv\)/i;
+  /Instagram|FBAN|FBAV|FB_IAB|Snapchat|TikTok|musical_ly|Line\/|Twitter|LinkedInApp|Telegram|; wv\)/iu;
 
 interface Turnstile {
   remove: (id: string) => void;

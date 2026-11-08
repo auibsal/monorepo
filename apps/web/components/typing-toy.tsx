@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useId, useRef, useState } from "react";
 
-const WORDS = /\S+/g;
+const WORDS = /\S+/gu;
 const SIX = 6;
 
 /**
@@ -48,7 +48,7 @@ export const TypingToy = () => {
       </label>
       <textarea
         autoComplete="off"
-        className="min-h-32 w-full resize-y border-line border-t border-b bg-surface-reading px-0 py-space-4 font-mono text-xl leading-relaxed outline-none focus-visible:border-text"
+        className="border-line bg-surface-reading py-space-4 focus-visible:border-text min-h-32 w-full resize-y border-t border-b px-0 font-mono text-xl leading-relaxed outline-none"
         dir="auto"
         id={id}
         onChange={(e) => setText(e.target.value)}

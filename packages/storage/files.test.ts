@@ -9,9 +9,9 @@ import {
 } from "./files";
 
 // Supabase Storage's key rule (storage-api `isValidKey`).
-const VALID_KEY = /^(\w|\/|!|-|\.|\*|'|\(|\)| |&|\$|@|=|;|:|\+|,|\?)*$/;
-const MP3_KEY = /^piece\/[0-9a-f-]{36}\.mp3$/;
-const M4A_KEY = /\.m4a$/;
+const VALID_KEY = /^(\w|\/|!|-|\.|\*|'|\(|\)| |&|\$|@|=|;|:|\+|,|\?)*$/u;
+const MP3_KEY = /^piece\/[0-9a-f-]{36}\.mp3$/u;
+const M4A_KEY = /\.m4a$/u;
 
 describe("file names in keys", () => {
   it.each([
@@ -69,7 +69,7 @@ describe("checkFile", () => {
   });
 });
 
-const RANDOM_PDF_PATH = /^abc\/[0-9a-f-]{36}\.pdf$/;
+const RANDOM_PDF_PATH = /^abc\/[0-9a-f-]{36}\.pdf$/u;
 
 describe("anonymous keys", () => {
   it("carry nothing about the original file name", () => {

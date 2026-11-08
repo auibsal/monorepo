@@ -75,7 +75,7 @@ const PartnerFrame = ({
     >
       <nav
         aria-label={t("tabsLabel")}
-        className="overflow-x-auto border-line border-b"
+        className="border-line overflow-x-auto border-b"
       >
         <ul className="flex gap-x-6">
           {TABS.map((tab) => {
@@ -85,10 +85,10 @@ const PartnerFrame = ({
                 <Link
                   aria-current={here ? "page" : undefined}
                   className={cn(
-                    "block whitespace-nowrap border-b-[1.5px] py-3 font-medium text-sm hover:text-accent",
+                    "hover:text-accent block border-b-[1.5px] py-3 text-sm font-medium whitespace-nowrap",
                     here
                       ? "border-accent text-text"
-                      : "border-transparent text-text-secondary"
+                      : "text-text-secondary border-transparent"
                   )}
                   href={tab.href}
                 >
@@ -556,7 +556,7 @@ const Guests = ({ partnerId }: { partnerId: string }) => {
           <li className="grid gap-2 py-5" key={guest.id}>
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <p className="font-medium">{personName(guest, locale)}</p>
-              <p className="break-all text-sm" dir="ltr">
+              <p className="text-sm break-all" dir="ltr">
                 {guest.email}
               </p>
             </div>
@@ -764,7 +764,7 @@ export const OpenInvitations = ({
             key={invitation.id}
           >
             <span className="grid gap-1">
-              <span className="break-all text-sm" dir="ltr">
+              <span className="text-sm break-all" dir="ltr">
                 {invitation.email}
               </span>
               <span className="type-caption">
@@ -824,7 +824,7 @@ const TeamMate = ({
       <span className="grid gap-1">
         <span>
           <span className="font-medium">{personName(mate, locale)}</span>{" "}
-          <span className="break-all text-sm text-text-secondary" dir="ltr">
+          <span className="text-text-secondary text-sm break-all" dir="ltr">
             {mate.email}
           </span>
         </span>

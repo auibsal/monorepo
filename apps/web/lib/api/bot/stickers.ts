@@ -29,7 +29,7 @@ export interface StickerSet {
 export type LoadSet = (name: string) => Promise<StickerSet>;
 
 // Telegram may store an emoji with or without the variation selector.
-const bare = (emoji = "") => emoji.replace(/️/g, "");
+const bare = (emoji = "") => emoji.replace(/️/gu, "");
 
 /** Each sticker's file_id in the set, by its emoji or its place. */
 export const pickStickers = (set: StickerSet) =>

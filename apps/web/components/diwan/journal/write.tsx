@@ -51,11 +51,11 @@ const sendingDesks = journal.desks.filter(
 const VisitorDoor = () => {
   const tw = useTranslations("diwan.journal.write");
   return (
-    <div className="grid gap-3 border-line border-y py-5">
+    <div className="border-line grid gap-3 border-y py-5">
       <p className="type-body">{tw("door.who")}</p>
       <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
         <Link
-          className="inline-flex h-12 items-center bg-accent px-6 font-medium text-[0.9375rem] text-on-accent hover:bg-accent/90"
+          className="bg-accent text-on-accent hover:bg-accent/90 inline-flex h-12 items-center px-6 text-[0.9375rem] font-medium"
           href={{ pathname: "/sign-in", query: { next: "/qirtas/write" } }}
         >
           {tw("door.signIn")}
@@ -75,7 +75,7 @@ const HowItWorks = () => {
     <DiwanSection id="how" title={tw("how.title")}>
       <ol className="grid gap-4 md:grid-cols-3">
         {(["choose", "read", "edit"] as const).map((step, i) => (
-          <li className="grid gap-1 border-line border-t pt-3" key={step}>
+          <li className="border-line grid gap-1 border-t pt-3" key={step}>
             <span className="type-caption">{formatNumber(i + 1)}</span>
             <span className="type-heading">{tw(`how.${step}.title`)}</span>
             <span className="type-body text-text-secondary">
@@ -115,7 +115,7 @@ export const WriteHome = () => {
           page shows only what is published. */}
       {door}
       <DiwanSection id="sections" title={tw("sectionsTitle")}>
-        <ul className="grid divide-y divide-line border-line border-y">
+        <ul className="divide-line border-line grid divide-y border-y">
           {sendingDesks.map((desk) => (
             <li
               className="grid gap-3 py-5 md:grid-cols-[12rem_1fr]"
@@ -131,7 +131,7 @@ export const WriteHome = () => {
                   {journal.sendableCategories(desk).map((category) => (
                     <li key={category}>
                       <Link
-                        className="link font-medium text-sm"
+                        className="link text-sm font-medium"
                         href={`/qirtas/write/${category}`}
                       >
                         {tj(`categories.${category}`)}
@@ -152,7 +152,7 @@ export const WriteHome = () => {
       </DiwanSection>
       <HowItWorks />
       <DiwanSection id="edition" title={tw("editionTitle")}>
-        <p className="max-w-3xl text-text-secondary">{tw("editionLede")}</p>
+        <p className="text-text-secondary max-w-3xl">{tw("editionLede")}</p>
         {calls.data ? null : <SectionSpinner />}
         {calls.data && editionCalls.length === 0 ? (
           <p className="type-body">{tw("noCall")}</p>
@@ -780,7 +780,7 @@ const PartialSend = ({ id }: { readonly id: string | null }) => {
     return null;
   }
   return (
-    <p className="text-sm text-text" role="alert">
+    <p className="text-text text-sm" role="alert">
       {t("filesFailed")}{" "}
       <Link className="link" href={`/account/work/submissions/${id}`}>
         {t("openSubmission")}
@@ -933,7 +933,7 @@ const DraftRow = ({
     label = t("draftSaved");
   }
   return (
-    <div className="grid gap-2 border-line border-t pt-4">
+    <div className="border-line grid gap-2 border-t pt-4">
       <p className="type-caption">{t("draftHint")}</p>
       <div className="flex flex-wrap items-center gap-3">
         <Button

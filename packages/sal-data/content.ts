@@ -59,7 +59,7 @@ export const slotRefTypes = [
   "page",
 ] as const;
 
-const PAGE_SLUG = /^[a-z0-9]+(-[a-z0-9]+)*(\/[a-z0-9]+(-[a-z0-9]+)*)*$/;
+const PAGE_SLUG = /^[a-z0-9]+(-[a-z0-9]+)*(\/[a-z0-9]+(-[a-z0-9]+)*)*$/u;
 
 export const pageSchema = z.object({
   body_ar: z.string().optional(),

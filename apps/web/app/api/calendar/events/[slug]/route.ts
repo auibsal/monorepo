@@ -3,8 +3,8 @@ import { publicEvent } from "@/lib/api/calendar";
 import { icsResponse, renderCalendar } from "@/lib/api/ics";
 import { problem } from "@/lib/api/problem";
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-const ICS_SUFFIX = /\.ics$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
+const ICS_SUFFIX = /\.ics$/u;
 
 /** GET /calendar/events/<slug>.ics?lang=ar — "Add to calendar" for a public event. */
 export const GET = async (

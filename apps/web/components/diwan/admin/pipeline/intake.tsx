@@ -268,7 +268,7 @@ export const Readers = ({ issueId }: { issueId: string }) => {
         {open.map((entry) => {
           const reads = entry.status === "third_read" ? [1, 2, 3] : [1, 2];
           return (
-            <li className="grid gap-3 border-line border-t p-4" key={entry.id}>
+            <li className="border-line grid gap-3 border-t p-4" key={entry.id}>
               <div className="flex flex-wrap items-baseline gap-3">
                 <span className="type-code">{entry.blind_id}</span>
                 <span className="font-medium">{entry.title}</span>
@@ -277,7 +277,7 @@ export const Readers = ({ issueId }: { issueId: string }) => {
               <dl className="grid gap-2 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-x-4">
                 {reads.map((n) => (
                   <div className="contents" key={n}>
-                    <dt className="font-medium text-sm">
+                    <dt className="text-sm font-medium">
                       {t("readNumber", { number: formatNumber(n) })}
                     </dt>
                     <dd>

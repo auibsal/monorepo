@@ -514,7 +514,7 @@ export const Thread = ({ pieceId }: { pieceId: string }) => {
       ) : null}
       <ol className="grid gap-3">
         {thread.data?.map((n) => (
-          <li className="grid gap-1 border-line border-t p-3" key={n.id}>
+          <li className="border-line grid gap-1 border-t p-3" key={n.id}>
             <p className="type-caption">
               {writer(n)}
               {" · "}

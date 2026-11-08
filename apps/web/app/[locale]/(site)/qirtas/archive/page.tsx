@@ -60,7 +60,7 @@ const ArchivePage = async ({ params, searchParams }: ArchiveProps) => {
       {months.length === 0 ? (
         <p className="type-body text-text-secondary">{t("noPieces")}</p>
       ) : (
-        <ul className="grid border-line border-b">
+        <ul className="border-line grid border-b">
           {months.map((m) => (
             <li className="border-line border-t" key={m.key}>
               <Link

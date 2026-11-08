@@ -37,7 +37,7 @@ export const botLink = (username: string, payload?: string) =>
 export const mainApp = (username: string) =>
   `https://t.me/${username}?startapp`;
 
-const SUPERGROUP_PREFIX = /^-100/;
+const SUPERGROUP_PREFIX = /^-100/u;
 
 /** A link to a message in a supergroup (t.me/c/<id>/<thread>/<message>). */
 export const messageLink = (

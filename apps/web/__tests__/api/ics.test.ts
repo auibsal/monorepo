@@ -79,7 +79,7 @@ test("a canceled event stays in the feed, marked, with its change dated", () => 
   expect(body).toContain("STATUS:CANCELLED");
   expect(body).toContain("STATUS:CONFIRMED");
   expect(body).toContain("LAST-MODIFIED:20261107T100000Z");
-  const sequences = [...body.matchAll(/SEQUENCE:(\d+)/g)].map((m) =>
+  const sequences = [...body.matchAll(/SEQUENCE:(\d+)/gu)].map((m) =>
     Number(m[1])
   );
   expect(sequences).toHaveLength(2);
