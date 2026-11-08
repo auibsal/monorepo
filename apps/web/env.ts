@@ -34,6 +34,7 @@ export const env = withPresets(
         process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL,
       NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
       NOTION_TOKEN: process.env.NOTION_TOKEN,
+      NOTION_WEBHOOK_SECRET: process.env.NOTION_WEBHOOK_SECRET,
       RESEND_WEBHOOK_SECRET: process.env.RESEND_WEBHOOK_SECRET,
       REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
       TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
@@ -58,6 +59,8 @@ export const env = withPresets(
       // The "SAL Platform" connection in the team's Notion workspace (an
       // internal API token). Without it the Notion sync does nothing.
       NOTION_TOKEN: z.string().min(20).optional(),
+      // The verification token Notion sends once when the webhook is made.
+      NOTION_WEBHOOK_SECRET: z.string().min(20).optional(),
       // Bearer token for POST /api/revalidate (the outbox handler calls it
       // in-process; the secret stays for calls from elsewhere).
       // Resend's webhook signing secret (whsec_…), for bounces and

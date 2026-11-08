@@ -39,6 +39,7 @@ the secret is unset.
 | `/api/hooks/outbox` | POST | The Supabase database webhook on `core.outbox` | `DATABASE_WEBHOOK_SECRET` Bearer | — |
 | `/api/hooks/telegram` | POST | Telegram (Hudhud’s webhook) | `TELEGRAM_WEBHOOK_SECRET` header | — |
 | `/api/hooks/wallet` | POST | Google Wallet (a pass saved or removed) | Google’s signed message | — |
+| `/api/hooks/notion` | POST | Notion (a page changed: starts the sync, once a minute at most) | `X-Notion-Signature` HMAC (`NOTION_WEBHOOK_SECRET`) | one a minute |
 | `/api/hooks/resend` | POST | Resend (bounces and complaints) | Svix signature (`RESEND_WEBHOOK_SECRET`) | — |
 | `/api/invitations/test` | POST | The Diwan (an invitation list’s test) | Member + permission | — |
 | `/api/newsletter/confirm` | POST | The confirmation page | The emailed token | — |
