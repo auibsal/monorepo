@@ -26,9 +26,8 @@ The platform is one repository, [auibsal/monorepo](https://github.com/auibsal/mo
 - **Permissions, not role names.** Roles are bundles of permissions, assigned only through `access.assign_role()`, never from a user's profile.
 - **Two-step sign-in for sensitive roles.** Council officers, directors and the Elections Committee only hold their permissions on a session that passed the second step.
 - **Secrets live only in the API and CI.** The Diwan bundle is public by design; CI fails if a secret's name or value appears in it.
-- **Multi-step rules are database functions.** Ballots, the ranked-choice count, ledger sign-off, waitlist promotion and Journal decisions are single atomic functions.
+- **Multi-step rules are database functions.** Ballots, the election count, waitlist promotion and Qirtas decisions are single atomic functions.
 - **Blind review.** Readers never receive an author's identity before a decision; the database withholds it.
-- **The charity ledger is append-only.** Corrections are reversing entries; only signed-off entries count.
 
 ## Scheduled jobs
 

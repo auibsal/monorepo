@@ -80,6 +80,7 @@ hand. The nightly backup and how to restore it: `docs/platform/backups.md`.
 - `AGENTS.md`: the code conventions for people and AI agents
 - `packages/brand/BRAND-BOOK.md`: the brand rules
 - `ARCHITECTURE_AND_INTEGRATIONS.md`: how the pieces fit together
+- `docs/adr/`: the technical decisions and why
 - `docs/platform/`: the runbooks (email, backups, retention, secrets, vendors, releases, incidents)
 - `PROGRESS.md`: what is done and what is open
 

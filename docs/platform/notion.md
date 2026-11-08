@@ -121,7 +121,7 @@ the workspace (Notion's API cannot invite people).
 - Volunteers (rotas, crews) are added as **guests** on their project's pages
   only.
 - Never put member records, RSVPs by name, ballots, submissions or authors,
-  ledger entries, certificates or confidential forms in Notion.
+  certificates or confidential forms in Notion.
 
 ## When something is wrong
 
