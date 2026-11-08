@@ -5,16 +5,9 @@ import { config, withAnalyzer } from "@/lib/next-config";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-// Addresses that were shared and then moved redirect permanently (308), as
-// "Cool URIs don't change" and US practice require (decisions §6); every
-// other old address is simply not found. www.auibsal.org → auibsal.org is
-// a Vercel domain setting.
-const MOVED: readonly [from: string, to: string][] = [
-  // Hudhud's messages already in members' chats link here, and Telegram
-  // never updates a button once it is sent.
-  ["/membership", "/account"],
-  ["/membership/:path*", "/account/:path*"],
-];
+// No redirects: links point at the current address, and an old one is
+// simply not found. www.auibsal.org → auibsal.org is a Vercel domain
+// setting.
 // English has no prefix; Arabic is under /ar.
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 //
@@ -63,14 +56,6 @@ let nextConfig: NextConfig = {
   // Off: with it, a missing event or piece answered 200 (its shared shell
   // streams first) and a piece's text-size buttons stopped answering.
   partialPrefetching: false,
-  redirects: async () =>
-    LANGUAGE_PREFIXES.flatMap((prefix) =>
-      MOVED.map(([from, to]) => ({
-        destination: `${prefix}${to}`,
-        permanent: true,
-        source: `${prefix}${from}`,
-      }))
-    ),
   // The design system's files, under its page in the Diwan, ahead of the
   // Diwan's routes.
   rewrites: async () => ({

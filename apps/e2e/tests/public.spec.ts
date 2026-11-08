@@ -168,28 +168,20 @@ test("every page in the sitemap is found, in both languages", async ({
   expect(missing).toEqual([]);
 });
 
-test("moved addresses redirect permanently, in both languages", async ({
+test("old addresses are simply not found, in both languages", async ({
   request,
 }) => {
-  // Only /membership is kept: Hudhud's sent buttons link there. Every other
-  // old address is simply not found.
-  const moved: [string, string][] = [
-    ["/membership", "/account"],
-    ["/membership/settings/notifications", "/account/settings/notifications"],
-  ];
   for (const prefix of ["", "/ar"]) {
-    for (const [from, to] of moved) {
-      const response = await request.get(`${urls.web}${prefix}${from}`, {
+    for (const gone of [
+      "/membership",
+      "/library/privacy",
+      "/partners/join",
+      "/search/poems",
+    ]) {
+      const response = await request.get(`${urls.web}${prefix}${gone}`, {
         maxRedirects: 0,
       });
-      expect(response.status(), `${prefix}${from}`).toBe(308);
-      expect(response.headers().location).toBe(`${prefix}${to}`);
+      expect(response.status(), `${prefix}${gone}`).toBe(404);
     }
-  }
-  for (const gone of ["/library/privacy", "/partners/join", "/search/poems"]) {
-    const response = await request.get(`${urls.web}${gone}`, {
-      maxRedirects: 0,
-    });
-    expect(response.status(), gone).toBe(404);
   }
 });

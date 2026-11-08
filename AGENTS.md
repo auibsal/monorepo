@@ -248,10 +248,8 @@ everywhere:
   path (an event, a piece, an issue); lists are filtered with query
   strings (`/events?month=`, `/qirtas/archive?month=&section=`,
   `/search?q=`). Links point at the current
-  address, never at a redirect. The one redirect kept is `/membership` →
-  `/account` (308, `MOVED` in `apps/web/next.config.ts`, in both
-  languages), because Hudhud's sent buttons link there; any other old
-  address is simply not found. The address alone decides the
+  address; there are no redirects, and an old address is simply not
+  found. The address alone decides the
   language (`localeDetection: false`).
 - **Big records get pages; small rows are edited in place.** A record
   with its own life (an event, a piece, a production, a partner, a
