@@ -2,6 +2,7 @@ import type { Locale } from "@repo/internationalization";
 import { locales, localizedPath } from "@repo/internationalization";
 import type { Metadata } from "next";
 import { createMetadata } from "./create-metadata";
+import { signOgTitle } from "./og-signature";
 
 interface PageMetadata {
   description: string;
@@ -19,8 +20,13 @@ const ogImagePath = (
   locale: Locale,
   { title }: Pick<PageMetadata, "title">
 ) => {
-  const query = new URLSearchParams({ title: title.slice(0, 120) });
-  return `${localizedPath(locale, "/og")}?${query.toString()}`;
+  const text = title.slice(0, 120);
+  const signature = signOgTitle(locale, text);
+  const query = new URLSearchParams(
+    signature ? { sig: signature, title: text } : {}
+  );
+  const search = query.toString();
+  return `${localizedPath(locale, "/og")}${search ? `?${search}` : ""}`;
 };
 
 /**
