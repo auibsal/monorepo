@@ -1,6 +1,6 @@
 import { scopeTypes } from "@repo/rbac";
 import { z } from "zod";
-import { type Client, unwrap } from "./client";
+import { type Client, currentDate, unwrap } from "./client";
 
 /** access.assign_role(): roles.assign is re-checked in the database. */
 export const roleAssignmentSchema = z
@@ -124,7 +124,7 @@ export const assignmentsFor = async (client: Client, userId: string) =>
 /** Active now: started and not yet ended. */
 export const isActiveAssignment = (
   a: { ends_at: string | null; starts_at: string },
-  now = new Date()
+  now = currentDate()
 ) =>
   new Date(a.starts_at) <= now &&
   (a.ends_at === null || new Date(a.ends_at) > now);

@@ -7,6 +7,7 @@ import { NewsletterSignup } from "@/components/newsletter/signup";
 import { pastIssues } from "@/components/sunday-paper-issue";
 import { localizedMetadata } from "@/lib/metadata";
 import { nextIssue } from "@/lib/sunday-paper";
+import { roughlyNow } from "@/lib/this-year";
 
 interface NewsletterProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -28,6 +29,7 @@ export const generateMetadata = async ({
  * and its past issues (design review C17), each at /sunday-paper/<yyyy-mm>.
  */
 const NewsletterPage = async ({ params }: NewsletterProps) => {
+  const now = new Date(await roughlyNow());
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.newsletter" });
@@ -63,7 +65,7 @@ const NewsletterPage = async ({ params }: NewsletterProps) => {
       ) : (
         <p className="type-body">
           {t("archive.first", {
-            date: formatLongDate(nextIssue().sunday, locale),
+            date: formatLongDate(nextIssue(now).sunday, locale),
           })}
         </p>
       )}

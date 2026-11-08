@@ -12,6 +12,9 @@ import {
 } from "@/components/qirtas/editions";
 import { localizedMetadata } from "@/lib/metadata";
 
+// Its query string decides what it shows, so it renders per request.
+export const instant = false;
+
 interface EditionsProps {
   readonly params: Promise<{ locale: Locale }>;
   readonly searchParams: Promise<{ view?: string }>;

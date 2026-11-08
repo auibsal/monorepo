@@ -8,6 +8,7 @@ import {
 import { content, documents, journal } from "@repo/sal-data";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { MetadataRoute } from "next";
+import { cacheLife } from "next/cache";
 import { pieceHref } from "@/components/qirtas/cards";
 import { readPublished } from "@/lib/supabase";
 
@@ -51,10 +52,6 @@ const staticPaths = [
   "/partners",
 ];
 
-// Rebuilt hourly, so a renamed program or a new piece appears without a
-// deploy.
-export const revalidate = 3600;
-
 const localized = (
   path: string,
   lastModified = new Date(),
@@ -97,6 +94,10 @@ const publishedEditions = async (client: SupabaseClient<Database>) =>
   );
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
+  // Rebuilt hourly, so a renamed page or a new piece appears without a
+  // deploy.
+  "use cache";
+  cacheLife("hours");
   const [docs, pieces, eventPages, issues, editions] = await Promise.all([
     readPublished(["documents"], (c) => documents.publicDocuments(c), []),
     readPublished(["journal"], (c) => journal.publishedPieceSlugs(c), []),

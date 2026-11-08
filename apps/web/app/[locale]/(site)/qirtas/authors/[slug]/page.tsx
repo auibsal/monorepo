@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PieceColumn } from "@/components/qirtas/cards";
 import { localizedMetadata } from "@/lib/metadata";
+import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
 import { readPublished } from "@/lib/supabase";
 
 interface AuthorProps {
@@ -16,7 +17,11 @@ const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 type Author = Awaited<ReturnType<typeof journal.authorPage>>;
 type Kind = "member" | "partner" | "guest";
 
-export const generateStaticParams = () => [];
+// Pages are made on their first visit; the placeholder (never a real
+// slug) lets the build check the route (Cache Components).
+export const generateStaticParams = () => [{ slug: PLACEHOLDER_SLUG }];
+// Made on its first visit, then kept until published again.
+export const instant = false;
 
 const load = (slug: string): Promise<Author> =>
   SLUG.test(slug)

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { currentDate } from "./client";
 import { clueWords, guessWords, searchWords } from "./game-words";
 
 // Qirtas's games (decisions.md): four daily games, made from fixed
@@ -101,7 +102,7 @@ const baghdadDate = new Intl.DateTimeFormat("en-CA", {
 });
 
 /** Days since 1970 on the Baghdad calendar; the daily games change at midnight there. */
-export const gameDay = (date = new Date()) =>
+export const gameDay = (date = currentDate()) =>
   Math.floor(Date.parse(`${baghdadDate.format(date)}T00:00:00Z`) / DAY_MS);
 
 /**

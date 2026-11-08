@@ -15,6 +15,7 @@ import { EditionCover, loadEditions } from "@/components/qirtas/editions";
 import { ShareLink } from "@/components/share";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
+import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
 import { readPublished } from "@/lib/supabase";
 
 interface EditionProps {
@@ -24,7 +25,11 @@ interface EditionProps {
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 type Edition = Awaited<ReturnType<typeof journal.issueBySlug>>;
 
-export const generateStaticParams = () => [];
+// Pages are made on their first visit; the placeholder (never a real
+// slug) lets the build check the route (Cache Components).
+export const generateStaticParams = () => [{ slug: PLACEHOLDER_SLUG }];
+// Made on its first visit, then kept until published again.
+export const instant = false;
 
 const load = (slug: string): Promise<Edition | null> =>
   SLUG.test(slug)

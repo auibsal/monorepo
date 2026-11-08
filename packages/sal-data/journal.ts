@@ -1,6 +1,6 @@
 import { Constants, type Enums } from "@repo/database";
 import { z } from "zod";
-import { type Client, unwrap } from "./client";
+import { type Client, currentDate, unwrap } from "./client";
 import { sanitizeRichText, toPlainText } from "./sanitize";
 
 export type Category = Enums<{ schema: "journal" }, "category">;
@@ -358,7 +358,7 @@ export const mySubmissions = async (client: Client) =>
       .order("created_at", { ascending: false })
   );
 
-export const openCalls = async (client: Client, now = new Date()) =>
+export const openCalls = async (client: Client, now = currentDate()) =>
   unwrap(
     await journal(client)
       .from("calls")
@@ -372,11 +372,11 @@ export const openCalls = async (client: Client, now = new Date()) =>
  * Open calls for the printed Edition: the standing call (no Edition, always
  * open) is left out wherever calls are announced.
  */
-export const editionCalls = async (client: Client, now = new Date()) =>
+export const editionCalls = async (client: Client, now = currentDate()) =>
   (await openCalls(client, now))?.filter((call) => call.issue_id) ?? [];
 
 /** The next published call that has not opened yet, if any. */
-export const nextCall = async (client: Client, now = new Date()) =>
+export const nextCall = async (client: Client, now = currentDate()) =>
   unwrap(
     await journal(client)
       .from("calls")
@@ -463,7 +463,7 @@ export const setCallPartners = async (
 };
 
 /** Published calls that have not opened yet: announced ahead of time. */
-export const upcomingCalls = async (client: Client, now = new Date()) =>
+export const upcomingCalls = async (client: Client, now = currentDate()) =>
   unwrap(
     await journal(client)
       .from("calls")
@@ -552,7 +552,9 @@ const published = <
 >(
   query: T
 ) =>
-  query.eq("status", "published").lte("published_at", new Date().toISOString());
+  query
+    .eq("status", "published")
+    .lte("published_at", currentDate().toISOString());
 
 export const issueBySlug = async (client: Client, slug: string) =>
   unwrap(
@@ -717,7 +719,7 @@ const publishedPieces = (client: Client) =>
     .from("pieces")
     .select(cardColumns)
     .eq("status", "published")
-    .lte("published_at", new Date().toISOString())
+    .lte("published_at", currentDate().toISOString())
     .order("sort", { ascending: true, referencedTable: "piece_media" });
 
 export type PieceCard = NonNullable<
@@ -751,7 +753,7 @@ export const publishedPieceSlugs = async (client: Client) =>
       .from("pieces")
       .select("slug, desk, language, published_at")
       .eq("status", "published")
-      .lte("published_at", new Date().toISOString())
+      .lte("published_at", currentDate().toISOString())
       .order("published_at", { ascending: false })
   ) ?? [];
 
@@ -770,7 +772,7 @@ export const currentEdition = async (client: Client) =>
       .from("issues")
       .select("*")
       .eq("status", "published")
-      .lte("published_at", new Date().toISOString())
+      .lte("published_at", currentDate().toISOString())
       .order("published_at", { ascending: false })
       .limit(1)
       .maybeSingle()
@@ -791,7 +793,7 @@ export const qirtasPiece = async (client: Client, slug: string) => {
       .from("pieces")
       .select(fullColumns)
       .eq("status", "published")
-      .lte("published_at", new Date().toISOString())
+      .lte("published_at", currentDate().toISOString())
       .eq("slug", slug)
       .order("sort", { ascending: true, referencedTable: "piece_media" })
       .maybeSingle()
@@ -993,7 +995,7 @@ export const authorPage = async (client: Client, slug: string) => {
       .select("issue:issues(slug, title_en, title_ar, published_at)")
       .eq("contributor_id", contributor.id)
       .eq("status", "published")
-      .lte("published_at", new Date().toISOString())
+      .lte("published_at", currentDate().toISOString())
       .not("issue_id", "is", null),
   ]);
   const editions = [
@@ -1053,7 +1055,7 @@ export const pieceClip = async (client: Client, clipId: string | null) =>
           .eq("desk", "video")
           .eq("status", "published")
           .eq("members_only", false)
-          .lte("published_at", new Date().toISOString())
+          .lte("published_at", currentDate().toISOString())
           .maybeSingle()
       )
     : null;
@@ -1130,7 +1132,7 @@ export const publishedDates = async (client: Client) =>
       .from("pieces")
       .select("published_at, desk, language")
       .eq("status", "published")
-      .lte("published_at", new Date().toISOString())
+      .lte("published_at", currentDate().toISOString())
       .order("published_at", { ascending: false })
       .limit(5000)
   ) ?? [];

@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/section";
 import { loadProgramme } from "@/components/series";
 import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
 import { readPublished } from "@/lib/supabase";
+import { roughlyNow } from "@/lib/this-year";
 import { type Month, monthFrom, monthParam } from "@/lib/whats-on";
 
 const HTTP_SCHEME = /^https?:/u;
@@ -47,6 +48,7 @@ export const WhatsOn = async ({
   locale: Locale;
   month: Month;
 }) => {
+  const now = new Date(await roughlyNow());
   const t = await getTranslations({ locale, namespace: "web.events" });
   const hostId = host ? (await loadProgramme(host))?.id : undefined;
   const all = await readPublished(
@@ -81,7 +83,7 @@ export const WhatsOn = async ({
       </p>
 
       <MonthSection
-        hrefFor={(m) => href(monthFrom(m))}
+        hrefFor={(m) => href(monthFrom(m, now))}
         locale={locale}
         month={month}
       >

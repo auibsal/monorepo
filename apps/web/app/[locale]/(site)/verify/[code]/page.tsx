@@ -11,6 +11,10 @@ import { PageHeader } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
+// Made on its first visit (its address names a record), then kept until
+// it is published again.
+export const instant = false;
+
 const CODE = /^[a-z0-9]{6,32}$/u;
 
 interface CertificateParams {

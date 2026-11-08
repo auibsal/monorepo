@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { type Client, DataError, unwrap } from "./client";
+import { type Client, currentDate, DataError, unwrap } from "./client";
 
 /**
  * Partnerships (Policy Manual P11, P8). The register, memoranda (Form F-26),
@@ -157,7 +157,7 @@ export const publicPartners = async (client: Client) =>
   unwrap(await client.schema("governance").rpc("public_partners")) ?? [];
 
 /** Days until a date (negative when it has passed). */
-export const daysUntil = (date: string, today = new Date()) => {
+export const daysUntil = (date: string, today = currentDate()) => {
   const start = Date.UTC(
     today.getUTCFullYear(),
     today.getUTCMonth(),
@@ -172,7 +172,7 @@ export const renewalsDue = <
 >(
   agreements: readonly T[],
   days = 30,
-  today = new Date()
+  today = currentDate()
 ) =>
   agreements.filter(
     (a) =>
@@ -204,7 +204,7 @@ export const closeConflictItem = async (client: Client, itemId: string) =>
     await client
       .schema("governance")
       .from("conflict_items")
-      .update({ closed_on: new Date().toISOString().slice(0, 10) })
+      .update({ closed_on: currentDate().toISOString().slice(0, 10) })
       .eq("id", itemId)
   );
 

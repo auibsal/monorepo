@@ -17,7 +17,9 @@ media do.
 
 - `apps/web`: **the one app**, auibsal.org. Three parts, one deployment:
   - `app/[locale]/(site)`: the public site. Published reads only, with the
-    publishable key; cached by tag and revalidated on publish.
+    publishable key; cached by tag and revalidated on publish; Cache
+    Components prerenders each page around what a request needs (the
+    time through `roughlyNow`, never `new Date()` in a page).
   - `app/[locale]/(account)`: **your account**, the members' pages on the
     site: `/sign-in`, `/sign-up` (and `/sign-up/guest`), `/auth/*`,
     `/welcome`, `/get-involved` (public), `/forms/<number>`,

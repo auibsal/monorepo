@@ -8,6 +8,9 @@ import { PageHeader } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 import { readLive } from "@/lib/supabase";
 
+// Its query string decides what it shows, so it renders per request.
+export const instant = false;
+
 interface CardParams {
   readonly params: Promise<{ code: string; locale: Locale }>;
   readonly searchParams: Promise<{ t?: string | string[] }>;

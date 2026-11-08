@@ -197,13 +197,13 @@ Part A first).
     stories. They read the app's messages, auth and API helpers in 73
     files, so each must first take its labels as props: its own change.
   - F5: deploying only after migrations is done (Nov 8; the Deploy Hook
-    is the owner's step above). Cache Components waits until after V1:
-    published reads are already cached by tag and refreshed on publish;
-    turning it on (tried Nov 8) needs the theme cookie out of the root
-    layout and a real record for every dynamic route at build time, or
-    the build fails on an empty table (Editions today). The bundle-size
-    check is the performance budget the journeys already enforce on a
-    mid-range phone (`apps/e2e/tests/performance.spec.ts`).
+    is the owner's step above). Cache Components is on (Nov 8): public
+    pages are prerendered around what each request needs; a record page
+    has a placeholder shell so a missing record still answers 404; the
+    time comes from `roughlyNow` (`lib/this-year.ts`) and reaches
+    `@repo/sal-data` through `setClock`. The bundle-size check is the
+    performance budget the journeys already enforce on a mid-range phone
+    (`apps/e2e/tests/performance.spec.ts`).
   - F6: dropping the `charity` schema (empty; after it leaves the exposed
     schemas). `supabase/setup-cli` is not needed: CI runs the CLI pinned
     in the lockfile.

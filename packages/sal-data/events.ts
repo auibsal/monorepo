@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { type Client, unwrap } from "./client";
+import { type Client, currentDate, unwrap } from "./client";
 
 export const eventQuestionSchema = z.object({
   id: z.string().min(1).max(40),
@@ -31,7 +31,7 @@ export const eventColumns =
 export const publicEvents = async (
   client: Client,
   {
-    from = new Date(),
+    from = currentDate(),
     limit = 50,
     programmeId,
   }: { from?: Date; limit?: number; programmeId?: string } = {}
@@ -54,7 +54,7 @@ export const publicEvents = async (
 export const pastPublicEvents = async (
   client: Client,
   {
-    before = new Date(),
+    before = currentDate(),
     limit = 20,
     programmeId,
   }: { before?: Date; limit?: number; programmeId?: string } = {}

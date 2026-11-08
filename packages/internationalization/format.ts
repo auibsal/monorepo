@@ -276,13 +276,67 @@ export const formatIqd = (amount: number, locale: Locale = defaultLocale) => {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
+// The Baghdad wall clock without constructing a TZDate (whose constructor
+// reads the current time, which a prerendered page may not do).
+const ZONE_PARTS = new Intl.DateTimeFormat("en-US", {
+  day: "numeric",
+  hour: "numeric",
+  hourCycle: "h23",
+  minute: "numeric",
+  month: "numeric",
+  second: "numeric",
+  timeZone: TIME_ZONE,
+  year: "numeric",
+});
+
+interface WallClock {
+  day: number;
+  hour: number;
+  minute: number;
+  monthIndex: number;
+  second: number;
+  year: number;
+}
+
+/** An instant's date and time on Baghdad's wall clock. */
+const wallClock = (date: Date): WallClock => {
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    Number(ZONE_PARTS.formatToParts(date).find((p) => p.type === type)?.value);
+  return {
+    day: part("day"),
+    hour: part("hour"),
+    minute: part("minute"),
+    monthIndex: part("month") - 1,
+    second: part("second"),
+    year: part("year"),
+  };
+};
+
+/** The instant a Baghdad wall-clock time names. */
+const fromWallClock = (
+  year: number,
+  monthIndex: number,
+  day: number,
+  hour = 0,
+  minute = 0
+) => {
+  const asUtc = Date.UTC(year, monthIndex, day, hour, minute);
+  // The zone's offset at that moment: what the wall clock reads there,
+  // taken as UTC, less the instant itself.
+  const seen = wallClock(new Date(asUtc));
+  const offset =
+    Date.UTC(seen.year, seen.monthIndex, seen.day, seen.hour, seen.minute) -
+    asUtc;
+  return new Date(asUtc - offset);
+};
+
 /** A UTC instant → "YYYY-MM-DDTHH:mm" in Baghdad (for datetime-local). */
 export const toZonedInputValue = (value: DateInput | null | undefined) => {
   if (value === null || value === undefined || value === "") {
     return "";
   }
-  const zoned = new TZDate(toDate(value), TIME_ZONE);
-  return `${zoned.getFullYear()}-${pad(zoned.getMonth() + 1)}-${pad(zoned.getDate())}T${pad(zoned.getHours())}:${pad(zoned.getMinutes())}`;
+  const zoned = wallClock(toDate(value));
+  return `${zoned.year}-${pad(zoned.monthIndex + 1)}-${pad(zoned.day)}T${pad(zoned.hour)}:${pad(zoned.minute)}`;
 };
 
 const ZONED_INPUT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/u;
@@ -294,15 +348,13 @@ export const fromZonedInputValue = (value: string) => {
     return null;
   }
   const [, y, mo, d, h, mi] = match.map(Number) as number[];
-  const zoned = new TZDate(
+  return fromWallClock(
     y ?? 0,
     (mo ?? 1) - 1,
     d ?? 1,
     h ?? 0,
-    mi ?? 0,
-    TIME_ZONE
-  );
-  return new Date(zoned.getTime()).toISOString();
+    mi ?? 0
+  ).toISOString();
 };
 
 /** A UTC instant → "YYYY-MM-DD", the Baghdad calendar day (for type="date"). */
@@ -313,12 +365,12 @@ export const toZonedDateValue = (value: DateInput | null | undefined) =>
 
 /** Midnight on the first of a month in Baghdad, as an instant. */
 export const zonedMonthStart = (year: number, monthIndex: number) =>
-  new Date(new TZDate(year, monthIndex, 1, TIME_ZONE).getTime());
+  fromWallClock(year, monthIndex, 1);
 
 /** The Baghdad year and month (0–11) an instant falls in. */
 export const zonedYearMonth = (value: DateInput) => {
-  const zoned = new TZDate(toDate(value), TIME_ZONE);
-  return { monthIndex: zoned.getMonth(), year: zoned.getFullYear() };
+  const zoned = wallClock(toDate(value));
+  return { monthIndex: zoned.monthIndex, year: zoned.year };
 };
 
 /** "November 2026" / «تشرين الثاني 2026», in Baghdad, Latin digits. */

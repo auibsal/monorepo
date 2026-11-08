@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { type Client, unwrap } from "./client";
+import { type Client, currentDate, unwrap } from "./client";
 
 /**
  * Recognition: staff service (hours for service letters, staff only) and
@@ -135,7 +135,7 @@ export const serviceLetterCopy: Record<
 };
 
 /** The academic year runs from September 1. */
-export const academicYearStart = (on: Date = new Date()) => {
+export const academicYearStart = (on: Date = currentDate()) => {
   const year =
     on.getUTCMonth() >= 8 ? on.getUTCFullYear() : on.getUTCFullYear() - 1;
   return `${year}-09-01`;
@@ -441,7 +441,7 @@ export const societyYear = (year: number) => ({
 });
 
 /** The academic year a date falls in. */
-export const societyYearOf = (date: Date = new Date()) =>
+export const societyYearOf = (date: Date = currentDate()) =>
   Number(academicYearStart(date).slice(0, 4));
 
 /**

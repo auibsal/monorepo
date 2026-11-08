@@ -2,6 +2,9 @@ import { forms } from "@repo/sal-data";
 import { notFound } from "next/navigation";
 import { FillForm } from "@/components/diwan/forms/fill";
 
+// Its query string decides what it shows, so it renders per request.
+export const instant = false;
+
 interface PageProps {
   readonly params: Promise<{ number: string }>;
   readonly searchParams: Promise<{ event?: string; link?: string }>;

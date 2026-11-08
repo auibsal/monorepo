@@ -5,6 +5,7 @@ import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
+import { thisYear } from "@/lib/this-year";
 
 const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
 
@@ -18,6 +19,7 @@ const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
  * Membership live only there.
  */
 export const Footer = async () => {
+  const year = await thisYear();
   const t = await getTranslations("web.footer");
   const tn = await getTranslations("web.nav");
   const tx = await getTranslations("web.footerExtra");
@@ -118,7 +120,7 @@ export const Footer = async () => {
           </ul>
         </div>
         <div className="border-line text-text-secondary col-span-2 flex flex-col gap-3 border-t pt-5 text-[0.8125rem] lg:col-span-4 lg:flex-row lg:flex-wrap lg:items-baseline lg:justify-between">
-          <p>{tx("copyright", { year: String(new Date().getFullYear()) })}</p>
+          <p>{tx("copyright", { year: String(year) })}</p>
           <ul className="flex flex-wrap gap-x-5 gap-y-1">
             {fine.map(([href, label]) => (
               <li key={href}>

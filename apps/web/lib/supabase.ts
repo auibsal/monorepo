@@ -1,8 +1,15 @@
 import "server-only";
 
+import { AsyncLocalStorage } from "node:async_hooks";
 import type { Database } from "@repo/database";
+import { setClock } from "@repo/sal-data";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { env } from "@/env";
+import { roughlyNow } from "@/lib/this-year";
+
+/** The moment a published read runs at (see `readPublished`). */
+const readingAt = new AsyncLocalStorage<number>();
+setClock(() => readingAt.getStore() ?? Date.now());
 
 /** Cache tags revalidated on publish (the API routes → /api/revalidate). */
 export const cacheTags = [
@@ -60,7 +67,10 @@ export const readPublished = async <T>(
     return fallback;
   }
   try {
-    return await read(client);
+    // The shared reads compare against a moment kept a few minutes, so the
+    // page can be prerendered and refreshes on its own.
+    const at = await roughlyNow();
+    return await readingAt.run(at, () => read(client));
   } catch {
     return fallback;
   }

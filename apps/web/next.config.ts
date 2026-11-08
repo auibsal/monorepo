@@ -67,6 +67,9 @@ const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 // route (decisions.md), and search engines never index them.
 let nextConfig: NextConfig = {
   ...config,
+  // Pages are prerendered around what each request needs; published
+  // reads stay cached by tag and are refreshed on publish (lib/supabase.ts).
+  cacheComponents: true,
   headers: async () => [
     // The API routes answer with JSON, CSV or a calendar (audit E5): the
     // transport and sniffing headers the pages get, and never framed or

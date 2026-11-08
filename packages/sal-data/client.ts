@@ -39,3 +39,18 @@ export const localized = <T extends Record<string, unknown>>(
     ""
   );
 };
+
+let clockSource: () => number = () => Date.now();
+
+/**
+ * The time the shared reads compare against (published, still open,
+ * coming). The real time by default; the site's published reads set it to
+ * a moment kept a few minutes, so their pages can be prerendered (Cache
+ * Components). Only the site's server sets it, through `setClock`.
+ */
+export const currentDate = () => new Date(clockSource());
+
+/** Where `currentDate` reads the time from (the site's server only). */
+export const setClock = (source: () => number) => {
+  clockSource = source;
+};

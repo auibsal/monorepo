@@ -5,6 +5,14 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { pastIssues, SundayPaperIssue } from "@/components/sunday-paper-issue";
 import { localizedMetadata } from "@/lib/metadata";
+import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
+
+// Made on its first visit (its address names a record), then kept until
+// it is published again.
+export const instant = false;
+// The placeholder (never a real address) gives the route a shell, so a
+// missing record answers 404 before anything streams.
+export const generateStaticParams = () => [{ month: PLACEHOLDER_SLUG }];
 
 interface IssueProps {
   readonly params: Promise<{ locale: Locale; month: string }>;

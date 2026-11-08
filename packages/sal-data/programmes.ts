@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { type Client, unwrap } from "./client";
+import { type Client, currentDate, unwrap } from "./client";
 
 /**
  * A page typed at the Typewriter Tour (decisions.md): kept as the
@@ -126,7 +126,7 @@ export const removalStatuses = [
 ] as const;
 
 /** Hours and minutes until (positive) or past (negative) a due time. */
-export const timeLeft = (dueAt: string, now = new Date()) => {
+export const timeLeft = (dueAt: string, now = currentDate()) => {
   const minutes = Math.round(
     (new Date(dueAt).getTime() - now.getTime()) / 60_000
   );
