@@ -51,6 +51,16 @@ Clear space is one notch depth (about a quarter of the symbol's width) on every 
 
 **With the University.** Where the AUIB logo appears it leads; the Society's lockup follows at equal or smaller height. Inside AUIB's own templates, follow AUIB.
 
+## AUIB's logos
+
+The University and its offices appear in one standard set, in `apps/web/public/institutions/`, all in AUIB's brand:
+
+- **The University:** the AUIB mark alone (`auib`).
+- **An office or partner:** the AUIB mark, a hairline, then the name, over "American University of Iraq – Baghdad" (`student-life`, `cas`, `press`, `library`). The name is the office's own, without "AUIB", which the mark already carries: Office of Student Life, College of Arts and Sciences, Press, Library.
+- **One crimson (#AB1D3F) and one gray (#6D6E71).** Names in Ubuntu Bold, in title case, on one line or broken after "of"; the University line in Ubuntu Medium; hairlines in gray.
+- **Two versions of each:** color for paper (`<name>.svg`) and white for ink (`<name>-white.svg`). The page shows the one that suits its ground; never put the color version on ink.
+- **Shown side by side at the same height.** Never recolor, retype or rearrange one; a new office is drawn on the same grid.
+
 ## Never
 
 × Stretch or squash it · × Recolor it · × Put the crimson symbol on ink · × Rotate it · × Add shadows or effects · × Retype the name · × Mix languages or repeat it: one lockup, in the piece's language · × Use the light file on crimson

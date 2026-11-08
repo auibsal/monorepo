@@ -225,11 +225,10 @@ Part A first).
 ## Content still needed
 
 - [x] The institutions' logos (Nov 8): AUIB, the Office of Student Life,
-  the College of Arts and Sciences, AUIB Press and the AUIB Library, in
-  `apps/web/public/institutions/`, redrawn as SVG from the supplied files
-  (shapes and colors unchanged). AUIB Press's was cut from a photo and the
-  Library's file is small, so their fine detail is approximate: replace
-  both when the offices send their own vector files.
+  the College of Arts and Sciences, the Press and the Library, as one
+  standard AUIB set in `apps/web/public/institutions/` (one crimson, one
+  gray, Ubuntu; color for paper, white for ink;
+  `packages/brand/guide/02-logo.md`).
 - [ ] The dated events of decisions §7 (the pilots on Nov 17 and Dec 1,
   spring 2027's Tuesdays, the al-Mutanabbi Street trip on Apr 23) go into
   Notion's Events once the room and times are confirmed with Student Life.

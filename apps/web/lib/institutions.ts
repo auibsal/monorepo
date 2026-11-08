@@ -1,50 +1,42 @@
 /**
  * The Society's home institution and institutional partners (Constitution
  * 1.2: a registered student organization of AUIB, recognized by the Office
- * of Student Life). Names come from the messages files; logos are the
- * institutions' own files in apps/web/public/institutions, redrawn as SVG
- * with their shapes and colors unchanged.
- * `ground` is what the file was made for: a color logo sits on paper, a
- * white one on ink, in either theme.
+ * of Student Life). Names come from the messages files. Logos are AUIB's
+ * standard set in apps/web/public/institutions (packages/brand/guide/
+ * 02-logo.md): `<logo>.svg` in color for paper, `<logo>-white.svg` for ink.
  */
 export const INSTITUTIONS = [
   {
-    ground: "paper",
     key: "auib",
-    logo: "/institutions/auib.svg",
+    logo: "auib",
     role: "home",
     url: "https://auib.edu.iq",
   },
   {
-    ground: "ink",
     key: "studentLife",
-    logo: "/institutions/student-life.svg",
+    logo: "student-life",
     role: "recognition",
     url: null,
   },
   {
-    ground: "paper",
     key: "cas",
-    logo: "/institutions/cas.svg",
+    logo: "cas",
     role: "partner",
     url: null,
   },
   {
-    ground: "ink",
     key: "press",
-    logo: "/institutions/press.svg",
+    logo: "press",
     role: "partner",
     url: null,
   },
   {
-    ground: "ink",
     key: "library",
-    logo: "/institutions/library.svg",
+    logo: "library",
     role: "partner",
     url: null,
   },
 ] as const satisfies readonly {
-  ground: "paper" | "ink";
   key: string;
   logo: string;
   role: "home" | "recognition" | "partner";
