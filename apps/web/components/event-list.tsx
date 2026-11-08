@@ -155,11 +155,3 @@ export const eventItems = (
     title: localized(event, "title", locale),
     venue: localized(event, "venue", locale) || null,
   }));
-
-export const EventList = ({
-  events,
-  locale,
-}: {
-  events: readonly EventRow[];
-  locale: Locale;
-}) => <DatedList items={eventItems(events, locale)} locale={locale} />;

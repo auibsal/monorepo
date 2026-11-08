@@ -88,7 +88,7 @@ export type Problem =
   | "deck";
 
 /** What the caller may do to this piece (the database checks again). */
-export const usePieceRights = (piece: Piece | null | undefined) => {
+const usePieceRights = (piece: Piece | null | undefined) => {
   const grants = useGrants();
   const can = (permission: Parameters<typeof hasPermission>[1]) =>
     Boolean(piece) &&

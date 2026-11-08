@@ -13,7 +13,7 @@ import { MemberPicker, type Person } from "../member-picker";
 const key = ["admin", "journal", "contributors"];
 
 /** The contributors (bylines) the newsroom can name. */
-export const useBylines = () => {
+const useBylines = () => {
   const { supabase } = useAuth();
   return useQuery({
     queryFn: async () =>

@@ -32,5 +32,3 @@ export const createClient = () => {
     }
   );
 };
-
-export type BrowserClient = ReturnType<typeof createClient>;

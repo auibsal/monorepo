@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { logos } from "../../lib/logos";
 import { cn } from "../../lib/utils";
 
-export type SocialPostGround = "crimson" | "ink" | "white";
+type SocialPostGround = "crimson" | "ink" | "white";
 
 interface SocialPostProps {
   readonly className?: string;

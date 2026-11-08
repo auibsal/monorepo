@@ -2,7 +2,7 @@ import type { Context } from "grammy";
 import { type Copy, copy, type Lang, langOf } from "./copy";
 import { type Account, whoami } from "./db";
 
-export interface Flavor {
+interface Flavor {
   /** The linked Diwan account, loaded once per update when first asked for. */
   account: () => Promise<Account | null>;
   /** The bot's username, for start links. */

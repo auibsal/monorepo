@@ -185,7 +185,7 @@ type NeedOwner =
   | { readonly column: "event_id"; readonly id: string }
   | { readonly column: "programme_id"; readonly id: string };
 
-export const NewNeed = ({
+const NewNeed = ({
   onDone,
   owner,
 }: {

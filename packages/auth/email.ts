@@ -144,7 +144,7 @@ export interface SignUpDetails {
 const NAME_PARTS = ["first", "father", "grandfather", "last"] as const;
 
 /** One language's name: name, father's, grandfather's and last. */
-export type NameParts = Record<(typeof NAME_PARTS)[number], string>;
+type NameParts = Record<(typeof NAME_PARTS)[number], string>;
 
 /**
  * Creates an account. Metadata here only fills in the profile; it is never

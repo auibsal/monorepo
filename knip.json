@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "include": ["files", "dependencies", "unlisted"],
+  "include": ["files", "dependencies", "unlisted", "exports", "types"],
   "ignoreDependencies": [
     "tailwindcss",
     "@tailwindcss/postcss",
@@ -18,7 +18,7 @@
       "ignoreDependencies": ["react-dom", "@types/react-dom"]
     },
     "packages/brand": {
-      "ignore": ["assets/**"]
+      "ignore": ["assets/**", "components/ui/**"]
     }
   }
 }

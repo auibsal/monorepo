@@ -49,7 +49,7 @@ media do.
     (`/diwan/partnerships`: applications, the register, memoranda); and
     Membership (`/diwan/membership`: the Register, guests, openings,
     service, the Typewriter Tour). Diwan code names pages by their own path (`/events`); `Link`,
-    `useRouter`, `usePathname` and `redirect` from `@/lib/diwan/navigation`
+    `useRouter` and `usePathname` from `@/lib/diwan/navigation`
     add the `/diwan` prefix.
   - Your account and the Diwan are client-rendered (`components/diwan`,
     `lib/diwan`); every check in them is UX only. They read and write
@@ -115,7 +115,6 @@ bun run --cwd packages/brand dev       # the design system, locally
 bun run --cwd packages/database db:test:sync     # copy the pgTAP preamble
 bun run --cwd packages/brand tokens      # regenerate tokens.css
 bun run --cwd packages/brand icons       # regenerate the icon data
-bun run gen:package         # scaffold packages/<name>
 ```
 
 Run `check`, `typecheck` and `test` before every commit, and `db:test` for
@@ -658,9 +657,6 @@ any schema change. Integration tests run against a local stack with
   logical Tailwind utilities (`ms-*`, `pe-*`, `start-*`, `text-start`);
   `bun run check:rtl` enforces it. Icons that point along the reading
   direction get `rtl:rotate-180`.
-- **Optional modules:** code belonging to an optional module is wrapped in
-  `// <module:id>` … `// </module:id>` markers; `bun run
-  check:placeholders` keeps them balanced.
 - **shadcn/ui:** files in `packages/brand/components/ui` are generated;
   update them with the shadcn CLI where possible. SAL components live in
   `packages/brand/components/sal`.

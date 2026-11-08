@@ -15,7 +15,7 @@ const HTTP_SCHEME = /^https?:/;
 const AUIB_EVENTS = "https://auib.edu.iq/events/";
 
 /** Who hosts the events a list can be narrowed to (`/events?host=company`). */
-export const HOSTS = ["company"] as const;
+const HOSTS = ["company"] as const;
 export type Host = (typeof HOSTS)[number];
 export const isHost = (value: unknown): value is Host =>
   (HOSTS as readonly unknown[]).includes(value);

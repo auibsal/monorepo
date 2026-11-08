@@ -16,7 +16,7 @@ export interface PendingFile {
   kind: FileKind;
 }
 
-export const acceptFor = (kind: FileKind) =>
+const acceptFor = (kind: FileKind) =>
   kind === "image"
     ? journal.submissionFileTypes.image.join(",")
     : journal.submissionFileTypes.manuscript.join(",");

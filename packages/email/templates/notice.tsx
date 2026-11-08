@@ -31,7 +31,7 @@ const LOCKUP = {
 const FONT = "'Ubuntu Arabic', Ubuntu, 'Segoe UI', Tahoma, Arial, sans-serif";
 
 /** A line in a list: a title that links, and what it is (a date, a section). */
-export interface NoticeItem {
+interface NoticeItem {
   readonly href?: string;
   readonly meta?: string;
   readonly title: string;
@@ -365,5 +365,6 @@ Notice.PreviewProps = {
   preview: "You're booked for the reading",
 } satisfies NoticeProps;
 
+/** @public React Email's preview server loads a template by its default export. */
 // biome-ignore lint/complexity/noRedundantDefaultExport: React Email's preview server loads templates through their default export.
 export default Notice;

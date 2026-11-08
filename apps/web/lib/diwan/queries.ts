@@ -197,20 +197,6 @@ export const useMyShifts = () => {
   );
 };
 
-export const useMySixWords = () => {
-  const { supabase } = useAuth();
-  return useUserQuery(queryKeys.sixWords, async (userId) =>
-    unwrap(
-      await supabase
-        .schema("programmes")
-        .from("six_words")
-        .select("id, text, language, status, show_name")
-        .eq("user_id", userId)
-        .maybeSingle()
-    )
-  );
-};
-
 export const useCalendarToken = () => {
   const { supabase } = useAuth();
   return useUserQuery(queryKeys.calendarToken, () =>

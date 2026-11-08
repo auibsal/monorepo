@@ -32,7 +32,7 @@ import { ResendConfirmation } from "./resend-confirmation";
  * a partner's invitation (its address, when it names one, is fixed) or an
  * application to partner. Without one, the form takes AUIB addresses only.
  */
-export interface OutsideSignUp {
+interface OutsideSignUp {
   readonly email?: string | null;
   readonly reason:
     | { invitation: string }

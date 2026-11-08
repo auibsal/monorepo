@@ -2,7 +2,6 @@ import { project } from "@repo/config";
 import { diwanPath, isLocale, localizedPath } from "@repo/internationalization";
 import {
   Link as LocaleLink,
-  redirect as localeRedirect,
   usePathname as useLocalePathname,
   useRouter as useLocaleRouter,
 } from "@repo/internationalization/navigation";
@@ -78,14 +77,6 @@ export const useRouter = (): LocaleRouter => {
     [router]
   );
 };
-
-type RedirectArgs = Parameters<typeof localeRedirect>;
-
-/** The locale-aware redirect, with the Diwan prefix added. */
-export const redirect = (
-  args: RedirectArgs[0],
-  ...rest: RedirectArgs extends [unknown, ...infer R] ? R : never
-) => localeRedirect({ ...args, href: diwanHref(args.href) }, ...rest);
 
 /**
  * A post-sign-in destination taken from the URL. Only paths on this site

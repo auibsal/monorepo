@@ -19,7 +19,7 @@ import { stamp } from "./publish";
  * "Public page" is cleared and its Platform note says so, for the English
  * row and its Arabic edition alike.
  */
-export const OFF_SITE = new Set([
+const OFF_SITE = new Set([
   "Idea",
   "Planning",
   "Draft",

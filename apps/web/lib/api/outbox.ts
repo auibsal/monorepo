@@ -103,7 +103,7 @@ import {
  * the notice on their devices, after the email has gone.
  */
 /** Also in private.queue_revalidation(): a row past it no longer counts as waiting. */
-export const MAX_ATTEMPTS = 5;
+const MAX_ATTEMPTS = 5;
 
 type Lang = CopyLang;
 interface OutboxRow {
@@ -1583,7 +1583,7 @@ export const isDeferred = (payload: unknown, now = Date.now()) => {
  * the welcome is part of the confirmation email now, and reminders and
  * digests have Hudhud or the account's own pages.
  */
-export const NON_ESSENTIAL = new Set([
+const NON_ESSENTIAL = new Set([
   "membership.welcome",
   "qirtas.call_opened",
   "qirtas.piece_note",

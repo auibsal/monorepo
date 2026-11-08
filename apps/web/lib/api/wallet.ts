@@ -98,7 +98,7 @@ const issuer = () => env.GOOGLE_WALLET_ISSUER_ID ?? "";
 export const walletClassId = () => `${issuer()}.sal-membership`;
 
 /** The pass for a card code. */
-export const walletObjectId = (code: string) => `${issuer()}.card-${code}`;
+const walletObjectId = (code: string) => `${issuer()}.card-${code}`;
 
 /** The card code a pass was issued for, or null for another issuer's. */
 export const walletCodeOf = (objectId: string) => {

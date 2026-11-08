@@ -28,7 +28,7 @@ type UniversityRow = events.UniversityEvent;
  * Where a row leads: the event's page, or, for a members-only teaser, the
  * members' events page (which asks the visitor to sign in).
  */
-export const rowHref = (row: Row) =>
+const rowHref = (row: Row) =>
   row.teaser || row.members_only
     ? `/account/calendar#${row.slug}`
     : `/events/${row.slug}`;
@@ -36,7 +36,7 @@ export const rowHref = (row: Row) =>
 type WayKey = "canceled" | "members" | "open" | "rsvp" | "invite";
 
 /** The one line under each title: how to come. */
-export const wayOf = (row: Row): WayKey => {
+const wayOf = (row: Row): WayKey => {
   if (row.status === "canceled") {
     return "canceled";
   }

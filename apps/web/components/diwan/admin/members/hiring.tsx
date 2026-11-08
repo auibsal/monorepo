@@ -24,7 +24,7 @@ import { SkillsPicker } from "../programmes/skills-picker";
 /** Every opening list in the Diwan reads and refreshes under this key. */
 export const key = ["admin", "openings"];
 
-export const owners = [
+const owners = [
   "program",
   "qirtas",
   "media",

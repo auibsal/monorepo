@@ -12,7 +12,7 @@ const isBefore = (at: string, end: Date) =>
   end.getTime() - new Date(at).getTime() > 0;
 
 /** What an issue carried, from the records, in this language. */
-export const issueContents = async (issue: Issue, locale: Locale) => {
+const issueContents = async (issue: Issue, locale: Locale) => {
   const [pieces, upcoming] = await Promise.all([
     readPublished(
       ["journal"],

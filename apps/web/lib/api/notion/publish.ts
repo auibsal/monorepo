@@ -52,9 +52,6 @@ export const stamp = () => {
   return `${formatLongDate(now, "en")}, ${formatClock(now, "en")}`;
 };
 
-export const needsChangesNote = (problems: string[]) =>
-  `Not published (${stamp()}): ${problems.join(" ")}`;
-
 export const needsChanges = async (
   ctx: SyncContext,
   page: NotionPage,

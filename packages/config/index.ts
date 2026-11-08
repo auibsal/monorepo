@@ -1,22 +1,6 @@
 import { z } from "zod";
 import raw from "./project.json" with { type: "json" };
 
-const PLACEHOLDER = /^\{\{[A-Z_]+\}\}$/;
-
-/** True while a value is still an unfilled placeholder token from the template. */
-export const isPlaceholder = (value: string) => PLACEHOLDER.test(value);
-
-/**
- * Functional values (URLs, emails, IDs) resolve to `undefined` until
- * `bun run init` replaces the placeholder, so an uninitialized template still
- * builds and runs. Display names keep the raw token so it is visibly obvious.
- */
-const filled = <T extends z.ZodType<string, string>>(schema: T) =>
-  z
-    .string()
-    .transform((value) => (isPlaceholder(value) ? undefined : value))
-    .pipe(schema.optional());
-
 /** Every locale the template ships configuration for. */
 export const supportedLocales = ["ar", "en", "ckb"] as const;
 export type SupportedLocale = (typeof supportedLocales)[number];
@@ -77,10 +61,10 @@ const projectSchema = z
       timeZone: z.string().min(1),
       weekStartsOn: z.number().int().min(0).max(6),
     }),
-    repoUrl: filled(z.url()),
+    repoUrl: z.url(),
     shortName: z.string().min(1),
     slug: z.string().min(1),
-    supportEmail: filled(z.email()),
+    supportEmail: z.email(),
     /**
      * Hudhud's sticker set on Telegram (t.me/addstickers/<name>): the bot
      * reads it and follows some replies with one (lib/api/bot/stickers.ts).

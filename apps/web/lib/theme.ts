@@ -4,7 +4,7 @@
  * they choose with the toggle; the choice is a functional cookie (no
  * consent needed), read before the first paint so no page flashes.
  */
-export const THEME_COOKIE = "sal_theme";
+const THEME_COOKIE = "sal_theme";
 
 export type Theme = "light" | "dark";
 

@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
-export const SUPABASE_URL =
-  process.env.SUPABASE_URL ?? "http://127.0.0.1:54321";
+const SUPABASE_URL = process.env.SUPABASE_URL ?? "http://127.0.0.1:54321";
 export const MAILPIT_URL = process.env.MAILPIT_URL ?? "http://127.0.0.1:54324";
 const secret = process.env.SUPABASE_SECRET_KEY ?? "";
 

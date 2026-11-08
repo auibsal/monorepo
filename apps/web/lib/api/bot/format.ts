@@ -10,10 +10,6 @@ export const pick = (
   ar: string | null | undefined
 ) => (lang === "ar" ? (ar ?? en) : (en ?? ar)) ?? "";
 
-/** A person's name from Telegram, escaped. */
-export const displayName = (user: { first_name: string; last_name?: string }) =>
-  escapeHtml([user.first_name, user.last_name].filter(Boolean).join(" "));
-
 export const when = (lang: Lang, iso: string) =>
   copy[lang].when(formatLongDate(iso, lang), formatClock(iso, lang));
 

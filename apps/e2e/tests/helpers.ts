@@ -52,7 +52,7 @@ export const latestMail = async (to: string, after = 0) => {
 };
 
 /** The six-digit code an authenticator app shows for a key (RFC 6238). */
-export const totp = (secret: string, at = Date.now()) => {
+const totp = (secret: string, at = Date.now()) => {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let bits = "";
   for (const char of secret.replace(/[=]+$/, "").toUpperCase()) {

@@ -634,7 +634,7 @@ const inviteUrl = (code: string, locale: string) =>
  * Lead's) or as the partner's guest. The person gets an email; the link
  * works for that address only, for fourteen days.
  */
-export const InviteByEmail = ({
+const InviteByEmail = ({
   kind,
   partnerId,
 }: {

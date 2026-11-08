@@ -179,7 +179,7 @@ export const mirrorOfficers = async (
 };
 
 /** Stage names in the order a submission moves through them. */
-export const STAGES = [
+const STAGES = [
   ["received", "Received"],
   ["intake_check", "Intake check"],
   ["in_review", "In review"],

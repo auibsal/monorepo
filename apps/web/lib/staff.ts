@@ -4,7 +4,7 @@
 // Diwan for staff, and the dashboard for a partner's people. A hint for the header, never for access: each area's own
 // gate and Row Level Security decide.
 
-export const WAYS_COOKIE = "sal_ways";
+const WAYS_COOKIE = "sal_ways";
 
 export interface Ways {
   /** Holds a role in the Society (the Diwan). */

@@ -33,7 +33,7 @@ export const useVisibleModules = () => {
  * The sections this officer opens, each linked to the first of its views
  * their roles include: a section never opens on a page they can't use.
  */
-export const useVisibleSections = () => {
+const useVisibleSections = () => {
   const { grants, visible } = useVisibleModules();
   const keys = new Set<string>(visible.map((m) => m.key));
   const sections = adminSections.flatMap((section) => {
