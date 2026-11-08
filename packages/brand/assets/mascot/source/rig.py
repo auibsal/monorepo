@@ -71,6 +71,7 @@ def eye(sc,kind='open'):
     if kind=='worry':
         return (f'<circle cx="{ex}" cy="{ey}" r="15" fill="{sc["eye"]}"/><circle cx="{ex+1}" cy="{ey+2}" r="6" fill="{sc["pupil"]}"/>'
                 f'<path d="M {ex-10} {ey-20} L {ex+10} {ey-24}" stroke="{sc["pupil"]}" stroke-width="5" stroke-linecap="round"/>')
+    raise ValueError(f'no eye called {kind!r}')
 def wingshape(L=150,w0=24,w1=48):
     return (f"M -{w0} 0 C -{w0} -{L*0.4:.0f} -{w1} -{L*0.66:.0f} -{w1*0.86:.0f} -{L*0.9:.0f} "
             f"C -{w1*0.6:.0f} -{L*1.06:.0f} {w1*0.6:.0f} -{L*1.06:.0f} {w1*0.86:.0f} -{L*0.9:.0f} "

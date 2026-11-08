@@ -18,7 +18,6 @@
     "@react-email/components": "1.0.12",
     "@repo/config": "workspace:*",
     "@repo/email": "workspace:*",
-    "@repo/observability": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "next": "16.4.5",

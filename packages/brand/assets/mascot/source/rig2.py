@@ -1,7 +1,7 @@
 """Hudhud, the Society's mascot: the drawing, as flat SVG shapes.
 Shapes are drawn in their own coordinates, then shifted so the body sits near the local origin."""
 import math
-from rig import CR,C700,C100,C50,INK,INK70,W,SCHEMES,wing,wingshape,svg,g
+from rig import INK,W,SCHEMES,wing,g
 OX,OY=-280,-300
 HC=(374,190); HR=46
 BODY=("M 352 262 C 374 290 372 332 346 354 C 316 380 268 390 232 386 C 196 382 172 356 174 322 "
@@ -47,6 +47,7 @@ def eye(sc,kind):
     if kind=='sleep': return f'<path d="M {ex-11} {ey-2} Q {ex} {ey+9} {ex+11} {ey-2}" fill="none" stroke="{k}" stroke-width="6" stroke-linecap="round"/>'
     if kind=='worry': return (f'<circle cx="{ex}" cy="{ey+2}" r="10.5" fill="{k}"/><circle cx="{ex+3.5}" cy="{ey-1}" r="3.4" fill="{W}"/>'
                               f'<path d="M {ex-12} {ey-18} L {ex+10} {ey-23}" stroke="{k}" stroke-width="5.5" stroke-linecap="round"/>')
+    raise ValueError(f'no eye called {kind!r}')
 def beak(sc,open_=0):
     s=f'<path d="M 414 174 C 458 178 494 200 516 248 C 519 255 511 260 506 254 C 488 226 460 212 418 212 Z" fill="{sc["beak"]}"/>'
     if open_:
@@ -67,7 +68,7 @@ def folded(sc,uid):
     return (f'<clipPath id="{uid}"><path d="{WING}"/></clipPath><path d="{WING}" fill="{sc["wing"]}" stroke="{sc["gap"]}" stroke-width="6" stroke-linejoin="round"/>'
             f'<g clip-path="url(#{uid})">{bars}</g>')
 def bird(scheme='light',crest_kind='up',eye_kind='open',beak_open=0,head_tilt=0,wings='folded',legs_on=True,uid='b',wave=None,extra_front=''):
-    sc=SCHEMES[scheme]; back=[]; front=[]
+    sc=SCHEMES[scheme]; back=[]
     if wings=='flying': back.append(wing(sc,-60,10,-78,uid+'wd',150,26,50,bars=(0.42,0.62,0.8)))
     if wings=='both': back.append(wing(sc,-50,0,-76,uid+'w1',170,30,58))
     if wave in ('front','raise') or wings=='both': back.append(wing(sc,-20,0,-34,uid+'wv',190,30,60,bars=(0.42,0.6,0.78)))

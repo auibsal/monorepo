@@ -1,7 +1,7 @@
 """Hudhud, the Society's mascot: the drawing, as flat SVG shapes.
 Shapes are drawn in their own coordinates, then shifted so the body sits near the local origin."""
 import math
-from rig import CR,C700,C100,C50,INK,INK70,W,SCHEMES,wing,wingshape,svg,g
+from rig import INK,W,SCHEMES,g
 OX,OY=-280,-300
 HC=(374,190); HR=46
 BODY=("M 352 262 C 374 290 372 332 346 354 C 316 380 268 390 232 386 C 196 382 172 356 174 322 "
@@ -14,7 +14,6 @@ CRESTS={'up':(-84,30,[88,106,118,120,110,92]),
         'fanned':(-92,40,[92,110,122,124,116,98]),
         'folded':(-118,-34,[78,94,104,104,92,76]),
         'droop':(-148,-70,[66,80,90,90,80,66])}
-PIV=(354,236)
 def pt(c,ang,r):
     a=math.radians(ang); return (c[0]+math.sin(a)*r, c[1]-math.cos(a)*r)
 def fan(sc,kind,uid):
@@ -47,6 +46,7 @@ def eye(sc,kind):
     if kind=='sleep': return f'<path d="M {ex-11} {ey-2} Q {ex} {ey+9} {ex+11} {ey-2}" fill="none" stroke="{k}" stroke-width="6" stroke-linecap="round"/>'
     if kind=='worry': return (f'<circle cx="{ex}" cy="{ey+2}" r="10.5" fill="{k}"/><circle cx="{ex+3.5}" cy="{ey-1}" r="3.4" fill="{W}"/>'
                               f'<path d="M {ex-12} {ey-18} L {ex+10} {ey-23}" stroke="{k}" stroke-width="5.5" stroke-linecap="round"/>')
+    raise ValueError(f'no eye called {kind!r}')
 from rig2 import tail, legs, folded
 CRESTS['fanned']=(-92,38,[90,106,116,118,110,94])
 CRESTS['swept']=(-112,-8,[82,98,108,106,94,78])

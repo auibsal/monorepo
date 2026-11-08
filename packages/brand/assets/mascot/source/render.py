@@ -1,5 +1,5 @@
 import sys,os; sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
-from rig import *; import cairosvg
+import cairosvg
 from PIL import Image
 def png(svgs,out,w=512):
     cairosvg.svg2png(bytestring=svgs.encode(),write_to=out,output_width=w)
