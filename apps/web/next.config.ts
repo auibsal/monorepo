@@ -10,53 +10,10 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 // other old address is simply not found. www.auibsal.org → auibsal.org is
 // a Vercel domain setting.
 const MOVED: readonly [from: string, to: string][] = [
+  // Hudhud's messages already in members' chats link here, and Telegram
+  // never updates a button once it is sent.
   ["/membership", "/account"],
   ["/membership/:path*", "/account/:path*"],
-  ["/library/privacy", "/privacy"],
-  ["/library/terms-of-use", "/terms"],
-  ["/library/accessibility", "/accessibility"],
-  ["/partners/join", "/partners/apply"],
-  // Your account's tabs match their pages (decisions §6).
-  ["/account/society", "/account/elections"],
-  ["/account/society/stand/:position", "/account/elections/:position"],
-  ["/account/saved", "/account/work"],
-  ["/account/settings/notices", "/account/settings/notifications"],
-  ["/account/settings/declarations", "/account/settings/disclosures"],
-  // The Diwan by Council seat (decisions §6).
-  ["/diwan/society/declarations", "/diwan/council/disclosures"],
-  ["/diwan/society", "/diwan/council"],
-  ["/diwan/society/:path*", "/diwan/council/:path*"],
-  ["/diwan/people/service/certificates", "/diwan/qirtas/certificates"],
-  [
-    "/diwan/people/service/certificates/:path*",
-    "/diwan/qirtas/certificates/:path*",
-  ],
-  ["/diwan/people/partners", "/diwan/partnerships"],
-  ["/diwan/people/partners/:path*", "/diwan/partnerships/:path*"],
-  ["/diwan/people", "/diwan/membership"],
-  ["/diwan/people/:path*", "/diwan/membership/:path*"],
-  ["/diwan/qirtas/video/episodes/:path*", "/diwan/media/episodes/:path*"],
-  ["/diwan/qirtas/video/reels/:path*", "/diwan/media/reels/:path*"],
-  ["/diwan/design", "/diwan/media/design"],
-  ["/_design", "/diwan/media/design"],
-  ["/_design/:path*", "/diwan/media/design"],
-  ["/diwan/events/pitches/:path*", "/diwan/events/proposals/:path*"],
-  ["/diwan/events/:ref/door", "/diwan/events/:ref/check-in"],
-  [
-    "/account/record/:ref([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
-    "/account/record/certificates/:ref",
-  ],
-  // Filters are query strings (decisions §6).
-  ["/events/:month(\\d{4}-\\d{2})", "/events?month=:month"],
-  ["/events/:month(\\d{4}-\\d{2})/society", "/events?month=:month"],
-  ["/company/:month(\\d{4}-\\d{2})", "/events?host=company&month=:month"],
-  ["/qirtas/archive/:month(\\d{4}-\\d{2})", "/qirtas/archive?month=:month"],
-  [
-    "/qirtas/archive/:month(\\d{4}-\\d{2})/:section",
-    "/qirtas/archive?month=:month&section=:section",
-  ],
-  ["/search/:q", "/search?q=:q"],
-  ["/qirtas/editions/list", "/qirtas/editions?view=list"],
 ];
 // English has no prefix; Arabic is under /ar.
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;

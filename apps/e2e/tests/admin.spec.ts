@@ -83,7 +83,7 @@ test("the design system is part of the Diwan, for officers only", async ({
   page,
   request,
 }) => {
-  // Its files are there for staff alone; the old address moved here.
+  // Its files are there for staff alone; the old address is gone.
   const file = await request.get(
     `${urls.web}/diwan/media/design/kit/index.json`
   );
@@ -91,7 +91,7 @@ test("the design system is part of the Diwan, for officers only", async ({
   const old = await request.get(`${urls.web}/_design/index.html`, {
     maxRedirects: 0,
   });
-  expect(old.status()).toBe(308);
+  expect(old.status()).toBe(404);
 
   await signInWithPassword(page, editor.email);
   await page.goto(`${urls.web}/diwan/media/design`);

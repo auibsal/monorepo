@@ -247,12 +247,11 @@ everywhere:
 - **Lasting addresses.** Pages people share or return to have their own
   path (an event, a piece, an issue); lists are filtered with query
   strings (`/events?month=`, `/qirtas/archive?month=&section=`,
-  `/search?q=`). An address that was shared and
-  then moved gets a permanent redirect (308, `MOVED` in
-  `apps/web/next.config.ts`, in both languages): `/membership` →
-  `/account`, `/library/privacy|terms-of-use|accessibility` → `/privacy`,
-  `/terms`, `/accessibility`, `/partners/join` → `/partners/apply`. Any
-  other old address is simply not found. The address alone decides the
+  `/search?q=`). Links point at the current
+  address, never at a redirect. The one redirect kept is `/membership` →
+  `/account` (308, `MOVED` in `apps/web/next.config.ts`, in both
+  languages), because Hudhud's sent buttons link there; any other old
+  address is simply not found. The address alone decides the
   language (`localeDetection: false`).
 - **Big records get pages; small rows are edited in place.** A record
   with its own life (an event, a piece, a production, a partner, a

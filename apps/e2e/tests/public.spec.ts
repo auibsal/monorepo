@@ -171,23 +171,11 @@ test("every page in the sitemap is found, in both languages", async ({
 test("moved addresses redirect permanently, in both languages", async ({
   request,
 }) => {
+  // Only /membership is kept: Hudhud's sent buttons link there. Every other
+  // old address is simply not found.
   const moved: [string, string][] = [
     ["/membership", "/account"],
-    ["/membership/settings/notices", "/account/settings/notices"],
-    ["/account/settings/notices", "/account/settings/notifications"],
-    ["/account/society", "/account/elections"],
-    ["/account/saved", "/account/work"],
-    ["/library/privacy", "/privacy"],
-    ["/library/terms-of-use", "/terms"],
-    ["/library/accessibility", "/accessibility"],
-    ["/partners/join", "/partners/apply"],
-    ["/search/poems", "/search?q=poems"],
-    ["/qirtas/editions/list", "/qirtas/editions?view=list"],
-    [
-      "/qirtas/archive/2026-11/news",
-      "/qirtas/archive?month=2026-11&section=news",
-    ],
-    ["/company/2026-11", "/events?host=company&month=2026-11"],
+    ["/membership/settings/notifications", "/account/settings/notifications"],
   ];
   for (const prefix of ["", "/ar"]) {
     for (const [from, to] of moved) {
@@ -197,5 +185,11 @@ test("moved addresses redirect permanently, in both languages", async ({
       expect(response.status(), `${prefix}${from}`).toBe(308);
       expect(response.headers().location).toBe(`${prefix}${to}`);
     }
+  }
+  for (const gone of ["/library/privacy", "/partners/join", "/search/poems"]) {
+    const response = await request.get(`${urls.web}${gone}`, {
+      maxRedirects: 0,
+    });
+    expect(response.status(), gone).toBe(404);
   }
 });
