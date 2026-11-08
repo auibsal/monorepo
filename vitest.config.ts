@@ -4,8 +4,17 @@ export default defineConfig({
   test: {
     coverage: {
       provider: "v8",
-      reporter: ["cobertura"],
+      reporter: ["cobertura", "text-summary"],
       reportsDirectory: "./coverage",
+      // Floors, two points under the coverage of Nov 8, 2026 (54% of
+      // statements and lines, 36% of branches, 40% of functions): a change
+      // that drops coverage below them fails CI. Raise them as tests grow.
+      thresholds: {
+        branches: 34,
+        functions: 38,
+        lines: 52,
+        statements: 52,
+      },
     },
     projects: [
       "apps/web",
