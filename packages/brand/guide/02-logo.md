@@ -51,12 +51,12 @@ Clear space is one notch depth (about a quarter of the symbol's width) on every 
 
 **With the University.** Where the AUIB logo appears it leads; the Society's lockup follows at equal or smaller height. Inside AUIB's own templates, follow AUIB.
 
-## AUIB's logos
+## AUIB’s logos
 
-The University and its offices appear in one standard set, in `apps/web/public/institutions/`, all in AUIB's brand and all made the same way:
+The University and its offices appear in one standard set, in `apps/web/public/institutions/`, all in AUIB’s brand and all made the same way:
 
-- **One layout.** The AUIB mark, a hairline as tall as the mark, then the name, its lines centered on the mark. The University's name is "American University of / Iraq – Baghdad"; each office or partner gives its own name without "AUIB", which the mark already carries: Office of Student Life, College of Arts and Sciences, Press, Library.
-- **One type, two colors.** Names in Ubuntu Bold, title case, on one line or broken after "of", in AUIB crimson (#AB1D3F); the hairline and the mark's AUIB in AUIB gray (#6D6E71).
+- **One layout.** A mark, a hairline as tall as the mark’s box, then the name, its lines centered on the mark. The University, the Office of Student Life and the College of Arts and Sciences use the AUIB mark; AUIB Press and the AUIB Library use their own round emblems, the same width as the AUIB mark and centered in its place. Where the mark is AUIB’s, the name leaves “AUIB” to the mark (“American University of / Iraq – Baghdad”, “Office of / Student Life”, “College of / Arts and Sciences”); beside their own emblems the Press and the Library give their full names.
+- **One type, two colors.** Names in Ubuntu Bold, title case, on one line or broken after “of”, in AUIB crimson (#AB1D3F); the hairline and the mark’s AUIB in AUIB gray (#6D6E71); the emblems in crimson.
 - **Transparent, in two versions.** Color for paper (`<name>.svg`) and white for ink (`<name>-white.svg`), with no background of their own. The page shows the one that suits its ground; never the color version on ink.
 - **Same size, same place.** Shown at one height, the marks aligned on the start edge. Never recolor, retype or rearrange one; a new office is drawn on the same grid.
 
