@@ -6,6 +6,7 @@ import { revalidateTag } from "next/cache";
 import { env } from "@/env";
 import { hasBearer } from "@/lib/api/bearer";
 import { parseIcal } from "@/lib/api/ical";
+import { problem } from "@/lib/api/problem";
 import { termsFromFeed } from "@/lib/api/terms";
 
 export const maxDuration = 60;
@@ -19,7 +20,7 @@ export const maxDuration = 60;
  */
 const sync = async (request: Request) => {
   if (!hasBearer(request, env.CRON_SECRET)) {
-    return new Response("Unauthorized", { status: 401 });
+    return problem(401, "unauthorized");
   }
   const admin = createAdminClient();
   const url = project.campusCalendar;
@@ -41,7 +42,7 @@ const sync = async (request: Request) => {
   } catch (error) {
     // The next hourly run tries again; nothing is lost in between.
     log.warn(`AUIB calendar fetch failed: ${parseError(error)}`);
-    return Response.json({ error: "fetch_failed" }, { status: 502 });
+    return problem(502, "fetch_failed");
   }
 
   const events = parseIcal(text);
@@ -68,7 +69,7 @@ const sync = async (request: Request) => {
     );
   if (storeError) {
     log.error(`AUIB calendar upsert failed: ${storeError.message}`);
-    return Response.json({ error: "store_failed" }, { status: 500 });
+    return problem(500, "store_failed");
   }
   const earliest = events.reduce(
     (min, e) => (e.start < min ? e.start : min),

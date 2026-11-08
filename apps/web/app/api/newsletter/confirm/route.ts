@@ -1,7 +1,7 @@
 import { createAdminClient } from "@repo/database/admin";
-import { NextResponse } from "next/server";
 import { z } from "zod";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { respond } from "@/lib/api/problem";
 
 export const OPTIONS = preflight;
 
@@ -17,8 +17,7 @@ const VALID_FOR_MS = 7 * 24 * 60 * 60 * 1000;
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
-  const json = (payload: object, status = 200) =>
-    NextResponse.json(payload, { headers, status });
+  const json = respond(headers);
 
   const parsed = requestSchema.safeParse(
     await request.json().catch(() => null)

@@ -3,6 +3,7 @@ import { hasBearer } from "@/lib/api/bearer";
 import { sharedBot } from "@/lib/api/bot/bot";
 import { runRemovals } from "@/lib/api/bot/features/group/removals";
 import { runFeeds } from "@/lib/api/bot/feeds";
+import { problem } from "@/lib/api/problem";
 
 export const maxDuration = 60;
 
@@ -13,7 +14,7 @@ export const maxDuration = 60;
  */
 const run = async (request: Request) => {
   if (!hasBearer(request, env.CRON_SECRET)) {
-    return new Response("Unauthorized", { status: 401 });
+    return problem(401, "unauthorized");
   }
   if (!env.TELEGRAM_BOT_TOKEN) {
     return Response.json({ groups: 0, posted: 0, skipped: "no_token" });

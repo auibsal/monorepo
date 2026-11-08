@@ -6,7 +6,6 @@ import { invitation } from "@repo/email/copy";
 import { Notice, noticeText } from "@repo/email/templates/notice";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
-import { NextResponse } from "next/server";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { inviteStopToken } from "@/lib/api/email-stop";
 import {
@@ -14,6 +13,7 @@ import {
   invitationSigner,
 } from "@/lib/api/invitation-letter";
 import { hasPermission } from "@/lib/api/permissions";
+import { respond } from "@/lib/api/problem";
 import { presidentId } from "@/lib/api/signer";
 import { origin } from "@/lib/api/urls";
 
@@ -35,8 +35,7 @@ const SAMPLE = {
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
-  const json = (data: object, status = 200) =>
-    NextResponse.json(data, { headers, status });
+  const json = respond(headers);
 
   const session = await authenticateRequest(request);
   if (!session) {

@@ -3,6 +3,7 @@ import { log } from "@repo/observability/log";
 import { buckets } from "@repo/storage";
 import { isAuthorizedCronRequest, unauthorized } from "@/lib/api/cron";
 import { deleteAccount } from "@/lib/api/deletion";
+import { problem } from "@/lib/api/problem";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
@@ -113,6 +114,6 @@ export const GET = async (request: Request) => {
           ],
         },
       });
-    return new Response(message, { status: 500 });
+    return problem(500, "retention_failed");
   }
 };

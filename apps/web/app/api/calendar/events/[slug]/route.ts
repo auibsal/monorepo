@@ -1,6 +1,7 @@
 import { createAdminClient } from "@repo/database/admin";
 import { publicEvent } from "@/lib/api/calendar";
 import { icsResponse, renderCalendar } from "@/lib/api/ics";
+import { problem } from "@/lib/api/problem";
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const ICS_SUFFIX = /\.ics$/;
@@ -14,12 +15,12 @@ export const GET = async (
   const locale =
     new URL(request.url).searchParams.get("lang") === "ar" ? "ar" : "en";
   if (!SLUG.test(slug)) {
-    return new Response("Not found", { status: 404 });
+    return problem(404, "not_found");
   }
 
   const event = await publicEvent(createAdminClient(), slug, locale);
   if (!event) {
-    return new Response("Not found", { status: 404 });
+    return problem(404, "not_found");
   }
 
   return icsResponse(renderCalendar(event.title, [event]), `${slug}.ics`);

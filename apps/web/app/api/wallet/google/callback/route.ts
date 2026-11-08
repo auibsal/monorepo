@@ -1,6 +1,7 @@
 import { createAdminClient } from "@repo/database/admin";
 import { NextResponse } from "next/server";
 import { env } from "@/env";
+import { problem } from "@/lib/api/problem";
 import {
   walletClassId,
   walletCodeOf,
@@ -16,17 +17,14 @@ import { openWalletMessage, walletRootKeys } from "@/lib/api/wallet-callback";
  */
 export const POST = async (request: Request) => {
   if (!walletConfigured()) {
-    return NextResponse.json(
-      { error: "wallet_not_configured" },
-      { status: 503 }
-    );
+    return problem(503, "wallet_not_configured");
   }
   const event = await openWalletMessage(await request.text(), {
     issuerId: env.GOOGLE_WALLET_ISSUER_ID ?? "",
     rootKeys: await walletRootKeys(),
   });
   if (!event) {
-    return NextResponse.json({ error: "invalid_signature" }, { status: 400 });
+    return problem(400, "invalid_signature");
   }
   const code = walletCodeOf(event.objectId);
   if (event.classId !== walletClassId() || !code) {

@@ -1,5 +1,4 @@
 import { authenticateRequest } from "@repo/auth/verify";
-import { NextResponse } from "next/server";
 import { z } from "zod";
 import { env } from "@/env";
 import { hasBearer } from "@/lib/api/bearer";
@@ -7,6 +6,7 @@ import { sharedBot } from "@/lib/api/bot/bot";
 import { configure } from "@/lib/api/bot/setup";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { hasPermission } from "@/lib/api/permissions";
+import { respond } from "@/lib/api/problem";
 import { api } from "@/lib/api/urls";
 
 export const maxDuration = 30;
@@ -26,8 +26,7 @@ const webhookUrl = () => api("/telegram");
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
-  const json = (data: object, status = 200) =>
-    NextResponse.json(data, { headers, status });
+  const json = respond(headers);
 
   if (!hasBearer(request, env.CRON_SECRET)) {
     const session = await authenticateRequest(request);

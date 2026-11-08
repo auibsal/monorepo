@@ -1,12 +1,12 @@
 import { authenticateRequest } from "@repo/auth/verify";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
-import { NextResponse } from "next/server";
 import { z } from "zod";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { toCsv } from "@/lib/api/csv";
 import { exportsByName } from "@/lib/api/exports";
 import { hasPermissionAnywhere } from "@/lib/api/permissions";
+import { respond } from "@/lib/api/problem";
 
 export const OPTIONS = preflight;
 
@@ -18,8 +18,7 @@ export const POST = async (
   context: { params: Promise<{ name: string }> }
 ) => {
   const headers = corsHeaders(request);
-  const json = (data: object, status: number) =>
-    NextResponse.json(data, { headers, status });
+  const json = respond(headers);
 
   const { name } = await context.params;
   const definition = Object.hasOwn(exportsByName, name)

@@ -7,6 +7,7 @@ import {
 import { createAdminClient } from "@repo/database/admin";
 import { formatLongDate } from "@repo/internationalization/format";
 import { ImageResponse } from "next/og";
+import { problem } from "@/lib/api/problem";
 import { presidentSigner } from "@/lib/api/signer";
 import { cardNumber, sealOf } from "@/lib/signature-seal";
 
@@ -29,11 +30,11 @@ export const GET = async (request: Request) => {
   const url = new URL(request.url);
   const date = url.searchParams.get("date") ?? "";
   if (url.searchParams.get("seat") !== "president" || !DATE.test(date)) {
-    return new Response("Not found", { status: 404 });
+    return problem(404, "not_found");
   }
   const signer = await presidentSigner(createAdminClient());
   if (!signer) {
-    return new Response("Not found", { status: 404 });
+    return problem(404, "not_found");
   }
   const [script, text] = await Promise.all([
     readFile(path.join(FONTS, "MrsSaintDelafield-Regular.ttf")),

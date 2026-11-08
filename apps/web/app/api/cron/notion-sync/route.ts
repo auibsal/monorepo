@@ -1,6 +1,7 @@
 import { env } from "@/env";
 import { hasBearer } from "@/lib/api/bearer";
 import { runNotionSync } from "@/lib/api/notion/run";
+import { problem } from "@/lib/api/problem";
 
 export const maxDuration = 60;
 
@@ -14,7 +15,7 @@ export const maxDuration = 60;
  */
 const sync = async (request: Request) => {
   if (!hasBearer(request, env.CRON_SECRET)) {
-    return new Response("Unauthorized", { status: 401 });
+    return problem(401, "unauthorized");
   }
   const resyncDocuments =
     new URL(request.url).searchParams.get("documents") === "all";

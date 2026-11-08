@@ -1,3 +1,5 @@
+import { problem } from "@/lib/api/problem";
+
 const PREFIX = /^[0-9A-F]{5}$/;
 
 /**
@@ -12,7 +14,7 @@ export const GET = async (request: Request): Promise<Response> => {
     .trim()
     .toUpperCase();
   if (!PREFIX.test(prefix)) {
-    return new Response("Bad prefix", { status: 400 });
+    return problem(400, "invalid_prefix");
   }
   const upstream = await fetch(
     `https://api.pwnedpasswords.com/range/${prefix}`,
@@ -22,7 +24,7 @@ export const GET = async (request: Request): Promise<Response> => {
     }
   ).catch(() => null);
   if (!upstream?.ok) {
-    return new Response("Unavailable", { status: 503 });
+    return problem(503, "unavailable");
   }
   return new Response(await upstream.text(), {
     headers: {

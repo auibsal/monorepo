@@ -4,6 +4,7 @@ import { z } from "zod";
 import { env } from "@/env";
 import { hasBearer } from "@/lib/api/bearer";
 import { drain, processRow } from "@/lib/api/outbox";
+import { problem } from "@/lib/api/problem";
 
 const body = z.union([
   z.object({ id: z.number().int().positive() }),
@@ -19,11 +20,11 @@ export const maxDuration = 60;
  */
 export const POST = async (request: Request) => {
   if (!hasBearer(request, env.DATABASE_WEBHOOK_SECRET)) {
-    return new Response("Unauthorized", { status: 401 });
+    return problem(401, "unauthorized");
   }
   const parsed = body.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
-    return Response.json({ error: "invalid_request" }, { status: 400 });
+    return problem(400, "invalid_request");
   }
   const admin = createAdminClient();
   if ("drain" in parsed.data) {

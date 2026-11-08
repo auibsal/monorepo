@@ -5,6 +5,7 @@ import { log } from "@repo/observability/log";
 import { NextResponse } from "next/server";
 import { exportAccount } from "@/lib/api/account-export";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { problem } from "@/lib/api/problem";
 
 export const OPTIONS = preflight;
 
@@ -16,10 +17,7 @@ export const POST = async (request: Request) => {
   const headers = { ...corsHeaders(request), "Cache-Control": "no-store" };
   const session = await authenticateRequest(request);
   if (!session) {
-    return NextResponse.json(
-      { error: "unauthorized" },
-      { headers, status: 401 }
-    );
+    return problem(401, "unauthorized", headers);
   }
   try {
     const data = await exportAccount(createAdminClient(), session.userId);
@@ -27,9 +25,6 @@ export const POST = async (request: Request) => {
     return NextResponse.json(data, { headers });
   } catch (error) {
     log.error(`Account export failed: ${parseError(error)}`);
-    return NextResponse.json(
-      { error: "export_failed" },
-      { headers, status: 500 }
-    );
+    return problem(500, "export_failed", headers);
   }
 };

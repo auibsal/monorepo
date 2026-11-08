@@ -7,6 +7,13 @@ means the route re-checks a permission with `hasPermission`. Public forms
 check Turnstile (`lib/api/turnstile.ts`) and a limit per address in the
 database (`withinRateLimit`).
 
+Errors are RFC 9457 problem details (`application/problem+json`, from
+`lib/api/problem.ts`): `type`, `title` and `status`, with the route's short
+code in `error` (`"unauthorized"`, `"invalid_request"`, …), which the
+Diwan's `callApi` reads. Shared secrets are checked by one helper,
+`hasBearer` (`lib/api/bearer.ts`), in constant time, failing closed when
+the secret is unset.
+
 | Route | Method | Caller | Auth | Limit |
 | --- | --- | --- | --- | --- |
 | `/api/account/delete` | POST | The member, from Settings | Member, signed in within 15 minutes | — |

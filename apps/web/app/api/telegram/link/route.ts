@@ -3,12 +3,12 @@ import { createAdminClient } from "@repo/database/admin";
 import { parseError } from "@repo/observability/error";
 import { log } from "@repo/observability/log";
 import { botIdFromToken, TELEGRAM_LINK_PAGE } from "@repo/telegram";
-import { NextResponse } from "next/server";
 import { z } from "zod";
 import { env } from "@/env";
 import { sharedBot } from "@/lib/api/bot/bot";
 import { greetLinked } from "@/lib/api/bot/features/account";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { respond } from "@/lib/api/problem";
 import {
   authorizeUrl,
   exchangeCode,
@@ -58,8 +58,7 @@ const isProfilePage = (redirectUri: string) => {
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
-  const json = (data: object, status = 200) =>
-    NextResponse.json(data, { headers, status });
+  const json = respond(headers);
 
   const session = await authenticateRequest(request);
   if (!session) {
