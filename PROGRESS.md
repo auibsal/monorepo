@@ -167,11 +167,12 @@ Part A first).
 - [ ] **The staging loop.** Create, publish and edit an event and a
   document from Notion, once a staging URL and its keys are in the
   environment.
-- [x] **The design system is the Diwan's own page** (owner, Nov 8):
-  Storybook is served whole at `/diwan/media/design`, not framed, to staff
-  only on the site's sign-in, with a way back to the Diwan.
+- [x] **The design system is part of the Diwan** (owner, Nov 8):
+  `/diwan/media/design` is a Diwan page with the Diwan's header and menu,
+  the design system's sections and entries listed on it, and each entry
+  drawn in place at its own address, with no Storybook around it.
 - [x] **Readers read the work, never the file** (owner, Nov 8): the
-  readers' pledge before the text; the text on the page and Gallery
+  readers' pledge (F-40, signed on the reading page) before the text; the text on the page and Gallery
   images marked with the reader's card number and the day; no file,
   download or file address to readers; copy, the context menu and print
   off on that page; originals by role, each opening in the submission's

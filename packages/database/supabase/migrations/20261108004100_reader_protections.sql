@@ -4,49 +4,21 @@
 --   a copy marked with their card number and the day; no file, download or
 --   file address reaches them (/api/files/blind returns marked images only).
 -- • The text comes through journal.entry_text(), only to someone who may
---   read the entry and has taken the readers' pledge (confidentiality, no
---   copies, no sharing, stepping aside from work they know). The columns
---   are no longer selectable by themselves.
+--   read the entry and has signed F-40, the Confidentiality pledge
+--   (decisions.md: everyone signs F-40 before reading). The columns are no
+--   longer selectable by themselves.
 -- • Originals open only for their author, the Submissions Manager while the
 --   work is in intake, and the section's editor or the Editor-in-Chief once
 --   it is accepted (or, for named work at a section's desk, its editor).
 --   Every opening by anyone but the author is kept (journal.original_openings)
 --   and shown in the submission's History.
 
--- ── The readers' pledge ─────────────────────────────────────────────────────
-
-create table journal.reader_pledges (
-  user_id uuid primary key references auth.users (id) on delete cascade,
-  version smallint not null check (version > 0),
-  agreed_at timestamptz not null default now()
-);
-
-comment on table journal.reader_pledges is
-  'Who has taken the readers'' pledge, and which version. Written only by journal.take_reader_pledge().';
-
-alter table journal.reader_pledges enable row level security;
-
-create policy "No third-party apps" on journal.reader_pledges
-  as restrictive for all to authenticated, anon
-  using ((select private.client_allows('journal')))
-  with check ((select private.client_allows('journal')));
-
-create policy "Readers read their own pledge" on journal.reader_pledges
-  as permissive for select to authenticated
-  using (user_id = (select auth.uid()));
-
-grant select on journal.reader_pledges to authenticated;
-grant all on journal.reader_pledges to service_role;
-
--- The pledge's current version: a new text asks everyone again.
-create function private.reader_pledge_version()
-returns smallint
-language sql
-immutable
-set search_path = ''
-as $$
-  select 1::smallint
-$$;
+-- ── The readers' pledge is F-40 ─────────────────────────────────────────────
+-- F-40, the Confidentiality pledge, is signed on the reading page itself
+-- (the register's "part of another page"): the reader's name on the
+-- platform is the signature, they agree to sign electronically, and the
+-- signed copy is kept and emailed like every form's. Nothing is left for a
+-- handler to do, so it is kept closed. A new version of F-40 asks again.
 
 create function private.has_reader_pledge()
 returns boolean
@@ -56,13 +28,17 @@ security definer
 set search_path = ''
 as $$
   select exists (
-    select 1 from journal.reader_pledges p
-    where p.user_id = (select auth.uid())
-      and p.version = private.reader_pledge_version()
+    select 1
+    from governance.form_submissions s
+    join governance.form_types t on t.key = s.form_key
+    where s.form_key = 'f40'
+      and s.submitted_by = (select auth.uid())
+      and s.form_version = t.version
+      and s.signed_at is not null
   );
 $$;
 
-create function private.take_reader_pledge()
+create function private.sign_reader_pledge(esign_agreed boolean)
 returns timestamptz
 language plpgsql
 security definer
@@ -70,54 +46,84 @@ set search_path = ''
 as $$
 declare
   me uuid := (select auth.uid());
-  agreed timestamptz;
+  t governance.form_types;
+  signer text;
+  ip text;
+  new_id uuid;
+  signed timestamptz;
 begin
-  if me is null then
-    raise exception 'Sign in to take the pledge' using errcode = '28000';
+  if me is null or not private.is_staff(me) then
+    raise exception 'Only the review team signs the readers'' pledge'
+      using errcode = '42501';
   end if;
-  insert into journal.reader_pledges (user_id, version)
-  values (me, private.reader_pledge_version())
-  on conflict (user_id) do update
-    set version = excluded.version, agreed_at = now()
-    where journal.reader_pledges.version <> excluded.version
-  returning agreed_at into agreed;
-  return coalesce(
-    agreed,
-    (select p.agreed_at from journal.reader_pledges p where p.user_id = me)
-  );
+  if not coalesce(esign_agreed, false) then
+    raise exception 'esign_agreement_required' using errcode = '23514';
+  end if;
+  select * into t from governance.form_types where key = 'f40';
+  select s.signed_at into signed
+  from governance.form_submissions s
+  where s.form_key = 'f40' and s.submitted_by = me and s.form_version = t.version
+  order by s.signed_at desc
+  limit 1;
+  if signed is not null then
+    return signed;
+  end if;
+  -- The signature is the name on the platform, never typed.
+  select coalesce(nullif(btrim(p.full_name_en), ''), btrim(p.full_name_ar)) into signer
+  from core.profiles p where p.id = me;
+  if char_length(coalesce(signer, '')) < 2 then
+    raise exception 'signature_required' using errcode = '23514';
+  end if;
+  ip := split_part(coalesce(
+    (nullif(current_setting('request.headers', true), '')::jsonb) ->> 'x-forwarded-for', ''), ',', 1);
+  insert into governance.form_submissions (
+    form_key, submitted_by, routing, data, status, submitted_at, form_version,
+    signer_name, signed_at, esign_agreed, signer_ip, document_sha256
+  ) values (
+    'f40', me, 'none', '{}'::jsonb, 'closed', now(), t.version,
+    signer, now(), true, nullif(btrim(ip), ''),
+    encode(extensions.digest(jsonb_build_object(
+      'form', t.code, 'version', t.version, 'data', '{}'::jsonb, 'signer', signer
+    )::text, 'sha256'), 'hex')
+  )
+  returning id, signed_at into new_id, signed;
+  perform private.enqueue('forms.signed_copy', jsonb_build_object('submission_id', new_id));
+  return signed;
 end;
 $$;
 
-create function journal.take_reader_pledge()
+create function journal.sign_reader_pledge(esign_agreed boolean)
 returns timestamptz
 language sql
 security invoker
 set search_path = ''
 as $$
-  select private.take_reader_pledge();
+  select private.sign_reader_pledge(esign_agreed);
 $$;
 
+-- The caller's own F-40, read under RLS (a submitter reads their own).
 create function journal.my_reader_pledge()
-returns table (version smallint, agreed_at timestamptz, current boolean)
+returns table (version integer, agreed_at timestamptz, current boolean)
 language sql
 stable
 security invoker
 set search_path = ''
 as $$
-  select p.version, p.agreed_at, p.version = private.reader_pledge_version()
-  from journal.reader_pledges p
-  where p.user_id = (select auth.uid());
+  select s.form_version, s.signed_at, s.form_version = t.version
+  from governance.form_submissions s
+  join governance.form_types t on t.key = s.form_key
+  where s.form_key = 'f40' and s.submitted_by = (select auth.uid())
+  order by s.signed_at desc
+  limit 1;
 $$;
 
-revoke all on function private.reader_pledge_version() from public, anon;
 revoke all on function private.has_reader_pledge() from public, anon;
-revoke all on function private.take_reader_pledge() from public, anon;
-revoke all on function journal.take_reader_pledge() from public, anon;
+revoke all on function private.sign_reader_pledge(boolean) from public, anon;
+revoke all on function journal.sign_reader_pledge(boolean) from public, anon;
 revoke all on function journal.my_reader_pledge() from public, anon;
-grant execute on function private.reader_pledge_version() to authenticated, service_role;
 grant execute on function private.has_reader_pledge() to authenticated, service_role;
-grant execute on function private.take_reader_pledge() to authenticated, service_role;
-grant execute on function journal.take_reader_pledge() to authenticated;
+grant execute on function private.sign_reader_pledge(boolean) to authenticated, service_role;
+grant execute on function journal.sign_reader_pledge(boolean) to authenticated;
 grant execute on function journal.my_reader_pledge() to authenticated;
 
 -- ── The text, only after the pledge ─────────────────────────────────────────
@@ -160,7 +166,7 @@ begin
     return;
   end if;
   if not private.has_reader_pledge() then
-    raise exception 'Take the readers'' pledge first'
+    raise exception 'Sign the readers'' pledge (F-40) first'
       using errcode = 'P0001', hint = 'reader_pledge';
   end if;
   return query

@@ -12,9 +12,10 @@ const getAbsolutePath = (value: string) =>
   dirname(require.resolve(join(value, "package.json")));
 
 /**
- * The design system, SAL-MED-02, in the Diwan at /diwan/design (owner, Nov
- * 4, 2026). `bun run build:site` builds it into apps/web/design (served to staff at /_design),
- * which the Diwan's page frames. Every path in the stories is relative
+ * The design system, SAL-MED-02 (decisions.md). `bun run build:site` builds
+ * it into apps/web/design; the Diwan's page /diwan/media/design lists its
+ * entries and draws each in place (files served to staff at
+ * /diwan/media/design/kit). Every path in the stories is relative
  * ("brand-kit/…", "brand/…"), so the same stories work in `bun run dev`.
  */
 const config: StorybookConfig = {

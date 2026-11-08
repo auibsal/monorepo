@@ -2,12 +2,15 @@
 
 import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
+import { MySignature } from "@/components/signature";
 import { callApi } from "@/lib/diwan/api";
 import { SectionSpinner } from "../../states";
 import { ErrorLine } from "../kit";
@@ -31,14 +34,23 @@ const usePledge = () => {
   });
 };
 
-/** The readers' pledge, taken once (and again when its text changes). */
+/**
+ * The readers' pledge is F-40, the Confidentiality pledge, signed here in
+ * the reader's name on the platform (once, and again for a new version).
+ */
 const Pledge = () => {
   const t = useTranslations("diwan.admin.pipeline.pledge");
+  const tf = useTranslations("diwan.forms");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const take = useMutation({
+  const [agreed, setAgreed] = useState(false);
+  const sign = useMutation({
     mutationFn: async () =>
-      unwrap(await supabase.schema("journal").rpc("take_reader_pledge")),
+      unwrap(
+        await supabase
+          .schema("journal")
+          .rpc("sign_reader_pledge", { esign_agreed: agreed })
+      ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: pipelineKey }),
   });
   return (
@@ -50,14 +62,25 @@ const Pledge = () => {
           <li key={point}>{t(`points.${point}`)}</li>
         ))}
       </ul>
+      <MySignature />
+      <div className="flex items-start gap-2">
+        <Checkbox
+          checked={agreed}
+          id="pledge-esign"
+          onCheckedChange={(checked) => setAgreed(checked === true)}
+        />
+        <Label className="font-normal" htmlFor="pledge-esign">
+          {tf("esignAgree")}
+        </Label>
+      </div>
       <Button
         className="justify-self-start"
-        disabled={take.isPending}
-        onClick={() => take.mutate()}
+        disabled={!agreed || sign.isPending}
+        onClick={() => sign.mutate()}
       >
         {t("agree")}
       </Button>
-      <ErrorLine error={take.error} />
+      <ErrorLine error={sign.error} />
     </section>
   );
 };

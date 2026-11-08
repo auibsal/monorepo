@@ -4445,25 +4445,6 @@ export type Database = {
           },
         ];
       };
-      reader_pledges: {
-        Row: {
-          agreed_at: string;
-          user_id: string;
-          version: number;
-        };
-        ComputedFields: never;
-        Insert: {
-          agreed_at?: string;
-          user_id: string;
-          version: number;
-        };
-        Update: {
-          agreed_at?: string;
-          user_id?: string;
-          version?: number;
-        };
-        Relationships: [];
-      };
       saved_pieces: {
         Row: {
           piece_id: string;
@@ -5075,6 +5056,7 @@ export type Database = {
         Args: { signer_name: string; submission_id: string };
         Returns: string;
       };
+      sign_reader_pledge: { Args: { esign_agreed: boolean }; Returns: string };
       submission_partners: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -5083,7 +5065,6 @@ export type Database = {
           name_en: string;
         }[];
       };
-      take_reader_pledge: { Args: Record<PropertyKey, never>; Returns: string };
       transition_submission: {
         Args: {
           id: string;

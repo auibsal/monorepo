@@ -39,7 +39,7 @@ const MOVED: readonly [from: string, to: string][] = [
   ["/diwan/qirtas/video/reels/:path*", "/diwan/media/reels/:path*"],
   ["/diwan/design", "/diwan/media/design"],
   ["/_design", "/diwan/media/design"],
-  ["/_design/:path*", "/diwan/media/design/:path*"],
+  ["/_design/:path*", "/diwan/media/design"],
   ["/diwan/events/pitches/:path*", "/diwan/events/proposals/:path*"],
   ["/diwan/events/:ref/door", "/diwan/events/:ref/check-in"],
   [
@@ -62,8 +62,9 @@ const MOVED: readonly [from: string, to: string][] = [
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 //
 // The design system (packages/brand, `bun run build:site`) is built into
-// apps/web/design and served whole at /diwan/media/design by the API route,
-// to staff only (decisions.md); search engines never index it.
+// apps/web/design. The Diwan's page /diwan/media/design shows its entries;
+// their files are served to staff at /diwan/media/design/kit by the API
+// route (decisions.md), and search engines never index them.
 let nextConfig: NextConfig = {
   ...config,
   headers: async () => [
@@ -92,7 +93,7 @@ let nextConfig: NextConfig = {
         { key: "X-Robots-Tag", value: "noindex, nofollow" },
         { key: "X-Frame-Options", value: "SAMEORIGIN" },
       ],
-      source: `${prefix}/diwan/media/design/:path*`,
+      source: `${prefix}/diwan/media/design/kit/:path*`,
     })),
   ],
   outputFileTracingIncludes: {
@@ -107,20 +108,14 @@ let nextConfig: NextConfig = {
         source: `${prefix}${from}`,
       }))
     ),
-  // The design system is the page itself at /diwan/media/design (owner,
-  // Nov 8, 2026), ahead of the Diwan's routes; its files sit under it.
+  // The design system's files, under its page in the Diwan, ahead of the
+  // Diwan's routes.
   rewrites: async () => ({
     afterFiles: [],
-    beforeFiles: LANGUAGE_PREFIXES.flatMap((prefix) => [
-      {
-        destination: `/api/design/index.html${prefix ? "?lang=ar" : ""}`,
-        source: `${prefix}/diwan/media/design`,
-      },
-      {
-        destination: `/api/design/:path*${prefix ? "?lang=ar" : ""}`,
-        source: `${prefix}/diwan/media/design/:path*`,
-      },
-    ]),
+    beforeFiles: LANGUAGE_PREFIXES.map((prefix) => ({
+      destination: "/api/design/:path*",
+      source: `${prefix}/diwan/media/design/kit/:path*`,
+    })),
     fallback: [],
   }),
 };

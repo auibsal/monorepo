@@ -1,4 +1,4 @@
--- Readers read the work, never the file: the pledge before the text, the
+-- Readers read the work, never the file: F-40 signed before the text, the
 -- columns closed, originals by role and every opening kept.
 begin;
 -- <preamble>
@@ -97,7 +97,7 @@ $$;
 
 delete from journal.issues;
 
-select plan(16);
+select plan(18);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
@@ -166,14 +166,22 @@ select throws_ok($$ select * from journal.entry_text((select id from journal.bli
   'P0001', null, 'No text before the readers'' pledge');
 select throws_ok($$ select journal.open_original('f1000000-0000-0000-0000-000000000001') $$,
   '42501', null, 'A reader never opens the original');
-select isnt(journal.take_reader_pledge(), null, 'The reader takes the pledge');
+select throws_ok($$ select journal.sign_reader_pledge(false) $$,
+  '23514', null, 'F-40 is signed only with the agreement to sign electronically');
+select isnt(journal.sign_reader_pledge(true), null, 'The reader signs F-40');
+select is(
+  (select signer_name || ' · ' || status from governance.form_submissions where form_key = 'f40'),
+  'Reader One · closed',
+  'The signed copy is F-40, in the reader''s platform name, with nothing left to handle'
+);
 select is((select body_html from journal.entry_text((select id from journal.blind_entries))),
   '<p>The text</p>', 'After the pledge, the reader reads the text');
 select is((select current from journal.my_reader_pledge()), true, 'The pledge is the current one');
 select is((select count(*)::integer from journal.original_openings), 0, 'Readers see no openings');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000005b2');
-select is((select count(*)::integer from journal.reader_pledges), 0, 'A reader sees only their own pledge');
+select is((select count(*)::integer from governance.form_submissions where form_key = 'f40'), 0,
+  'A reader sees only their own signed F-40');
 
 -- ── After acceptance ────────────────────────────────────────────────────────
 

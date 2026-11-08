@@ -79,21 +79,15 @@ test("editing in the Diwan opens its own page, one step under its list", async (
   await expect(page).toHaveURL(/\/diwan\/qirtas$/u);
 });
 
-test("the design system is the Diwan's own page, for officers only", async ({
+test("the design system is part of the Diwan, for officers only", async ({
   page,
   request,
 }) => {
-  // Signed out: the page sends you to sign in and back; its files are not there.
-  const anonymous = await request.get(`${urls.web}/diwan/media/design`, {
-    maxRedirects: 0,
-  });
-  expect(anonymous.status()).toBe(307);
-  expect(anonymous.headers().location).toContain(
-    "/sign-in?next=%2Fdiwan%2Fmedia%2Fdesign"
+  // Its files are there for staff alone; the old address moved here.
+  const file = await request.get(
+    `${urls.web}/diwan/media/design/kit/index.json`
   );
-  const file = await request.get(`${urls.web}/diwan/media/design/index.json`);
   expect(file.status()).toBe(404);
-  // The old address moved here.
   const old = await request.get(`${urls.web}/_design/index.html`, {
     maxRedirects: 0,
   });
@@ -101,15 +95,33 @@ test("the design system is the Diwan's own page, for officers only", async ({
 
   await signInWithPassword(page, editor.email);
   await page.goto(`${urls.web}/diwan/media/design`);
-  // Storybook itself, not a frame, with the way back to the Diwan.
-  await expect(page.locator("iframe#storybook-preview-iframe")).toBeAttached();
-  await expect(page.getByRole("link", { name: "← The Diwan" })).toHaveAttribute(
-    "href",
-    "/diwan"
+  // The Diwan's own page: its header, its menu, the design system's sections.
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Design system" })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "The Diwan’s sections" })
+  ).toBeVisible();
+  const sections = page.getByRole("navigation", {
+    name: "Sections of the design system",
+  });
+  await expect(sections.getByRole("link", { name: "Guide" })).toHaveAttribute(
+    "aria-current",
+    "page"
   );
-  expect(await page.locator("base").getAttribute("href")).toBe(
-    "/diwan/media/design/"
+  // The entry is drawn in place, with no Storybook around it.
+  const entry = page.frameLocator(
+    'iframe[src*="/diwan/media/design/kit/iframe.html"]'
   );
+  await expect(entry.locator("#storybook-docs")).toBeVisible();
+  await expect(entry.locator("#storybook-docs")).toContainText("SAL-MED-02");
+  await expect(entry.locator("#storybook-explorer-tree")).toHaveCount(0);
+
+  await sections.getByRole("link", { name: "Components" }).click();
+  await expect(page).toHaveURL(/\/diwan\/media\/design\/components-/u);
+  await expect(
+    sections.getByRole("link", { name: "Components" })
+  ).toHaveAttribute("aria-current", "page");
 });
 
 test("a reader takes the pledge, then reads the work on the page and gets no file", async ({
@@ -149,11 +161,13 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
       { blind_entry_id: entryId, read_number: 1, reader_id: readerId },
       { onConflict: "blind_entry_id,reader_id" }
     );
+  // A reader who hasn't signed F-40, the readers' pledge.
   await db
-    .schema("journal")
-    .from("reader_pledges")
+    .schema("governance")
+    .from("form_submissions")
     .delete()
-    .eq("user_id", readerId);
+    .eq("form_key", "f40")
+    .eq("submitted_by", readerId);
 
   // No address of a stored file reaches the reader's browser.
   const fileAddresses: string[] = [];
@@ -171,7 +185,11 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
   ).toBeVisible();
   await expect(page.getByText("The kettle keeps")).toHaveCount(0);
   await expectAccessible(page);
-  await page.getByRole("button", { name: "I agree" }).click();
+  // Signed in their platform name, after agreeing to sign electronically.
+  const sign = page.getByRole("button", { name: "Sign the pledge" });
+  await expect(sign).toBeDisabled();
+  await page.getByLabel(/I agree to sign electronically/u).check();
+  await sign.click();
 
   const text = page.getByText("The kettle keeps its counsel on the stove.");
   await expect(text).toBeVisible();

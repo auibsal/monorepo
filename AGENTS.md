@@ -72,12 +72,13 @@ media do.
   (`BRAND-BOOK.md`), the assets (tokens, fonts, icons, logos, Hudhud, the
   social templates, the printables), and the code the app imports as
   `@repo/brand` (`styles/globals.css`, `components/ui` (shadcn),
-  `components/sal`, `lib`). Its Storybook is the Diwan's `/diwan/media/design`
-  (Guide, Foundations, Logos, Components, Emails, Social, Print), built
-  into `apps/web/design` by the web build and served whole at that
-  address to staff only, on the site's sign-in (`app/api/design`, a
-  rewrite; its toolbar leads back to the Diwan; ignored by git, never
-  indexed). The public sees the brand only on the press page
+  `components/sal`, `lib`). Its stories are the Diwan's own page
+  `/diwan/media/design` (Guide, Foundations, Logos, Components, Emails,
+  Social, Print; each entry at `/diwan/media/design/<entry>`,
+  `components/diwan/admin/system/design.tsx`), drawn in place from the
+  build in `apps/web/design` (made by the web build, ignored by git),
+  whose files are served to staff only at `/diwan/media/design/kit`
+  (`app/api/design`, a rewrite; never indexed). The public sees the brand only on the press page
   (`/about/press`). No PDFs or document files in the repository: print
   is the page printed from the browser.
 - `packages/*`: shared code, imported as `@repo/<name>` (a fixed internal
@@ -189,7 +190,8 @@ any schema change. Integration tests run against a local stack with
 - **Blind review.** Readers never receive an author's identity before a
   decision; verify against network responses, not the UI. Clients never
   read `contributors.user_id`, so a pen name can't be traced. Readers
-  read the work, never the file: after the readers' pledge, the text on
+  read the work, never the file: after signing F-40 (the readers'
+  pledge) on the reading page, the text on
   the page (`journal.entry_text`) and images marked with their card
   number (`/api/files/blind`); originals open by role through
   `journal.open_original`, each opening kept.

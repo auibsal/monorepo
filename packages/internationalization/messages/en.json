@@ -2046,7 +2046,7 @@
             "noSharing": "You don’t share, describe, or discuss it with anyone outside the review.",
             "stepAside": "If you know or can tell whose work it is, you step aside from it and tell the Editor-in-Chief."
           },
-          "agree": "I agree"
+          "agree": "Sign the pledge"
         },
         "room": {
           "note": "Read it here only. Your card number and today’s date are set across the work.",
@@ -3246,6 +3246,21 @@
         "approve": "Approve and invite",
         "reason": "Reason for declining",
         "decline": "Decline"
+      },
+      "design": {
+        "title": "Design system",
+        "lede": "SAL-MED-02: the brand guide, its foundations, logos, components, emails, social templates and printables, as the site uses them.",
+        "notBuilt": "The design system isn’t built on this copy of the site.",
+        "sections": "Sections of the design system",
+        "groups": {
+          "Guide": "Guide",
+          "Foundations": "Foundations",
+          "Logos": "Logos",
+          "Components": "Components",
+          "Emails": "Emails",
+          "Social": "Social",
+          "Print": "Print"
+        }
       }
     },
     "editor": {

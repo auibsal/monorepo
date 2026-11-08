@@ -34,7 +34,6 @@ const TABLES: readonly (readonly [string, string, string])[] = [
   ["journal", "piece_notes", "author_id"],
   ["journal", "original_openings", "opened_by"],
   ["journal", "prize_vote_receipts", "user_id"],
-  ["journal", "reader_pledges", "user_id"],
   ["journal", "saved_pieces", "user_id"],
   ["journal", "submission_drafts", "user_id"],
   ["journal", "submissions", "author_id"],

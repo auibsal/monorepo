@@ -3,16 +3,15 @@ import path from "node:path";
 import { authenticateCookies } from "@repo/auth/verify";
 
 /**
- * The design system (packages/brand's Storybook, built into apps/web/design
- * by `bun run build:site`), served whole at /diwan/media/design (a rewrite;
- * the page itself, not framed) to staff only, on the
- * same sign-in as the rest of the site. The browser loads these files
- * itself, so the session comes from its cookies. Someone signed out who
- * opens the page goes to sign in and comes back; any other file is simply
- * not there for anyone but staff.
+ * The design system's files (packages/brand's stories, built into
+ * apps/web/design by `bun run build:site`) at /diwan/media/design/kit (a
+ * rewrite), for the Diwan's own design system page to draw its entries
+ * with. Staff only, on the same sign-in as the rest of the site: the
+ * browser loads these files itself, so the session comes from its cookies,
+ * and for anyone else they are simply not there.
  */
 const ROOT = path.resolve(process.cwd(), "design");
-const SEGMENT = /^[\w-][\w.-]*$/u;
+const SEGMENT = /^[\w-][\w.~-]*$/u;
 
 const TYPES: Record<string, string> = {
   ".css": "text/css; charset=utf-8",
@@ -34,10 +33,6 @@ const TYPES: Record<string, string> = {
   ".woff2": "font/woff2",
   ".zip": "application/zip",
 };
-
-/** Where the page lives; its HTML takes it as the base for relative files. */
-const PAGE = "/diwan/media/design";
-const HEAD = /<head(\s[^>]*)?>/iu;
 
 const notFound = () =>
   new Response("Not found", {
@@ -68,31 +63,12 @@ export const GET = async (
   if (!file.startsWith(`${ROOT}${path.sep}`)) {
     return notFound();
   }
-  const isHtml = path.extname(file).toLowerCase() === ".html";
-  const lang =
-    new URL(request.url).searchParams.get("lang") === "ar" ? "/ar" : "";
   const session = await authenticateCookies(request);
-  if (!session) {
-    if (isHtml && parts.length === 1 && parts[0] === "index.html") {
-      const next = encodeURIComponent(`${lang}${PAGE}`);
-      return Response.redirect(
-        new URL(`${lang}/sign-in?next=${next}`, request.url),
-        307
-      );
-    }
-    return notFound();
-  }
-  if (!(await isStaff(session))) {
+  if (!(session && (await isStaff(session)))) {
     return notFound();
   }
   try {
-    const raw = await readFile(file);
-    // Relative paths in Storybook's pages resolve under the page's address.
-    const body = isHtml
-      ? raw
-          .toString("utf8")
-          .replace(HEAD, (open) => `${open}<base href="${lang}${PAGE}/">`)
-      : raw;
+    const body = await readFile(file);
     return new Response(body, {
       headers: {
         "Cache-Control": "private, max-age=300",

@@ -164,7 +164,9 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
     expect(closed.error?.code).toBe("42501");
     const beforePledge = await rj.rpc("entry_text", { entry: entryId });
     expect(beforePledge.error?.hint).toBe("reader_pledge");
-    expect((await rj.rpc("take_reader_pledge")).error).toBeNull();
+    expect(
+      (await rj.rpc("sign_reader_pledge", { esign_agreed: true })).error
+    ).toBeNull();
 
     const columns = "id, blind_id, title, category, language, status";
     const responses = await Promise.all([
