@@ -2,7 +2,8 @@
  * The Society's home institution and institutional partners (Constitution
  * 1.2: a registered student organization of AUIB, recognized by the Office
  * of Student Life). Names come from the messages files; logos are the
- * institutions' own files in apps/web/public/institutions, unaltered.
+ * institutions' own files in apps/web/public/institutions, redrawn as SVG
+ * with their shapes and colors unchanged.
  * `ground` is what the file was made for: a color logo sits on paper, a
  * white one on ink, in either theme.
  */
@@ -10,35 +11,35 @@ export const INSTITUTIONS = [
   {
     ground: "paper",
     key: "auib",
-    logo: "/institutions/auib.png",
+    logo: "/institutions/auib.svg",
     role: "home",
     url: "https://auib.edu.iq",
   },
   {
     ground: "ink",
     key: "studentLife",
-    logo: "/institutions/student-life.png",
+    logo: "/institutions/student-life.svg",
     role: "recognition",
     url: null,
   },
   {
     ground: "paper",
     key: "cas",
-    logo: "/institutions/cas.png",
+    logo: "/institutions/cas.svg",
     role: "partner",
     url: null,
   },
   {
     ground: "ink",
     key: "press",
-    logo: "/institutions/press.png",
+    logo: "/institutions/press.svg",
     role: "partner",
     url: null,
   },
   {
     ground: "ink",
     key: "library",
-    logo: "/institutions/library.png",
+    logo: "/institutions/library.svg",
     role: "partner",
     url: null,
   },
