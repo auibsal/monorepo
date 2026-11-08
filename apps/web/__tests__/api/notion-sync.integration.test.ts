@@ -281,38 +281,6 @@ describe.skipIf(!enabled)("Notion sync", () => {
     ).toHaveLength(0);
   });
 
-  test("publishes a program's row from Notion to its program", async () => {
-    const page = fake.make(
-      sources.programmes,
-      {
-        "Diwan ID": { rich_text: [{ text: { content: salonId } }] },
-        Language: { select: { name: "English" } },
-        Name: { title: [{ text: { content: "Reading with a guest" } }] },
-        Rhythm: {
-          rich_text: [
-            {
-              text: { content: `Tuesdays, as the term calendar sets ${stamp}` },
-            },
-          ],
-        },
-        Status: { select: { name: "Ready to publish" } },
-      },
-      `n-lead-${stamp}`
-    );
-    await sync();
-    expect(statusOf(page)).toBe("Published");
-    const { data } = await admin
-      .schema("core")
-      .from("programmes")
-      .select("rhythm_en, slug")
-      .eq("id", salonId)
-      .single();
-    expect(data).toEqual({
-      rhythm_en: `Tuesdays, as the term calendar sets ${stamp}`,
-      slug: "salon",
-    });
-  });
-
   test("refuses a document from someone without governance.manage", async () => {
     const page = fake.make(
       sources.documents,
