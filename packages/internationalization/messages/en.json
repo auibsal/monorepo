@@ -1118,6 +1118,15 @@
         "confirmRole": "Confirm after the first term",
         "studentLifeEligible": "Student Life says eligible",
         "studentLifeNotEligible": "Student Life says not eligible",
+        "name": {
+          "title": "Their name",
+          "body": "As on their papers, in four parts, in English and in Arabic. The member can change it themselves; correct it here when it differs from their official name. The activity log keeps that it was corrected, not the name.",
+          "en": "In English",
+          "ar": "In Arabic",
+          "save": "Save the name",
+          "saved": "Saved. The site now shows {name}.",
+          "taken": "Another account already has this full name. Check both accounts before saving."
+        },
         "departure": {
           "title": "Left AUIB",
           "body": "For a student Member who has left AUIB. A graduate becomes an Associate Member: same account and number, no vote and no office. Someone who left without graduating becomes a guest: same number and a Guest card, no vote, no role, and Hudhud takes them out of the members’ group after a week.",
@@ -1991,12 +2000,6 @@
           "notFound": "No piece with this link, or your roles don’t cover it.",
           "text": "Text",
           "noText": "Submitted as a file.",
-          "files": "Files",
-          "filesNote": "Copies with the author’s details removed from the file properties. Links last five minutes.",
-          "getFiles": "Get the files",
-          "preparing": "Preparing…",
-          "noFiles": "No files attached.",
-          "fileUnavailable": "this file couldn’t be prepared; ask the Submissions Manager.",
           "yourRead": "Your read (read {number})",
           "rubricNote": "Rubric v2: each criterion from 1 to 5, weighted to a total out of 100.",
           "scoresClosed": "Scoring has closed for this piece.",
@@ -2042,6 +2045,27 @@
           "back": "The Edition",
           "missing": "This call is not here",
           "title": "A call"
+        },
+        "pledge": {
+          "title": "The readers’ pledge",
+          "intro": "Before you read work sent to Qirtas, you agree that:",
+          "points": {
+            "confidential": "What you read here is confidential until it is published, and so is everything said about it.",
+            "noCopies": "You keep no copy of it: no screenshots, photos, downloads, or notes that quote it.",
+            "noSharing": "You don’t share, describe, or discuss it with anyone outside the review.",
+            "stepAside": "If you know or can tell whose work it is, you step aside from it and tell the Editor-in-Chief."
+          },
+          "agree": "Sign the pledge"
+        },
+        "room": {
+          "note": "Read it here only. Your card number and today’s date are set across the work.",
+          "notPrinted": "Work under review isn’t printed.",
+          "image": "Image {number}",
+          "imageUnavailable": "This image can’t be shown here. The Submissions Manager has the original."
+        },
+        "openings": {
+          "line": "{date}: {name} opened the original ({file})",
+          "note": "Originals open for the Submissions Manager during intake, and for the section’s editor or the Editor-in-Chief once the work is accepted. Each opening is recorded here."
         }
       },
       "partners": {
@@ -2676,6 +2700,7 @@
           "earlier": "Move earlier",
           "remove": "Remove",
           "add": "Add images",
+          "fromSubmission": "Use the images the writer sent",
           "hint": "JPEG, PNG or WebP, up to 25 MB each. At least 3,000 px on the long side for Gallery work. Only images whose identifiable people consented."
         },
         "credits": {
@@ -3029,17 +3054,13 @@
           "governance_partner_invitations": "an invitation",
           "membership_guests": "a guest of the Society",
           "events_session_links": "an event’s link",
-          "events_joint_tasks": "a joint event’s checklist item"
+          "events_joint_tasks": "a joint event’s checklist item",
+          "core_profiles": "a member’s name"
         },
         "roleFor": "{role} for {person}"
       },
       "noAccessTitle": "Not in your roles",
       "noAccessGo": "Go to what you can open here",
-      "design": {
-        "title": "Design system",
-        "lede": "SAL-MED-02, Brand and Identity, in full: the guide, colors, type, logos, components and every email, and the social and print files to download.",
-        "open": "Open in a new tab"
-      },
       "find": {
         "open": "Find anything (/ or Ctrl+K)",
         "label": "Find in the Diwan",
@@ -3235,6 +3256,21 @@
         "approve": "Approve and invite",
         "reason": "Reason for declining",
         "decline": "Decline"
+      },
+      "design": {
+        "title": "Design system",
+        "lede": "SAL-MED-02: the brand guide, its foundations, logos, components, emails, social templates and printables, as the site uses them.",
+        "notBuilt": "The design system isn’t built on this copy of the site.",
+        "sections": "Sections of the design system",
+        "groups": {
+          "Guide": "Guide",
+          "Foundations": "Foundations",
+          "Logos": "Logos",
+          "Components": "Components",
+          "Emails": "Emails",
+          "Social": "Social",
+          "Print": "Print"
+        }
       }
     },
     "editor": {
@@ -4940,7 +4976,8 @@
         "auib": "The American University of Iraq – Baghdad",
         "studentLife": "Office of Student Life",
         "cas": "College of Arts and Sciences",
-        "press": "AUIB Press"
+        "press": "AUIB Press",
+        "library": "AUIB Library"
       },
       "allPartners": "All partners"
     },

@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import {
   Tabs,
   TabsContent,
@@ -9,10 +8,11 @@ import {
 } from "@repo/brand/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
 import { formatNumber } from "@repo/internationalization/format";
-import { localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, unwrap } from "@/lib/data";
 import { SectionSpinner } from "../../states";
 import {
   AdminHeading,

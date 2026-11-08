@@ -1,7 +1,6 @@
 import { Shelf } from "@repo/brand/components/sal/shelf";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
@@ -10,7 +9,11 @@ import {
   EditionShelfItem,
   loadEditions,
 } from "@/components/qirtas/editions";
+import { localized } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
+
+// Its query string decides what it shows, so it renders per request.
+export const instant = false;
 
 interface EditionsProps {
   readonly params: Promise<{ locale: Locale }>;

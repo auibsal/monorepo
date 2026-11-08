@@ -1,6 +1,6 @@
 import type { Database } from "@repo/database";
-import { buckets, removeFolder } from "@repo/storage";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { buckets, removeFolder } from "@/lib/storage";
 
 type Client = SupabaseClient<Database>;
 

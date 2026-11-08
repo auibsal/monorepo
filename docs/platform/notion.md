@@ -65,10 +65,9 @@ Notion to verify, and set it as `NOTION_WEBHOOK_SECRET` in Vercel
    `core.notion_links`); removed when the record is gone.
 2. **Qirtas pipeline** (`mirrors.ts`): counts per stage, never titles or
    names.
-3. **Programs** (`programs.ts`): no longer publishes a page (owner, Nov 5,
-   2026: every event is a standard event, none in a series). A row set to
-   Ready to publish updates its row's name, summary and rhythm but never
-   makes it active, and a new row is kept inactive.
+3. **Programs:** retired (owner, Nov 5, 2026: every event is a standard
+   event, none in a series). The sync no longer reads the Programs
+   database, which Notion keeps for history.
 4. **Events** (`publish.ts`): **Ready to publish** checks the row
    (`rules.ts`: title, start time, lengths, slug; a link to a former series is ignored) and publishes
    the event; the Arabic edition then fills its Arabic. **Cancel on the

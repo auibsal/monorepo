@@ -7,11 +7,12 @@ import {
   toZonedDateValue,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import type { ComponentProps, ReactNode } from "react";
 import { type DatedItem, DatedList } from "@/components/event-list";
+import { events, localized } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
+import { roughlyNow } from "@/lib/this-year";
 import {
   byDay,
   type Month,
@@ -60,7 +61,7 @@ export const nextAfter = async (
   month: Month,
   programmeId?: string
 ): Promise<Row | null> => {
-  const from = new Date(Math.max(Date.now(), month.from.getTime()));
+  const from = new Date(Math.max(await roughlyNow(), month.from.getTime()));
   const rows = await readPublished(
     ["events"],
     (c) => events.calendar(c, from, new Date(from.getTime() + YEAR)),
@@ -98,7 +99,7 @@ export const MonthCalendar = async ({
   const t = await getTranslations({ locale, namespace: "web.events" });
   const days = byDay(rows);
   const universityDays = byDay(university);
-  const today = toZonedDateValue(new Date());
+  const today = toZonedDateValue(new Date(await roughlyNow()));
   const universityWhen = (row: UniversityRow) =>
     row.all_day ? t("allDay") : formatClock(row.starts_at, locale);
   const universityItems: DatedItem[] = university.map((row) => ({

@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
-import { localized } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { localized } from "@/lib/data";
 import { queryKeys, useMyShifts } from "@/lib/diwan/queries";
 import { RowList } from "../page";
 import { EmptyLine } from "../states";

@@ -1,5 +1,5 @@
-import { escapeHtml } from "@repo/telegram";
 import { Composer, InlineKeyboard } from "grammy";
+import { escapeHtml } from "@/lib/telegram";
 import type { BotContext } from "../context";
 import { db, type EventRow, visibleEvents } from "../db";
 import { eventText, pick, when } from "../format";

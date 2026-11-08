@@ -1,8 +1,8 @@
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { journal } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { NewsletterSignup } from "@/components/newsletter/signup";
+import { journal } from "@/lib/data";
 
 /**
  * After a piece (decisions.md): the two things a reader who finished

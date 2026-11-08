@@ -4,6 +4,7 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
+import { getTranslations } from "next-intl/server";
 import {
   journal,
   localized,
@@ -12,8 +13,7 @@ import {
   type TextPart,
   withContents,
   withNotes,
-} from "@repo/sal-data";
-import { getTranslations } from "next-intl/server";
+} from "@/lib/data";
 import { mediaUrl } from "@/lib/media";
 import { FigureChart } from "./figure-chart";
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { Icon } from "@repo/brand/components/sal/icon";
 import { cn } from "@repo/brand/lib/utils";
 import { diwanPath, localizedPath } from "@repo/internationalization";
@@ -9,6 +8,7 @@ import { Link, usePathname } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { hasSessionCookie } from "@/lib/auth/session-cookie";
 import { readWays, type Ways } from "@/lib/staff";
 import { Masthead, mastheadLink } from "./masthead";
 
@@ -22,8 +22,8 @@ type SectionKey =
   | "events"
   | "join";
 // About · What's on · Qirtas · The Company · Get involved · Join: programs
-// and events are one calendar, the Company stands beside Qirtas (owner,
-// Oct 30, 2026), and "Get involved" opens the careers page. Join is for
+// and events are one calendar, the Company stands beside Qirtas (decisions.md),
+// and "Get involved" opens the careers page. Join is for
 // visitors: signed in, the end of the line opens Membership instead.
 const sections: { href: string; key: SectionKey }[] = [
   { href: "/about", key: "about" },

@@ -153,8 +153,8 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');
 select is((select hours from membership.service_totals() where user_id = '00000000-0000-0000-0000-0000000000a1'),
   3.00::numeric, 'The General Secretary sees everyone''s totals');
 
--- Certificates only for finishing Qalam and for the Mutanabbi Prize (owner,
--- Nov 7, 2026), one language each; signers by kind.
+-- Certificates only for finishing Qalam and for the Mutanabbi Prize (decisions.md),
+-- one language each; signers by kind.
 select lives_ok(
   $$ insert into membership.certificates (id, user_id, kind, prize_category, citation_en, lang)
      values ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-0000000000a1', 'prize',

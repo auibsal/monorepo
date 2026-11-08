@@ -5,8 +5,8 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { localized } from "@repo/sal-data";
 import { useLocale, useTranslations } from "next-intl";
+import { localized } from "@/lib/data";
 import { useOpenCalls } from "@/lib/diwan/queries";
 import { EmptyLine } from "../states";
 import { Section } from "./section";

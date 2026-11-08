@@ -1,22 +1,25 @@
 # Analytics
 
-The public site counts visits with **Vercel Web Analytics**, which sets no
-cookies and keeps no personal data (decisions, Nov 7, 2026). There is no
-Google Tag Manager, no Google Analytics and no cookie banner. The members'
-pages and the Diwan are not counted.
+The public site counts visits with **Vercel Web Analytics** and measures
+how fast its pages load on visitors' devices with **Vercel Speed
+Insights**. Neither sets cookies or keeps personal data (decisions.md).
+There is no Google Tag Manager, no Google Analytics and no cookie banner.
+The members' pages and the Diwan are not counted or measured.
 
 ## How it works
 
-- `<Analytics />` from `@vercel/analytics/next` is in the public site's
-  layout (`app/[locale]/(site)/layout.tsx`). Its script and its reports
-  are served from the site's own origin (`/_vercel/insights/*`), so the
-  Content Security Policy needs nothing added.
-- Page views only; there are no custom events.
+- `<Analytics />` from `@vercel/analytics/next` and `<SpeedInsights />`
+  from `@vercel/speed-insights/next` are in the public site's layout
+  (`app/[locale]/(site)/layout.tsx`). Their scripts and reports are
+  served from the site's own origin (`/_vercel/insights/*`,
+  `/_vercel/speed-insights/*`), so the Content Security Policy needs
+  nothing added.
+- Page views and the Core Web Vitals only; there are no custom events.
 
 ## To turn it on
 
-In Vercel: the project → Analytics → Enable. Nothing is set in the
-environment.
+In Vercel: the project → Analytics → Enable, and the project → Speed
+Insights → Enable. Nothing is set in the environment.
 
 ## The cookies the site sets
 

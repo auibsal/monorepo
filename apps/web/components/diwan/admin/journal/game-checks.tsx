@@ -1,13 +1,13 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { formatLongDate } from "@repo/internationalization/format";
-import { games, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { games, unwrap } from "@/lib/data";
 import { ErrorLine } from "../kit";
 
 /** How many days ahead the queue shows. */

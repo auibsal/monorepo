@@ -1,12 +1,12 @@
 "use client";
 
-import { verifyEmailCode } from "@repo/auth/email";
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { verifyEmailCode } from "@/lib/auth/email";
+import { useAuth } from "@/lib/auth/provider";
 import { useAuthError } from "@/lib/diwan/auth-messages";
 
 /**

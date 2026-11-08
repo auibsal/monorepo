@@ -1,13 +1,21 @@
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { journal } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PieceCardView } from "@/components/qirtas/cards";
 import { ShareLink } from "@/components/share";
+import { journal } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
+import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
 import { readPublished } from "@/lib/supabase";
+
+// Made on its first visit (its address names a record), then kept until
+// it is published again.
+export const instant = false;
+// The placeholder (never a real address) gives the route a shell, so a
+// missing record answers 404 before anything streams.
+export const generateStaticParams = () => [{ slugs: [PLACEHOLDER_SLUG] }];
 
 interface SelectionProps {
   readonly params: Promise<{ locale: Locale; slugs: string[] }>;

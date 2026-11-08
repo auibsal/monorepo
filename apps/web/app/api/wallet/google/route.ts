@@ -1,6 +1,4 @@
-import { authenticateRequest } from "@repo/auth/verify";
 import { createAdminClient } from "@repo/database/admin";
-import { membership } from "@repo/sal-data";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { respond } from "@/lib/api/problem";
 import {
@@ -11,6 +9,8 @@ import {
   walletConfigured,
   walletPassHeld,
 } from "@/lib/api/wallet";
+import { authenticateRequest } from "@/lib/auth/verify";
+import { membership } from "@/lib/data";
 
 export const OPTIONS = preflight;
 

@@ -1,4 +1,3 @@
-import { authenticateRequest } from "@repo/auth/verify";
 import { z } from "zod";
 import { env } from "@/env";
 import { hasBearer } from "@/lib/api/bearer";
@@ -8,6 +7,7 @@ import { corsHeaders, preflight } from "@/lib/api/cors";
 import { hasPermission } from "@/lib/api/permissions";
 import { respond } from "@/lib/api/problem";
 import { api } from "@/lib/api/urls";
+import { authenticateRequest } from "@/lib/auth/verify";
 
 export const maxDuration = 30;
 export const OPTIONS = preflight;

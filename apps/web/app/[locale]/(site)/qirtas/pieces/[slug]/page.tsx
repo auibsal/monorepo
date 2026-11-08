@@ -7,6 +7,14 @@ import {
   PieceArticle,
   pieceMetadata,
 } from "@/components/qirtas/piece-page";
+import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
+
+// Made on its first visit (its address names a record), then kept until
+// it is published again.
+export const instant = false;
+// The placeholder (never a real address) gives the route a shell, so a
+// missing record answers 404 before anything streams.
+export const generateStaticParams = () => [{ slug: PLACEHOLDER_SLUG }];
 
 interface PieceProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;

@@ -1,13 +1,13 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { formatDateTime } from "@repo/internationalization/format";
-import { localized, unwrap } from "@repo/sal-data";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, unwrap } from "@/lib/data";
 import { RowList } from "../../page";
 import { EmptyLine, SectionSpinner } from "../../states";
 import { AdminHeading, Field, SelectInput } from "../kit";
@@ -26,6 +26,7 @@ type Operation = "INSERT" | "UPDATE" | "DELETE";
 const THINGS = {
   "access.role_assignments": "membership",
   "access.two_step_resets": "membership",
+  "core.profiles": "membership",
   "events.check_ins": "events",
   "events.events": "events",
   "events.joint_tasks": "events",
@@ -165,9 +166,10 @@ const Feed = ({ entries }: { readonly entries: readonly Entry[] }) => {
   const t = useTranslations("diwan.admin.activity");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
-  // A role assignment reads as the role and the person it's for.
+  // A role assignment reads as the role and the person it's for; a
+  // corrected name, as whose it is.
   const holders = entries.flatMap((e) =>
-    e.table_name === "role_assignments"
+    e.table_name === "role_assignments" || e.table_name === "profiles"
       ? [((e.new_row ?? e.old_row) as { user_id?: string } | null)?.user_id]
       : []
   );
@@ -197,6 +199,11 @@ const Feed = ({ entries }: { readonly entries: readonly Entry[] }) => {
           unknown
         > | null;
         let name = nameOf(row, locale);
+        // A corrected name: whose, never the name itself (it isn't kept).
+        if (entry.table_name === "profiles" && row) {
+          const holder = names.data?.find((n) => n.id === row.user_id);
+          name = holder ? memberName(holder, locale) : "";
+        }
         if (entry.table_name === "role_assignments" && row) {
           const role = roles.data?.find((r) => r.key === row.role);
           const holder = names.data?.find((n) => n.id === row.user_id);

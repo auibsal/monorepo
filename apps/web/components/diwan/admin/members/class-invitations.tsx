@@ -1,14 +1,14 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
-import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { OpenInvitations } from "@/components/diwan/partner/workspace";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, partners, unwrap } from "@/lib/data";
 import {
   type InviteeLanguage,
   InviteeLanguageField,

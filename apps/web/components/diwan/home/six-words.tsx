@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
-import { programmes } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { programmes } from "@/lib/data";
 import { ErrorLine, SelectInput } from "../admin/kit";
 import { PagePhoto } from "../tour-station";
 import { Section } from "./section";

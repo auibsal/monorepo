@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
@@ -12,12 +11,13 @@ import {
   formatPlainDate,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { localized, recognition, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { SelectInput } from "@/components/diwan/admin/kit";
 import { DateInput } from "@/components/fields/date-input";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, recognition, unwrap } from "@/lib/data";
 import { AddInPlace, ErrorLine } from "../admin/kit";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";

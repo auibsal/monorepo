@@ -1,6 +1,6 @@
-import { journal } from "@repo/sal-data";
 import { notFound } from "next/navigation";
 import { WriteType } from "@/components/diwan/journal/write";
+import { journal } from "@/lib/data";
 import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) => t("diwan.journal.title"));

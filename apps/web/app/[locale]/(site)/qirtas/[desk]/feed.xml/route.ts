@@ -1,6 +1,6 @@
 import { isLocale } from "@repo/internationalization";
-import { journal } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import { journal } from "@/lib/data";
 import { qirtasFeed } from "@/lib/feed";
 
 const isDesk = (value: string): value is journal.Desk =>

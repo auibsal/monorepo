@@ -1,5 +1,5 @@
 {
-  "extends": "@repo/typescript-config/nextjs.json",
+  "extends": "../../tsconfig.nextjs.json",
   "compilerOptions": {},
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

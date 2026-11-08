@@ -1,8 +1,8 @@
 import { project } from "@repo/config";
-import { content } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { RemovalForm } from "@/components/removal-form";
 import { PageHeader, Section } from "@/components/section";
+import { content } from "@/lib/data";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
 

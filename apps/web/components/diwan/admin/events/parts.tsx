@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
-import { hasPermissionAnywhere, type Permission } from "@repo/rbac";
-import { localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
+import { hasPermissionAnywhere, type Permission } from "@/lib/rbac";
 import { DiwanSection, RowList } from "../../page";
 import { EmptyLine } from "../../states";
 import { Needs } from "../needs";

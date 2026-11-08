@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Textarea } from "@repo/brand/components/ui/textarea";
@@ -11,10 +10,11 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link, useRouter } from "@repo/internationalization/navigation";
-import { journal, localized, toPlainText, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { journal, localized, toPlainText, unwrap } from "@/lib/data";
 import { queryKeys, useOpenCalls } from "@/lib/diwan/queries";
 import { manuscriptHtml } from "@/lib/manuscript";
 import {

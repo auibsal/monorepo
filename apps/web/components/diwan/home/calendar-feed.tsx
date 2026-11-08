@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import {
   Dialog,
@@ -13,11 +12,12 @@ import {
 } from "@repo/brand/components/ui/dialog";
 import { Input } from "@repo/brand/components/ui/input";
 import { apiUrl } from "@repo/internationalization";
-import { membership } from "@repo/sal-data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { clientEnv as env } from "@/env.client";
+import { useAuth } from "@/lib/auth/provider";
+import { membership } from "@/lib/data";
 import { queryKeys, useCalendarToken } from "@/lib/diwan/queries";
 import { Section } from "./section";
 

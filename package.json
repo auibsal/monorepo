@@ -13,6 +13,7 @@
     "boundaries": "turbo boundaries",
     "build": "turbo build",
     "check": "ultracite check",
+    "check:decisions": "bun scripts/check-decisions.ts",
     "check:forms": "bun scripts/check-forms-register.ts",
     "check:i18n": "bun scripts/check-i18n.ts && bun scripts/check-language.ts",
     "check:placeholders": "bun scripts/check-placeholders.ts",
@@ -39,7 +40,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",
-    "@repo/typescript-config": "workspace:*",
     "@types/node": "26.6.6",
     "@vitest/coverage-v8": "^5.1.0",
     "knip": "^6.44.2",

@@ -1,7 +1,6 @@
 import type { Locale } from "@repo/internationalization";
 import { formatMonth } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
@@ -9,8 +8,13 @@ import {
   archiveMonths,
   archivePath,
 } from "@/components/qirtas/archive";
+import { journal } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
+import { roughlyNow } from "@/lib/this-year";
 import { isMonthSegment, monthFrom } from "@/lib/whats-on";
+
+// Its query string decides what it shows, so it renders per request.
+export const instant = false;
 
 interface ArchiveProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -37,6 +41,7 @@ export const generateMetadata = async ({
  * section=news, decisions §6).
  */
 const ArchivePage = async ({ params, searchParams }: ArchiveProps) => {
+  const now = new Date(await roughlyNow());
   const { locale } = await params;
   const { month, section } = await searchParams;
   setRequestLocale(locale);
@@ -45,7 +50,7 @@ const ArchivePage = async ({ params, searchParams }: ArchiveProps) => {
       <ArchiveMonth
         desk={isDesk(section) ? section : null}
         locale={locale}
-        month={monthFrom(month)}
+        month={monthFrom(month, now)}
       />
     );
   }
@@ -68,7 +73,7 @@ const ArchivePage = async ({ params, searchParams }: ArchiveProps) => {
                 href={archivePath(m.key)}
               >
                 <span className="type-title group-hover:text-accent">
-                  {formatMonth(monthFrom(m.key).from, locale)}
+                  {formatMonth(monthFrom(m.key, now).from, locale)}
                 </span>
                 <span className="type-caption text-text-secondary">
                   {t("archive.count", {

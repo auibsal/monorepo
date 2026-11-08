@@ -1,13 +1,13 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { type governance, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import { useAuth } from "@/lib/auth/provider";
+import { type governance, localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { ErrorState, SectionSpinner } from "../../states";

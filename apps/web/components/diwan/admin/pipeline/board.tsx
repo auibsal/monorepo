@@ -1,16 +1,16 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { cn } from "@repo/brand/lib/utils";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type DragEvent, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { journal, localized, unwrap } from "@/lib/data";
 import { SectionSpinner } from "../../states";
 import { type Column, DataTable, ErrorLine, SelectInput } from "../kit";
 import {

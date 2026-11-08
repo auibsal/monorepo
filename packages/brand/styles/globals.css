@@ -270,8 +270,9 @@
   }
 }
 
-/* Typography plugin */
-@utility prose {
+/* Typography plugin. Outside the layers, so the role tokens win over the
+   plugin's own grays (which stay dark on ink) and its bold headings. */
+.prose {
   --tw-prose-body: var(--color-foreground);
   --tw-prose-headings: var(--color-foreground);
   --tw-prose-lead: var(--color-muted-foreground);

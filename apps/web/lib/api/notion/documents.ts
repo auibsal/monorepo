@@ -310,8 +310,8 @@ const adoptionOf = (record: {
 }) => ({ adopted_on: record.adopted_on, vote: record.vote });
 
 /**
- * Publishes the rows set to Ready to publish. The Library re-sync (owner,
- * Nov 7, 2026: run once right after production is unpaused, with
+ * Publishes the rows set to Ready to publish. The Library re-sync (decisions.md:
+ * run once right after production is unpaused, with
  * `?documents=all` on the sync route) takes every row already Published as
  * well, English rows first so each Arabic edition finds its record.
  */

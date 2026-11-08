@@ -6,7 +6,6 @@
       "name": "monorepo-template",
       "devDependencies": {
         "@biomejs/biome": "2.6.6",
-        "@repo/typescript-config": "workspace:*",
         "@types/node": "26.6.6",
         "@vitest/coverage-v8": "^5.1.0",
         "knip": "^6.44.2",
@@ -21,7 +20,6 @@
       "devDependencies": {
         "@axe-core/playwright": "4.14.0",
         "@playwright/test": "1.65.0",
-        "@repo/typescript-config": "workspace:*",
         "@supabase/supabase-js": "^2.119.0",
         "@types/node": "26.6.6",
         "typescript": "^7.0.2",
@@ -32,19 +30,13 @@
       "version": "1.0.0",
       "dependencies": {
         "@grammyjs/auto-retry": "^2.0.2",
-        "@repo/auth": "workspace:*",
+        "@next/bundle-analyzer": "16.4.5",
         "@repo/brand": "workspace:*",
         "@repo/config": "workspace:*",
         "@repo/database": "workspace:*",
         "@repo/email": "workspace:*",
         "@repo/internationalization": "workspace:*",
-        "@repo/next-config": "workspace:*",
-        "@repo/observability": "workspace:*",
-        "@repo/rbac": "workspace:*",
-        "@repo/sal-data": "workspace:*",
-        "@repo/security": "workspace:*",
-        "@repo/storage": "workspace:*",
-        "@repo/telegram": "workspace:*",
+        "@supabase/ssr": "^0.12.7",
         "@supabase/supabase-js": "^2.119.0",
         "@t3-oss/env-nextjs": "^0.13.11",
         "@tanstack/react-query": "^5.107.1",
@@ -54,6 +46,7 @@
         "@tiptap/react": "^3.33.0",
         "@tiptap/starter-kit": "^3.33.0",
         "@vercel/analytics": "2.0.1",
+        "@vercel/speed-insights": "2.1.0",
         "fflate": "^0.8.3",
         "grammy": "^1.46.0",
         "jose": "^6.2.15",
@@ -66,6 +59,7 @@
         "react": "19.3.1",
         "react-dom": "19.3.1",
         "react-qr-code": "^2.2.0",
+        "sanitize-html": "^2.18.1",
         "server-only": "^0.0.1",
         "sharp": "^0.35.5",
         "web-push": "^4.0.0",
@@ -73,39 +67,17 @@
       },
       "devDependencies": {
         "@react-email/components": "1.0.12",
-        "@repo/typescript-config": "workspace:*",
         "@tailwindcss/postcss": "^4.3.5",
         "@testing-library/dom": "^10.4.2",
         "@testing-library/react": "^16.3.3",
         "@types/node": "26.6.6",
         "@types/react": "19.3.0",
         "@types/react-dom": "19.3.0",
+        "@types/sanitize-html": "^2.16.2",
         "@types/web-push": "^3.6.4",
         "@vitejs/plugin-react": "^6.2.1",
         "jsdom": "^31.0.0",
         "tailwindcss": "^4.3.5",
-        "typescript": "^7.0.2",
-        "vitest": "^5.1.0",
-      },
-    },
-    "packages/auth": {
-      "name": "@repo/auth",
-      "version": "1.0.0",
-      "dependencies": {
-        "@repo/database": "workspace:*",
-        "@supabase/ssr": "^0.12.7",
-        "@supabase/supabase-js": "^2.119.0",
-        "@t3-oss/env-nextjs": "^0.13.11",
-        "react": "19.3.1",
-        "server-only": "^0.0.1",
-        "zod": "^4.6.7",
-      },
-      "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
-        "@types/node": "26.6.6",
-        "@types/react": "19.3.0",
-        "@types/react-dom": "19.3.0",
-        "next": "16.4.5",
         "typescript": "^7.0.2",
         "vitest": "^5.1.0",
       },
@@ -117,7 +89,6 @@
         "@react-email/components": "1.0.12",
         "@repo/config": "workspace:*",
         "@repo/email": "workspace:*",
-        "@repo/observability": "workspace:*",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "next": "16.4.5",
@@ -131,7 +102,6 @@
       },
       "devDependencies": {
         "@playwright/test": "1.65.0",
-        "@repo/typescript-config": "workspace:*",
         "@storybook/addon-docs": "^10.6.6",
         "@storybook/addon-themes": "^10.6.6",
         "@storybook/nextjs": "^10.6.6",
@@ -155,7 +125,6 @@
         "zod": "^4.6.7",
       },
       "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
         "@types/node": "26.6.6",
         "typescript": "^7.0.2",
         "vitest": "^5.1.0",
@@ -171,7 +140,6 @@
         "zod": "^4.6.7",
       },
       "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
         "@types/node": "26.6.6",
         "supabase": "3.0.0",
         "typescript": "^7.0.2",
@@ -190,7 +158,6 @@
         "zod": "^4.6.7",
       },
       "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
         "@types/node": "26.6.6",
         "@types/react": "19.3.0",
         "@types/react-dom": "19.3.0",
@@ -207,7 +174,6 @@
         "react": "19.3.1",
       },
       "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
         "@types/node": "26.6.6",
         "@types/react": "19.3.0",
         "@types/react-dom": "19.3.0",
@@ -216,97 +182,6 @@
         "typescript": "^7.0.2",
         "vitest": "^5.1.0",
       },
-    },
-    "packages/next-config": {
-      "name": "@repo/next-config",
-      "version": "1.0.0",
-      "dependencies": {
-        "@next/bundle-analyzer": "16.4.5",
-        "@t3-oss/env-nextjs": "^0.13.11",
-        "zod": "^4.6.7",
-      },
-      "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
-        "next": "16.4.5",
-        "vitest": "^5.1.0",
-      },
-    },
-    "packages/observability": {
-      "name": "@repo/observability",
-      "version": "1.0.0",
-      "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
-        "@types/node": "26.6.6",
-        "typescript": "^7.0.2",
-      },
-    },
-    "packages/rbac": {
-      "name": "@repo/rbac",
-      "version": "1.0.0",
-      "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
-        "@types/node": "26.6.6",
-        "typescript": "^7.0.2",
-        "vitest": "^5.1.0",
-      },
-    },
-    "packages/sal-data": {
-      "name": "@repo/sal-data",
-      "version": "1.0.0",
-      "dependencies": {
-        "@repo/database": "workspace:*",
-        "@repo/rbac": "workspace:*",
-        "@supabase/supabase-js": "^2.119.0",
-        "sanitize-html": "^2.18.1",
-        "zod": "^4.6.7",
-      },
-      "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
-        "@types/node": "26.6.6",
-        "@types/sanitize-html": "^2.16.2",
-        "typescript": "^7.0.2",
-        "vitest": "^5.1.0",
-      },
-    },
-    "packages/security": {
-      "name": "@repo/security",
-      "version": "1.0.0",
-      "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
-        "typescript": "^7.0.2",
-      },
-    },
-    "packages/storage": {
-      "name": "@repo/storage",
-      "version": "1.0.0",
-      "dependencies": {
-        "@repo/database": "workspace:*",
-        "@supabase/supabase-js": "^2.119.0",
-      },
-      "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
-        "@types/node": "26.6.6",
-        "typescript": "^7.0.2",
-        "vitest": "^5.1.0",
-      },
-    },
-    "packages/telegram": {
-      "name": "@repo/telegram",
-      "version": "1.0.0",
-      "dependencies": {
-        "@t3-oss/env-nextjs": "^0.13.11",
-        "zod": "^4.6.7",
-      },
-      "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
-        "@types/node": "26.6.6",
-        "typescript": "^7.0.2",
-        "vitest": "^5.1.0",
-      },
-    },
-    "packages/typescript-config": {
-      "name": "@repo/typescript-config",
-      "version": "1.0.0",
     },
   },
   "trustedDependencies": [
@@ -1056,8 +931,6 @@
 
     "@react-email/text": ["@react-email/text@0.1.6", "", { "peerDependencies": { "react": "^18.0 || ^19.0 || ^19.0.0-rc" } }, "sha512-TYqkioRS45wTR5il3dYk/SbUjjEdhSwh9BtRNB99qNH1pXAwA45H7rAuxehiu8iJQJH0IyIr+6n62gBz9ezmsw=="],
 
-    "@repo/auth": ["@repo/auth@workspace:packages/auth"],
-
     "@repo/brand": ["@repo/brand@workspace:packages/brand"],
 
     "@repo/config": ["@repo/config@workspace:packages/config"],
@@ -1067,22 +940,6 @@
     "@repo/email": ["@repo/email@workspace:packages/email"],
 
     "@repo/internationalization": ["@repo/internationalization@workspace:packages/internationalization"],
-
-    "@repo/next-config": ["@repo/next-config@workspace:packages/next-config"],
-
-    "@repo/observability": ["@repo/observability@workspace:packages/observability"],
-
-    "@repo/rbac": ["@repo/rbac@workspace:packages/rbac"],
-
-    "@repo/sal-data": ["@repo/sal-data@workspace:packages/sal-data"],
-
-    "@repo/security": ["@repo/security@workspace:packages/security"],
-
-    "@repo/storage": ["@repo/storage@workspace:packages/storage"],
-
-    "@repo/telegram": ["@repo/telegram@workspace:packages/telegram"],
-
-    "@repo/typescript-config": ["@repo/typescript-config@workspace:packages/typescript-config"],
 
     "@rolldown/binding-android-arm-eabi": ["@rolldown/binding-android-arm-eabi@1.2.16", "", { "os": "android", "cpu": "arm" }, "sha512-ia3DwAs0OsMGS7+IConptSiyk9pEXkOx/AbJ2n/lAGxH3QkWQus1t8d7gnAT38FCU2sQu8lUbeR6AiZFv4JxaA=="],
 
@@ -1413,6 +1270,8 @@
     "@typescript/typescript-win32-x64": ["@typescript/typescript-win32-x64@7.0.2", "", { "os": "win32", "cpu": "x64" }, "sha512-0BQ3HkAHHlKLSp1qRvf3SUhGpGsDuhB/jgFw75guyqbxJqEaS0Cw/VFO8i2nHglJUzQCRtMMR/IBAKE3ETMC4g=="],
 
     "@vercel/analytics": ["@vercel/analytics@2.0.1", "", { "peerDependencies": { "@remix-run/react": "^2", "@sveltejs/kit": "^1 || ^2", "next": ">= 13", "nuxt": ">= 3", "react": "^18 || ^19 || ^19.0.0-rc", "svelte": ">= 4", "vue": "^3", "vue-router": "^4" }, "optionalPeers": ["@remix-run/react", "@sveltejs/kit", "next", "nuxt", "react", "svelte", "vue", "vue-router"] }, "sha512-MTQG6V9qQrt1tsDeF+2Uoo5aPjqbVPys1xvnIftXSJYG2SrwXRHnqEvVoYID7BTruDz4lCd2Z7rM1BdkUehk2g=="],
+
+    "@vercel/speed-insights": ["@vercel/speed-insights@2.1.0", "", { "peerDependencies": { "@sveltejs/kit": "^1 || ^2 || ^3 || ^3.0.0-next.0", "next": ">= 13", "nuxt": ">= 3", "react": "^18 || ^19 || ^19.0.0-rc", "svelte": ">= 4", "vue": "^3", "vue-router": "^4" }, "optionalPeers": ["@sveltejs/kit", "next", "nuxt", "react", "svelte", "vue", "vue-router"] }, "sha512-tkDiIEjjmlwPpTFnOK14hBhsRLMo5yoCeK2Er3AHWlL7WTzHgFSyItps3TOW0HukErUlYlaUeHiVLCyfiE4WAA=="],
 
     "@vitejs/plugin-react": ["@vitejs/plugin-react@6.2.1", "", { "dependencies": { "@rolldown/pluginutils": "^1.0.1" }, "peerDependencies": { "@rolldown/plugin-babel": "^0.1.7 || ^0.2.0 || ^0.3.0", "babel-plugin-react-compiler": "^1.0.0", "oxc-transform-react": ">=0.152.0 <0.157.0", "vite": "^8.0.0" }, "optionalPeers": ["@rolldown/plugin-babel", "babel-plugin-react-compiler", "oxc-transform-react"] }, "sha512-9KyWCij3r0+qLG3Q62vBmv0VyevmYibAtxaCIVK9o0k6CXgaajZRIe8tpfchQcdZArJ5b/7OrIz4W3b2uxVRDA=="],
 

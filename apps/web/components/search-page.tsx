@@ -1,6 +1,10 @@
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { SearchForm } from "@/components/search-form";
+import { PageHeader } from "@/components/section";
 import {
   content,
   documents,
@@ -8,11 +12,7 @@ import {
   journal,
   localized,
   toPlainText,
-} from "@repo/sal-data";
-import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { SearchForm } from "@/components/search-form";
-import { PageHeader } from "@/components/section";
+} from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 

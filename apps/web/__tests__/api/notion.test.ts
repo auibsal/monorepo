@@ -11,7 +11,6 @@ const {
   checkDocument,
   checkEvent,
   eventExtras,
-  checkProgram,
   checkQirtas,
   languageOf,
   RETIRED_DOCUMENT_FAMILY,
@@ -257,24 +256,6 @@ describe("publishing rules", () => {
     expect(loose.ok ? [] : loose.problems).toContain(
       "An Arabic edition links exactly one English row in Edition of."
     );
-  });
-
-  test("a program row gives its name, rhythm and summary", () => {
-    expect(
-      checkProgram(
-        page({
-          Name: title("Listening session"),
-          Rhythm: text("Tuesdays, as the term calendar sets"),
-          Summary: text("An album played in full, then talked about."),
-        })
-      )
-    ).toMatchObject({
-      ok: true,
-      values: {
-        rhythm: "Tuesdays, as the term calendar sets",
-        slug: "listening-session",
-      },
-    });
   });
 
   test("a document row needs its code, address and audience", () => {

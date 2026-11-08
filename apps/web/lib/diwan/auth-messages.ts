@@ -1,8 +1,8 @@
 "use client";
 
-import type { EmailAuthErrorCode } from "@repo/auth/email";
-import type { PasskeyErrorCode } from "@repo/auth/passkeys";
 import { useTranslations } from "next-intl";
+import type { EmailAuthErrorCode } from "@/lib/auth/email";
+import type { PasskeyErrorCode } from "@/lib/auth/passkeys";
 
 /** The translated text for an auth error code. */
 export const useAuthError = () => {

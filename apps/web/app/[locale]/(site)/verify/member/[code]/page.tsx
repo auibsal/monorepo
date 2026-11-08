@@ -1,12 +1,15 @@
 import { Guilloche } from "@repo/brand/components/sal/guilloche";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { localized, membership } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/section";
+import { localized, membership } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readLive } from "@/lib/supabase";
+
+// Its query string decides what it shows, so it renders per request.
+export const instant = false;
 
 interface CardParams {
   readonly params: Promise<{ code: string; locale: Locale }>;

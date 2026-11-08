@@ -1,5 +1,4 @@
 import type { Locale } from "@repo/internationalization";
-import { documents } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
@@ -7,13 +6,19 @@ import {
   DocumentArticle,
   documentMetadata,
 } from "@/components/library/document-page";
+import { documents } from "@/lib/data";
+import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
 
 interface DocumentProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;
 }
 
 // Rendered on first request, then cached until a document is edited.
-export const generateStaticParams = () => [];
+// Pages are made on their first visit; the placeholder (never a real
+// slug) lets the build check the route (Cache Components).
+export const generateStaticParams = () => [{ slug: PLACEHOLDER_SLUG }];
+// Made on its first visit, then kept until published again.
+export const instant = false;
 
 export const generateMetadata = async ({
   params,

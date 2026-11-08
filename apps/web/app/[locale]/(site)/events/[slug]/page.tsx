@@ -1,20 +1,29 @@
+import { ActionBar } from "@repo/brand/components/sal/action-bar";
 import { Icon } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import { apiPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, localized, sanitizeRichText } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EventBooking } from "@/components/event-booking";
 import { EventParts } from "@/components/event-parts";
-import { ActionBar } from "@/components/frame/action-bar";
 import { ManageLinks } from "@/components/manage-links";
+import { events, localized, sanitizeRichText } from "@/lib/data";
 import { eventLd, JsonLd } from "@/lib/json-ld";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
+import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
 import { readPublished } from "@/lib/supabase";
+import { roughlyNow } from "@/lib/this-year";
+
+// Made on its first visit (its address names a record), then kept until
+// it is published again.
+export const instant = false;
+// The placeholder (never a real address) gives the route a shell, so a
+// missing record answers 404 before anything streams.
+export const generateStaticParams = () => [{ slug: PLACEHOLDER_SLUG }];
 
 interface EventProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;
@@ -77,7 +86,7 @@ const EventView = async ({
     (c) => events.eventHost(c, event.slug),
     null
   );
-  const upcoming = new Date(event.starts_at).getTime() > Date.now();
+  const upcoming = new Date(event.starts_at).getTime() > (await roughlyNow());
 
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-16">

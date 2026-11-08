@@ -977,7 +977,6 @@ export type Database = {
         Row: {
           audience: string;
           chat_id: number;
-          join_policy: string;
           lang: string;
           registered_at: string;
           registered_by: string | null;
@@ -988,7 +987,6 @@ export type Database = {
         Insert: {
           audience?: string;
           chat_id: number;
-          join_policy?: string;
           lang?: string;
           registered_at?: string;
           registered_by?: string | null;
@@ -998,7 +996,6 @@ export type Database = {
         Update: {
           audience?: string;
           chat_id?: number;
-          join_policy?: string;
           lang?: string;
           registered_at?: string;
           registered_by?: string | null;
@@ -1010,31 +1007,25 @@ export type Database = {
       telegram_members: {
         Row: {
           chat_id: number;
-          joined_at: string;
           removed_at: string | null;
           telegram_id: number;
           verified_at: string | null;
           warned_at: string | null;
-          warnings: number;
         };
         ComputedFields: never;
         Insert: {
           chat_id: number;
-          joined_at?: string;
           removed_at?: string | null;
           telegram_id: number;
           verified_at?: string | null;
           warned_at?: string | null;
-          warnings?: number;
         };
         Update: {
           chat_id?: number;
-          joined_at?: string;
           removed_at?: string | null;
           telegram_id?: number;
           verified_at?: string | null;
           warned_at?: string | null;
-          warnings?: number;
         };
         Relationships: [
           {
@@ -1078,31 +1069,6 @@ export type Database = {
             referencedColumns: ["chat_id"];
           },
         ];
-      };
-      telegram_word_plays: {
-        Row: {
-          created_at: string;
-          day: number;
-          guesses: string[];
-          lang: string;
-          telegram_id: number;
-        };
-        ComputedFields: never;
-        Insert: {
-          created_at?: string;
-          day: number;
-          guesses?: string[];
-          lang: string;
-          telegram_id: number;
-        };
-        Update: {
-          created_at?: string;
-          day?: number;
-          guesses?: string[];
-          lang?: string;
-          telegram_id?: number;
-        };
-        Relationships: [];
       };
     };
     Views: {
@@ -3859,6 +3825,46 @@ export type Database = {
         };
         Relationships: [];
       };
+      original_openings: {
+        Row: {
+          file_id: string;
+          id: number;
+          opened_at: string;
+          opened_by: string | null;
+          submission_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          file_id: string;
+          id?: never;
+          opened_at?: string;
+          opened_by?: string | null;
+          submission_id: string;
+        };
+        Update: {
+          file_id?: string;
+          id?: never;
+          opened_at?: string;
+          opened_by?: string | null;
+          submission_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "original_openings_file_id_fkey";
+            columns: ["file_id"];
+            isOneToOne: false;
+            referencedRelation: "submission_files";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "original_openings_submission_id_fkey";
+            columns: ["submission_id"];
+            isOneToOne: false;
+            referencedRelation: "submissions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       piece_bodies: {
         Row: {
           body_ar: string | null;
@@ -4868,6 +4874,14 @@ export type Database = {
           author_name_en: string;
         }[];
       };
+      entry_text: {
+        Args: { entry: string };
+        Returns: {
+          body_html: string;
+          mark: string;
+          source_text: string;
+        }[];
+      };
       expired_submissions: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4932,6 +4946,14 @@ export type Database = {
           slug: string;
         }[];
       };
+      my_reader_pledge: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          agreed_at: string;
+          current: boolean;
+          version: number;
+        }[];
+      };
       next_stop_team: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4941,6 +4963,7 @@ export type Database = {
           title_en: string;
         }[];
       };
+      open_original: { Args: { file: string }; Returns: string };
       open_prize_round: { Args: Record<PropertyKey, never>; Returns: string };
       piece_from_entry: { Args: { blind_entry_id: string }; Returns: string };
       piece_thread: {
@@ -5033,6 +5056,7 @@ export type Database = {
         Args: { signer_name: string; submission_id: string };
         Returns: string;
       };
+      sign_reader_pledge: { Args: { esign_agreed: boolean }; Returns: string };
       submission_partners: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -5699,6 +5723,20 @@ export type Database = {
       };
       confirm_service: {
         Args: { approve: boolean; reason?: string; record_id: string };
+        Returns: undefined;
+      };
+      correct_name: {
+        Args: {
+          father_ar: string;
+          father_en: string;
+          first_ar: string;
+          first_en: string;
+          grandfather_ar: string;
+          grandfather_en: string;
+          last_ar: string;
+          last_en: string;
+          member: string;
+        };
         Returns: undefined;
       };
       current_pledge_version: {

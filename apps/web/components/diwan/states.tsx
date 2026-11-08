@@ -1,6 +1,9 @@
 "use client";
 
-import { Button } from "@repo/brand/components/ui/button";
+import {
+  EmptyLine as BrandEmptyLine,
+  ErrorNotice,
+} from "@repo/brand/components/sal/states";
 import { Spinner } from "@repo/brand/components/ui/spinner";
 import { cn } from "@repo/brand/lib/utils";
 import { Link as SiteLink } from "@repo/internationalization/navigation";
@@ -31,26 +34,16 @@ interface ErrorStateProps {
   readonly onRetry?: () => void;
 }
 
+/** The design system's ErrorNotice, in the page's language. */
 export const ErrorState = ({ className, onRetry }: ErrorStateProps) => {
   const t = useTranslations();
-
   return (
-    <div
-      className={cn(
-        "flex flex-col items-center justify-center gap-3 py-8 text-center",
-        className
-      )}
-      role="alert"
-    >
-      <p className="type-body text-text-secondary">
-        {t("diwan.errors.loadFailed")}
-      </p>
-      {onRetry ? (
-        <Button onClick={onRetry} size="sm" variant="outline">
-          {t("common.retry")}
-        </Button>
-      ) : null}
-    </div>
+    <ErrorNotice
+      className={className}
+      message={t("diwan.errors.loadFailed")}
+      onRetry={onRetry}
+      retryLabel={t("common.retry")}
+    />
   );
 };
 
@@ -80,8 +73,8 @@ const ActionLink = ({ href, label, site = false }: Action) => {
 };
 
 /**
- * One muted line for an empty section, with the next thing to do: every
- * empty state offers one (an in-app path or a full URL).
+ * The design system's EmptyLine with its next action: every empty state
+ * offers one (an in-app path or a full URL).
  */
 export const EmptyLine = ({
   action,
@@ -90,8 +83,7 @@ export const EmptyLine = ({
   readonly action?: Action;
   readonly children: string;
 }) => (
-  <div className="grid justify-items-start gap-2">
-    <p className="type-body text-text-secondary">{children}</p>
-    {action ? <ActionLink {...action} /> : null}
-  </div>
+  <BrandEmptyLine action={action ? <ActionLink {...action} /> : undefined}>
+    {children}
+  </BrandEmptyLine>
 );

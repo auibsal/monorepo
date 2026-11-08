@@ -1,7 +1,5 @@
 "use client";
 
-import { sendPasswordReset } from "@repo/auth/email";
-import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
@@ -9,6 +7,8 @@ import { Label } from "@repo/brand/components/ui/label";
 import { localizedPath } from "@repo/internationalization";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useRef, useState } from "react";
+import { sendPasswordReset } from "@/lib/auth/email";
+import { useAuth } from "@/lib/auth/provider";
 import { useAuthError } from "@/lib/diwan/auth-messages";
 import { callbackUrl } from "@/lib/diwan/navigation";
 import { useScreenTop } from "@/lib/diwan/use-screen-top";

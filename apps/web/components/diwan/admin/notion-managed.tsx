@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Icon } from "@repo/brand/components/sal/icon";
-import { unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { unwrap } from "@/lib/data";
 
 type NotionKind =
   | "event"

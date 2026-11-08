@@ -1,16 +1,16 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Input } from "@repo/brand/components/ui/input";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import { formatPlainDate } from "@repo/internationalization/format";
 import { Link as SiteLink } from "@repo/internationalization/navigation";
-import { recognition } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import { useAuth } from "@/lib/auth/provider";
+import { recognition } from "@/lib/data";
 import { SectionSpinner } from "../../states";
 import {
   AddInPlace,

@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
-import type { Grant } from "@repo/rbac";
-import { journal, membership, names, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/auth/provider";
+import { journal, membership, names, unwrap } from "@/lib/data";
+import type { Grant } from "@/lib/rbac";
 
 /**
  * Data hooks. Every query runs with the member's session, so Row Level

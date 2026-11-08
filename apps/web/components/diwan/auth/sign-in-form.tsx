@@ -1,8 +1,5 @@
 "use client";
 
-import { sendMagicLink, signInWithPassword } from "@repo/auth/email";
-import { passkeysSupported, signInWithPasskey } from "@repo/auth/passkeys";
-import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
@@ -12,6 +9,9 @@ import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
 import { PasswordInput } from "@/components/fields/password-input";
+import { sendMagicLink, signInWithPassword } from "@/lib/auth/email";
+import { passkeysSupported, signInWithPasskey } from "@/lib/auth/passkeys";
+import { useAuth } from "@/lib/auth/provider";
 import { useAuthError, usePasskeyError } from "@/lib/diwan/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/diwan/navigation";
 import { useScreenTop } from "@/lib/diwan/use-screen-top";

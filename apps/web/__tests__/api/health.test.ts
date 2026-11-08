@@ -14,6 +14,9 @@ vi.mock("@repo/database/admin", () => ({
   }),
 }));
 
+// Outside a request there is no connection to wait for.
+vi.mock("next/server", () => ({ connection: () => Promise.resolve() }));
+
 const { GET } = await import("@/app/api/health/route");
 
 beforeEach(() => {

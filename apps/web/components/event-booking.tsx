@@ -1,10 +1,10 @@
 "use client";
 
-import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { Button } from "@repo/brand/components/ui/button";
 import { type Locale, localizedPath } from "@repo/internationalization";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
+import { hasSessionCookie } from "@/lib/auth/session-cookie";
 
 type Status = "booked" | "waiting" | "reminded" | "none";
 
@@ -13,7 +13,7 @@ type Status = "booked" | "waiting" | "reminded" | "none";
 // and the same for all; apps/e2e/tests/performance.spec.ts).
 const loadClient = async () =>
   (await import("@/lib/diwan/supabase")).getSupabase();
-const loadEvents = async () => await import("@repo/sal-data/events");
+const loadEvents = async () => await import("@/lib/data/events");
 type Notice = "booked" | "waitlisted" | "cancelled" | "reminded" | "failed";
 
 /**

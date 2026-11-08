@@ -1,7 +1,7 @@
-import { publicEvents } from "@repo/sal-data/events";
-import { escapeHtml } from "@repo/telegram";
 import { Composer, InlineKeyboard, InlineQueryResultBuilder } from "grammy";
 import type { InlineQueryResult } from "grammy/types";
+import { publicEvents } from "@/lib/data/events";
+import { escapeHtml } from "@/lib/telegram";
 import type { BotContext } from "../context";
 import { copy, type Lang } from "../copy";
 import { anon } from "../db";

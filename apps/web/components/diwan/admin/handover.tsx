@@ -1,14 +1,14 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { DiwanSection, RowList } from "../page";
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Icon } from "@repo/brand/components/sal/icon";
 import { cn } from "@repo/brand/lib/utils";
 import {
@@ -13,6 +12,7 @@ import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
 import { useVisibleModules } from "@/components/diwan/admin/admin-shell";
 import { useTwoStep } from "@/components/diwan/auth/two-step";
+import { useAuth } from "@/lib/auth/provider";
 import { useMyPartners } from "@/lib/diwan/partners";
 import { disablePush } from "@/lib/diwan/push";
 import { useMemberStatus, useMyMembership } from "@/lib/diwan/queries";

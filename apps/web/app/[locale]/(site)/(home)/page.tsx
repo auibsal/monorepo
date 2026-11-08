@@ -4,14 +4,15 @@ import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, journal, localized } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { type DatedItem, DatedList, eventItems } from "@/components/event-list";
 import { NewsletterSignup } from "@/components/newsletter/signup";
 import { PieceCardView } from "@/components/qirtas/cards";
+import { events, journal, localized } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
+import { roughlyNow } from "@/lib/this-year";
 
 interface HomeProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -44,7 +45,9 @@ const Home = async ({ params }: HomeProps) => {
 
   // The next three weeks (the overhaul, Oct 30, 2026): open calls (filed
   // under the day they close) and the events, in date order, six at most.
-  const horizon = new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString();
+  const horizon = new Date(
+    (await roughlyNow()) + 21 * 24 * 60 * 60 * 1000
+  ).toISOString();
   const term: DatedItem[] = [
     ...(calls ?? []).map((call) => ({
       at: call.closes_at,

@@ -1,7 +1,7 @@
 import "server-only";
 
-import type { authenticateRequest } from "@repo/auth/verify";
-import type { Permission, ScopeType } from "@repo/rbac";
+import type { authenticateRequest } from "@/lib/auth/verify";
+import type { Permission, ScopeType } from "@/lib/rbac";
 
 export type ApiSession = NonNullable<
   Awaited<ReturnType<typeof authenticateRequest>>

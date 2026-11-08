@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/brand/components/sal/card";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
-import { unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { unwrap } from "@/lib/data";
 
 /** Waiting longer than this means emails are not leaving. */
 const STUCK_MS = 15 * 60 * 1000;

@@ -1,9 +1,9 @@
 "use client";
 
-import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { type Locale, localizedPath } from "@repo/internationalization";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { hasSessionCookie } from "@/lib/auth/session-cookie";
 import { getSupabase } from "@/lib/diwan/supabase";
 
 type State = "hidden" | "saved" | "unsaved";

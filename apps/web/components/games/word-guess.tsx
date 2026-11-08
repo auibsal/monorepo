@@ -3,6 +3,9 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { cn } from "@repo/brand/lib/utils";
 import { localizedPath } from "@repo/internationalization";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ShareLink } from "@/components/share";
 import {
   currentStreak,
   dailyAnswer,
@@ -17,10 +20,7 @@ import {
   type Streak,
   scoreGuess,
   WORD_LENGTH,
-} from "@repo/sal-data/games";
-import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { ShareLink } from "@/components/share";
+} from "@/lib/data/games";
 import { loadProgress, saveProgress } from "./storage";
 
 const tile: Record<Mark | "empty" | "typed", string> = {

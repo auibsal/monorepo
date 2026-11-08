@@ -1,8 +1,8 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
-import { journal, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/auth/provider";
+import { journal, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
 
 export type SubmissionStatus = journal.SubmissionStatus;
@@ -56,20 +56,6 @@ export const readTotals = (entry: Pick<BlindEntryRow, "assignments">) =>
 
 export const entryAverage = (entry: Pick<BlindEntryRow, "assignments">) =>
   journal.averageTotal(readTotals(entry));
-
-export interface BlindFile {
-  kind: string;
-  mimeType: string;
-  name: string;
-  url: string | null;
-}
-
-/** Links to the metadata-stripped copies (the API routes check access by RLS). */
-export const useBlindFiles = () => {
-  const { supabase } = useAuth();
-  return (entry: string) =>
-    callApi<{ files: BlindFile[] }>(supabase, "/files/blind", { entry });
-};
 
 export const openSubmissionFile = async (
   supabase: ReturnType<typeof useAuth>["supabase"],

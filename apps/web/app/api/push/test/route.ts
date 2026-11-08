@@ -1,10 +1,10 @@
-import { authenticateRequest } from "@repo/auth/verify";
 import { createAdminClient } from "@repo/database/admin";
 import { pushTest } from "@repo/email/copy";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { respond } from "@/lib/api/problem";
 import { pushConfigured, pushToUser } from "@/lib/api/push";
 import { site } from "@/lib/api/urls";
+import { authenticateRequest } from "@/lib/auth/verify";
 
 export const OPTIONS = preflight;
 

@@ -1,7 +1,7 @@
-import { membership } from "@repo/sal-data";
 import { describe, expect, test } from "vitest";
 import { detailsThin } from "@/components/diwan/profile/tell-us-more";
 import { planSetup } from "@/components/diwan/setup-form";
+import { membership } from "@/lib/data";
 
 const blank = { father: "", first: "", grandfather: "", last: "" };
 const none = { ar: blank, en: blank };

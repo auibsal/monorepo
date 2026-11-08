@@ -1,17 +1,16 @@
 import "server-only";
 
 import { createAdminClient } from "@repo/database/admin";
-import { parseError } from "@repo/observability/error";
-import { log } from "@repo/observability/log";
 import { revalidateTag } from "next/cache";
 import { env } from "@/env";
 import { diwan, origin } from "@/lib/api/urls";
+import { parseError } from "@/lib/observability/error";
+import { log } from "@/lib/observability/log";
 import { createNotion, type Notion, type NotionUser } from "./client";
 import type { Admin, Sources, SyncContext } from "./context";
 import { publishDocuments, syncAdoptionRecords } from "./documents";
 import { sendMinutesToDiwan } from "./minutes";
 import { mirrorJournal, mirrorOfficers, peopleByEmail } from "./mirrors";
-import { publishPrograms } from "./programs";
 import { publishWaiting, syncRsvpCounts } from "./publish";
 import { unpublishFromNotion } from "./unpublish";
 
@@ -57,8 +56,8 @@ export interface SyncState {
 
 /**
  * Everything one sync does, in order (Nov 4, 2026): the read-only copies
- * (officers, Qirtas's counts), then what Notion authors (programs before
- * the events that link them, documents and their adoption record,
+ * (officers, Qirtas's counts), then what Notion authors (events,
+ * documents and their adoption record,
  * minutes), then the RSVP counts. Nothing is made in the Diwan and copied
  * back: events and minutes are written in Notion only (decisions §8).
  */
@@ -68,7 +67,6 @@ const steps: [
 ][] = [
   ["officers", (ctx, users) => mirrorOfficers(ctx, peopleByEmail(users))],
   ["journal", (ctx) => mirrorJournal(ctx)],
-  ["programs", (ctx) => publishPrograms(ctx)],
   ["publishing", (ctx) => publishWaiting(ctx)],
   [
     "documents",

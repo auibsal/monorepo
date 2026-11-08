@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
-import { localized, partners } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { MySignature } from "@/components/signature";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, partners } from "@/lib/data";
 import { EmptyLine } from "../../states";
 import { ConfirmAction, ErrorLine, Field, SelectInput } from "../kit";
 

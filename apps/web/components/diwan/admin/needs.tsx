@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Textarea } from "@repo/brand/components/ui/textarea";
@@ -9,13 +8,14 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { hasPermission } from "@repo/rbac";
-import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, unwrap } from "@/lib/data";
 import { useGrants } from "@/lib/diwan/queries";
+import { hasPermission } from "@/lib/rbac";
 import { EmptyLine, SectionSpinner } from "../states";
 import { AddInPlace, ConfirmAction, ErrorLine, Field, SaveButton } from "./kit";
 

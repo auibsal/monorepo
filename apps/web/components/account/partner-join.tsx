@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Label } from "@repo/brand/components/ui/label";
@@ -10,7 +9,6 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, Suspense, useState } from "react";
@@ -20,6 +18,8 @@ import { SignUpForm } from "@/components/diwan/auth/sign-up-form";
 import { DiwanPage, DiwanSection } from "@/components/diwan/page";
 import { PageSpinner } from "@/components/diwan/states";
 import { MySignature } from "@/components/signature";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, partners, unwrap } from "@/lib/data";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 
 const PATH = "/partners/apply";
@@ -103,8 +103,8 @@ const ApplicationForm = () => {
     reach: "iraq" as (typeof REACHES)[number],
     url: "",
   });
-  // A signature is the signer's name on the platform, dated today (owner,
-  // Oct 31, 2026); the database signs in that name whatever is sent.
+  // A signature is the signer's name on the platform, dated today (decisions.md);
+  // the database signs in that name whatever is sent.
   const signatory = profile.data
     ? localized(profile.data, "full_name", locale)
     : "";

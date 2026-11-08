@@ -2,9 +2,9 @@
 
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Label } from "@repo/brand/components/ui/label";
-import { membership } from "@repo/sal-data";
 import { useTranslations } from "next-intl";
 import { useId } from "react";
+import { membership } from "@/lib/data";
 
 export type Skill = (typeof membership.skills)[number];
 

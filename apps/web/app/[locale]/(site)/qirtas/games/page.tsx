@@ -1,10 +1,10 @@
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import type { games } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { GameNumber } from "@/components/games/daily";
 import { WordGuess } from "@/components/games/word-guess";
+import type { games } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface GamesProps {

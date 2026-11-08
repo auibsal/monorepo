@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Icon } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
@@ -11,6 +10,7 @@ import {
 } from "@repo/internationalization/format";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
 import { callApi } from "@/lib/diwan/api";
 import { SectionSpinner } from "../../states";
 import { type Column, DataTable, ErrorLine } from "../kit";

@@ -20,6 +20,8 @@ import {
   toZonedDateValue,
   toZonedInputValue,
   WEEK_STARTS_ON,
+  zonedMonthStart,
+  zonedYearMonth,
 } from "./format";
 
 // 21:30 UTC on 3 October is already 4 October in Baghdad (UTC+3).
@@ -142,5 +144,24 @@ describe("Baghdad form values", () => {
   test("the two round-trip", () => {
     const value = "2027-04-14T09:30";
     expect(toZonedInputValue(fromZonedInputValue(value))).toBe(value);
+  });
+});
+
+describe("Baghdad months", () => {
+  test("starts a month at midnight in Baghdad", () => {
+    expect(zonedMonthStart(2026, 10).toISOString()).toBe(
+      "2026-10-31T21:00:00.000Z"
+    );
+  });
+
+  test("puts a late-evening instant in Baghdad's next month", () => {
+    expect(zonedYearMonth("2026-10-31T22:30:00Z")).toEqual({
+      monthIndex: 10,
+      year: 2026,
+    });
+    expect(zonedYearMonth("2026-10-31T20:30:00Z")).toEqual({
+      monthIndex: 9,
+      year: 2026,
+    });
   });
 });

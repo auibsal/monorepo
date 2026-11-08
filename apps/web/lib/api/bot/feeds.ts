@@ -1,8 +1,8 @@
 import { formatClock } from "@repo/internationalization/format";
-import { publicEvents } from "@repo/sal-data/events";
-import { gameDay, gameNumber } from "@repo/sal-data/games";
-import { escapeHtml } from "@repo/telegram";
 import { type Api, GrammyError, InlineKeyboard } from "grammy";
+import { publicEvents } from "@/lib/data/events";
+import { gameDay, gameNumber } from "@/lib/data/games";
+import { escapeHtml } from "@/lib/telegram";
 import { copy, type Lang } from "./copy";
 import { anon, db, type Group, groups } from "./db";
 import { groupText, postTo } from "./features/group/common";

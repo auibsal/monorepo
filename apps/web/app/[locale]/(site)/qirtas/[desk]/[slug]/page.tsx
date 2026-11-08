@@ -7,12 +7,21 @@ import {
   PieceArticle,
   pieceMetadata,
 } from "@/components/qirtas/piece-page";
+import { journal } from "@/lib/data";
+import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
 
 interface PieceProps {
   readonly params: Promise<{ desk: string; locale: Locale; slug: string }>;
 }
 
-export const generateStaticParams = () => [];
+// Pages are made on their first visit; the placeholder (never a real
+// slug) lets the build check the route (Cache Components).
+export const generateStaticParams = () =>
+  journal.desks
+    .filter((desk) => desk !== "games")
+    .map((desk) => ({ desk, slug: PLACEHOLDER_SLUG }));
+// Made on its first visit, then kept until published again.
+export const instant = false;
 
 export const generateMetadata = async ({
   params,

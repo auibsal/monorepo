@@ -1,6 +1,5 @@
 "use client";
 
-import { hasSessionCookie } from "@repo/auth/session-cookie";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
@@ -16,6 +15,7 @@ import {
   useState,
 } from "react";
 import { ResultLine } from "@/components/frame/result-line";
+import { hasSessionCookie } from "@/lib/auth/session-cookie";
 
 // The human check loads once someone starts typing an address: the sign-up
 // shows on many pages, and readers should never load the script.

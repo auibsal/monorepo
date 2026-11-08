@@ -102,15 +102,7 @@ select is((select count(*)::integer from access.roles where key = 'treasurer'), 
 select is((select count(*)::integer from access.permissions where key like 'spending.%'), 0, 'There are no spending permissions');
 select hasnt_table('governance', 'spending_approvals', 'The spending log is gone');
 select hasnt_column('access', 'roles', 'spending_limit_iqd', 'Roles carry no spending limit');
--- The empty schema stays until it leaves the Data API's exposed schemas.
-select is(
-  (select count(*)::int from pg_class c join pg_namespace n on n.oid = c.relnamespace
-   where n.nspname = 'charity')
-  + (select count(*)::int from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-   where n.nspname = 'charity'),
-  0,
-  'No charity campaigns, costs or handovers on the site'
-);
+select hasnt_schema('charity', 'No charity campaigns, costs or handovers on the site');
 select is((select count(*)::integer from governance.form_types where title_en ilike '%expense%'), 0, 'The Expense Claim is gone');
 select ok(
   not exists (select 1 from access.permissions where key like 'charity.%'),

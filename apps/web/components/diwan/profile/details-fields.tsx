@@ -1,14 +1,14 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
-import { membership } from "@repo/sal-data";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { membership } from "@/lib/data";
 import { Field, SelectInput } from "../admin/kit";
 import { DiwanSection } from "../page";
 

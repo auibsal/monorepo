@@ -3,11 +3,11 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { governance, localized } from "@repo/sal-data";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CouncilSeats } from "@/components/council";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
+import { governance, localized } from "@/lib/data";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
 

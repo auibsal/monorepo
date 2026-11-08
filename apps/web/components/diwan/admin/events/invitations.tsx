@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
-import { events } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { events } from "@/lib/data";
 import { ErrorLine } from "../kit";
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";

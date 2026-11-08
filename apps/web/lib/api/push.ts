@@ -2,9 +2,9 @@ import "server-only";
 
 import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
-import { log } from "@repo/observability/log";
 import { sendNotification, WebPushError } from "web-push";
 import { env } from "@/env";
+import { log } from "@/lib/observability/log";
 
 /**
  * Web Push: notices on members' phones and browsers, alongside the email.

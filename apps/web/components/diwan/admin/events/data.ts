@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
-import { scopesFor } from "@repo/rbac";
-import { localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, unwrap } from "@/lib/data";
 import { useGrants } from "@/lib/diwan/queries";
+import { scopesFor } from "@/lib/rbac";
 
 /** Programs, limited to the ones a permission covers (all for a global grant). */
 export const useProgrammeOptions = (

@@ -1,9 +1,9 @@
 import { createAdminClient } from "@repo/database/admin";
-import { log } from "@repo/observability/log";
-import { buckets } from "@repo/storage";
 import { isAuthorizedCronRequest, unauthorized } from "@/lib/api/cron";
 import { deleteAccount } from "@/lib/api/deletion";
 import { problem } from "@/lib/api/problem";
+import { log } from "@/lib/observability/log";
+import { buckets } from "@/lib/storage";
 
 type Admin = ReturnType<typeof createAdminClient>;
 

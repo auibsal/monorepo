@@ -1,4 +1,5 @@
 import { internationalizationMiddleware } from "@repo/internationalization/proxy";
+import { NextRequest } from "next/server";
 import {
   contentSecurityPolicy,
   createNonce,
@@ -7,16 +8,15 @@ import {
   telegramMiniApp,
   withNonce,
   withSecurityHeaders,
-} from "@repo/security/proxy";
-import { NextRequest } from "next/server";
+} from "@/lib/security/proxy";
 import { themeScript } from "@/lib/theme";
 
 export const config = {
   // Every page, in both languages: the public site, Membership and the Diwan. Not the
-  // API routes, the design system's build (/_design, framed by the Diwan),
+  // API routes, the design system's files (/diwan/media/design/kit),
   // the service worker, the manifest, the feeds or static files.
   matcher: [
-    "/((?!api/|_design/|_next/static|_next/image|favicon.ico|robots.txt|calendar.ics|sw.js|manifest.webmanifest|icons/|\\.well-known|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
+    "/((?!api/|_design|diwan/media/design/kit/|ar/diwan/media/design/kit/|_next/static|_next/image|favicon.ico|robots.txt|calendar.ics|sw.js|manifest.webmanifest|icons/|\\.well-known|sitemap.xml|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|pdf|docx?|xlsx?|zip|webmanifest)).*)",
   ],
 };
 

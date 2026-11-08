@@ -1,6 +1,5 @@
 import { createAdminClient } from "@repo/database/admin";
-
-export const dynamic = "force-dynamic";
+import { connection } from "next/server";
 
 const NO_STORE = { "Cache-Control": "no-store" };
 
@@ -10,6 +9,8 @@ const NO_STORE = { "Cache-Control": "no-store" };
  * the database doesn't answer.
  */
 export const GET = async (): Promise<Response> => {
+  // Every request asks the database afresh.
+  await connection();
   const commit = process.env.VERCEL_GIT_COMMIT_SHA ?? null;
   try {
     const { error } = await createAdminClient()

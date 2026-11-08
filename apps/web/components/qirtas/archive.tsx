@@ -1,9 +1,9 @@
 import type { Locale } from "@repo/internationalization";
 import { formatMonth, zonedYearMonth } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { PieceCardView } from "@/components/qirtas/cards";
+import { journal } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 import { type Month, monthParam } from "@/lib/whats-on";
 

@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
 import { callApi } from "@/lib/diwan/api";
 import {
   disablePush,

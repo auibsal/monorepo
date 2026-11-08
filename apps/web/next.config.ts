@@ -1,7 +1,7 @@
-import { config, withAnalyzer } from "@repo/next-config";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { env } from "@/env";
+import { config, withAnalyzer } from "@/lib/next-config";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
@@ -38,6 +38,8 @@ const MOVED: readonly [from: string, to: string][] = [
   ["/diwan/qirtas/video/episodes/:path*", "/diwan/media/episodes/:path*"],
   ["/diwan/qirtas/video/reels/:path*", "/diwan/media/reels/:path*"],
   ["/diwan/design", "/diwan/media/design"],
+  ["/_design", "/diwan/media/design"],
+  ["/_design/:path*", "/diwan/media/design"],
   ["/diwan/events/pitches/:path*", "/diwan/events/proposals/:path*"],
   ["/diwan/events/:ref/door", "/diwan/events/:ref/check-in"],
   [
@@ -60,12 +62,14 @@ const MOVED: readonly [from: string, to: string][] = [
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 //
 // The design system (packages/brand, `bun run build:site`) is built into
-// apps/web/design and shown inside the Diwan at /diwan/design, which frames
-// it. /_design is a rewrite (not a redirect) to the API route that serves
-// those files to staff only (decisions.md); only the site may frame
-// it, and search engines never index it.
+// apps/web/design. The Diwan's page /diwan/media/design shows its entries;
+// their files are served to staff at /diwan/media/design/kit by the API
+// route (decisions.md), and search engines never index them.
 let nextConfig: NextConfig = {
   ...config,
+  // Pages are prerendered around what each request needs; published
+  // reads stay cached by tag and are refreshed on publish (lib/supabase.ts).
+  cacheComponents: true,
   headers: async () => [
     // The API routes answer with JSON, CSV or a calendar (audit E5): the
     // transport and sniffing headers the pages get, and never framed or
@@ -87,18 +91,21 @@ let nextConfig: NextConfig = {
       headers: [{ key: "X-Frame-Options", value: "DENY" }],
       source: "/api/:path((?!design/).*)",
     },
-    {
+    ...LANGUAGE_PREFIXES.map((prefix) => ({
       headers: [
         { key: "X-Robots-Tag", value: "noindex, nofollow" },
         { key: "X-Frame-Options", value: "SAMEORIGIN" },
       ],
-      source: "/_design/:path*",
-    },
+      source: `${prefix}/diwan/media/design/kit/:path*`,
+    })),
   ],
   outputFileTracingIncludes: {
     "/api/design/[...path]": ["./design/**/*"],
     "/api/email/signature": ["../../packages/brand/assets/fonts/*.ttf"],
   },
+  // Off: with it, a missing event or piece answered 200 (its shared shell
+  // streams first) and a piece's text-size buttons stopped answering.
+  partialPrefetching: false,
   redirects: async () =>
     LANGUAGE_PREFIXES.flatMap((prefix) =>
       MOVED.map(([from, to]) => ({
@@ -107,9 +114,16 @@ let nextConfig: NextConfig = {
         source: `${prefix}${from}`,
       }))
     ),
-  rewrites: async () => [
-    { destination: "/api/design/:path*", source: "/_design/:path*" },
-  ],
+  // The design system's files, under its page in the Diwan, ahead of the
+  // Diwan's routes.
+  rewrites: async () => ({
+    afterFiles: [],
+    beforeFiles: LANGUAGE_PREFIXES.map((prefix) => ({
+      destination: "/api/design/:path*",
+      source: `${prefix}/diwan/media/design/kit/:path*`,
+    })),
+    fallback: [],
+  }),
 };
 
 if (env.ANALYZE === "true") {

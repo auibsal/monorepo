@@ -69,7 +69,7 @@ export const languageOf = (page: NotionPage): "ar" | "en" =>
   read.select(page, "Language") === "Arabic" ? "ar" : "en";
 
 /** The English row an Arabic edition translates, if it names one. */
-export const editionOf = (page: NotionPage, problems: string[]) => {
+const editionOf = (page: NotionPage, problems: string[]) => {
   const linked = read.relation(page, "Edition of");
   if (linked.length !== 1) {
     problems.push(
@@ -195,42 +195,6 @@ export const checkArabicEdition = (
       summary: optional(summaryText),
       title: text,
       venue: optional(read.text(page, venue)),
-    },
-  };
-};
-
-export interface ProgramValues {
-  name: string;
-  rhythm: string | null;
-  slug: string;
-  summary: string | null;
-}
-
-/** A program row (Publishing, Programs): its name, rhythm and summary. */
-export const checkProgram = (page: NotionPage): Checked<ProgramValues> => {
-  const problems: string[] = [];
-  const name = read.text(page, "Name");
-  if (!name) {
-    problems.push("Add the program's name.");
-  }
-  const rhythm = read.text(page, "Rhythm");
-  const summary = read.text(page, "Summary");
-  problems.push(
-    ...lengthProblem("The name", name, 120),
-    ...lengthProblem("The rhythm", rhythm, 200),
-    ...lengthProblem("The summary", summary, 500)
-  );
-  const slug = slugify(name);
-  if (problems.length > 0) {
-    return { ok: false, problems };
-  }
-  return {
-    ok: true,
-    values: {
-      name,
-      rhythm: optional(rhythm),
-      slug,
-      summary: optional(summary),
     },
   };
 };

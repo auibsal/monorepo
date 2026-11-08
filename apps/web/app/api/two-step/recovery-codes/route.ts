@@ -1,7 +1,4 @@
-import { authenticateRequest } from "@repo/auth/verify";
 import { createAdminClient } from "@repo/database/admin";
-import { parseError } from "@repo/observability/error";
-import { log } from "@repo/observability/log";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { respond } from "@/lib/api/problem";
 import {
@@ -9,6 +6,9 @@ import {
   newRecoveryCode,
   RECOVERY_CODE_COUNT,
 } from "@/lib/api/two-step";
+import { authenticateRequest } from "@/lib/auth/verify";
+import { parseError } from "@/lib/observability/error";
+import { log } from "@/lib/observability/log";
 
 export const OPTIONS = preflight;
 

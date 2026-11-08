@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Label } from "@repo/brand/components/ui/label";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useId } from "react";
+import { useAuth } from "@/lib/auth/provider";
 import { queryKeys, useProfile } from "@/lib/diwan/queries";
 import { ErrorLine } from "../admin/kit";
 

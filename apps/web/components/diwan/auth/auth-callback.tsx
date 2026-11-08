@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Link, useRouter } from "@repo/internationalization/navigation";
 import type { AuthError } from "@supabase/supabase-js";
@@ -8,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { FullPageSpinner } from "@/components/diwan/states";
+import { useAuth } from "@/lib/auth/provider";
 import { safeNextPath, stripLocale } from "@/lib/diwan/navigation";
 
 /**

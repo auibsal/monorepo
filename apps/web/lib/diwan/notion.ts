@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
-import { hasPermissionAnywhere } from "@repo/rbac";
-import { content } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/auth/provider";
+import { content } from "@/lib/data";
+import { hasPermissionAnywhere } from "@/lib/rbac";
 import { useGrants } from "./queries";
 
 /**

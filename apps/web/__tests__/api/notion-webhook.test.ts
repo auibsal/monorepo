@@ -15,7 +15,7 @@ vi.mock("@/lib/api/rate-limit", () => ({
 vi.mock("next/server", () => ({
   after: (task: () => Promise<void>) => later.push(task),
 }));
-vi.mock("@repo/observability/log", () => ({
+vi.mock("@/lib/observability/log", () => ({
   log: { info: vi.fn(), warn: vi.fn() },
 }));
 

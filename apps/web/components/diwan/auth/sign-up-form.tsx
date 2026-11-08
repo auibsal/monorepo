@@ -1,23 +1,23 @@
 "use client";
 
-import {
-  AUIB_DOMAIN,
-  auibLocalPart,
-  MIN_PASSWORD_LENGTH,
-  signUpWithEmail,
-} from "@repo/auth/email";
-import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { Link } from "@repo/internationalization/navigation";
-import { names as nameParts } from "@repo/sal-data";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { PasswordInput } from "@/components/fields/password-input";
+import {
+  AUIB_DOMAIN,
+  auibLocalPart,
+  MIN_PASSWORD_LENGTH,
+  signUpWithEmail,
+} from "@/lib/auth/email";
+import { useAuth } from "@/lib/auth/provider";
+import { names as nameParts } from "@/lib/data";
 import { useAuthError } from "@/lib/diwan/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/diwan/navigation";
 import { useScreenTop } from "@/lib/diwan/use-screen-top";

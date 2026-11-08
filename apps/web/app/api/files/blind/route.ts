@@ -1,16 +1,11 @@
-import { authenticateRequest } from "@repo/auth/verify";
 import { createAdminClient } from "@repo/database/admin";
-import { parseError } from "@repo/observability/error";
-import { log } from "@repo/observability/log";
-import { createSignedFileUrl } from "@repo/storage";
 import { z } from "zod";
-import {
-  blindExtensions,
-  isBlindMimeType,
-  stripMetadata,
-} from "@/lib/api/blind-copy";
 import { corsHeaders, preflight } from "@/lib/api/cors";
+import { markedImage } from "@/lib/api/marked-image";
 import { respond } from "@/lib/api/problem";
+import { authenticateRequest } from "@/lib/auth/verify";
+import { parseError } from "@/lib/observability/error";
+import { log } from "@/lib/observability/log";
 
 export const OPTIONS = preflight;
 export const maxDuration = 60;
@@ -18,77 +13,17 @@ export const maxDuration = 60;
 const body = z.object({ entry: z.uuid() });
 
 const BUCKET = "submissions";
-
-type Admin = ReturnType<typeof createAdminClient>;
-interface FileRow {
-  blind_path: string | null;
-  id: string;
-  kind: string;
-  mime_type: string;
-  storage_path: string;
-}
-
-/** Makes (once) and stores the metadata-free copy of one file. */
-const ensureBlindCopy = async (
-  admin: Admin,
-  entryId: string,
-  file: FileRow
-) => {
-  if (file.blind_path) {
-    return file.blind_path;
-  }
-  if (!isBlindMimeType(file.mime_type)) {
-    throw new Error(`No blind copy for ${file.mime_type}`);
-  }
-  const { data, error } = await admin.storage
-    .from(BUCKET)
-    .download(file.storage_path);
-  if (error || !data) {
-    throw new Error(`Download failed: ${error?.message ?? "no data"}`);
-  }
-  const stripped = await stripMetadata(
-    new Uint8Array(await data.arrayBuffer()),
-    file.mime_type
-  );
-  const path = `blind/${entryId}/${crypto.randomUUID()}.${blindExtensions[file.mime_type]}`;
-  const upload = await admin.storage
-    .from(BUCKET)
-    .upload(path, stripped, { contentType: file.mime_type, upsert: false });
-  if (upload.error) {
-    throw new Error(`Upload failed: ${upload.error.message}`);
-  }
-  const saved = await admin
-    .schema("journal")
-    .from("submission_files")
-    .update({ blind_path: path })
-    .eq("id", file.id)
-    .is("blind_path", null)
-    .select("blind_path")
-    .maybeSingle();
-  if (saved.data?.blind_path) {
-    return saved.data.blind_path;
-  }
-  // Another request made the copy first: keep theirs, drop ours.
-  await admin.storage.from(BUCKET).remove([path]);
-  const current = await admin
-    .schema("journal")
-    .from("submission_files")
-    .select("blind_path")
-    .eq("id", file.id)
-    .single();
-  if (!current.data?.blind_path) {
-    throw new Error("Blind copy not recorded");
-  }
-  return current.data.blind_path;
-};
+const IMAGE_TYPES = new Set(["image/jpeg", "image/png"]);
+/** A Gallery entry rarely has more; the rest stay with the original. */
+const MAX_IMAGES = 12;
 
 /**
- * Five-minute links to the blind copies of a submission's files, for anyone
- * who may read the blind entry (assigned readers, the issue's editors, the
- * Submissions Manager, the Advisory Board for flagged work): the caller's
- * own read of journal.blind_entries decides, under RLS. Copies have author
- * metadata stripped; originals are never returned here, and a file that
- * cannot be stripped is reported as unavailable rather than sent as is.
+ * A blind entry's images for its readers, each a copy drawn again with the
+ * reader's card number and the day across it, sent in the answer itself:
+ * no file, file address or download reaches a reader, and manuscripts never
+ * leave the site (readers read the text on the page). The caller's own
+ * journal.entry_text() decides: someone who may read the entry and has
+ * taken the readers' pledge.
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
@@ -104,56 +39,63 @@ export const POST = async (request: Request) => {
   }
   const entryId = parsed.data.entry;
 
-  const { data: entry } = await session.supabase
+  const text = await session.supabase
     .schema("journal")
-    .from("blind_entries")
-    .select("id")
-    .eq("id", entryId)
-    .maybeSingle();
-  if (!entry) {
+    .rpc("entry_text", { entry: entryId });
+  if (text.error) {
+    return text.error.hint === "reader_pledge"
+      ? json({ error: "pledge_required" }, 403)
+      : json({ error: "not_found" }, 404);
+  }
+  const reading = text.data?.[0];
+  if (!reading) {
     return json({ error: "not_found" }, 404);
   }
 
   const admin = createAdminClient();
-  const { data: key } = await admin
+  const { data: link } = await admin
     .schema("journal")
     .from("blind_keys")
     .select("submission_id")
     .eq("blind_entry_id", entryId)
     .single();
-  if (!key) {
-    return json({ files: [] });
+  if (!link) {
+    return json({ images: [] });
   }
   const { data: rows } = await admin
     .schema("journal")
     .from("submission_files")
-    .select("id, kind, mime_type, storage_path, blind_path")
-    .eq("submission_id", key.submission_id)
+    .select("id, mime_type, storage_path")
+    .eq("submission_id", link.submission_id)
+    .eq("kind", "image")
     .order("created_at");
 
-  const files = await Promise.all(
-    (rows ?? []).map(async (file, index) => {
-      const label = `${file.kind}-${index + 1}.${
-        isBlindMimeType(file.mime_type)
-          ? blindExtensions[file.mime_type]
-          : "bin"
-      }`;
-      try {
-        const path = await ensureBlindCopy(admin, entryId, file);
-        const url = await createSignedFileUrl(admin, BUCKET, path, {
-          download: label,
-        });
-        return { kind: file.kind, mimeType: file.mime_type, name: label, url };
-      } catch (error) {
-        log.error(`Blind copy failed for ${file.id}: ${parseError(error)}`);
-        return {
-          kind: file.kind,
-          mimeType: file.mime_type,
-          name: label,
-          url: null,
-        };
-      }
-    })
+  const day = new Date().toISOString().slice(0, 10);
+  const mark = [reading.mark, day].filter(Boolean).join(" · ");
+  const images = await Promise.all(
+    (rows ?? [])
+      .filter((file) => IMAGE_TYPES.has(file.mime_type))
+      .slice(0, MAX_IMAGES)
+      .map(async (file, index) => {
+        const key = `image-${index + 1}`;
+        try {
+          const { data, error } = await admin.storage
+            .from(BUCKET)
+            .download(file.storage_path);
+          if (error || !data) {
+            throw new Error(error?.message ?? "no data");
+          }
+          const { height, jpeg, width } = await markedImage(
+            new Uint8Array(await data.arrayBuffer()),
+            mark
+          );
+          const src = `data:image/jpeg;base64,${Buffer.from(jpeg).toString("base64")}`;
+          return { height, key, src, width };
+        } catch (error) {
+          log.error(`Marked copy failed for ${file.id}: ${parseError(error)}`);
+          return { height: 0, key, src: null, width: 0 };
+        }
+      })
   );
-  return json({ files });
+  return json({ images }, 200);
 };

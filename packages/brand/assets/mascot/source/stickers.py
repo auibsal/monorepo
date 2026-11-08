@@ -1,6 +1,8 @@
 import sys,os; d=os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0,d); os.chdir(d)
-from rig import *; from props import *; from rig3 import bird; import cairosvg, io
-from PIL import Image, ImageFilter, ImageChops
+from rig import C100,svg,g
+from props import bang,book,envelope,motion,qmark,sparks,sweat,ticket,zzz
+from rig3 import bird; import cairosvg, io
+from PIL import Image, ImageFilter
 os.makedirs('stk7',exist_ok=True)
 S={}
 S['01-hello']=dict(b=dict(eye_kind='happy',beak_open=14,crest_kind='fanned',wings='wave'),lean=-4)

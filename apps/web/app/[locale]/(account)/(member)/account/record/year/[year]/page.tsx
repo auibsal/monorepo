@@ -1,6 +1,6 @@
-import { recognition } from "@repo/sal-data";
 import { notFound } from "next/navigation";
 import { FIRST_YEAR, YearSummary } from "@/components/diwan/service/year";
+import { recognition } from "@/lib/data";
 import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>

@@ -1,8 +1,9 @@
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import { journal } from "@/lib/data";
+import { roughlyNow } from "@/lib/this-year";
 import { DeskNav } from "./desk-nav";
 
 /**
@@ -24,7 +25,13 @@ export const Nameplate = async ({ locale }: { locale: Locale }) => {
         </Link>
       </div>
       <p className="border-text grid gap-1 border-y py-2.5 text-[0.8125rem] font-medium sm:grid-cols-3 sm:items-center">
-        <span>{formatLongDate(new Date().toISOString(), locale, true)}</span>
+        <span>
+          {formatLongDate(
+            new Date(await roughlyNow()).toISOString(),
+            locale,
+            true
+          )}
+        </span>
         <span className="sm:text-center">{t("tagline")}</span>
         <span className="flex flex-wrap gap-x-5 sm:justify-end">
           <Link className="hover:text-accent" href="/qirtas/masthead">

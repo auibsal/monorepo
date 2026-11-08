@@ -32,7 +32,7 @@ Part A first).
   staff type in the paper sign-ups, send the test to the President, and
   the President says go. That list is deleted thirty days after its own
   send.
-- [ ] **Merge PR #238 before joining opens.** Its migrations, applied by
+- [x] **Merge PR #238 before joining opens** (merged Nov 7). Its migrations, applied by
   CI, change production data once:
   - every published event without a place goes back to draft, and the
     Nov 17 writing workshop is canceled;
@@ -43,13 +43,21 @@ Part A first).
   - the President's Qirtas and Prize permissions and the Acting
     President role go; the Vice President acts while the President is
     recorded absent.
-- [ ] **The Library re-sync**, then a check:
-  - run `/api/cron/notion-sync?documents=all` until it reports done;
-  - check every public page for retired names and codes;
-  - rename any Notion event that still carries a retired name.
+- [x] **The Library re-sync**, then a check (Nov 8): the sync runs clean
+  (its one error, the retired Programs database, is gone with PR #250);
+  all 86 pages in the sitemap were read for retired names and codes, and
+  the one found, "open nights" in the Company's line, is fixed by a
+  migration.
 
 ## For the owner: dashboards and secrets
 
+- [ ] **Before merging PR #250: the Deploy Hook.** Main now deploys
+  only after its migrations (`apps/web/vercel.json` turns off Vercel's
+  own main deploys; `migrate.yml` calls the hook). In Vercel → the web
+  project → Settings → Git → Deploy Hooks, create one named "After
+  migrations" for the branch `main`; copy its URL into GitHub → Settings
+  → Environments → production as the secret `VERCEL_DEPLOY_HOOK`.
+  Without it the migrate run fails and nothing deploys.
 - [ ] **GitHub → Environments → production:** add `BACKUP_PASSPHRASE`.
   The nightly backup fails without it. Run it once from Actions to check.
 - [ ] **GitHub → Actions secrets:** add `NOTION_TOKEN`, then the
@@ -60,10 +68,10 @@ Part A first).
   - requires the checks "Lint, typecheck, test", "Build apps", "Database
     (migrations, RLS, integration)" and "End-to-end (Playwright + axe)";
   - blocks force pushes and deletion.
-- [ ] **GitHub → Code security:** turn on the dependency graph, secret
-  scanning and push protection. Then add the repository variable
+- [ ] **GitHub → Code security:** the dependency graph, secret scanning
+  and push protection are on (Nov 8). Add the repository variable
   `DEPENDENCY_REVIEW` = `on`.
-- [ ] **After PR #249 merges, reconnect Hudhud** (Diwan → Desk →
+- [ ] **Now that PR #249 is merged, reconnect Hudhud** (Diwan → Desk →
   Connected → Hudhud), so Telegram calls `/api/hooks/telegram`. Wallet
   moves by itself to `/api/hooks/wallet`, unless its callback was set by
   hand in the Google Pay console: then change it there.
@@ -78,14 +86,13 @@ Part A first).
 - [ ] **Supabase → Realtime → Settings:** turn off "Allow public access".
 - [ ] **Supabase → Authentication → Emails:** confirm the eight templates
   and subjects match `packages/database/supabase/templates`.
-- [ ] **Cloudflare DNS for auibsal.org:** add CAA records (none are set
-  today):
+- [ ] **Cloudflare DNS for auibsal.org:** add CAA records (still none on
+  Nov 8):
   - `0 issue "letsencrypt.org"`
   - `0 issue "pki.goog"`
   - `0 issue "sectigo.com"`
   - `0 iodef "mailto:hello@auibsal.org"`
-  Then submit auibsal.org at hstspreload.org (the header already carries
-  `preload`).
+  (auibsal.org is already on the HSTS preload list.)
 - [ ] **Cloudflare:** turn off Web Analytics' automatic setup if it is
   still on (the CSP blocks its beacon).
 - [ ] **Vercel, auibsal:** remove the Sentry and Arcjet variables if they
@@ -108,11 +115,15 @@ Part A first).
 
 - [ ] **Vercel → Environment Variables (Production):** add
   `TURNSTILE_SECRET_KEY` (the widget's secret) and `RESEND_WEBHOOK_SECRET`;
-  remove `RESEND_FROM` and any Google Tag Manager or Analytics variables.
-  Turn on Web Analytics in the project.
+  remove `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`,
+  `ARCJET_KEY`, `NEXT_PUBLIC_ADSENSE_CLIENT`, `NEXT_PUBLIC_ADSENSE_SLOT`
+  and the four `PASS_*` variables (nothing reads them). Done on Nov 8:
+  `RESEND_FROM`, `NEXT_PUBLIC_GTM_ID` and `NEXT_PUBLIC_TAG_GATEWAY_PATH`
+  removed; Web Analytics and Speed Insights on.
 - [ ] **Resend → Webhooks:** add `https://auibsal.org/api/hooks/resend` for
-  `email.bounced` and `email.complained`; its signing secret is
-  `RESEND_WEBHOOK_SECRET`.
+  `email.bounced` and `email.complained` (none is set up on Nov 8); its
+  signing secret goes in Vercel as `RESEND_WEBHOOK_SECRET`. Until then a
+  bounced address is written to again.
 - [ ] **Telegram:** run the webhook setup again (Diwan → Media → Channels)
   so Hudhud receives `chat_member` updates (people leaving a group).
 - [ ] **Backups:** add `RESEND_TOKEN` to the production environment (the
@@ -132,11 +143,14 @@ Part A first).
 ## For the owner: the Society
 
 - [ ] **Recovery codes.** Only one of the six people holding a Council
-  role has made a set. Each makes one on Membership → Settings and keeps
+  role has made a set (still one on Nov 8). Each makes one on Membership → Settings and keeps
   it away from their phone.
-- [ ] **Arabic name parts.** Each officer sets their four Arabic name
-  parts on Profile. Fajer Ezzet's and Mohammed-Ali Ohmaid's are not on
-  record.
+- [ ] **Officers' official names.** Once PR #250 is live, whoever holds
+  `members.manage` (the President or the General Secretary) enters the
+  officers' official four-part names, given by the owner on Nov 8, on
+  each member page (Diwan → Membership → the person → Their name). The
+  names are not kept in the repository. Mohammed-Ali Ohmaid's English
+  parts are still empty.
 - [ ] **Roles on the site.** Assign every holder on record (decisions §4)
   on their member page, the Managing Editor and the Next Stop host among
   them. The Council page and the masthead come only from roles.
@@ -146,11 +160,8 @@ Part A first).
     settings;
   - Student Life's two admins, titled "Student Life", with no
     permissions.
-- [ ] **Old Telegram columns:** `core.telegram_word_plays`,
-  `core.telegram_groups.join_policy`, `core.telegram_members.warnings`
-  and `joined_at`, and the settings `telegram.rules_en`/`_ar` are unused
-  in production. Dropping them deletes their data, so it waits for the
-  owner's go-ahead.
+- [x] **Old Telegram columns** (owner's go, Nov 8): dropped by
+  `20261108003900_old_telegram_columns.sql`.
 - [ ] **The partner memorandum.** The memorandum a partner signs at
   `/partners/apply` is its own words and the Policy Manual's lines. If the
   Society adopts a standard text, it replaces them.
@@ -162,13 +173,22 @@ Part A first).
 - [ ] **The staging loop.** Create, publish and edit an event and a
   document from Notion, once a staging URL and its keys are in the
   environment.
-- [ ] **`/_design` is not behind a sign-in.** The built Storybook files
-  load without one; the Diwan's page around them is for staff. Nothing in
-  them is private (the press kit shows the same brand), so this stays as
-  it is unless the owner wants it gated.
-- [ ] **Gallery images on acceptance.** Copy accepted Gallery images from
-  the private submissions bucket to the piece; for now editors upload them
-  on the piece's page.
+- [x] **The design system is part of the Diwan** (owner, Nov 8):
+  `/diwan/media/design` is a Diwan page with the Diwan's header and menu,
+  the design system's sections and entries listed on it, and each entry
+  drawn in place at its own address, with no Storybook around it.
+- [x] **Readers read the work, never the file** (owner, Nov 8): the
+  readers' pledge (F-40, signed on the reading page) before the text; the text on the page and Gallery
+  images marked with the reader's card number and the day; no file,
+  download or file address to readers; copy, the context menu and print
+  off on that page; originals by role, each opening in the submission's
+  History (`20261108004100_reader_protections.sql`).
+- [x] **Manuscripts read as written** (owner, Nov 8): PDF and Word text
+  keeps verse lines, stanzas, paragraphs, headings, italics and Arabic
+  order (`lib/text-layout.ts`); test manuscripts read word for word.
+- [x] **Gallery images on acceptance** (PR #250): a piece accepted from a
+  submission takes the writer's images, stripped of their metadata, with
+  one button on its page (`/api/qirtas/images`).
 
 - [x] **Audit F and E5** (PRs #244, #246, #248 and #249): one error
   shape and Bearer helper; Knip with exports and types;
@@ -177,26 +197,38 @@ Part A first).
   CSP for your account and the Diwan; axe on every WCAG 2.1 A/AA rule; the
   public pages on a Pixel and an iPhone; keyboard journeys; signed share
   images; the Notion webhook; webhooks under `/api/hooks/*`.
-- [ ] **Audit F, left open on purpose:**
-  - F4: moving DataTable, Field, ChoiceInput, Table, NavTabs, EmptyState,
-    ErrorState and ActionBar into `packages/brand` with stories, and
-    message namespaces per route segment (a large move, best on its own).
-  - F5: Cache Components for published reads; a bundle-size check on
-    pull requests; deploying only after migrations (needs a Vercel deploy
-    hook, owner side).
-  - F6: `supabase/setup-cli` in CI (the CLI is pinned through the
-    lockfile already); dropping the `charity` schema (after it leaves the
-    exposed schemas).
-  - F7: coverage minimums.
-  - F1: AGENTS.md cut to code conventions; the decisions.md date-line
-    check (needs the attached copy's line).
+- [x] **Audit F, the last items:**
+  - F4: the shared pieces are in `packages/brand/components/sal` with
+    stories (Components/Kit, Nov 8): DataTable, Field, ChoiceInput,
+    ErrorNotice, EmptyLine, PageError and ActionBar take their words as
+    props; the app's `kit.tsx`, `choice-input.tsx`, `states.tsx` and
+    `error-state.tsx` pass its messages, so their importers are unchanged.
+  - F5: deploying only after migrations is done (Nov 8; the Deploy Hook
+    is the owner's step above). Cache Components is on (Nov 8): public
+    pages are prerendered around what each request needs; a record page
+    has a placeholder shell so a missing record still answers 404; the
+    time comes from `roughlyNow` (`lib/this-year.ts`) and reaches
+    `lib/data` through `setClock`. The bundle-size check is the
+    performance budget the journeys already enforce on a mid-range phone
+    (`apps/e2e/tests/performance.spec.ts`).
+  - F6: the `charity` schema is dropped and no longer exposed (Nov 8).
+    `supabase/setup-cli` is not needed: CI runs the CLI pinned in the
+    lockfile.
+  - F7: coverage minimums are set (PR #250, `vitest.config.ts`): two
+    points under Nov 8's coverage.
+  - F1: AGENTS.md is cut to the conventions (Nov 8; the domain is in
+    `docs/platform/domain.md`). The decisions.md date line is checked in
+    CI (`bun run check:decisions`): a real day, its weekday right, not in
+    the future, no later "decided" date, and a new date whenever the file
+    changes.
 
 ## Content still needed
 
-- [ ] TODO(content): official logo files for AUIB, the Office of Student
-  Life, the College of Arts and Sciences and AUIB Press
-  (`apps/web/public/institutions/`, then `apps/web/lib/institutions.ts`).
-  Their names show until then.
+- [x] The institutions' logos (Nov 8): AUIB, the Office of Student Life,
+  the College of Arts and Sciences, the Press and the Library, as one
+  standard AUIB set in `apps/web/public/institutions/`: one layout, one
+  height, Ubuntu Bold, one crimson and one gray, transparent, color for
+  paper and white for ink (`packages/brand/guide/02-logo.md`).
 - [ ] The dated events of decisions §7 (the pilots on Nov 17 and Dec 1,
   spring 2027's Tuesdays, the al-Mutanabbi Street trip on Apr 23) go into
   Notion's Events once the room and times are confirmed with Student Life.

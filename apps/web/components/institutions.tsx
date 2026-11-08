@@ -4,8 +4,8 @@ import { INSTITUTIONS } from "@/lib/institutions";
 
 /**
  * The home institution, the recognition and the institutional partners,
- * as a row of tiles: the official logo when one is supplied, the name
- * otherwise.
+ * as a row of tiles, each with its logo from AUIB's standard set: in
+ * color on paper, in white on ink.
  */
 export const Institutions = async ({
   showAll = false,
@@ -27,24 +27,30 @@ export const Institutions = async ({
         ) : null}
       </div>
       <p className="type-body max-w-3xl">{t("lede")}</p>
-      <ul className="gap-space-4 grid sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="gap-space-4 grid sm:grid-cols-2 lg:grid-cols-3">
         {INSTITUTIONS.map((item) => {
           const name = t(`names.${item.key}`);
           const body = (
             <>
               <span className="type-label">{t(`roles.${item.role}`)}</span>
-              {item.logo ? (
-                // biome-ignore lint/performance/noImgElement: a static logo file, as supplied
+              <span className="py-space-3 grid h-28 items-center justify-items-start">
+                {/* biome-ignore lint/performance/noImgElement: a static logo file */}
                 <img
                   alt={name}
-                  className="h-12 w-auto justify-self-start object-contain"
-                  height={48}
-                  src={item.logo}
-                  width={160}
+                  className="on-ink:hidden h-20 w-auto max-w-full object-contain"
+                  height={80}
+                  src={`/institutions/${item.logo}.svg`}
+                  width={236}
                 />
-              ) : (
-                <span className="type-subheading">{name}</span>
-              )}
+                {/* biome-ignore lint/performance/noImgElement: a static logo file */}
+                <img
+                  alt={name}
+                  className="on-ink:block hidden h-20 w-auto max-w-full object-contain"
+                  height={80}
+                  src={`/institutions/${item.logo}-white.svg`}
+                  width={236}
+                />
+              </span>
             </>
           );
           return (

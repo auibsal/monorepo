@@ -1,17 +1,17 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { hasPermission, hasPermissionAnywhere } from "@repo/rbac";
-import { localized, type membership, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, type membership, unwrap } from "@/lib/data";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
+import { hasPermission, hasPermissionAnywhere } from "@/lib/rbac";
 import { SectionSpinner } from "../../states";
 import {
   AdminHeading,

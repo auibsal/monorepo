@@ -2,14 +2,16 @@ import { project } from "@repo/config";
 import { routing } from "@repo/internationalization/routing";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { AppProviders } from "@/components/diwan/providers";
 
 // Rendered for each request, so Next can put the request's CSP nonce on
-// its scripts (apps/web/proxy.ts).
-export const dynamic = "force-dynamic";
+// its scripts (apps/web/proxy.ts): the layout waits for the request, and
+// may block rather than ship a static shell.
+export const instant = false;
 
 interface DiwanLayoutProperties {
   readonly children: ReactNode;
@@ -40,6 +42,7 @@ export const metadata: Metadata = {
  * (Row Level Security decides) or to the API routes under /api with it.
  */
 const DiwanLayout = async ({ children, params }: DiwanLayoutProperties) => {
+  await connection();
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();

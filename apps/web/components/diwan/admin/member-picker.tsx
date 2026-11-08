@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
-import { unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useDeferredValue, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { unwrap } from "@/lib/data";
 import { Field } from "./kit";
 import { memberName } from "./members/directory";
 

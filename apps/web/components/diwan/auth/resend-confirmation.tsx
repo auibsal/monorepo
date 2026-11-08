@@ -1,10 +1,10 @@
 "use client";
 
-import { resendConfirmation } from "@repo/auth/email";
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { resendConfirmation } from "@/lib/auth/email";
+import { useAuth } from "@/lib/auth/provider";
 import { useAuthError } from "@/lib/diwan/auth-messages";
 
 /** Seconds before the confirmation email may be sent again. */

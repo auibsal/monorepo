@@ -1,12 +1,13 @@
 // @vitest-environment node
+
+import { describe, expect, test } from "vitest";
 import {
   contentSecurityPolicy,
   createNonce,
   scriptHash,
   securityOptionsWith,
   withNonce,
-} from "@repo/security/proxy";
-import { describe, expect, test } from "vitest";
+} from "@/lib/security/proxy";
 import { themeScript } from "@/lib/theme";
 
 const BASE64_128 = /^[A-Za-z0-9+/]{22}==$/u;

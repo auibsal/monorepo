@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import {
   Dialog,
@@ -18,11 +17,12 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { events, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
 import { InlineConfirm } from "@/components/frame/inline-confirm";
+import { useAuth } from "@/lib/auth/provider";
+import { events, localized, unwrap } from "@/lib/data";
 import {
   queryKeys,
   useMyMembership,

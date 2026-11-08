@@ -1,14 +1,5 @@
 "use client";
 
-import {
-  addPasskey,
-  listPasskeys,
-  PASSKEY_NAME_MAX,
-  type PasskeyErrorCode,
-  passkeysSupported,
-  removePasskey,
-} from "@repo/auth/passkeys";
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
@@ -16,6 +7,15 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
+import {
+  addPasskey,
+  listPasskeys,
+  PASSKEY_NAME_MAX,
+  type PasskeyErrorCode,
+  passkeysSupported,
+  removePasskey,
+} from "@/lib/auth/passkeys";
+import { useAuth } from "@/lib/auth/provider";
 import { usePasskeyError } from "@/lib/diwan/auth-messages";
 import { DiwanSection } from "../page";
 

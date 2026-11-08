@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Link } from "@repo/internationalization/navigation";
-import { journal, localized, sanitizeRichText } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { journal, localized, sanitizeRichText } from "@/lib/data";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { SectionSpinner } from "../states";
 

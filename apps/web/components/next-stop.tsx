@@ -1,5 +1,5 @@
 import type { Locale } from "@repo/internationalization";
-import { journal } from "@repo/sal-data";
+import { journal } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 
 /** Next Stop's published episodes in this language, newest first. */

@@ -1,6 +1,5 @@
 "use client";
 
-import { hasSessionCookie } from "@repo/auth/session-cookie";
 import {
   diwanPath,
   type Locale,
@@ -8,6 +7,7 @@ import {
 } from "@repo/internationalization";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { hasSessionCookie } from "@/lib/auth/session-cookie";
 import { readWays, type Ways } from "@/lib/staff";
 
 /**

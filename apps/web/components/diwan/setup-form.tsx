@@ -1,13 +1,11 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Database } from "@repo/database";
 import { Link, useRouter } from "@repo/internationalization/navigation";
-import { membership, names as nameParts, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -20,6 +18,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { membership, names as nameParts, unwrap } from "@/lib/data";
 import { isNameTaken } from "@/lib/diwan/errors";
 import { safeNextPath, stripLocale } from "@/lib/diwan/navigation";
 import {

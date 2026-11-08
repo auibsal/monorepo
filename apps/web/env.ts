@@ -1,11 +1,11 @@
-import { keys as auth } from "@repo/auth/keys";
 import { keys as database } from "@repo/database/keys";
 import { keys as email } from "@repo/email/keys";
-import { envPresets, withPresets } from "@repo/next-config/env";
-import { keys as core } from "@repo/next-config/keys";
-import { keys as telegram } from "@repo/telegram/keys";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
+import { keys as auth } from "@/lib/auth/keys";
+import { envPresets, withPresets } from "@/lib/next-config/env";
+import { keys as core } from "@/lib/next-config/keys";
+import { keys as telegram } from "@/lib/telegram/keys";
 
 const presets = envPresets(auth(), core(), database(), email(), telegram());
 

@@ -1,8 +1,8 @@
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal, localized } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
+import { journal, localized } from "@/lib/data";
 import { mediaUrl } from "@/lib/media";
 
 type Card = journal.PieceCard;

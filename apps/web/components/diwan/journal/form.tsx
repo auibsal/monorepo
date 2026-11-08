@@ -4,9 +4,9 @@ import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
-import { journal, toPlainText } from "@repo/sal-data";
 import { useTranslations } from "next-intl";
 import { useId } from "react";
+import { journal, toPlainText } from "@/lib/data";
 import { Field, SelectInput } from "../admin/kit";
 import { RichTextEditor } from "../editor/rich-text";
 

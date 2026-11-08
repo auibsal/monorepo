@@ -1,5 +1,6 @@
 import { routing } from "@repo/internationalization/routing";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import {
@@ -21,8 +22,9 @@ interface SiteLayoutProperties {
 }
 
 /**
- * The public site: header, footer and cookieless analytics (Vercel Web
- * Analytics; decisions, Nov 7: no Google tags, no cookie banner).
+ * The public site: header, footer and cookieless measurement (Vercel Web
+ * Analytics and Speed Insights; decisions.md: no Google tags, no cookie
+ * banner).
  */
 const SiteLayout = async ({ children, params }: SiteLayoutProperties) => {
   const { locale } = await params;
@@ -51,6 +53,7 @@ const SiteLayout = async ({ children, params }: SiteLayoutProperties) => {
         <Footer />
         <ConsoleNote />
         <Analytics />
+        <SpeedInsights />
       </NextIntlClientProvider>
     </div>
   );

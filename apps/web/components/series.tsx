@@ -1,6 +1,6 @@
 import type { Locale } from "@repo/internationalization";
-import { localized, programmes } from "@repo/sal-data";
 import type { Metadata } from "next";
+import { localized, programmes } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 

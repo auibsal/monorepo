@@ -1,6 +1,6 @@
 import type { Locale } from "@repo/internationalization";
 import { siteUrl } from "@repo/internationalization";
-import { journal, localized } from "@repo/sal-data";
+import { journal, localized } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 
 const ESCAPES: Record<string, string> = {

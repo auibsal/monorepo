@@ -1,16 +1,17 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { authenticateCookies } from "@repo/auth/verify";
+import { authenticateCookies } from "@/lib/auth/verify";
 
 /**
- * The design system (packages/brand's Storybook, built into apps/web/design
- * by `bun run build:site`), served at /_design (a rewrite) to staff only:
- * the same sign-in as the Diwan, which frames it at /diwan/media/design (owner,
- * Nov 7, 2026). The browser loads these files itself, so the session comes
- * from its cookies; anyone else is told the file isn't there.
+ * The design system's files (packages/brand's stories, built into
+ * apps/web/design by `bun run build:site`) at /diwan/media/design/kit (a
+ * rewrite), for the Diwan's own design system page to draw its entries
+ * with. Staff only, on the same sign-in as the rest of the site: the
+ * browser loads these files itself, so the session comes from its cookies,
+ * and for anyone else they are simply not there.
  */
 const ROOT = path.resolve(process.cwd(), "design");
-const SEGMENT = /^[\w-][\w.-]*$/u;
+const SEGMENT = /^[\w-][\w.~-]*$/u;
 
 const TYPES: Record<string, string> = {
   ".css": "text/css; charset=utf-8",
@@ -39,11 +40,9 @@ const notFound = () =>
     status: 404,
   });
 
-const isStaff = async (request: Request) => {
-  const session = await authenticateCookies(request);
-  if (!session) {
-    return false;
-  }
+type Session = NonNullable<Awaited<ReturnType<typeof authenticateCookies>>>;
+
+const isStaff = async (session: Session) => {
   const { data, error } = await session.supabase
     .schema("membership")
     .rpc("my_membership");
@@ -64,7 +63,8 @@ export const GET = async (
   if (!file.startsWith(`${ROOT}${path.sep}`)) {
     return notFound();
   }
-  if (!(await isStaff(request))) {
+  const session = await authenticateCookies(request);
+  if (!(session && (await isStaff(session)))) {
     return notFound();
   }
   try {

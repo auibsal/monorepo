@@ -1,6 +1,6 @@
-import { createClient as createBrowserClient } from "@repo/auth/client";
 import type { Database } from "@repo/database";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createClient as createBrowserClient } from "@/lib/auth/client";
 
 let client: SupabaseClient<Database> | undefined;
 let prerenderClient: SupabaseClient<Database> | undefined;

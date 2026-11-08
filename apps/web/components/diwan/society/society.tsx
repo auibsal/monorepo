@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { type governance, localized, membership, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { type governance, localized, membership, unwrap } from "@/lib/data";
 import { StartLinks } from "../forms/forms";
 import { VotingEligibility } from "../home/voting";
 import { DiwanPage, DiwanSection, RowList } from "../page";

@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
-import { localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, unwrap } from "@/lib/data";
 import { JointChecklist } from "../../joint/checklist";
 import { DiwanSection } from "../../page";
 import { ErrorLine, Field, SaveButton, SelectInput } from "../kit";

@@ -1,7 +1,7 @@
 import { diwanUrl } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
-import { escapeHtml } from "@repo/telegram";
 import { InlineKeyboard } from "grammy";
+import { escapeHtml } from "@/lib/telegram";
 import { type Copy, copy, type Lang } from "./copy";
 import { db, type Group } from "./db";
 import { topicOf } from "./features/group/common";

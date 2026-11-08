@@ -1,82 +1,70 @@
 "use client";
 
-import { sanitizeRichText, toPlainText } from "@repo/sal-data";
+import { sanitizeRichText, toPlainText } from "@/lib/data";
+import {
+  layoutPages,
+  type TextPage,
+  textItem,
+  withDirection,
+} from "./text-layout";
 
 const DOCX =
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
-const escapeHtml = (text: string) =>
-  text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-
-/** Lines into paragraphs: a blank line starts a new one. */
-const paragraphs = (lines: string[]) => {
-  const out: string[] = [];
-  let current: string[] = [];
-  const flush = () => {
-    if (current.length > 0) {
-      out.push(`<p>${escapeHtml(current.join(" "))}</p>`);
-      current = [];
-    }
-  };
-  for (const raw of lines) {
-    const line = raw.trim();
-    if (line === "") {
-      flush();
-    } else {
-      current.push(line);
-    }
-  }
-  flush();
-  return out.join("");
-};
-
-/** A PDF's text, page by page; the line breaks the PDF carries. */
+/** A PDF's text laid out again: verse lines, paragraphs and headings. */
 const pdfHtml = async (file: File) => {
   const pdfjs = await import("pdfjs-dist");
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     "pdfjs-dist/build/pdf.worker.min.mjs",
     import.meta.url
   ).toString();
-  const doc = await pdfjs.getDocument({ data: await file.arrayBuffer() })
-    .promise;
-  const pages = await Promise.all(
-    Array.from({ length: doc.numPages }, async (_, i) =>
-      (await doc.getPage(i + 1)).getTextContent()
-    )
+  // The fonts' own names say which runs are italic or bold.
+  const doc = await pdfjs.getDocument({
+    data: await file.arrayBuffer(),
+    fontExtraProperties: true,
+  }).promise;
+  const pages: TextPage[] = await Promise.all(
+    Array.from({ length: doc.numPages }, async (_, i) => {
+      const page = await doc.getPage(i + 1);
+      const content = await page.getTextContent();
+      // The fonts are loaded (with their names) as the page is drawn.
+      await page.getOperatorList();
+      const fontName = (id: string) => {
+        try {
+          return (page.commonObjs.get(id) as { name?: string } | null)?.name;
+        } catch {
+          return "";
+        }
+      };
+      return {
+        items: content.items.flatMap((item) =>
+          "str" in item ? [textItem(item, fontName(item.fontName))] : []
+        ),
+        width: page.getViewport({ scale: 1 }).width,
+      };
+    })
   );
-  const lines: string[] = [];
-  for (const content of pages) {
-    let line = "";
-    let lastY: number | null = null;
-    for (const item of content.items) {
-      if (!("str" in item)) {
-        continue;
-      }
-      const y = item.transform[5] ?? 0;
-      // A jump of more than a line and a half is a paragraph break.
-      if (lastY !== null && Math.abs(lastY - y) > (item.height || 12) * 1.6) {
-        lines.push(line, "");
-        line = "";
-      }
-      line += item.str;
-      if (item.hasEOL) {
-        lines.push(line);
-        line = "";
-      }
-      lastY = y;
-    }
-    lines.push(line, "");
-  }
-  return paragraphs(lines);
+  return layoutPages(pages);
 };
+
+/** Word's styles as the editor's: headings, underline, strikethrough. */
+const STYLE_MAP = [
+  "p[style-name='Title'] => h2:fresh",
+  "p[style-name='Heading 1'] => h2:fresh",
+  "p[style-name='Heading 2'] => h3:fresh",
+  "p[style-name='Heading 3'] => h4:fresh",
+  "u => u",
+  "strike => s",
+];
 
 /** A Word file as HTML: headings, paragraphs, lists, bold and italics. */
 const docxHtml = async (file: File) => {
   const mammoth = await import("mammoth");
-  const { value } = await mammoth.convertToHtml({
-    arrayBuffer: await file.arrayBuffer(),
-  });
-  return value;
+  const { value } = await mammoth.convertToHtml(
+    { arrayBuffer: await file.arrayBuffer() },
+    { styleMap: STYLE_MAP }
+  );
+  return withDirection(value);
 };
 
 /**

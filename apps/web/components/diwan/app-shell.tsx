@@ -11,8 +11,8 @@ import { FindPanel } from "./admin/find-panel";
 import { LanguageSwitcher } from "./language-switcher";
 
 /**
- * The Diwan frame (officers only): skip link, the site's own header (owner,
- * Oct 30, 2026: the same main menu everywhere), the Diwan's row of six
+ * The Diwan frame (officers only): skip link, the site's own header (decisions.md:
+ * the same main menu everywhere), the Diwan's row of six
  * sections, the find-anything line (it opens in place, pushing the page
  * down), main. Members' own pages are on the site (/account).
  */

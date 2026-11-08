@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import {
@@ -8,11 +7,12 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { journal, localized, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { MySignature } from "@/components/signature";
+import { useAuth } from "@/lib/auth/provider";
+import { journal, localized, unwrap } from "@/lib/data";
 import {
   queryKeys,
   useMemberStatus,

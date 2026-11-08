@@ -7,6 +7,7 @@ under Account); the Society's documents are on
 [auibsal.org/library](https://auibsal.org/library).
 
 - [How the platform works](overview.md)
+- [The Society in the code](domain.md)
 - [Accounts and access](accounts.md)
 - [Releases and migrations](releases.md)
 - [Backups and restore](backups.md)

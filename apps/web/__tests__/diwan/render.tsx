@@ -1,4 +1,3 @@
-import { AuthProvider } from "@repo/auth/provider";
 import type { Database } from "@repo/database";
 import ar from "@repo/internationalization/messages/ar.json";
 import en from "@repo/internationalization/messages/en.json";
@@ -8,6 +7,7 @@ import { render } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import type { ReactNode } from "react";
 import { vi } from "vitest";
+import { AuthProvider } from "@/lib/auth/provider";
 
 /** A Supabase client stand-in; tests override the methods they use. */
 export const fakeSupabase = (overrides: Record<string, unknown> = {}) =>

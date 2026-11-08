@@ -1,8 +1,8 @@
 import "server-only";
 
-import type { Permission } from "@repo/rbac";
-import { membership, unwrap } from "@repo/sal-data";
 import { z } from "zod";
+import { membership, unwrap } from "@/lib/data";
+import type { Permission } from "@/lib/rbac";
 import type { ApiSession } from "./permissions";
 
 /**

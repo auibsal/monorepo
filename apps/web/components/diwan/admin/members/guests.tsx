@@ -1,9 +1,7 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { DiwanSection, RowList } from "@/components/diwan/page";
@@ -12,6 +10,8 @@ import {
   ErrorState,
   SectionSpinner,
 } from "@/components/diwan/states";
+import { useAuth } from "@/lib/auth/provider";
+import { unwrap } from "@/lib/data";
 import { AdminHeading, ConfirmAction, ErrorLine } from "../kit";
 import { ClassInvitations } from "./class-invitations";
 

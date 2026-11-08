@@ -1,8 +1,8 @@
 import type { Locale } from "@repo/internationalization";
-import { localized, programmes } from "@repo/sal-data";
 import { getTranslations } from "next-intl/server";
 import { Section } from "@/components/section";
 import { TypingToy } from "@/components/typing-toy";
+import { localized, programmes } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 
 /**

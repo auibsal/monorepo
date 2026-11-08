@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import {
@@ -8,10 +7,11 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { localized, membership, recognition, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, membership, recognition, unwrap } from "@/lib/data";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
 

@@ -1,15 +1,14 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
-import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import { formatNumber } from "@repo/internationalization/format";
-import { journal, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { journal, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { SectionSpinner } from "../../states";
@@ -22,14 +21,8 @@ import {
   SelectInput,
 } from "../kit";
 import { AuthorName } from "./board";
-import {
-  type BlindFile,
-  type Category,
-  pipelineKey,
-  useBlindFiles,
-  usePipelineIssues,
-} from "./data";
-import { TextView } from "./text-view";
+import { type Category, pipelineKey, usePipelineIssues } from "./data";
+import { ReadingRoom } from "./reading-room";
 
 type Decision = "accept" | "accept_with_edits" | "decline";
 const DECISIONS: Decision[] = ["accept", "accept_with_edits", "decline"];
@@ -45,7 +38,7 @@ const useEntry = (id: string | null) => {
           .schema("journal")
           .from("blind_entries")
           .select(
-            "*, assignments(id, read_number, reader_id, score:scores(total, craft, voice, depth, archive_factor, comment))"
+            "id, blind_id, call_id, issue_id, category, language, title, status, editor_notes, flagged, flag_note, created_at, updated_at, desk, assignments(id, read_number, reader_id, score:scores(total, craft, voice, depth, archive_factor, comment))"
           )
           .eq("id", id ?? "")
           .maybeSingle(),
@@ -66,55 +59,6 @@ type EntryData = NonNullable<
   NonNullable<ReturnType<typeof useEntry>["data"]>["entry"]
 >;
 type Assignment = EntryData["assignments"][number];
-
-const BlindFiles = ({ entryId }: { entryId: string }) => {
-  const t = useTranslations("diwan.admin.pipeline");
-  const fetchFiles = useBlindFiles();
-  const files = useMutation({ mutationFn: () => fetchFiles(entryId) });
-  const label = (f: BlindFile, index: number) =>
-    `${t(`fileKinds.${f.kind as "manuscript" | "image" | "source"}`)} ${formatNumber(index + 1)}`;
-  return (
-    <section className="grid gap-3">
-      <h2 className="type-subheading">{t("entry.files")}</h2>
-      <p className="type-caption">{t("entry.filesNote")}</p>
-      {files.data ? null : (
-        <Button
-          className="justify-self-start"
-          disabled={files.isPending}
-          onClick={() => files.mutate()}
-          size="sm"
-          variant="outline"
-        >
-          {files.isPending ? t("entry.preparing") : t("entry.getFiles")}
-        </Button>
-      )}
-      {files.data && files.data.files.length === 0 ? (
-        <p className="type-caption">{t("entry.noFiles")}</p>
-      ) : null}
-      <ul className="grid gap-2">
-        {files.data?.files.map((f, index) => (
-          <li key={f.name}>
-            {f.url ? (
-              <a
-                className="link"
-                href={f.url}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {label(f, index)}
-              </a>
-            ) : (
-              <span>
-                {label(f, index)}: {t("entry.fileUnavailable")}
-              </span>
-            )}
-          </li>
-        ))}
-      </ul>
-      <ErrorLine error={files.error} />
-    </section>
-  );
-};
 
 /** Rubric v2, scored by the assigned reader. */
 const ScoreForm = ({
@@ -474,24 +418,7 @@ export const EntryView = () => {
         </section>
       ) : null}
 
-      <section className="grid gap-3">
-        <h2 className="type-subheading">{t("entry.text")}</h2>
-        <TextView
-          html={entry.body_html}
-          lang={entry.language === "ar" ? "ar" : undefined}
-        />
-        {entry.body_html ? null : (
-          <p className="type-caption">{t("entry.noText")}</p>
-        )}
-        {entry.source_text ? (
-          <>
-            <h3 className="font-medium">{t("submission.source")}</h3>
-            <p className="whitespace-pre-wrap">{entry.source_text}</p>
-          </>
-        ) : null}
-      </section>
-
-      <BlindFiles entryId={entry.id} />
+      <ReadingRoom entryId={entry.id} language={entry.language} />
 
       {mine ? <ScoreForm assignment={mine} open={scoring} /> : null}
       {isEditor ? <EditorPanel entry={entry} /> : null}

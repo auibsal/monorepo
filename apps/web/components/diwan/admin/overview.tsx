@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Icon, type IconName } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
@@ -9,13 +8,14 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { hasPermissionAnywhere, type Permission } from "@repo/rbac";
-import { localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useNotionHandbook, useTeamWorkspace } from "@/lib/diwan/notion";
 import { useGrants } from "@/lib/diwan/queries";
+import { hasPermissionAnywhere, type Permission } from "@/lib/rbac";
 import { DiwanSection } from "../page";
 import { ErrorState, SectionSpinner } from "../states";
 import { doorPath, useDoorEvents } from "./events/check-in";

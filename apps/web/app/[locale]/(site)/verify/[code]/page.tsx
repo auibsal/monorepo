@@ -3,13 +3,17 @@ import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
 import { formatPlainDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { localized, membership, recognition } from "@repo/sal-data";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/section";
+import { localized, membership, recognition } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
+
+// Made on its first visit (its address names a record), then kept until
+// it is published again.
+export const instant = false;
 
 const CODE = /^[a-z0-9]{6,32}$/u;
 

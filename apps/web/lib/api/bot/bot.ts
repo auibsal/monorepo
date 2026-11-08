@@ -1,8 +1,8 @@
 import { autoRetry } from "@grammyjs/auto-retry";
-import { botIdFromToken } from "@repo/telegram";
 import { Bot, GrammyError, HttpError } from "grammy";
 import type { UserFromGetMe } from "grammy/types";
 import { env } from "@/env";
+import { botIdFromToken } from "@/lib/telegram";
 import { type BotContext, flavor } from "./context";
 import { account } from "./features/account";
 import { events } from "./features/events";

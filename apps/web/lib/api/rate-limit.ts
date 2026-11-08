@@ -3,7 +3,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { BlockList, isIP } from "node:net";
 import { createAdminClient } from "@repo/database/admin";
-import { log } from "@repo/observability/log";
+import { log } from "@/lib/observability/log";
 
 /**
  * Cloudflare's published edge ranges (cloudflare.com/ips). A request whose

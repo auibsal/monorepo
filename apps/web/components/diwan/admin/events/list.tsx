@@ -1,15 +1,15 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import type { Locale } from "@repo/internationalization";
 import {
   formatClock,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { type events, localized, unwrap } from "@repo/sal-data";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/lib/auth/provider";
+import { type events, localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { DiwanSection } from "../../page";
 import { ErrorState, SectionSpinner } from "../../states";

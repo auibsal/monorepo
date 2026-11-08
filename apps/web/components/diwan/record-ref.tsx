@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { SkeletonRows } from "@/components/frame/skeleton";
+import { useAuth } from "@/lib/auth/provider";
 import { RouteParams } from "@/lib/diwan/use-query-param";
 import { EmptyLine } from "./states";
 

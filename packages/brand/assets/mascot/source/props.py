@@ -1,4 +1,4 @@
-from rig import *
+from rig import C100,CR,INK,W
 def book(x,y,rot=0,sc=None):
     # open book held in front: two white pages, ink cover edge, ink text lines
     return (f'<g transform="translate({x} {y}) rotate({rot})">'

@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@repo/auth/provider";
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
@@ -9,14 +8,15 @@ import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { hasPermissionAnywhere } from "@repo/rbac";
-import { localized, partners, unwrap } from "@repo/sal-data";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { localized, partners, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
+import { hasPermissionAnywhere } from "@/lib/rbac";
 import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { SectionSpinner } from "../../states";

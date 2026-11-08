@@ -1,12 +1,13 @@
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
-import { localized } from "@repo/sal-data";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { loadProgramme } from "@/components/series";
 import { whatsOnPath } from "@/components/whats-on-page";
+import { localized } from "@/lib/data";
+import { roughlyNow } from "@/lib/this-year";
 import { monthFrom } from "@/lib/whats-on";
 
 /**
@@ -16,6 +17,7 @@ import { monthFrom } from "@/lib/whats-on";
  * (/events?host=company). Performances are ordinary events.
  */
 export const CompanyView = async ({ locale }: { locale: Locale }) => {
+  const now = new Date(await roughlyNow());
   const company = await loadProgramme("company");
   if (!company) {
     notFound();
@@ -44,7 +46,7 @@ export const CompanyView = async ({ locale }: { locale: Locale }) => {
       <p>
         <Link
           className="link"
-          href={whatsOnPath(monthFrom(undefined), "company")}
+          href={whatsOnPath(monthFrom(undefined, now), "company")}
         >
           {t("dates")}
         </Link>
