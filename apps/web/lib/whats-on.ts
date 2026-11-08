@@ -29,7 +29,7 @@ const make = (year: number, monthIndex: number): Month => {
   };
 };
 
-/** A month in an address: /events/2026-11, /company/2026-11. */
+/** A month as `YYYY-MM` (the `month` query value, `?month=2026-11`). */
 export const isMonthSegment = (value: string) => MONTH.test(value);
 
 /** The month a `YYYY-MM` path segment names, or the current one in Baghdad. */

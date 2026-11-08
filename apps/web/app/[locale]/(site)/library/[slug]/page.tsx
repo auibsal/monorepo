@@ -29,8 +29,8 @@ export const generateMetadata = async ({
 
 /**
  * A document in the Library. GOV-04 to GOV-06 have their own addresses
- * (/privacy, /terms, /accessibility), and their old Library addresses
- * redirect there (next.config.ts).
+ * (/privacy, /terms, /accessibility); here they are not found, so each
+ * lives at one address.
  */
 const DocumentPage = async ({ params }: DocumentProps) => {
   const { locale, slug } = await params;

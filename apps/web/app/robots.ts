@@ -7,8 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       // Google Wallet reaches the pass images and the save/remove callback
       // as Googlebot (/api/wallet/...); the rest of the API stays out.
       allow: ["/", "/api/wallet/"],
-      // The design system is the Diwan's (/diwan/media/design).
-      disallow: ["/api/", "/_design/"],
+      disallow: ["/api/"],
       userAgent: "*",
     },
     sitemap: new URL("/sitemap.xml", project.url).href,

@@ -63,8 +63,9 @@ test.describe("public site", () => {
       page.getByRole("link", { name: /AUIB’s calendar/u })
     ).toHaveAttribute("href", /auib\.edu\.iq/u);
     await expectAccessible(page);
-    await page.goto(`${urls.web}/events/${month}`);
-    await expect(page).toHaveURL(new RegExp(`/events\\?month=${month}$`, "u"));
+    // A month is a query string; the old path-style address is not found.
+    const old = await page.goto(`${urls.web}/events/${month}`);
+    expect(old?.status()).toBe(404);
     // A month with nothing in it points to what comes next.
     await page.goto(`${urls.web}/events?month=2026-01`);
     const next = page.getByText("Next:");
@@ -168,34 +169,20 @@ test("every page in the sitemap is found, in both languages", async ({
   expect(missing).toEqual([]);
 });
 
-test("moved addresses redirect permanently, in both languages", async ({
+test("old addresses are simply not found, in both languages", async ({
   request,
 }) => {
-  const moved: [string, string][] = [
-    ["/membership", "/account"],
-    ["/membership/settings/notices", "/account/settings/notices"],
-    ["/account/settings/notices", "/account/settings/notifications"],
-    ["/account/society", "/account/elections"],
-    ["/account/saved", "/account/work"],
-    ["/library/privacy", "/privacy"],
-    ["/library/terms-of-use", "/terms"],
-    ["/library/accessibility", "/accessibility"],
-    ["/partners/join", "/partners/apply"],
-    ["/search/poems", "/search?q=poems"],
-    ["/qirtas/editions/list", "/qirtas/editions?view=list"],
-    [
-      "/qirtas/archive/2026-11/news",
-      "/qirtas/archive?month=2026-11&section=news",
-    ],
-    ["/company/2026-11", "/events?host=company&month=2026-11"],
-  ];
   for (const prefix of ["", "/ar"]) {
-    for (const [from, to] of moved) {
-      const response = await request.get(`${urls.web}${prefix}${from}`, {
+    for (const gone of [
+      "/membership",
+      "/library/privacy",
+      "/partners/join",
+      "/search/poems",
+    ]) {
+      const response = await request.get(`${urls.web}${prefix}${gone}`, {
         maxRedirects: 0,
       });
-      expect(response.status(), `${prefix}${from}`).toBe(308);
-      expect(response.headers().location).toBe(`${prefix}${to}`);
+      expect(response.status(), `${prefix}${gone}`).toBe(404);
     }
   }
 });
