@@ -72,8 +72,9 @@ media do.
   `@repo/brand` (`styles/globals.css`, `components/ui` (shadcn),
   `components/sal`, `lib`). Its Storybook is the Diwan's `/diwan/media/design`
   (Guide, Foundations, Logos, Components, Emails, Social, Print), built
-  into `apps/web/design` by the web build and served at `/_design` to staff
-  only (`app/api/design`; ignored by git, never
+  into `apps/web/design` by the web build and served whole at that
+  address to staff only, on the site's sign-in (`app/api/design`, a
+  rewrite; its toolbar leads back to the Diwan; ignored by git, never
   indexed). The public sees the brand only on the press page
   (`/about/press`). No PDFs or document files in the repository: print
   is the page printed from the browser.

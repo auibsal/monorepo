@@ -27,7 +27,7 @@ the secret is unset.
 | `/api/cron/notion-sync` | GET, POST | Vercel Cron, pg_cron | `CRON_SECRET` Bearer | every 15 minutes |
 | `/api/cron/retention` | GET | Vercel Cron | `CRON_SECRET` Bearer | daily |
 | `/api/cron/telegram` | GET, POST | Vercel Cron, pg_cron | `CRON_SECRET` Bearer | every 10 minutes |
-| `/api/design/[...path]` | GET | Staff’s browser (the design system at `/_design`) | Staff session cookie | — |
+| `/api/design/[...path]` | GET | Staff’s browser (the design system, the page at `/diwan/media/design`) | Staff session cookie; signed out, the page sends to sign-in | — |
 | `/api/email/stop` | POST | The stop page; mail apps’ one-click unsubscribe (RFC 8058) | The email’s signed token | — |
 | `/api/exports/<name>` | POST | The Diwan | Member + permission per export | — |
 | `/api/files/agreement` | POST | A writer | Member | — |

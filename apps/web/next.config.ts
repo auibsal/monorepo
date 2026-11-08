@@ -38,6 +38,8 @@ const MOVED: readonly [from: string, to: string][] = [
   ["/diwan/qirtas/video/episodes/:path*", "/diwan/media/episodes/:path*"],
   ["/diwan/qirtas/video/reels/:path*", "/diwan/media/reels/:path*"],
   ["/diwan/design", "/diwan/media/design"],
+  ["/_design", "/diwan/media/design"],
+  ["/_design/:path*", "/diwan/media/design/:path*"],
   ["/diwan/events/pitches/:path*", "/diwan/events/proposals/:path*"],
   ["/diwan/events/:ref/door", "/diwan/events/:ref/check-in"],
   [
@@ -60,10 +62,8 @@ const MOVED: readonly [from: string, to: string][] = [
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 //
 // The design system (packages/brand, `bun run build:site`) is built into
-// apps/web/design and shown inside the Diwan at /diwan/design, which frames
-// it. /_design is a rewrite (not a redirect) to the API route that serves
-// those files to staff only (decisions.md); only the site may frame
-// it, and search engines never index it.
+// apps/web/design and served whole at /diwan/media/design by the API route,
+// to staff only (decisions.md); search engines never index it.
 let nextConfig: NextConfig = {
   ...config,
   headers: async () => [
@@ -87,13 +87,13 @@ let nextConfig: NextConfig = {
       headers: [{ key: "X-Frame-Options", value: "DENY" }],
       source: "/api/:path((?!design/).*)",
     },
-    {
+    ...LANGUAGE_PREFIXES.map((prefix) => ({
       headers: [
         { key: "X-Robots-Tag", value: "noindex, nofollow" },
         { key: "X-Frame-Options", value: "SAMEORIGIN" },
       ],
-      source: "/_design/:path*",
-    },
+      source: `${prefix}/diwan/media/design/:path*`,
+    })),
   ],
   outputFileTracingIncludes: {
     "/api/design/[...path]": ["./design/**/*"],
@@ -107,9 +107,22 @@ let nextConfig: NextConfig = {
         source: `${prefix}${from}`,
       }))
     ),
-  rewrites: async () => [
-    { destination: "/api/design/:path*", source: "/_design/:path*" },
-  ],
+  // The design system is the page itself at /diwan/media/design (owner,
+  // Nov 8, 2026), ahead of the Diwan's routes; its files sit under it.
+  rewrites: async () => ({
+    afterFiles: [],
+    beforeFiles: LANGUAGE_PREFIXES.flatMap((prefix) => [
+      {
+        destination: `/api/design/index.html${prefix ? "?lang=ar" : ""}`,
+        source: `${prefix}/diwan/media/design`,
+      },
+      {
+        destination: `/api/design/:path*${prefix ? "?lang=ar" : ""}`,
+        source: `${prefix}/diwan/media/design/:path*`,
+      },
+    ]),
+    fallback: [],
+  }),
 };
 
 if (env.ANALYZE === "true") {

@@ -79,14 +79,35 @@ test("editing in the Diwan opens its own page, one step under its list", async (
   await expect(page).toHaveURL(/\/diwan\/qirtas$/u);
 });
 
-test("the design system's files open for officers only", async ({
+test("the design system is the Diwan's own page, for officers only", async ({
   page,
   request,
 }) => {
-  const anonymous = await request.get(`${urls.web}/_design/index.html`);
-  expect(anonymous.status()).toBe(404);
+  // Signed out: the page sends you to sign in and back; its files are not there.
+  const anonymous = await request.get(`${urls.web}/diwan/media/design`, {
+    maxRedirects: 0,
+  });
+  expect(anonymous.status()).toBe(307);
+  expect(anonymous.headers().location).toContain(
+    "/sign-in?next=%2Fdiwan%2Fmedia%2Fdesign"
+  );
+  const file = await request.get(`${urls.web}/diwan/media/design/index.json`);
+  expect(file.status()).toBe(404);
+  // The old address moved here.
+  const old = await request.get(`${urls.web}/_design/index.html`, {
+    maxRedirects: 0,
+  });
+  expect(old.status()).toBe(308);
+
   await signInWithPassword(page, editor.email);
-  const staff = await page.request.get(`${urls.web}/_design/index.html`);
-  expect(staff.status()).toBe(200);
-  expect(staff.headers()["content-type"]).toContain("text/html");
+  await page.goto(`${urls.web}/diwan/media/design`);
+  // Storybook itself, not a frame, with the way back to the Diwan.
+  await expect(page.locator("iframe#storybook-preview-iframe")).toBeAttached();
+  await expect(page.getByRole("link", { name: "← The Diwan" })).toHaveAttribute(
+    "href",
+    "/diwan"
+  );
+  expect(await page.locator("base").getAttribute("href")).toBe(
+    "/diwan/media/design/"
+  );
 });

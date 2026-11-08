@@ -4,10 +4,12 @@ import { authenticateCookies } from "@repo/auth/verify";
 
 /**
  * The design system (packages/brand's Storybook, built into apps/web/design
- * by `bun run build:site`), served at /_design (a rewrite) to staff only:
- * the same sign-in as the Diwan, which frames it at /diwan/media/design (owner,
- * Nov 7, 2026). The browser loads these files itself, so the session comes
- * from its cookies; anyone else is told the file isn't there.
+ * by `bun run build:site`), served whole at /diwan/media/design (a rewrite;
+ * owner, Nov 8, 2026: the page itself, not framed) to staff only, on the
+ * same sign-in as the rest of the site. The browser loads these files
+ * itself, so the session comes from its cookies. Someone signed out who
+ * opens the page goes to sign in and comes back; any other file is simply
+ * not there for anyone but staff.
  */
 const ROOT = path.resolve(process.cwd(), "design");
 const SEGMENT = /^[\w-][\w.-]*$/u;
@@ -33,17 +35,19 @@ const TYPES: Record<string, string> = {
   ".zip": "application/zip",
 };
 
+/** Where the page lives; its HTML takes it as the base for relative files. */
+const PAGE = "/diwan/media/design";
+const HEAD = /<head(\s[^>]*)?>/iu;
+
 const notFound = () =>
   new Response("Not found", {
     headers: { "Cache-Control": "no-store" },
     status: 404,
   });
 
-const isStaff = async (request: Request) => {
-  const session = await authenticateCookies(request);
-  if (!session) {
-    return false;
-  }
+type Session = NonNullable<Awaited<ReturnType<typeof authenticateCookies>>>;
+
+const isStaff = async (session: Session) => {
   const { data, error } = await session.supabase
     .schema("membership")
     .rpc("my_membership");
@@ -64,11 +68,31 @@ export const GET = async (
   if (!file.startsWith(`${ROOT}${path.sep}`)) {
     return notFound();
   }
-  if (!(await isStaff(request))) {
+  const isHtml = path.extname(file).toLowerCase() === ".html";
+  const lang =
+    new URL(request.url).searchParams.get("lang") === "ar" ? "/ar" : "";
+  const session = await authenticateCookies(request);
+  if (!session) {
+    if (isHtml && parts.length === 1 && parts[0] === "index.html") {
+      const next = encodeURIComponent(`${lang}${PAGE}`);
+      return Response.redirect(
+        new URL(`${lang}/sign-in?next=${next}`, request.url),
+        307
+      );
+    }
+    return notFound();
+  }
+  if (!(await isStaff(session))) {
     return notFound();
   }
   try {
-    const body = await readFile(file);
+    const raw = await readFile(file);
+    // Relative paths in Storybook's pages resolve under the page's address.
+    const body = isHtml
+      ? raw
+          .toString("utf8")
+          .replace(HEAD, (open) => `${open}<base href="${lang}${PAGE}/">`)
+      : raw;
     return new Response(body, {
       headers: {
         "Cache-Control": "private, max-age=300",

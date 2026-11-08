@@ -163,10 +163,9 @@ Part A first).
 - [ ] **The staging loop.** Create, publish and edit an event and a
   document from Notion, once a staging URL and its keys are in the
   environment.
-- [ ] **`/_design` is not behind a sign-in.** The built Storybook files
-  load without one; the Diwan's page around them is for staff. Nothing in
-  them is private (the press kit shows the same brand), so this stays as
-  it is unless the owner wants it gated.
+- [x] **The design system is the Diwan's own page** (owner, Nov 8):
+  Storybook is served whole at `/diwan/media/design`, not framed, to staff
+  only on the site's sign-in, with a way back to the Diwan.
 - [x] **Gallery images on acceptance** (PR #250): a piece accepted from a
   submission takes the writer's images, stripped of their metadata, with
   one button on its page (`/api/qirtas/images`).
