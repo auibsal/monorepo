@@ -34,7 +34,7 @@ the secret is unset.
 | `/api/files/blind` | POST | A reader | Member (assigned reader) | — |
 | `/api/files/rights` | POST | The Company | Member + permission | — |
 | `/api/files/submission` | POST | A writer | Member | — |
-| `/api/qirtas/images` | POST | A Qirtas editor (a piece accepted from a submission takes the writer's images, metadata stripped) | Member (the piece's editor, under RLS) | — |
+| `/api/qirtas/images` | POST | A Qirtas editor (a piece accepted from a submission takes the writer’s images, metadata stripped) | Member (the piece’s editor, under RLS) | — |
 | `/api/forms/sign` | POST | Anyone signing without an account; anonymous concerns | Turnstile, or a single-use form link | per address |
 | `/api/health` | GET | Uptime checks | Public (`no-store`) | — |
 | `/api/hooks/outbox` | POST | The Supabase database webhook on `core.outbox` | `DATABASE_WEBHOOK_SECRET` Bearer | — |
