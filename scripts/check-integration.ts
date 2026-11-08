@@ -39,6 +39,4 @@ if (problems.length > 0) {
   }
   process.exit(1);
 }
-console.log(
-  `Integration: ${report.testResults.length} suites ran every test.`
-);
+console.log(`Integration: ${report.testResults.length} suites ran every test.`);
