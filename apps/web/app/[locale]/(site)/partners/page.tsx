@@ -52,7 +52,7 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           <ul className="grid gap-8 sm:grid-cols-3">
             {SIDES[side].map((key) => (
               <li
-                className="grid content-start gap-2 border-line border-t pt-4"
+                className="border-line grid content-start gap-2 border-t pt-4"
                 key={key}
               >
                 <h3 className="type-subheading">
@@ -70,7 +70,7 @@ const PartnersPage = async ({ params }: LocaleParams) => {
         <p className="type-body">{t("work")}</p>
         <p className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <Link
-            className="font-medium text-accent hover:underline"
+            className="text-accent font-medium hover:underline"
             href="/partners/apply"
           >
             {t("apply")}
@@ -106,7 +106,7 @@ const PartnersPage = async ({ params }: LocaleParams) => {
                 const name = localized(partner, "name", locale);
                 return (
                   <li
-                    className="grid content-start gap-3 border-line border-t py-space-4"
+                    className="border-line py-space-4 grid content-start gap-3 border-t"
                     key={partner.slug}
                   >
                     {logo ? (

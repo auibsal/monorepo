@@ -26,13 +26,13 @@ const SAMPLE: Record<string, string> = {
 };
 
 const IF_AR =
-  /\{\{ if and \.Data\.locale \(eq \.Data\.locale "ar"\) \}\}([\s\S]*?)\{\{ else \}\}([\s\S]*?)\{\{ end \}\}/g;
+  /\{\{ if and \.Data\.locale \(eq \.Data\.locale "ar"\) \}\}([\s\S]*?)\{\{ else \}\}([\s\S]*?)\{\{ end \}\}/gu;
 
 /** The template as one language sees it. */
 const fill = (template: string, lang: "ar" | "en") =>
   template
     .replace(IF_AR, (_, ar: string, en: string) => (lang === "ar" ? ar : en))
-    .replace(/\{\{ \.(\w+) \}\}/g, (_, key: string) => SAMPLE[key] ?? "");
+    .replace(/\{\{ \.(\w+) \}\}/gu, (_, key: string) => SAMPLE[key] ?? "");
 
 const auth = (name: string): Story => ({
   loaders: [
@@ -44,8 +44,9 @@ const auth = (name: string): Story => ({
     <div className="grid gap-8 lg:grid-cols-2">
       {(["en", "ar"] as const).map((lang) => (
         <iframe
-          className="h-[44rem] w-full border border-line bg-white"
+          className="border-line h-[44rem] w-full border bg-white"
           key={lang}
+          sandbox="allow-popups allow-popups-to-escape-sandbox"
           srcDoc={fill(loaded.template as string, lang)}
           title={`${name} (${lang})`}
         />

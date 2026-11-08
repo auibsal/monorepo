@@ -214,7 +214,7 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
         <ErrorLine error={save.error} />
       </form>
 
-      <div className="grid gap-2 border-line border-t pt-space-4">
+      <div className="border-line pt-space-4 grid gap-2 border-t">
         {row.is_open ? (
           <ConfirmAction
             confirmLabel={t("close")}

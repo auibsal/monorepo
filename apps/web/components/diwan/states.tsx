@@ -9,20 +9,20 @@ import { useAppLink } from "@/lib/link-context";
 
 export const FullPageSpinner = () => (
   <div className="flex min-h-[50svh] flex-1 items-center justify-center">
-    <Spinner className="size-6 text-text-secondary" />
+    <Spinner className="text-text-secondary size-6" />
   </div>
 );
 
 /** A page's content while its gate or data loads, inside the shell. */
 export const PageSpinner = () => (
   <div className="flex min-h-[50svh] items-center justify-center">
-    <Spinner className="size-6 text-text-secondary" />
+    <Spinner className="text-text-secondary size-6" />
   </div>
 );
 
 export const SectionSpinner = ({ className }: { className?: string }) => (
   <div className={cn("flex items-center justify-center py-8", className)}>
-    <Spinner className="size-5 text-text-secondary" />
+    <Spinner className="text-text-secondary size-5" />
   </div>
 );
 
@@ -56,7 +56,7 @@ export const ErrorState = ({ className, onRetry }: ErrorStateProps) => {
 
 const actionClass = "link type-caption";
 // Full URLs and same-page anchors are plain links; paths get the language.
-const EXTERNAL = /^(https?|webcal):|^#/;
+const EXTERNAL = /^(https?|webcal):|^#/u;
 
 interface Action {
   readonly href: string;

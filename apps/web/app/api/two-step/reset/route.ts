@@ -9,7 +9,7 @@ import { removeAuthenticators } from "@/lib/api/two-step";
 
 export const OPTIONS = preflight;
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 
 /**
  * Resets another person's two-step sign-in (roles.assign, which itself

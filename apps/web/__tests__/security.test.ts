@@ -9,7 +9,7 @@ import {
 import { describe, expect, test } from "vitest";
 import { themeScript } from "@/lib/theme";
 
-const BASE64_128 = /^[A-Za-z0-9+/]{22}==$/;
+const BASE64_128 = /^[A-Za-z0-9+/]{22}==$/u;
 
 const directive = (policy: string, name: string) =>
   policy

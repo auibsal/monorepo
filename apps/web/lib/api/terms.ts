@@ -21,8 +21,8 @@ const SEASONS = {
 
 type Season = keyof typeof SEASONS;
 
-const OPENS = /first day of (fall|spring|summer) semester/i;
-const CLOSES = /(fall|spring|summer) semester ends/i;
+const OPENS = /first day of (fall|spring|summer) semester/iu;
+const CLOSES = /(fall|spring|summer) semester ends/iu;
 
 /** The calendar date in Baghdad, as YYYY-MM-DD. */
 const baghdadDate = (iso: string) =>

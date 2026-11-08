@@ -12,7 +12,7 @@ interface AuthorProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;
 }
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 type Author = Awaited<ReturnType<typeof journal.authorPage>>;
 type Kind = "member" | "partner" | "guest";
 
@@ -88,7 +88,7 @@ const AuthorPage = async ({ params }: AuthorProps) => {
           <h2 className="type-heading" id="editions">
             {t("authorEditions")}
           </h2>
-          <ul className="grid border-line border-b">
+          <ul className="border-line grid border-b">
             {editions.map((issue) => (
               <li className="border-line border-t py-3" key={issue.slug}>
                 <Link className="link" href={`/qirtas/editions/${issue.slug}`}>
@@ -104,11 +104,11 @@ const AuthorPage = async ({ params }: AuthorProps) => {
           <h2 className="type-heading" id="tour">
             {t("tourPages")}
           </h2>
-          <ul className="grid border-line border-b">
+          <ul className="border-line grid border-b">
             {pages.map((page) => (
               <li className="border-line border-t py-4" key={page.id}>
                 <blockquote
-                  className="type-heading whitespace-pre-line font-light font-mono"
+                  className="type-heading font-mono font-light whitespace-pre-line"
                   dir="auto"
                   lang={page.language === "other" ? undefined : page.language}
                 >

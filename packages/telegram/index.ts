@@ -9,10 +9,10 @@ const HTML_ESCAPES: Record<string, string> = {
   "<": "&lt;",
   ">": "&gt;",
 };
-const HTML_SPECIAL = /[&<>]/g;
-const QUOTE = /"/g;
-const SAFE_SCHEME = /^(https?|tg):/;
-const START_PAYLOAD = /^[\w-]{1,64}$/;
+const HTML_SPECIAL = /[&<>]/gu;
+const QUOTE = /"/gu;
+const SAFE_SCHEME = /^(https?|tg):/u;
+const START_PAYLOAD = /^[\w-]{1,64}$/u;
 
 /** Escapes text for Telegram's HTML parse mode. */
 export const escapeHtml = (text: string) =>

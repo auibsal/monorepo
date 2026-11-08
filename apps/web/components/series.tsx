@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 
 export type Series = NonNullable<
   Awaited<ReturnType<typeof programmes.programmes>>

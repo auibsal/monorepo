@@ -36,7 +36,7 @@ export const useMemberNames = (ids: readonly (string | null | undefined)[]) => {
   });
 };
 
-const FILTER_SYNTAX = /[%,()"\\*.:]/g;
+const FILTER_SYNTAX = /[%,()"\\*.:]/gu;
 
 /** Drops characters that mean something in a PostgREST filter. */
 const safe = (value: string) => value.replace(FILTER_SYNTAX, " ").trim();
@@ -81,7 +81,7 @@ export const MemberPicker = ({
   if (value) {
     return (
       <div className="grid gap-2">
-        <span className="font-medium text-sm">{label}</span>
+        <span className="text-sm font-medium">{label}</span>
         <div className="flex items-center gap-3">
           <span>{memberName(value, locale)}</span>
           <Button

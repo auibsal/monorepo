@@ -33,7 +33,9 @@ export const DesignSystem = () => {
       title={t("title")}
     >
       <iframe
-        className="h-[80vh] min-h-[36rem] w-full border border-line"
+        className="border-line h-[80vh] min-h-[36rem] w-full border"
+        // Storybook, served from this origin: it runs scripts and opens links.
+        sandbox="allow-downloads allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
         src={SOURCE}
         title={t("title")}
       />

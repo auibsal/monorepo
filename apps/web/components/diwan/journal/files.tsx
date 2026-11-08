@@ -89,7 +89,7 @@ export const FilePicker = ({
     <div className="grid gap-3">
       {kinds.map((kind) => (
         <div className="grid gap-1" key={kind}>
-          <label className="font-medium text-sm" htmlFor={`${id}-${kind}`}>
+          <label className="text-sm font-medium" htmlFor={`${id}-${kind}`}>
             {t(`kinds.${kind}`)}
           </label>
           <FileInput

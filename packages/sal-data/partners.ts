@@ -51,8 +51,8 @@ export const conflictKinds = [
   "other",
 ] as const;
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-const MOU_CODE = /^MOU-\d{4}-\d{2,3}$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
+const MOU_CODE = /^MOU-\d{4}-\d{2,3}$/u;
 
 const optionalText = (max: number) =>
   z
@@ -84,7 +84,7 @@ export const partnerSchema = z.object({
   slug: z.string().regex(SLUG),
   status: z.enum(partnerStatuses),
   url: z
-    .union([z.url({ protocol: /^https$/ }), z.literal("")])
+    .union([z.url({ protocol: /^https$/u }), z.literal("")])
     .transform((value) => value || null)
     .nullable()
     .optional(),

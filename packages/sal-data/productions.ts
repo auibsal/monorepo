@@ -50,7 +50,7 @@ export const nextStage = (stage: ProductionStage): ProductionStage | null => {
     : (productionStages[index + 1] ?? null);
 };
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 
 const optionalText = (max: number) =>
   z

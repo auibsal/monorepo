@@ -48,7 +48,7 @@ export const Invitations = ({ eventId }: { eventId: string }) => {
       {invited.data && invited.data.length === 0 ? (
         <p className="type-body text-text-secondary">{t("noInvitations")}</p>
       ) : null}
-      <ul className="grid divide-y divide-line">
+      <ul className="divide-line grid divide-y">
         {invited.data?.map((row) => (
           <li
             className="flex flex-wrap items-center justify-between gap-3 py-2"

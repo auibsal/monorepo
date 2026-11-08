@@ -6,7 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { authCookieOptions } from "./cookies";
 import { keys } from "./keys";
 
-const BEARER = /^Bearer\s+(.+)$/i;
+const BEARER = /^Bearer\s+(.+)$/iu;
 
 /**
  * Authenticates an API request by its `Authorization: Bearer <access token>`
@@ -63,9 +63,7 @@ export const authenticateCookies = async (request: Request) => {
   if (!(NEXT_PUBLIC_SUPABASE_URL && NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)) {
     return null;
   }
-  const cookies = parseCookieHeader(request.headers.get("cookie") ?? "").map(
-    ({ name, value }) => ({ name, value: value ?? "" })
-  );
+  const cookies = parseCookieHeader(request.headers.get("cookie") ?? "");
   const supabase = createServerClient<Database>(
     NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,

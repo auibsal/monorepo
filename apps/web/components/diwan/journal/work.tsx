@@ -181,7 +181,7 @@ export const MyPiece = () => {
       </AdminHeading>
 
       {status === "editing" ? (
-        <section className="grid max-w-3xl gap-3 border-line border-t p-4">
+        <section className="border-line grid max-w-3xl gap-3 border-t p-4">
           <h2 className="type-subheading">{t("finalCheck")}</h2>
           <p>{t("finalCheckLede")}</p>
           <div>

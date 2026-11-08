@@ -45,7 +45,7 @@ const PieceFigure = async ({
   const title = localized(figure, "title", lang) || figure.title_en || "";
   const source = localized(figure, "source", lang);
   return (
-    <figure className="not-prose my-10 grid gap-4 border-line border-y py-6">
+    <figure className="not-prose border-line my-10 grid gap-4 border-y py-6">
       <figcaption className="type-label">{title}</figcaption>
       <FigureChart
         asBars={t("asBars")}
@@ -184,7 +184,7 @@ const Html = async ({
       />
       <ol
         aria-label={t("notes")}
-        className="type-caption grid gap-2 border-line border-t pt-4 font-sans"
+        className="type-caption border-line grid gap-2 border-t pt-4 font-sans"
       >
         {notes.map((note, index) => (
           <li className="flex gap-2" id={note.id} key={note.id}>
@@ -334,7 +334,7 @@ const LongReadBody = async ({ piece }: { piece: Full }) => {
         {parts.map((part) => (
           <div className="grid gap-3" key={part.lang} lang={part.lang}>
             <p className="type-label">{t("contents")}</p>
-            <ol className="grid gap-2 border-line border-s ps-4">
+            <ol className="border-line grid gap-2 border-s ps-4">
               {part.contents.map((item) => (
                 <li className="type-caption" key={item.id}>
                   <a className="hover:text-accent" href={`#${item.id}`}>
@@ -417,7 +417,7 @@ const TranslationBody = async ({
       </section>
       <section
         aria-label={t("original", { language: name })}
-        className="grid content-start gap-4 border-line border-t pt-6 lg:border-s lg:border-t-0 lg:ps-12 lg:pt-0"
+        className="border-line grid content-start gap-4 border-t pt-6 lg:border-s lg:border-t-0 lg:ps-12 lg:pt-0"
       >
         <p className="type-caption text-text-secondary">
           {t("original", { language: name })}
@@ -439,7 +439,7 @@ const DramaBody = ({ piece }: { piece: Full }) => (
   <div className="reading mx-auto grid w-full max-w-2xl gap-10 px-4 py-12">
     {texts(piece).map((text) => (
       <Html
-        className="prose max-w-none whitespace-pre-wrap [&_em]:text-text-secondary [&_p]:mb-4 [&_strong]:uppercase [&_strong]:tracking-wide"
+        className="prose [&_em]:text-text-secondary max-w-none whitespace-pre-wrap [&_p]:mb-4 [&_strong]:tracking-wide [&_strong]:uppercase"
         html={text.html}
         key={text.lang}
         lang={text.lang}
@@ -567,13 +567,14 @@ const VideoBody = async ({
   return (
     <div className="mx-auto grid w-full max-w-4xl gap-6 px-4">
       {id ? (
-        <div className="aspect-video w-full overflow-hidden border-line border-t">
+        <div className="border-line aspect-video w-full overflow-hidden border-t">
           <iframe
             allow="encrypted-media; picture-in-picture"
             allowFullScreen
             className="h-full w-full"
             loading="lazy"
             referrerPolicy="strict-origin-when-cross-origin"
+            sandbox="allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"
             src={`https://www.youtube-nocookie.com/embed/${id}`}
             title={localized(piece, "title", locale)}
           />
@@ -606,7 +607,7 @@ const SixWordsBody = ({ piece }: { piece: Full }) => (
   <div className="mx-auto grid w-full max-w-2xl gap-6 px-4">
     {texts(piece).map((text) => (
       <div
-        className="grid min-h-56 place-items-center border-line border-y py-10 text-center"
+        className="border-line grid min-h-56 place-items-center border-y py-10 text-center"
         key={text.lang}
       >
         <Html
@@ -669,7 +670,7 @@ export const CorrectionNotes = async ({
   }
   const t = await getTranslations({ locale, namespace: "web.journal" });
   return (
-    <aside className="mx-auto grid w-full max-w-3xl gap-2 border-line border-t px-4 pt-4">
+    <aside className="border-line mx-auto grid w-full max-w-3xl gap-2 border-t px-4 pt-4">
       <h2 className="type-heading">{t("corrections")}</h2>
       <ul className="grid gap-1">
         {piece.corrections.map((c) => (

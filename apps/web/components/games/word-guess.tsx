@@ -188,7 +188,7 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
                 <span
                   aria-label={label}
                   className={cn(
-                    "grid size-12 place-items-center border-2 font-semibold text-2xl sm:size-14",
+                    "grid size-12 place-items-center border-2 text-2xl font-semibold sm:size-14",
                     tile[mark ?? (letter ? "typed" : "empty")]
                   )}
                   // biome-ignore lint/suspicious/noArrayIndexKey: squares are positions
@@ -222,7 +222,7 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
         />
       ) : null}
 
-      <fieldset className="m-0 grid w-full min-w-0 max-w-xl gap-2 border-0 p-0">
+      <fieldset className="m-0 grid w-full max-w-xl min-w-0 gap-2 border-0 p-0">
         <legend className="sr-only">{t("guess.keyboard")}</legend>
         {keyboardRows[lang].map((line, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: keyboard rows are fixed
@@ -244,7 +244,7 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
                 <button
                   aria-label={mark ? t(`guess.${mark}`, { letter: key }) : key}
                   className={cn(
-                    "h-12 min-w-0 flex-1 border font-semibold text-lg disabled:opacity-60",
+                    "h-12 min-w-0 flex-1 border text-lg font-semibold disabled:opacity-60",
                     mark ? tile[mark] : "border-line border-t"
                   )}
                   disabled={over}

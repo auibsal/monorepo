@@ -3,8 +3,8 @@
  * (Arabic names), and formula injection neutralized: a cell that starts
  * with = + - @ (or a tab/CR) is prefixed with an apostrophe.
  */
-const FORMULA_START = /^[=+\-@\t\r]/;
-const NEEDS_QUOTES = /[",\n\r]/;
+const FORMULA_START = /^[=+\-@\t\r]/u;
+const NEEDS_QUOTES = /[",\n\r]/u;
 
 export const csvCell = (value: unknown) => {
   if (value === null || value === undefined) {

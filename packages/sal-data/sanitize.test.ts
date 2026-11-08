@@ -6,7 +6,7 @@ import {
   withNotes,
 } from "./sanitize";
 
-const UNSAFE = /script|onclick|javascript|iframe/;
+const UNSAFE = /script|onclick|javascript|iframe/u;
 
 test("strips scripts, handlers and unsafe links", () => {
   const html = sanitizeRichText(

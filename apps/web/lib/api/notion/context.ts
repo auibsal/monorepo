@@ -125,7 +125,7 @@ export const dropLink = (ctx: SyncContext, pageId: string) =>
     .delete()
     .eq("notion_page_id", bareId(pageId));
 
-const TRASHED = /archiv|trash/i;
+const TRASHED = /archiv|trash/iu;
 
 /** The page is gone from Notion (deleted, in the trash, or not shared). */
 export const isGone = (error: unknown) =>

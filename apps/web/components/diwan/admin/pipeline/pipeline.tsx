@@ -198,7 +198,7 @@ export const PipelineAdmin = ({ embedded = false }: { embedded?: boolean }) => {
   return (
     <div className="grid gap-6">
       {embedded ? (
-        <p className="type-body max-w-3xl text-text-secondary">{t("lede")}</p>
+        <p className="type-body text-text-secondary max-w-3xl">{t("lede")}</p>
       ) : (
         <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
       )}

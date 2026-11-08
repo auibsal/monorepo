@@ -180,7 +180,7 @@ export const PieceFigures = ({ pieceId }: { readonly pieceId: string }) => {
         <ul className="grid gap-4">
           {list.map((figure) => (
             <li
-              className="grid gap-2 border-line border-t pt-3"
+              className="border-line grid gap-2 border-t pt-3"
               key={figure.id}
             >
               <p className="type-body">

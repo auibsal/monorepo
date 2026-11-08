@@ -266,7 +266,7 @@ const TableInput = ({
     <div className="grid gap-3">
       {rows.map((row, index) => (
         <fieldset
-          className="grid gap-3 border-line border-t p-4 sm:grid-cols-2"
+          className="border-line grid gap-3 border-t p-4 sm:grid-cols-2"
           // biome-ignore lint/suspicious/noArrayIndexKey: rows have no ids; their order is the identity
           key={index}
         >
@@ -408,7 +408,7 @@ export const FormFieldInput = ({
     }
     return (
       <fieldset aria-invalid={invalid} className="grid gap-2">
-        <legend className="mb-2 font-medium text-sm">
+        <legend className="mb-2 text-sm font-medium">
           {label}
           {required}
         </legend>
@@ -565,7 +565,7 @@ export const FormValues = ({
 }) => (
   <dl className="grid gap-4">
     {fields.map((field) => (
-      <div className="grid gap-1 border-line border-b pb-3" key={field.key}>
+      <div className="border-line grid gap-1 border-b pb-3" key={field.key}>
         <dt className="type-label">
           {office ? labels.office(field.key) : labels.field(field.key)}
         </dt>

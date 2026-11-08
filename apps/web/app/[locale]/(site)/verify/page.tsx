@@ -9,7 +9,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/section";
 import { localizedMetadata } from "@/lib/metadata";
 
-const CODE = /^[a-z0-9]{6,32}$/;
+const CODE = /^[a-z0-9]{6,32}$/u;
 
 interface VerifyParams {
   readonly params: Promise<{ locale: Locale }>;

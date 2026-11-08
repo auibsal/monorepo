@@ -5,7 +5,7 @@ import { problem } from "@/lib/api/problem";
 
 export const OPTIONS = preflight;
 
-const TOKEN = /^[0-9a-f]{32,128}$/;
+const TOKEN = /^[0-9a-f]{32,128}$/u;
 
 /**
  * Leaves the newsletter. Two callers: the button on

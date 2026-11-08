@@ -28,7 +28,7 @@ import { bodyOf, editorEmail, NO_EMAIL, stamp } from "./publish";
  */
 
 const IN_THE_DIWAN = "Minutes in the Diwan";
-const UUID = /^[0-9a-f-]{36}$/i;
+const UUID = /^[0-9a-f-]{36}$/iu;
 
 /** Notion's meeting kinds (decisions.md). */
 const BODIES: Record<string, governance.MeetingBody> = {
@@ -141,7 +141,7 @@ const readDraft = async (
   };
 };
 
-const ARABIC = /[\u0600-\u06FF]/;
+const ARABIC = /[\u0600-\u06FF]/u;
 
 /**
  * The Arabic minutes (decisions §13): kept as a sub-page of the English

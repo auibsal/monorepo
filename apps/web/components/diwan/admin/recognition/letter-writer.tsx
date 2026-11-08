@@ -19,7 +19,7 @@ const LETTER_FORMS = ["f03", "f30", "f32", "f33", "f34", "f42"] as const;
 type LetterForm = (typeof LETTER_FORMS)[number];
 type Lang = "en" | "ar";
 
-const PARAGRAPHS = /\n{2,}/;
+const PARAGRAPHS = /\n{2,}/u;
 
 const SIGN_OFF: Record<Lang, string> = {
   ar: "مع خالص التحية،",

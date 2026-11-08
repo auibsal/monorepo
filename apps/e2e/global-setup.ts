@@ -68,7 +68,7 @@ export default async function globalSetup() {
           {
             pledge_type: kind,
             user_id: id,
-            version: String(row.value).replace(/"/g, ""),
+            version: String(row.value).replace(/"/gu, ""),
           },
           { ignoreDuplicates: true, onConflict: "user_id,pledge_type,version" }
         );

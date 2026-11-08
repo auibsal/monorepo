@@ -4,7 +4,7 @@
 // for the page, never for access: Row Level Security decides what anyone may
 // read.
 
-const SESSION_COOKIE = /^sb-[A-Za-z0-9-]+-auth-token(\.\d+)?$/;
+const SESSION_COOKIE = /^sb-[A-Za-z0-9-]+-auth-token(\.\d+)?$/u;
 
 /** Whether the cookies carry a Supabase session. */
 export const hasSessionCookie = (cookies: string) =>

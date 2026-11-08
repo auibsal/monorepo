@@ -112,11 +112,11 @@ const MembershipMenu = ({
         />
       </button>
       {open ? (
-        <ul className="absolute end-0 top-full z-50 mt-3 grid min-w-48 divide-y divide-line border border-line bg-surface">
+        <ul className="divide-line border-line bg-surface absolute end-0 top-full z-50 mt-3 grid min-w-48 divide-y border">
           {[way, ...extras].map((item) => (
             <li key={item.href}>
               <NextLink
-                className="block whitespace-nowrap px-4 py-3 font-medium text-sm hover:text-accent"
+                className="hover:text-accent block px-4 py-3 text-sm font-medium whitespace-nowrap"
                 href={item.href}
                 onClick={() => setOpen(false)}
               >
@@ -222,7 +222,7 @@ export const SiteHeader = ({
                 </NextLink>
                 {extras.map((extra) => (
                   <NextLink
-                    className="ms-7 font-medium text-text-secondary hover:text-accent"
+                    className="text-text-secondary hover:text-accent ms-7 font-medium"
                     href={extra.href}
                     key={extra.href}
                     onClick={close}

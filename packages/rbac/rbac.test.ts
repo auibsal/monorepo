@@ -32,7 +32,7 @@ const insertsAt = (table: string) =>
     ...sql.matchAll(
       new RegExp(
         `insert into ${table} \\([^)]*\\)\\s*(?:values|select)([\\s\\S]*?);\\n`,
-        "g"
+        "gu"
       )
     ),
   ].map((m) => ({ at: m.index ?? 0, body: m[1] ?? "" }));
@@ -47,26 +47,26 @@ const retiredAfter = (role: string, at: number) =>
  * only the grants made after its return. */
 const roleRetiredAt = new Map<string, number>();
 for (const m of sql.matchAll(
-  /delete from access\.roles where key in \(([^)]*)\)/g
+  /delete from access\.roles where key in \(([^)]*)\)/gu
 )) {
-  for (const k of (m[1] ?? "").matchAll(/'([a-z_]+)'/g)) {
+  for (const k of (m[1] ?? "").matchAll(/'([a-z_]+)'/gu)) {
     roleRetiredAt.set(k[1] ?? "", m.index ?? 0);
   }
 }
 const retiredPermissions = new Set(
   [
     ...sql.matchAll(
-      /delete from access\.permissions where key in \(([^)]*)\)/g
+      /delete from access\.permissions where key in \(([^)]*)\)/gu
     ),
   ].flatMap((m) =>
-    [...(m[1] ?? "").matchAll(/'([a-z_.]+)'/g)].map((k) => k[1] ?? "")
+    [...(m[1] ?? "").matchAll(/'([a-z_.]+)'/gu)].map((k) => k[1] ?? "")
   )
 );
 /** Old key to new, from the migrations that renamed a permission. */
 const renamed = new Map(
   [
     ...sql.matchAll(
-      /update access\.role_permissions\s+set permission = '([a-z_.]+)'\s+where permission = '([a-z_.]+)'/g
+      /update access\.role_permissions\s+set permission = '([a-z_.]+)'\s+where permission = '([a-z_.]+)'/gu
     ),
   ].map((m) => [m[2], m[1]])
 );
@@ -75,7 +75,7 @@ const current = (key: string) => renamed.get(key) ?? key;
 const revokedGrants = new Set(
   [
     ...sql.matchAll(
-      /delete from access\.role_permissions where role = '([a-z_]+)' and permission = '([a-z_.]+)'/g
+      /delete from access\.role_permissions where role = '([a-z_]+)' and permission = '([a-z_.]+)'/gu
     ),
   ].map((m) => `${m[1]}:${m[2]}`)
 );
@@ -85,7 +85,7 @@ const revokedGrants = new Set(
 const councilUpdates = new Map(
   [
     ...sql.matchAll(
-      /update access\.roles\s+set is_council = (true|false)[^;]*?where key = '([a-z_]+)'/g
+      /update access\.roles\s+set is_council = (true|false)[^;]*?where key = '([a-z_]+)'/gu
     ),
   ].map((m) => [m[2], m[1]])
 );
@@ -94,7 +94,9 @@ describe("mirror of the reference data in the migrations", () => {
   test("permission keys match", () => {
     const keys = inserts("access.permissions")
       .flatMap((body) =>
-        [...body.matchAll(/\('([a-z_.]+)', '/g)].map((m) => current(m[1] ?? ""))
+        [...body.matchAll(/\('([a-z_.]+)', '/gu)].map((m) =>
+          current(m[1] ?? "")
+        )
       )
       .filter((key) => !retiredPermissions.has(key));
     expect(keys.sort()).toEqual([...permissions].sort());
@@ -105,7 +107,7 @@ describe("mirror of the reference data in the migrations", () => {
     const rows = insertsAt("access.roles").flatMap(({ at, body }) =>
       [
         ...body.matchAll(
-          /\('([a-z_]+)', '[^']+', '[^']+', (true|false),(?: (?:null|\d+),)? \d+\)/g
+          /\('([a-z_]+)', '[^']+', '[^']+', (true|false),(?: (?:null|\d+),)? \d+\)/gu
         ),
       ].map((m) => ({ at, m }))
     );
@@ -138,15 +140,15 @@ describe("mirror of the reference data in the migrations", () => {
     for (const { at, body } of insertsAt("access.role_permissions")) {
       // Bundles: ('role', array['a', 'b']).
       for (const [, role = "", list = ""] of body.matchAll(
-        /\('([a-z_]+)', array\[([^\]]+)\]\)/g
+        /\('([a-z_]+)', array\[([^\]]+)\]\)/gu
       )) {
-        for (const [, permission = ""] of list.matchAll(/'([a-z_.]+)'/g)) {
+        for (const [, permission = ""] of list.matchAll(/'([a-z_.]+)'/gu)) {
           grant(role, permission, at);
         }
       }
       // Single grants: ('role', 'permission').
       for (const [, role = "", permission = ""] of body.matchAll(
-        /\('([a-z_]+)', '([a-z_.]+)'\)/g
+        /\('([a-z_]+)', '([a-z_.]+)'\)/gu
       )) {
         grant(role, permission, at);
       }

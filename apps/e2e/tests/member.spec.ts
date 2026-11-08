@@ -37,10 +37,10 @@ test("a member sends work to Qirtas and sees the reading timeline", async ({
   await page.getByLabel("Title").fill(`A small poem ${Date.now()}`);
   await page.locator('[contenteditable="true"]').first().click();
   await page.keyboard.type("The paper and the pen, and the hour between them.");
-  await page.getByLabel(/has not appeared in another journal/i).check();
-  await page.getByRole("checkbox", { name: /human authorship/i }).check();
+  await page.getByLabel(/has not appeared in another journal/iu).check();
+  await page.getByRole("checkbox", { name: /human authorship/iu }).check();
   await page.getByRole("button", { name: "Send to Qirtas" }).click();
-  await expect(page).toHaveURL(/\/account\/work\/submissions\//);
+  await expect(page).toHaveURL(/\/account\/work\/submissions\//u);
   await expect(page.getByRole("heading", { name: "Progress" })).toBeVisible();
   await expect(page.locator('[aria-current="step"]')).toContainText("Received");
   await expectAccessible(page);
@@ -57,11 +57,11 @@ test("a member saves a draft, comes back to it and sends it", async ({
   await page.keyboard.type("Half a line, kept for later.");
   await page.getByRole("button", { name: "Save draft" }).click();
   // The first save gives the draft its own address.
-  await expect(page).toHaveURL(/\/qirtas\/write\/poetry\/[0-9a-f-]{36}$/);
+  await expect(page).toHaveURL(/\/qirtas\/write\/poetry\/[0-9a-f-]{36}$/u);
   await expect(page.getByRole("button", { name: "Draft saved" })).toBeVisible();
 
   await page.goto(`${urls.web}/qirtas/write`);
-  const row = page.getByRole("row", { name: new RegExp(title) });
+  const row = page.getByRole("row", { name: new RegExp(title, "u") });
   await expect(row).toContainText("Draft, not sent");
   await row.getByRole("link", { name: title }).click();
   await expect(page.getByLabel("Title")).toHaveValue(title);
@@ -70,14 +70,14 @@ test("a member saves a draft, comes back to it and sends it", async ({
   );
   await expectAccessible(page);
 
-  await page.getByLabel(/has not appeared in another journal/i).check();
-  await page.getByRole("checkbox", { name: /human authorship/i }).check();
+  await page.getByLabel(/has not appeared in another journal/iu).check();
+  await page.getByRole("checkbox", { name: /human authorship/iu }).check();
   await page.getByRole("button", { name: "Send to Qirtas" }).click();
-  await expect(page).toHaveURL(/\/account\/work\/submissions\//);
+  await expect(page).toHaveURL(/\/account\/work\/submissions\//u);
   // Sent, it is a submission; the draft is gone.
   await page.goto(`${urls.web}/qirtas/write`);
   await expect(
-    page.getByRole("row", { name: new RegExp(title) })
+    page.getByRole("row", { name: new RegExp(title, "u") })
   ).not.toContainText("Draft, not sent");
 });
 

@@ -52,7 +52,7 @@ export const env = withPresets(
       // it isn't available yet. docs/platform/wallet.md.
       GOOGLE_WALLET_ISSUER_ID: z
         .string()
-        .regex(/^[0-9]+$/)
+        .regex(/^[0-9]+$/u)
         .optional(),
       GOOGLE_WALLET_PRIVATE_KEY: z.string().min(100).optional(),
       GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL: z.email().optional(),

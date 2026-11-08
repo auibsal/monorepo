@@ -42,7 +42,7 @@ export const ActionBar = ({
         {children}
       </div>
       {away ? (
-        <div className="fixed inset-x-0 bottom-0 z-30 border-line border-t bg-surface px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden print:hidden">
+        <div className="border-line bg-surface fixed inset-x-0 bottom-0 z-30 border-t px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden print:hidden">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             {children}
           </div>

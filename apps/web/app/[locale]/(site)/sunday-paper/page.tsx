@@ -38,7 +38,7 @@ const NewsletterPage = async ({ params }: NewsletterProps) => {
         <h1 className="type-display">{t("title")}</h1>
         <p className="type-lede">{t("lede")}</p>
       </header>
-      <section className="grid gap-4 border-line border-t p-6">
+      <section className="border-line grid gap-4 border-t p-6">
         <NewsletterSignup />
       </section>
       <p className="type-body text-text-secondary">{t("members")}</p>
@@ -47,11 +47,11 @@ const NewsletterPage = async ({ params }: NewsletterProps) => {
           <h2 className="type-heading" id="past-issues">
             {t("archive.title")}
           </h2>
-          <ul className="grid border-line border-b">
+          <ul className="border-line grid border-b">
             {issues.map((issue) => (
               <li className="border-line border-t" key={issue.key}>
                 <Link
-                  className="block py-3 hover:text-accent"
+                  className="hover:text-accent block py-3"
                   href={`/sunday-paper/${issue.key}`}
                 >
                   {formatLongDate(issue.sunday, locale)}

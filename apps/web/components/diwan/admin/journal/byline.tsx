@@ -80,7 +80,7 @@ export const BylinePicker = ({
   if (current) {
     return (
       <div className="grid gap-2">
-        <span className="font-medium text-sm">{label}</span>
+        <span className="text-sm font-medium">{label}</span>
         <div className="flex items-center gap-3">
           <span>{localized(current, "name", locale)}</span>
           {current.is_pen_name ? (

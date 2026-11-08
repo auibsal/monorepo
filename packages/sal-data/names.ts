@@ -45,7 +45,7 @@ type ProfileNames = Partial<Record<NameColumn, string | null>> & {
   full_name_en?: string | null;
 };
 
-const WHITESPACE = /\s+/;
+const WHITESPACE = /\s+/u;
 
 /**
  * A profile's parts in one language. A name kept whole from before the

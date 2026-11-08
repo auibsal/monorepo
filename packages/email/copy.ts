@@ -1540,7 +1540,7 @@ export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
   }));
 
 // A sentence ends in its mark, perhaps closed by a parenthesis or a quote.
-const END_PUNCTUATION = /[.!?…][)’”]?$/;
+const END_PUNCTUATION = /[.!?…][)’”]?$/u;
 
 /** "Dear Lina," or, with no first name on the list, "Hello," alone. */
 const greeting = (l: Lang, firstName: string | null) => {

@@ -89,7 +89,7 @@ const Entry = ({
   readonly summary: string | null;
   readonly title: string;
 }) => (
-  <li className="grid content-start gap-2 border-line border-t py-space-4">
+  <li className="border-line py-space-4 grid content-start gap-2 border-t">
     <h3 className="type-heading">
       <Link className="hover:text-accent" href={href}>
         {title}

@@ -2,7 +2,7 @@ import { project } from "@repo/config";
 import { type LogoVariant, logos } from "../lib/logos";
 import { cn } from "../lib/utils";
 
-const HEIGHT_CLASS = /(^|\s)([\w-]+:)?h-/;
+const HEIGHT_CLASS = /(^|\s)([\w-]+:)?h-/u;
 
 interface BrandLogoProps {
   readonly className?: string;

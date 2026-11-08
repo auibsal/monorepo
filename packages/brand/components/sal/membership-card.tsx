@@ -136,7 +136,7 @@ const Sheen = () => (
 const Field = ({ label, value }: { label: string; value: string }) => (
   <div className="grid content-start gap-1">
     <dt className="type-label text-text-secondary">{label}</dt>
-    <dd className="font-medium text-text tabular-nums">{value}</dd>
+    <dd className="text-text font-medium tabular-nums">{value}</dd>
   </div>
 );
 
@@ -203,7 +203,7 @@ export const MembershipCard = ({
   return (
     <div
       className={cn(
-        "relative grid max-w-3xl gap-8 overflow-hidden border border-line bg-surface-reading p-6 text-text [transform:perspective(1100px)_rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))] sm:grid-cols-[1fr_auto] sm:p-8 print:break-inside-avoid",
+        "border-line bg-surface-reading text-text relative grid max-w-3xl [transform:perspective(1100px)_rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))] gap-8 overflow-hidden border p-6 sm:grid-cols-[1fr_auto] sm:p-8 print:break-inside-avoid",
         className
       )}
       data-theme="light"
@@ -226,7 +226,7 @@ export const MembershipCard = ({
       <div className="relative grid content-between gap-8">
         <div className="flex items-start justify-between gap-4">
           <BrandLogo ground="light" height={44} locale={locale} />
-          <p className="type-label pt-1 text-end text-text-secondary">
+          <p className="type-label text-text-secondary pt-1 text-end">
             {title}
           </p>
         </div>
@@ -240,15 +240,15 @@ export const MembershipCard = ({
             </p>
           ) : null}
         </div>
-        <dl className="grid grid-cols-2 gap-x-8 gap-y-4 border-line border-t pt-4 sm:grid-cols-4">
+        <dl className="border-line grid grid-cols-2 gap-x-8 gap-y-4 border-t pt-4 sm:grid-cols-4">
           <Field label={labels.number} value={cardNumber(number)} />
           {classLabel ? (
             <Field label={labels.class} value={classLabel} />
           ) : null}
         </dl>
       </div>
-      <figure className="relative grid content-start justify-items-center gap-2 sm:border-line sm:border-s sm:ps-8">
-        <div className="grid w-40 gap-2 bg-surface p-3">
+      <figure className="sm:border-line relative grid content-start justify-items-center gap-2 sm:border-s sm:ps-8">
+        <div className="bg-surface grid w-40 gap-2 p-3">
           {qr.value ? (
             <QRCode
               aria-label={labels.qr}
@@ -261,16 +261,16 @@ export const MembershipCard = ({
           )}
           {/* Time left on this code: a hairline that empties. */}
           {qr.left === undefined ? null : (
-            <span aria-hidden="true" className="h-px w-full bg-line">
+            <span aria-hidden="true" className="bg-line h-px w-full">
               <span
-                className="block h-px bg-text transition-[width] duration-1000 ease-linear"
+                className="bg-text block h-px transition-[width] duration-1000 ease-linear"
                 style={{ width: `${qr.left * 100}%` }}
               />
             </span>
           )}
         </div>
         {since ? (
-          <figcaption className="type-label text-center text-text-secondary">
+          <figcaption className="type-label text-text-secondary text-center">
             {since}
           </figcaption>
         ) : null}
@@ -278,7 +278,7 @@ export const MembershipCard = ({
       {/* The one accent on the card: a crimson rule along its foot. */}
       <span
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-1.5 bg-accent"
+        className="bg-accent absolute inset-x-0 bottom-0 h-1.5"
       />
     </div>
   );

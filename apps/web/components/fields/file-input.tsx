@@ -21,7 +21,7 @@ export const FileInput = ({
   return (
     <span
       className={cn(
-        "relative flex items-center gap-3 border border-line border-dashed px-4 py-3 text-sm focus-within:border-text hover:border-text",
+        "border-line focus-within:border-text hover:border-text relative flex items-center gap-3 border border-dashed px-4 py-3 text-sm",
         className
       )}
     >

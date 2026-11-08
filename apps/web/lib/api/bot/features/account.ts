@@ -14,7 +14,7 @@ import { admitPending } from "./group/joins";
 export const account = new Composer<BotContext>();
 const dm = account.chatType("private");
 
-const LINK = /^link_([0-9a-f]{32})$/;
+const LINK = /^link_([0-9a-f]{32})$/u;
 
 export const linkKeyboard = (ctx: BotContext) =>
   new InlineKeyboard().url(ctx.t.buttons.link, connectPage(ctx.lang));
@@ -146,7 +146,7 @@ dm.command("link", async (ctx) => {
   );
 });
 
-dm.callbackQuery(/^notify:(on|off)$/, async (ctx) => {
+dm.callbackQuery(/^notify:(on|off)$/u, async (ctx) => {
   const on = ctx.match[1] === "on";
   await db()
     .schema("core")
@@ -158,7 +158,7 @@ dm.callbackQuery(/^notify:(on|off)$/, async (ctx) => {
   await ctx.editMessageText(view.text, { reply_markup: view.keyboard });
 });
 
-dm.callbackQuery(/^word:(on|off)$/, async (ctx) => {
+dm.callbackQuery(/^word:(on|off)$/u, async (ctx) => {
   const on = ctx.match[1] === "on";
   await db()
     .schema("core")

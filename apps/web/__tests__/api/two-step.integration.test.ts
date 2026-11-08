@@ -25,7 +25,7 @@ process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = publishableKey;
 process.env.SUPABASE_SECRET_KEY = secretKey;
 
 const PASSWORD = "integration-test-1";
-const PADDING = /[=]+$/;
+const PADDING = /[=]+$/u;
 
 // RFC 6238 with Supabase's settings (SHA-1, 30 s, 6 digits).
 const base32 = (secret: string) => {
@@ -177,7 +177,7 @@ describe.skipIf(!enabled)("two-step recovery", () => {
     ).toBe(400);
     expect(await factors(idOf(officer))).toHaveLength(1);
 
-    const typed = (codes[0] ?? "").toLowerCase().replace(/-/g, " ");
+    const typed = (codes[0] ?? "").toLowerCase().replace(/-/gu, " ");
     expect((await post(routes.recover, bearer, { code: typed })).status).toBe(
       200
     );

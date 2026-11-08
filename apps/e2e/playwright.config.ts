@@ -16,7 +16,7 @@ const script = process.env.E2E_START === "start" ? "start" : "dev";
 const launchOptions = process.env.PLAYWRIGHT_CHROMIUM
   ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM }
   : {};
-const PHONE_SPECS = /(public|games|keyboard)\.spec\.ts/;
+const PHONE_SPECS = /(public|games|keyboard)\.spec\.ts/u;
 
 export default defineConfig({
   forbidOnly: Boolean(process.env.CI),

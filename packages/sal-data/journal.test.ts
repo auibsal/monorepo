@@ -30,8 +30,8 @@ import {
 } from "./journal";
 
 const TRANSITION_PAIR =
-  /\(\s*\x27([a-z_]+)\x27(?:::journal\.submission_status)?,\s*\x27([a-z_]+)\x27(?:::journal\.submission_status)?\)/g;
-const RANDOM_PDF_PATH = /^abc\/[0-9a-f-]{36}\.pdf$/;
+  /\(\s*\x27([a-z_]+)\x27(?:::journal\.submission_status)?,\s*\x27([a-z_]+)\x27(?:::journal\.submission_status)?\)/gu;
+const RANDOM_PDF_PATH = /^abc\/[0-9a-f-]{36}\.pdf$/u;
 const migrations = join(
   import.meta.dirname,
   "..",
@@ -130,7 +130,7 @@ describe("rubric v2", () => {
     const formula = criteria
       .map((key) => `${key} * ${rubric[key].weight / rubric[key].max}`)
       .join(" + ");
-    expect(journalSql.replace(/\s+/g, " ")).toContain(formula);
+    expect(journalSql.replace(/\s+/gu, " ")).toContain(formula);
     expect(criteria.reduce((sum, key) => sum + rubric[key].weight, 0)).toBe(
       100
     );
@@ -219,7 +219,7 @@ describe("submission form", () => {
       const desk = deskOf(category);
       if (desk !== "letters") {
         expect(fn, category).toMatch(
-          new RegExp(`'${category}'[^)]*\\)\\s*then '${desk}'`)
+          new RegExp(`'${category}'[^)]*\\)\\s*then '${desk}'`, "u")
         );
       }
     }

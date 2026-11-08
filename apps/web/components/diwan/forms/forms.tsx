@@ -74,7 +74,7 @@ export const StartLinks = ({ keys }: { readonly keys?: readonly string[] }) => {
       {available.map((type) => (
         <li key={type.key}>
           <Link className="group grid gap-1" href={`/forms/${type.code}`}>
-            <span className="font-medium underline-offset-4 group-hover:text-accent group-hover:underline group-focus-visible:text-accent">
+            <span className="group-hover:text-accent group-focus-visible:text-accent font-medium underline-offset-4 group-hover:underline">
               {td(`${type.key}.action` as Parameters<typeof td>[0])}
             </span>
             <span className="type-caption">

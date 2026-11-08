@@ -286,7 +286,7 @@ const ProblemsLine = ({
 }) => {
   const t = useTranslations("diwan.forms");
   return problems.length > 0 ? (
-    <p className="text-sm text-text" role="alert">
+    <p className="text-text text-sm" role="alert">
       {t("problems", {
         fields: problems.map((key) => labels.field(key)).join(" · "),
       })}

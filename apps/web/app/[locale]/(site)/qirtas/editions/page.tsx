@@ -46,7 +46,7 @@ const EditionsPage = async ({ params, searchParams }: EditionsProps) => {
       <div className="grid gap-4">
         <ul className="grid">
           {editions.map((edition) => (
-            <li className="border-line border-t py-space-4" key={edition.id}>
+            <li className="border-line py-space-4 border-t" key={edition.id}>
               <Link
                 className="group grid gap-1"
                 href={`/qirtas/editions/${edition.slug}`}

@@ -291,7 +291,7 @@ const AuditionSlot = ({
   const active = status && status !== "canceled";
 
   return (
-    <li className="grid gap-2 border-line border-t pt-3">
+    <li className="border-line grid gap-2 border-t pt-3">
       <p className="font-medium">
         {formatLongDate(audition.starts_at, locale)} ·{" "}
         {formatClock(audition.starts_at, locale)}–

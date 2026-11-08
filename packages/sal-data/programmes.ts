@@ -78,7 +78,7 @@ export const programmes = async (client: Client) =>
     await client.schema("core").from("programmes").select("*").order("sort")
   );
 
-const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/;
+const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/u;
 const YOUTUBE_HOSTS = new Set([
   "youtube.com",
   "www.youtube.com",
@@ -112,7 +112,7 @@ export const youtubeId = (value: string) => {
 };
 
 const REEL_URL =
-  /^https:\/\/(www\.)?(instagram\.com|tiktok\.com|youtube\.com|youtu\.be)\//;
+  /^https:\/\/(www\.)?(instagram\.com|tiktok\.com|youtube\.com|youtu\.be)\//u;
 
 /** Mirrors the reels.url check in the database. */
 export const isReelUrl = (value: string) => REEL_URL.test(value.trim());

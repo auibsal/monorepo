@@ -119,7 +119,7 @@ export const TwoStepPanel = () => {
     event.preventDefault();
     setFailed(false);
     const code = String(new FormData(event.currentTarget).get("code") ?? "")
-      .replace(/\s/g, "")
+      .replace(/\s/gu, "")
       .trim();
     if (factorId) {
       verify.mutate({ code, id: factorId });
@@ -129,7 +129,7 @@ export const TwoStepPanel = () => {
   return (
     <section
       aria-labelledby="two-step-title"
-      className="grid max-w-xl gap-4 border-line border-t pt-space-4"
+      className="border-line pt-space-4 grid max-w-xl gap-4 border-t"
     >
       <h2 className="type-heading" id="two-step-title">
         {factorId ? t("verifyTitle") : t("setupTitle")}
@@ -151,7 +151,7 @@ export const TwoStepPanel = () => {
 
       {enrolling ? (
         <div className="grid gap-3" data-theme="light">
-          <div className="justify-self-start border border-line bg-surface p-2">
+          <div className="border-line bg-surface justify-self-start border p-2">
             {/* biome-ignore lint/performance/noImgElement: Supabase returns the QR as an SVG data URL */}
             <img alt={t("qrAlt")} height={176} src={enrolling.qr} width={176} />
           </div>
@@ -228,7 +228,7 @@ const RecoveryCodeForm = ({
     onSubmit(String(new FormData(event.currentTarget).get("recovery") ?? ""));
   };
   return (
-    <div className="grid gap-3 border-line border-t pt-space-3">
+    <div className="border-line pt-space-3 grid gap-3 border-t">
       <Button
         aria-expanded={open}
         className="justify-self-start px-0"

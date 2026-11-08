@@ -124,12 +124,12 @@ export const AssociateRequestForm = () => {
         {t("send")}
       </Button>
       {state === "failed" ? (
-        <p className="text-sm text-text" role="alert">
+        <p className="text-text text-sm" role="alert">
           {t("failed")}
         </p>
       ) : null}
       {state === "rate_limited" ? (
-        <p className="text-sm text-text" role="alert">
+        <p className="text-text text-sm" role="alert">
           {t("rateLimited")}
         </p>
       ) : null}

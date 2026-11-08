@@ -179,7 +179,7 @@ export const CrosswordGame = ({
             : null}
         </p>
         <fieldset
-          className="m-0 grid w-full min-w-0 max-w-xl gap-px border border-text bg-text p-0"
+          className="border-text bg-text m-0 grid w-full max-w-xl min-w-0 gap-px border p-0"
           style={{
             gridTemplateColumns: `repeat(${crossword.cols}, minmax(0, 1fr))`,
           }}
@@ -190,11 +190,11 @@ export const CrosswordGame = ({
               const k = `${r},${c}`;
               if (!sq) {
                 return (
-                  <span aria-hidden className="aspect-square bg-text" key={k} />
+                  <span aria-hidden className="bg-text aspect-square" key={k} />
                 );
               }
               return (
-                <span className="relative aspect-square bg-surface" key={k}>
+                <span className="bg-surface relative aspect-square" key={k}>
                   {sq.number ? (
                     <span
                       aria-hidden
@@ -212,9 +212,9 @@ export const CrosswordGame = ({
                     autoCapitalize="characters"
                     autoComplete="off"
                     className={cn(
-                      "size-full bg-transparent text-center font-semibold text-base uppercase caret-transparent outline-none focus:text-accent sm:text-xl print:text-transparent print:ring-0",
+                      "focus:text-accent size-full bg-transparent text-center text-base font-semibold uppercase caret-transparent outline-none sm:text-xl print:text-transparent print:ring-0",
                       activeCells.has(k) && "border-line border-t",
-                      k === active.cell && "ring-2 ring-accent ring-inset",
+                      k === active.cell && "ring-accent ring-2 ring-inset",
                       wrong(k, sq.letter) && "text-text line-through"
                     )}
                     maxLength={2}
@@ -282,7 +282,7 @@ export const CrosswordGame = ({
                 <li key={`${e.number}-${across}`}>
                   <button
                     aria-current={activeEntry === e ? "true" : undefined}
-                    className="w-full rounded-sm border-line px-2 py-1 text-start hover:text-accent aria-[current=true]:border-t"
+                    className="border-line hover:text-accent w-full rounded-sm px-2 py-1 text-start aria-[current=true]:border-t"
                     onClick={() => focusCell(at(e, 0), e.across)}
                     type="button"
                   >

@@ -1,11 +1,5 @@
 // @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-vi.mock("server-only", () => ({}));
-vi.mock("@repo/config", () => ({
-  project: { telegram: { stickerSet: "auibsal" } },
-}));
-
 import type { BotContext } from "@/lib/api/bot/context";
 import {
   followWithSticker,
@@ -13,6 +7,11 @@ import {
   resetStickers,
   type StickerSet,
 } from "@/lib/api/bot/stickers";
+
+vi.mock("server-only", () => ({}));
+vi.mock("@repo/config", () => ({
+  project: { telegram: { stickerSet: "auibsal" } },
+}));
 
 // The twelve stickers in the order of packages/brand/assets/mascot/README.md.
 const EMOJI = [

@@ -9,7 +9,7 @@ import { type ComponentProps, useMemo } from "react";
 
 const PREFIX = project.paths.diwan;
 // Absolute URLs, other schemes, fragments and queries are left alone.
-const EXTERNAL = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#|\?)/i;
+const EXTERNAL = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#|\?)/iu;
 
 type LinkProps = ComponentProps<typeof LocaleLink>;
 type Href = LinkProps["href"];

@@ -73,7 +73,7 @@ export const Certificate = ({
 }: CertificateProps) => (
   <article
     className={cn(
-      "grid aspect-[297/210] w-full content-between gap-6 border-2 border-line bg-surface p-10 text-center text-text print:rounded-none print:border-0",
+      "border-line bg-surface text-text grid aspect-[297/210] w-full content-between gap-6 border-2 p-10 text-center print:rounded-none print:border-0",
       className
     )}
     data-theme="light"
@@ -86,13 +86,13 @@ export const Certificate = ({
     </header>
 
     <div className="grid justify-items-center gap-4">
-      <h1 className="font-light text-4xl text-text">{title}</h1>
+      <h1 className="text-text text-4xl font-light">{title}</h1>
       <p className="type-body">{lead}</p>
-      <p className="border-line border-b px-8 pb-1 font-light text-3xl">
+      <p className="border-line border-b px-8 pb-1 text-3xl font-light">
         {name}
       </p>
       <p className="type-body max-w-2xl text-lg">{body}</p>
-      <p className={notice ? "font-medium text-text" : "type-caption"}>
+      <p className={notice ? "text-text font-medium" : "type-caption"}>
         {notice ?? dated}
       </p>
     </div>
@@ -102,7 +102,7 @@ export const Certificate = ({
       <div className="grid grid-cols-2 items-end gap-6 text-sm">
         {signers.map((signer) => (
           <div
-            className="grid gap-1 border-line border-t pt-2"
+            className="border-line grid gap-1 border-t pt-2"
             key={signer.role}
           >
             <span className="font-medium">{signer.name}</span>

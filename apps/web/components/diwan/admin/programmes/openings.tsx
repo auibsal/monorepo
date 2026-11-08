@@ -277,9 +277,9 @@ export const OpeningsAdmin = () => {
         </Field>
       </div>
       {list.isPending ? <SectionSpinner /> : null}
-      <ul className="grid divide-y divide-line">
+      <ul className="divide-line grid divide-y">
         {list.data && shown.length === 0 ? (
-          <li className="type-body py-3 text-text-secondary">{t("empty")}</li>
+          <li className="type-body text-text-secondary py-3">{t("empty")}</li>
         ) : null}
         {shown.map((o) => (
           <OpeningItem

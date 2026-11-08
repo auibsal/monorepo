@@ -12,7 +12,7 @@ import { useGrants } from "./queries";
  * only choose whom to show the links to.
  */
 
-const NOTION_URL = /^https:\/\/(app\.notion\.com|www\.notion\.so)\//;
+const NOTION_URL = /^https:\/\/(app\.notion\.com|www\.notion\.so)\//u;
 
 const isNotionUrl = (value: unknown): value is string =>
   typeof value === "string" && NOTION_URL.test(value);

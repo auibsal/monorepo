@@ -19,9 +19,9 @@ export const iconDataPath = join(
   "icon-data.ts"
 );
 
-const SHAPE = /<(path|circle|line|polyline|polygon|rect)\s([^>]*?)\s*\/>/g;
-const ATTRIBUTE = /([a-z][a-z0-9-]*)="([^"]*)"/g;
-const ICON_FILE = /^icon-(.+)\.svg$/;
+const SHAPE = /<(path|circle|line|polyline|polygon|rect)\s([^>]*?)\s*\/>/gu;
+const ATTRIBUTE = /([a-z][a-z0-9-]*)="([^"]*)"/gu;
+const ICON_FILE = /^icon-(.+)\.svg$/u;
 
 /** The shapes of one icon file, as [tag, attributes]. */
 export const parseIcon = (svg: string) =>

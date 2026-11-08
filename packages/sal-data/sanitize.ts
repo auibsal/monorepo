@@ -65,10 +65,10 @@ export const sanitizeRichText = (html: string | null | undefined) =>
 /** Plain text from rich text, for excerpts and search snippets. */
 export const toPlainText = (html: string | null | undefined) =>
   sanitizeHtml(html ?? "", { allowedAttributes: {}, allowedTags: [] })
-    .replace(/\s+/g, " ")
+    .replace(/\s+/gu, " ")
     .trim();
 
-const NOTE = /<small(?:\s[^>]*)?>([\s\S]*?)<\/small>/g;
+const NOTE = /<small(?:\s[^>]*)?>([\s\S]*?)<\/small>/gu;
 
 /**
  * Notes in rich text (design review A13): each <small> written in the text
@@ -88,7 +88,7 @@ export const withNotes = (html: string, prefix: string) => {
   return { body, notes };
 };
 
-const HEADING = /<h2(?:\s[^>]*)?>([\s\S]*?)<\/h2>/g;
+const HEADING = /<h2(?:\s[^>]*)?>([\s\S]*?)<\/h2>/gu;
 
 /**
  * A long read's contents (design review A15): each <h2> of the sanitized
@@ -110,7 +110,7 @@ export const withContents = (html: string, prefix: string) => {
 };
 
 const FIGURE_MARK =
-  /<p(?:\s[^>]*)?>\s*\[(?:figure|شكل)\s*(\d{1,2})\]\s*<\/p>/gi;
+  /<p(?:\s[^>]*)?>\s*\[(?:figure|شكل)\s*(\d{1,2})\]\s*<\/p>/giu;
 
 export type TextPart = { html: string } | { figure: number };
 

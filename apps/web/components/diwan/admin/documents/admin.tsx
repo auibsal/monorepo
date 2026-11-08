@@ -271,7 +271,7 @@ const EditorForm = ({
         </h2>
         <p className="type-caption">{t("textFromNotion")}</p>
         <div
-          className="prose max-w-none border-line border-t pt-space-4"
+          className="prose border-line pt-space-4 max-w-none border-t"
           // biome-ignore lint/security/noDangerouslySetInnerHtml: rendered from Notion and sanitized by the sync
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(doc.body_en) }}
         />

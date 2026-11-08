@@ -71,10 +71,9 @@ const sync = async (request: Request) => {
     log.error(`AUIB calendar upsert failed: ${storeError.message}`);
     return problem(500, "store_failed");
   }
-  const earliest = events.reduce(
-    (min, e) => (e.start < min ? e.start : min),
-    events[0]?.start ?? new Date().toISOString()
-  );
+  // ISO 8601 strings sort in time order.
+  const earliest =
+    events.map((e) => e.start).toSorted()[0] ?? new Date().toISOString();
   await admin
     .schema("core")
     .from("external_events")

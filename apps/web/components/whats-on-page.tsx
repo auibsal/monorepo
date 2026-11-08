@@ -10,7 +10,7 @@ import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
 import { readPublished } from "@/lib/supabase";
 import { type Month, monthFrom, monthParam } from "@/lib/whats-on";
 
-const HTTP_SCHEME = /^https?:/;
+const HTTP_SCHEME = /^https?:/u;
 /** AUIB's own events calendar. */
 const AUIB_EVENTS = "https://auib.edu.iq/events/";
 
@@ -93,7 +93,7 @@ export const WhatsOn = async ({
         />
       </MonthSection>
 
-      <p className="type-caption border-line border-t pt-space-4">
+      <p className="type-caption border-line pt-space-4 border-t">
         <a className="link" href={feed}>
           {t("subscribe")}
         </a>{" "}

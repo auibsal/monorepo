@@ -75,10 +75,10 @@ const AboutPage = async ({ params }: LocaleParams) => {
       </Section>
 
       <Section id="began" title={t("beganTitle")}>
-        <ol className="grid border-line border-b">
+        <ol className="border-line grid border-b">
           {BEGAN.map(([key, day, slug]) => (
             <li
-              className="grid gap-1 border-line border-t py-3 sm:grid-cols-[16rem_1fr] sm:gap-x-6"
+              className="border-line grid gap-1 border-t py-3 sm:grid-cols-[16rem_1fr] sm:gap-x-6"
               key={key}
             >
               <time className="type-caption text-text-secondary" dateTime={day}>
@@ -97,11 +97,11 @@ const AboutPage = async ({ params }: LocaleParams) => {
       </Section>
 
       <Section id="motto" title={t("mottoTitle")}>
-        <figure className="grid gap-3 border-line border-t pt-space-4">
-          <p className="font-light text-4xl leading-tight sm:text-5xl">
+        <figure className="border-line pt-space-4 grid gap-3 border-t">
+          <p className="text-4xl leading-tight font-light sm:text-5xl">
             {t("motto")}
           </p>
-          <figcaption className="type-body max-w-[60ch] text-text-secondary">
+          <figcaption className="type-body text-text-secondary max-w-[60ch]">
             {t("mottoNote")}
           </figcaption>
         </figure>
@@ -128,7 +128,7 @@ const AboutPage = async ({ params }: LocaleParams) => {
         />
       </Section>
 
-      <div className="grid gap-4 border-line border-t pt-space-4">
+      <div className="border-line pt-space-4 grid gap-4 border-t">
         <p className="type-body max-w-[60ch]">{t("nonPartisan")}</p>
       </div>
     </div>

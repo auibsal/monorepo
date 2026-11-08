@@ -10,6 +10,28 @@ Every change goes through a pull request to `main`. Nothing is edited on product
 3. **The database.** When CI passes on `main`, the **Migrate production database** workflow runs `supabase db push`, which applies only migrations production has not seen, in order, and stops at the first error. It needs `SUPABASE_ACCESS_TOKEN` and `SUPABASE_DB_PASSWORD` in the production environment; a Deploy Hook (`VERCEL_DEPLOY_HOOK`) is optional and, if set, deploys again after the migrations. Vercel builds `main` at the same time, so a change whose code needs a new column should tolerate the few minutes before its migration lands.
 4. **Check.** The workflow run is green, the Vercel deployments read Ready, and auibsal.org and auibsal.org/api/health answer.
 
+## Versions and GitHub releases
+
+The platform follows [Semantic Versioning](https://semver.org): a major
+version for a change that breaks how people or other systems use it, a
+minor version for new features, a patch for fixes. Every workspace keeps
+the same version as the root `package.json`, and each release has its
+entry in `CHANGELOG.md`.
+
+To cut a release once its pull request is merged and `main` is green:
+
+1. On GitHub, open **Releases** (the repository's right-hand column, or
+   `/releases`) → **Draft a new release**.
+2. **Choose a tag** → type the version with a `v` (`v1.0.0`) → **Create
+   new tag on publish**. Target: `main`.
+3. Title it the same (`v1.0.0`), paste that version's `CHANGELOG.md`
+   entry as the description (or **Generate release notes**, then trim).
+4. Leave **Set as a pre-release** off, keep **Set as the latest release**
+   on, and **Publish release**.
+
+The tag marks the exact commit that was deployed; Vercel's deployment for
+that commit is the one to promote if a later release has to be rolled back.
+
 ## Rules for database changes
 
 - A schema change is a new file in `packages/database/supabase/migrations`. Never edit a migration that has reached production; add a new one.

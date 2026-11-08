@@ -92,11 +92,13 @@ export const createBot = (
       );
     }
     // Let the person know, where there is a person waiting.
+    // The copy is missing when the error came before the language was set.
+    const { t } = ctx as Partial<BotContext>;
     try {
       if (ctx.callbackQuery) {
-        await ctx.answerCallbackQuery(ctx.t?.generic);
-      } else if (ctx.chat?.type === "private" && ctx.t) {
-        await ctx.reply(ctx.t.generic);
+        await ctx.answerCallbackQuery(t?.generic);
+      } else if (ctx.chat?.type === "private" && t) {
+        await ctx.reply(t.generic);
         await followWithSticker(ctx, "sorry");
       }
     } catch {

@@ -20,10 +20,10 @@ export const MAX_GUESSES = 6;
 
 // ── Letters ──────────────────────────────────────────────────────────────────
 
-const ARABIC_MARKS = /[ً-ٰٟـ]/g;
-const NOT_ARABIC_LETTER = /[^ء-ي]/g;
-const NOT_LATIN_LETTER = /[^A-Z]/g;
-const ALIF_FORMS = /[أإآٱ]/g;
+const ARABIC_MARKS = /[ً-ٰٟـ]/gu;
+const NOT_ARABIC_LETTER = /[^ء-ي]/gu;
+const NOT_LATIN_LETTER = /[^A-Z]/gu;
+const ALIF_FORMS = /[أإآٱ]/gu;
 
 /**
  * The letters a word is played with: English in capitals; Arabic without

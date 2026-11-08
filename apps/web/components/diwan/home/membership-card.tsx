@@ -250,7 +250,7 @@ export const MembershipCard = () => {
               <DialogTitle>{name}</DialogTitle>
               <DialogDescription>{t("card.showHint")}</DialogDescription>
             </DialogHeader>
-            <div className="grid justify-items-center gap-3 bg-surface p-6">
+            <div className="bg-surface grid justify-items-center gap-3 p-6">
               <div className="w-full max-w-72">{code(288)}</div>
               <p className="type-label text-text-secondary">
                 {t("card.number", { number: cardNumber(card.data.number) })}

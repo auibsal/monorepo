@@ -29,11 +29,11 @@ interface Sticker {
   size: [number, number];
 }
 
-const SIZE = /\swidth="[^"]+"\s+height="[^"]+"/;
-const XML = /<\?xml[^>]*\?>\s*/;
-const CUT = /stroke="(?:#ec008c|rgb\(92\.5[^"]*\))"/gi;
-const TITLE = /<title>([^<]+)<\/title>/;
-const UNSAFE = /[\\/:*?"<>|]/g;
+const SIZE = /\swidth="[^"]+"\s+height="[^"]+"/u;
+const XML = /<\?xml[^>]*\?>\s*/u;
+const CUT = /stroke="(?:#ec008c|rgb\(92\.5[^"]*\))"/giu;
+const TITLE = /<title>([^<]+)<\/title>/u;
+const UNSAFE = /[\\/:*?"<>|]/gu;
 
 /** Each sticker's SVG at the given size (CSS), with its XML declaration dropped. */
 const sized = (source: string, style: string) =>

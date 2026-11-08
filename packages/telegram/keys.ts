@@ -2,9 +2,9 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 // Telegram usernames: 5–32 letters, digits and underscores; bots end in "bot".
-const USERNAME = /^[A-Za-z][A-Za-z0-9_]{3,30}bot$/i;
-const TOKEN = /^\d+:[\w-]{30,}$/;
-const SECRET_TOKEN = /^[\w-]{32,256}$/;
+const USERNAME = /^[A-Za-z][A-Za-z0-9_]{3,30}bot$/iu;
+const TOKEN = /^\d+:[\w-]{30,}$/u;
+const SECRET_TOKEN = /^[\w-]{32,256}$/u;
 
 export const keys = () =>
   createEnv({

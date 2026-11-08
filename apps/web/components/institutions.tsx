@@ -16,7 +16,7 @@ export const Institutions = async ({
 
   return (
     <section aria-labelledby="institutions" className="grid gap-6">
-      <div className="flex flex-wrap items-baseline justify-between gap-4 border-line border-b pb-2">
+      <div className="border-line flex flex-wrap items-baseline justify-between gap-4 border-b pb-2">
         <h2 className="type-heading" id="institutions">
           {t("title")}
         </h2>
@@ -27,7 +27,7 @@ export const Institutions = async ({
         ) : null}
       </div>
       <p className="type-body max-w-3xl">{t("lede")}</p>
-      <ul className="grid gap-space-4 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="gap-space-4 grid sm:grid-cols-2 lg:grid-cols-4">
         {INSTITUTIONS.map((item) => {
           const name = t(`names.${item.key}`);
           const body = (
@@ -49,7 +49,7 @@ export const Institutions = async ({
           );
           return (
             <li
-              className="grid content-start gap-2 border-line border-t p-space-4"
+              className="border-line p-space-4 grid content-start gap-2 border-t"
               key={item.key}
             >
               {item.url ? (

@@ -9,11 +9,11 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@axe-core/playwright": "4.13.0",
-    "@playwright/test": "1.63.0",
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.65.0",
     "@repo/typescript-config": "workspace:*",
-    "@supabase/supabase-js": "^2.117.3",
-    "@types/node": "24.19.1",
+    "@supabase/supabase-js": "^2.119.0",
+    "@types/node": "26.6.6",
     "typescript": "^7.0.2"
   }
 }

@@ -3,7 +3,7 @@ import QRCode from "react-qr-code";
 import { cn } from "../../lib/utils";
 import { BrandLogo } from "../brand-logo";
 
-const SCHEME = /^https?:\/\//;
+const SCHEME = /^https?:\/\//u;
 
 interface LetterProps {
   /** The paragraphs of the letter. */
@@ -80,14 +80,14 @@ export const Letter = ({
 }: LetterProps) => (
   <article
     className={cn(
-      "grid min-h-[60rem] w-full max-w-3xl grid-rows-[auto_1fr_auto] gap-space-6 bg-surface p-[9%] text-text print:min-h-[297mm] print:w-[210mm] print:max-w-none print:p-[21mm]",
+      "gap-space-6 bg-surface text-text grid min-h-[60rem] w-full max-w-3xl grid-rows-[auto_1fr_auto] p-[9%] print:min-h-[297mm] print:w-[210mm] print:max-w-none print:p-[21mm]",
       className
     )}
     data-theme="light"
   >
-    <header className="flex items-start justify-between gap-space-4">
+    <header className="gap-space-4 flex items-start justify-between">
       <BrandLogo ground="light" height={52} locale={locale} />
-      <p className="grid justify-items-end gap-1 pt-2 text-sm text-text-secondary">
+      <p className="text-text-secondary grid justify-items-end gap-1 pt-2 text-sm">
         <span>{date}</span>
         {reference ? (
           <span className="type-code" dir="ltr">
@@ -96,7 +96,7 @@ export const Letter = ({
         ) : null}
       </p>
     </header>
-    <div className="grid content-start gap-space-4 text-[0.9375rem] leading-relaxed">
+    <div className="gap-space-4 grid content-start text-[0.9375rem] leading-relaxed">
       <address className="grid not-italic">
         {recipient.map((line) => (
           <span key={line}>{line}</span>
@@ -104,14 +104,14 @@ export const Letter = ({
       </address>
       <p className="font-medium">{subject}</p>
       <p>{greeting}</p>
-      <div className="grid gap-space-3">{children}</div>
-      <div className="grid gap-1 pt-space-3">
+      <div className="gap-space-3 grid">{children}</div>
+      <div className="pt-space-3 grid gap-1">
         <p>{signOff ?? SIGN_OFF[locale] ?? SIGN_OFF.en}</p>
         <p className="pt-space-5">{signer.name}</p>
         <p className="text-text-secondary">{signer.role}</p>
       </div>
     </div>
-    <footer className="flex flex-wrap items-end justify-between gap-space-4 border-line border-t pt-3 text-text-secondary text-xs">
+    <footer className="gap-space-4 border-line text-text-secondary flex flex-wrap items-end justify-between border-t pt-3 text-xs">
       <div className="grid gap-1">
         <span className="type-code" dir="ltr">
           {code}
@@ -119,7 +119,7 @@ export const Letter = ({
         <span>{foot}</span>
       </div>
       {verify ? (
-        <div className="flex items-center gap-space-3">
+        <div className="gap-space-3 flex items-center">
           <span className="type-code" dir="ltr">
             {verify.code} · {verify.url.replace(SCHEME, "")}
           </span>

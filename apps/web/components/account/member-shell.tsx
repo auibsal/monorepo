@@ -138,7 +138,7 @@ const AccountNav = () => {
   const current = links.find((link) => isCurrent(pathname, link));
   const extras = (
     <button
-      className="whitespace-nowrap py-3 text-start font-medium text-sm text-text-secondary hover:text-accent"
+      className="text-text-secondary hover:text-accent py-3 text-start text-sm font-medium whitespace-nowrap"
       onClick={signOut}
       type="button"
     >
@@ -157,22 +157,22 @@ const AccountNav = () => {
         // A new page closes the list.
         key={pathname}
       >
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-medium text-sm [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
           <span>{t(current?.key ?? "today")}</span>
           <Icon
             className="size-4 transition-transform group-open:rotate-180"
             name="chevron-down"
           />
         </summary>
-        <ul className="grid divide-y divide-line border-line border-t">
+        <ul className="divide-line border-line grid divide-y border-t">
           {links.map((link) => (
             <li key={link.href}>
               <Link
                 aria-current={isCurrent(pathname, link) ? "page" : undefined}
                 className={cn(
-                  "block py-3 text-sm hover:text-accent",
+                  "hover:text-accent block py-3 text-sm",
                   isCurrent(pathname, link)
-                    ? "font-medium text-accent"
+                    ? "text-accent font-medium"
                     : "text-text"
                 )}
                 href={link.href}
@@ -182,7 +182,7 @@ const AccountNav = () => {
             </li>
           ))}
         </ul>
-        <div className="grid border-line border-t">{extras}</div>
+        <div className="border-line grid border-t">{extras}</div>
       </details>
       {/* Wider screens: the links in one row, sign-out at the end. */}
       <div className="mx-auto hidden w-full max-w-6xl items-center gap-x-6 px-4 md:flex">
@@ -194,10 +194,10 @@ const AccountNav = () => {
                 <Link
                   aria-current={here ? "page" : undefined}
                   className={cn(
-                    "block whitespace-nowrap border-b-[1.5px] py-3 font-medium text-sm hover:text-accent",
+                    "hover:text-accent block border-b-[1.5px] py-3 text-sm font-medium whitespace-nowrap",
                     here
                       ? "border-accent text-text"
-                      : "border-transparent text-text-secondary"
+                      : "text-text-secondary border-transparent"
                   )}
                   href={link.href}
                 >
@@ -216,7 +216,7 @@ const AccountNav = () => {
 };
 
 /** Pages that show the account's row of links. */
-const ACCOUNT_PAGES = /^\/account(\/|$)/;
+const ACCOUNT_PAGES = /^\/account(\/|$)/u;
 
 /** The members' pages: the account row where it belongs, then the page. */
 export const MemberShell = ({ children }: { children: ReactNode }) => {

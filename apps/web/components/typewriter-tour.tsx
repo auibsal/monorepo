@@ -31,7 +31,7 @@ export const TypewriterTourWall = async ({
           <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
             {wall.map((entry) => (
               <li
-                className="grid content-start gap-1 border-line border-t py-space-4"
+                className="border-line py-space-4 grid content-start gap-1 border-t"
                 key={entry.id}
               >
                 <p className="font-mono text-lg">{entry.text}</p>

@@ -88,7 +88,7 @@ export const read = {
   url: (page: NotionPage, name: string) => get(page, name)?.url ?? null,
 };
 
-const OFFSET = /(?:Z|[+-]\d{2}:\d{2})$/;
+const OFFSET = /(?:Z|[+-]\d{2}:\d{2})$/u;
 
 /**
  * A Notion date as an instant. Notion returns times with an offset; a time
@@ -104,8 +104,8 @@ export const toInstant = (value: string | null | undefined): string | null => {
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 };
 
-const NOT_SLUG = /[^a-z0-9]+/g;
-const EDGES = /^-+|-+$/g;
+const NOT_SLUG = /[^a-z0-9]+/gu;
+const EDGES = /^-+|-+$/gu;
 
 /** A web address part from a title: Latin letters and digits only. */
 export const slugify = (text: string) =>
@@ -117,4 +117,4 @@ export const slugify = (text: string) =>
     .slice(0, 80)
     .replace(EDGES, "");
 
-export const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+export const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;

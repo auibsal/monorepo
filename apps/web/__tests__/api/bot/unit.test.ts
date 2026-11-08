@@ -1,9 +1,5 @@
 // @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
-
-vi.mock("server-only", () => ({}));
-process.env.SKIP_ENV_VALIDATION = "true";
-
 import { copy, langOf } from "@/lib/api/bot/copy";
 import type { EventRow } from "@/lib/api/bot/db";
 import { baghdadHour } from "@/lib/api/bot/feeds";
@@ -17,7 +13,12 @@ import {
 } from "@/lib/api/bot/links";
 import { briefText, summaryText } from "@/lib/api/bot/staff";
 
-const EXCLAMATION = /[!！]/;
+vi.mock("server-only", () => ({}));
+vi.hoisted(() => {
+  process.env.SKIP_ENV_VALIDATION = "true";
+});
+
+const EXCLAMATION = /[!！]/u;
 const EMOJI = /\p{Extended_Pictographic}/u;
 
 const strings = (value: unknown): string[] => {

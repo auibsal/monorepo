@@ -20,7 +20,7 @@ interface EventProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;
 }
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 
 // /events/<slug> is an event (a month of What's on is /events?month=;
 // old month addresses redirect, next.config.ts). The Supabase reads stay

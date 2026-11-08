@@ -18,7 +18,7 @@ import {
 export const setup = new Composer<BotContext>();
 const groups = setup.chatType(["group", "supergroup"]);
 
-const CODE = /^[0-9a-f]{32}$/;
+const CODE = /^[0-9a-f]{32}$/u;
 
 groups.command("setup", async (ctx) => {
   const member = await senderMember(ctx);

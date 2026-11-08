@@ -25,7 +25,7 @@ export const DiwanPage = ({
     <header className="grid gap-4">
       <h1 className="type-display text-balance">{title}</h1>
       {lede ? (
-        <p className="type-lede max-w-[48ch] text-text-secondary">{lede}</p>
+        <p className="type-lede text-text-secondary max-w-[48ch]">{lede}</p>
       ) : null}
       {actions ? (
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -64,7 +64,7 @@ export const DiwanSection = ({
     <div className="grid gap-2">
       <SectionHead action={action} size="heading" title={title} titleId={id} />
       {description ? (
-        <p className="type-body max-w-[60ch] text-text-secondary">
+        <p className="type-body text-text-secondary max-w-[60ch]">
           {description}
         </p>
       ) : null}
@@ -87,7 +87,7 @@ export const RowList = ({
   return (
     <List
       className={cn(
-        "grid divide-y divide-line [&>li:first-child]:pt-0 [&>li:last-child]:pb-0 [&>li]:py-4",
+        "divide-line grid divide-y [&>li]:py-4 [&>li:first-child]:pt-0 [&>li:last-child]:pb-0",
         className
       )}
     >

@@ -22,7 +22,7 @@ import { AdminHeading, Field } from "../kit";
 import { memberName } from "../members/directory";
 import { useAttendeeSearch } from "./attendance";
 
-const TICKET = /^sal:ticket:([0-9a-f]{24})$/;
+const TICKET = /^sal:ticket:([0-9a-f]{24})$/u;
 
 /** What a scanned code asks for: a ticket, a membership card, or nothing. */
 export const parseScan = (value: string) => {
@@ -237,7 +237,7 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
         {formatClock(event.data.starts_at, locale)}
       </AdminHeading>
       <p className="type-body text-text-secondary">{t("lede")}</p>
-      <p className="font-medium text-text" role="status">
+      <p className="text-text font-medium" role="status">
         {t("count", { count: formatNumber(count.data ?? 0) })}
       </p>
 
@@ -247,7 +247,7 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
         aria-live="assertive"
         className={
           message
-            ? "border-line border-t p-space-4 font-medium text-lg text-text"
+            ? "border-line p-space-4 text-text border-t text-lg font-medium"
             : "sr-only"
         }
       >
@@ -273,7 +273,7 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
         <ul className="grid gap-2">
           {results.data?.map((person) => (
             <li
-              className="flex flex-wrap items-center justify-between gap-3 border-line border-b py-2"
+              className="border-line flex flex-wrap items-center justify-between gap-3 border-b py-2"
               key={person.user_id}
             >
               <span>

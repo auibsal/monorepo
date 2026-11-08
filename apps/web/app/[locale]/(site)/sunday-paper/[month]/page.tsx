@@ -10,7 +10,7 @@ interface IssueProps {
   readonly params: Promise<{ locale: Locale; month: string }>;
 }
 
-const MONTH = /^(\d{4})-(\d{2})$/;
+const MONTH = /^(\d{4})-(\d{2})$/u;
 
 /** The issue a `yyyy-mm` segment names, when it has been sent. */
 const issueFrom = async (segment: string) => {

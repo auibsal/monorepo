@@ -8,7 +8,7 @@ import { SkeletonRows } from "@/components/frame/skeleton";
 import { RouteParams } from "@/lib/diwan/use-query-param";
 import { EmptyLine } from "./states";
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
 
 interface Lookup {
   /** The column that holds the readable name (slug). */

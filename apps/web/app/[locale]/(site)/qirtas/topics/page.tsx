@@ -44,10 +44,10 @@ const TopicsPage = async ({ params }: TopicsProps) => {
       {topics.length === 0 ? (
         <p className="type-body text-text-secondary">{t("noTopics")}</p>
       ) : (
-        <ul className="grid gap-x-10 border-line border-b sm:grid-cols-2">
+        <ul className="border-line grid gap-x-10 border-b sm:grid-cols-2">
           {topics.map((topic) => (
             <li
-              className="flex items-baseline justify-between gap-4 border-line border-t py-3"
+              className="border-line flex items-baseline justify-between gap-4 border-t py-3"
               key={topic.id}
             >
               <Link className="link" href={`/qirtas/topics/${topic.slug}`}>

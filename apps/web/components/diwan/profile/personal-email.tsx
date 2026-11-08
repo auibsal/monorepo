@@ -76,7 +76,7 @@ export const PersonalEmail = () => {
               </Button>
             )}
             <Button
-              className="px-0 text-text-secondary"
+              className="text-text-secondary px-0"
               disabled={remove.isPending}
               onClick={() => remove.mutate()}
               variant="link"

@@ -124,7 +124,7 @@ export const Application = ({
   );
 
   return (
-    <li className="grid gap-2 border-line border-t py-3">
+    <li className="border-line grid gap-2 border-t py-3">
       <p className="type-body">
         {name}
         {reply.note ? ` · ${reply.note}` : ""}

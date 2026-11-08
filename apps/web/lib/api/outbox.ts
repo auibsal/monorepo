@@ -175,7 +175,7 @@ const recipient = async (
 };
 
 /** A signer without an account gave an address to reach them. */
-const AN_EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const AN_EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/u;
 
 /** The outbox row being processed: for idempotency keys and push. */
 const current = new AsyncLocalStorage<{
@@ -320,7 +320,7 @@ const send = async (
     replyTo: project.supportEmail,
     subject: built.subject,
     tags: run
-      ? [{ name: "kind", value: run.kind.replace(/[^\w-]/g, "_") }]
+      ? [{ name: "kind", value: run.kind.replace(/[^\w-]/gu, "_") }]
       : [],
     text: noticeText({ blocks: built.blocks, footer: lines }),
     to: to.email,

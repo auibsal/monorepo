@@ -153,7 +153,7 @@ export const SearchPage = async ({ params, searchParams }: SearchProps) => {
                 <ul className="grid gap-4">
                   {group.map((r) => (
                     <li
-                      className="grid gap-1 border-line border-b pb-4"
+                      className="border-line grid gap-1 border-b pb-4"
                       key={`${r.kind}-${r.id}`}
                     >
                       {r.occurred_at ? (
@@ -220,11 +220,11 @@ const SearchStart = async ({ locale }: { locale: Locale }) => {
           <h2 className="type-heading" id="search-recent">
             {t("recent")}
           </h2>
-          <ul className="grid border-line border-b">
+          <ul className="border-line grid border-b">
             {recent.map((p) => (
               <li className="border-line border-t" key={p.id}>
                 <Link
-                  className="grid gap-1 py-3 hover:text-accent"
+                  className="hover:text-accent grid gap-1 py-3"
                   href={journal.piecePath(p)}
                 >
                   {p.published_at ? (
@@ -249,11 +249,11 @@ const SearchStart = async ({ locale }: { locale: Locale }) => {
           <h2 className="type-heading" id="search-coming">
             {t("coming")}
           </h2>
-          <ul className="grid border-line border-b">
+          <ul className="border-line grid border-b">
             {coming.map((e) => (
               <li className="border-line border-t" key={e.id}>
                 <Link
-                  className="grid gap-1 py-3 hover:text-accent"
+                  className="hover:text-accent grid gap-1 py-3"
                   href={`/events/${e.slug}`}
                 >
                   <span className="type-caption">

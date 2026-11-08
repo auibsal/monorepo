@@ -188,6 +188,9 @@ Part A first).
     lockfile already); dropping the `charity` schema (after it leaves the
     exposed schemas).
   - F7: coverage minimums.
+  - The Supabase CLI 3: move `migrate.yml` and `backup.yml` to its flags
+    (`--remote` for `--linked`, no `link --password`, `--yes` for hosted
+    changes), test them on a branch project, then bump the CLI.
   - F1: AGENTS.md cut to code conventions; the decisions.md date-line
     check (needs the attached copy's line).
 

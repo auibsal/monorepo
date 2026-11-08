@@ -61,7 +61,7 @@ export const DatedList = ({
   items: readonly DatedItem[];
   locale: Locale;
 }) => (
-  <ul className="grid divide-y divide-line">
+  <ul className="divide-line grid divide-y">
     {items.map((item) => {
       const { day, month, weekday } = formatDayParts(item.at, locale);
       return (
@@ -71,8 +71,8 @@ export const DatedList = ({
               <span
                 className={
                   item.quiet
-                    ? "font-light text-[2.75rem] text-text-secondary leading-none tracking-tight"
-                    : "font-light text-[2.75rem] leading-none tracking-tight"
+                    ? "text-text-secondary text-[2.75rem] leading-none font-light tracking-tight"
+                    : "text-[2.75rem] leading-none font-light tracking-tight"
                 }
               >
                 {day}
@@ -85,8 +85,8 @@ export const DatedList = ({
               <span
                 className={
                   item.quiet
-                    ? "text-base text-text-secondary leading-snug group-hover:text-accent"
-                    : "font-normal text-xl leading-snug group-hover:text-accent"
+                    ? "text-text-secondary group-hover:text-accent text-base leading-snug"
+                    : "group-hover:text-accent text-xl leading-snug font-normal"
                 }
                 lang={item.lang}
               >
@@ -105,7 +105,7 @@ export const DatedList = ({
               ) : null}
             </span>
             {item.place || item.venue || item.time ? (
-              <span className="type-caption flex flex-wrap gap-x-4 gap-y-1 text-text-secondary sm:justify-end">
+              <span className="type-caption text-text-secondary flex flex-wrap gap-x-4 gap-y-1 sm:justify-end">
                 {item.venue ? (
                   <span className="inline-flex items-center gap-1.5">
                     <Icon name="map-pin" />

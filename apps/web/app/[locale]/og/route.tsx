@@ -15,7 +15,7 @@ const INK = "#273236";
 const ASH = "#5c6568";
 
 const SIZE = { height: 630, width: 1200 };
-const WHITESPACE = /\s+/;
+const WHITESPACE = /\s+/u;
 
 /** Words with their position in the text (a stable key). */
 const wordsOf = (text: string) => {

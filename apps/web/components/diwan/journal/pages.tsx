@@ -359,7 +359,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
     return <SectionSpinner />;
   }
   return (
-    <section className="grid max-w-3xl gap-3 border-line border-t p-4">
+    <section className="border-line grid max-w-3xl gap-3 border-t p-4">
       <h2 className="type-subheading">{t("title")}</h2>
       {agreement.data ? (
         <>
@@ -518,7 +518,7 @@ export const MySubmission = () => {
       </AdminHeading>
 
       {row.status === "intake_check" && row.intake_returned_at ? (
-        <section className="grid gap-2 border-line border-t p-4" role="status">
+        <section className="border-line grid gap-2 border-t p-4" role="status">
           <h2 className="font-medium">{t("returnedTitle")}</h2>
           <p className="whitespace-pre-wrap">{row.intake_note}</p>
           <p className="type-caption">{t("returnedHint")}</p>
@@ -667,15 +667,15 @@ const ReadingTimeline = ({
           return (
             <li
               aria-current={state === "current" ? "step" : undefined}
-              className="grid grid-cols-[1.5rem_1fr] gap-3 border-line border-b py-3"
+              className="border-line grid grid-cols-[1.5rem_1fr] gap-3 border-b py-3"
               key={stage}
             >
               <span
                 aria-hidden="true"
                 className={
                   state === "next"
-                    ? "mt-1 size-4 border border-line"
-                    : "mt-1 size-4 border border-line bg-band"
+                    ? "border-line mt-1 size-4 border"
+                    : "border-line bg-band mt-1 size-4 border"
                 }
               />
               <div className="grid gap-1">

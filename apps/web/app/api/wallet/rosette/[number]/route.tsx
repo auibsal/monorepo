@@ -2,7 +2,7 @@ import { guillochePaths } from "@repo/brand/components/sal/guilloche";
 import { ImageResponse } from "next/og";
 import { problem } from "@/lib/api/problem";
 
-const NUMBER = /^[0-9]{1,7}$/;
+const NUMBER = /^[0-9]{1,7}$/u;
 const PAPER = "#f5f2ee";
 const ASH = "#5c6568";
 

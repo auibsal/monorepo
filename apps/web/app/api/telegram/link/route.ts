@@ -20,8 +20,8 @@ export const OPTIONS = preflight;
 
 // RFC 7636: verifiers are 43–128 unreserved characters; an S256 challenge
 // is 43 base64url characters.
-const VERIFIER = /^[\w.~-]{43,128}$/;
-const CHALLENGE = /^[\w-]{43}$/;
+const VERIFIER = /^[\w.~-]{43,128}$/u;
+const CHALLENGE = /^[\w-]{43}$/u;
 
 const body = z.union([
   z.object({

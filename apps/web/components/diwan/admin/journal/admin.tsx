@@ -451,7 +451,7 @@ const QueueItem = ({ item }: { item: QueueRow }) => {
       : "";
 
   return (
-    <li className="grid gap-3 border-line border-t p-4">
+    <li className="border-line grid gap-3 border-t p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h3 className="font-medium">{item.title}</h3>
         <span className="type-caption">
@@ -755,7 +755,7 @@ export const ContributorPage = ({ slug }: { readonly slug: string }) => {
   );
 };
 
-const UUID_LIKE = /^[0-9a-f-]{36}$/i;
+const UUID_LIKE = /^[0-9a-f-]{36}$/iu;
 
 const puzzleEditorKeys = [
   "journal.approve",

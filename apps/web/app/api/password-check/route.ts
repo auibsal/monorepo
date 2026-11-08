@@ -1,6 +1,6 @@
 import { problem } from "@/lib/api/problem";
 
-const PREFIX = /^[0-9A-F]{5}$/;
+const PREFIX = /^[0-9A-F]{5}$/u;
 
 /**
  * The breached-password check (NIST SP 800-63B §5.1.1.2) for sign-up,

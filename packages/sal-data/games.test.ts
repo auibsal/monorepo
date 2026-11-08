@@ -273,10 +273,11 @@ describe("crossword layout", () => {
             start = start < 0 ? b : start;
           } else {
             if (start >= 0 && b - start >= 2) {
+              const at = start;
               const found = crossword?.entries.some((e) =>
                 across
-                  ? e.across && e.row === a && e.col === start
-                  : !e.across && e.col === a && e.row === start
+                  ? e.across && e.row === a && e.col === at
+                  : !e.across && e.col === a && e.row === at
               );
               expect(found).toBe(true);
             }

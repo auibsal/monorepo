@@ -25,7 +25,7 @@ const securityOptions = securityOptionsWith();
 // The daily word is also the Telegram bot's Main App: Telegram's web app
 // shows Mini Apps in a frame, so that page (and only that page) may be framed
 // by it.
-const WORD_GAME = /^(\/[a-z]{2})?\/qirtas\/games\/word\/?$/;
+const WORD_GAME = /^(\/[a-z]{2})?\/qirtas\/games\/word\/?$/u;
 const miniAppOptions = telegramMiniApp(securityOptions);
 
 // Your account and the Diwan (the (account) and diwan route groups, which
@@ -33,7 +33,7 @@ const miniAppOptions = telegramMiniApp(securityOptions);
 // of 'unsafe-inline'. The public site is prerendered, so it keeps the
 // static policy.
 const PER_REQUEST =
-  /^(\/[a-z]{2})?\/(account|auth|company\/auditions|continue|diwan|forgot-password|forms|get-involved|invite|partners\/(apply|dashboard)|qirtas\/(read|write)|sign-in|sign-up|welcome)(\/|$)/;
+  /^(\/[a-z]{2})?\/(account|auth|company\/auditions|continue|diwan|forgot-password|forms|get-involved|invite|partners\/(apply|dashboard)|qirtas\/(read|write)|sign-in|sign-up|welcome)(\/|$)/u;
 const themeHash = scriptHash(themeScript);
 
 // The proxy picks the language and sets the security headers. Sign-in and

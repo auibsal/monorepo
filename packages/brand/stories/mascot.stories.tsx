@@ -122,10 +122,10 @@ const StickerGrid = () => (
 export const Stickers: Story = {
   render: () => (
     <div className="grid gap-6">
-      <section className="bg-surface p-6 text-text" data-theme="light">
+      <section className="bg-surface text-text p-6" data-theme="light">
         <StickerGrid />
       </section>
-      <section className="bg-surface p-6 text-text" data-theme="dark">
+      <section className="bg-surface text-text p-6" data-theme="dark">
         <StickerGrid />
       </section>
     </div>

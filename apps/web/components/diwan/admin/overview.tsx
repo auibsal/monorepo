@@ -65,9 +65,9 @@ const Figure = ({
   readonly label: string;
   readonly value: number;
 }) => (
-  <SalCard className="content-start gap-2 p-4 sm:gap-3 sm:p-space-4">
+  <SalCard className="sm:p-space-4 content-start gap-2 p-4 sm:gap-3">
     <p className="type-label">{label}</p>
-    <p className="font-light text-3xl text-text tabular-nums sm:text-4xl">
+    <p className="text-text text-3xl font-light tabular-nums sm:text-4xl">
       {formatNumber(value)}
     </p>
     <p className="sm:type-body text-sm">{detail}</p>
@@ -242,7 +242,7 @@ const QuickActions = () => {
   ).slice(0, 3);
   return actions.map((action) => (
     <Link
-      className="inline-flex items-center gap-1.5 font-medium text-sm hover:text-accent"
+      className="hover:text-accent inline-flex items-center gap-1.5 text-sm font-medium"
       href={action.key === "door" && next ? doorPath(next) : action.href}
       key={action.key}
     >
@@ -361,7 +361,7 @@ export const AdminOverview = () => {
         <p className="type-body text-text-secondary">{t("nothing")}</p>
       ) : null}
       {figures.length > 0 ? (
-        <div className="grid grid-cols-2 gap-space-3 sm:gap-space-4 xl:grid-cols-3">
+        <div className="gap-space-3 sm:gap-space-4 grid grid-cols-2 xl:grid-cols-3">
           {figures.map((figure) => (
             <Figure key={figure.label} {...figure} />
           ))}
@@ -373,14 +373,14 @@ export const AdminOverview = () => {
           {o.campaigns.length === 0 ? (
             <p className="type-body text-text-secondary">{t("noCampaigns")}</p>
           ) : (
-            <ul className="grid gap-space-4 sm:grid-cols-2">
+            <ul className="gap-space-4 grid sm:grid-cols-2">
               {o.campaigns.map((c) => (
                 <li key={c.campaign_id}>
                   <SalCard>
                     <p className="font-medium">
                       {localized(c, "title", locale)}
                     </p>
-                    <p className="font-light text-2xl text-text tabular-nums">
+                    <p className="text-text text-2xl font-light tabular-nums">
                       {t("counted", {
                         amount: formatIqd(c.counted_iqd, locale),
                       })}

@@ -65,13 +65,13 @@ export const DiwanNav = () => {
           aria-current={here ? "page" : undefined}
           className={cn(
             phone
-              ? "block py-3 text-sm hover:text-accent"
-              : "block whitespace-nowrap border-b-[1.5px] py-3 font-medium text-sm hover:text-accent",
-            phone && (here ? "font-medium text-accent" : "text-text"),
+              ? "hover:text-accent block py-3 text-sm"
+              : "hover:text-accent block border-b-[1.5px] py-3 text-sm font-medium whitespace-nowrap",
+            phone && (here ? "text-accent font-medium" : "text-text"),
             !phone &&
               (here
                 ? "border-accent text-text"
-                : "border-transparent text-text-secondary")
+                : "text-text-secondary border-transparent")
           )}
           href={section.path}
         >
@@ -86,14 +86,14 @@ export const DiwanNav = () => {
         className="group mx-auto w-full max-w-6xl px-4 md:hidden"
         key={pathname}
       >
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 font-medium text-sm [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
           <span>{t(current)}</span>
           <Icon
             className="size-4 transition-transform group-open:rotate-180"
             name="chevron-down"
           />
         </summary>
-        <ul className="grid divide-y divide-line border-line border-t">
+        <ul className="divide-line border-line grid divide-y border-t">
           {sections.map((section) => link(section, true))}
         </ul>
       </details>
@@ -151,7 +151,7 @@ export const SectionTabs = ({
   }
   const hereIndex = tabHere(tabs, pathname);
   return (
-    <nav aria-label={label} className="overflow-x-auto border-line border-b">
+    <nav aria-label={label} className="border-line overflow-x-auto border-b">
       <ul className="flex gap-x-6">
         {tabs.map((tab, index) => {
           const here = index === hereIndex;
@@ -160,16 +160,16 @@ export const SectionTabs = ({
               <Link
                 aria-current={here ? "page" : undefined}
                 className={cn(
-                  "block whitespace-nowrap border-b-[1.5px] py-3 font-medium text-sm hover:text-accent",
+                  "hover:text-accent block border-b-[1.5px] py-3 text-sm font-medium whitespace-nowrap",
                   here
                     ? "border-accent text-text"
-                    : "border-transparent text-text-secondary"
+                    : "text-text-secondary border-transparent"
                 )}
                 href={tab.href}
               >
                 {tab.label}
                 {tab.count ? (
-                  <span className="ms-1.5 text-accent">{tab.count}</span>
+                  <span className="text-accent ms-1.5">{tab.count}</span>
                 ) : null}
               </Link>
             </li>

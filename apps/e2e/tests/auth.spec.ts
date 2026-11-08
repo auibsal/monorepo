@@ -9,7 +9,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   const local = `e2e-${Date.now()}`;
   // One person, one name: each run's new member has a grandfather's name of
   // their own (letters from the clock).
-  const grandfather = `Hasan${String(Date.now()).replace(/\d/g, (d) => "abcdefghij"[Number(d)] ?? "")}`;
+  const grandfather = `Hasan${String(Date.now()).replace(/\d/gu, (d) => "abcdefghij"[Number(d)] ?? "")}`;
   const email = `${local}@auib.edu.iq`;
   // A phone's screen: the next screen must start at the top, not in the
   // footer where the button left the page.
@@ -22,8 +22,8 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByLabel("Password").fill(PASSWORD);
   await expect(page.getByLabel("Family name")).toHaveCount(0);
   // Students say they are (decisions §2).
-  await page.getByRole("checkbox", { name: /enrolled AUIB student/ }).check();
-  await page.getByRole("checkbox", { name: /18 or older/ }).check();
+  await page.getByRole("checkbox", { name: /enrolled AUIB student/u }).check();
+  await page.getByRole("checkbox", { name: /18 or older/u }).check();
   // Scrolled down to the button, as on a phone.
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.getByRole("button", { name: "Create account" }).click();
@@ -32,14 +32,14 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
 
   const mail = await latestMail(email);
-  const link = /href="([^"]*\/auth\/confirm\?[^"]+)"/.exec(mail.HTML)?.[1];
+  const link = /href="([^"]*\/auth\/confirm\?[^"]+)"/u.exec(mail.HTML)?.[1];
   expect(link).toBeTruthy();
   await page.goto((link ?? "").replaceAll("&amp;", "&"));
-  await page.getByRole("button", { name: /continue/i }).click();
+  await page.getByRole("button", { name: /continue/iu }).click();
 
   // One question per screen.
   // One question per screen, each at its own address.
-  await expect(page).toHaveURL(/\/welcome\/1(\?|$)/);
+  await expect(page).toHaveURL(/\/welcome\/1(\?|$)/u);
   await expect(page.getByText("Step 1 of 5")).toBeVisible();
   await expectAccessible(page);
   // The name in four parts, in English, then in Arabic.
@@ -50,13 +50,13 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByLabel("Family name").press("Enter");
 
   await expect(page.getByText("Step 2 of 5")).toBeVisible();
-  await expect(page).toHaveURL(/\/welcome\/2(\?|$)/);
+  await expect(page).toHaveURL(/\/welcome\/2(\?|$)/u);
   await page.getByLabel("Name", { exact: true }).fill("عضو");
   await page.getByLabel("Father’s name", { exact: true }).fill("كريم");
   await page
     .getByLabel("Grandfather’s name")
     .fill(
-      `حسن${grandfather.slice(5).replace(/[a-j]/g, (c) => "ابتثجحخدذر"[c.charCodeAt(0) - 97] ?? "")}`
+      `حسن${grandfather.slice(5).replace(/[a-j]/gu, (c) => "ابتثجحخدذر"[c.charCodeAt(0) - 97] ?? "")}`
     );
   await page.getByLabel("Family name").fill("جديد");
   // The browser's Back goes to the last screen, answers kept.
@@ -84,11 +84,13 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expectAccessible(page);
 
   // The optional details are part of Profile (Nov 4, 2026).
-  await page.getByRole("link", { name: /Tell us more about yourself/ }).click();
-  await expect(page).toHaveURL(/\/account\/settings\/profile/);
+  await page
+    .getByRole("link", { name: /Tell us more about yourself/u })
+    .click();
+  await expect(page).toHaveURL(/\/account\/settings\/profile/u);
   const details = page.getByRole("region", { name: "More about you" });
   // Five answers: chosen from a list under the field, not a row.
-  await details.getByRole("button", { name: /You are/ }).click();
+  await details.getByRole("button", { name: /You are/u }).click();
   await details.getByRole("option", { name: "A student at AUIB" }).click();
   await details.getByRole("checkbox", { name: "Poetry" }).check();
   await details.getByRole("checkbox", { name: "Theater" }).check();
@@ -131,14 +133,14 @@ test("a whole address pasted and submitted at once signs up the right address", 
     .getByLabel("Your AUIB email")
     .fill(`paste.${Date.now()}@auib.edu.iq`);
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
-  await page.getByRole("checkbox", { name: /enrolled AUIB student/ }).check();
-  await page.getByRole("checkbox", { name: /18 or older/ }).check();
+  await page.getByRole("checkbox", { name: /enrolled AUIB student/u }).check();
+  await page.getByRole("checkbox", { name: /18 or older/u }).check();
   await page.getByLabel("Password", { exact: true }).press("Enter");
   const status = page.getByRole("status").first();
   await expect(status).toContainText("@auib.edu.iq");
   await expect(status).not.toContainText("auib.edu.iq@auib.edu.iq");
   await expect(
-    page.getByRole("button", { name: /Send the email again in \d+ s/ })
+    page.getByRole("button", { name: /Send the email again in \d+ s/u })
   ).toBeDisabled();
 });
 
@@ -181,11 +183,11 @@ test("a sign-in email's code works where its link can't be opened", async ({
   await expect(page.getByRole("status")).toContainText("type its code");
 
   const mail = await latestMail(member.email, sentAt);
-  const code = /letter-spacing:0\.25em[^>]*>(\d{6,10})</.exec(mail.HTML)?.[1];
+  const code = /letter-spacing:0\.25em[^>]*>(\d{6,10})</u.exec(mail.HTML)?.[1];
   expect(code).toBeTruthy();
   await page.getByLabel("Code from the email").fill(code ?? "");
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`));
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
 });
 
 test("a member with a name from before the four parts is asked for them at sign-in", async ({
@@ -216,7 +218,7 @@ test("a member with a name from before the four parts is asked for them at sign-
   await page.getByLabel("Email").fill(member.email);
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
-  await expect(page).toHaveURL(/\/welcome\/1/);
+  await expect(page).toHaveURL(/\/welcome\/1/u);
   // The first and last words are offered as the first and fourth parts.
   await expect(page.getByLabel("Name", { exact: true })).toHaveValue("E2E");
   await expect(page.getByLabel("Family name")).toHaveValue("Tester");
@@ -227,6 +229,6 @@ test("a member with a name from before the four parts is asked for them at sign-
   await page.getByLabel("Father’s name", { exact: true }).fill("تجريبي");
   await page.getByLabel("Grandfather’s name").fill("آلي");
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`));
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
   await expect(page.getByText("E2E Tester").first()).toBeVisible();
 });

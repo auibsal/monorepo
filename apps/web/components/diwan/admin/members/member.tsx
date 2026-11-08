@@ -609,7 +609,7 @@ const AssignRole = ({
         </ConfirmAction>
       </div>
       {brokenRule ? (
-        <p className="text-sm text-text" role="alert">
+        <p className="text-text text-sm" role="alert">
           {t(`rules.${brokenRule}`)}
         </p>
       ) : (
@@ -635,7 +635,7 @@ const TwoStepReset = ({ name, userId }: { name: string; userId: string }) => {
   return (
     <section className="grid gap-3">
       <h2 className="type-heading">{t("title")}</h2>
-      <p className="type-body max-w-2xl text-text-secondary">{t("body")}</p>
+      <p className="type-body text-text-secondary max-w-2xl">{t("body")}</p>
       <div>
         <ConfirmAction
           confirmLabel={t("confirm")}
@@ -678,7 +678,7 @@ const Departure = ({ name, userId }: { name: string; userId: string }) => {
   return (
     <section className="grid gap-3">
       <h2 className="type-heading">{t("title")}</h2>
-      <p className="type-body max-w-2xl text-text-secondary">{t("body")}</p>
+      <p className="type-body text-text-secondary max-w-2xl">{t("body")}</p>
       <div className="flex flex-wrap gap-3">
         <ConfirmAction
           confirmLabel={t("graduatedConfirm")}

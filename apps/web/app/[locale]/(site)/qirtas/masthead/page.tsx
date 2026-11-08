@@ -46,10 +46,10 @@ const MastheadPage = async ({ params }: MastheadProps) => {
         <dl className="grid">
           {people.map((p) => (
             <div
-              className="grid gap-1 border-line border-t py-4 sm:grid-cols-[1fr_1.4fr] sm:gap-6"
+              className="border-line grid gap-1 border-t py-4 sm:grid-cols-[1fr_1.4fr] sm:gap-6"
               key={`${p.role}-${p.full_name_en}`}
             >
-              <dt className="type-caption font-medium uppercase tracking-wider">
+              <dt className="type-caption font-medium tracking-wider uppercase">
                 {localized(p, "title", locale)}
               </dt>
               <dd className="type-heading">

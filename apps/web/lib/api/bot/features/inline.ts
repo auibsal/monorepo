@@ -19,7 +19,7 @@ import { pieceAuthor, publicPieces } from "./qirtas";
 export const inline = new Composer<BotContext>();
 
 const MAX_QUERY = 40;
-const MENTIONS = /@\w+/g;
+const MENTIONS = /@\w+/gu;
 
 const matches = (query: string, ...fields: (string | null)[]) =>
   !query ||

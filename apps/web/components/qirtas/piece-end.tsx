@@ -22,7 +22,7 @@ export const PieceEnd = async ({
   return (
     <aside
       aria-label={t("end.label")}
-      className="mx-auto grid w-full max-w-3xl gap-8 border-line border-t px-4 pt-8 md:grid-cols-2 print:hidden"
+      className="border-line mx-auto grid w-full max-w-3xl gap-8 border-t px-4 pt-8 md:grid-cols-2 print:hidden"
     >
       {sends ? (
         <div className="grid content-start gap-2">

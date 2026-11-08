@@ -37,7 +37,7 @@ export const GetInvolved = () => {
         <p className="type-body text-text-secondary">
           {t("members")}{" "}
           <Link
-            className="font-medium text-accent hover:underline"
+            className="text-accent font-medium hover:underline"
             href={{ pathname: "/sign-in", query: { next: "/get-involved" } }}
           >
             {t("signIn")}

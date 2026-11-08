@@ -1,5 +1,5 @@
-const SLUG_TRIM = /^-+|-+$/g;
-const NOT_SLUG = /[^a-z0-9]+/g;
+const SLUG_TRIM = /^-+|-+$/gu;
+const NOT_SLUG = /[^a-z0-9]+/gu;
 
 /** "The Return 2026" → "the-return-2026". */
 export const slugify = (value: string) =>

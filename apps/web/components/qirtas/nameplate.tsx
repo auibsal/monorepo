@@ -17,13 +17,13 @@ export const Nameplate = async ({ locale }: { locale: Locale }) => {
     <header className="grid gap-6">
       <div className="grid justify-items-center pt-4 text-center">
         <Link
-          className="font-medium text-[clamp(4.5rem,13vw,10rem)] leading-[0.95] tracking-[-0.04em] hover:text-accent"
+          className="hover:text-accent text-[clamp(4.5rem,13vw,10rem)] leading-[0.95] font-medium tracking-[-0.04em]"
           href="/qirtas"
         >
           {t("title")}
         </Link>
       </div>
-      <p className="grid gap-1 border-text border-y py-2.5 font-medium text-[0.8125rem] sm:grid-cols-3 sm:items-center">
+      <p className="border-text grid gap-1 border-y py-2.5 text-[0.8125rem] font-medium sm:grid-cols-3 sm:items-center">
         <span>{formatLongDate(new Date().toISOString(), locale, true)}</span>
         <span className="sm:text-center">{t("tagline")}</span>
         <span className="flex flex-wrap gap-x-5 sm:justify-end">

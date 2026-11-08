@@ -3,7 +3,7 @@ import { type Client, unwrap } from "./client";
 
 export const BIO_MAX_WORDS = 50;
 
-const WHITESPACE = /\s+/;
+const WHITESPACE = /\s+/u;
 
 export const wordCount = (value: string) => {
   const trimmed = value.trim();
@@ -72,10 +72,10 @@ export const livePath = (code: string, digits: string) =>
   `${cardPath(code)}?t=${digits}`;
 
 /** Live digits, as they appear in the link. */
-export const LIVE_DIGITS = /^[0-9]{8}$/;
+export const LIVE_DIGITS = /^[0-9]{8}$/u;
 
 /** A card's code, as it appears in the link (20 hex characters). */
-export const CARD_CODE = /^[0-9a-f]{20}$/;
+export const CARD_CODE = /^[0-9a-f]{20}$/u;
 
 /** The member's own card (issued on first look). */
 export const myCard = async (client: Client) =>

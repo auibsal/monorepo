@@ -73,13 +73,13 @@ export const Section: Story = {
         }
         title="This term"
       />
-      <ul className="grid border-line border-b">
+      <ul className="border-line grid border-b">
         {["Writing workshop", "Readings and conversation"].map((title, i) => (
           <li
-            className="grid grid-cols-[6rem_1fr] gap-x-4 border-line border-t py-space-4"
+            className="border-line py-space-4 grid grid-cols-[6rem_1fr] gap-x-4 border-t"
             key={title}
           >
-            <span className="font-light text-[2.75rem] leading-none">
+            <span className="text-[2.75rem] leading-none font-light">
               {String(13 + i * 7)}
             </span>
             <span className="text-xl">{title}</span>
@@ -129,7 +129,7 @@ export const FormPageStory: Story = {
     >
       <FormField id="release-name" label="Full name">
         <input
-          className="h-11 w-full border-text border-b bg-transparent text-text outline-none focus-visible:border-accent"
+          className="border-text text-text focus-visible:border-accent h-11 w-full border-b bg-transparent outline-none"
           defaultValue="Lina Hassan"
           id="release-name"
           type="text"
@@ -137,19 +137,19 @@ export const FormPageStory: Story = {
       </FormField>
       <FormField id="release-event" label="Event">
         <input
-          className="h-11 w-full border-text border-b bg-transparent text-text outline-none focus-visible:border-accent"
+          className="border-text text-text focus-visible:border-accent h-11 w-full border-b bg-transparent outline-none"
           defaultValue="Writing workshop, Tuesday, November 17"
           id="release-event"
           type="text"
         />
       </FormField>
       <fieldset className="grid gap-2">
-        <legend className="mb-2 font-medium text-sm text-text">
+        <legend className="text-text mb-2 text-sm font-medium">
           Where the photos may appear
         </legend>
         {RELEASE_USES.map((use) => (
           <label
-            className="flex items-center gap-3 border-line border-b py-2 text-text"
+            className="border-line text-text flex items-center gap-3 border-b py-2"
             key={use}
           >
             <input className="size-4 accent-[var(--accent)]" type="checkbox" />
@@ -165,17 +165,17 @@ export const FormPageStory: Story = {
 export const PrintedForm: Story = {
   render: () => (
     <section
-      className="grid max-w-2xl gap-6 bg-white p-8 text-text"
+      className="text-text grid max-w-2xl gap-6 bg-white p-8"
       data-theme="light"
     >
       <FormHeader code="SAL-EXB-01 · F-15" title="Photo release" />
       <div className="grid grid-cols-2 gap-6">
         {["Full name", "Event", "Signature", "Date"].map((field) => (
           <div className="grid gap-2" key={field}>
-            <span className="font-medium text-[10.4px] text-text-secondary uppercase tracking-[0.1em]">
+            <span className="text-text-secondary text-[10.4px] font-medium tracking-[0.1em] uppercase">
               {field}
             </span>
-            <span className="block h-7 border-text border-b" />
+            <span className="border-text block h-7 border-b" />
           </div>
         ))}
       </div>
@@ -238,7 +238,7 @@ const shelfItems = (titles: readonly string[]) =>
     key: title,
     node: (
       <a className="grid gap-2 hover:underline" href="#shelf">
-        <span className="grid aspect-[3/4] place-items-center border border-line p-4 text-center">
+        <span className="border-line grid aspect-[3/4] place-items-center border p-4 text-center">
           <span className="type-heading">{title}</span>
         </span>
         <span className="type-caption text-text-secondary">{title}</span>

@@ -29,7 +29,7 @@ export const TellUsMoreLine = () => {
     return null;
   }
   return (
-    <p className="type-body border-line border-y py-space-3">
+    <p className="type-body border-line py-space-3 border-y">
       <Link
         className="link font-medium"
         href="/account/settings/profile#details"

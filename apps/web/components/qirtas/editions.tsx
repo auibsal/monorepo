@@ -67,9 +67,9 @@ const CoverArt = async ({
   return (
     <span
       aria-hidden
-      className="grid aspect-[3/4] w-full content-between border border-line bg-surface p-space-4"
+      className="border-line bg-surface p-space-4 grid aspect-[3/4] w-full content-between border"
     >
-      <span className="font-medium text-2xl tracking-tight">{t("title")}</span>
+      <span className="text-2xl font-medium tracking-tight">{t("title")}</span>
       <span className="type-title">
         {t("editionNumber", { number: String(edition.number) })}
       </span>
@@ -136,7 +136,7 @@ export const EditionComing = async ({ locale }: { locale: Locale }) => {
           />
           <ul className="grid">
             {launches.map((event) => (
-              <li className="border-line border-t py-space-4" key={event.id}>
+              <li className="border-line py-space-4 border-t" key={event.id}>
                 <Link
                   className="group grid gap-1"
                   href={`/events/${event.slug}`}

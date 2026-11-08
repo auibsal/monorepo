@@ -12,7 +12,7 @@ for (const locale of ["en", "ar"] as const) {
     const skip = page.locator(":focus");
     await expect(skip).toHaveAttribute("href", "#main");
     await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/#main$/);
+    await expect(page).toHaveURL(/#main$/u);
   });
 
   test(`the main menu is reached and followed by keyboard (${locale})`, async ({
@@ -30,6 +30,6 @@ for (const locale of ["en", "ar"] as const) {
       }
     }
     await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/\/events\/?$/);
+    await expect(page).toHaveURL(/\/events\/?$/u);
   });
 }

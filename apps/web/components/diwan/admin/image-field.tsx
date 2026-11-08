@@ -71,7 +71,7 @@ export const ImageField = ({
         <div className="flex flex-wrap items-end gap-3">
           {kind === "pdf" ? (
             <a
-              className="break-all text-sm underline underline-offset-4"
+              className="text-sm break-all underline underline-offset-4"
               dir="ltr"
               href={getMediaUrl(supabase, value)}
               rel="noopener"
@@ -112,7 +112,7 @@ export const ImageField = ({
         {!busy && kind === "image" ? t("noImageNote") : null}
       </p>
       {problem ? (
-        <p className="text-sm text-text" role="alert">
+        <p className="text-text text-sm" role="alert">
           {problem}
         </p>
       ) : null}

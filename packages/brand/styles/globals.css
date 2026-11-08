@@ -368,10 +368,10 @@
     *,
     ::before,
     ::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
       scroll-behavior: auto !important;
       transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
     }
   }
 }
@@ -540,6 +540,7 @@
  * frame (header, footer, menus and actions carry `print:hidden`).
  */
 @media print {
+  /* biome-ignore lint/suspicious/useBaseline: print margins only; browsers without @page use their own. */
   @page {
     margin: 18mm 16mm;
   }

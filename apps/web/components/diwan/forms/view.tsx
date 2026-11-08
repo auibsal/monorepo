@@ -52,10 +52,10 @@ export const SubmissionSheet = ({
 
   return (
     <article
-      className="grid gap-6 bg-surface p-6 text-text print:p-0"
+      className="bg-surface text-text grid gap-6 p-6 print:p-0"
       data-theme="light"
     >
-      <header className="grid gap-1 border-line border-b-2 pb-3">
+      <header className="border-line grid gap-1 border-b-2 pb-3">
         <h2 className="type-heading">{labels.title()}</h2>
         <p className="type-caption">
           {actions ? `${definition.code} · ` : ""}

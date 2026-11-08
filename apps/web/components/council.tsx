@@ -39,7 +39,7 @@ export const CouncilSeats = ({
         holders.length > 0 ? holders.join(locale === "ar" ? "، " : ", ") : open;
       return (
         <li
-          className="grid content-start gap-1 border-line border-t py-space-4"
+          className="border-line py-space-4 grid content-start gap-1 border-t"
           key={seat.seat}
         >
           <p className="type-label">

@@ -33,7 +33,7 @@ export const VotingEligibility = () => {
         <div aria-hidden="true" className="grid grid-cols-2 gap-1">
           {STEPS.map((step) => (
             <span
-              className={step <= count ? "h-1 bg-text" : "h-1 bg-line"}
+              className={step <= count ? "bg-text h-1" : "bg-line h-1"}
               key={step}
             />
           ))}

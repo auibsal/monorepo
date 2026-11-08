@@ -67,7 +67,7 @@ export const EventParts = async ({
           </ul>
         </Section>
       ) : null}
-      {pieces.filter((p) => localized(p, "title", locale)).length > 0 ? (
+      {pieces.some((p) => localized(p, "title", locale)) ? (
         <Section id="qirtas" title={t("qirtas")}>
           <ul className="grid gap-2">
             {pieces

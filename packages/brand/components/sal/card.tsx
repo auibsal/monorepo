@@ -9,7 +9,7 @@ import { cn } from "../../lib/utils";
  */
 export const SalCard = ({ className, ...props }: ComponentProps<"section">) => (
   <section
-    className={cn("grid gap-3 border-line border-t pt-space-4", className)}
+    className={cn("border-line pt-space-4 grid gap-3 border-t", className)}
     {...props}
   />
 );

@@ -14,7 +14,7 @@ const body = z.object({
   anonymous: z.boolean().default(false),
   data: z.record(z.string().max(64), z.unknown()),
   esign_agreed: z.boolean().default(false),
-  form: z.string().regex(/^f\d{2}$/),
+  form: z.string().regex(/^f\d{2}$/u),
   link: z.string().max(100).nullish(),
   routing: z.enum(forms.routings).default("none"),
   signer_contact: z.string().max(200).nullish(),

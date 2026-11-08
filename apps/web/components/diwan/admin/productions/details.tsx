@@ -90,7 +90,7 @@ export const DetailsTab = ({ production }: { production: ProductionRow }) => {
     <div className="grid max-w-3xl gap-8 pt-4">
       <div className="grid gap-3">
         <p className="type-label">{t("stageNow")}</p>
-        <p className="font-medium text-xl">{t(`stages.${stage}`)}</p>
+        <p className="text-xl font-medium">{t(`stages.${stage}`)}</p>
         {finished ? null : (
           <div className="flex flex-wrap items-center gap-3">
             {next ? (

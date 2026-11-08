@@ -91,7 +91,7 @@ export const Service = () => {
       <SalCard>
         <div className="grid gap-3">
           <p className="type-label">{t("thisYear")}</p>
-          <p className="font-light text-3xl tabular-nums">
+          <p className="text-3xl font-light tabular-nums">
             {t("hours", { hours: formatNumber(total) })}
           </p>
         </div>
@@ -107,7 +107,7 @@ export const Service = () => {
         <ul className="grid gap-2">
           {(records.data ?? []).map((r) => (
             <li
-              className="flex flex-wrap items-baseline justify-between gap-2 border-line border-b pb-2"
+              className="border-line flex flex-wrap items-baseline justify-between gap-2 border-b pb-2"
               key={r.id}
             >
               <span className="grid">

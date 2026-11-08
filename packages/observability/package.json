@@ -1,6 +1,6 @@
 {
   "name": "@repo/observability",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "24.19.1",
+    "@types/node": "26.6.6",
     "typescript": "^7.0.2"
   }
 }

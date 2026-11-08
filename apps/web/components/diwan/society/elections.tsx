@@ -197,7 +197,7 @@ const Nominate = ({ position }: { readonly position: Position }) => {
           stored. */}
       <div className="flex items-start gap-2">
         <input
-          className="mt-1 size-4 accent-accent"
+          className="accent-accent mt-1 size-4"
           id={`gpa-${position.id}`}
           name="gpa_consent"
           required
@@ -317,7 +317,7 @@ const Ballot = ({
         );
         return (
           <div
-            className="grid gap-3 border-line border-t pt-space-4"
+            className="border-line pt-space-4 grid gap-3 border-t"
             key={position.id}
           >
             <Label htmlFor={`${election.id}-${position.id}`}>
@@ -428,7 +428,7 @@ const ElectionCard = ({
   const votingPoint = votingPointLine(election, locale, t, when);
 
   return (
-    <article className="grid gap-4 border-line border-t pt-space-4">
+    <article className="border-line pt-space-4 grid gap-4 border-t">
       <header className="grid gap-1">
         <h3 className="type-heading">{localized(election, "title", locale)}</h3>
         <p className="type-caption">
@@ -468,7 +468,7 @@ const ElectionCard = ({
             );
             return (
               <section
-                className="grid gap-2 border-line border-t pt-3"
+                className="border-line grid gap-2 border-t pt-3"
                 key={position.id}
               >
                 <h4 className="type-subheading">

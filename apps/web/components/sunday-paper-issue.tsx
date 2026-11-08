@@ -65,11 +65,11 @@ export const SundayPaperIssue = async ({
 
   return (
     <article className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12">
-      <header className="grid justify-items-center gap-3 border-text border-b-2 pb-4 text-center">
-        <h1 className="font-light text-5xl tracking-tight sm:text-7xl">
+      <header className="border-text grid justify-items-center gap-3 border-b-2 pb-4 text-center">
+        <h1 className="text-5xl font-light tracking-tight sm:text-7xl">
           {t("title")}
         </h1>
-        <p className="type-caption flex w-full flex-wrap justify-between gap-x-6 border-text border-t pt-2">
+        <p className="type-caption border-text flex w-full flex-wrap justify-between gap-x-6 border-t pt-2">
           <span>{formatLongDate(issue.sunday, locale)}</span>
           <span>{t("archive.issueLine")}</span>
         </p>
@@ -101,7 +101,7 @@ export const SundayPaperIssue = async ({
                       .map((p) => (
                         <li className="border-line border-t pt-3" key={p.id}>
                           <Link
-                            className="grid gap-1 hover:text-accent"
+                            className="hover:text-accent grid gap-1"
                             href={journal.piecePath(p)}
                           >
                             <span className="type-heading">
@@ -138,7 +138,7 @@ export const SundayPaperIssue = async ({
               {on.map((e) => (
                 <li className="border-line border-t pt-3" key={e.id}>
                   <Link
-                    className="grid gap-1 hover:text-accent"
+                    className="hover:text-accent grid gap-1"
                     href={`/events/${e.slug}`}
                   >
                     <span className="type-caption">
@@ -159,7 +159,7 @@ export const SundayPaperIssue = async ({
           step fewer for a reader who has just read an issue. */}
       <section
         aria-labelledby="next-issue"
-        className="grid gap-3 border-line border-t pt-6 print:hidden"
+        className="border-line grid gap-3 border-t pt-6 print:hidden"
       >
         <h2 className="type-heading" id="next-issue">
           {t("archive.subscribe")}

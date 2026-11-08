@@ -21,7 +21,7 @@ export const signInWithPassword = async (page: Page, email: string) => {
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
-  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`));
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
 };
 
 /** The newest email to an address, from the local stack's Mailpit. */
@@ -52,11 +52,11 @@ export const latestMail = async (to: string, after = 0) => {
 const totp = (secret: string, at = Date.now()) => {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let bits = "";
-  for (const char of secret.replace(/[=]+$/, "").toUpperCase()) {
+  for (const char of secret.replace(/[=]+$/u, "").toUpperCase()) {
     bits += alphabet.indexOf(char).toString(2).padStart(5, "0");
   }
   const key = Buffer.from(
-    (bits.match(/.{8}/g) ?? []).map((byte) => Number.parseInt(byte, 2))
+    (bits.match(/.{8}/gu) ?? []).map((byte) => Number.parseInt(byte, 2))
   );
   const counter = Buffer.alloc(8);
   counter.writeBigUInt64BE(BigInt(Math.floor(at / 30_000)));
@@ -76,7 +76,7 @@ const totp = (secret: string, at = Date.now()) => {
  */
 export const setUpTwoStep = async (page: Page) => {
   await page.getByRole("button", { name: "Set up my authenticator" }).click();
-  const key = await page.locator("code").first().innerText();
+  const key = (await page.locator("code").first().textContent()) ?? "";
   await page.getByLabel("Six-digit code").fill(totp(key.trim()));
   await page.getByRole("button", { name: "Confirm" }).click();
 };

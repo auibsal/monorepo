@@ -21,7 +21,7 @@ interface EditionProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;
 }
 
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 type Edition = Awaited<ReturnType<typeof journal.issueBySlug>>;
 
 export const generateStaticParams = () => [];
@@ -140,7 +140,7 @@ const EditionPage = async ({ params }: EditionProps) => {
         {byDesk.map((group) => (
           <div className="grid gap-3" key={group.desk}>
             <h3 className="type-label">{t(`desks.${group.desk}`)}</h3>
-            <ol className="grid border-line border-b">
+            <ol className="border-line grid border-b">
               {group.pieces.map((piece) => (
                 <li className="border-line border-t" key={piece.id}>
                   <Link
@@ -165,7 +165,7 @@ const EditionPage = async ({ params }: EditionProps) => {
       {older || newer ? (
         <nav
           aria-label={t("otherEditions")}
-          className="mx-auto grid w-full max-w-3xl gap-4 border-text border-t pt-6 sm:grid-cols-2"
+          className="border-text mx-auto grid w-full max-w-3xl gap-4 border-t pt-6 sm:grid-cols-2"
         >
           {older ? (
             <Link

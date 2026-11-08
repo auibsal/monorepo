@@ -9,7 +9,7 @@ export const roleAssignmentSchema = z
     /** An adopted Council resolution agreeing to a B5.5 exception. */
     exception_resolution: z.uuid().nullable().optional(),
     note: z.string().trim().max(500).optional(),
-    role_key: z.string().regex(/^[a-z_]+$/),
+    role_key: z.string().regex(/^[a-z_]+$/u),
     scope_id: z.uuid().nullable(),
     scope_type: z.enum(scopeTypes),
     starts_at: z.iso.datetime({ offset: true }),

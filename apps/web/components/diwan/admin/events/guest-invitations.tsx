@@ -75,7 +75,7 @@ export const GuestInvitations = ({ eventId }: { eventId: string }) => {
       <h2 className="type-title font-light">{t("title")}</h2>
       <p className="type-caption">{t("hint")}</p>
       {open.length > 0 ? (
-        <ul className="grid divide-y divide-line">
+        <ul className="divide-line grid divide-y">
           {open.map((row) => (
             <li
               className="flex flex-wrap items-center justify-between gap-3 py-2"

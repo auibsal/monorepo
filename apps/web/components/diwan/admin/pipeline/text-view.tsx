@@ -10,7 +10,7 @@ export const TextView = ({
 }) =>
   html ? (
     <div
-      className="prose max-w-none border-line border-t p-4"
+      className="prose border-line max-w-none border-t p-4"
       // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
       dangerouslySetInnerHTML={{ __html: sanitizeRichText(html) }}
       lang={lang}

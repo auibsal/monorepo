@@ -9,21 +9,21 @@ test.describe("Qirtas games", () => {
     await page.goto(`${urls.web}/qirtas/games`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Games");
     await expect(
-      page.getByRole("heading", { level: 2, name: /Today’s word/ })
+      page.getByRole("heading", { level: 2, name: /Today’s word/u })
     ).toBeVisible();
     await expect(page.getByRole("button", { name: "Enter" })).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Play it on its own page" })
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /Find the eight hidden words/ })
+      page.getByRole("link", { name: /Find the eight hidden words/u })
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /Fill the grid from the clues/ })
+      page.getByRole("link", { name: /Fill the grid from the clues/u })
     ).toBeVisible();
     await expect(
       page.getByRole("link", {
-        name: /Five words with their letters scrambled/,
+        name: /Five words with their letters scrambled/u,
       })
     ).toBeVisible();
     await expectAccessible(page);
@@ -60,7 +60,7 @@ test.describe("Qirtas games", () => {
     await expect(
       page
         .getByRole("listitem", { name: "Guess 1" })
-        .getByRole("img", { name: /right place|elsewhere|not in the word/ })
+        .getByRole("img", { name: /right place|elsewhere|not in the word/u })
     ).toHaveCount(5);
     await expectAccessible(page);
   });
@@ -78,7 +78,7 @@ test.describe("Qirtas games", () => {
     page,
   }) => {
     await page.goto(`${urls.web}/qirtas/games/crossword`);
-    await expect(page.getByText(/No\. \d+/)).toBeVisible();
+    await expect(page.getByText(/No\. \d+/u)).toBeVisible();
     const square = page.getByRole("textbox").first();
     await square.click();
     await page.keyboard.type("x");

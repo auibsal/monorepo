@@ -62,7 +62,7 @@ export const Handover = () => {
           {waiting.map((r) => {
             const owners = (r.owners ?? []) as unknown as Owner[];
             return (
-              <li className="grid gap-1 py-space-4" key={r.item}>
+              <li className="py-space-4 grid gap-1" key={r.item}>
                 <Link
                   className="type-subheading hover:text-accent"
                   href={WHERE[r.item] ?? "/"}

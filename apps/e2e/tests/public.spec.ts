@@ -28,10 +28,10 @@ test.describe("public site", () => {
     await expect(
       page.getByRole("heading", { name: event.title })
     ).toBeVisible();
-    const book = page.getByRole("link", { name: /rsvp|book/i }).first();
+    const book = page.getByRole("link", { name: /rsvp|book/iu }).first();
     await expect(book).toHaveAttribute(
       "href",
-      new RegExp(`/account/calendar#${event.slug}$`)
+      new RegExp(`/account/calendar#${event.slug}$`, "u")
     );
     const ld = await page
       .locator('script[type="application/ld+json"]')
@@ -60,16 +60,16 @@ test.describe("public site", () => {
       page.getByRole("link", { name: universityDate.title })
     ).toHaveCount(0);
     await expect(
-      page.getByRole("link", { name: /AUIB’s calendar/ })
-    ).toHaveAttribute("href", /auib\.edu\.iq/);
+      page.getByRole("link", { name: /AUIB’s calendar/u })
+    ).toHaveAttribute("href", /auib\.edu\.iq/u);
     await expectAccessible(page);
     await page.goto(`${urls.web}/events/${month}`);
-    await expect(page).toHaveURL(new RegExp(`/events\\?month=${month}$`));
+    await expect(page).toHaveURL(new RegExp(`/events\\?month=${month}$`, "u"));
     // A month with nothing in it points to what comes next.
     await page.goto(`${urls.web}/events?month=2026-01`);
     const next = page.getByText("Next:");
     await expect(next).toBeVisible();
-    await expect(next.getByRole("link")).toHaveAttribute("href", /\/events\//);
+    await expect(next.getByRole("link")).toHaveAttribute("href", /\/events\//u);
   });
 
   test("every event is a standard event: no series pages", async ({ page }) => {
@@ -95,7 +95,7 @@ test.describe("public site", () => {
       .getByRole("main")
       .getByRole("link", { name: "Next Stop’s promise" })
       .click();
-    await expect(page).toHaveURL(/\/next-stop\/care$/);
+    await expect(page).toHaveURL(/\/next-stop\/care$/u);
   });
 
   test("Get involved is one list of every open opportunity", async ({
@@ -154,7 +154,7 @@ test("every page in the sitemap is found, in both languages", async ({
   request,
 }) => {
   const xml = await (await request.get(`${urls.web}/sitemap.xml`)).text();
-  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/gu)].map((m) => m[1]);
   expect(locs.length).toBeGreaterThan(0);
   const missing: string[] = [];
   for (const loc of locs) {

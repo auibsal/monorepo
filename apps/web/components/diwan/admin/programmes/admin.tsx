@@ -116,7 +116,7 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
       <ul className="grid gap-3">
         {episodes.data?.map((e) => (
           <li
-            className="flex flex-wrap items-center justify-between gap-3 border-line border-b pb-3"
+            className="border-line flex flex-wrap items-center justify-between gap-3 border-b pb-3"
             key={e.id}
           >
             <div>
@@ -356,7 +356,7 @@ const EpisodeEditor = ({
         value={form.summary}
       />
       {problem ? (
-        <p className="text-sm text-text" role="alert">
+        <p className="text-text text-sm" role="alert">
           {problem}
         </p>
       ) : null}
@@ -420,7 +420,7 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
       <ul className="grid gap-3">
         {data.data?.reels.map((r) => (
           <li
-            className="flex flex-wrap items-center justify-between gap-3 border-line border-b pb-3"
+            className="border-line flex flex-wrap items-center justify-between gap-3 border-b pb-3"
             key={r.id}
           >
             <div className="min-w-0">
@@ -572,7 +572,7 @@ const NewReel = ({ programmeId }: { readonly programmeId: string }) => {
         value={form.caption}
       />
       {problem ? (
-        <p className="text-sm text-text" role="alert">
+        <p className="text-text text-sm" role="alert">
           {problem}
         </p>
       ) : null}
@@ -681,7 +681,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
             (s) => s.shift_id === shift.id && s.status !== "canceled"
           );
           return (
-            <li className="grid gap-2 border-line border-b pb-3" key={shift.id}>
+            <li className="border-line grid gap-2 border-b pb-3" key={shift.id}>
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <p className="font-medium">
                   {localized(shift, "role", locale)}
@@ -920,7 +920,7 @@ const Countdown = ({ dueAt }: { dueAt: string }) => {
   };
   return (
     <p
-      className={left.overdue ? "font-medium text-text" : "font-medium"}
+      className={left.overdue ? "text-text font-medium" : "font-medium"}
       role="timer"
     >
       {left.overdue ? t("overdue", values) : t("left", values)}
@@ -972,7 +972,7 @@ const RemovalCard = ({
         {t(`statuses.${request.status as RemovalStatus}`)}
       </p>
       {request.content_url ? (
-        <p className="break-all text-sm" dir="ltr">
+        <p className="text-sm break-all" dir="ltr">
           {t("content")}: {request.content_url}
         </p>
       ) : null}
