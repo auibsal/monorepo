@@ -16,7 +16,7 @@ select is_empty(
     from pg_proc p
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname in ('public', 'core', 'access', 'membership', 'events',
-        'journal', 'charity', 'programmes', 'governance', 'content')
+        'journal', 'programmes', 'governance', 'content')
       and p.prosecdef
       and (has_function_privilege('anon', p.oid, 'execute')
         or has_function_privilege('authenticated', p.oid, 'execute'))
@@ -30,7 +30,7 @@ select is_empty(
     from pg_proc p
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname in ('public', 'core', 'access', 'membership', 'events',
-        'journal', 'charity', 'programmes', 'governance', 'content', 'private')
+        'journal', 'programmes', 'governance', 'content', 'private')
       and p.prokind = 'f'
       and not exists (
         select 1 from unnest(coalesce(p.proconfig, '{}')) c
@@ -65,7 +65,7 @@ select is_empty(
     join pg_namespace n on n.oid = c.connamespace
     where c.contype = 'f'
       and n.nspname in ('public', 'core', 'access', 'membership', 'events',
-        'journal', 'charity', 'programmes', 'governance', 'content', 'private')
+        'journal', 'programmes', 'governance', 'content', 'private')
       and not exists (
         select 1 from pg_index i
         where i.indrelid = c.conrelid

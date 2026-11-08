@@ -22,8 +22,7 @@ export type HistoryTable =
   | "governance.partners"
   | "governance.partner_agreements"
   | "governance.elections"
-  | "governance.society_documents"
-  | "charity.campaigns";
+  | "governance.society_documents";
 
 /** Fields named in words; the rest are "other details". */
 const FIELDS = [

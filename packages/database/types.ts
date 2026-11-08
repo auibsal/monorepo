@@ -977,7 +977,6 @@ export type Database = {
         Row: {
           audience: string;
           chat_id: number;
-          join_policy: string;
           lang: string;
           registered_at: string;
           registered_by: string | null;
@@ -988,7 +987,6 @@ export type Database = {
         Insert: {
           audience?: string;
           chat_id: number;
-          join_policy?: string;
           lang?: string;
           registered_at?: string;
           registered_by?: string | null;
@@ -998,7 +996,6 @@ export type Database = {
         Update: {
           audience?: string;
           chat_id?: number;
-          join_policy?: string;
           lang?: string;
           registered_at?: string;
           registered_by?: string | null;
@@ -1010,31 +1007,25 @@ export type Database = {
       telegram_members: {
         Row: {
           chat_id: number;
-          joined_at: string;
           removed_at: string | null;
           telegram_id: number;
           verified_at: string | null;
           warned_at: string | null;
-          warnings: number;
         };
         ComputedFields: never;
         Insert: {
           chat_id: number;
-          joined_at?: string;
           removed_at?: string | null;
           telegram_id: number;
           verified_at?: string | null;
           warned_at?: string | null;
-          warnings?: number;
         };
         Update: {
           chat_id?: number;
-          joined_at?: string;
           removed_at?: string | null;
           telegram_id?: number;
           verified_at?: string | null;
           warned_at?: string | null;
-          warnings?: number;
         };
         Relationships: [
           {
@@ -1078,31 +1069,6 @@ export type Database = {
             referencedColumns: ["chat_id"];
           },
         ];
-      };
-      telegram_word_plays: {
-        Row: {
-          created_at: string;
-          day: number;
-          guesses: string[];
-          lang: string;
-          telegram_id: number;
-        };
-        ComputedFields: never;
-        Insert: {
-          created_at?: string;
-          day: number;
-          guesses?: string[];
-          lang: string;
-          telegram_id: number;
-        };
-        Update: {
-          created_at?: string;
-          day?: number;
-          guesses?: string[];
-          lang?: string;
-          telegram_id?: number;
-        };
-        Relationships: [];
       };
     };
     Views: {
