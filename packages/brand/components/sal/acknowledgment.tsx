@@ -14,7 +14,7 @@ import { cn } from "../../lib/utils";
  * words, prices or calls to buy (the IRS line between an acknowledgment and
  * advertising), so the components take names and logos, never a sentence.
  */
-export const ACKNOWLEDGMENT_LINES = {
+const ACKNOWLEDGMENT_LINES = {
   sponsor: { ar: "بدعم من", en: "Supported by" },
   support: { ar: "بمساندة", en: "With the support of" },
 } as const;

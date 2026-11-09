@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils";
  * seat; the Society's name; the motto; the site and the handle; and the
  * paperless line. Arabic is its own edition, never under the English.
  */
-export const EMAIL_SIGNATURE = {
+const EMAIL_SIGNATURE = {
   ar: {
     links: "auibsal.org · @auibsal",
     motto: "والقرطاسُ والقلمُ.",

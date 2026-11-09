@@ -7,7 +7,10 @@ import { SalCard } from "@repo/brand/components/sal/card";
 import { Certificate } from "@repo/brand/components/sal/certificate";
 import { DocumentFooter } from "@repo/brand/components/sal/document-footer";
 import { DocumentHeader } from "@repo/brand/components/sal/document-header";
-import { EmailSignature } from "@repo/brand/components/sal/email-signature";
+import {
+  EmailSignature,
+  emailSignatureText,
+} from "@repo/brand/components/sal/email-signature";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { FormField, FormPage } from "@repo/brand/components/sal/form-page";
 import { Letter } from "@repo/brand/components/sal/letter";
@@ -481,6 +484,9 @@ export const EmailSignatureStory: Story = {
     <div className="grid gap-12 sm:grid-cols-2">
       <EmailSignature name="Your name" seat="Director of Media" />
       <EmailSignature lang="ar" name="اسمك" seat="مدير الإعلام" />
+      <pre className="type-code whitespace-pre-wrap">
+        {emailSignatureText("en", "Your name", "Director of Media")}
+      </pre>
     </div>
   ),
 };

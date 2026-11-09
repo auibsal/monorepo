@@ -109,13 +109,14 @@ select throws_ok(
   $$ insert into programmes.needs (event_id, item, quantity, needed_by, purpose, status, given_by)
      values ('00000000-0000-0000-0000-00000005e001', 'Chairs', 20, current_date + 5, 'Seating', 'listed',
        '00000000-0000-0000-0000-00000005d001') $$,
-  '23514', null, 'A need is given by a partner only once it is provided');
+  '23514', 'new row for relation "needs" violates check constraint "needs_given_by_when_provided"',
+  'A need is given by a partner only once it is provided');
 
-insert into programmes.needs (event_id, item, quantity, needed_by, purpose, status, given_by) values
-  ('00000000-0000-0000-0000-00000005e001', 'Books', 30, current_date + 5, 'Prizes', 'provided', '00000000-0000-0000-0000-00000005d001'),
-  ('00000000-0000-0000-0000-00000005e001', 'Tea', 1, current_date + 5, 'Refreshments', 'partly_provided', '00000000-0000-0000-0000-00000005d001'),
-  ('00000000-0000-0000-0000-00000005e001', 'Room', 1, current_date + 5, 'Venue', 'provided', '00000000-0000-0000-0000-00000005d002'),
-  ('00000000-0000-0000-0000-00000005e002', 'Pens', 10, current_date + 5, 'Writing', 'provided', '00000000-0000-0000-0000-00000005d001');
+insert into programmes.needs (event_id, item, quantity, needed_by, purpose, status, requested_on, provided_on, given_by) values
+  ('00000000-0000-0000-0000-00000005e001', 'Books', 30, current_date + 5, 'Prizes', 'provided', current_date, current_date, '00000000-0000-0000-0000-00000005d001'),
+  ('00000000-0000-0000-0000-00000005e001', 'Tea', 1, current_date + 5, 'Refreshments', 'partly_provided', current_date, current_date, '00000000-0000-0000-0000-00000005d001'),
+  ('00000000-0000-0000-0000-00000005e001', 'Room', 1, current_date + 5, 'Venue', 'provided', current_date, current_date, '00000000-0000-0000-0000-00000005d002'),
+  ('00000000-0000-0000-0000-00000005e002', 'Pens', 10, current_date + 5, 'Writing', 'provided', current_date, current_date, '00000000-0000-0000-0000-00000005d001');
 
 select pg_temp.login_anon();
 select is((select count(*)::int from events.event_sponsors('reading-sp')), 1,
