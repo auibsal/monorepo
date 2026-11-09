@@ -4,8 +4,8 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 
 | English | Arabic |
 |---|---|
-| AUIB Society of Arts and Letters | جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد (then: الجمعية) |
-| AUIB | الجامعة الأمريكية في العراق – بغداد |
+| AUIB Society of Arts and Letters | جمعية الفنون والآداب في الجامعة الأمريكية في بغداد (then: الجمعية) |
+| AUIB | الجامعة الأمريكية في بغداد |
 | Student Life | شؤون الطلبة |
 | Campus Recreation Officer | مسؤول الأنشطة الترفيهية في الحرم الجامعي |
 | Director of Student Life | مديرة شؤون الطلبة |

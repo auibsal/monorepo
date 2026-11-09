@@ -6,8 +6,9 @@ import { INSTITUTIONS } from "@/lib/institutions";
 
 /**
  * "With the support of" and AUIB's own offices (decisions §2), from the
- * fixed list in lib/institutions: their logos on About, their names in the
- * footer.
+ * fixed list in lib/institutions, on the partners page only: their logos
+ * (or, with `logos` off, their names), each linking to its page on AUIB's
+ * site.
  */
 export const Support = async ({
   className,

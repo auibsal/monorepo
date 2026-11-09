@@ -203,7 +203,8 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   checklist. No perks or offers anywhere: sponsors in kind are thanked
   with a "Supported by" line (`SupportedBy`), and the card is for the door
   only. AUIB's own offices aren't partners: they are listed under "With
-  the support of" (`WithTheSupportOf`) on About and in the footer, from
+  the support of" (`WithTheSupportOf`) on /partners only, each linking
+  to its page on AUIB's site, from
   the fixed list in `apps/web/lib/institutions.ts`.
 - **Guests** sign up at `/sign-up/guest`, or are invited by named email
   by a partner or by an event's lead on the event's Diwan page (`partner_invitations.event_id`); never members. Each

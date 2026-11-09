@@ -5,8 +5,8 @@ import { cn } from "../../lib/utils";
  * (claude/glossary_ar.md):
  *
  * - "With the support of" («بمساندة»): AUIB's own offices (AUIB, the Office
- *   of Student Life, AUIB Press, the Library, the colleges), on About and in
- *   the footer, from the site's settings. They are not partners.
+ *   of Student Life, AUIB Press, the Library, the colleges), on the partners
+ *   page only, from the site's code. They are not partners.
  * - "Supported by" («بدعم من»): a sponsor in kind, on the event page, the
  *   partner's listing, printed programs and the thank-you (F-30).
  *
@@ -94,7 +94,12 @@ const Names = ({
       return (
         <li key={item.name} lang={lang}>
           {item.href ? (
-            <a className="hover:underline" href={item.href} rel="noopener">
+            <a
+              className="hover:underline"
+              href={item.href}
+              rel="noopener"
+              target="_blank"
+            >
               {mark}
             </a>
           ) : (

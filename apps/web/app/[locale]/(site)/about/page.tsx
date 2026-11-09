@@ -1,7 +1,6 @@
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Support } from "@/components/institutions";
 import { PageHeader, RuledList, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 
@@ -9,8 +8,8 @@ export const generateMetadata = sectionMetadata("web.about", "/about");
 
 /**
  * The About page (decisions §6): the one sentence, the motto, what the
- * Society does, how it is run, then its pages, and AUIB's offices under
- * "With the support of" (decisions §2).
+ * Society does, how it is run, then its pages. AUIB's offices are listed
+ * on the partners page only.
  */
 
 /** What the Society does (decisions §1), each opening its own part. */
@@ -147,12 +146,6 @@ const AboutPage = async ({ params }: LocaleParams) => {
           }))}
         />
       </Section>
-
-      <Support
-        className="border-line pt-space-4 border-t"
-        locale={locale}
-        logos
-      />
     </div>
   );
 };

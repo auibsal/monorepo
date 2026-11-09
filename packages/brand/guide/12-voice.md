@@ -63,7 +63,7 @@ One glossary for every Arabic word the Society uses, kept with the decisions (`c
 
 | English | Arabic |
 | --- | --- |
-| AUIB Society of Arts and Letters | جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد (then الجمعية; never النادي) |
+| AUIB Society of Arts and Letters | جمعية الفنون والآداب في الجامعة الأمريكية في بغداد (then الجمعية; never النادي) |
 | Qirtas · Qalam | قرطاس · قلم |
 | the Company | الفرقة |
 | Next Stop | «المحطة التالية» |

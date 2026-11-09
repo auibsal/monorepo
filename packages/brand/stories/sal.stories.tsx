@@ -345,7 +345,7 @@ export const LetterArabic: Story = {
         foot="hello@auibsal.org · auibsal.org"
         greeting="السيدة لينا حسن المحترمة،"
         locale="ar"
-        recipient={["لينا حسن", "الجامعة الأمريكية في العراق – بغداد"]}
+        recipient={["لينا حسن", "الجامعة الأمريكية في بغداد"]}
         reference="LTR-2026-001"
         signer={{ name: "يعقوب غسان العزاوي", role: "الأمين العام" }}
         subject="رسالة خدمة"
@@ -448,7 +448,7 @@ export const CertificateArabic: Story = {
   name: "Certificate, Arabic",
   render: () => (
     <Certificate
-      body="أتمّ «قلم»، البرنامج الصيفي لقرطاس، صحيفة جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد."
+      body="أتمّ «قلم»، البرنامج الصيفي لقرطاس، صحيفة جمعية الفنون والآداب في الجامعة الأمريكية في بغداد."
       dated="مُنحت في 27 نيسان 2028"
       lead="تشهد الجمعية بأن"
       locale="ar"
@@ -486,8 +486,8 @@ export const EmailSignatureStory: Story = {
 };
 
 /**
- * "With the support of": AUIB's own offices, on About and in the footer,
- * from the site's settings (decisions §2). They are not partners.
+ * "With the support of": AUIB's own offices, on the partners page only
+ * (decisions §2). They are not partners.
  */
 export const WithTheSupportOfStory: Story = {
   name: "With the support of",
@@ -503,7 +503,7 @@ export const WithTheSupportOfStory: Story = {
       />
       <WithTheSupportOf
         items={[
-          { name: "الجامعة الأمريكية في العراق - بغداد" },
+          { name: "الجامعة الأمريكية في بغداد" },
           { name: "مكتب شؤون الطلبة" },
         ]}
         lang="ar"

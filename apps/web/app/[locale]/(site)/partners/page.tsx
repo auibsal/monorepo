@@ -1,5 +1,6 @@
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Support } from "@/components/institutions";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { localized, partners } from "@/lib/data";
@@ -140,6 +141,13 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           </Section>
         );
       })}
+      {/* AUIB's own offices aren't partners (decisions §2): they support
+          the Society, listed here and nowhere else. */}
+      <Support
+        className="border-line pt-space-4 border-t"
+        locale={locale}
+        logos
+      />
     </div>
   );
 };
