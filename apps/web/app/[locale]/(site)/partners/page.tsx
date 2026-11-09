@@ -1,6 +1,5 @@
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Institutions } from "@/components/institutions";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { localized, partners } from "@/lib/data";
@@ -91,7 +90,6 @@ const PartnersPage = async ({ params }: LocaleParams) => {
       <Section id="second-chapter" title={t("secondChapter.title")}>
         <p className="type-body max-w-[60ch]">{t("secondChapter.body")}</p>
       </Section>
-      <Institutions />
       {list.length === 0 ? <p className="type-body">{t("empty")}</p> : null}
       {REACH.map((reach) => {
         const group = list.filter((p) => p.reach === reach);

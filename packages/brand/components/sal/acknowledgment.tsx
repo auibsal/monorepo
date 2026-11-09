@@ -38,18 +38,34 @@ export interface Acknowledged {
 
 interface AcknowledgmentProps {
   readonly className?: string;
+  /** Names at the surrounding text's size, closer together (a footer). */
+  readonly compact?: boolean;
+  /** The reading direction; Arabic reads right to left. */
+  readonly dir?: "ltr" | "rtl";
   readonly items: readonly Acknowledged[];
-  readonly lang?: "ar" | "en";
+  /**
+   * The line in the page's language, from its messages; the English and
+   * Arabic lines above when not given.
+   */
+  readonly label?: string;
+  readonly lang?: string;
 }
 
 const Names = ({
+  compact = false,
   items,
   lang,
 }: {
+  compact?: boolean;
   items: readonly Acknowledged[];
-  lang: "ar" | "en";
+  lang: string;
 }) => (
-  <ul className="flex flex-wrap items-center gap-x-8 gap-y-4">
+  <ul
+    className={cn(
+      "flex flex-wrap items-center",
+      compact ? "gap-x-4 gap-y-1" : "gap-x-8 gap-y-4"
+    )}
+  >
     {items.map((item) => {
       const mark = item.logo ? (
         <>
@@ -73,7 +89,7 @@ const Names = ({
           ) : null}
         </>
       ) : (
-        <span className="type-body">{item.name}</span>
+        <span className={compact ? undefined : "type-body"}>{item.name}</span>
       );
       return (
         <li key={item.name} lang={lang}>
@@ -92,18 +108,23 @@ const Names = ({
 
 const Line = ({
   className,
+  compact,
+  dir,
   items,
   kind,
+  label,
   lang = "en",
 }: AcknowledgmentProps & { kind: keyof typeof ACKNOWLEDGMENT_LINES }) =>
   items.length === 0 ? null : (
     <section
       className={cn("grid gap-3", className)}
-      dir={lang === "ar" ? "rtl" : "ltr"}
+      dir={dir ?? (lang === "ar" ? "rtl" : "ltr")}
       lang={lang}
     >
-      <p className="type-label">{ACKNOWLEDGMENT_LINES[kind][lang]}</p>
-      <Names items={items} lang={lang} />
+      <p className="type-label">
+        {label ?? ACKNOWLEDGMENT_LINES[kind][lang === "ar" ? "ar" : "en"]}
+      </p>
+      <Names compact={compact} items={items} lang={lang} />
     </section>
   );
 

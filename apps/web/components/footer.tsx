@@ -1,10 +1,11 @@
 import { BrandLogo } from "@repo/brand/components/brand-logo";
 import { Icon } from "@repo/brand/components/sal/icon";
 import { project } from "@repo/config";
-import { localizedPath } from "@repo/internationalization";
+import { type Locale, localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
+import { Support } from "@/components/institutions";
 import { thisYear } from "@/lib/this-year";
 
 const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
@@ -12,7 +13,8 @@ const linkClass = "hover:text-accent hover:underline hover:underline-offset-4";
 /**
  * The one footer for the whole site, the members' pages and the Diwan
  * alike: ink in both modes. The reversed lockup in the page's language and
- * one sentence, three short columns under white labels (Programs, Society,
+ * one sentence, AUIB's offices under "With the support of" (decisions
+ * §2), three short columns under white labels (Programs, Society,
  * Stay in touch; two side by side on phones), then a hairline and the fine
  * print, which keeps the policies within reach. Nothing here repeats the
  * header (decisions.md): its sections, Search, Sign in and
@@ -64,6 +66,7 @@ export const Footer = async () => {
           <p className="text-text-secondary max-w-[34ch]">
             {tx("recognition")}
           </p>
+          <Support className="pt-2" locale={locale as Locale} />
         </div>
         {columns
           .filter((column) => column.links.length > 0)

@@ -1,7 +1,8 @@
+import { SupportedBy } from "@repo/brand/components/sal/acknowledgment";
 import { ActionBar } from "@repo/brand/components/sal/action-bar";
 import { Icon } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
-import { apiPath } from "@repo/internationalization";
+import { apiPath, getDirection } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
@@ -77,6 +78,7 @@ const EventView = async ({
     notFound();
   }
   const t = await getTranslations({ locale, namespace: "web.events" });
+  const ti = await getTranslations({ locale, namespace: "web.institutions" });
   const body = localized(event, "body", locale);
   const image = mediaUrl(event.image_path);
   const cancelled = event.status === "canceled";
@@ -85,6 +87,12 @@ const EventView = async ({
     ["events", "partners"],
     (c) => events.eventHost(c, event.slug),
     null
+  );
+  // Sponsors in kind (decisions §2): names or logos only.
+  const sponsors = await readPublished(
+    ["events", "partners"],
+    (c) => events.eventSponsors(c, event.slug),
+    []
   );
   const upcoming = new Date(event.starts_at).getTime() > (await roughlyNow());
 
@@ -184,6 +192,20 @@ const EventView = async ({
         />
       ) : null}
       <EventParts event={event} locale={locale} />
+      <SupportedBy
+        className="border-line pt-space-4 border-t"
+        dir={getDirection(locale)}
+        items={sponsors.map((sponsor) => {
+          const logo = mediaUrl(sponsor.logo_path);
+          return {
+            href: sponsor.url,
+            logo: logo ? { height: 48, src: logo, width: 160 } : null,
+            name: localized(sponsor, "name", locale) || sponsor.name_en,
+          };
+        })}
+        label={ti("supportedBy")}
+        lang={locale}
+      />
     </article>
   );
 };

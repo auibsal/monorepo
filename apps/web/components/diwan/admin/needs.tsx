@@ -17,13 +17,22 @@ import { localized, unwrap } from "@/lib/data";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermission } from "@/lib/rbac";
 import { EmptyLine, SectionSpinner } from "../states";
-import { AddInPlace, ConfirmAction, ErrorLine, Field, SaveButton } from "./kit";
+import {
+  AddInPlace,
+  ConfirmAction,
+  ErrorLine,
+  Field,
+  SaveButton,
+  SelectInput,
+} from "./kit";
 
 const key = ["admin", "needs"];
 
 type Outcome = "provided" | "partly_provided" | "not_provided";
 
 interface Need {
+  /** The partner that gave it in kind (decisions §3); null for Student Life. */
+  given_by: string | null;
   id: string;
   item: string;
   needed_by: string;
@@ -43,12 +52,31 @@ const today = () =>
     new Date()
   );
 
-/** The General Secretary records the request and what Student Life gave. */
+const STUDENT_LIFE = "student-life";
+
+/** The partners in the one register, for "Given by" (never typed). */
+const usePartnerNames = () => {
+  const { supabase } = useAuth();
+  return useQuery({
+    queryFn: async () =>
+      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
+    queryKey: ["admin", "partner-names"],
+  });
+};
+
+/**
+ * The General Secretary records the request and what was given: by
+ * Student Life, or in kind by a partner, who is then thanked on the event's
+ * page ("Supported by", decisions §2).
+ */
 const RequestActions = ({ need }: { readonly need: Need }) => {
   const t = useTranslations("diwan.admin.needs");
+  const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
+  const partners = usePartnerNames();
   const [note, setNote] = useState(need.provided_note ?? "");
+  const [givenBy, setGivenBy] = useState(need.given_by ?? STUDENT_LIFE);
   const move = useMutation({
     mutationFn: async (status: Need["status"]) =>
       unwrap(
@@ -59,6 +87,10 @@ const RequestActions = ({ need }: { readonly need: Need }) => {
             status === "requested"
               ? { requested_on: today(), status }
               : {
+                  given_by:
+                    status === "not_provided" || givenBy === STUDENT_LIFE
+                      ? null
+                      : givenBy,
                   provided_note: note.trim() || null,
                   provided_on: status === "not_provided" ? null : today(),
                   status,
@@ -89,6 +121,22 @@ const RequestActions = ({ need }: { readonly need: Need }) => {
   }
   return (
     <div className="grid max-w-xl gap-2">
+      <Field label={t("givenBy")}>
+        {(id) => (
+          <SelectInput
+            id={id}
+            onChange={(e) => setGivenBy(e.target.value)}
+            value={givenBy}
+          >
+            <option value={STUDENT_LIFE}>{t("studentLife")}</option>
+            {(partners.data ?? []).map((p) => (
+              <option key={p.id} value={p.id}>
+                {localized(p, "name", locale) || p.name_en}
+              </option>
+            ))}
+          </SelectInput>
+        )}
+      </Field>
       <Field label={t("providedNote")}>
         {(id) => (
           <Input
@@ -142,6 +190,13 @@ const NeedRow = ({
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
   });
+  const partners = usePartnerNames();
+  const partner = need.given_by
+    ? partners.data?.find((p) => p.id === need.given_by)
+    : null;
+  const giver = partner
+    ? localized(partner, "name", locale) || partner.name_en
+    : null;
   const facts = [
     t("quantity", { count: formatNumber(need.quantity, locale) }),
     t("neededBy", { date: formatLongDate(need.needed_by, locale) }),
@@ -163,6 +218,7 @@ const NeedRow = ({
         {need.provided_on
           ? ` · ${t("providedOn", { date: formatLongDate(need.provided_on, locale) })}`
           : ""}
+        {giver ? ` · ${t("givenByName", { partner: giver })}` : ""}
         {need.provided_note ? ` · ${need.provided_note}` : ""}
       </p>
       {canRequest ? <RequestActions need={need} /> : null}
@@ -322,7 +378,7 @@ export const Needs = ({
         .schema("programmes")
         .from("needs")
         .select(
-          "id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note, programme_id, event_id"
+          "id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note, given_by, programme_id, event_id"
         )
         .order("needed_by");
       if (owner) {
