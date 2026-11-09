@@ -6,7 +6,7 @@ The first page of every Society document: the lockup and code at the top, a larg
 
 **Markup:** `<article class="sal-page sal-cover" data-theme="light" lang="en">` (or `dir="rtl" lang="ar"`), containing:
 - `.sal-cover__top`, holding `img.sal-cover__lockup` (78 px tall) and `.sal-cover__code` with one `.sal-code` line.
-- `h1.sal-cover__title`: one or two words a line, at most two lines. Light, in ink (Ubuntu Arabic Regular in Arabic).
+- `h1.sal-cover__title`: one or two words a line, at most two lines. Light, in ink (Ubuntu Regular in Arabic).
 - `p.sal-cover__subtitle`: one sentence.
 - `p.sal-cover__prepared` with `span.sal-cover__prepared-name`: "Prepared by", the name, the role.
 - `footer.sal-cover__foot`: the date at the start, the status at the end ("Version 1, proposed" until the Founding Meeting; then "Version 1").

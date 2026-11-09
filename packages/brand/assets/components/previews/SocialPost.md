@@ -7,7 +7,7 @@ The 1080 × 1350 Instagram post. It scales to any container width: every size is
 **Markup:** `<div class="sal-post sal-post--crimson|white|ink">` (add `sal-post--photo` for a photo post) wrapping `.sal-post__frame`, which contains:
 - `img.sal-post__photo` (photo posts only): the picture, cropped to 1080 × 820.
 - `img.sal-post__lockup`: `sal-lockup-horizontal.svg` or `sal-lockup-horizontal-ar.svg` on white; the `-reversed` files on crimson and ink.
-- `h2.sal-post__headline`: two to five words with a full stop, Light, in one color. In Arabic, Ubuntu Arabic Regular.
+- `h2.sal-post__headline`: two to five words with a full stop, Light, in one color. In Arabic, Ubuntu Regular.
 - `p.sal-post__lede`: one sentence (optional on photo posts).
 - `p.sal-post__meta`: one or two `<span>` lines: the date and place, the link, `@auibsal`. In Arabic posts, wrap Latin runs (`@auibsal`, links) in `<bdi dir="ltr">`.
 

@@ -8,7 +8,7 @@ The front page: the nameplate, the dateline between ink rules, the six sections,
 
 One nameplate on every page of the paper, the same on the front page, a section and a piece.
 
-- "Qirtas" in Ubuntu Medium (500), set tight, never Light, never in crimson. On Arabic pages, «قرطاس» in Ubuntu Arabic Bold.
+- "Qirtas" in Ubuntu Medium (500), set tight, never Light, never in crimson. On Arabic pages, «قرطاس» in Ubuntu Bold.
 - Under it, the dateline between two ink rules: the date, the line "AUIB's paper of news, letters and art", and links to the Masthead, the Editions and the Mutanabbi Prize.
 - Then the six sections as a row of text links, always in this order. No logo inside the nameplate: the site header already carries it. The masthead is the paper's list of editors, at /qirtas/masthead, from the roles people hold.
 - Qirtas pages sit on paper (`surface-reading`), the one place the page is not white.
@@ -30,15 +30,15 @@ Six Words and Next Stop are not part of Qirtas: six-word pages belong to the Typ
 
 ## Reading Qirtas
 
-Headlines in Ubuntu, reading in Literata. Every article page is built the same way, so the words do the work.
+Headlines in Ubuntu, reading in Markazi Text, in both languages. Every article page is built the same way, so the words do the work.
 
 | Part | Set in |
 | --- | --- |
 | Headline | Ubuntu Light, display, in ink |
-| Dek | Literata 22 / 1.5 (`read-dek`) |
+| Dek | Markazi Text 26 / 1.5 (`read-dek`) |
 | Byline | The section in accent, then the author and date: "Letters · By … · Tuesday, November 17". Never above the headline. |
-| Body | Literata 17.5 / 1.68 (`read-body`), 60–70 characters a line |
-| Drop cap | Literata Medium in accent, first paragraph only |
+| Body | Markazi Text 21 / 1.6 (`read-body`), 60–70 characters a line; Arabic at 1.8 |
+| Drop cap | Markazi Text Medium in accent, first paragraph only |
 | Pull quote | Ubuntu Light 34 px, one color |
 
 ## The Edition

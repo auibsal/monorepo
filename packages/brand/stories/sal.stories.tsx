@@ -1,8 +1,13 @@
 import { BrandLogo } from "@repo/brand/components/brand-logo";
+import {
+  SupportedBy,
+  WithTheSupportOf,
+} from "@repo/brand/components/sal/acknowledgment";
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Certificate } from "@repo/brand/components/sal/certificate";
 import { DocumentFooter } from "@repo/brand/components/sal/document-footer";
 import { DocumentHeader } from "@repo/brand/components/sal/document-header";
+import { EmailSignature } from "@repo/brand/components/sal/email-signature";
 import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { FormField, FormPage } from "@repo/brand/components/sal/form-page";
 import { Letter } from "@repo/brand/components/sal/letter";
@@ -43,21 +48,24 @@ export const TypeStyles: Story = {
         Label: names fields and columns, never above a title
       </p>
       <p className="reading max-w-[44ch] text-[1.375rem]">
-        Reading: Literata, for the paper's decks and articles.
+        Reading: Markazi Text, for the body of the paper's pieces.
       </p>
       <p className="type-code">SAL-GOV-01 · Article 7</p>
     </div>
   ),
 };
 
-/** Arabic: Ubuntu Arabic Regular, in one color. */
+/** Arabic: Ubuntu Regular, in one color; the reading face is Markazi Text. */
 export const TypeStylesArabic: Story = {
   render: () => (
     <div className="grid max-w-4xl gap-5" dir="rtl" lang="ar">
       <h1 className="type-display-xl">والقرطاسُ والقلمُ.</h1>
       <h3 className="type-title">هذا الفصل</h3>
       <p className="type-lede">جمعية للأدب والمسرح والفنون.</p>
-      <p className="type-body">النص بخط Ubuntu Arabic العادي.</p>
+      <p className="type-body">النص بخط Ubuntu العادي.</p>
+      <p className="reading max-w-[44ch]">
+        وللقراءة في «قرطاس» خط Markazi Text.
+      </p>
     </div>
   ),
 };
@@ -459,5 +467,61 @@ export const CertificateArabic: Story = {
       society="جمعية الفنون والآداب"
       title="شهادة إتمام «قلم»"
     />
+  ),
+};
+
+/**
+ * The email signature (decisions §11), in the email's language only: the
+ * sender's name and seat, the Society, the motto, the site and handle, and
+ * the paperless line. `emailSignatureText` gives the plain-text version.
+ */
+export const EmailSignatureStory: Story = {
+  name: "Email signature",
+  render: () => (
+    <div className="grid gap-12 sm:grid-cols-2">
+      <EmailSignature name="Your name" seat="Director of Media" />
+      <EmailSignature lang="ar" name="اسمك" seat="مدير الإعلام" />
+    </div>
+  ),
+};
+
+/**
+ * "With the support of": AUIB's own offices, on About and in the footer,
+ * from the site's settings (decisions §2). They are not partners.
+ */
+export const WithTheSupportOfStory: Story = {
+  name: "With the support of",
+  render: () => (
+    <div className="grid gap-12">
+      <WithTheSupportOf
+        items={[
+          { name: "The American University of Iraq – Baghdad" },
+          { name: "Office of Student Life" },
+          { name: "AUIB Press" },
+          { name: "AUIB Library" },
+        ]}
+      />
+      <WithTheSupportOf
+        items={[
+          { name: "الجامعة الأمريكية في العراق - بغداد" },
+          { name: "مكتب شؤون الطلبة" },
+        ]}
+        lang="ar"
+      />
+    </div>
+  ),
+};
+
+/**
+ * "Supported by": a sponsor in kind, by name or logo alone, with no
+ * qualitative words, prices or calls to buy (decisions §2).
+ */
+export const SupportedByStory: Story = {
+  name: "Supported by",
+  render: () => (
+    <div className="grid gap-12">
+      <SupportedBy items={[{ name: "The sponsor’s name" }]} />
+      <SupportedBy items={[{ name: "اسم الداعم" }]} lang="ar" />
+    </div>
   ),
 };

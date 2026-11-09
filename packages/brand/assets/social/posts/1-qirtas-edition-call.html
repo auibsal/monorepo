@@ -24,7 +24,7 @@
 :root{--mist:#C3CACB;
   --crimson:#9C213E; --crimson-700:#7E1A32; --crimson-100:#C3CACB; --crimson-50:#F7ECEF;
   --ink:#273236; --ink-70:#4A5559; --ink-50:#6E777A; --ink-10:#E7EAEB; --line:#E3DEDF; --paper:#FAF7F5; --white:#fff;
-  --sans:Ubuntu, "Ubuntu Arabic", sans-serif; --ar:"Ubuntu Arabic", Ubuntu, sans-serif; --mono:'Ubuntu Mono', Ubuntu, monospace;
+  --sans:Ubuntu, sans-serif; --ar:Ubuntu, sans-serif; --mono:'Ubuntu Mono', Ubuntu, monospace;
 }
 @page{size:A4;margin:0}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -277,10 +277,10 @@ table.grid-f td.lab{background:var(--crimson-50);font-weight:700;width:34mm}
    hairlines and space, square corners, no tints, no icons.
    The Bookmark is only ever the logo. Headings stand alone.
    ================================================================== */
-@font-face{font-family:"Ubuntu Arabic";font-weight:300;src:url(../../fonts/UbuntuArabic-Regular.woff2)}
-@font-face{font-family:"Ubuntu Arabic";font-weight:400;src:url(../../fonts/UbuntuArabic-Regular.woff2)}
-@font-face{font-family:"Ubuntu Arabic";font-weight:500;src:url(../../fonts/UbuntuArabic-Regular.woff2)}
-@font-face{font-family:"Ubuntu Arabic";font-weight:700;src:url(../../fonts/UbuntuArabic-Bold.woff2)}
+@font-face{font-family:Ubuntu;font-weight:300;src:url(../../fonts/UbuntuArabic-Regular.woff2);unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:Ubuntu;font-weight:400;src:url(../../fonts/UbuntuArabic-Regular.woff2);unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:Ubuntu;font-weight:500;src:url(../../fonts/UbuntuArabic-Bold.woff2);unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF}
+@font-face{font-family:Ubuntu;font-weight:700;src:url(../../fonts/UbuntuArabic-Bold.woff2);unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF}
 :root{--crimson:#9C213E;--ink:#273236;--paper:#F5F2EE;--stone:#E2DDD6;--ash:#5C6568;--rose:#C3CACB;
   --crimson-50:transparent;--crimson-100:#C3CACB;--ink-70:#5C6568;--ink-50:#5C6568;--ink-10:#F5F2EE;--line:#E2DDD6}
 body{font-size:10.3pt;line-height:1.55}
@@ -464,7 +464,7 @@ table.grid-f td.lab{background:var(--paper)}
 .sal-story .sal-post__lede { top: calc(1120 * var(--u)); font-size: calc(44 * var(--u)); }
 .sal-story .sal-post__meta { bottom: calc(340 * var(--u)); font-size: calc(34 * var(--u)); }
 
-/* Arabic: Ubuntu Arabic has no Light and no italic. Display is Regular. */
+/* Arabic: Ubuntu's Arabic files have no Light and no italic. Display is Regular. */
 [dir="rtl"] .sal-post__frame, [dir="rtl"] .sal-story__frame { font-family: var(--font-arabic); }
 [dir="rtl"] .sal-post__headline { font-weight: 400; letter-spacing: 0; line-height: 1.3; font-size: calc(132 * var(--u)); }
 [dir="rtl"].sal-post--photo .sal-post__headline { font-size: calc(92 * var(--u)); }
@@ -480,9 +480,9 @@ table.grid-f td.lab{background:var(--paper)}
 .sal-post--white .sal-post__meta, .sal-story--white .sal-post__meta { color: var(--ash); }
 .sal-post--ink .sal-post__frame, .sal-story--ink .sal-story__frame { background: var(--ink); color: var(--white); }
 
-@font-face{font-family:"Ubuntu Arabic";font-weight:400;src:url(../../fonts/UbuntuArabic-Regular.woff2)}
+@font-face{font-family:Ubuntu;font-weight:400;src:url(../../fonts/UbuntuArabic-Regular.woff2);unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF}
 :root{--white:#FFFFFF;--ink:#273236;--crimson:#9C213E;--paper:#F5F2EE;--stone:#E2DDD6;--ash:#5C6568;--crimson-100:#C3CACB;
- --font-sans:Ubuntu,sans-serif;--font-arabic:"Ubuntu Arabic",sans-serif;--font-mono:'Ubuntu Mono',monospace;--hairline:1px;--page-margin:79px;
+ --font-sans:Ubuntu,sans-serif;--font-arabic:Ubuntu,sans-serif;--font-mono:'Ubuntu Mono',monospace;--hairline:1px;--page-margin:79px;
  --accent:#9C213E;--on-accent:#fff;--text:#273236}
 body{margin:0;width:1080px}
 .sal-post{width:1080px}

@@ -27,10 +27,10 @@
   --sal-duration-base: 200ms;
   --sal-duration-slow: 320ms;
   --sal-ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --sal-font-sans: "Ubuntu", "Ubuntu Arabic", system-ui, sans-serif;
-  --sal-font-arabic: "Ubuntu Arabic", "Ubuntu", sans-serif;
+  --sal-font-sans: "Ubuntu", system-ui, sans-serif;
+  --sal-font-arabic: "Ubuntu", sans-serif;
   --sal-font-mono: "Ubuntu Mono", ui-monospace, monospace;
-  --sal-font-read: "Literata", Georgia, serif;
+  --sal-font-read: "Markazi Text", Georgia, serif;
 }
 
 /* Light mode, and paper that stays light in dark mode (certificates, letters, printouts). */

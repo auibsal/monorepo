@@ -16,7 +16,7 @@ Everything lives here, in the Society's design system in the Diwan, built from `
 | `icon-*.svg` | The icon set, one per meaning |
 | `tokens.json` · `bundle.css` | Colors, type, space and the components: cover, footer, form page, printed form, post, carousel, story, highlights, icons |
 
-**Fonts.** Ubuntu, Ubuntu Mono and Literata are free from Google Fonts. Ubuntu Arabic is not on Google Fonts: install it from the design system ([Regular](brand-kit/fonts/UbuntuArabic-Regular.ttf), [Bold](brand-kit/fonts/UbuntuArabic-Bold.ttf)). Install them before editing any template. In Canva, upload the logo SVGs and Ubuntu Arabic to the Brand Kit with the six colors.
+**Fonts.** Ubuntu, Ubuntu Mono and Markazi Text are free from Google Fonts. Ubuntu's Arabic files are not on Google Fonts: install them from the design system ([Regular](brand-kit/fonts/UbuntuArabic-Regular.ttf), [Bold](brand-kit/fonts/UbuntuArabic-Bold.ttf)). Install them before editing any template. In Canva, upload the logo SVGs and Ubuntu's Arabic files (they appear as Ubuntu) to the Brand Kit with the six colors.
 
 | Document | Version | Kept by | Status |
 | --- | --- | --- | --- |

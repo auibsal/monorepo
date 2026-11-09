@@ -1,18 +1,28 @@
 /**
- * Print files (SAL-MED-02, Print): makes the PDFs Student Life prints from,
- * into dist/print, which is never committed. `bun run print`.
+ * The brand's files (SAL-MED-02; decisions §14): one version of every
+ * design, with no code line on it; the code is in the file name instead
+ * ("SAL-MED-02-Haven-poster-EN.pdf"). Everything goes into dist/, which is
+ * never committed. `bun run print`.
  *
- * - The sticker pack: a cover ("SAL-MED-02 · Sticker pack") with the specs,
- *   an overview page per group at 47%, and one page per sticker at 100% with
- *   its magenta cut line, from assets/print/stickers (stickers.json and the
- *   SVGs).
- * - Every HTML page in assets/print/posters and assets/print/printables.html,
- *   printed as it is; each file is named after its <title>.
+ * - Print: CMYK PDFs for coated paper (FOGRA39), into dist/print. Every HTML
+ *   page in assets/print/posters, assets/print/printables.html and the
+ *   sticker pack (a cover with the specs, an overview page per group at
+ *   47%, and one page per sticker at 100% with its magenta cut line). Each
+ *   page is printed by the browser (RGB) and converted with Ghostscript:
+ *   `gs -sColorConversionStrategy=CMYK -sOutputICCProfile=<FOGRA39>`. The
+ *   profile is FOGRA39L_coated.icc (or ECI's ISOcoated_v2), not kept in the
+ *   repository: point FOGRA39_ICC at it.
+ * - Screens: RGB PNGs at their pixel size, into dist/social: the posts,
+ *   stories, highlight covers and avatars in assets/social. With
+ *   `--in-place`, each PNG beside its HTML in assets/social is refreshed too.
  *
- * Fonts load from Google Fonts (Ubuntu) and assets/fonts (Ubuntu Arabic), so
- * run it online.
+ * A file's name is the code, its <title> (after "SAL-MED-02 · ") and its
+ * language from <html lang>: "SAL-MED-02-Society-poster-AR.pdf". Fonts load
+ * from Google Fonts and assets/fonts, so run it online.
  */
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 import { chromium } from "@playwright/test";
 
@@ -20,6 +30,9 @@ const ROOT = resolve(import.meta.dirname, "..");
 const ASSETS = join(ROOT, "assets");
 const STICKERS = join(ASSETS, "print/stickers");
 const OUT = join(ROOT, "dist/print");
+const SCREENS = join(ROOT, "dist/social");
+const SOCIAL = join(ASSETS, "social");
+const IN_PLACE = process.argv.includes("--in-place");
 
 interface Sticker {
   cut: [number, number];
@@ -33,7 +46,18 @@ const SIZE = /\swidth="[^"]+"\s+height="[^"]+"/u;
 const XML = /<\?xml[^>]*\?>\s*/u;
 const CUT = /stroke="(?:#ec008c|rgb\(92\.5[^"]*\))"/giu;
 const TITLE = /<title>([^<]+)<\/title>/u;
-const UNSAFE = /[\\/:*?"<>|]/gu;
+const LANG = /<html[^>]*\slang="([a-z]+)"/u;
+const UNSAFE = /[\\/:*?"<>|,()]/gu;
+const CODE_PREFIX = /^SAL-MED-02\s*·\s*/u;
+const SPACES = /\s+/u;
+
+/** "SAL-MED-02 · Society poster" in Arabic → "SAL-MED-02-Society-poster-AR". */
+export const fileName = (title: string, lang: string) =>
+  [
+    "SAL-MED-02",
+    ...title.replace(CODE_PREFIX, "").replace(UNSAFE, "").trim().split(SPACES),
+    lang.toUpperCase(),
+  ].join("-");
 
 /** Each sticker's SVG at the given size (CSS), with its XML declaration dropped. */
 const sized = (source: string, style: string) =>
@@ -64,7 +88,7 @@ const stickerPack = async () => {
     "utf8"
   );
 
-  pages.push(`<section class="a4"><div class="top"><div class="lock">${lockup}</div><p class="code">SAL-MED-02 · Sticker pack</p></div>
+  pages.push(`<section class="a4"><div class="top"><div class="lock">${lockup}</div></div>
 <h1>Sticker pack</h1><p class="lede">${list.length} stickers for the Society, for Student Life to print.</p>
 <div class="specs">
 <div><h3>Cut</h3><p>Each sticker is die-cut on its magenta line, named CutContour. The line is the cut only and is not printed.</p></div>
@@ -110,7 +134,7 @@ const stickerPack = async () => {
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>SAL-MED-02 · Sticker pack</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&family=Ubuntu+Mono&display=swap">
 <style>
-@font-face{font-family:"Ubuntu Arabic";src:url(${fonts}/UbuntuArabic-Regular.woff2)}
+@font-face{font-family:Ubuntu;src:url(${fonts}/UbuntuArabic-Regular.woff2);unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF}
 ${css.join("\n")}
 body{margin:0;font-family:Ubuntu,sans-serif;color:#273236;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 section{break-after:page;overflow:hidden;position:relative}
@@ -135,29 +159,103 @@ footer{position:absolute;bottom:14mm;left:18mm;font-size:8pt;color:#5c6568}
   return file;
 };
 
+/** The FOGRA39 profile Ghostscript converts to; required for print files. */
+const fogra = () => {
+  const profile = process.env.FOGRA39_ICC;
+  if (!(profile && existsSync(profile))) {
+    throw new Error(
+      "Print files are CMYK for FOGRA39 coated paper: set FOGRA39_ICC to FOGRA39L_coated.icc (or ECI's ISOcoated_v2_eci.icc)."
+    );
+  }
+  return profile;
+};
+
+/** The browser's RGB PDF, converted to CMYK with Ghostscript. */
+const toCmyk = (rgb: string, cmyk: string, icc: string) => {
+  const run = spawnSync(
+    "gs",
+    [
+      "-q",
+      "-dNOPAUSE",
+      "-dBATCH",
+      "-dSAFER",
+      "-sDEVICE=pdfwrite",
+      "-dPDFSETTINGS=/prepress",
+      "-sColorConversionStrategy=CMYK",
+      "-dProcessColorModel=/DeviceCMYK",
+      `-sOutputICCProfile=${icc}`,
+      `-sOutputFile=${cmyk}`,
+      rgb,
+    ],
+    { stdio: "inherit" }
+  );
+  if (run.status !== 0) {
+    throw new Error(`Ghostscript could not convert ${rgb}`);
+  }
+};
+
+const nameOf = async (file: string) => {
+  const source = await readFile(file, "utf8");
+  return fileName(
+    TITLE.exec(source)?.[1] ?? file,
+    LANG.exec(source)?.[1] ?? "en"
+  );
+};
+
+const htmlIn = async (dir: string) =>
+  (await readdir(dir))
+    .filter((f) => f.endsWith(".html"))
+    .map((f) => join(dir, f));
+
+const profile = fogra();
 await mkdir(OUT, { recursive: true });
-const posters = (await readdir(join(ASSETS, "print/posters")))
-  .filter((f) => f.endsWith(".html"))
-  .map((f) => join(ASSETS, "print/posters", f));
-const files = [
+await mkdir(SCREENS, { recursive: true });
+const prints = [
   await stickerPack(),
-  ...posters,
+  ...(await htmlIn(join(ASSETS, "print/posters"))),
   join(ASSETS, "print/printables.html"),
 ];
+const screens = (
+  await Promise.all(
+    ["posts", "stories", "highlights", "avatars"].map((dir) =>
+      htmlIn(join(SOCIAL, dir))
+    )
+  )
+).flat();
 
-const browser = await chromium.launch();
-for (const file of files) {
-  // One page at a time, in order, so the log reads as the files are made.
+// CHROMIUM_PATH: a browser of your own when Playwright's download is missing.
+const browser = await chromium.launch({
+  executablePath: process.env.CHROMIUM_PATH || undefined,
+});
+for (const file of prints) {
+  // One file at a time, in order, so the log reads as the files are made.
   // biome-ignore lint/performance/noAwaitInLoops: printed one by one, in order
   const page = await browser.newPage();
   await page.goto(`file://${file}`, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  const title = (TITLE.exec(await readFile(file, "utf8"))?.[1] ?? file)
-    .replace(" · ", " ")
-    .replace(UNSAFE, "");
-  const pdf = join(OUT, `${title}.pdf`);
-  await page.pdf({ path: pdf, preferCSSPageSize: true, printBackground: true });
+  const name = await nameOf(file);
+  const rgb = join(OUT, `${name}.rgb.pdf`);
+  const pdf = join(OUT, `${name}.pdf`);
+  await page.pdf({ path: rgb, preferCSSPageSize: true, printBackground: true });
   await page.close();
+  toCmyk(rgb, pdf, profile);
+  await rm(rgb);
   console.log(relative(ROOT, pdf));
+}
+for (const file of screens) {
+  // biome-ignore lint/performance/noAwaitInLoops: shot one by one, in order
+  const page = await browser.newPage({ deviceScaleFactor: 1 });
+  await page.setViewportSize({ height: 1080, width: 1080 });
+  await page.goto(`file://${file}`, { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  const folder = relative(SOCIAL, file).split("/")[0] ?? "";
+  const base = file.slice(file.lastIndexOf("/") + 1, -".html".length);
+  const png = join(SCREENS, `SAL-MED-02-${folder}-${base}.png`);
+  const image = await page.screenshot({ fullPage: true, path: png });
+  if (IN_PLACE) {
+    await writeFile(file.replace(/\.html$/u, ".png"), image);
+  }
+  await page.close();
+  console.log(relative(ROOT, png));
 }
 await browser.close();

@@ -28,7 +28,7 @@ const LOCKUP = {
   en: siteUrl("en", "/brand/sal-lockup-horizontal-email.png"),
 };
 
-const FONT = "'Ubuntu Arabic', Ubuntu, 'Segoe UI', Tahoma, Arial, sans-serif";
+const FONT = "Ubuntu, 'Segoe UI', Tahoma, Arial, sans-serif";
 
 /** A line in a list: a title that links, and what it is (a date, a section). */
 interface NoticeItem {

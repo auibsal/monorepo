@@ -82,13 +82,17 @@
  * local(Arial), which Android and Linux don't have, so text first set in
  * their wider system face jumped when Ubuntu arrived (the performance
  * budget, A8). These match Ubuntu's width on running text, measured
- * Nov 5, 2026 (Liberation Sans and Roboto are Arial's width).
+ * Nov 5, 2026 (Liberation Sans and Roboto are Arial's width). They cover
+ * Latin only: Ubuntu's Arabic files come straight after Ubuntu's Latin in
+ * the stack, so Arabic is never drawn in DejaVu or another system face.
  */
 @font-face {
   font-family: "Ubuntu Fallback Arial";
   src:
     local("Liberation Sans"), local("LiberationSans"), local("Roboto"),
     local("Roboto-Regular");
+  /* Latin only: Arabic never falls to a system face (DejaVu had Arabic). */
+  unicode-range: U+0000-05FF, U+2000-206F, U+20AC, U+2122;
   size-adjust: 99.35%;
   ascent-override: 93.81%;
   descent-override: 19.02%;
@@ -98,6 +102,7 @@
 @font-face {
   font-family: "Ubuntu Fallback DejaVu";
   src: local("DejaVu Sans"), local("DejaVuSans");
+  unicode-range: U+0000-05FF, U+2000-206F, U+20AC, U+2122;
   size-adjust: 88.74%;
   ascent-override: 105.03%;
   descent-override: 21.3%;
@@ -107,13 +112,17 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  /*
+   * Ubuntu, one family in both languages (decisions §14): its Latin files,
+   * then its Arabic files (Arabic code points only), then the stand-ins.
+   */
   --font-sans:
-    var(--font-ubuntu), "Ubuntu Fallback Arial", "Ubuntu Fallback DejaVu",
-    var(--font-ubuntu-arabic), ui-sans-serif, system-ui, sans-serif;
-  --font-arabic: var(--font-ubuntu-arabic), var(--font-ubuntu), sans-serif;
+    var(--font-ubuntu), var(--font-ubuntu-arabic), "Ubuntu Fallback Arial",
+    "Ubuntu Fallback DejaVu", ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: var(--font-sans);
   --font-mono: var(--font-ubuntu-mono), ui-monospace, monospace;
-  /* Qirtas's article text (dek and body) only. */
-  --font-read: var(--font-literata), Georgia, serif;
+  /* The body of Qirtas's pieces only, in both languages. */
+  --font-read: var(--font-markazi), Georgia, serif;
   /* A signed name only (the Signature component). */
   --font-signature: var(--font-mrs-saint), cursive;
 
@@ -315,6 +324,7 @@
     :where(h1, h2, h3):not(
       :where([class~="not-prose"], [class~="not-prose"] *)
     ) {
+    font-family: var(--font-sans);
     font-weight: 400;
     letter-spacing: -0.015em;
   }
@@ -394,11 +404,13 @@
 /*
  * Type styles: the screen styles of packages/brand/assets/tokens.json. Display is Light
  * (300), tightly spaced, in `text`; text is Regular at 1.6; labels are
- * Medium, small, tracked capitals in `text-secondary`. Arabic (ar-*): Ubuntu
- * Arabic has no Light or italic, so its display is Regular through
- * :lang(ar), with 1.3 leading and no tracking.
+ * Medium, small, tracked capitals in `text-secondary`. Arabic (ar-*): Ubuntu's
+ * Arabic files have no Light or italic, so its display is Regular through
+ * :lang(ar), with 1.3 leading and no tracking. Headlines are always Ubuntu,
+ * also inside a reading page.
  */
 @utility type-display-xl {
+  font-family: var(--font-sans);
   font-size: clamp(3.5rem, 8.6vw, 7.75rem);
   font-weight: 300;
   line-height: 0.98;
@@ -412,6 +424,7 @@
   }
 }
 @utility type-display {
+  font-family: var(--font-sans);
   font-size: clamp(2.75rem, 6vw, 4.5rem);
   font-weight: 300;
   line-height: 1;
@@ -426,6 +439,7 @@
 }
 /* Section titles: Light, standing alone (no marker, nothing above them). */
 @utility type-title {
+  font-family: var(--font-sans);
   font-size: clamp(2.125rem, 4vw, 2.75rem);
   font-weight: 300;
   line-height: 1.1;
@@ -439,6 +453,7 @@
   }
 }
 @utility type-heading {
+  font-family: var(--font-sans);
   font-size: clamp(1.375rem, 2.4vw, 1.75rem);
   font-weight: 400;
   line-height: 1.25;
@@ -451,6 +466,7 @@
   }
 }
 @utility type-subheading {
+  font-family: var(--font-sans);
   font-size: 1.25rem;
   font-weight: 400;
   line-height: 1.35;
@@ -522,16 +538,21 @@
     color: var(--accent);
   }
 }
-/* Qirtas's reading pages: paper ground; Literata for English article text. */
+/*
+ * Qirtas's reading pages: paper ground; Markazi Text for the body of the
+ * piece in both languages (decisions §14). Markazi runs small, so it is
+ * set about a fifth larger than the text beside it (the reading face before it was 17.5px:
+ * 21px here); headlines, the nameplate and the interface stay Ubuntu.
+ */
 @utility reading {
   font-family: var(--font-read);
-  font-size: calc(1.09375rem * var(--reading-scale, 1));
-  line-height: 1.68;
+  font-size: calc(1.3125rem * var(--reading-scale, 1));
+  line-height: 1.6;
   background-color: var(--surface-reading);
   &:lang(ar),
   & :lang(ar) {
-    font-family: var(--font-arabic);
-    line-height: 1.9;
+    font-family: var(--font-read);
+    line-height: 1.8;
   }
 }
 

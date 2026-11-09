@@ -330,7 +330,8 @@ everywhere:
 - Headlines are Light and one color, text Regular, labels Medium tracked
   capitals; never bold headlines. Titles stand alone (`SectionHead`): no
   kicker, eyebrow or label above a headline. No exclamation marks in
-  headings. Qirtas's articles are set in Literata (`reading`).
+  headings. The body of Qirtas's pieces is set in Markazi Text, both languages
+  (`reading`); the typeface is Ubuntu in both languages, never "Ubuntu Arabic".
 - Hairlines in place of boxes and cards; square corners; no shadows. One
   solid accent button per view, everything else a text link. At most one
   crimson band per page; crimson never on ink.
