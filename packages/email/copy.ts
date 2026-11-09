@@ -467,7 +467,7 @@ export const verificationDecided = (
               ? "راجعت الهيئة الإدارية لجمعية الفنون والآداب طلبك ولم تتمكن من التحقق منه. يمكنك ما زلت قراءة قرطاس وحضور الفعاليات العامة."
               : "The Council of the AUIB Society of Arts and Letters looked at your request and couldn't verify it. You can still read Qirtas and come to public events.",
             l === "ar"
-              ? "إن ظننت أن في الأمر خطأ، فردّ على هذه الرسالة وأخبرنا بصلتك بالجامعة الأمريكية في العراق – بغداد أو بالجمعية."
+              ? "إن ظننت أن في الأمر خطأ، فردّ على هذه الرسالة وأخبرنا بصلتك بالجامعة الأمريكية في بغداد أو بالجمعية."
               : "If you think this is a mistake, reply to this email and tell us how you're connected to AUIB or the Society.",
           ],
         }
@@ -1619,7 +1619,7 @@ const plainInvitation = (
   paragraphs: [
     hello,
     l === "ar"
-      ? "أودّ أن أدعوك إلى الانضمام إلى جمعية الفنون والآداب في الجامعة الأمريكية في العراق – بغداد. نُصدر «قرطاس»، جريدة الجامعة للأخبار والأدب والفن، ونُدير «الفرقة»، مسرحنا، ونصنع «المحطة القادمة»، برنامجنا المصوّر، ونقيم الفعاليات طوال العام."
+      ? "أودّ أن أدعوك إلى الانضمام إلى جمعية الفنون والآداب في الجامعة الأمريكية في بغداد. نُصدر «قرطاس»، جريدة الجامعة للأخبار والأدب والفن، ونُدير «الفرقة»، مسرحنا، ونصنع «المحطة القادمة»، برنامجنا المصوّر، ونقيم الفعاليات طوال العام."
       : "I’d like to invite you to join the AUIB Society of Arts and Letters. We publish Qirtas, AUIB’s paper of news, letters and art; run the Company, our theater; make Next Stop, our show; and hold events all year.",
     l === "ar"
       ? "انضم عبر auibsal.org/join بهذا البريد. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نكتب إليك مرة أخرى."

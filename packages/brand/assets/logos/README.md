@@ -1,4 +1,4 @@
-The Society's identity: the symbol, the two wordmarks and the lockups built from them. All of them are vector, with text outlined (Ubuntu Bold and Ubuntu Arabic Bold), so no fonts are needed. Use them as `<img>`; their colors are fixed, so never recolor them.
+The Society's identity: the symbol, the two wordmarks and the lockups built from them. All of them are vector, with text outlined (Ubuntu Bold, in both languages), so no fonts are needed. Use them as `<img>`; their colors are fixed, so never recolor them.
 
 **One language per piece.** Use the logo in the language of the content: the English lockup on English pages, posts and documents; the Arabic lockup on Arabic ones. Never both on one piece.
 

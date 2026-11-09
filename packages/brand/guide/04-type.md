@@ -2,7 +2,7 @@
 
 ## Ubuntu, set like a book
 
-Ubuntu speaks for the Society in English and Ubuntu Arabic in Arabic: one family for both languages, as AUIB uses it. The range: Light for display, Regular for reading, Medium for labels.
+Ubuntu speaks for the Society in English and in Arabic: one family for both languages, as AUIB uses it. The range: Light for display, Regular for reading, Medium for labels.
 
 | Style | Screen | Print (A4) | Post (1080) | Weight | Use |
 | --- | --- | --- | --- | --- | --- |
@@ -14,11 +14,11 @@ Ubuntu speaks for the Society in English and Ubuntu Arabic in Arabic: one family
 | Label | 12 px | 7.8 pt | 28 px | Medium | Field names, columns, metadata. Never above a headline |
 | Code | 12 px | 9 pt | — | Mono | SAL-GOV-01 · F-14; six-word typewriter lines |
 
-- **Arabic.** Ubuntu Arabic Regular: it has no Light and no italic, so display is Regular. 1.3 leading for display, 1.6–2.0 for text. Never tracked. `dir="rtl"`, `lang="ar"`, Western digits.
-- **Inside Qirtas.** Long articles in Qirtas are set in Literata for reading. Its masthead, headlines and interface stay Ubuntu.
+- **Arabic.** Ubuntu Regular: its Arabic has no Light and no italic, so display is Regular. 1.3 leading for display, 1.6–2.0 for text. Never tracked. `dir="rtl"`, `lang="ar"`, Western digits.
+- **Inside Qirtas.** The body of Qirtas's pieces is set in Markazi Text for reading, in English and in Arabic: one family drawn for both scripts. It runs small, so it is set about a fifth larger than Ubuntu text. Qirtas's nameplate, headlines and interface stay Ubuntu.
 - **Bold.** For the logo and for emphasis inside a sentence. Never for headlines.
 
-Ubuntu, Ubuntu Mono and Literata are free from Google Fonts. Ubuntu Arabic ships with the design system. Never substitute another Arabic face.
+Ubuntu, Ubuntu Mono and Markazi Text are free from Google Fonts. Ubuntu's Arabic files are not on Google Fonts: they ship with the design system and are served under the one family name, Ubuntu, for Arabic text only. Never substitute another Arabic face, and never call it anything but Ubuntu.
 
 ## The type scale
 
@@ -46,13 +46,13 @@ Every size has a name. Use the names in code and templates, never a size picked 
 | `post-display` | 160 px / 1.0 | 300 | Two to five words with a full stop, in one color. |
 | `post-lede` | 38 px / 1.4 | 400 | One sentence under the headline. |
 | `post-meta` | 28 px / 1.4 | 500 | The date or link and @auibsal at the bottom start. |
-| **Arabic · Ubuntu Arabic** | | | |
+| **Arabic · Ubuntu** | | | |
 | `ar-display` | 64 px / 1.3 | 400 | Arabic headlines and the motto on Arabic pages. Regular, never tracked. |
 | `ar-heading` | 30 px / 1.6 | 400 | Arabic section titles and list headings. |
 | `ar-body` | 18.5 px / 1.9 | 400 | Arabic body text, one step larger than body. |
 | `ar-post` | 132 px / 1.3 | 400 | Arabic post headlines on 1080 px posts. The sentence is 42 px and the meta 30 px. |
-| **Qirtas reading · Literata** | | | |
-| `read-dek` | 22 px / 1.5 | 400 | The standfirst under a Qirtas headline. |
-| `read-body` | 17.5 px / 1.68 | 400 | Article text in Qirtas, in two columns on wide screens. |
+| **Qirtas reading · Markazi Text** | | | |
+| `read-dek` | 26 px / 1.5 | 400 | The standfirst under a Qirtas headline. |
+| `read-body` | 21 px / 1.6 | 400 | Article text in Qirtas, English and Arabic, in two columns on wide screens. |
 | **Mono · Ubuntu Mono** | | | |
 | `code` | 12 px / 1.3 | 400 | Document codes, form numbers, six-word typewriter lines. |

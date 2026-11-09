@@ -92,8 +92,8 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **One design per thing** in `@repo/brand/components/sal`: `FormPage`,
   `Letter`, `MembershipCard`, `Certificate` and the guilloche. The site
   renders them; print and PDF are the same page printed from the browser.
-  The card and certificate keep the live site's look (the card's tilt and
-  sheen are the one exception to "no 3D", off with reduced motion).
+  The card and certificate keep the live site's look; the card holds
+  still (no tilt, sheen or turning pattern).
 - **Certificates** are two: finishing Qalam and the Mutanabbi Prize, one
   language each, with a verification code (`/verify/<code>` takes a
   certificate or a card code). Service is a letter
@@ -201,7 +201,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   invitation and verify their own guests, invited by named email too (no
   shareable links). Partners never use Notion and see only their own events and
   checklist. No perks or offers anywhere: sponsors in kind are thanked
-  with a "Supported by" line, and the card is for the door only.
+  with a "Supported by" line (`SupportedBy`), and the card is for the door
+  only. AUIB's own offices aren't partners: they are listed under "With
+  the support of" (`WithTheSupportOf`) on /partners only, each linking
+  to its page on AUIB's site, from
+  the fixed list in `apps/web/lib/institutions.ts`.
 - **Guests** sign up at `/sign-up/guest`, or are invited by named email
   by a partner or by an event's lead on the event's Diwan page (`partner_invitations.event_id`); never members. Each
   has a number from the one series and a Guest card from the start, books
@@ -212,7 +216,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   only. Every event, Qirtas and the Tour keep a needs list
   (`programmes.needs`: item, quantity, date needed, purpose), and the
   General Secretary sends each request to Student Life and logs what was
-  provided (Council → Requests). Charity collections are a Notion record,
+  provided (Council → Requests), and by whom: Student Life, or a partner
+  in kind (`needs.given_by`, picked from the register), whom the event's
+  page then thanks under "Supported by" (`events.event_sponsors`: listed,
+  active partners only). Charity collections are a Notion record,
   not a site feature.
 - **Governance.** Meetings by body (Council, general, Annual, special,
   Founding; `meetingBodies`); elections by secret ballot online over a set

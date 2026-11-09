@@ -6,9 +6,45 @@ import { type LocaleParams, sectionMetadata } from "@/lib/page";
 
 export const generateMetadata = sectionMetadata("web.about", "/about");
 
-const PILLARS = ["connecting", "fostering", "celebrating", "building"] as const;
+/**
+ * The About page (decisions §6): the one sentence, the motto, what the
+ * Society does, how it is run, then its pages. AUIB's offices are listed
+ * on the partners page only.
+ */
 
-/** The Society's own pages, in a row of six (decisions.md: threes). */
+/** What the Society does (decisions §1), each opening its own part. */
+const DOES = [
+  ["qirtas", "/qirtas"],
+  ["company", "/company"],
+  ["nextStop", "/next-stop"],
+  ["events", "/events"],
+] as const;
+
+/** How it is run (decisions §2–§3), in the order a newcomer asks. */
+const RUN = [
+  "open",
+  "council",
+  "elections",
+  "editors",
+  "money",
+  "process",
+  "rules",
+] as const;
+
+/**
+ * Where the Society stands (decisions §0), a dated line each. The Society
+ * is founded at the Founding Meeting; nothing here dates an adoption before
+ * it.
+ */
+const BEGAN = [
+  ["registered", null],
+  ["tour", "2026-02-08"],
+  ["fair", "2026-02-23"],
+  ["fall", "2026-10-05"],
+  ["founding", "2027-03-30"],
+] as const;
+
+/** The Society's own pages, in a row of three. */
 const HUB = [
   ["council", "/about/council"],
   ["library", "/library"],
@@ -16,31 +52,6 @@ const HUB = [
   ["contact", "/about/contact"],
   ["press", "/about/press"],
   ["verify", "/verify"],
-] as const;
-/**
- * How the Society began, a dated line each (the design review C6), from
- * what Qirtas reported at the time; each line opens the piece.
- */
-const BEGAN = [
-  ["handbook", "2026-09-28", "society-publishes-its-member-handbook"],
-  ["documents", "2026-10-09", "society-publishes-its-founding-documents"],
-  [
-    "constitution",
-    "2026-10-13",
-    "society-ratifies-its-constitution-on-charter-day",
-  ],
-  ["qirtas", "2026-10-14", "qirtas-launches-as-one-paper"],
-] as const;
-
-const GLANCE = [
-  "open",
-  "power",
-  "council",
-  "elections",
-  "editors",
-  "money",
-  "process",
-  "last",
 ] as const;
 
 const AboutPage = async ({ params }: LocaleParams) => {
@@ -59,6 +70,68 @@ const AboutPage = async ({ params }: LocaleParams) => {
         </Link>
       </PageHeader>
 
+      <Section id="motto" title={t("mottoTitle")}>
+        <figure className="border-line pt-space-4 grid gap-3 border-t">
+          <p className="text-4xl leading-tight font-light sm:text-5xl">
+            {t("motto")}
+          </p>
+          <figcaption className="type-body text-text-secondary max-w-[60ch]">
+            {t("mottoNote")}
+          </figcaption>
+        </figure>
+      </Section>
+
+      <Section id="does" title={t("doesTitle")}>
+        <RuledList
+          items={DOES.map(([key, href]) => ({
+            body: t(`does.${key}.body`),
+            key,
+            title: (
+              <Link className="hover:text-accent" href={href}>
+                {t(`does.${key}.title`)}
+              </Link>
+            ),
+          }))}
+        />
+      </Section>
+
+      <Section id="run" title={t("runTitle")}>
+        <RuledList
+          columns={3}
+          items={RUN.map((key) => ({
+            body: t(`run.${key}.body`),
+            key,
+            title: t(`run.${key}.title`),
+          }))}
+        />
+        <p className="type-body pt-space-4 max-w-[60ch]">{t("nonPartisan")}</p>
+      </Section>
+
+      <Section id="began" title={t("beganTitle")}>
+        <ol className="border-line grid border-b">
+          {BEGAN.map(([key, day]) => (
+            <li
+              className="border-line grid gap-1 border-t py-3 sm:grid-cols-[16rem_1fr] sm:gap-x-6"
+              key={key}
+            >
+              {day ? (
+                <time
+                  className="type-caption text-text-secondary"
+                  dateTime={day}
+                >
+                  {formatLongDate(`${day}T12:00:00+03:00`, locale, true)}
+                </time>
+              ) : (
+                <span className="type-caption text-text-secondary">
+                  {t("spring2026")}
+                </span>
+              )}
+              <span className="type-body">{t(`began.${key}`)}</span>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
       <Section id="society" title={t("hubTitle")}>
         <RuledList
           columns={3}
@@ -73,64 +146,6 @@ const AboutPage = async ({ params }: LocaleParams) => {
           }))}
         />
       </Section>
-
-      <Section id="began" title={t("beganTitle")}>
-        <ol className="border-line grid border-b">
-          {BEGAN.map(([key, day, slug]) => (
-            <li
-              className="border-line grid gap-1 border-t py-3 sm:grid-cols-[16rem_1fr] sm:gap-x-6"
-              key={key}
-            >
-              <time className="type-caption text-text-secondary" dateTime={day}>
-                {formatLongDate(`${day}T12:00:00+03:00`, locale, true)}
-              </time>
-              <Link className="link" href={`/qirtas/news/${slug}`}>
-                {t(`began.${key}`)}
-              </Link>
-            </li>
-          ))}
-        </ol>
-      </Section>
-
-      <Section id="preamble" title={t("preambleTitle")}>
-        <p className="type-lede max-w-[60ch]">{t("preamble")}</p>
-      </Section>
-
-      <Section id="motto" title={t("mottoTitle")}>
-        <figure className="border-line pt-space-4 grid gap-3 border-t">
-          <p className="text-4xl leading-tight font-light sm:text-5xl">
-            {t("motto")}
-          </p>
-          <figcaption className="type-body text-text-secondary max-w-[60ch]">
-            {t("mottoNote")}
-          </figcaption>
-        </figure>
-      </Section>
-
-      <Section id="pillars" title={t("pillarsTitle")}>
-        <RuledList
-          items={PILLARS.map((key) => ({
-            body: t(`pillars.${key}.body`),
-            key,
-            title: t(`pillars.${key}.title`),
-          }))}
-        />
-      </Section>
-
-      <Section id="glance" title={t("glanceTitle")}>
-        <RuledList
-          columns={3}
-          items={GLANCE.map((key) => ({
-            body: t(`glance.${key}.body`),
-            key,
-            title: t(`glance.${key}.title`),
-          }))}
-        />
-      </Section>
-
-      <div className="border-line pt-space-4 grid gap-4 border-t">
-        <p className="type-body max-w-[60ch]">{t("nonPartisan")}</p>
-      </div>
     </div>
   );
 };

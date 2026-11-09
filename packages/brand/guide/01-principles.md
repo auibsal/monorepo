@@ -11,7 +11,7 @@ A society about writing should look like the best-made page on campus: wide marg
 | Principle | |
 | --- | --- |
 | **Quiet by default** | White space, hairline rules and sentence case carry the page. Each page gets one loud thing: a headline, one button or one band of color. If two things compete, remove one. |
-| **One language per piece** | Every page, post and document is in English or in Arabic, with the logo in that language, and every one exists in both. The two editions are equals, set in the same family, Ubuntu and Ubuntu Arabic, each written for its own readers. Never both on one piece. |
+| **One language per piece** | Every page, post and document is in English or in Arabic, with the logo in that language, and every one exists in both. The two editions are equals, set in the same family, Ubuntu, each written for its own readers. Never both on one piece. |
 | **The page is the brand** | The symbol is a bookmark, and it appears only as the logo. Everything else is built from what a book is made of: pages, margins, rules and type. Titles stand alone: no markers, ribbons or labels above them. No gradients, no shadows; icons carry meaning, never decoration. |
 | **Paperless by default** | Forms, tickets and documents live on the site and in Notion. Print only what is needed, to the confirmed number, and say only what the Society actually does. |
 

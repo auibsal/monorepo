@@ -41,7 +41,13 @@ export interface BrandTokens {
   stroke: { tokens: Token[] };
   type: {
     families: Record<string, string>;
-    fonts: { family: string; file: string; style: string; weight: string }[];
+    fonts: {
+      family: string;
+      file: string;
+      style: string;
+      unicodeRange?: string;
+      weight: string;
+    }[];
     groups: { family: string; name: string; styles: TypeStyle[] }[];
   };
 }
@@ -123,7 +129,7 @@ export const renderTokens = (tokens: BrandTokens) => {
 };
 
 const GOOGLE_FONTS =
-  "https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Ubuntu+Mono:wght@400;700&family=Literata:wght@400;500&display=swap";
+  "https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Ubuntu+Mono:wght@400;700&family=Markazi+Text:wght@400..700&display=swap";
 
 const UPPERCASE = new Set(["label", "print-label"]);
 
@@ -148,10 +154,10 @@ export const renderBrandTokens = (tokens: BrandTokens) => {
   return [
     "/* AUIB Society of Arts and Letters, design tokens. Generated from tokens.json by packages/brand/scripts/tokens.ts; edit that file, not this one. */",
     `@import url('${GOOGLE_FONTS}');`,
-    "/* Ubuntu Arabic is not on Google Fonts; it ships in fonts/ (Ubuntu Font License 1.0). */",
+    "/* Ubuntu's Arabic files are not on Google Fonts; they ship in fonts/ (Ubuntu Font License 1.0) and serve the one family, Ubuntu, for Arabic code points. */",
     ...tokens.type.fonts.map(
       (font) =>
-        `@font-face { font-family: "${font.family}"; src: url("${font.file}") format("woff2"); font-weight: ${font.weight}; font-style: ${font.style}; font-display: swap; }`
+        `@font-face { font-family: "${font.family}"; src: url("${font.file}") format("woff2"); font-weight: ${font.weight}; font-style: ${font.style}; font-display: swap;${font.unicodeRange ? ` unicode-range: ${font.unicodeRange};` : ""} }`
     ),
     ":root {",
     ...Object.entries(palette).map(([name, value]) => `  --${name}: ${value};`),

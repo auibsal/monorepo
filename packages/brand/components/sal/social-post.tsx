@@ -22,7 +22,7 @@ interface SocialPostProps {
   readonly headline: ReactNode;
   /**
    * One language per post: "ar" mirrors the post and uses the Arabic lockup
-   * and Ubuntu Arabic (Regular).
+   * and Ubuntu Regular.
    */
   readonly lang?: "ar" | "en";
   /** One sentence under the headline. */

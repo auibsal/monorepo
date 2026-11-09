@@ -174,7 +174,8 @@ any schema change. Integration tests run against a local stack with
   deleting the account needs a sign-in from the last 15 minutes
   (`signedInWithin`) and removes the person's own files. "Download your
   data" is JSON from `/api/account/export`. The Diwan signs a device out
-  after 30 minutes unused (`IdleSignOut`). An AUIB sign-in address is not
+  after an hour with no use of your account or the Diwan (`IdleSignOut`,
+  NIST SP 800-63B-4's AAL2 inactivity timeout). An AUIB sign-in address is not
   changed from the account (`private.keep_auib_address`).
 - **Two-step sign-in for sensitive roles.** Roles with `requires_mfa` (the
   Council, the Acting President, the Elections Committee) count only on
@@ -329,7 +330,8 @@ everywhere:
 - Headlines are Light and one color, text Regular, labels Medium tracked
   capitals; never bold headlines. Titles stand alone (`SectionHead`): no
   kicker, eyebrow or label above a headline. No exclamation marks in
-  headings. Qirtas's articles are set in Literata (`reading`).
+  headings. The body of Qirtas's pieces is set in Markazi Text, both languages
+  (`reading`); the typeface is Ubuntu in both languages, never "Ubuntu Arabic".
 - Hairlines in place of boxes and cards; square corners; no shadows. One
   solid accent button per view, everything else a text link. At most one
   crimson band per page; crimson never on ink.

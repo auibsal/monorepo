@@ -82,8 +82,19 @@ export const Posts: Story = {
         { file: "2-second-chapter", name: "Second Chapter" },
         { file: "4-come-in", name: "Come in" },
         { file: "5-get-involved", name: "Get involved" },
+        { file: "6-haven-1", name: "Haven: the cover" },
+        { file: "6-haven-2", name: "Haven: the cover, Arabic" },
+        { file: "6-haven-3", name: "Haven: a memory, a dream, or both" },
+        {
+          file: "6-haven-4",
+          name: "Haven: a memory, a dream, or both, Arabic",
+        },
+        { file: "6-haven-5", name: "Haven: send your work" },
+        { file: "6-haven-6", name: "Haven: send your work, Arabic" },
+        { file: "6-haven-7", name: "Haven: the wordmark" },
+        { file: "6-haven-8", name: "Haven: the wordmark, Arabic" },
       ]}
-      size="Posts, 1080 × 1350."
+      size="Posts, 1080 × 1350. The Haven carousel is eight slides, each English slide followed by its Arabic one."
     />
   ),
 };

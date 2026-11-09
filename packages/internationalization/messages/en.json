@@ -114,7 +114,7 @@
       "createAccount": "Create an account",
       "deleted": "Your account has been deleted.",
       "passkey": "Sign in with a passkey",
-      "idle": "You were signed out of the Diwan after thirty minutes without use. Sign in to pick up where you left off."
+      "idle": "You were signed out of the Diwan after an hour without use. Sign in to pick up where you left off."
     },
     "signUp": {
       "title": "Join the Society",
@@ -942,7 +942,7 @@
         "pending": "{amount} waiting for sign-off",
         "noCampaigns": "No active campaign.",
         "nothing": "Your roles don’t include any of the overview figures.",
-        "membersDetail": "{count, plural, =0 {None are Voting Members yet (two activities this semester or last).} one {{n} is a Voting Member (two activities this semester or last).} other {{n} are Voting Members (two activities this semester or last).}}",
+        "membersDetail": "{count, plural, =0 {None are Voting Members yet (two events or general meetings in the last 12 months).} one {{n} is a Voting Member (two events or general meetings in the last 12 months).} other {{n} are Voting Members (two events or general meetings in the last 12 months).}}",
         "verificationDetail": "The oldest has waited since {date}.",
         "verificationNone": "No one is waiting.",
         "reviewRequests": "Review requests",
@@ -1271,7 +1271,7 @@
           "shifts": "Shifts",
           "needs": "Needs",
           "prompts": "Prompts",
-          "collection": "The book fair’s collection",
+          "collection": "The charity collection",
           "collectionLede": "Link the campaign to its event, the fair: the event’s page then carries the collection, its catalog and its impact report.",
           "noCampaigns": "No campaign yet.",
           "campaigns": "Campaigns",
@@ -2884,7 +2884,10 @@
           "provided": "Provided",
           "partly_provided": "Partly provided",
           "not_provided": "Not provided"
-        }
+        },
+        "givenBy": "Given by",
+        "studentLife": "Student Life",
+        "givenByName": "given by {partner}"
       },
       "hiring": {
         "title": "Hiring",
@@ -4560,73 +4563,75 @@
     },
     "about": {
       "title": "About the Society",
-      "lede": "To cultivate a culture of literature and creative expression across AUIB.",
-      "constitution": "Read the Constitution",
-      "preambleTitle": "Preamble",
-      "preamble": "We, students of the American University of Iraq – Baghdad, gathered as the Society of Arts and Letters, in a city that once kept the House of Wisdom and still keeps al-Mutanabbi Street, adopt this Constitution so that our Society is open to every student, governed in the open, careful with people and money, and built to outlast those who founded it.",
+      "lede": "The AUIB Society of Arts and Letters publishes Qirtas, AUIB’s paper of news, letters and art; runs the Company, its theater; makes Next Stop, its show; and holds events all year.",
+      "constitution": "Read the proposed Constitution",
       "mottoTitle": "Our motto",
-      "motto": "The paper and the pen",
+      "motto": "The paper and the pen.",
       "mottoNote": "From al-Mutanabbi’s most quoted line: the horses, the night and the desert know me; so do the sword, the lance, the paper and the pen. We keep only the last two.",
-      "pillarsTitle": "Four pillars",
-      "pillars": {
-        "connecting": {
-          "title": "Connecting students",
-          "body": "From every college, into one room and onto one page."
+      "doesTitle": "What the Society does",
+      "does": {
+        "qirtas": {
+          "title": "Qirtas",
+          "body": "The Society’s paper of news, letters and art, with its own masthead and editorial independence. It includes Qalam, its summer program for high school students. Anyone can write for it, at any time."
         },
-        "fostering": {
-          "title": "Fostering creativity",
-          "body": "Deadlines, editors and stages that turn drafts into finished work."
+        "company": {
+          "title": "The Company",
+          "body": "The Society’s theater company. Its performances are events like any other, open to the campus."
         },
-        "celebrating": {
-          "title": "Celebrating culture",
-          "body": "Arabic and English side by side; Iraqi writing next to world writing."
+        "nextStop": {
+          "title": "Next Stop",
+          "body": "The Society’s video show, a reality sitcom about AUIB, in episodes, specials and reels."
         },
-        "building": {
-          "title": "Building a community",
-          "body": "A society people stay in, and come back to."
+        "events": {
+          "title": "Events",
+          "body": "Events all year, at least one a month in term, on one calendar: among them the Typewriter Tour in the spring club fair week and Second Chapter, a book drive and sale for a charity, at the fall club fair."
         }
       },
-      "glanceTitle": "At a glance",
-      "glance": {
+      "runTitle": "How it is run",
+      "run": {
         "open": {
           "title": "Open and free",
-          "body": "Any enrolled AUIB student can join. No fee, no audition, no portfolio. Members who take part in two activities a semester vote."
-        },
-        "power": {
-          "title": "Members hold the power",
-          "body": "The members elect the officers by secret ballot, change this Constitution and can remove anyone who abuses a role."
+          "body": "Any enrolled AUIB student can join, with no fee and no audition. Faculty, staff and alumni join as Associate Members. Members who attended at least two events or general meetings in the past 12 months vote."
         },
         "council": {
-          "title": "A Council runs the work",
-          "body": "Three elected officers and three directors meet every two weeks and set each term’s calendar of events."
+          "title": "A Council of nine",
+          "body": "Three officers, the President, Vice President and General Secretary, and six directors, each with their own work. The Council meets monthly in term; every member is welcome at the general meetings, every two weeks."
         },
         "elections": {
-          "title": "Elections every April",
-          "body": "Secret ballot with AUIB sign-in, run by a committee of non-candidates. Ranked choice when more than two stand. Presidents serve two terms at most."
+          "title": "Elections",
+          "body": "Members elect the officers by secret ballot, online or at the meeting; a winner needs a majority of the votes cast, or the top two go to a runoff. Qirtas’s staff elect its Editor-in-Chief; the President appoints the other directors after an open call, with the Executive Board’s approval. The first elections are in October 2027, then every April."
         },
         "editors": {
-          "title": "Editors decide the art",
-          "body": "Qirtas’s editors and the Company’s director make creative calls. The Council overrules a selection only on grounds of law, safety or University policy, and in writing."
+          "title": "Editors decide the paper",
+          "body": "Qirtas chooses its own work. The President, as Publisher, never selects work, and the Society’s media team promotes the paper but never decides what it runs."
         },
         "money": {
           "title": "No money of its own",
-          "body": "The Society holds no budget and no money: Student Life provides what its events need. The book fair’s collection is counted by two people, handed over with a witness and a receipt, and goes to the charity in full."
+          "body": "The Society holds no budget, no account and no money, and charges no dues. The Office of Student Life provides what it needs, and sponsors give in kind. Money collected for a charity, at Second Chapter or elsewhere, belongs to the charity: every dinar goes to it."
         },
         "process": {
           "title": "Fair process",
-          "body": "Anyone facing discipline hears the concern and can answer it. Removal of an officer needs two-thirds of members voting."
+          "body": "No one is removed from a role without notice and a hearing. Removal takes a two-thirds vote of the Council, or of a members’ meeting for an officer."
         },
-        "last": {
-          "title": "Written to last",
-          "body": "Minutes, reports and an archive are kept for the next generation. Core principles can only be changed at two meetings, a month apart."
+        "rules": {
+          "title": "Written rules",
+          "body": "The Constitution and Bylaws govern the Society, with Robert’s Rules of Order where they are silent. Members amend them by a two-thirds vote, with two weeks’ written notice."
         }
       },
       "nonPartisan": "Our Society is non-partisan and non-sectarian. Your writing and art can explore anything human. The Society itself takes no side in party or sect.",
+      "beganTitle": "How it began",
+      "began": {
+        "registered": "The Society registers as a club with the Office of Student Life.",
+        "tour": "The first Typewriter Tour, four days at four places on campus.",
+        "fair": "Its first table at the club fair.",
+        "fall": "Registered again for the fall, at the fall club fair.",
+        "founding": "The Founding Meeting, where members adopt the Constitution and Bylaws."
+      },
       "hubTitle": "The Society",
       "hub": {
         "council": {
           "title": "The Council",
-          "body": "Who leads the Society this year, from the roles they hold."
+          "body": "Who leads the Society this year, seat by seat."
         },
         "library": {
           "title": "The Library",
@@ -4634,7 +4639,7 @@
         },
         "partners": {
           "title": "Partners",
-          "body": "The organizations the Society works with, and what members get from them."
+          "body": "The organizations the Society works with, and how to become one."
         },
         "contact": {
           "title": "Contact",
@@ -4649,13 +4654,7 @@
           "body": "Check a membership card or a certificate the Society issued."
         }
       },
-      "beganTitle": "How it began",
-      "began": {
-        "handbook": "The Society sets out what membership means, in its member handbook.",
-        "documents": "Its founding documents and three-year plan go online.",
-        "constitution": "The members ratify the Constitution.",
-        "qirtas": "Qirtas launches: news, letters and art in one paper."
-      }
+      "spring2026": "Spring 2026"
     },
     "join": {
       "title": "Join the Society",
@@ -4686,7 +4685,7 @@
         },
         "vote": {
           "title": "A vote",
-          "body": "Two activities in a semester make you a Voting Member: you vote in elections and can stand for office."
+          "body": "Attend two events or general meetings in 12 months and you are a Voting Member: you vote in elections, and after a term as a member you can stand for office."
         }
       },
       "tiersTitle": "Kinds of membership",
@@ -4965,13 +4964,6 @@
       "asList": "See the productions as a list"
     },
     "institutions": {
-      "title": "Home and partners",
-      "lede": "The Society is a registered student organization of the American University of Iraq – Baghdad, recognized by the Office of Student Life.",
-      "roles": {
-        "home": "Home institution",
-        "recognition": "Recognition",
-        "partner": "Institutional partner"
-      },
       "names": {
         "auib": "The American University of Iraq – Baghdad",
         "studentLife": "Office of Student Life",
@@ -4979,7 +4971,8 @@
         "press": "AUIB Press",
         "library": "AUIB Library"
       },
-      "allPartners": "All partners"
+      "withTheSupportOf": "With the support of",
+      "supportedBy": "Supported by"
     },
     "notFound": {
       "title": "A page unwritten",
@@ -4992,7 +4985,7 @@
     "footerExtra": {
       "copyright": "© {year} AUIB Society of Arts and Letters. All rights reserved.",
       "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
-      "colophon": "Set in Ubuntu and Ubuntu Arabic. Written in Baghdad.",
+      "colophon": "Set in Ubuntu and Markazi Text. Written in Baghdad.",
       "paperless": "Paperless by default. Books reused through Second Chapter.",
       "instagram": "Instagram",
       "telegram": "Telegram",

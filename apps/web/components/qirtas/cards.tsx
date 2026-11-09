@@ -141,7 +141,7 @@ export const PieceColumn = async ({
 );
 
 /**
- * The lead story: the category, a Light headline, the deck in Literata
+ * The lead story: the category, a Light headline, the deck in Markazi Text
  * and the byline. The picture shows only when the piece has one: a story
  * without an image keeps a typographic layout, never an empty box.
  */

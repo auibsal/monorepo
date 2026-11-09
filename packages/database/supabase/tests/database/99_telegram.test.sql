@@ -106,7 +106,7 @@ end;
 $$;
 grant execute on function pg_temp.as_service() to public;
 
-select plan(29);
+select plan(30);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000007a1', 'tg1@auib.edu.iq', 'Linked Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000007a2', 'tg2@auib.edu.iq', 'Other Member');
@@ -209,6 +209,8 @@ select is((select count(*)::int from core.telegram_accounts
 select pg_temp.logout();
 select ok((select command like '%call_api(''/cron/telegram''%' from cron.job
   where jobname = 'sal-telegram-posts'), 'The group posts call apps/api');
+select ok((select command not like '%telegram_word_plays%' from cron.job
+  where jobname = 'sal-telegram-tidy'), 'The nightly tidy names only tables that exist');
 select hasnt_function('private', 'call_bot', 'The bot has no caller of its own');
 
 select * from finish();

@@ -84,6 +84,15 @@ export const publicEvent = async (client: Client, eventSlug: string) =>
       .maybeSingle()
   );
 
+/**
+ * The partners that gave a public event's needs in kind, thanked on its
+ * page with "Supported by" (decisions §2): active, listed partners only.
+ */
+export const eventSponsors = async (client: Client, eventSlug: string) =>
+  unwrap(
+    await events(client).rpc("event_sponsors", { event_slug: eventSlug })
+  ) ?? [];
+
 /** The partner a public event is held with (decisions §13), or null. */
 export const eventHost = async (client: Client, eventSlug: string) =>
   unwrap(

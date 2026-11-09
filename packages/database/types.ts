@@ -1766,6 +1766,16 @@ export type Database = {
           slug: string;
         }[];
       };
+      event_sponsors: {
+        Args: { event_slug: string };
+        Returns: {
+          logo_path: string;
+          name_ar: string;
+          name_en: string;
+          slug: string;
+          url: string;
+        }[];
+      };
       find_attendee: {
         Args: { event_id: string; query: string };
         Returns: {
@@ -6122,6 +6132,7 @@ export type Database = {
           created_at: string;
           created_by: string | null;
           event_id: string | null;
+          given_by: string | null;
           id: string;
           item: string;
           needed_by: string;
@@ -6139,6 +6150,7 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           event_id?: string | null;
+          given_by?: string | null;
           id?: string;
           item: string;
           needed_by: string;
@@ -6155,6 +6167,7 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           event_id?: string | null;
+          given_by?: string | null;
           id?: string;
           item?: string;
           needed_by?: string;

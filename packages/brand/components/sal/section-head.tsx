@@ -14,7 +14,7 @@ interface SectionHeadProps {
 }
 
 /**
- * A section title: the title alone, Light (Ubuntu Arabic Regular in
+ * A section title: the title alone, Light (Ubuntu Regular in
  * Arabic), and at most a text link at the end of its line. No marker and
  * nothing above it: the Bookmark is only ever the logo.
  */

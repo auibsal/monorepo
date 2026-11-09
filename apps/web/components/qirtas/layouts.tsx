@@ -257,7 +257,7 @@ const Figure = ({
 /**
  * News, interviews, features, reviews: a column after the photo, in the
  * site's own type (decisions.md: news reads like the rest of the
- * site; Literata stays for stories and poems).
+ * site; Markazi Text stays for stories and poems).
  */
 const NewsBody = ({ locale, piece }: { locale: Locale; piece: Full }) => {
   const [photo] = images(piece);
