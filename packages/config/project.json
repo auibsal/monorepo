@@ -47,6 +47,16 @@
       "kind": "telegram",
       "url": "https://t.me/auibsal_bot",
       "handle": "@auibsal_bot"
+    },
+    {
+      "kind": "youtube",
+      "url": "https://www.youtube.com/@auibsal",
+      "handle": "@auibsal"
+    },
+    {
+      "kind": "linkedin",
+      "url": "https://www.linkedin.com/company/auibsal",
+      "handle": "auibsal"
     }
   ]
 }
