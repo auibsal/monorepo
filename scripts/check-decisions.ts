@@ -5,8 +5,9 @@
  * The date must be a real day, its weekday right, and not in the future;
  * no "decided <Mon> <D>" in the file may be later than it. With a base
  * ref (DECISIONS_BASE, e.g. origin/main), a changed file must carry a
- * changed date line: the same text is kept in the Claude project, and the
- * date is how the two copies are matched.
+ * changed date line, unless the line already names today in Baghdad (a
+ * second version the same day): the same text is kept in the Claude
+ * project, and the date is how the two copies are matched.
  */
 import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
@@ -90,7 +91,15 @@ if (base) {
   const before = git("show", `${base}:${FILE}`);
   const existed = before.status === 0;
   const beforeLine = existed ? (before.stdout.split("\n")[0] ?? "") : "";
-  if (changed && existed && beforeLine === first) {
+  // A second version on the same day keeps that day's date line: only a
+  // line naming a day before today (in Baghdad) must move.
+  const baghdadToday = new Date(Date.now() + 3 * 60 * 60 * 1000);
+  const datedToday =
+    match !== null &&
+    MONTHS.indexOf(match[2] ?? "") === baghdadToday.getUTCMonth() &&
+    Number(match[3]) === baghdadToday.getUTCDate() &&
+    Number(match[4]) === baghdadToday.getUTCFullYear();
+  if (changed && existed && beforeLine === first && !datedToday) {
     problems.push(
       `${FILE} changed but its date line did not: give it the date of this version.`
     );
