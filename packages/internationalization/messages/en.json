@@ -114,7 +114,7 @@
       "createAccount": "Create an account",
       "deleted": "Your account has been deleted.",
       "passkey": "Sign in with a passkey",
-      "idle": "You were signed out of the Diwan after thirty minutes without use. Sign in to pick up where you left off."
+      "idle": "You were signed out of the Diwan after an hour without use. Sign in to pick up where you left off."
     },
     "signUp": {
       "title": "Join the Society",

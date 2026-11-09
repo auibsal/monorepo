@@ -5,8 +5,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth/provider";
 
-/** How long the Diwan stays signed in with nobody using it. */
-export const IDLE_MINUTES = 30;
+/**
+ * How long the Diwan stays signed in with nobody using it: NIST SP
+ * 800-63B-4's inactivity timeout for two-step (AAL2) sessions.
+ */
+export const IDLE_MINUTES = 60;
 
 const KEY = "sal_diwan_active_at";
 const EVENTS = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
@@ -32,17 +35,11 @@ export const isIdle = (lastActive: number, now: number, minutes: number) =>
   now - lastActive > minutes * 60_000;
 
 /**
- * The Diwan's inactivity timeout (decisions §11): after thirty minutes
- * with no use in any of its tabs, this device signs out and comes back to
- * the sign-in page, which returns to the same page afterwards. Activity in
- * one tab counts for all (the time is shared through local storage).
+ * Marks this device as in use while the member uses your account or the
+ * Diwan, in any tab (the time is shared through local storage), so the
+ * Diwan's timeout counts use anywhere on the signed-in site.
  */
-export const IdleSignOut = () => {
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const pathname = usePathname();
-
+export const ActivityStamp = () => {
   useEffect(() => {
     let lastWrite = 0;
     const touch = () => {
@@ -57,6 +54,30 @@ export const IdleSignOut = () => {
     for (const name of EVENTS) {
       window.addEventListener(name, touch, { passive: true });
     }
+    return () => {
+      for (const name of EVENTS) {
+        window.removeEventListener(name, touch);
+      }
+    };
+  }, []);
+  return null;
+};
+
+/**
+ * The Diwan's inactivity timeout (NIST SP 800-63B-4, AAL2): after an hour with no use
+ * of your account or the Diwan in any tab, this device signs out and comes
+ * back to the sign-in page, which returns to the same page afterwards.
+ * Opening the Diwan counts as use, so a session that was idle elsewhere is
+ * never signed out on arrival.
+ */
+export const IdleSignOut = () => {
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    writeStamp(Date.now());
     const timer = window.setInterval(async () => {
       if (!isIdle(readStamp(), Date.now(), IDLE_MINUTES)) {
         return;
@@ -69,12 +90,7 @@ export const IdleSignOut = () => {
         query: { idle: "1", next: pathname },
       });
     }, 30_000);
-    return () => {
-      window.clearInterval(timer);
-      for (const name of EVENTS) {
-        window.removeEventListener(name, touch);
-      }
-    };
+    return () => window.clearInterval(timer);
   }, [pathname, queryClient, router, supabase]);
 
   return null;

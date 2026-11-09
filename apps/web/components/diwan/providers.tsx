@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useState } from "react";
+import { ActivityStamp } from "@/components/diwan/idle-sign-out";
 import { AuthProvider } from "@/lib/auth/provider";
 import { getSupabase } from "@/lib/diwan/supabase";
 
@@ -9,7 +10,7 @@ interface AppProvidersProps {
   readonly children: ReactNode;
 }
 
-/** Data fetching and the Supabase session. */
+/** Data fetching, the Supabase session and the time of last use. */
 export const AppProviders = ({ children }: AppProvidersProps) => {
   const [queryClient] = useState(
     () =>
@@ -23,7 +24,10 @@ export const AppProviders = ({ children }: AppProvidersProps) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider client={supabase}>{children}</AuthProvider>
+      <AuthProvider client={supabase}>
+        <ActivityStamp />
+        {children}
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

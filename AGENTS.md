@@ -174,7 +174,8 @@ any schema change. Integration tests run against a local stack with
   deleting the account needs a sign-in from the last 15 minutes
   (`signedInWithin`) and removes the person's own files. "Download your
   data" is JSON from `/api/account/export`. The Diwan signs a device out
-  after 30 minutes unused (`IdleSignOut`). An AUIB sign-in address is not
+  after an hour with no use of your account or the Diwan (`IdleSignOut`,
+  NIST SP 800-63B-4's AAL2 inactivity timeout). An AUIB sign-in address is not
   changed from the account (`private.keep_auib_address`).
 - **Two-step sign-in for sensitive roles.** Roles with `requires_mfa` (the
   Council, the Acting President, the Elections Committee) count only on

@@ -92,8 +92,8 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **One design per thing** in `@repo/brand/components/sal`: `FormPage`,
   `Letter`, `MembershipCard`, `Certificate` and the guilloche. The site
   renders them; print and PDF are the same page printed from the browser.
-  The card and certificate keep the live site's look (the card's tilt and
-  sheen are the one exception to "no 3D", off with reduced motion).
+  The card and certificate keep the live site's look; the card holds
+  still (no tilt, sheen or turning pattern).
 - **Certificates** are two: finishing Qalam and the Mutanabbi Prize, one
   language each, with a verification code (`/verify/<code>` takes a
   certificate or a card code). Service is a letter
