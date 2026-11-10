@@ -682,12 +682,8 @@
       "asMember": "As a member of the Society",
       "write": {
         "lede": "Send your work to Qirtas, the Society’s paper of news, letters and art. For now, Letters and Gallery take work, from members and the Society’s guests.",
-        "callCloses": "{call} closes {date}. Up to {max} pieces per person.",
-        "noCall": "No call for the printed Edition is open now. Letters and Gallery work is still welcome and is published online.",
         "yourWork": "Your drafts",
         "updated": "Updated",
-        "editionTitle": "The printed Edition",
-        "editionLede": "Twice a year a call opens for the printed Edition. While one is open, Letters and Gallery work can answer it; the rest is published online as it is ready.",
         "yourWorkLede": "What you have sent and what is being edited with you. Only you see it here; your author page shows only what is published.",
         "sendMore": "Write for Qirtas",
         "deck": "Deck",
@@ -766,7 +762,19 @@
           }
         },
         "gamesNote": "Games come from Qirtas’s editors.",
-        "gamesLink": "Play today’s games"
+        "gamesLink": "Play today’s games",
+        "haven": {
+          "title": "Haven",
+          "dek": "Dreams and memories · the pilot issue of Qirtas",
+          "memories": "Our memories and dreams are the most intimate parts of ourselves. Each of us holds a memory from childhood, or a dream close to the heart, that refuses to die.",
+          "share": "Share a piece of your own: a poem, a short story, a creative essay, or an artwork. Let it be about a core memory, a dream, or both, seen through your own eyes, and be one of the contributors to the first issue of Qirtas, AUIB’s paper of news, letters and art.",
+          "send": "Submit your work now."
+        },
+        "drafts": {
+          "title": "Your drafts",
+          "all": "All your work",
+          "line": "{type} · {date}"
+        }
       }
     },
     "profile": {
