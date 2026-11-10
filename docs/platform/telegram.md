@@ -60,6 +60,12 @@ And without commands:
   time (`word`, else `qirtas`; its Play button opens the Main App). A
   purpose without a topic gets no posts. Each post goes out once
   (`core.telegram_posts`).
+- **Announcements** (decisions §17): a notice the President sends from the
+  Diwan (The Council → Announcements) is posted once to the members' group
+  (`announcements` only) and sent to each linked member who keeps notices
+  on, in their language, 25 a run (`core.announcement_deliveries`), for
+  three days after the go. The President's words go as written, with the
+  site button; nothing of the bot's Iraqi copy is added.
 
 **What Telegram does itself** (so the bot doesn't):
 

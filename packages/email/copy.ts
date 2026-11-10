@@ -1741,3 +1741,38 @@ export const invitation = (
       signoff: presidentSignoff(l, signer),
     };
   });
+
+/** Paragraphs: text between empty lines. */
+const PARAGRAPH_BREAK = /\n\s*\n/u;
+
+export interface AnnouncementInfo {
+  body_ar: string;
+  body_en: string;
+  link_path: string | null;
+  title_ar: string;
+  title_en: string;
+}
+
+/**
+ * An announcement (decisions §17): the President's notice in one language,
+ * its paragraphs as written, with a button to the page it points to.
+ */
+export const announcement = (
+  lang: Lang,
+  notice: AnnouncementInfo,
+  base: string
+) =>
+  build(lang, (l) => ({
+    action: notice.link_path
+      ? {
+          fallback: true,
+          href: `${base}${localizedPath(l, notice.link_path)}`,
+          label: l === "ar" ? "افتح الصفحة" : "Open the page",
+        }
+      : undefined,
+    heading: l === "ar" ? notice.title_ar : notice.title_en,
+    paragraphs: (l === "ar" ? notice.body_ar : notice.body_en)
+      .split(PARAGRAPH_BREAK)
+      .map((p) => p.trim())
+      .filter(Boolean),
+  }));

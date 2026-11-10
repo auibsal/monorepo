@@ -12,7 +12,8 @@ import {
 
 /**
  * Resend Broadcasts for the emails that go to many people at once: the
- * Sunday Paper and the one-time invitation (decisions.md). One email
+ * Sunday Paper, the one-time invitation and the President's announcements
+ * (decisions.md). One email
  * per person counts against the free plan's 100 a day, which sign-in emails
  * share; a Broadcast doesn't.
  *
@@ -49,7 +50,7 @@ export interface BroadcastJob {
   readonly footer: NoticeFooterLine[];
   /** One row in core.broadcasts, for example "sunday-paper:2026-12:en". */
   readonly key: string;
-  readonly kind: "invitation" | "sunday_paper";
+  readonly kind: "announcement" | "invitation" | "sunday_paper";
   readonly lang: "ar" | "en";
 }
 

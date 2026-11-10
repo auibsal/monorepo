@@ -439,6 +439,76 @@ export type Database = {
         };
         Relationships: [];
       };
+      announcement_deliveries: {
+        Row: {
+          announcement_id: string;
+          sent_at: string;
+          telegram_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          announcement_id: string;
+          sent_at?: string;
+          telegram_id: number;
+        };
+        Update: {
+          announcement_id?: string;
+          sent_at?: string;
+          telegram_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "announcement_deliveries_announcement_id_fkey";
+            columns: ["announcement_id"];
+            isOneToOne: false;
+            referencedRelation: "announcements";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      announcements: {
+        Row: {
+          body_ar: string;
+          body_en: string;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          link_path: string | null;
+          sent_at: string | null;
+          tested_at: string | null;
+          title_ar: string;
+          title_en: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          body_ar: string;
+          body_en: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          link_path?: string | null;
+          sent_at?: string | null;
+          tested_at?: string | null;
+          title_ar: string;
+          title_en: string;
+          updated_at?: string;
+        };
+        Update: {
+          body_ar?: string;
+          body_en?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          link_path?: string | null;
+          sent_at?: string | null;
+          tested_at?: string | null;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       broadcasts: {
         Row: {
           broadcast_id: string | null;
@@ -1217,6 +1287,17 @@ export type Database = {
         }[];
       };
       run_retention: { Args: Record<PropertyKey, never>; Returns: Json };
+      save_announcement: {
+        Args: {
+          body_ar: string;
+          body_en: string;
+          id?: string;
+          link_path?: string;
+          title_ar: string;
+          title_en: string;
+        };
+        Returns: string;
+      };
       save_push_subscription: {
         Args: {
           auth: string;
@@ -1226,6 +1307,7 @@ export type Database = {
         };
         Returns: string;
       };
+      send_announcement: { Args: { id: string }; Returns: boolean };
       sunday_paper_recipients: {
         Args: Record<PropertyKey, never>;
         Returns: {
