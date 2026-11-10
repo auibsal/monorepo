@@ -456,7 +456,15 @@ export type Database = {
           sent_at?: string;
           telegram_id?: number;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "announcement_deliveries_announcement_id_fkey";
+            columns: ["announcement_id"];
+            isOneToOne: false;
+            referencedRelation: "announcements";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       announcements: {
         Row: {
@@ -1138,18 +1146,6 @@ export type Database = {
     };
     Functions: {
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
-      save_announcement: {
-        Args: {
-          body_ar: string;
-          body_en: string;
-          id: string | null;
-          link_path: string | null;
-          title_ar: string;
-          title_en: string;
-        };
-        Returns: string;
-      };
-      send_announcement: { Args: { id: string }; Returns: boolean };
       apply_broadcast_unsubscribes: {
         Args: { emails: string[] };
         Returns: number;
@@ -1291,6 +1287,17 @@ export type Database = {
         }[];
       };
       run_retention: { Args: Record<PropertyKey, never>; Returns: Json };
+      save_announcement: {
+        Args: {
+          body_ar: string;
+          body_en: string;
+          id?: string;
+          link_path?: string;
+          title_ar: string;
+          title_en: string;
+        };
+        Returns: string;
+      };
       save_push_subscription: {
         Args: {
           auth: string;
@@ -1300,6 +1307,7 @@ export type Database = {
         };
         Returns: string;
       };
+      send_announcement: { Args: { id: string }; Returns: boolean };
       sunday_paper_recipients: {
         Args: Record<PropertyKey, never>;
         Returns: {

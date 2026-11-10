@@ -75,8 +75,8 @@ const Editor = ({
         await supabase.schema("core").rpc("save_announcement", {
           body_ar: form.body_ar,
           body_en: form.body_en,
-          id: form.id,
-          link_path: form.link_path || null,
+          id: form.id ?? undefined,
+          link_path: form.link_path || undefined,
           title_ar: form.title_ar,
           title_en: form.title_en,
         })

@@ -42,15 +42,15 @@ revoke all on core.announcements from anon, authenticated;
 grant select on core.announcements to authenticated;
 grant all on core.announcements to service_role;
 
--- Saves a notice not yet sent: a new one when id is null. Any change
+-- Saves a notice not yet sent: a new one when no id is given. Any change
 -- clears its test, so what is sent is always what the President read.
 create function private.save_announcement(
-  id uuid,
   title_en text,
   title_ar text,
   body_en text,
   body_ar text,
-  link_path text
+  link_path text default null,
+  id uuid default null
 )
 returns uuid
 language plpgsql
@@ -88,25 +88,25 @@ begin
 end;
 $$;
 
-revoke all on function private.save_announcement(uuid, text, text, text, text, text) from public, anon;
-grant execute on function private.save_announcement(uuid, text, text, text, text, text) to authenticated;
+revoke all on function private.save_announcement(text, text, text, text, text, uuid) from public, anon;
+grant execute on function private.save_announcement(text, text, text, text, text, uuid) to authenticated;
 
 create function core.save_announcement(
-  id uuid,
   title_en text,
   title_ar text,
   body_en text,
   body_ar text,
-  link_path text
+  link_path text default null,
+  id uuid default null
 )
 returns uuid
 language sql
 security invoker
 set search_path = ''
-as $$ select private.save_announcement(id, title_en, title_ar, body_en, body_ar, link_path) $$;
+as $$ select private.save_announcement(title_en, title_ar, body_en, body_ar, link_path, id) $$;
 
-revoke all on function core.save_announcement(uuid, text, text, text, text, text) from public, anon;
-grant execute on function core.save_announcement(uuid, text, text, text, text, text) to authenticated;
+revoke all on function core.save_announcement(text, text, text, text, text, uuid) from public, anon;
+grant execute on function core.save_announcement(text, text, text, text, text, uuid) to authenticated;
 
 -- The President's go, after the test reached the President. A notice is
 -- sent once: the email job goes in the outbox, and Hudhud's next run posts

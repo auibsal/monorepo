@@ -107,7 +107,7 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000a0101');
 select is((select count(*)::integer from core.announcements), 0,
   'A member reads no announcements');
 select throws_ok(
-  $$ select core.save_announcement(null, 'T', 'ع', 'Body', 'نص', null) $$,
+  $$ select core.save_announcement('T', 'ع', 'Body', 'نص') $$,
   '42501', null, 'Only the President writes them'
 );
 
@@ -115,7 +115,7 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000a0102');
 select ok((select count(*) from core.announcements) >= 1,
   'The President reads them, Haven''s draft among them');
 create temp table saved as
-  select core.save_announcement(null, 'Title', 'عنوان', 'One.' || chr(10) || chr(10) || 'Two.', 'واحد.', '/qirtas/write') as id;
+  select core.save_announcement('Title', 'عنوان', 'One.' || chr(10) || chr(10) || 'Two.', 'واحد.', '/qirtas/write') as id;
 grant select on saved to authenticated;
 select throws_ok(
   $$ select core.send_announcement((select id from saved)) $$,
@@ -126,7 +126,7 @@ select pg_temp.logout();
 update core.announcements set tested_at = now() where id = (select id from saved);
 select pg_temp.login_as('00000000-0000-0000-0000-0000000a0102');
 select lives_ok(
-  $$ select core.save_announcement((select id from saved), 'Title, again', 'عنوان', 'One.', 'واحد.', '/qirtas/write') $$,
+  $$ select core.save_announcement('Title, again', 'عنوان', 'One.', 'واحد.', '/qirtas/write', (select id from saved)) $$,
   'A change before it is sent is saved'
 );
 select pg_temp.logout();
@@ -137,7 +137,7 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000a0102');
 select ok(core.send_announcement((select id from saved)), 'The President sends it after the test');
 select ok(not core.send_announcement((select id from saved)), 'Nothing is sent twice');
 select throws_ok(
-  $$ select core.save_announcement((select id from saved), 'Late', 'متأخر', 'Late.', 'متأخر.', null) $$,
+  $$ select core.save_announcement('Late', 'متأخر', 'Late.', 'متأخر.', null, (select id from saved)) $$,
   'P0001', 'announcement_closed', 'A sent notice can''t be changed'
 );
 select pg_temp.logout();
