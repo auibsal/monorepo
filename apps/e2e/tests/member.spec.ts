@@ -60,10 +60,12 @@ test("a member saves a draft, comes back to it and sends it", async ({
   await expect(page).toHaveURL(/\/qirtas\/write\/poetry\/[0-9a-f-]{36}$/u);
   await expect(page.getByRole("button", { name: "Draft saved" })).toBeVisible();
 
+  // Write for Qirtas lists the current drafts (decisions §17).
   await page.goto(`${urls.web}/qirtas/write`);
-  const row = page.getByRole("row", { name: new RegExp(title, "u") });
-  await expect(row).toContainText("Draft, not sent");
-  await row.getByRole("link", { name: title }).click();
+  const drafts = page.getByRole("region", { name: "Your drafts" });
+  const item = drafts.getByRole("listitem").filter({ hasText: title });
+  await expect(item).toContainText("Poetry");
+  await item.getByRole("link", { name: title }).click();
   await expect(page.getByLabel("Title")).toHaveValue(title);
   await expect(page.locator('[contenteditable="true"]').first()).toContainText(
     "Half a line, kept for later."
@@ -74,11 +76,10 @@ test("a member saves a draft, comes back to it and sends it", async ({
   await page.getByRole("checkbox", { name: /human authorship/iu }).check();
   await page.getByRole("button", { name: "Send to Qirtas" }).click();
   await expect(page).toHaveURL(/\/account\/work\/submissions\//u);
-  // Sent, it is a submission; the draft is gone.
+  // Sent, it is a submission; the draft is gone from Write for Qirtas.
   await page.goto(`${urls.web}/qirtas/write`);
-  await expect(
-    page.getByRole("row", { name: new RegExp(title, "u") })
-  ).not.toContainText("Draft, not sent");
+  await expect(page.getByRole("heading", { name: "Haven" })).toBeVisible();
+  await expect(page.getByRole("link", { name: title })).toHaveCount(0);
 });
 
 test("a manuscript's text fills the editor, and the file goes with the work", async ({

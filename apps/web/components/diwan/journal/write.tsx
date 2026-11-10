@@ -177,8 +177,8 @@ const Haven = () => {
 };
 
 /**
- * The member's current drafts, the two most recent: what they have sent
- * lives in Your account → Work, so it isn't repeated here.
+ * The member's current drafts, the two most recent (decisions §17): what
+ * they have sent lives in Your account → Work, so it isn't repeated here.
  */
 const CurrentDrafts = () => {
   const tw = useTranslations("diwan.journal.write");
