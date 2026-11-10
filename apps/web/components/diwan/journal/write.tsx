@@ -167,11 +167,7 @@ const Haven = () => {
         </h2>
         <p className="type-body text-text-secondary">{tw("dek")}</p>
       </div>
-      <div className="reading grid max-w-[60ch] gap-4">
-        <p>{tw("memories")}</p>
-        <p>{tw("share")}</p>
-      </div>
-      <p className="type-body font-medium">{tw("send")}</p>
+      <p className="reading max-w-[60ch]">{tw("memories")}</p>
     </section>
   );
 };
