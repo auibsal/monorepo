@@ -8,6 +8,7 @@ import { EmailQuotaError, sendEmail } from "@repo/email";
 import {
   accountDeleted,
   agreementReminder,
+  announcement,
   applicationDecided,
   applicationReceived,
   applicationWaiting,
@@ -654,6 +655,67 @@ const handlers: Record<string, Handler> = {
     if (typeof payload.email === "string") {
       const lang = langOf(payload.lang);
       await send({ email: payload.email, lang }, accountDeleted(lang));
+    }
+  },
+  // The President's notice (decisions §17): one Broadcast per language to
+  // the Sunday Paper's readers, each in their own language.
+  "announcement.broadcast": async (admin, payload) => {
+    await cleanUpSegments(admin);
+    await pullUnsubscribes(admin);
+    const id = String(payload.id ?? "");
+    const { data: notice } = await admin
+      .schema("core")
+      .from("announcements")
+      .select("id, title_en, title_ar, body_en, body_ar, link_path, sent_at")
+      .eq("id", id)
+      .maybeSingle();
+    if (!notice?.sent_at) {
+      return;
+    }
+    const { data: everyone, error } = await admin
+      .schema("core")
+      .rpc("sunday_paper_recipients");
+    if (error) {
+      throw error;
+    }
+    const waiting: string[] = [];
+    for (const lang of ["en", "ar"] as const) {
+      const contacts: BroadcastContact[] = (everyone ?? [])
+        .filter((person) => person.lang === lang)
+        .map((person) => ({
+          email: person.email,
+          properties: {
+            stop_url: person.user_id
+              ? stopLinks(lang, person.user_id).page
+              : unsubscribeLinks(lang, person.token ?? "").page,
+          },
+        }));
+      const line = FOOTER_LINES.optional[lang];
+      try {
+        // biome-ignore lint/performance/noAwaitInLoops: one language at a time
+        await runBroadcast(admin, {
+          built: announcement(lang, notice, origin()),
+          contacts,
+          footer: [
+            {
+              href: contactField("stop_url"),
+              link: line.link,
+              text: line.text,
+            },
+          ],
+          key: `announcement:${notice.id}:${lang}`,
+          kind: "announcement",
+          lang,
+        });
+      } catch (failure) {
+        if (!(failure instanceof BroadcastPending)) {
+          throw failure;
+        }
+        waiting.push(failure.message);
+      }
+    }
+    if (waiting.length > 0) {
+      throw new BroadcastPending(waiting.join(" "));
     }
   },
   "company.audition_update": async (admin, payload) => {

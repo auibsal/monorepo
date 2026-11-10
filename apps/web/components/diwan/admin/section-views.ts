@@ -43,6 +43,7 @@ type ViewKey =
   | "elections"
   | "concerns"
   | "disclosures"
+  | "announcements"
   | "library";
 
 export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
@@ -77,6 +78,12 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
       key: "disclosures",
       module: "governance",
       permission: ["governance.manage", "partners.sign"],
+    },
+    {
+      href: "/council/announcements",
+      key: "announcements",
+      module: "governance",
+      permission: "roles.assign",
     },
     { href: "/council/library", key: "library", module: "library" },
   ],

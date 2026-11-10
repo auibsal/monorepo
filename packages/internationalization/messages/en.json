@@ -2976,7 +2976,8 @@
           "partnerships": "Partnerships",
           "media": "Media",
           "council": "The Council",
-          "invitations": "Invitations"
+          "invitations": "Invitations",
+          "announcements": "Announcements"
         },
         "council": "The Council",
         "media": "Media",
@@ -3282,6 +3283,30 @@
           "Social": "Social",
           "Print": "Print"
         }
+      },
+      "announcements": {
+        "title": "Announcements",
+        "lede": "A notice written once, in English and in Arabic. Send its test to yourself, read it, then send it: one email in each reader’s language to everyone who takes the Sunday Paper, a post in the members’ group’s Announcements topic, and a message from Hudhud to each linked member who keeps notices on.",
+        "new": "New announcement",
+        "none": "No announcements yet.",
+        "titleEn": "Title in English",
+        "titleAr": "Title in Arabic",
+        "bodyEn": "The notice in English",
+        "bodyAr": "The notice in Arabic",
+        "bodyHint": "Plain text. Leave an empty line between paragraphs.",
+        "link": "The page it points to (optional)",
+        "linkHint": "A page on auibsal.org, as its path. The Arabic edition links to the same page in Arabic.",
+        "save": "Save",
+        "test": "Send the test to yourself",
+        "testSent": "The test went to {email}, in English and in Arabic.",
+        "tested": "Tested on {date}.",
+        "testNote": "Any change clears the test: send it again and read it before you send the notice.",
+        "send": "Send the announcement",
+        "confirm": "Send it now? The emails go out within a few minutes, and Hudhud posts within ten. It can’t be called back.",
+        "sendNow": "Send now",
+        "notYet": "Not yet",
+        "sentOn": "Sent on {date}.",
+        "linkPlaceholder": "/qirtas/write"
       }
     },
     "editor": {

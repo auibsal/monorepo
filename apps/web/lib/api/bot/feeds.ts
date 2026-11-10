@@ -8,7 +8,7 @@ import { anon, db, type Group, groups } from "./db";
 import { groupText, postTo } from "./features/group/common";
 import { pieceAuthor, publicPieces } from "./features/qirtas";
 import { label, pick, when } from "./format";
-import { botLink, eventPage, mainApp, piecePage } from "./links";
+import { botLink, eventPage, mainApp, piecePage, web } from "./links";
 import { staffPosts } from "./staff";
 
 /**
@@ -35,7 +35,8 @@ export type Kind =
   | "piece"
   | "word"
   | "brief"
-  | "event_summary";
+  | "event_summary"
+  | "announcement";
 
 const posts = () => db().schema("core").from("telegram_posts");
 
@@ -380,6 +381,155 @@ const dailyWordDirect = async (api: Api, username: string, now: Date) => {
   );
 };
 
+// ── Announcements ─────────────────────────────────────────────────────────
+
+/** How long after the President's go a notice still goes out. */
+const ANNOUNCEMENT_WINDOW = 72 * HOUR;
+/** A group post carries both languages: each body stays well inside 4,096. */
+const GROUP_BODY_MAX = 1500;
+const DIRECT_NOTICES_PER_RUN = 25;
+
+interface Notice {
+  body_ar: string;
+  body_en: string;
+  id: string;
+  link_path: string | null;
+  title_ar: string;
+  title_en: string;
+}
+
+/** Notices sent in the last three days, oldest first. */
+const sentNotices = async (now: Date) => {
+  const { data } = await db()
+    .schema("core")
+    .from("announcements")
+    .select("id, title_en, title_ar, body_en, body_ar, link_path")
+    .not("sent_at", "is", null)
+    .gte("sent_at", new Date(now.getTime() - ANNOUNCEMENT_WINDOW).toISOString())
+    .order("sent_at");
+  return (data ?? []) as Notice[];
+};
+
+const clip = (text: string, max: number) =>
+  text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
+
+/**
+ * The President's words as written (decisions §17): the title and body, in
+ * the reader's language, with the site's own button. Nothing of Hudhud's
+ * Iraqi copy is added, so a message never mixes the two registers.
+ */
+const noticeText = (notice: Notice, lang: Lang, max = 3500) =>
+  [
+    `<b>${escapeHtml(pick(lang, notice.title_en, notice.title_ar))}</b>`,
+    escapeHtml(clip(pick(lang, notice.body_en, notice.body_ar), max)),
+  ].join("\n\n");
+
+const noticeButton = (notice: Notice, lang: Lang) =>
+  new InlineKeyboard().url(
+    copy[lang].buttons.site,
+    web(lang, notice.link_path ?? "/")
+  );
+
+/** The members' group: the Announcements topic, once per notice. */
+const groupNotices = (run: Run, notices: Notice[]) =>
+  sequence(
+    notices.map(
+      (notice) => () =>
+        once(run.group, "announcement", notice.id, () =>
+          postTo(
+            run.api,
+            run.group,
+            ["announcements"],
+            copyFor(run.group, (lang) =>
+              noticeText(notice, lang, GROUP_BODY_MAX)
+            ),
+            { reply_markup: noticeButton(notice, linkLang(run.group)) }
+          )
+        )
+    ),
+    MAX_PER_RUN
+  );
+
+const deliveries = () => db().schema("core").from("announcement_deliveries");
+const telegramAccounts = () => db().schema("core").from("telegram_accounts");
+
+/**
+ * One notice to one member's chat: claimed first; a member who blocked the
+ * bot has their notices turned off, any other failure gives the claim back.
+ */
+const sendNotice = async (
+  api: Api,
+  notice: Notice,
+  chat: number,
+  lang: Lang
+) => {
+  const { data: claimed } = await deliveries()
+    .upsert(
+      { announcement_id: notice.id, telegram_id: chat },
+      { ignoreDuplicates: true, onConflict: "announcement_id,telegram_id" }
+    )
+    .select("telegram_id");
+  if (!claimed?.length) {
+    return false;
+  }
+  try {
+    await api.sendMessage(chat, noticeText(notice, lang), {
+      parse_mode: "HTML",
+      reply_markup: noticeButton(notice, lang),
+    });
+    return true;
+  } catch (error) {
+    if (error instanceof GrammyError && error.error_code === 403) {
+      await telegramAccounts()
+        .update({ notify: false })
+        .eq("telegram_id", chat);
+      return false;
+    }
+    await deliveries()
+      .delete()
+      .eq("announcement_id", notice.id)
+      .eq("telegram_id", chat);
+    if (!(error instanceof GrammyError)) {
+      throw error;
+    }
+    return false;
+  }
+};
+
+/**
+ * Each linked member who keeps notices on, in their own language
+ * (core.announcement_deliveries keeps who has had which).
+ */
+const directNotices = async (api: Api, notices: Notice[]) => {
+  if (!notices.length) {
+    return 0;
+  }
+  const { data: linked } = await telegramAccounts()
+    .select("telegram_id, user_id")
+    .eq("notify", true);
+  if (!linked?.length) {
+    return 0;
+  }
+  const { data: profiles } = await db()
+    .schema("core")
+    .from("profiles")
+    .select("id, locale")
+    .in(
+      "id",
+      linked.map((a) => a.user_id)
+    );
+  const langOf = (userId: string): Lang =>
+    profiles?.find((p) => p.id === userId)?.locale === "ar" ? "ar" : "en";
+  const jobs = notices.flatMap((notice) =>
+    linked.map(
+      (account) => () =>
+        sendNotice(api, notice, account.telegram_id, langOf(account.user_id))
+    )
+  );
+  // A few dozen a run, well within Telegram's limits; the rest next run.
+  return sequence(jobs, DIRECT_NOTICES_PER_RUN);
+};
+
 /**
  * Posts for events that are no longer on the site (canceled, unpublished
  * or deleted) are deleted from the group (decisions §6: posts are edited or
@@ -423,7 +573,11 @@ export const runFeeds = async (
   now = new Date()
 ): Promise<FeedResult> => {
   const withdrawn = await withdrawGone(api);
-  const direct = (await dailyWordDirect(api, username, now)) + withdrawn;
+  const notices = await sentNotices(now);
+  const direct =
+    (await dailyWordDirect(api, username, now)) +
+    (await directNotices(api, notices)) +
+    withdrawn;
   const connected = await groups();
   if (!connected.length) {
     return { groups: 0, posted: direct };
@@ -441,10 +595,11 @@ export const runFeeds = async (
       if (group.audience === "staff") {
         return staffPosts(run);
       }
+      const announced = await groupNotices(run, notices);
       const soon = await soonEvents(run, events);
       const fresh = await newEvents(run, events);
       const written = await newPieces(run, pieces);
-      return soon + fresh + written + (await dailyWord(run));
+      return announced + soon + fresh + written + (await dailyWord(run));
     })
   );
   return {

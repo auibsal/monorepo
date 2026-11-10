@@ -439,6 +439,68 @@ export type Database = {
         };
         Relationships: [];
       };
+      announcement_deliveries: {
+        Row: {
+          announcement_id: string;
+          sent_at: string;
+          telegram_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          announcement_id: string;
+          sent_at?: string;
+          telegram_id: number;
+        };
+        Update: {
+          announcement_id?: string;
+          sent_at?: string;
+          telegram_id?: number;
+        };
+        Relationships: [];
+      };
+      announcements: {
+        Row: {
+          body_ar: string;
+          body_en: string;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          link_path: string | null;
+          sent_at: string | null;
+          tested_at: string | null;
+          title_ar: string;
+          title_en: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          body_ar: string;
+          body_en: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          link_path?: string | null;
+          sent_at?: string | null;
+          tested_at?: string | null;
+          title_ar: string;
+          title_en: string;
+          updated_at?: string;
+        };
+        Update: {
+          body_ar?: string;
+          body_en?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          link_path?: string | null;
+          sent_at?: string | null;
+          tested_at?: string | null;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       broadcasts: {
         Row: {
           broadcast_id: string | null;
@@ -1076,6 +1138,18 @@ export type Database = {
     };
     Functions: {
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
+      save_announcement: {
+        Args: {
+          body_ar: string;
+          body_en: string;
+          id: string | null;
+          link_path: string | null;
+          title_ar: string;
+          title_en: string;
+        };
+        Returns: string;
+      };
+      send_announcement: { Args: { id: string }; Returns: boolean };
       apply_broadcast_unsubscribes: {
         Args: { emails: string[] };
         Returns: number;
