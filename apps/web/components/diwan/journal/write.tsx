@@ -137,12 +137,6 @@ export const WriteHome = () => {
             </li>
           ))}
         </ul>
-        <p className="type-caption">
-          {tw("gamesNote")}{" "}
-          <Link className="link" href="/qirtas/games">
-            {tw("gamesLink")}
-          </Link>
-        </p>
       </DiwanSection>
       <HowItWorks />
     </div>
