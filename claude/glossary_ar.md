@@ -5,7 +5,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | English | Arabic |
 |---|---|
 | AUIB Society of Arts and Letters | جمعية الفنون والآداب في الجامعة الأمريكية في بغداد (then: الجمعية) |
-| AUIB | الجامعة الأمريكية في بغداد |
+| AUIB | الجامعة الأمريكية في بغداد (decided Nov 9: everywhere, never «الجامعة الأمريكية في العراق – بغداد») |
 | Student Life | شؤون الطلبة |
 | Campus Recreation Officer | مسؤول الأنشطة الترفيهية في الحرم الجامعي |
 | Director of Student Life | مديرة شؤون الطلبة |
@@ -69,11 +69,13 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Privacy Notice / Terms of Use / Accessibility Statement | إشعار الخصوصية / شروط الاستخدام / بيان إمكانية الوصول |
 | Constitution / Bylaws / Policy Manual | الدستور / النظام الداخلي / دليل السياسات |
 | Leadership Handbook / Qirtas Staff Manual / Editorial Standards and Stylebook | دليل القيادة / دليل فريق قرطاس / معايير التحرير ودليل الأسلوب |
+| Annual Plan | الخطة السنوية |
 | Founding Proposal | مقترح التأسيس |
 | Version 1, proposed | النسخة 1، مقترحة |
+| Article / Section (governing documents) | المادة / البند |
 | camera-shy sticker | ملصق «بلا تصوير» |
 | names of people | in Arabic editions, written in Arabic script as in the Founding Proposal (شاهين فرجو، فجر سيف خالد عزت، يعقوب غسان العزاوي، محمد علي إحسان أحميد، علي حيدر، مية حكيمي، حسن صادق) |
 | Jelena Zivkovic / Ali Najm | يلينا زيفكوفيتش / علي نجم |
 | Qirtas (grammar) | قرطاس is masculine (قرطاس يصدر، نشره قرطاس); when the word «صحيفة» is used, agree with it |
 
-**Titles of named holders:** a title that names a woman takes تاء التأنيث (نائبة الرئيس، الأمينة العامة، رئيسة التحرير، مديرة الإعلام) with feminine verbs and pronouns; a seat named in the abstract keeps the form above. The Vice President is «نائبة الرئيس».
+**Titles of named holders:** a title that names a woman takes تاء التأنيث (نائبة الرئيس، الأمينة العامة، رئيسة التحرير، مديرة الإعلام) with feminine verbs and pronouns; a seat named in the abstract keeps the form above and avoids pronouns where it can. The Vice President is «نائبة الرئيس».
