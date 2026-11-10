@@ -97,7 +97,7 @@ describe("six sections, flexible types", () => {
 });
 
 describe("the types members send", () => {
-  test("every section but Games; two doors", () => {
+  test("Letters and Gallery only, for now", () => {
     expect(sendableCategories("letters")).toEqual([
       "poetry",
       "fiction",
@@ -106,7 +106,9 @@ describe("the types members send", () => {
       "translation",
       "letters_other",
     ]);
+    expect(sendableCategories("gallery").length).toBeGreaterThan(0);
     expect(sendableCategories("games")).toEqual([]);
+    expect(sendableCategories("voices")).toEqual([]);
     expect(closedCategories).toEqual([
       "word",
       "word_search",

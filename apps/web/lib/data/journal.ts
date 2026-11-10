@@ -99,9 +99,17 @@ export const deskCategories = (desk: Desk): readonly Category[] =>
  */
 export const closedCategories: readonly Category[] = [...sectionTypes.games];
 
+/**
+ * The sections taking work for now (decisions §17): Letters and Gallery
+ * only. The other sections reopen by adding them back here.
+ */
+const openDesks: readonly Desk[] = ["letters", "gallery"];
+
 /** The types a member sends in each section. */
 export const sendableCategories = (desk: Desk) =>
-  deskCategories(desk).filter((c) => !closedCategories.includes(c));
+  openDesks.includes(desk)
+    ? deskCategories(desk).filter((c) => !closedCategories.includes(c))
+    : [];
 
 /** Every type a member can send, at /qirtas/write/<type>. */
 const writableTypes = desks.flatMap(sendableCategories);

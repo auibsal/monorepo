@@ -25,7 +25,7 @@ import {
   SelectInput,
 } from "../admin/kit";
 import { RichTextEditor } from "../editor/rich-text";
-import { DiwanSection } from "../page";
+import { DiwanSection, RowList } from "../page";
 import { SectionSpinner } from "../states";
 import {
   attachFile,
@@ -35,7 +35,7 @@ import {
   PendingList,
 } from "./files";
 import { AuthorshipPledge, Declarations } from "./form";
-import { PartnerPathway, useSubmitPathway, YourWork } from "./pages";
+import { PartnerPathway, useMyDrafts, useSubmitPathway } from "./pages";
 
 const LANGUAGES = ["en", "ar", "bilingual"] as const;
 
@@ -92,27 +92,21 @@ const HowItWorks = () => {
  * /qirtas/write (decisions.md; the gateway revised Nov 5, 2026):
  * one door, readable by anyone. Visitors learn what Qirtas takes and how it
  * is read, then sign in (and come back here) or join; members and guests
- * see their work first. Every section but Games takes work all year, read
- * blind before an editor takes it up with the author; Letters and Gallery
- * work may also answer an open call for the printed Edition.
+ * see their current drafts. The current issue's call (Haven) leads; work
+ * is read blind before an editor takes it up with the author.
  */
 export const WriteHome = () => {
   const tw = useTranslations("diwan.journal.write");
   const tj = useTranslations("diwan.admin.journal");
-  const locale = useLocale() as Locale;
   const { loading, user } = useAuth();
-  const calls = useOpenCalls();
-  const editionCalls = (calls.data ?? []).filter((c) => c.issue_id);
   let door: ReactNode = null;
   if (!loading) {
-    door = user ? <YourWork /> : <VisitorDoor />;
+    door = user ? <CurrentDrafts /> : <VisitorDoor />;
   }
   return (
     <div className="grid gap-8">
       <AdminHeading title={tw("title")}>{tw("lede")}</AdminHeading>
-      {/* Private work lives here alone, as drafts (decisions.md):
-          what the member sent and what is edited with them. Their author
-          page shows only what is published. */}
+      <Haven />
       {door}
       <DiwanSection id="sections" title={tw("sectionsTitle")}>
         <ul className="divide-line border-line grid divide-y border-y">
@@ -151,23 +145,78 @@ export const WriteHome = () => {
         </p>
       </DiwanSection>
       <HowItWorks />
-      <DiwanSection id="edition" title={tw("editionTitle")}>
-        <p className="text-text-secondary max-w-3xl">{tw("editionLede")}</p>
-        {calls.data ? null : <SectionSpinner />}
-        {calls.data && editionCalls.length === 0 ? (
-          <p className="type-body">{tw("noCall")}</p>
-        ) : null}
-        {editionCalls.map((call) => (
-          <p className="type-body" key={call.id}>
-            {tw("callCloses", {
-              call: localized(call, "title", locale),
-              date: formatLongDate(call.closes_at, locale, true),
-              max: formatNumber(call.max_per_person),
-            })}
-          </p>
-        ))}
-      </DiwanSection>
     </div>
+  );
+};
+
+/**
+ * The current issue's call (decisions §14): Haven, Qirtas's pilot issue,
+ * in the poster's own words, with no deadline until the Editor-in-Chief
+ * sets the issue's dates. Work for it goes through the sections below.
+ */
+const Haven = () => {
+  const tw = useTranslations("diwan.journal.write.haven");
+  return (
+    <section
+      aria-labelledby="haven"
+      className="border-line grid gap-4 border-y py-8"
+    >
+      <div className="grid gap-2">
+        <h2 className="type-display" id="haven">
+          {tw("title")}
+        </h2>
+        <p className="type-body text-text-secondary">{tw("dek")}</p>
+      </div>
+      <div className="reading grid max-w-[60ch] gap-4">
+        <p>{tw("memories")}</p>
+        <p>{tw("share")}</p>
+      </div>
+      <p className="type-body font-medium">{tw("send")}</p>
+    </section>
+  );
+};
+
+/**
+ * The member's current drafts, the two most recent (decisions §17): what
+ * they have sent lives in Your account → Work, so it isn't repeated here.
+ */
+const CurrentDrafts = () => {
+  const tw = useTranslations("diwan.journal.write");
+  const tj = useTranslations("diwan.admin.journal");
+  const locale = useLocale() as Locale;
+  const drafts = useMyDrafts();
+  if (!drafts.data?.length) {
+    return null;
+  }
+  return (
+    <DiwanSection
+      action={
+        <Link className="link text-sm" href="/account/work">
+          {tw("drafts.all")}
+        </Link>
+      }
+      id="drafts"
+      title={tw("drafts.title")}
+    >
+      <RowList>
+        {drafts.data.slice(0, 2).map((d) => (
+          <li className="grid gap-1" key={d.id}>
+            <Link
+              className="font-medium underline underline-offset-4"
+              href={`/qirtas/write/${d.category}/${d.id}`}
+            >
+              {d.title || tw("untitledDraft")}
+            </Link>
+            <span className="type-caption">
+              {tw("drafts.line", {
+                date: formatLongDate(d.updated_at, locale),
+                type: tj(`categories.${d.category}`),
+              })}
+            </span>
+          </li>
+        ))}
+      </RowList>
+    </DiwanSection>
   );
 };
 

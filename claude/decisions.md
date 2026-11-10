@@ -1,4 +1,4 @@
-# SAL: current decisions (source of truth, Monday, November 9, 2026)
+# SAL: current decisions (source of truth, Tuesday, November 10, 2026)
 
 Every chat in this project should follow this file. Where an older document, project doc or chat disagrees, this file wins. All Society documents are **Version 1**: there are no earlier versions, no change histories and no old names. The same text is kept in the Claude project (`claude/decisions.md`) and in the monorepo (`claude/decisions.md`); change both together.
 
@@ -404,3 +404,8 @@ Codes follow the owner: each family is a Council seat (GOV is the members' own).
 - **Accessibility requests** (GOV-06) are answered within three working days; every event description ends with how to ask for an accommodation and by when.
 - **Cookies, by name (checked on the live site Nov 9):** `sb-…-auth-token` (sign-in, until sign-out), `NEXT_LOCALE` (the language of the page opened, a session cookie), `sal_theme` (light or dark once chosen, one year), and Cloudflare's security cookies when its checks run. GOV-04 lists them; a new cookie is added there before it ships.
 - **The Founding Proposal** is a one-page cover memo to the Office of Student Life (who the Society is, where it stands, the six governing documents with GOV-01 and GOV-02 for review, the Founding Meeting's rules, and what the Society asks); the Constitution's text lives only in the Constitution. It stays a record, separate from the Annual Plan.
+
+## 17. Decisions of Nov 10 (the owner)
+
+- **Write for Qirtas takes Letters and Gallery only, for now (decided Nov 10).** News, Voices and Video take no submissions until the owner reopens them; their forms are not found, and their section pages and pieces carry no "send your work" link. Games still come from the editors.
+- **Write for Qirtas leads with Haven (decided Nov 10).** The page opens with Haven's call in the poster's words (§14), with no deadline until the Editor-in-Chief sets the issue's dates. A signed-in member sees only their two most recent drafts there, with a link to all their work; what they have sent lives in Your account → Work.

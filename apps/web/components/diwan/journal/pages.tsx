@@ -108,7 +108,7 @@ interface Sent {
  * where it stands and its own page.
  */
 /** The member's drafts in Write for Qirtas, newest first. */
-const useMyDrafts = () => {
+export const useMyDrafts = () => {
   const { supabase, user } = useAuth();
   return useQuery({
     enabled: Boolean(user),
