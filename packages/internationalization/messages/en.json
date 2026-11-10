@@ -681,7 +681,7 @@
       "throughPartnerOptional": "Optional: if this work comes through one of the Society’s partners. It is never shown to readers.",
       "asMember": "As a member of the Society",
       "write": {
-        "lede": "Send your work to Qirtas, the Society’s paper of news, letters and art. Every section but Games takes work all year, from members and the Society’s guests.",
+        "lede": "Send your work to Qirtas, the Society’s paper of news, letters and art. For now, Letters and Gallery take work, from members and the Society’s guests.",
         "callCloses": "{call} closes {date}. Up to {max} pieces per person.",
         "noCall": "No call for the printed Edition is open now. Letters and Gallery work is still welcome and is published online.",
         "yourWork": "Your drafts",
