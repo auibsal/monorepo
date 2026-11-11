@@ -4775,15 +4775,15 @@
       "title": "The paper and the pen.",
       "lede": "A society for literature, theater and the arts at the American University of Iraq – Baghdad. Our motto is a line of al‑Mutanabbi.",
       "join": "Join the Society",
-      "whatsOn": "Events",
-      "thisTerm": "The next three weeks",
-      "noEvents": "Nothing is announced for the next three weeks.",
+      "thisTerm": "Coming up",
       "allEvents": "The whole calendar",
       "closes": "Closes {date}",
-      "programs": "Events",
-      "sundayPaper": "The Sunday Paper",
-      "sundayPaperLede": "One email a month, on the first Sunday: what Qirtas published, what’s on and the places open to members.",
-      "nextEvent": "Next: {title}, {date}, {time}"
+      "call": "Write for the next Edition",
+      "edition": "The newest Edition",
+      "nextStop": "Next Stop’s latest",
+      "nextStopAll": "Every episode",
+      "openRoles": "Open roles",
+      "openRolesAll": "Every open role"
     },
     "documents": {
       "title": "Library",

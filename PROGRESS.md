@@ -187,9 +187,10 @@ production; **Owner** is a step only the owner can take.
   an Edition: Read; Next Stop: Watch the latest; the Company: Audition when
   open, else See the season; Get involved: Apply; Partners: Become a
   partner).
-- [ ] Home, when each has something: motto and Join; the next three events;
+- [x] Home, when each has something: motto and Join; the next three events;
   the newest Edition or current call; latest from Qirtas; Next Stop's
-  latest; open roles; From the Society.
+  latest; open roles; From the Society. Join is its one action; the Sunday
+  Paper sign-up stays on Qirtas's front page.
 - [x] About in the order of decisions.md, with the full al-Mutanabbi verse
   and its translation, the story of the name Qirtas, the numbers counted by
   the site and the independence statement.

@@ -2,17 +2,18 @@ import { SectionHead } from "@repo/brand/components/sal/section-head";
 import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
-import { formatClock, formatLongDate } from "@repo/internationalization/format";
+import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { OpenPlaces } from "@/components/account/open-places";
 import { type DatedItem, DatedList, eventItems } from "@/components/event-list";
-import { NewsletterSignup } from "@/components/newsletter/signup";
+import { EpisodeCard, loadEpisodes } from "@/components/next-stop";
 import { PieceCardView } from "@/components/qirtas/cards";
-import { events, journal, localized } from "@/lib/data";
+import { FromTheSociety } from "@/components/qirtas/from-the-society";
+import { events, journal, localized, programmes } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
-import { roughlyNow } from "@/lib/this-year";
 
 interface HomeProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -36,40 +37,34 @@ const Home = async ({ params }: HomeProps) => {
   const tj = await getTranslations({ locale, namespace: "web.journal" });
   const join = localizedPath(locale, "/sign-up");
 
-  const [nextEvents, calls, front, news] = await Promise.all([
-    readPublished(["events"], (c) => events.publicEvents(c, { limit: 6 }), []),
-    readPublished(["journal"], (c) => journal.editionCalls(c), []),
-    readPublished(["journal"], (c) => journal.frontPieces(c), []),
-    readPublished(["journal"], (c) => journal.deskPieces(c, "news"), []),
-  ]);
+  const [nextEvents, calls, edition, front, news, episodes, places] =
+    await Promise.all([
+      readPublished(
+        ["events"],
+        (c) => events.publicEvents(c, { limit: 3 }),
+        []
+      ),
+      readPublished(["journal"], (c) => journal.editionCalls(c), []),
+      readPublished(["journal"], (c) => journal.currentEdition(c), null),
+      readPublished(["journal"], (c) => journal.frontPieces(c), []),
+      readPublished(["journal"], (c) => journal.deskPieces(c, "news"), []),
+      loadEpisodes(),
+      readPublished(["programmes"], (c) => programmes.openPlaces(c), []),
+    ]);
 
-  // The next three weeks (the overhaul, Oct 30, 2026): open calls (filed
-  // under the day they close) and the events, in date order, six at most.
-  const horizon = new Date(
-    (await roughlyNow()) + 21 * 24 * 60 * 60 * 1000
-  ).toISOString();
-  const term: DatedItem[] = [
-    ...(calls ?? []).map((call) => ({
-      at: call.closes_at,
-      href: "/qirtas",
-      key: call.id,
-      line: localized(call, "theme", locale),
-      place: t("closes", { date: formatLongDate(call.closes_at, locale) }),
-      title: localized(call, "title", locale),
-    })),
-    ...eventItems(nextEvents ?? [], locale),
-  ]
-    .filter((item) => !(item.at > horizon))
-    .sort((a, b) => a.at.localeCompare(b.at))
-    .slice(0, 6);
-
+  // Home, in decisions.md's order, each part only when it has something:
+  // the motto and Join; the next three events; the current call or the
+  // newest Edition; the latest from Qirtas; Next Stop's latest; open roles;
+  // From the Society. Join is the one main action.
+  const term: DatedItem[] = eventItems(nextEvents ?? [], locale).slice(0, 3);
+  const [call] = calls ?? [];
   const pieces = journal.inLanguage(
     ((front ?? []).length > 0 ? front : news) ?? [],
     locale
   );
   const [lead, ...rest] = pieces;
-  // The next event, from the calendar (design review C1): never typed in.
-  const [soonest] = nextEvents ?? [];
+  const [latestEpisode] = episodes;
+  const roles = (places ?? []).slice(0, 3);
 
   return (
     <>
@@ -78,48 +73,68 @@ const Home = async ({ params }: HomeProps) => {
           <div className="grid gap-6">
             <h1 className="type-display-xl max-w-4xl">{t("title")}</h1>
             <p className="type-lede max-w-[34ch]">{t("lede")}</p>
-            {soonest ? (
-              <p className="type-body">
-                <Link className="link" href={`/events/${soonest.slug}`}>
-                  {t("nextEvent", {
-                    date: formatLongDate(soonest.starts_at, locale),
-                    time: formatClock(soonest.starts_at, locale),
-                    title: localized(soonest, "title", locale),
-                  })}
-                </Link>
-              </p>
-            ) : null}
             <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-2">
               <Button asChild>
                 <a href={join}>{t("join")}</a>
-              </Button>
-              <Button asChild variant="link">
-                <a href="#this-term">{t("whatsOn")}</a>
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      <section
-        aria-labelledby="this-term"
-        className="gap-space-5 mx-auto grid w-full max-w-6xl px-4 py-16 [&_h2]:scroll-mt-28"
-      >
-        <SectionHead
-          action={
-            <Link className="link type-caption" href="/events">
-              {t("allEvents")}
-            </Link>
-          }
-          title={t("thisTerm")}
-          titleId="this-term"
-        />
-        {term.length > 0 ? (
+      {term.length > 0 ? (
+        <section
+          aria-labelledby="this-term"
+          className="gap-space-5 mx-auto grid w-full max-w-6xl px-4 py-16 [&_h2]:scroll-mt-28"
+        >
+          <SectionHead
+            action={
+              <Link className="link type-caption" href="/events">
+                {t("allEvents")}
+              </Link>
+            }
+            title={t("thisTerm")}
+            titleId="this-term"
+          />
           <DatedList items={term} locale={locale} />
-        ) : (
-          <p className="type-body text-text-secondary">{t("noEvents")}</p>
-        )}
-      </section>
+        </section>
+      ) : null}
+
+      {call || edition ? (
+        <section
+          aria-labelledby="edition"
+          className="gap-space-4 border-line mx-auto grid w-full max-w-6xl border-t px-4 py-16"
+        >
+          <h2 className="type-heading" id="edition">
+            {call ? t("call") : t("edition")}
+          </h2>
+          {call ? (
+            <div className="grid gap-2">
+              <p className="type-subheading">
+                <Link className="hover:text-accent" href="/qirtas/submit">
+                  {localized(call, "title", locale)}
+                </Link>
+              </p>
+              <p className="type-body max-w-[60ch]">
+                {localized(call, "theme", locale)}
+              </p>
+              <p className="type-caption">
+                {t("closes", { date: formatLongDate(call.closes_at, locale) })}
+              </p>
+            </div>
+          ) : null}
+          {!call && edition ? (
+            <p className="type-subheading">
+              <Link
+                className="hover:text-accent"
+                href={`/qirtas/editions/${edition.slug}`}
+              >
+                {localized(edition, "title", locale)}
+              </Link>
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       {lead ? (
         <section aria-labelledby="paper" className="bg-surface-reading">
@@ -147,18 +162,47 @@ const Home = async ({ params }: HomeProps) => {
         </section>
       ) : null}
 
-      <section
-        aria-labelledby="sunday-paper"
-        className="border-line mx-auto grid w-full max-w-6xl gap-4 border-t px-4 py-16 md:grid-cols-[1fr_1.4fr] md:items-start"
-      >
-        <div className="grid gap-2">
-          <h2 className="type-heading" id="sunday-paper">
-            {t("sundayPaper")}
-          </h2>
-          <p className="type-body">{t("sundayPaperLede")}</p>
-        </div>
-        <NewsletterSignup compact />
-      </section>
+      {latestEpisode ? (
+        <section
+          aria-labelledby="next-stop"
+          className="gap-space-4 mx-auto grid w-full max-w-6xl px-4 py-16"
+        >
+          <SectionHead
+            action={
+              <Link className="link type-caption" href="/next-stop">
+                {t("nextStopAll")}
+              </Link>
+            }
+            title={t("nextStop")}
+            titleId="next-stop"
+          />
+          <div className="max-w-3xl">
+            <EpisodeCard episode={latestEpisode} locale={locale} />
+          </div>
+        </section>
+      ) : null}
+
+      {roles.length > 0 ? (
+        <section
+          aria-labelledby="open-roles"
+          className="gap-space-4 border-line mx-auto grid w-full max-w-6xl border-t px-4 py-16"
+        >
+          <SectionHead
+            action={
+              <Link className="link type-caption" href="/get-involved">
+                {t("openRolesAll")}
+              </Link>
+            }
+            title={t("openRoles")}
+            titleId="open-roles"
+          />
+          <OpenPlaces locale={locale} places={roles} />
+        </section>
+      ) : null}
+
+      <div className="border-line mx-auto grid w-full max-w-6xl border-t px-4 py-16 empty:hidden">
+        <FromTheSociety locale={locale} />
+      </div>
     </>
   );
 };
