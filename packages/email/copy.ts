@@ -1561,6 +1561,58 @@ export const shiftReminder = (lang: Lang, s: ShiftInfo, app: string) =>
     ],
   }));
 
+/**
+ * After someone deletes their account: it goes in 30 days, and signing in
+ * before then keeps it (decisions.md, Members).
+ */
+export const accountDeletionScheduled = (
+  lang: Lang,
+  deletesOn: string,
+  base: string
+) =>
+  build(lang, (l) => ({
+    action: {
+      href: `${base}${localizedPath(l, "/sign-in")}`,
+      label: l === "ar" ? "سجّل الدخول لإبقاء حسابك" : "Sign in to keep it",
+    },
+    heading:
+      l === "ar"
+        ? `سيُحذف حسابك في ${formatLongDate(deletesOn, l)}`
+        : `Your account will be deleted on ${formatLongDate(deletesOn, l)}`,
+    paragraphs: [
+      l === "ar"
+        ? "طلبت حذف حسابك في جمعية الفنون والآداب. سيُحذف هو وحجوزاتك وملفك الشخصي في هذا التاريخ."
+        : "You asked to delete your account with the AUIB Society of Arts and Letters. It goes on that date, with your bookings and your profile.",
+      l === "ar"
+        ? "غيّرت رأيك؟ سجّل الدخول قبل ذلك ويبقى حسابك كما هو. وإن لم تطلب ذلك، فسجّل الدخول وغيّر كلمة المرور."
+        : "Changed your mind? Sign in before then and your account stays as it is. If you didn't ask for this, sign in and change your password.",
+    ],
+  }));
+
+/**
+ * A sign-in from a kind of device the account hasn't used (decisions.md,
+ * Members). Account email: always sent.
+ */
+export const newDevice = (
+  lang: Lang,
+  at: string,
+  device: string,
+  base: string
+) =>
+  build(lang, (l) => ({
+    action: account(base, l, "/account/settings"),
+    heading:
+      l === "ar" ? "تسجيل دخول من جهاز جديد" : "A sign-in from a new device",
+    paragraphs: [
+      l === "ar"
+        ? `سُجّل الدخول إلى حسابك في ${formatLongDate(at, l)}، الساعة ${formatClock(at, l)}، من: ${device}`
+        : `Your account was signed in on ${formatLongDate(at, l)}, at ${formatClock(at, l)}, from: ${device}`,
+      l === "ar"
+        ? "إن كان هذا أنت فلا تفعل شيئًا. وإن لم يكن، فافتح «الإعدادات»، واختر «الخروج من الأجهزة الأخرى»، وغيّر كلمة المرور."
+        : "If this was you, there's nothing to do. If it wasn't, open Settings, choose “Sign out everywhere else” and change your password.",
+    ],
+  }));
+
 /** After an account is deleted: to the address it had. */
 export const accountDeleted = (lang: Lang) =>
   build(lang, (l) => ({

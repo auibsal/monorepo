@@ -43,20 +43,24 @@ production; **Owner** is a step only the owner can take.
   personal-data permission (check-in, members, the Tour, identities, the
   mailing list, forms, concerns, partners, productions, Qalam, settings,
   the audit log); the hourly job `sal-two-step-from` turns it on.
-- [ ] **Sessions:** Settings lists signed-in devices with "Sign out
+- [x] **Sessions:** Settings lists signed-in devices with "Sign out
   everywhere else"; a sign-in from an unfamiliar device sends an email.
-  **Migrates:** a table of the account's known devices.
-- [ ] **Deletion:** a 30-day grace period; signing in restores the account.
-  **Migrates:** `deletion_requested_at`, and the daily job deletes after 30
-  days.
-- [ ] **Download your data:** a readable page beside the JSON.
+  **Migrates:** `core.known_devices` (filled from today's sessions, so no
+  one is emailed for the devices they already use); the five-minute job
+  `sal-new-devices`.
+- [x] **Deletion:** a 30-day grace period; signing in restores the account.
+  **Migrates:** `deletion_requested_at`; the retention job deletes after
+  30 days. The confirmation is a second step on the page.
+- [x] **Download your data:** a readable page beside the JSON.
 - [ ] **Sign-up in three screens at most:** address and password; the names
   (the legal name for Members, with a line on where it is used) and the
   Arabic form; the agreements. Everything else waits on Today. The first
   two weeks' emails each point to one next step and stop once it is done.
-- [ ] **Renewal each September:** "I'm still here", one click, with the Code
+- [x] **Renewal each September:** "I'm still here", one click, with the Code
   of Conduct re-acknowledged; those who don't stay members but leave the
-  active count and Student Life's lists. **Migrates:** `renewed_at`.
+  active count and Student Life's lists. **Migrates:** `renewed_at`
+  (empty: every member joined or renews this year, so September 2027 is
+  the first ask); `private.is_active_member()` is the active count.
 - [ ] **The classes:** Member, Associate, Honorary, Guest as decisions.md
   defines them; the class follows the person's status on the same account
   and number; no "staff" class. The Parent and Qalam account types go: a

@@ -78,8 +78,10 @@ export const GET = async (request: Request) => {
       throw runError;
     }
 
+    // Guest accounts unused for two years, and accounts whose owners
+    // deleted them more than 30 days ago.
     const guests = (due ?? [])
-      .filter((d) => d.kind === "guest_account")
+      .filter((d) => d.kind === "guest_account" || d.kind === "deleted_account")
       .map((d) => d.ref);
     for (const id of guests) {
       // biome-ignore lint/performance/noAwaitInLoops: one account at a time

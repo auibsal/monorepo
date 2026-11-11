@@ -15,6 +15,7 @@ import { Passkeys } from "./passkeys";
 import { ChangePassword } from "./password";
 import { PersonalEmail } from "./personal-email";
 import { PhoneNotifications } from "./phone-notifications";
+import { Sessions } from "./sessions";
 import { TelegramLink } from "./telegram-link";
 
 /**
@@ -91,6 +92,7 @@ export const SettingsScreen = () => {
       <ChangePassword />
       <TwoStepSettings />
       <Passkeys />
+      <Sessions />
       <RecoveryCodes />
       <DownloadData />
       <DeleteAccount />

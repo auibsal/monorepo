@@ -4,9 +4,10 @@ import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
+import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
 import { PasswordInput } from "@/components/fields/password-input";
 import { signInWithPassword } from "@/lib/auth/email";
@@ -15,6 +16,9 @@ import { useAuth } from "@/lib/auth/provider";
 import { useAuthError, usePasskeyError } from "@/lib/diwan/auth-messages";
 import { safeNextPath } from "@/lib/diwan/navigation";
 import { useHumanCheck } from "./human-check";
+
+/** A day as the deletion route returns it (yyyy-mm-dd). */
+const DAY = /^\d{4}-\d{2}-\d{2}$/u;
 
 /**
  * `embedded`: inside another page (the partner application), which has
@@ -29,6 +33,7 @@ export const SignInForm = ({
   const errorText = useAuthError();
   const passkeyErrorText = usePasskeyError();
   const { supabase } = useAuth();
+  const locale = useLocale();
   const params = useSearchParams();
   const next = safeNextPath(params.get("next"));
   const id = useId();
@@ -104,8 +109,16 @@ export const SignInForm = ({
         </FormHeader>
       )}
       {params.get("idle") ? <p role="status">{t("signIn.idle")}</p> : null}
-      {params.get("deleted") ? (
-        <p role="status">{t("signIn.deleted")}</p>
+      {DAY.test(params.get("deleted") ?? "") ? (
+        <p role="status">
+          {t("signIn.deleted", {
+            date: formatLongDate(
+              `${params.get("deleted")}T12:00:00+03:00`,
+              locale,
+              true
+            ),
+          })}
+        </p>
       ) : null}
       {
         <form className="grid gap-4" noValidate onSubmit={submit}>

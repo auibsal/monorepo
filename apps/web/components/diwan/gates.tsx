@@ -1,6 +1,8 @@
 "use client";
 
 import { usePathname, useRouter } from "@repo/internationalization/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import type { membership } from "@/lib/data";
@@ -40,7 +42,37 @@ export const RequireAuth = ({ children }: GateProps) => {
     }
   }, [loading, pathname, router, user]);
 
-  return loading || !user ? <PageSpinner /> : children;
+  return loading || !user ? (
+    <PageSpinner />
+  ) : (
+    <>
+      <Restored />
+      {children}
+    </>
+  );
+};
+
+/**
+ * Signing in keeps an account its owner had asked to delete (decisions.md,
+ * Members: 30 days to change one's mind), and says so once.
+ */
+const Restored = () => {
+  const t = useTranslations("diwan.profile.delete");
+  const { supabase, user } = useAuth();
+  const restored = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () => {
+      const { data } = await supabase.schema("core").rpc("restore_account");
+      return data === true;
+    },
+    queryKey: ["restore-account", user?.id ?? ""],
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+  return restored.data ? (
+    <p className="border-line border-b px-4 py-3 text-center" role="status">
+      {t("restored")}
+    </p>
+  ) : null;
 };
 
 /**

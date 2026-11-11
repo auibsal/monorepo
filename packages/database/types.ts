@@ -786,6 +786,25 @@ export type Database = {
         };
         Relationships: [];
       };
+      known_devices: {
+        Row: {
+          device: string;
+          first_seen: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          device: string;
+          first_seen?: string;
+          user_id: string;
+        };
+        Update: {
+          device?: string;
+          first_seen?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       notion_links: {
         Row: {
           content_hash: string | null;
@@ -913,6 +932,7 @@ export type Database = {
           birth_year: number | null;
           camera_shy: boolean;
           created_at: string;
+          deletion_requested_at: string | null;
           father_name_ar: string | null;
           father_name_en: string | null;
           first_name_ar: string | null;
@@ -951,6 +971,7 @@ export type Database = {
           birth_year?: number | null;
           camera_shy?: boolean;
           created_at?: string;
+          deletion_requested_at?: string | null;
           father_name_ar?: string | null;
           father_name_en?: string | null;
           first_name_ar?: string | null;
@@ -988,6 +1009,7 @@ export type Database = {
           birth_year?: number | null;
           camera_shy?: boolean;
           created_at?: string;
+          deletion_requested_at?: string | null;
           father_name_ar?: string | null;
           father_name_en?: string | null;
           first_name_ar?: string | null;
@@ -1433,6 +1455,16 @@ export type Database = {
           title_form: string;
         }[];
       };
+      my_sessions: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          created_at: string;
+          current: boolean;
+          id: string;
+          last_seen: string;
+          user_agent: string;
+        }[];
+      };
       my_topics: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1492,6 +1524,7 @@ export type Database = {
         Returns: undefined;
       };
       request_personal_email: { Args: { email: string }; Returns: undefined };
+      restore_account: { Args: Record<PropertyKey, never>; Returns: boolean };
       retention_due: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -5881,6 +5914,7 @@ export type Database = {
           created_at: string;
           in_directory: boolean;
           member_since: string;
+          renewed_at: string | null;
           tier: Database["membership"]["Enums"]["tier"];
           updated_at: string;
           user_id: string;
@@ -5890,6 +5924,7 @@ export type Database = {
           created_at?: string;
           in_directory?: boolean;
           member_since?: string;
+          renewed_at?: string | null;
           tier?: Database["membership"]["Enums"]["tier"];
           updated_at?: string;
           user_id: string;
@@ -5898,6 +5933,7 @@ export type Database = {
           created_at?: string;
           in_directory?: boolean;
           member_since?: string;
+          renewed_at?: string | null;
           tier?: Database["membership"]["Enums"]["tier"];
           updated_at?: string;
           user_id?: string;
@@ -6266,6 +6302,8 @@ export type Database = {
         }[];
       };
       remove_invitation: { Args: { address: string }; Returns: boolean };
+      renew_membership: { Args: Record<PropertyKey, never>; Returns: string };
+      renewal_due: { Args: Record<PropertyKey, never>; Returns: boolean };
       reset_calendar_token: {
         Args: Record<PropertyKey, never>;
         Returns: string;

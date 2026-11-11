@@ -108,7 +108,7 @@
       "forgot": "Forgot your password?",
       "noAccount": "New to the Society?",
       "createAccount": "Create an account",
-      "deleted": "Your account has been deleted.",
+      "deleted": "Your account will be deleted on {date}. Changed your mind? Sign in before then and it stays.",
       "passkey": "Sign in with a passkey",
       "idle": "You were signed out of the Diwan after an hour without use. Sign in to pick up where you left off."
     },
@@ -438,6 +438,15 @@
           "mailbox": "The seat’s mailbox received, with its password and two-step backup reset",
           "notion": "Invited to Notion by the Secretary"
         }
+      },
+      "renewal": {
+        "title": "I’m still here",
+        "lede": "A new year at the Society has begun. Tell us you’re still a member, and you stay on the active list: you vote, hold roles and appear on Student Life’s lists.",
+        "conduct": "Renewing means you agree again to follow the Code of Conduct.",
+        "readConduct": "Read the Code of Conduct",
+        "action": "I’m still here",
+        "done": "Thank you: you’re on this year’s active list.",
+        "failed": "That didn’t go through. Try again."
       }
     },
     "events": {
@@ -844,18 +853,23 @@
         "description": "Everything the site keeps about you, as one file (JSON): your profile, membership, card number, bookings, check-ins, roles, letters, certificates, Qirtas submissions and drafts, and your settings.",
         "submit": "Download my data",
         "preparing": "Preparing your file…",
-        "failed": "We couldn’t prepare your file. Please try again."
+        "failed": "We couldn’t prepare your file. Please try again.",
+        "show": "See it as a page",
+        "account": "Your account",
+        "profile": "Your profile"
       },
       "delete": {
         "title": "Delete account",
-        "description": "Deletes your account, your bookings and your profile. Published Qirtas pieces stay under the agreement you signed.",
+        "description": "Deletes your account, your bookings and your profile 30 days from now; signing in before then keeps it. Published Qirtas pieces stay under the agreement you signed.",
         "phrase": "delete my account",
         "prompt": "Type “{phrase}” to confirm.",
         "submit": "Delete my account",
         "deleting": "Deleting…",
         "failed": "We couldn’t delete your account. Please try again.",
         "reauthenticate": "To delete your account, sign in again first; it keeps someone else at your screen from doing it.",
-        "signInAgain": "Sign in again"
+        "signInAgain": "Sign in again",
+        "cancel": "Keep my account",
+        "restored": "Welcome back. Your account was set to be deleted; signing in has kept it."
       },
       "push": {
         "title": "Phone notifications",
@@ -4271,6 +4285,15 @@
         "submit": "Change the password",
         "done": "Your password is changed. Use it next time you sign in.",
         "code": "The code from the email"
+      },
+      "sessions": {
+        "title": "Where you’re signed in",
+        "lede": "Each device signed in to your account. A sign-in from a new device also sends you an email.",
+        "this": "this device",
+        "lastSeen": "Last used {when}",
+        "signOutOthers": "Sign out everywhere else",
+        "done": "Signed out everywhere else. This device stays signed in.",
+        "failed": "That didn’t work. Try again."
       }
     },
     "recoveryCodes": {

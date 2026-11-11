@@ -1,3 +1,4 @@
+import { deviceName } from "@/lib/device";
 import { buckets } from "@/lib/storage";
 import "server-only";
 
@@ -8,6 +9,7 @@ import { EmailQuotaError, sendEmail } from "@repo/email";
 import {
   type ApplicationStep,
   accountDeleted,
+  accountDeletionScheduled,
   agreementReminder,
   announcement,
   applicationDecided,
@@ -33,6 +35,7 @@ import {
   formSignedCopy,
   invitationBroadcast,
   invitationContact,
+  newDevice,
   newsletterConfirm,
   partnerInvitation,
   personalEmailConfirm,
@@ -727,6 +730,26 @@ const handlers: Record<string, Handler> = {
     if (typeof payload.email === "string") {
       const lang = langOf(payload.lang);
       await send({ email: payload.email, lang }, accountDeleted(lang));
+    }
+  },
+  // Deleting an account starts 30 days in which signing in keeps it.
+  "account.deletion_scheduled": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to && typeof payload.deletes_on === "string") {
+      await send(
+        to,
+        accountDeletionScheduled(to.lang, payload.deletes_on, appUrl())
+      );
+    }
+  },
+  // A sign-in from a kind of device the account hasn't used.
+  "account.new_device": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to && typeof payload.at === "string") {
+      await send(
+        to,
+        newDevice(to.lang, payload.at, deviceName(payload.user_agent), appUrl())
+      );
     }
   },
   // The President's notice (decisions.md, Channels and email): one Broadcast per language to
