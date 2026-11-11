@@ -118,7 +118,7 @@
     },
     "signUp": {
       "title": "Join the Society",
-      "description": "Membership is free and open to everyone with an AUIB email.",
+      "description": "Membership is open to everyone with an AUIB email.",
       "submit": "Create account",
       "submitting": "Creating account…",
       "checkInbox": "Check your inbox",
@@ -738,7 +738,7 @@
         },
         "sections": {
           "news": "Reports, features, interviews, profiles, event coverage and explainers. Pitch a story or send it.",
-          "video": "Next Stop episodes, reels, short films, video reports, recorded performances and animation. Send a link.",
+          "video": "Reels, short films, video reports, recorded performances and animation. Send a link.",
           "voices": "Reviews, columns, opinion essays, letters to the editor, debates and recommendations. No party politics, religion, sect or ethnicity.",
           "letters": "Poetry, fiction, creative nonfiction, drama and translation.",
           "gallery": "Art, photography, illustration, comics, calligraphy and photo essays."
@@ -4714,7 +4714,7 @@
         "voices": "Reviews, columns, opinion essays, letters to the editor, debates and recommendations.",
         "letters": "Poetry, fiction, creative nonfiction, drama and translation.",
         "gallery": "Art, photography, illustration, comics, calligraphy and photo essays.",
-        "video": "Next Stop, our show about campus, with reels, short films, video reports, recorded performances and animation.",
+        "video": "Reels, short films, video reports, recorded performances and animation.",
         "games": "Crosswords, quizzes, word ladders, riddles, anagrams and Name the Book."
       },
       "watch": "Watch the video",
@@ -4886,8 +4886,8 @@
       "runTitle": "How it is run",
       "run": {
         "open": {
-          "title": "Open and free",
-          "body": "Any enrolled AUIB student can join, with no fee and no audition. Faculty, staff and alumni join as Associate Members. Members who attended at least two events or general meetings in the past 12 months vote."
+          "title": "Open to every student",
+          "body": "Any enrolled AUIB student can join, with no audition. Faculty, staff and alumni join as Associate Members. Members who attended at least two events or general meetings in the past 12 months vote."
         },
         "council": {
           "title": "A Council of nine",
@@ -4954,7 +4954,7 @@
     },
     "join": {
       "title": "Join the Society",
-      "lede": "Membership is free and open to every AUIB student. There is no audition, no portfolio and no fee.",
+      "lede": "Membership is open to every AUIB student, with no audition and no portfolio.",
       "steps": {
         "register": {
           "title": "Register",

@@ -344,15 +344,15 @@ export const roles = {
   next_stop_host: {
     defaultScope: "global",
     isCouncil: false,
-    nameAr: "مقدّم «المحطة القادمة»",
-    nameEn: "Next Stop Host",
+    nameAr: "مقدّم «المحطة التالية»",
+    nameEn: "Next Stop host",
     permissions: ["library.read"],
   },
   next_stop_producer: {
     defaultScope: "global",
     isCouncil: false,
-    nameAr: "منتج «المحطة القادمة»",
-    nameEn: "Next Stop Producer",
+    nameAr: "منتج «المحطة التالية»",
+    nameEn: "Next Stop producer",
     permissions: ["content.manage", "library.read"],
   },
   // A partner's team (decisions.md), scoped to the partner: the
