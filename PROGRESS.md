@@ -111,8 +111,11 @@ production; **Owner** is a step only the owner can take.
   **Migrates:** `governance.sealed_signers`, F-21 needs an account, and
   `sign_form` seals instead of dropping the name. Concerns already sent
   without a name stay as they are.
-- [ ] Adopted resolutions (number, title, date) open to members beside the
+- [x] Adopted resolutions (number, title, date) open to members beside the
   approved minutes; those about partners and documents public.
+  **Migrates:** `governance.resolutions.subject` (partner, document or
+  other; the Council's partner votes marked partner); the public reads
+  only partners' and documents' resolutions from now on.
 - [ ] Each election page gets a candidates' forum event in the week before
   voting, recorded.
 

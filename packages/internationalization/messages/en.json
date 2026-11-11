@@ -607,6 +607,11 @@
         },
         "vote": "Vote for this",
         "voted": "You’ve voted in this category."
+      },
+      "resolutions": {
+        "title": "Resolutions",
+        "lede": "What the Council and members’ meetings adopted, by number and date. Those about partners and documents are also on the Council’s public page.",
+        "empty": "No resolutions adopted yet."
       }
     },
     "twoStep": {
@@ -1807,7 +1812,14 @@
           "title": "Resolutions of this meeting",
           "none": "No resolutions recorded for this meeting.",
           "numbered": "Resolution {code}.",
-          "numberOnAdoption": "The site numbers the resolution (RES-year-number) once it is adopted; failed motions are recorded only in the minutes."
+          "numberOnAdoption": "The site numbers the resolution (RES-year-number) once it is adopted; failed motions are recorded only in the minutes.",
+          "subject": "About",
+          "subjectHint": "Resolutions about a partner or a document are public once adopted; the rest are open to members.",
+          "subjects": {
+            "other": "Something else (members only)",
+            "partner": "A partner (public)",
+            "document": "A document (public)"
+          }
         },
         "elections": {
           "flagOff": "Online elections are off (Settings → Feature flags).",
@@ -5703,8 +5715,8 @@
       "lede": "The Council, what the Society has adopted, and whom members elected.",
       "council": "The Council",
       "councilEmpty": "The Council appears here once its members hold their roles.",
-      "resolutions": "Adopted resolutions",
-      "resolutionsEmpty": "No resolutions have been adopted yet.",
+      "resolutions": "Resolutions about partners and documents",
+      "resolutionsEmpty": "No resolutions about partners or documents have been adopted yet. Members read every adopted resolution in their account.",
       "votes": "{for} for, {against} against, {abstain} abstaining",
       "elections": "Election results",
       "electionsEmpty": "Results appear here once the Elections Committee publishes them.",

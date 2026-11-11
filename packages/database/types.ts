@@ -3193,6 +3193,7 @@ export type Database = {
           id: string;
           minutes_id: string | null;
           status: string;
+          subject: string;
           text_ar: string | null;
           text_en: string;
           title_ar: string | null;
@@ -3212,6 +3213,7 @@ export type Database = {
           id?: string;
           minutes_id?: string | null;
           status?: string;
+          subject?: string;
           text_ar?: string | null;
           text_en: string;
           title_ar?: string | null;
@@ -3230,6 +3232,7 @@ export type Database = {
           id?: string;
           minutes_id?: string | null;
           status?: string;
+          subject?: string;
           text_ar?: string | null;
           text_en?: string;
           title_ar?: string | null;
