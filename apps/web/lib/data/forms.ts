@@ -525,6 +525,15 @@ export const handleForm = async (
     })
   );
 
+/**
+ * The register's numbers (decisions.md, Forms): F-01 to F-46, with retired
+ * numbers never reused or shifted, so a signed record always points to its
+ * form. The register shows the active forms with their count.
+ */
+export const retiredForms = ["F-08", "F-22", "F-31", "F-44"] as const;
+const LAST_FORM = 46;
+export const activeFormCount = LAST_FORM - retiredForms.length;
+
 export const formTypes = async (client: Client) =>
   unwrap(
     await client

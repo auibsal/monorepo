@@ -404,6 +404,25 @@
         "member": "Member",
         "associate": "Associate Member",
         "honorary": "Honorary Member"
+      },
+      "roleChecklist": {
+        "title": "Your first steps as {role}",
+        "lede": "The new role holder’s checklist (F-04). The site marks what it can see; tick the rest when it’s done.",
+        "done": "Done:",
+        "todo": "To do:",
+        "go": "Go there",
+        "tick": "Mark as done",
+        "steps": {
+          "email": "The role email, with what the role does and who it works with",
+          "pledge": "The Code of Conduct and confidentiality, signed (for Qirtas, F-40 too)",
+          "declaration": "The conflict-of-interest declaration (F-06)",
+          "two_step": "Two-step sign-in or a passkey set up",
+          "diwan_group": "In the Diwan group on Telegram, through Hudhud",
+          "pages": "The role’s manual, Brand essentials and the role’s Diwan pages opened",
+          "handover": "The previous holder’s handover page walked through (F-07)",
+          "mailbox": "The seat’s mailbox received, with its password and two-step backup reset",
+          "notion": "Invited to Notion by the General Secretary"
+        }
       }
     },
     "events": {

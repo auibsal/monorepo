@@ -5,7 +5,9 @@
  * source of every form's number, title, fields and wording. This compares
  * the site with it:
  *
- * - every register entry (F-01 to F-46, F-22 and F-44 removed) is a row of
+ * - the active count: F-01 to F-46 less the retired numbers (`retiredForms`),
+ *   as the database has them and as the register states ("42 active forms");
+ * - every register entry (F-01 to F-46, the retired ones marked) is a row of
  *   `governance.form_types` with the same code and title, and no row is
  *   missing from the register;
  * - a form the register says is filled at auibsal.org/forms/F-xx is a site
@@ -17,12 +19,18 @@
  * migrations). Without NOTION_TOKEN it says so and skips; with
  * REQUIRE_FORMS_REGISTER=1 a missing token fails.
  */
-import { formKeys, registerFields } from "../apps/web/lib/data/forms";
+import {
+  activeFormCount,
+  formKeys,
+  registerFields,
+  retiredForms,
+} from "../apps/web/lib/data/forms";
 
 const NOTION = "https://api.notion.com/v1";
 const VERSION = "2026-03-11";
 const CODE = "SAL-EXB-01";
 const ENTRY = /^SAL-EXB-01 · (F-\d{2})\s*(.*?)\s*(?:·|$)/u;
+const ACTIVE = /(\d+) active forms/u;
 const SINGLE_QUOTES = /[‘’]/gu;
 const DOUBLE_QUOTES = /[“”]/gu;
 const SPACES = /\s+/gu;
@@ -170,16 +178,19 @@ const readRegister = async () => {
         : null;
     })
   );
-  return new Map(entries.filter((e) => e !== null));
+  // The page's own lines (not the entries): where it states the count.
+  const text = (await children(handbook.id)).map(textOf).join("\n");
+  return { entries: new Map(entries.filter((e) => e !== null)), text };
 };
 
 /** What differs between one form type and its register entry. */
 const typeProblems = (type: FormType, entry: Entry | undefined) => {
-  if (!entry) {
-    return [`${type.code} is on the site but not in the register.`];
-  }
+  // A retired number is a line in the register, not an entry.
   if (type.filled === "removed") {
     return [];
+  }
+  if (!entry) {
+    return [`${type.code} is on the site but not in the register.`];
   }
   const problems: string[] = [];
   if (entry.title !== type.title_en) {
@@ -227,7 +238,7 @@ const main = async () => {
   if (!(supabaseUrl && secret)) {
     throw new Error("Set SUPABASE_URL and SUPABASE_SECRET_KEY.");
   }
-  const [register, types] = await Promise.all([
+  const [{ entries: register, text: handbookText }, types] = await Promise.all([
     readRegister(),
     rest<FormType[]>(
       "governance",
@@ -235,7 +246,29 @@ const main = async () => {
     ),
   ]);
   const codes = new Set(types.map((t) => t.code));
+  const retired = types
+    .filter((t) => t.filled === "removed")
+    .map((t) => t.code)
+    .sort();
+  const active = types.length - retired.length;
+  const stated = ACTIVE.exec(handbookText)?.[1];
   const problems = [
+    ...(retired.join(",") === [...retiredForms].sort().join(",")
+      ? []
+      : [
+          `The retired forms differ: the site has ${retired.join(", ")}, the registry ${retiredForms.join(", ")}.`,
+        ]),
+    ...(active === activeFormCount
+      ? []
+      : [
+          `The site has ${active} active forms; the registry ${activeFormCount}.`,
+        ]),
+    // The count the register states, when its page has the line at the top.
+    ...(stated === undefined || stated === String(activeFormCount)
+      ? []
+      : [
+          `The register states ${stated} active forms; the registry ${activeFormCount}.`,
+        ]),
     ...types.flatMap((type) => typeProblems(type, register.get(type.code))),
     ...[...register.keys()]
       .filter((code) => !codes.has(code))
@@ -249,7 +282,7 @@ const main = async () => {
     process.exit(1);
   }
   console.log(
-    `Forms register: ${register.size} entries match the site (${formKeys.length} filled on the site).`
+    `Forms register: ${activeFormCount} active forms, ${retiredForms.length} retired (${retiredForms.join(", ")}); ${register.size} entries match the site (${formKeys.length} filled on the site).`
   );
 };
 

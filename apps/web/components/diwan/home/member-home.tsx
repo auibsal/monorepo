@@ -10,6 +10,7 @@ import { NextEvents } from "./next-events";
 import { Notices } from "./notices";
 import { OtherHome } from "./other-home";
 import { MyProgrammes } from "./programmes";
+import { RoleChecklist } from "./role-checklist";
 import { SavedReadingSection } from "./saved-reading";
 import { SixWords } from "./six-words";
 
@@ -89,6 +90,7 @@ export const MemberHome = () => {
       <MembershipCard />
       {mine.data?.kind === "member" ? (
         <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
+          <RoleChecklist />
           <Notices />
           <NextEvents />
           <MyProgrammes />
