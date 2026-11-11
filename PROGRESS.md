@@ -93,10 +93,15 @@ production; **Owner** is a step only the owner can take.
 ### 2. Records, receipts and agreements (decisions.md, Documents and forms)
 - [ ] Every action that creates a record shows a confirmation that stays on
   the page and emails a receipt with its record number and link.
-- [ ] Undo what is still the person's: cancel an RSVP before the start;
+- [x] Undo what is still the person's: cancel an RSVP before the start;
   withdraw a submission before its decision, or an application; withdraw a
   consent or release for the future. Irreversible steps take a second step
-  on the page, never a pop-up.
+  on the page, never a pop-up. Canceling, withdrawing a submission and an
+  application were already there; the media release and a trip's consent
+  are now withdrawn from the signed copy (`governance.withdraw_consent`,
+  the record kept, marked withdrawn; a trip's place given back). Parents'
+  consents signed by link have no account to withdraw from: the parent
+  writes, as before. **Migrates:** `form_submissions.withdrawn_at`.
 - [ ] The role agreement (the Code of Conduct, and the license for work made
   in the role), signed on accepting any role, before the
   conflict-of-interest declaration.

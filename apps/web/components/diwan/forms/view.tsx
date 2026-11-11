@@ -5,9 +5,10 @@ import type { Tables } from "@repo/database/types";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
+import { InlineConfirm } from "@/components/frame/inline-confirm";
 import { useAuth } from "@/lib/auth/provider";
 import { forms, unwrap } from "@/lib/data";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
@@ -77,6 +78,13 @@ export const SubmissionSheet = ({
             ? ""
             : ` · ${t(`routings.${submission.routing as forms.Routing}`)}`}
         </p>
+        {submission.withdrawn_at ? (
+          <p className="type-caption font-medium">
+            {t("withdrawnOn", {
+              date: formatLongDate(submission.withdrawn_at, locale, true),
+            })}
+          </p>
+        ) : null}
         {open && type?.acknowledge_days && !submission.acknowledged_at ? (
           <p className="type-caption">
             {t("acknowledgeBy", {
@@ -163,6 +171,7 @@ export const ViewForm = () => {
           {t("print")}
         </Button>
       </div>
+      <WithdrawConsent submission={row} />
       <SubmissionSheet submission={row} />
     </div>
   );
@@ -234,5 +243,50 @@ const SealedName = ({
       ) : null}
       {canOpen ? <p className="type-caption">{t("hint")}</p> : null}
     </section>
+  );
+};
+
+/** The consents and releases a signer may withdraw for the future. */
+const WITHDRAWABLE = new Set(["f15", "f45"]);
+
+/**
+ * Undo what is still yours (decisions.md, Documents and forms): a media
+ * release or a trip's consent is withdrawn for the future, with a second
+ * step on the page. The signed copy stays, marked withdrawn.
+ */
+const WithdrawConsent = ({ submission }: { submission: Submission }) => {
+  const t = useTranslations("diwan.forms");
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
+  const withdraw = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("withdraw_consent", { submission_id: submission.id })
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["forms"] }),
+  });
+  if (
+    !WITHDRAWABLE.has(submission.form_key) ||
+    submission.submitted_by !== user?.id ||
+    submission.withdrawn_at
+  ) {
+    return null;
+  }
+  return (
+    <div className="grid gap-2 print:hidden">
+      <InlineConfirm
+        confirm={t("withdraw")}
+        disabled={withdraw.isPending}
+        label={t("withdraw")}
+        onConfirm={() => withdraw.mutate()}
+        question={
+          submission.form_key === "f45"
+            ? t("withdrawTripAsk")
+            : t("withdrawAsk")
+        }
+      />
+    </div>
   );
 };

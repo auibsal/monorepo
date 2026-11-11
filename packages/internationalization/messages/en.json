@@ -4136,7 +4136,11 @@
         "openSafety": "Open the name: a safety risk",
         "openAgreed": "Open the name: they agreed",
         "hint": "Open it only for a risk to someone’s safety, or once the person has agreed. The opening is recorded with your name and the reason."
-      }
+      },
+      "withdraw": "Withdraw for the future",
+      "withdrawAsk": "Withdraw this for the future? What was already made under it stays; nothing new will use it.",
+      "withdrawTripAsk": "Withdraw your consent for this trip? Your place on the trip is given back.",
+      "withdrawnOn": "Withdrawn for the future on {date}."
     },
     "qirtas": {
       "pieceTitle": "Your piece",

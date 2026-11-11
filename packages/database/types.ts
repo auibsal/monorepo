@@ -2640,6 +2640,7 @@ export type Database = {
           submitted_at: string | null;
           submitted_by: string | null;
           updated_at: string;
+          withdrawn_at: string | null;
         };
         ComputedFields: never;
         Insert: {
@@ -2668,6 +2669,7 @@ export type Database = {
           submitted_at?: string | null;
           submitted_by?: string | null;
           updated_at?: string;
+          withdrawn_at?: string | null;
         };
         Update: {
           acknowledged_at?: string | null;
@@ -2695,6 +2697,7 @@ export type Database = {
           submitted_at?: string | null;
           submitted_by?: string | null;
           updated_at?: string;
+          withdrawn_at?: string | null;
         };
         Relationships: [
           {
@@ -3732,6 +3735,7 @@ export type Database = {
           votes: number;
         }[];
       };
+      withdraw_consent: { Args: { submission_id: string }; Returns: string };
     };
     Enums: {
       [_ in never]: never;
