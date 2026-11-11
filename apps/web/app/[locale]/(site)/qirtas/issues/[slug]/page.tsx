@@ -44,7 +44,7 @@ export const generateMetadata = async ({
   if (!edition) {
     return {};
   }
-  return localizedMetadata(locale, `/qirtas/editions/${edition.slug}`, {
+  return localizedMetadata(locale, `/qirtas/issues/${edition.slug}`, {
     description: localized(edition, "theme", locale),
     image: mediaUrl(edition.cover_path) ?? undefined,
     title: localized(edition, "title", locale),
@@ -105,7 +105,7 @@ const EditionPage = async ({ params }: EditionProps) => {
           <p className="type-caption">
             {localized(edition, "season", locale) || t("edition")}
           </p>
-          <ManageLinks diwan={`/qirtas/editions/${edition.slug}`} />
+          <ManageLinks diwan={`/qirtas/issues/${edition.slug}`} />
           <ShareLink title={localized(edition, "title", locale)} />
           {localized(edition, "theme", locale) ? (
             <p className="type-lede">{localized(edition, "theme", locale)}</p>
@@ -175,7 +175,7 @@ const EditionPage = async ({ params }: EditionProps) => {
           {older ? (
             <Link
               className="group grid gap-1"
-              href={`/qirtas/editions/${older.slug}`}
+              href={`/qirtas/issues/${older.slug}`}
             >
               <span className="type-caption">{t("previousEdition")}</span>
               <span className="type-title group-hover:text-accent">
@@ -188,7 +188,7 @@ const EditionPage = async ({ params }: EditionProps) => {
           {newer ? (
             <Link
               className="group grid gap-1 sm:text-end"
-              href={`/qirtas/editions/${newer.slug}`}
+              href={`/qirtas/issues/${newer.slug}`}
             >
               <span className="type-caption">{t("nextEdition")}</span>
               <span className="type-title group-hover:text-accent">

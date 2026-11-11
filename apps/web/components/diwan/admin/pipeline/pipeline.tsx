@@ -216,11 +216,12 @@ export const PipelineAdmin = ({ embedded = false }: { embedded?: boolean }) => {
               >
                 {issues.data?.map((i) => (
                   <option key={i.id} value={i.id}>
-                    {tj("volumeNumber", {
-                      number: formatNumber(i.number),
-                      volume: formatNumber(i.volume),
-                    })}{" "}
-                    · {localized(i, "title", locale)}
+                    {i.number === null
+                      ? localized(i, "title", locale)
+                      : `${tj("volumeNumber", {
+                          number: formatNumber(i.number),
+                          volume: formatNumber(i.volume),
+                        })} · ${localized(i, "title", locale)}`}
                   </option>
                 ))}
               </SelectInput>

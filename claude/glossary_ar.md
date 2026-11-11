@@ -33,6 +33,9 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Elections Committee | لجنة الانتخابات |
 | Our people (About) | «فريقنا» |
 | credits (production, episode) | فريق العمل |
+| stage manager / front-of-house manager | مدير المسرح / مسؤول الصالة |
+| pilot issue / pilot episode | العدد التجريبي / الحلقة التجريبية |
+| staff lane / contributor lane (Qirtas) | مسار هيئة التحرير / مسار المساهمين |
 | Faculty Advisor | المستشار من أعضاء هيئة التدريس |
 | Advisory Board | المجلس الاستشاري |
 | member / Associate Member / Honorary Member | عضو / عضو منتسب / عضو فخري |
@@ -72,7 +75,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | charity collection | جمع التبرعات لجهة خيرية |
 | the Edition | الإصدار |
 | issue (themed online collection) / Issue 1 | العدد / العدد 1 |
-| Haven (Issue 1) | «ملاذ» |
+| Haven (the pilot issue) | «ملاذ» |
 | topic (Qirtas) | موضوع |
 | section editor / assistant editor | محرر القسم / محرر مساعد |
 | copy editor | مدقق لغوي |

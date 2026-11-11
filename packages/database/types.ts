@@ -3920,8 +3920,9 @@ export type Database = {
           editors_note_en: string | null;
           id: string;
           launch_event_id: string | null;
-          number: number;
+          number: number | null;
           pdf_path: string | null;
+          pilot: boolean;
           print_run: number | null;
           printed_on: string | null;
           printer_ar: string | null;
@@ -3947,8 +3948,9 @@ export type Database = {
           editors_note_en?: string | null;
           id?: string;
           launch_event_id?: string | null;
-          number: number;
+          number?: number | null;
           pdf_path?: string | null;
+          pilot?: boolean;
           print_run?: number | null;
           printed_on?: string | null;
           printer_ar?: string | null;
@@ -3973,8 +3975,9 @@ export type Database = {
           editors_note_en?: string | null;
           id?: string;
           launch_event_id?: string | null;
-          number?: number;
+          number?: number | null;
           pdf_path?: string | null;
+          pilot?: boolean;
           print_run?: number | null;
           printed_on?: string | null;
           printer_ar?: string | null;

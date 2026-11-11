@@ -6,6 +6,7 @@ import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Json } from "@repo/database";
 import { type Locale, localizedPath } from "@repo/internationalization";
 import {
+  formatClock,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
@@ -143,13 +144,36 @@ export const WriteHome = () => {
   );
 };
 
+/** Haven's call with its issue's date, for the call's own terms. */
+const useHavenCall = () => {
+  const { supabase } = useAuth();
+  return useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("calls")
+          .select("closes_at, issue:issues!inner(slug, publish_at)")
+          .eq("issue.slug", "haven")
+          .maybeSingle()
+      ),
+    queryKey: ["journal", "haven-call"],
+  });
+};
+
+const HAVEN_RULES = ["length", "entries", "new", "who", "own"] as const;
+
 /**
- * The current issue's call (decisions §14): Haven, Qirtas's pilot issue,
- * in the poster's own words, with no deadline until the Editor-in-Chief
- * sets the issue's dates. Work for it goes through the sections below.
+ * Haven, Qirtas's pilot issue (decisions.md, Qirtas): the poster's words,
+ * the call's terms and its dates, read from the call itself. Work for it
+ * goes through Letters and Gallery below.
  */
 const Haven = () => {
   const tw = useTranslations("diwan.journal.write.haven");
+  const locale = useLocale() as Locale;
+  const call = useHavenCall().data;
+  const closes = call && journal.hasDeadline(call) ? call.closes_at : null;
+  const published = call?.issue?.publish_at ?? null;
   return (
     <section
       aria-labelledby="haven"
@@ -162,6 +186,30 @@ const Haven = () => {
         <p className="type-body text-text-secondary">{tw("dek")}</p>
       </div>
       <p className="reading max-w-[60ch]">{tw("memories")}</p>
+      <p className="type-lede max-w-[60ch]">{tw("call")}</p>
+      <div className="grid max-w-[60ch] gap-2">
+        <h3 className="type-heading">{tw("rulesTitle")}</h3>
+        <ul className="type-body grid list-disc gap-1 ps-5">
+          {HAVEN_RULES.map((rule) => (
+            <li key={rule}>{tw(`rules.${rule}`)}</li>
+          ))}
+        </ul>
+      </div>
+      {closes ? (
+        <p className="type-body max-w-[60ch] font-medium">
+          {tw("closes", {
+            date: formatLongDate(closes, locale, true),
+            time: formatClock(closes, locale),
+          })}
+        </p>
+      ) : null}
+      {published ? (
+        <p className="type-body max-w-[60ch]">
+          {tw("published", {
+            date: formatLongDate(published, locale, true),
+          })}
+        </p>
+      ) : null}
     </section>
   );
 };

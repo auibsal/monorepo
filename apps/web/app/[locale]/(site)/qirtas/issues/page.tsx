@@ -26,7 +26,7 @@ export const generateMetadata = async ({
 }: EditionsProps): Promise<Metadata> => {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  return localizedMetadata(locale, "/qirtas/editions", {
+  return localizedMetadata(locale, "/qirtas/issues", {
     description: t("editionsLede"),
     title: `${t("editions")} · ${t("title")}`,
   });
@@ -53,14 +53,16 @@ const EditionsPage = async ({ params, searchParams }: EditionsProps) => {
             <li className="border-line py-space-4 border-t" key={edition.id}>
               <Link
                 className="group grid gap-1"
-                href={`/qirtas/editions/${edition.slug}`}
+                href={`/qirtas/issues/${edition.slug}`}
               >
                 <span className="type-heading group-hover:underline">
                   {localized(edition, "title", locale)}
                 </span>
                 <span className="type-caption text-text-secondary">
                   {[
-                    t("editionNumber", { number: String(edition.number) }),
+                    edition.number === null
+                      ? t("pilotIssue")
+                      : t("editionNumber", { number: String(edition.number) }),
                     localized(edition, "season", locale),
                   ]
                     .filter(Boolean)
@@ -70,7 +72,7 @@ const EditionsPage = async ({ params, searchParams }: EditionsProps) => {
             </li>
           ))}
         </ul>
-        <Link className="link justify-self-start" href="/qirtas/editions">
+        <Link className="link justify-self-start" href="/qirtas/issues">
           {t("editionsOnShelf")}
         </Link>
       </div>
@@ -84,7 +86,7 @@ const EditionsPage = async ({ params, searchParams }: EditionsProps) => {
         }))}
         label={t("editions")}
         listLink={
-          <Link className="link" href="/qirtas/editions?view=list">
+          <Link className="link" href="/qirtas/issues?view=list">
             {t("editionsAsList")}
           </Link>
         }

@@ -59,7 +59,13 @@ const MOVED: readonly [from: string, to: string][] = [
     "/qirtas/archive?month=:month&section=:section",
   ],
   ["/search/:q", "/search?q=:q"],
-  ["/qirtas/editions/list", "/qirtas/editions?view=list"],
+  ["/qirtas/editions/list", "/qirtas/issues?view=list"],
+  // Themed online collections are issues; "the Edition" is only the
+  // printed year-in-review (decisions.md, Qirtas).
+  ["/qirtas/editions", "/qirtas/issues"],
+  ["/qirtas/editions/:slug", "/qirtas/issues/:slug"],
+  ["/diwan/qirtas/editions", "/diwan/qirtas/issues"],
+  ["/diwan/qirtas/editions/:ref", "/diwan/qirtas/issues/:ref"],
 ];
 //
 // The design system (packages/brand, `bun run build:site`) is built into

@@ -36,7 +36,7 @@ Every chat in this project follows this file. Where an older document, project d
 
 - **Standards the Society adopts publicly (free; only what it actually does):**
   - **For Qirtas:** SPJ's Code of Ethics, cited in EDT-01; the Student Press Law Center's resources; Google News (Publisher Center) and NewsArticle data on every piece; Internet Archive saving; and a Creative Commons license chosen by the writer for each piece.
-  - **An ISSN for Qirtas:** Iraq has no national ISSN centre, so the request goes to the ISSN International Centre through the ISSN Portal once Issue 1 is published. Any fee is asked of Student Life as a need.
+  - **An ISSN for Qirtas:** Iraq has no national ISSN centre, so the request goes to the ISSN International Centre through the ISSN Portal once the pilot issue is published. Any fee is asked of Student Life as a need.
   - **For the site:** WCAG 2.1 AA with checks; Global Privacy Control honored; Mozilla Observatory and securityheaders.com A ratings; plain language in every document and page; RSS feeds for Qirtas and What's on.
   - **Days marked,** each as an ordinary event or post: International Mother Language Day (Feb 21), Student Press Freedom Day (late February), World Poetry Day (Mar 21), National Poetry Month (April), World Book and Copyright Day (Apr 23), International Literacy Day (Sep 8), Banned Books Week (late September) and Arabic Language Day (Dec 18).
   - **Not joined:** paid memberships until Student Life can provide them; any green badge or claim the Society can't measure.
@@ -56,7 +56,7 @@ Every chat in this project follows this file. Where an older document, project d
   - **First season** (targets the Council sets once the Artistic Director is appointed): a staged reading around Wed Nov 17, 2027, and a full production around Wed–Thu Apr 26–27, 2028 (desk work in Ramadan, blocking after Eid al-Fitr, finished before Eid al-Adha and finals).
   - **Plays suggested to the panel,** with an original student play first if one is ready: Ahmad Shawqi's "Majnun Layla" (Arabic, the reading) and Oscar Wilde's "The Importance of Being Earnest" (English, the production).
   - **Its Notion project** is "The Company: first season". Rights are kept on the site ("no rights, no show").
-- **Next Stop** is the Society's video show, made by the Director of Media's team (a producer and the host): ~30-minute episodes, longer specials and reels, a reality-sitcom about AUIB. It is not part of Qirtas, and it can become its own club if it outgrows the Society.
+- **Next Stop** is the Society's video show, made by the Director of Media's team (a producer and the host): ~30-minute episodes, longer specials and reels, a reality-sitcom about AUIB. It is not part of Qirtas, and it can become its own club if it outgrows the Society. A pilot episode is released this fall (2026), before finals, and the first season runs in spring 2027, set by Media. Guests and pitches come in through nextstop@.
 - **Events.** There are no standing programs and no series. Events are made as needed, by the Society or for any party within or outside it, titled plainly for what they are, and recurring events are made again for each date. The Council sets a calendar of at least one event a month each term. Ways to run an event are kept in the Events Manual as plain formats: a reading with a guest, a book discussion, a writing workshop, a listening session, a debate, a trip, a performance.
 - **Traditions:** an event gets a name only once it has run at least twice and the Council agrees. There are two:
   - **The Typewriter Tour** (membership): once a year in the spring club fair week, with the fair as one of its days (§11).
@@ -269,9 +269,9 @@ Listed by their legal names:
   - **The Editor-in-Chief (Qirtas):** Managing Editor; Copy Chief and copy editors (both languages); a section editor for each of News, Voices, Letters, Gallery, Video and Games, each with up to two assistant editors; readers; staff writer, staff photographer and staff artist (standing masthead roles, with credits on pieces too); a guest editor (scoped to one issue).
   - **Qalam:** the Qalam lead (waits until 2028); Qalam mentors (scoped).
   - **The Director of Media:** Next Stop producer, Next Stop host, design lead, photo and video lead, social media lead, and web lead (renamed from "Technical Administrator"), all named in MED-01; Next Stop crew (scoped to an episode).
-  - **The Artistic Director:** no standing team. Each production has its director, stage manager, cast and crew as scoped roles, shown as its credits.
+  - **The Artistic Director:** no standing team. Each production's roles are scoped and shown as its credits: director and assistant director, stage manager and assistant stage manager, producer, dramaturg, designers (set, costume, light, sound), crew, front-of-house manager, and cast (actors, a reading's narrator, understudies). Ushers and the check-in desk are volunteer shifts.
   - **The Director of Events:** event leads (scoped to one event); event teams through shifts.
-  - **The Director of Membership:** the Tour lead; an alumni lead (from 2027–28); station volunteers (scoped to one shift).
+  - **The Director of Membership:** the Tour lead (appointed); an alumni lead (from 2027–28), who looks after the Associate Members who are graduates (reunions, the alumni list, inviting graduates as speakers and mentors); station volunteers (scoped to one shift).
   - **The Director of Partnerships:** a club relations lead.
   - **Outside:** the Faculty Advisor (two-step required); Advisory Board members (they read the library and the Council's minutes); the Partner Lead and the partner's team.
   - **Retired:** Arabic Editor, Onboarding Lead, Records and Recognition Lead (onboarding and service letters are automatic), Production Lead, Event Coordinator, Venues and Logistics Lead, Event Staff, Submissions Manager, Section Editor.
@@ -308,26 +308,35 @@ Listed by their legal names:
   - **Games:** the word, word search, crossword and anagrams, generated daily by the site in both languages, numbered from No. 1 and checked by the editors. The Managing Editor checks them until a Games editor exists. Members send no games.
 - **The masthead:** one editor per section, accountable for it, with up to two assistant editors (team roles) and any number of contributors. Until a section editor is appointed, the Editor-in-Chief covers the section.
   - **The Copy Chief** and copy editors copy edit every text piece before it runs.
-  - **The Managing Editor** handles intake for every piece, holds writers' names for blind review, never reads those pieces, and puts together the Sunday Paper.
+  - **The Managing Editor** handles intake for every outside submission, holds writers' names while a piece is read blind and never reads it during blind reading (giving the second approval after the decision is allowed), and puts together the Sunday Paper.
   - **F-40:** everyone signs it before reading.
 - **Editing:** every piece needs two approvals by two different people: the section editor (or whoever covers the section), then the Editor-in-Chief or the Managing Editor. Corrections are made in place with a note and listed in the public corrections log (/qirtas/corrections). Each piece is in one language, with an optional link to its translation, and every piece is public.
 - **Bylines:** the writer's name from the Register, a pen name, or "Anonymous". For a pen name or Anonymous the Editor-in-Chief must know the writer and keeps the identity confidential.
   - **Under-18s:** members under 18 may write, but nothing shows or names them without a parent's consent.
   - **Guests** are bylined with a short line saying who they are.
-- **Write for Qirtas** (auibsal.org/qirtas/submit; /qirtas/write redirects there) is the one door. Everything is read blind.
-  - **Terms:** the submission terms (one's own work, no AI-generated text, rights) are set in SAL-EDT-01.
-  - **For now** it takes only Letters and Gallery, for Haven. News, Voices and Video take no submissions until the owner reopens them, and their pages carry no "send your work" link.
-  - **The page** leads with Haven: its title, line and the call's first paragraph in the poster's words, with no deadline until the Editor-in-Chief sets the dates. A signed-in member sees their two most recent drafts there; everything they have sent lives in Your account → Work.
+- **Two lanes, the American standard** (newspapers for staff work, literary magazines for open submissions):
+  - **The staff lane:** staff writers, photographers and artists, and editors (mainly News, Voices columns and Video). A pitch, or an assignment from the section editor; written in the newsroom under the writer's own name; edited, copy edited and given its two approvals; then published. Never blind.
+  - **The contributor lane:** Write for Qirtas, for any member or guest (mainly Letters and Gallery). The Managing Editor does intake (the name stripped); two readers score it blind (a third if their scores differ by 20 or more); the section editor decides; then it is edited with the writer, copy edited and given its two approvals.
+  - **Letters to the editor and outside opinion pieces** (Voices) are never blind: the writer's identity is verified before they run.
+- **Write for Qirtas** (auibsal.org/qirtas/submit; /qirtas/write redirects there) is the one door for outside work.
+  - **Terms:** the submission terms (one's own work, no AI-generated text or images, rights) are set in SAL-EDT-01.
+  - **For now** it takes only Letters and Gallery, for Haven. News, Voices and Video take no outside submissions until the owner reopens them, and their pages carry no "send your work" link.
+  - **The page** leads with Haven's title, line, call and deadline. A signed-in member sees their two most recent drafts there; everything they have sent lives in Your account → Work.
   - **Unpublished submissions** are deleted twelve months after the decision.
-- **Haven** («ملاذ», Dreams and memories) is Qirtas's pilot issue, Issue 1, and the one themed call: a poem, a short story, a creative essay or an artwork about a memory, a dream or both, sent through Write for Qirtas. It sits beside the standing call, and its calls to action lead the front page, Editions and Write for Qirtas. The Editor-in-Chief sets its dates and form.
+- **Issues:** themed online collections. The pilot issue is this semester's; Issue 1 («العدد 1») comes in spring 2027, and one each term after. Pieces belong to an issue or to the standing flow. "The Edition" means only the printed year-in-review.
+- **Haven** («ملاذ», Dreams and memories) is the pilot issue (fall 2026) and the one themed call. It sits beside the standing call, and its calls to action lead the front page, Issues and Write for Qirtas.
+  - **The call:** a poem, a short story, a creative essay or an artwork about a memory, a dream or both. Up to 40 lines of poetry (up to three poems count as one entry), 2,500 words of prose, or three images (JPG, PNG or PDF, 10 MB each, each with a title and a one-line caption).
+  - **Entries:** up to two per person, in Arabic or English, one language each (a translation is its own entry, with the rights to the original). Not published before except on the writer's own social media; simultaneous submissions are allowed and withdrawn if taken elsewhere.
+  - **Who:** members of every class and guests 18 or older. Members under 18 may send work, but nothing shows or names them without a parent's consent. Only student Members are eligible for the Prize.
+  - **Dates:** submissions close Sun Dec 6, 2026, 11:59 p.m. Baghdad time; writers hear back within the week; the pilot issue is published Wed Dec 16, 2026, before finals end; it leads the Jan 3, 2027 Sunday Paper.
+- **Topics** are a short list kept by the editors; a topic page goes public only once it has three pieces, and nothing links to it before then.
 - **"From the Society":** the Society's announcements appear on Qirtas's front page in this labeled stream, owned by Media, never in News, never bylined and never chosen by editors. Qirtas may cover an announcement as its own piece. The Society's own news never appears as News.
-- **The 22 pieces made on Oct 14:**
-  - **Kept:** the 15 about AUIB news since spring 2026 (Mar 31 to Oct 14), and the Society's posts about things that actually happened (in "From the Society"; "Qirtas launches" becomes the Nov 8 launch; the membership and rulebooks posts only as edited to what happened; Charter Day is out).
-  - **Before running:** each is edited and fact-checked against AUIB's announcement (two approvals) and bylined to the member who wrote it, who confirms first.
-  - **Dates:** each runs dated on or close to its event, with no archive note. This is the owner's choice against the American standard (SPJ), which dates a piece by its publication.
+- **The 22 pieces made on Oct 14** were compiled with an AI writing tool, so none runs as written:
+  - **The 15 about AUIB news since spring 2026** (Mar 31 to Oct 14) go through the staff lane. Each is assigned to a staff writer, who reports and writes it anew from the Qirtas chat's fact sheet and AUIB's own announcement. It runs under the writer's byline, dated on or close to its event (the owner's choice against SPJ, which dates a piece by its publication). Piece 5 (the Times Higher Education shortlist; KAUST won on Nov 4) and piece 15 (the plan to 2031, with no event) are left to the News editor, as new items or not at all. The AI text is deleted once each piece is rewritten.
+  - **The Society's posts** become two "From the Society" notices dated Nov 8: "auibsal.org is open" and "The Society's documents are online" (the Member Handbook among them). Charter Day is out.
   - **Deleted:** the three pre-2026 pieces.
-  - **Coverage from now on:** once appointed, the News editor decides which AUIB stories Qirtas covers.
-- **Online** as pieces are ready. Themed online collections are **issues** (Haven is Issue 1, «العدد 1»: «ملاذ»), and pieces belong to an issue or to the standing flow; "the Edition" means only the printed year-in-review. **Topics** are a short list kept by the editors; a topic page goes public only once it has three pieces, and nothing links to it before then.
+- **The May applicants** (a Microsoft Form) each get a letter from president@ inviting them to join and apply on Get involved by Sun Nov 22, with the role the Editor-in-Chief has in mind. The form, its responses and any copies are deleted now.
+- **Online** as pieces are ready.
 - **The Edition:** one printed year-in-review a year: the top News stories and the best of Voices, Letters and Gallery, a crossword, and Video as a still with a QR. It is launched at an event, with printing asked of Student Life.
   - **The first:** spring 2028, covering launch to March 2028.
   - **Print specification:** A5, about 80 pages (a multiple of 4), 100 gsm text, 8 color pages for Gallery, a 300 gsm cover, perfect bound; the run is the confirmed need.
@@ -351,6 +360,8 @@ Listed by their legal names:
 - **Standard parts only:** RSVP and check-in, a needs list, volunteer shifts (only on an event; they log no hours), a partner checklist, and links from the night (photos, recordings, the Qirtas piece, minutes).
   - **Capacity:** RSVPs close at the room's posted capacity, with a waitlist.
   - **Debriefs:** each event links its debrief (F-13), kept in Notion without names.
+- **Booking:** RSVPs ask only about accessibility needs, and diet when food is served. A released place goes to the next on the waitlist by email until two hours before the start; after that, places are filled at the door. Unclaimed places are released 10 minutes before the start.
+- **One-event jobs** (box custodians, cashiers, ushers, check-in) are volunteer shifts on the event, signed up for with no application, as US volunteer slots are. Only an event lead and a Company production role are appointed through Get involved.
 - **Publishing:** an event is published only with a lead and a confirmed place. Leads:
   - the General Secretary for Council and general meetings and the Founding Meeting;
   - the President for the Dec 1 pilot;
@@ -427,7 +438,7 @@ Listed by their legal names:
   - **The Founding Proposal** is a one-page cover memo to the Office of Student Life: who the Society is, where it stands, the six governing documents (GOV-01 and GOV-02 for review), the Founding Meeting's rules, and what the Society asks. It is separate from the Annual Plan.
   - **decisions.md** is the one decision record; there is no decisions database in Notion.
 - **One forms register,** digital by default (E-SIGN and UETA): every form is in SAL-EXB-01 as "SAL-EXB-01 · F-xx", numbered F-01 to F-46.
-  - **Removed:** F-22 and F-44, never reused. Notable forms: F-11 event proposal, F-13 debrief, F-45 trip consent, F-46 a parent's consent for a member under 18.
+  - **Removed:** F-08, F-22, F-31 and F-44, never reused. Form numbers are permanent identifiers (as IRS and university form numbers are): retired numbers are never reused or shifted, so a signed record always points to its form. The register shows the active forms with a count, and the retired numbers marked retired. F-04 is the new role holder's checklist, kept on the site. Notable forms: F-11 event proposal, F-13 debrief, F-45 trip consent, F-46 a parent's consent for a member under 18.
   - **Where forms are filled:** people outside the staff fill them at auibsal.org/forms/<number>, and where the site already does the job (joining, RSVPs, Write for Qirtas, Get involved, elections, staff hours) the form is part of that page. Staff forms are Notion templates.
   - **Paper** is only a backup (photographed into the record the same day), plus the two-person cash count.
   - **One source:** the site's forms registry (`apps/web/lib/data/forms.ts` and the messages) matches the register exactly, and CI checks it.
@@ -639,8 +650,9 @@ Listed by their legal names:
   - **The Society poster:** the motto and "Join at auibsal.org/join" with the QR, nothing else.
   - **The Haven poster:** paper-colored with no texture; the lockup at the top on the side the language reads from; "Haven" («ملاذ») large in Ubuntu; the call in Markazi Text; "Submit your work now." beside the QR to /qirtas/submit.
     - **Sizes:** A2 for single-language boards; an A4 handout (English front, Arabic back); and an A3 landscape sheet with the two A4 editions side by side (English left, Arabic right).
-    - **Printing:** at Student Life, full size on same-size paper, with no bleed or cutting.
+    - **Printing (the professional print standard):** the A4 handout is printed two to an A3 sheet with 3 mm bleed and crop marks, then trimmed on Student Life's cutter. The A3 sheet can't have bleed (A3 is the largest paper), so its design keeps an even white margin.
     - **The carousel:** 1080 × 1350, an English slide then an Arabic slide.
+    - **Telegram:** posters and calls go to Telegram at 1080 × 1350, with the URL written as tappable text and no QR code (QR codes are for paper only).
   - **Every poster:** no personal photo, name, degree or email; no signing, disclaimer, archiving, anthology or prize.
 
 ## 16. Where things live, accounts and chats
@@ -659,6 +671,7 @@ Listed by their legal names:
 - **No personal storage:** no Google Drive, and no Society files in personal storage. The Society's files in the President's OneDrive move into Notion (the Tour scans into the site), and the folder is then deleted.
 - **Rows, not pages,** for small records (needs, shifts, credits, hours, roles); big records keep their own pages.
 - **Accounts and hosting:** the tool accounts (Vercel, Supabase, Resend, Cloudflare, GitHub, Zoho, Notion) stay as they are for now: owned by the President's AUIB email, with officers added as admins and two-step verification on. Who owns them later is the owner's decision; nothing is moved or newly created until then.
+  - **Admin access** passes with the role; ownership stays with the account's owner.
   - **Credentials:** the passwords, recovery codes and two-step backups are kept by the account owner and shared with the admins only where they need them; they are never kept in personal notes or chats, and are reset at each handover. Two-step sign-in is required for every Council role holder on the site.
 - **Claude chats:** one per department, each reading this file first:
   - Governance and the Executive Board (GOV, EXB);
@@ -674,13 +687,16 @@ Listed by their legal names:
 - **AUIB's week:** classes run Sunday to Wednesday, 8:00 a.m. to 2:00 p.m. (some until 5:00 p.m.). On Thursdays only ELA students and some labs are on campus. Friday is off, and Saturday is only for invited or RSVP events. The Society schedules around it, and holds no events in finals week (fall 2026 finals end Thu Dec 17).
 - **Fall 2026:**
   - **Wed Nov 18, 2:15–3:45 p.m.: the first Council meeting** (agenda sent Mon Nov 16). It ratifies the founding team's actions and every decision in this file up to the meeting; sets the term calendar and the room; plans general meetings; records the President's absence; approves the open call; and covers the founding team's GPA check, the Faculty Advisor invitation and the Founding Proposal's timeline. The launch is reported, not decided.
+  - **Sun Nov 22:** the May applicants' deadline to apply on Get involved.
   - **Wed Nov 25:** the founding team's GPA list goes to Student Life, and the Faculty Advisor invitation goes out.
   - **Tue Dec 1, 2:30–4:00 p.m.: the pilot,** a reading with a guest (the station access is tested).
   - **Wed Dec 2, 2:15–3:00 p.m.:** general meeting.
   - **Sun Dec 6:** the first Sunday Paper.
   - **Tue Dec 8, 2:30–4:00 p.m.:** a writing workshop. Its room, and the pilot's, is confirmed on Nov 18.
   - **Wed Dec 9, 2:15 p.m.:** Council meeting.
+  - **Sun Dec 6, 11:59 p.m.:** Haven's submissions close.
   - **Thu Dec 10:** the director openings close.
+  - **Wed Dec 16:** Haven, Qirtas's pilot issue, is published. Next Stop's pilot episode is released before finals.
   - **Sun Dec 20:** the President's notice to Student Life.
 - **Spring 2027** (assuming classes start Sun Feb 7):
   - **Executive Board approval** of the directors by Thu Jan 14. The President is abroad Jan 24 – May 15.
@@ -704,4 +720,4 @@ Never use these:
 - **Meetings:** the General Assembly and the AGM (now general meetings and the Annual Meeting).
 - **Qirtas:** Reviews (as a section name), The Month in Qirtas, Editor of Qirtas (now the Editor-in-Chief).
 - **Roles:** Director of the Company, Director of Letters, Director of Stage and Arts, Director of Programs, Treasurer, Deputy Treasurer, Acting President, Program Lead (now an event lead), Submissions Manager, Section Editor (now a section's editor), Event Coordinator, Venues and Logistics Lead, Production Lead, Event Staff, Arabic Editor, Onboarding Lead, Records and Recognition Lead, Technical Administrator (now the web lead).
-- **Other:** the Callboard (now Get involved), "Ubuntu Arabic", calls for the Edition ("the Edition's call"), "pilot Edition" for Haven (now Issue 1).
+- **Other:** the Callboard (now Get involved), "Ubuntu Arabic", calls for the Edition ("the Edition's call"), "pilot Edition" for Haven (now the pilot issue).

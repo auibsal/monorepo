@@ -71,7 +71,9 @@ const CoverArt = async ({
     >
       <span className="text-2xl font-medium tracking-tight">{t("title")}</span>
       <span className="type-title">
-        {t("editionNumber", { number: String(edition.number) })}
+        {edition.number === null
+          ? t("pilotIssue")
+          : t("editionNumber", { number: String(edition.number) })}
       </span>
     </span>
   );
@@ -85,7 +87,7 @@ export const EditionShelfItem = async ({
   edition: Edition;
   locale: Locale;
 }) => (
-  <Link className="group grid gap-2" href={`/qirtas/editions/${edition.slug}`}>
+  <Link className="group grid gap-2" href={`/qirtas/issues/${edition.slug}`}>
     <EditionCover edition={edition} locale={locale} />
     <span className="type-heading group-hover:underline">
       {localized(edition, "title", locale)}

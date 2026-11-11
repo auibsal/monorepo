@@ -71,7 +71,7 @@ const Editions = () => {
       cell: (i) => (
         <Link
           className="font-medium underline underline-offset-4"
-          href={`/qirtas/editions/${i.id}`}
+          href={`/qirtas/issues/${i.id}`}
         >
           {localized(i, "title", locale)}
         </Link>
@@ -97,7 +97,7 @@ const Editions = () => {
     <div className="grid gap-8">
       <AdminHeading
         actions={
-          <Link className={buttonLink} href="/qirtas/editions/new">
+          <Link className={buttonLink} href="/qirtas/issues/new">
             {t("newEdition")}
           </Link>
         }

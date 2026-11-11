@@ -92,6 +92,9 @@ const PublishControls = ({
 
 // ── Issue ───────────────────────────────────────────────────────────────────
 
+/** A number field's value, or null when it is empty (the pilot issue). */
+const optionalNumber = (value: string) => (value ? Number(value) : null);
+
 export const IssueEditor = () => {
   const t = useTranslations("diwan.admin.journal");
   const tw = useTranslations("diwan.admin.qirtas");
@@ -137,7 +140,7 @@ export const IssueEditor = () => {
         cover_path: i.cover_path,
         launch_event_id: i.launch_event_id ?? "",
         note: { ar: i.editors_note_ar ?? "", en: i.editors_note_en ?? "" },
-        number: String(i.number),
+        number: i.number === null ? "" : String(i.number),
         pdf_path: i.pdf_path,
         print_run: i.print_run ? String(i.print_run) : "",
         printed_on: i.printed_on ?? "",
@@ -180,9 +183,9 @@ export const IssueEditor = () => {
         editors_note_ar: form.note.ar || null,
         editors_note_en: form.note.en || null,
         launch_event_id: form.launch_event_id || null,
-        number: Number(form.number),
+        number: optionalNumber(form.number),
         pdf_path: form.pdf_path,
-        print_run: form.print_run ? Number(form.print_run) : null,
+        print_run: optionalNumber(form.print_run),
         printed_on: form.printed_on || null,
         printer_ar: form.printer.ar || null,
         printer_en: form.printer.en || null,
@@ -193,7 +196,7 @@ export const IssueEditor = () => {
             : null,
         season_ar: form.season.ar || null,
         season_en: form.season.en || null,
-        slug: form.slug || `edition-${form.number}`,
+        slug: form.slug || `issue-${form.number}`,
         status: next,
         theme_ar: form.theme.ar || null,
         theme_en: form.theme.en || null,
@@ -215,7 +218,7 @@ export const IssueEditor = () => {
     onSuccess: async (savedId) => {
       await queryClient.invalidateQueries({ queryKey: ["admin", "journal"] });
       if (!issueId) {
-        router.replace(`/qirtas/editions/${savedId}`);
+        router.replace(`/qirtas/issues/${savedId}`);
       }
     },
   });
@@ -244,7 +247,7 @@ export const IssueEditor = () => {
           <>
             {back(tk("back"))}
             {existing.data?.slug && status === "published" ? (
-              <OnTheSite href={`/qirtas/editions/${existing.data.slug}`} />
+              <OnTheSite href={`/qirtas/issues/${existing.data.slug}`} />
             ) : null}
           </>
         }
@@ -297,7 +300,7 @@ export const IssueEditor = () => {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, slug: e.target.value }))
                 }
-                placeholder={`edition-${form.number || "1"}`}
+                placeholder={`issue-${form.number || "1"}`}
                 value={form.slug}
               />
             )}

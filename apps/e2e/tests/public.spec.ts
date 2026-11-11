@@ -125,12 +125,12 @@ test.describe("public site", () => {
   test("before the first Edition, the Editions page shows its call, and the list has its own path", async ({
     page,
   }) => {
-    await page.goto(`${urls.web}/qirtas/editions`);
+    await page.goto(`${urls.web}/qirtas/issues`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "Editions"
     );
     await expectAccessible(page);
-    await page.goto(`${urls.web}/qirtas/editions?view=list`);
+    await page.goto(`${urls.web}/qirtas/issues?view=list`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "Editions"
     );

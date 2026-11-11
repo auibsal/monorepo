@@ -26,7 +26,7 @@ const staticPaths = [
   "/qirtas/gallery",
   "/qirtas/video",
   "/next-stop",
-  "/qirtas/editions",
+  "/qirtas/issues",
   "/qirtas/prize",
   "/qirtas/games",
   "/qirtas/games/word",
@@ -119,7 +119,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       ),
       editions.flatMap((edition) =>
         localized(
-          `/qirtas/editions/${edition.slug}`,
+          `/qirtas/issues/${edition.slug}`,
           new Date(edition.updated_at)
         )
       ),
