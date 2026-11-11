@@ -160,8 +160,10 @@ export const useMyWaitlist = () => {
       await supabase
         .schema("events")
         .from("waitlist")
-        .select("id, event:events(id, slug, title_en, title_ar, starts_at)")
-        .eq("status", "waiting")
+        .select(
+          "id, status, offered_until, event:events(id, slug, title_en, title_ar, starts_at)"
+        )
+        .in("status", ["waiting", "offered"])
         .eq("user_id", userId)
     )
   );

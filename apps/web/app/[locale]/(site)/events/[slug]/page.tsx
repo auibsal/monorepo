@@ -8,6 +8,7 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { EventAccess } from "@/components/event-access";
 import { EventBooking } from "@/components/event-booking";
 import { EventParts } from "@/components/event-parts";
 import { ManageLinks } from "@/components/manage-links";
@@ -191,6 +192,7 @@ const EventView = async ({
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
       ) : null}
+      {cancelled ? null : <EventAccess event={event} locale={locale} />}
       <EventParts event={event} locale={locale} />
       <SupportedBy
         className="border-line pt-space-4 border-t"

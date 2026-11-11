@@ -77,7 +77,9 @@ export const publicEvent = async (client: Client, eventSlug: string) =>
   unwrap(
     await events(client)
       .from("events")
-      .select(`${eventColumns}, body_en, body_ar, questions`)
+      .select(
+        `${eventColumns}, body_en, body_ar, questions, serves_food, step_free, seating, allergens`
+      )
       .eq("slug", eventSlug)
       .eq("members_only", false)
       .in("status", ["published", "canceled"])

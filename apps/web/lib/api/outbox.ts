@@ -58,6 +58,7 @@ import {
   sundayPaper,
   twoStepReset,
   verificationDecided,
+  waitlistOffered,
   waitlistPromoted,
   welcome,
 } from "@repo/email/copy";
@@ -345,7 +346,7 @@ const eventInfo = async (admin: AdminClient, eventId: unknown) => {
   const { data } = await admin
     .schema("events")
     .from("events")
-    .select("title_en, title_ar, starts_at, venue_en, venue_ar")
+    .select("slug, title_en, title_ar, starts_at, venue_en, venue_ar")
     .eq("id", String(eventId))
     .maybeSingle();
   return data;
@@ -870,9 +871,9 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  // The day before: to everyone booked, and to everyone who asked "Remind
-  // me". A booked reminder is optional (notify_email; without it, Telegram
-  // only); "Remind me" was asked for, so it always goes.
+  // The day before (decisions.md, Events): one reminder to everyone booked,
+  // with "Can't come? Cancel", and to everyone who asked "Remind me". Both
+  // were asked for (a booking, a reminder), so both always go.
   "events.reminder": async (admin, payload) => {
     const [to, event, { data: booking }] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -886,13 +887,11 @@ const handlers: Record<string, Handler> = {
         .eq("status", "confirmed")
         .maybeSingle(),
     ]);
-    const booked = Boolean(booking);
     if (!(to && event)) {
       return;
     }
-    // Reminders of what they booked are optional; "Remind me" was asked for.
-    await send(to, eventReminder(to.lang, event, appUrl(), booked), {
-      category: booked ? "optional" : "service",
+    await send(to, eventReminder(to.lang, event, appUrl(), Boolean(booking)), {
+      category: "service",
     });
   },
   "events.rsvp_confirmed": eventNotice(rsvpConfirmed),
@@ -917,6 +916,15 @@ const handlers: Record<string, Handler> = {
         ),
         { category: "optional" }
       );
+    }
+  },
+  "events.waitlist_offered": async (admin, payload) => {
+    const [to, event] = await Promise.all([
+      recipient(admin, payload.user_id),
+      eventInfo(admin, payload.event_id),
+    ]);
+    if (to && event && typeof payload.until === "string") {
+      await send(to, waitlistOffered(to.lang, event, appUrl(), payload.until));
     }
   },
   "events.waitlist_promoted": eventNotice(waitlistPromoted),

@@ -459,10 +459,14 @@
       "ticket": "Show my ticket",
       "cancel": "Give my place back",
       "leaveWaitlist": "Leave the waitlist",
+      "claim": "Claim your place",
+      "decline": "Let it go",
+      "declineAsk": "Let the place go to the next person?",
       "questions": "The organizers ask a few questions before booking.",
       "state": {
         "booked": "You have a place.",
         "waiting": "You’re on the waitlist. We’ll email you if a place opens.",
+        "held": "A place is held for you until {until}.",
         "noBooking": "No booking needed: just come.",
         "open": "Places available.",
         "full": "Full. Join the waitlist and we’ll email you if a place opens.",
@@ -1401,7 +1405,15 @@
           "sent": "Invitation sent."
         },
         "debrief": "The debrief (F-13) in Notion",
-        "servesFood": "Food is served (the booking also asks about diet)"
+        "servesFood": "Food is served (the booking also asks about diet)",
+        "access": "Access and food",
+        "accessHint": "The event’s page states these plainly, so people know before they come.",
+        "stepFree": "Step-free (no steps on the way in or in the room)",
+        "notSaid": "Not said yet",
+        "yes": "Yes",
+        "no": "No",
+        "seating": "Seating",
+        "allergens": "The main allergens in the food"
       },
       "checkIn": {
         "title": "Check-in",
@@ -1421,7 +1433,9 @@
         "count": "{count} checked in",
         "noResults": "No member found.",
         "cardNotLive": "This card’s code isn’t live (a screenshot?). Ask to see the card on the member’s own phone.",
-        "otherDoors": "Other events’ check-in"
+        "otherDoors": "Other events’ check-in",
+        "saved": "No connection: this check-in is saved on this device and will be sent when the connection is back.",
+        "waiting": "{count, plural, one {{number} check-in is} other {{number} check-ins are}} waiting for the connection. Keep this page open."
       },
       "content": {
         "title": "Content",
@@ -4786,12 +4800,45 @@
       "leaveWaitlist": "Leave the waitlist",
       "youreBooked": "You have a place.",
       "youreWaiting": "You’re on the waitlist; you’ll hear if a place opens.",
+      "claim": "Claim your place",
+      "decline": "Let it go",
+      "held": "A place is held for you until {until}. Claim it, or let it go to the next person.",
       "notices": {
         "booked": "Booked. A confirmation is on its way.",
         "waitlisted": "It’s full, so you’re on the waitlist; you’ll hear if a place opens.",
         "cancelled": "Done.",
         "reminded": "We’ll remind you the day before.",
         "failed": "That didn’t go through. Try again, or book from your calendar."
+      },
+      "access": {
+        "title": "Access",
+        "stepFree": "Step-free: no steps on the way in or in the room.",
+        "notStepFree": "Not step-free: there are steps on the way in or in the room.",
+        "stepUnknown": "Ask us about the way in and the room: {email}.",
+        "seating": {
+          "seated": "Seated.",
+          "standing": "Standing.",
+          "mixed": "Some seats, some standing."
+        },
+        "noFood": "No food is served.",
+        "foodWithout": "Food is served, without any of the main allergens.",
+        "foodWith": "Food is served. It contains {allergens}.",
+        "allergens": {
+          "gluten": "gluten",
+          "crustaceans": "crustaceans",
+          "eggs": "eggs",
+          "fish": "fish",
+          "peanuts": "peanuts",
+          "soy": "soy",
+          "milk": "milk",
+          "tree_nuts": "tree nuts",
+          "celery": "celery",
+          "mustard": "mustard",
+          "sesame": "sesame",
+          "sulphites": "sulfites",
+          "lupin": "lupin",
+          "molluscs": "mollusks"
+        }
       }
     },
     "journal": {

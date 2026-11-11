@@ -159,6 +159,9 @@ export const NextEvents = () => {
             <li key={entry.id}>
               <WaitlistItem
                 eventId={entry.event.id}
+                heldUntil={
+                  entry.status === "offered" ? entry.offered_until : null
+                }
                 title={localized(entry.event, "title", locale)}
               />
             </li>
@@ -169,17 +172,25 @@ export const NextEvents = () => {
   );
 };
 
-/** A waitlist place, with the member's current position. */
+/**
+ * A waitlist place, with the member's current position, or the place held
+ * for them and until when (decisions.md, Events).
+ */
 const WaitlistItem = ({
   eventId,
+  heldUntil,
   title,
 }: {
   eventId: string;
+  heldUntil: string | null;
   title: string;
 }) => {
   const t = useTranslations("diwan.home.events");
+  const te = useTranslations("diwan.events");
+  const locale = useLocale() as "en" | "ar";
   const { supabase } = useAuth();
   const position = useQuery({
+    enabled: !heldUntil,
     queryFn: async () =>
       unwrap(
         await supabase
@@ -192,6 +203,16 @@ const WaitlistItem = ({
   return (
     <div className="grid gap-1">
       <h3 className="type-subheading">{title}</h3>
+      {heldUntil ? (
+        <p className="type-caption">
+          {te("state.held", {
+            until: `${formatLongDate(heldUntil, locale)}, ${formatClock(heldUntil, locale)}`,
+          })}{" "}
+          <Link className="link" href="/account/calendar">
+            {te("claim")}
+          </Link>
+        </p>
+      ) : null}
       {position.data ? (
         <p className="type-caption">
           {t("waitlist", { position: formatNumber(position.data) })}

@@ -21,12 +21,12 @@ says what changes; **Migrates** says what a migration changes in
 production; **Owner** is a step only the owner can take.
 
 ### 11. Language (first: it touches every part)
-- [ ] "Secretary" («أمين السر»; «أمينة السر» for a woman) replaces "General
+- [x] "Secretary" («أمين السر»; «أمينة السر» for a woman) replaces "General
   Secretary" («الأمين العام») on the site, in emails, in Hudhud's copy and
   in the brand kit. The role's key (`general_secretary`) stays.
   **Migrates:** the role's titles in `access.roles` and the Council seat's
   titles.
-- [ ] "Events" («الفعاليات») replaces "What's on" in the menu, the pages,
+- [x] "Events" («الفعاليات») replaces "What's on" in the menu, the pages,
   the Sunday Paper, the feed and the brand kit.
 
 ### 1. Accounts and sign-in (decisions.md, Members)
@@ -129,15 +129,18 @@ production; **Owner** is a step only the owner can take.
   conflict-disclosure field for writers.
 
 ### 5. Events (decisions.md, Events)
-- [ ] Each event page states access plainly: step-free or not, seating,
+- [x] Each event page states access plainly: step-free or not, seating,
   food and the main allergens. **Migrates:** the event's access fields.
-- [ ] Check-in works offline and syncs later.
-- [ ] A released waitlist place is held 12 hours for the next person (or
-  until two hours before the start).
-- [ ] One reminder email the day before to everyone who RSVP'd, with "Can't
+- [x] Check-in works offline and syncs later.
+- [x] A released waitlist place is held 12 hours for the next person (or
+  until two hours before the start). **Migrates:** the waitlist's
+  `offered` and `expired` statuses and `offered_until`; the five-minute
+  release job also passes on unclaimed holds.
+- [x] One reminder email the day before to everyone who RSVP'd, with "Can't
   come? Cancel".
-- [ ] Off-campus trips ask an emergency contact with the trip consent,
-  deleted a week after the trip.
+- [x] Off-campus trips ask an emergency contact with the trip consent,
+  deleted a week after the trip. **Migrates:** the retention rule for
+  F-45's emergency contact and health notes.
 
 ### 6. The frame (decisions.md, The site)
 - [x] Header: logo, menu, search, language, theme, then Join or the account

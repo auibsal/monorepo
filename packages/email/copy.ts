@@ -60,6 +60,8 @@ const diwan = (base: string, l: Lang, path = "") => ({
 });
 
 export interface EventInfo {
+  /** The event's address, for "Can't come? Cancel" (its page holds the booking). */
+  slug?: string | null;
   starts_at: string;
   title_ar: string;
   title_en: string;
@@ -93,6 +95,36 @@ export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
     ],
   }));
 
+/**
+ * A released place held for the next on the waitlist (decisions.md,
+ * Events): 12 hours, or until two hours before the start; the one button
+ * claims it on the event's page.
+ */
+export const waitlistOffered = (
+  lang: Lang,
+  e: EventInfo,
+  app: string,
+  until: string
+) =>
+  build(lang, (l) => ({
+    action: e.slug
+      ? {
+          href: `${app}${localizedPath(l, `/events/${e.slug}`)}`,
+          label: l === "ar" ? "احجز المكان" : "Claim your place",
+        }
+      : account(app, l, MY_CALENDAR),
+    heading:
+      l === "ar"
+        ? `مكان محجوز لك: ${title(e, l)}`
+        : `A place is held for you: ${title(e, l)}`,
+    paragraphs: [
+      ...eventLines(e, l),
+      l === "ar"
+        ? `فرغ مكان وأنت التالي على قائمة الانتظار. نحفظه لك حتى ${when(until, l)}؛ وإن لم تحجزه حتى ذلك الحين ذهب إلى من بعدك.`
+        : `A place opened up and you're next on the waiting list. It's held for you until ${when(until, l)}; if you don't claim it by then, it goes to the next person.`,
+    ],
+  }));
+
 export const waitlistPromoted = (lang: Lang, e: EventInfo, app: string) =>
   build(lang, (l) => ({
     action: account(app, l, MY_CALENDAR),
@@ -110,8 +142,8 @@ export const waitlistPromoted = (lang: Lang, e: EventInfo, app: string) =>
 
 const REMINDER_CLOSE: Record<"booked" | "remindMe", Record<Lang, string>> = {
   booked: {
-    ar: "إن لم تعد تستطيع الحضور، فتنازل عن مكانك في «تقويمي» ليأخذه غيرك.",
-    en: "If you can no longer come, give your place back on My calendar so someone else can have it.",
+    ar: "إن لم تعد تستطيع الحضور، فألغِ حجزك ليأخذ مكانك غيرك.",
+    en: "If you can no longer come, cancel so someone else can have your place.",
   },
   remindMe: {
     ar: "طلبت أن نذكّرك. لا حجز لهذه الفعالية: تعال فحسب.",
@@ -119,9 +151,20 @@ const REMINDER_CLOSE: Record<"booked" | "remindMe", Record<Lang, string>> = {
   },
 };
 
+/** "Can't come? Cancel": the event's page, where the booking is canceled. */
+const cancelAction = (app: string, l: Lang, e: EventInfo) =>
+  e.slug
+    ? {
+        href: `${app}${localizedPath(l, `/events/${e.slug}`)}`,
+        label:
+          l === "ar" ? "لا تستطيع الحضور؟ ألغِ الحجز" : "Can’t come? Cancel",
+      }
+    : account(app, l, MY_CALENDAR);
+
 /**
- * The day before: to everyone booked (who can give the place back) and to
- * everyone who asked "Remind me" for an event without booking.
+ * The day before (decisions.md, Events): one reminder to everyone booked,
+ * whose one button is "Can't come? Cancel", and to everyone who asked
+ * "Remind me" for an event without booking.
  */
 export const eventReminder = (
   lang: Lang,
@@ -130,7 +173,7 @@ export const eventReminder = (
   booked = true
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, MY_CALENDAR),
+    action: booked ? cancelAction(app, l, e) : account(app, l, MY_CALENDAR),
     heading: l === "ar" ? `غدًا: ${title(e, l)}` : `Tomorrow: ${title(e, l)}`,
     paragraphs: [
       ...eventLines(e, l),

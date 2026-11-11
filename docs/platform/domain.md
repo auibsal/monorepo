@@ -166,9 +166,17 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   parts: its access (`events.events.entry`: `open`, `rsvp`, `members` or
   `invite` (Private); `members_only` is derived from it), RSVP and
   check-in (the booking asks only about accessibility needs, and diet
-  when `serves_food`; the waitlist moves by email until two hours before,
-  then the door fills places; places not claimed 10 minutes before are
-  released), a needs list,
+  when `serves_food`; a released place is held for the next on the
+  waitlist for 12 hours or until two hours before the start, whichever is
+  sooner, and passes on if unclaimed or declined (`events.waitlist.status`
+  `offered`, `offered_until`; `private.expire_offers` every five minutes);
+  from two hours before, the door fills places; places not claimed 10
+  minutes before are released; check-in keeps working without a
+  connection, `lib/diwan/door-queue.ts`), the access statement on the
+  page (`step_free`, `seating`, and the food's `allergens`, set on the
+  event's Diwan page), one reminder the day before with "Can't come?
+  Cancel", a trip's emergency contact deleted a week after it
+  (`private.purge_trip_contacts`), a needs list,
   volunteer shifts (on the event only, logging no hours), a partner
   checklist (`events.joint_tasks`) and links from the night
   (`events.session_links`, https only). Off campus is a standard field:

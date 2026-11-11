@@ -106,6 +106,7 @@ type NoticeKey =
 type StateKey =
   | "canceled"
   | "booked"
+  | "held"
   | "waiting"
   | "noBooking"
   | "open"
@@ -116,21 +117,29 @@ type StateKey =
 const GiveBack = ({
   booked,
   busy,
+  held = false,
   onConfirm,
 }: {
   readonly booked: boolean;
   readonly busy: boolean;
+  /** A place held for them: letting it go. */
+  readonly held?: boolean;
   readonly onConfirm: () => void;
 }) => {
   const t = useTranslations("diwan.events");
-  const label = booked ? t("cancel") : t("leaveWaitlist");
+  let label = booked ? t("cancel") : t("leaveWaitlist");
+  let question = booked ? t("cancelAsk") : t("leaveWaitlistAsk");
+  if (held) {
+    label = t("decline");
+    question = t("declineAsk");
+  }
   return (
     <InlineConfirm
       confirm={label}
       disabled={busy}
       label={label}
       onConfirm={onConfirm}
-      question={booked ? t("cancelAsk") : t("leaveWaitlistAsk")}
+      question={question}
     />
   );
 };
@@ -240,19 +249,32 @@ export const EventsBrowser = () => {
     (rsvps.data ?? []).map((r) => r.event?.id).filter(Boolean)
   );
   const waiting = new Set(
-    (waitlist.data ?? []).map((w) => w.event?.id).filter(Boolean)
+    (waitlist.data ?? [])
+      .filter((w) => w.status === "waiting")
+      .map((w) => w.event?.id)
+      .filter(Boolean)
+  );
+  // Released places held for them (decisions.md, Events), with the hold's end.
+  const held = new Map(
+    (waitlist.data ?? [])
+      .filter((w) => w.status === "offered" && w.event && w.offered_until)
+      .map((w) => [w.event?.id ?? "", w.offered_until ?? ""])
   );
 
   // My calendar is the member's own first: what they booked, wait for or
   // asked to be reminded of; then everything else coming up.
   const isMine = (event: UpcomingEvent) =>
-    booked.has(event.id) || waiting.has(event.id) || reminded.has(event.id);
+    booked.has(event.id) ||
+    waiting.has(event.id) ||
+    held.has(event.id) ||
+    reminded.has(event.id);
   const mine = (upcoming.data ?? []).filter(isMine);
   const others = (upcoming.data ?? []).filter((event) => !isMine(event));
 
   const start = (event: UpcomingEvent) => {
     setNotice(null);
-    if (event.questions.length > 0) {
+    // Claiming a held place keeps the answers given when they joined the line.
+    if (event.questions.length > 0 && !held.has(event.id)) {
       setAsking(event);
     } else {
       book.mutate({ answers: {}, id: event.id });
@@ -312,6 +334,7 @@ export const EventsBrowser = () => {
                 <EventCard
                   busy={book.isPending || cancel.isPending || remind.isPending}
                   event={event}
+                  heldUntil={held.get(event.id) ?? null}
                   isBooked={booked.has(event.id)}
                   isWaiting={waiting.has(event.id)}
                   key={event.id}
@@ -320,7 +343,7 @@ export const EventsBrowser = () => {
                   onCancel={() =>
                     cancel.mutate({
                       id: event.id,
-                      waiting: waiting.has(event.id),
+                      waiting: waiting.has(event.id) || held.has(event.id),
                     })
                   }
                   onRemind={() =>
@@ -393,7 +416,8 @@ const placesLeft = (event: UpcomingEvent) =>
 const stateOf = (
   event: UpcomingEvent,
   isBooked: boolean,
-  isWaiting: boolean
+  isWaiting: boolean,
+  isHeld = false
 ): StateKey => {
   const left = placesLeft(event);
   if (event.status === "canceled") {
@@ -401,6 +425,9 @@ const stateOf = (
   }
   if (isBooked) {
     return "booked";
+  }
+  if (isHeld) {
+    return "held";
   }
   if (isWaiting) {
     return "waiting";
@@ -441,6 +468,8 @@ const NoticeLine = ({ notice }: { notice: NoticeKey }) => {
 interface EventCardProps {
   readonly busy: boolean;
   readonly event: UpcomingEvent;
+  /** The end of a place held for them, if one is. */
+  readonly heldUntil: string | null;
   readonly isBooked: boolean;
   readonly isWaiting: boolean;
   readonly notice: NoticeKey | null;
@@ -453,6 +482,7 @@ interface EventCardProps {
 const EventCard = ({
   busy,
   event,
+  heldUntil,
   isBooked,
   isWaiting,
   notice,
@@ -463,7 +493,7 @@ const EventCard = ({
 }: EventCardProps) => {
   const t = useTranslations("diwan.events");
   const locale = useLocale() as "en" | "ar";
-  const state = stateOf(event, isBooked, isWaiting);
+  const state = stateOf(event, isBooked, isWaiting, Boolean(heldUntil));
   const left = placesLeft(event) ?? 0;
   const venue = localized(event, "venue", locale);
   const summary = localized(event, "summary", locale);
@@ -486,13 +516,27 @@ const EventCard = ({
         ) : null}
         <p className="type-caption">
           {kindOf(event) ? `${t(kindOf(event) ?? "membersOnly")} · ` : ""}
-          {t(`state.${state}`, { count: left, places: formatNumber(left) })}
+          {t(`state.${state}`, {
+            count: left,
+            places: formatNumber(left),
+            until: heldUntil
+              ? `${formatLongDate(heldUntil, locale)}, ${formatClock(heldUntil, locale)}`
+              : "",
+          })}
         </p>
         <div className="mt-auto flex flex-wrap gap-3 pt-2">
           {canBook ? (
             <Button disabled={busy} onClick={onBook}>
               {state === "full" ? t("joinWaitlist") : t("book")}
             </Button>
+          ) : null}
+          {state === "held" ? (
+            <>
+              <Button disabled={busy} onClick={onBook}>
+                {t("claim")}
+              </Button>
+              <GiveBack booked={false} busy={busy} held onConfirm={onCancel} />
+            </>
           ) : null}
           {state === "booked" && !guest ? (
             <Button asChild variant="outline">

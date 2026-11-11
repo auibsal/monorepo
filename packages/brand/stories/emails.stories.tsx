@@ -43,6 +43,7 @@ import {
   sundayPaper,
   twoStepReset,
   verificationDecided,
+  waitlistOffered,
   waitlistPromoted,
   welcome,
 } from "@repo/email/copy";
@@ -65,6 +66,7 @@ const APP = "https://auibsal.org";
 const WORK = "The paper and the pen";
 const PIECE = "00000000-0000-4000-8000-000000000001";
 const event: EventInfo = {
+  slug: "writing-workshop",
   starts_at: "2026-10-13T15:00:00Z",
   title_ar: "صفحات مفتوحة",
   title_en: "Writing workshop",
@@ -132,6 +134,9 @@ export const DecisionDecline = email((l) => decision(l, WORK, "decline", APP));
 export const EventReminder = email((l) => eventReminder(l, event, APP));
 export const EventReminderRemindMe = email((l) =>
   eventReminder(l, event, APP, false)
+);
+export const WaitlistOffered = email((l) =>
+  waitlistOffered(l, event, APP, "2026-10-12T21:00:00Z")
 );
 export const VerificationApproved = email((l) =>
   verificationDecided(l, true, APP)

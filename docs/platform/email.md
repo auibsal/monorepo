@@ -68,8 +68,9 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | Kind | When | To | Footer |
 | --- | --- | --- | --- |
 | `membership.welcome` | The first member pledge (the end of `/welcome`) | The new member: their card and where to start | Service |
-| `events.rsvp_confirmed`, `events.waitlist_promoted` | A place booked, or freed from the waiting list | The member | Service |
-| `events.reminder` | The day before | Booked: the member; "Remind me": whoever asked | Optional when booked; service for "Remind me" |
+| `events.rsvp_confirmed` | A place booked, or a held place claimed | The member | Service |
+| `events.waitlist_offered` | A released place held for the next on the waiting list: 12 hours, or until two hours before the start; one button claims it | The member | Service |
+| `events.reminder` | The day before | Booked: the member, with "Can't come? Cancel" (the event's page); "Remind me": whoever asked | Service |
 | `events.changed` | A published event canceled, or its day, time or place changed | Everyone booked, waiting or asking to be reminded; edits within ten minutes make one email | Service |
 | `events.shift_reminder` | The day before a shift | Whoever is on it | Optional |
 | `company.audition_update` | An audition time booked; called back, cast or not cast | The member | Service |

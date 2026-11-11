@@ -1743,6 +1743,7 @@ export type Database = {
       };
       events: {
         Row: {
+          allergens: string[];
           body_ar: string | null;
           body_en: string | null;
           capacity: number | null;
@@ -1760,10 +1761,12 @@ export type Database = {
           questions: NonNullable<Json>;
           rsvp_enabled: boolean;
           search: unknown;
+          seating: string | null;
           serves_food: boolean;
           slug: string;
           starts_at: string;
           status: string;
+          step_free: boolean | null;
           student_life_approved_by: string | null;
           student_life_approved_on: string | null;
           summary_ar: string | null;
@@ -1776,6 +1779,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          allergens?: string[];
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
@@ -1793,10 +1797,12 @@ export type Database = {
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
           search?: never;
+          seating?: string | null;
           serves_food?: boolean;
           slug: string;
           starts_at: string;
           status?: string;
+          step_free?: boolean | null;
           student_life_approved_by?: string | null;
           student_life_approved_on?: string | null;
           summary_ar?: string | null;
@@ -1808,6 +1814,7 @@ export type Database = {
           venue_en?: string | null;
         };
         Update: {
+          allergens?: string[];
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
@@ -1825,10 +1832,12 @@ export type Database = {
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
           search?: never;
+          seating?: string | null;
           serves_food?: boolean;
           slug?: string;
           starts_at?: string;
           status?: string;
+          step_free?: boolean | null;
           student_life_approved_by?: string | null;
           student_life_approved_on?: string | null;
           summary_ar?: string | null;
@@ -2033,6 +2042,7 @@ export type Database = {
           created_at: string;
           event_id: string;
           id: string;
+          offered_until: string | null;
           status: string;
           updated_at: string;
           user_id: string;
@@ -2043,6 +2053,7 @@ export type Database = {
           created_at?: string;
           event_id: string;
           id?: string;
+          offered_until?: string | null;
           status?: string;
           updated_at?: string;
           user_id: string;
@@ -2052,6 +2063,7 @@ export type Database = {
           created_at?: string;
           event_id?: string;
           id?: string;
+          offered_until?: string | null;
           status?: string;
           updated_at?: string;
           user_id?: string;

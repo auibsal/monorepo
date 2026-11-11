@@ -95,13 +95,14 @@ as $$
 $$;
 -- </preamble>
 
-select plan(20);
+select plan(23);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'one@auib.edu.iq', 'One');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'two@auib.edu.iq', 'Two');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'three@auib.edu.iq', 'Three');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'four@auib.edu.iq', 'Four');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'guest@gmail.com', 'Guest');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c1', 'staff@auib.edu.iq', 'Staff');
 
@@ -162,20 +163,33 @@ select lives_ok($$ select events.cancel_rsvp('e0000000-0000-0000-0000-0000000000
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
 select is(
-  (select status from events.rsvps where event_id = 'e0000000-0000-0000-0000-000000000001'),
-  'confirmed',
-  'Cancelling promotes the first person on the waitlist'
+  (select status from events.waitlist where event_id = 'e0000000-0000-0000-0000-000000000001'),
+  'offered',
+  'Cancelling holds the place for the first person on the waitlist'
 );
 select ok(
+  (select offered_until between now() + interval '11 hours' and now() + interval '12 hours 1 minute'
+   from events.waitlist where event_id = 'e0000000-0000-0000-0000-000000000001'),
+  'The place is held for 12 hours'
+);
+
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
+select is(events.rsvp('e0000000-0000-0000-0000-000000000001'), 'waitlisted',
+  'A held place cannot be taken by someone else');
+
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
+select is(events.rsvp('e0000000-0000-0000-0000-000000000001'), 'confirmed',
+  'The person holding the place claims it');
+select ok(
   exists (select 1 from events.rsvps where from_waitlist and event_id = 'e0000000-0000-0000-0000-000000000001'),
-  'The promoted RSVP is marked as from the waitlist'
+  'The claimed RSVP is marked as from the waitlist'
 );
 
 select pg_temp.logout();
 select ok(
-  exists (select 1 from core.outbox where kind = 'events.waitlist_promoted'
+  exists (select 1 from core.outbox where kind = 'events.waitlist_offered'
     and payload ->> 'user_id' = '00000000-0000-0000-0000-0000000000a3'),
-  'Promotion queues an email'
+  'The hold queues an email'
 );
 
 -- ── Check-in ────────────────────────────────────────────────────────────────
