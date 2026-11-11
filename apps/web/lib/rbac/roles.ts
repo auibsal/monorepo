@@ -358,6 +358,13 @@ export const roles = {
   },
   // A partner's team (decisions.md), scoped to the partner: the
   // Lead invites and removes; Team keeps the page.
+  parent: {
+    defaultScope: "member",
+    isCouncil: false,
+    nameAr: "وليّ الأمر",
+    nameEn: "Parent",
+    permissions: [],
+  },
   partner_lead: {
     defaultScope: "partner",
     isCouncil: false,
@@ -488,6 +495,13 @@ export const roles = {
     nameEn: "Qalam mentor",
     permissions: [],
   },
+  qalam_student: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "طالب «قلم»",
+    nameEn: "Qalam student",
+    permissions: [],
+  },
   reader: {
     defaultScope: "issue",
     isCouncil: false,
@@ -522,6 +536,13 @@ export const roles = {
     nameAr: "مدير المسرح",
     nameEn: "Stage manager",
     permissions: ["productions.manage", "events.checkin", "library.read"],
+  },
+  student_life: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "شؤون الطلبة",
+    nameEn: "Student Life",
+    permissions: [],
   },
   tech_admin: {
     defaultScope: "global",

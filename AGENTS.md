@@ -179,11 +179,24 @@ any schema change. Integration tests run against a local stack with
   student is 18 or older; the Code of Conduct is the only pledge. A password change
   on an old sign-in asks for an emailed code (secure password change);
   deleting the account needs a sign-in from the last 15 minutes
-  (`signedInWithin`) and removes the person's own files. "Download your
-  data" is JSON from `/api/account/export`. The Diwan signs a device out
+  (`signedInWithin`) and takes effect 30 days later
+  (`core.profiles.deletion_requested_at`; signing in restores it, the
+  retention job then removes the account and the person's own files).
+  Settings lists the devices signed in (`core.my_sessions()`, "Sign out
+  everywhere else"); a new kind of device emails the person
+  (`core.known_devices`). "Download your data" is `/api/account/export`,
+  shown as a page or saved as JSON. Each September members confirm "I'm
+  still here" (`membership.renewed_at`; `private.is_active_member()` is
+  the active count). The Diwan signs a device out
   after an hour with no use of your account or the Diwan (`IdleSignOut`,
   NIST SP 800-63B-4's AAL2 inactivity timeout). An AUIB sign-in address is not
   changed from the account (`private.keep_auib_address`).
+- **One account model (decisions.md, Members).** A class (Member,
+  Associate, Honorary, Guest) says whether someone is a member; a role
+  says what they do. Outside roles (Faculty Advisor, Student Life,
+  Advisory Board, partner roles, Parent, Qalam student) sit on whatever
+  account the class gives; a Parent's role is scoped to the child
+  (`scope_type = 'member'`). There is no "staff" class.
 - **Two-step sign-in (decisions.md, Members).** An authenticator app is
   offered to everyone (Settings). Roles with `requires_mfa` (the Council,
   the Elections Committee and, from Sun Nov 22, 2026, every role that sees
@@ -280,8 +293,12 @@ everywhere:
   from ten). Never write `<select>`, never stack action buttons in a
   column.
 - **One frame.** The public pages, your account and the Diwan share one
-  header (`components/masthead.tsx` with `site-header.tsx`) and one
-  footer (`components/footer.tsx`, not in the Diwan). One main menu:
+  header (`components/masthead.tsx` with `site-header.tsx`). The public
+  pages take the four-column footer (`Footer`; Qirtas's pages add its
+  line); your account, the partner dashboard and the Diwan take the slim
+  one (`SlimFooter`; the Diwan's shows the version and build), chosen by
+  address (`FooterSwitch`). The Diwan's seats are a side list on a
+  computer and a row on a phone (`DiwanNav`). One main menu:
   Events, Qirtas, The Company, Next Stop, Get involved and About, with
   a Join button (signed in,
   the end of the line opens Membership; the Diwan under it for staff, the

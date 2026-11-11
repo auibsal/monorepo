@@ -70,6 +70,13 @@ production; **Owner** is a step only the owner can take.
   parent and Qalam accounts become guests with those roles; the Campus
   Recreation Officer's account moves to Associate with the "Student Life"
   role (by the role it holds, never by a name or address in the migration).
+  Done so far: the outside roles Parent (scoped to the child), Qalam
+  student and Student Life exist (`20261113000600_outside_roles.sql`).
+  Still to build: the consent link making the parent's guest account with
+  the role, the parent's view of the child's consents, the class following
+  status (graduation to Associate), and the Campus Recreation Officer's
+  move, which is the owner's step (assign "Student Life" on their member
+  page; no migration names a person).
 - [ ] **The card:** no photo; everyone with an account gets one; class and
   role on the second line ("Guest · Parent"); under 18, the first name and
   last initial only (Qalam adds school and year); the Wallet pass updates

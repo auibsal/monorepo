@@ -101,6 +101,9 @@ const useScopeOptions = () => {
           id: i.id,
           label: `${i.volume}.${i.number} · ${localized(i, "title", locale)}`,
         })),
+        // A parent's role is linked to their child by the consent link,
+        // never picked here.
+        member: [],
         partner: (unwrap(partnerRows) ?? []).map((p) => ({
           id: p.id,
           label: localized(p, "name", locale),

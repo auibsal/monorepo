@@ -63,6 +63,7 @@ export const scopeTypes = [
   "production",
   "partner",
   "episode",
+  "member",
 ] as const;
 
 export type ScopeType = (typeof scopeTypes)[number];

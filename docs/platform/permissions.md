@@ -52,12 +52,14 @@ personal data). A passkey sign-in counts.
 | Next Stop crew | `next_stop_crew` | episode |  |  | none |
 | Next Stop host | `next_stop_host` | global |  |  | `library.read`, `media.guest_ideas` |
 | Next Stop producer | `next_stop_producer` | global |  |  | `content.manage`, `library.read`, `media.guest_ideas` |
+| Parent | `parent` | member |  |  | none |
 | Partner Lead | `partner_lead` | partner |  | yes | `partners.lead`, `partners.own` |
 | Photo and Video Lead | `photo_video_lead` | global |  | yes | `content.manage`, `events.checkin`, `library.read` |
 | President | `president` | global | yes | yes | `audit.read`, `certificates.prepare`, `certificates.sign`, `concerns.about_vp`, `concerns.handle`, `content.manage`, `events.checkin`, `events.manage`, `forms.handle`, `governance.manage`, `governance.minutes.write`, `library.council`, `library.read`, `mailing.read`, `members.manage`, `members.register`, `members.verify`, `partners.manage`, `partners.sign`, `productions.manage`, `programs.manage`, `roles.assign`, `settings.manage`, `tour.run` |
 | Producer | `production_producer` | production |  | yes | `productions.manage` |
 | Qalam Lead | `qalam_lead` | global |  | yes | `certificates.prepare`, `certificates.sign`, `library.read`, `qalam.manage` |
 | Qalam mentor | `qalam_mentor` | global |  |  | none |
+| Qalam student | `qalam_student` | global |  |  | none |
 | Reader | `reader` | issue |  |  | `journal.review`, `library.read` |
 | Secretary | `general_secretary` | global | yes | yes | `audit.read`, `certificates.prepare`, `content.manage`, `events.checkin`, `forms.handle`, `governance.manage`, `governance.minutes.write`, `library.council`, `library.read`, `members.manage`, `members.register`, `members.verify`, `tour.run` |
 | Set designer | `set_designer` | production |  |  | none |
@@ -67,6 +69,7 @@ personal data). A passkey sign-in counts.
 | Staff photographer | `photographer` | global |  |  | `library.read` |
 | Staff writer | `reporter` | global |  |  | `library.read` |
 | Stage manager | `stage_manager` | global |  | yes | `events.checkin`, `library.read`, `productions.manage` |
+| Student Life | `student_life` | global |  |  | none |
 | Team member | `partner_rep` | partner |  | yes | `partners.own` |
 | Tour Lead | `tour_lead` | global |  | yes | `events.checkin`, `library.read`, `tour.run` |
 | Understudy | `understudy` | production |  |  | none |

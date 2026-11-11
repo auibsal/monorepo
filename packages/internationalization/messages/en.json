@@ -1180,7 +1180,8 @@
           "campaign": "Campaign",
           "production": "Production",
           "partner": "Partner",
-          "episode": "Next Stop episode"
+          "episode": "Next Stop episode",
+          "member": "One member (a parent’s child)"
         },
         "endRole": "End now",
         "endRoleConfirm": "End this assignment now? The permissions it grants stop at once.",
