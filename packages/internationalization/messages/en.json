@@ -1134,7 +1134,8 @@
           "issue": "Qirtas issue",
           "campaign": "Campaign",
           "production": "Production",
-          "partner": "Partner"
+          "partner": "Partner",
+          "episode": "Next Stop episode"
         },
         "endRole": "End now",
         "endRoleConfirm": "End this assignment now? The permissions it grants stop at once.",
@@ -1149,14 +1150,14 @@
         "assignConfirm": "Give {name} the role {role}? It grants that role’s permissions from the start date.",
         "choose": "Choose…",
         "exception": "Council resolution allowing it",
-        "exceptionHint": "Only when the Council has adopted a resolution allowing this: a second Council role (to cover a seat, Constitution 6.6), more than two roles, or a second leadership role in the founding term (B5.5). Choose the resolution.",
+        "exceptionHint": "Only when the Council has adopted a resolution allowing a second Council seat (to cover a seat, Constitution 6.6). Choose the resolution.",
         "noException": "No exception",
         "rules": {
           "already_holds_role": "They already hold this role for that period.",
           "one_council_seat": "They already hold a Council seat. No person holds more than one (Constitution 6.6). End the other seat first.",
           "advisor_holds_no_other_role": "The Faculty Advisor is a member of faculty or staff (Constitution 9.1) and holds no other Society role.",
-          "two_roles_at_most": "They already hold two roles. Nobody holds more than two at once (B5.5) unless the Council agreed a founding-term exception.",
-          "one_leadership_role": "They already hold a leadership role (officer, director or event lead). Only one at a time (B5.5) unless the Council agreed a founding-term exception.",
+          "two_assistant_editors_at_most": "That section already has two assistant editors, the most it takes.",
+          "role_retired": "This role is retired: it stays on record but is no longer given.",
           "exception_needs_adopted_resolution": "The exception needs a Council resolution that has been adopted."
         },
         "twoStep": {
@@ -1767,6 +1768,14 @@
           "annual": "The Annual Meeting",
           "special": "A special meeting",
           "founding": "The Founding Meeting"
+        },
+        "accessReview": {
+          "title": "Access review",
+          "last": "Last reviewed {date}: {holders} roles held.",
+          "never": "Who holds what has not been reviewed yet.",
+          "due": "A review is due this quarter.",
+          "record": "Record this quarter’s review",
+          "note": "What you checked or changed (optional)"
         }
       },
       "settings": {

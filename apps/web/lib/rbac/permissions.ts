@@ -49,6 +49,7 @@ export const permissions = [
   "qalam.manage",
   "journal.prize",
   "forms.handle",
+  "mailing.read",
 ] as const;
 
 export type Permission = (typeof permissions)[number];
@@ -60,6 +61,7 @@ export const scopeTypes = [
   "issue",
   "production",
   "partner",
+  "episode",
 ] as const;
 
 export type ScopeType = (typeof scopeTypes)[number];

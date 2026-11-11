@@ -1,6 +1,6 @@
 -- Role rules: one Council seat (Constitution 6.6, B9.8), the Faculty
 -- Advisor holds no other role (9.1), no duplicates, and two roles with one
--- leadership role at most unless the Council agreed an exception (B5.5).
+-- Council seat at most unless the Council agreed an exception; no other cap.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -135,10 +135,9 @@ select lives_ok(
        starts_at => now() + interval '2 days') $$,
   'A seat that starts after the first one ends is allowed'
 );
-select throws_ok(
+select lives_ok(
   $$ select access.assign_role('00000000-0000-0000-0000-0000000000a1', 'reader') $$,
-  '23P01', 'two_roles_at_most',
-  'Two roles at most across overlapping periods'
+  'A seat holder also takes a team or scoped role: no cap but one seat'
 );
 
 select lives_ok(
@@ -152,18 +151,17 @@ select throws_ok(
 );
 select lives_ok(
   $$ select access.assign_role('00000000-0000-0000-0000-0000000000a2', 'copy_editor') $$,
-  'Two roles are allowed (B5.5)'
+  'Two roles are allowed'
 );
-select throws_ok(
+select lives_ok(
   $$ select access.assign_role('00000000-0000-0000-0000-0000000000a2', 'photographer') $$,
-  '23P01', 'two_roles_at_most',
-  'a third is not'
+  'and a third: the roles standard has no cap on team roles'
 );
 select throws_ok(
-  $$ select access.assign_role('00000000-0000-0000-0000-0000000000a2', 'photographer',
+  $$ select access.assign_role('00000000-0000-0000-0000-0000000000a1', 'media_director',
        exception_resolution => '00000000-0000-0000-0000-00000000e002') $$,
   '23P01', 'exception_needs_adopted_resolution',
-  'unless the Council adopted an exception (a draft is not enough)'
+  'A second seat needs an exception the Council adopted (a draft is not enough)'
 );
 
 select lives_ok(

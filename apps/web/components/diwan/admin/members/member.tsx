@@ -45,7 +45,7 @@ const useScopeOptions = () => {
   const locale = useLocale();
   return useQuery({
     queryFn: async () => {
-      const [programmes, issues, shows, partnerRows, eventRows] =
+      const [programmes, issues, shows, partnerRows, eventRows, episodeRows] =
         await Promise.all([
           supabase
             .schema("core")
@@ -77,11 +77,22 @@ const useScopeOptions = () => {
             .gte("starts_at", new Date(Date.now() - 30 * 864e5).toISOString())
             .order("starts_at")
             .limit(200),
+          // Next Stop's crew hold their roles for one episode.
+          supabase
+            .schema("programmes")
+            .from("episodes")
+            .select("id, title_en, title_ar, season, number")
+            .order("created_at", { ascending: false })
+            .limit(200),
         ]);
       const options: Record<
         Exclude<ScopeType, "global">,
         { id: string; label: string }[]
       > = {
+        episode: (unwrap(episodeRows) ?? []).map((e) => ({
+          id: e.id,
+          label: localized(e, "title", locale),
+        })),
         event: (unwrap(eventRows) ?? []).map((e) => ({
           id: e.id,
           label: `${localized(e, "title", locale)} · ${formatLongDate(e.starts_at, locale as Locale)}`,
@@ -493,11 +504,13 @@ const AssignRole = ({
               value={form.role_key}
             >
               <option value="">{t("choose")}</option>
-              {roles.data?.map((role) => (
-                <option key={role.key} value={role.key}>
-                  {localized(role, "name", locale)}
-                </option>
-              ))}
+              {roles.data
+                ?.filter((role) => !role.retired)
+                .map((role) => (
+                  <option key={role.key} value={role.key}>
+                    {localized(role, "name", locale)}
+                  </option>
+                ))}
             </SelectInput>
           )}
         </Field>

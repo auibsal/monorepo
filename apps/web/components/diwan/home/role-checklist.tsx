@@ -9,11 +9,22 @@ import { localized, unwrap } from "@/lib/data";
 import { RowList } from "../page";
 import { Section } from "./section";
 
+type StepKey =
+  | "declaration"
+  | "diwan_group"
+  | "email"
+  | "handover"
+  | "mailbox"
+  | "notion"
+  | "pages"
+  | "pledge"
+  | "two_step";
+
 /** The steps a person ticks; the site marks the rest itself. */
-const TICKED = new Set(["pages", "handover", "mailbox", "notion"]);
+const TICKED = new Set<StepKey>(["pages", "handover", "mailbox", "notion"]);
 
 /** Where each step is done, when it is done on the site. */
-const WHERE: Record<string, string | undefined> = {
+const WHERE: Partial<Record<StepKey, string>> = {
   declaration: "/forms/F-06",
   diwan_group: "/account/settings",
   pages: "/library",
@@ -27,7 +38,7 @@ interface Step {
   role_en: string;
   seat: boolean;
   starts_at: string;
-  step: string;
+  step: StepKey;
 }
 
 /**

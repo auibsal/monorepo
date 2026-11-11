@@ -9,6 +9,31 @@ export type Json =
 export type Database = {
   access: {
     Tables: {
+      access_reviews: {
+        Row: {
+          holders: number;
+          id: number;
+          note: string | null;
+          reviewed_at: string;
+          reviewed_by: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          holders: number;
+          id?: never;
+          note?: string | null;
+          reviewed_at?: string;
+          reviewed_by?: string | null;
+        };
+        Update: {
+          holders?: number;
+          id?: never;
+          note?: string | null;
+          reviewed_at?: string;
+          reviewed_by?: string | null;
+        };
+        Relationships: [];
+      };
       permissions: {
         Row: {
           description: string;
@@ -55,6 +80,7 @@ export type Database = {
           assigned_by: string | null;
           confirmed_at: string | null;
           confirmed_by: string | null;
+          covering: boolean;
           created_at: string;
           ends_at: string | null;
           exception_resolution_id: string | null;
@@ -76,6 +102,7 @@ export type Database = {
           assigned_by?: string | null;
           confirmed_at?: string | null;
           confirmed_by?: string | null;
+          covering?: boolean;
           created_at?: string;
           ends_at?: string | null;
           exception_resolution_id?: string | null;
@@ -96,6 +123,7 @@ export type Database = {
           assigned_by?: string | null;
           confirmed_at?: string | null;
           confirmed_by?: string | null;
+          covering?: boolean;
           created_at?: string;
           ends_at?: string | null;
           exception_resolution_id?: string | null;
@@ -119,6 +147,36 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "roles";
             referencedColumns: ["key"];
+          },
+        ];
+      };
+      role_checklist: {
+        Row: {
+          assignment_id: string;
+          done_at: string;
+          done_by: string | null;
+          step: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          assignment_id: string;
+          done_at?: string;
+          done_by?: string | null;
+          step: string;
+        };
+        Update: {
+          assignment_id?: string;
+          done_at?: string;
+          done_by?: string | null;
+          step?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "role_checklist_assignment_id_fkey";
+            columns: ["assignment_id"];
+            isOneToOne: false;
+            referencedRelation: "role_assignments";
+            referencedColumns: ["id"];
           },
         ];
       };
@@ -159,10 +217,12 @@ export type Database = {
           hiring_owner: string | null;
           is_council: boolean;
           key: string;
+          kind: string;
           name_ar: string;
           name_ar_feminine: string | null;
           name_en: string;
           requires_mfa: boolean;
+          retired: boolean;
           sort: number;
         };
         ComputedFields: never;
@@ -171,10 +231,12 @@ export type Database = {
           hiring_owner?: string | null;
           is_council?: boolean;
           key: string;
+          kind?: string;
           name_ar: string;
           name_ar_feminine?: string | null;
           name_en: string;
           requires_mfa?: boolean;
+          retired?: boolean;
           sort?: number;
         };
         Update: {
@@ -182,10 +244,12 @@ export type Database = {
           hiring_owner?: string | null;
           is_council?: boolean;
           key?: string;
+          kind?: string;
           name_ar?: string;
           name_ar_feminine?: string | null;
           name_en?: string;
           requires_mfa?: boolean;
+          retired?: boolean;
           sort?: number;
         };
         Relationships: [];
@@ -260,6 +324,19 @@ export type Database = {
           scope_type: string;
         }[];
       };
+      my_role_checklist: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          assignment_id: string;
+          done: boolean;
+          role: string;
+          role_ar: string;
+          role_en: string;
+          seat: boolean;
+          starts_at: string;
+          step: string;
+        }[];
+      };
       needs_two_step: { Args: Record<PropertyKey, never>; Returns: boolean };
       notion_publisher: {
         Args: {
@@ -289,9 +366,14 @@ export type Database = {
           user_id: string;
         }[];
       };
+      record_access_review: { Args: { note?: string }; Returns: number };
       record_seat_check: {
         Args: { assignment_id: string; eligible: boolean };
         Returns: undefined;
+      };
+      tick_role_step: {
+        Args: { assignment_id: string; step: string };
+        Returns: boolean;
       };
     };
     Enums: {

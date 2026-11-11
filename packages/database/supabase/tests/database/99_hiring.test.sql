@@ -207,10 +207,10 @@ select lives_ok(
   'Membership posts a role for any owner'
 );
 insert into programmes.openings (id, kind, role, title_en, title_ar)
-values ('00000000-0000-0000-0000-00000000d1b9', 'role', 'onboarding_lead', '', '');
+values ('00000000-0000-0000-0000-00000000d1b9', 'role', 'alumni_lead', '', '');
 select is(
   (select owner || ' / ' || title_en from programmes.openings where id = '00000000-0000-0000-0000-00000000d1b9'),
-  'membership / Onboarding Lead', 'A role opening takes its owner and title from the role'
+  'membership / Alumni Lead', 'A role opening takes its owner and title from the role'
 );
 select throws_ok(
   $$ insert into programmes.openings (kind, role, title_en, title_ar) values ('role', 'president', '', '') $$,
