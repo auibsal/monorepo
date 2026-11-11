@@ -9,6 +9,7 @@ import {
   EditionShelfItem,
   loadEditions,
 } from "@/components/qirtas/editions";
+import { HavenCall } from "@/components/qirtas/haven-call";
 import { localized } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 
@@ -98,6 +99,7 @@ const EditionsPage = async ({ params, searchParams }: EditionsProps) => {
         <h1 className="type-display">{t("editions")}</h1>
         <p className="type-lede max-w-3xl">{t("editionsLede")}</p>
       </header>
+      <HavenCall locale={locale} />
       {body}
     </div>
   );

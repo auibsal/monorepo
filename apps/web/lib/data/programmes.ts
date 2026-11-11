@@ -45,7 +45,7 @@ export const myPages = async (client: Client, userId: string) =>
       .schema("programmes")
       .from("six_words")
       .select(
-        "id, text, language, tour, station, visibility, publishable, photo_path, created_at"
+        "id, text, language, tour, station, visibility, show_full_name, publishable, photo_path, created_at"
       )
       .eq("user_id", userId)
       .order("created_at")
@@ -62,6 +62,23 @@ export const setPageVisibility = async (
       .schema("programmes")
       .from("six_words")
       .update({ visibility })
+      .eq("id", pageId)
+  );
+
+/**
+ * On the Tour's wall a page shows the first name and last initial unless
+ * the writer chooses the full name (decisions §18).
+ */
+export const setPageFullName = async (
+  client: Client,
+  pageId: string,
+  full: boolean
+) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("six_words")
+      .update({ show_full_name: full })
       .eq("id", pageId)
   );
 

@@ -396,7 +396,8 @@
           "tour": "Your profile and the Tour’s page"
         },
         "takenDown": "The editors have kept this page off the site.",
-        "notTranscribed": "Photographed at the Tour; the Tour lead types its words in soon."
+        "notTranscribed": "Photographed at the Tour; the Tour lead types its words in soon.",
+        "fullName": "Show my full name on the Tour’s page (otherwise, first name and last initial)"
       },
       "tiers": {
         "member": "Member",
@@ -864,6 +865,14 @@
         "unset": "Not given",
         "masculine": "Masculine",
         "feminine": "Feminine"
+      },
+      "preferred": {
+        "title": "Preferred name (optional)",
+        "hint": "The name you go by, shown in place of your legal first or last name on the site, your card and the Council page. Your four-part legal name stays on your records.",
+        "first_en": "First name, in English",
+        "last_en": "Last name, in English",
+        "first_ar": "First name, in Arabic",
+        "last_ar": "Last name, in Arabic"
       }
     },
     "admin": {
@@ -4730,7 +4739,13 @@
       },
       "tourPages": "Typewriter Tour pages",
       "prize": "Prize",
-      "correctionsPolicy": "How Qirtas corrects its errors"
+      "correctionsPolicy": "How Qirtas corrects its errors",
+      "haven": {
+        "title": "Haven",
+        "dek": "Dreams and memories · the pilot Edition of Qirtas",
+        "call": "Send a poem, a short story, a creative essay or an artwork, about a memory, a dream or both. Everything is read blind.",
+        "submit": "Submit your work now."
+      }
     },
     "about": {
       "title": "About the Society",

@@ -937,7 +937,7 @@ type Draft = ReturnType<typeof useDraft>;
 /** A saved draft's fields, with the form's own defaults for what it lacks. */
 const fromDraft = (saved: DraftContent) => ({
   body: saved.body ?? "",
-  // Empty: the default call (Qirtas, all year).
+  // Empty: the open call (Haven's, for now).
   callId: saved.callId ?? "",
   deck: saved.deck ?? "",
   language: saved.language ?? "en",
@@ -1025,7 +1025,7 @@ const useWriteCall = (
   const pathway = useSubmitPathway(open, callId, partnerId);
   const call =
     pathway.callable.find((c) => c.id === callId) ??
-    // Qirtas, all year, first: an Edition call is the member's choice.
+    // An open call without an Edition first; Haven's while it is the only one.
     pathway.callable.find((c) => !c.issue_id) ??
     pathway.callable[0];
   return {

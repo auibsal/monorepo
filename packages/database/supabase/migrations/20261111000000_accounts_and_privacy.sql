@@ -104,7 +104,8 @@ create trigger tidy_names before insert or update of full_name_en, full_name_ar,
   on core.profiles
   for each row execute function private.tidy_names();
 
-grant update (preferred_first_en, preferred_last_en, preferred_first_ar, preferred_last_ar)
+grant select (preferred_first_en, preferred_last_en, preferred_first_ar, preferred_last_ar),
+  update (preferred_first_en, preferred_last_en, preferred_first_ar, preferred_last_ar)
   on core.profiles to authenticated;
 
 comment on column core.profiles.preferred_first_en is
