@@ -271,7 +271,7 @@ export interface CallInfo {
  * A call closing in 2100 or later has no deadline yet (the Editor-in-Chief
  * sets the dates; the standing call never closes).
  */
-export const callHasDeadline = (closesAt: string) =>
+const callHasDeadline = (closesAt: string) =>
   new Date(closesAt).getUTCFullYear() < 2100;
 
 const callClosing = (closesAt: string, l: Lang) => {
