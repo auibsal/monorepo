@@ -39,7 +39,7 @@ export interface FormField {
 }
 
 export interface FormDefinition {
-  /** May be sent without a name (F-20). */
+  /** May keep the signer's name sealed from the panel (F-21). */
   readonly anonymous?: boolean;
   /** Signed only through a single-use link (a parent's consent). */
   readonly byLink?: boolean;
@@ -52,6 +52,8 @@ export interface FormDefinition {
   readonly preamble?: boolean;
   /** Asks who the concern is about, for routing (F-20). */
   readonly routing?: boolean;
+  /** Raised signed in only (a concern, decisions.md, Governance). */
+  readonly signIn?: boolean;
   /** Names the person the form is about (a member). */
   readonly subject?: boolean;
 }
@@ -198,6 +200,7 @@ export const forms: Record<FormKey, FormDefinition> = {
     ],
     key: "f21",
     routing: true,
+    signIn: true,
   },
   f26: {
     code: "F-26",

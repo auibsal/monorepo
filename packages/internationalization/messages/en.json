@@ -3839,8 +3839,8 @@
         "vice_president": "About the Vice President",
         "president": "About the President"
       },
-      "anonymous": "Send without my name",
-      "anonymousHint": "No account is stored with it, so we cannot reply and you will not see it in Requests and reports.",
+      "anonymous": "Keep my name from the panel",
+      "anonymousHint": "Your name is sealed: the panel reads your concern without it, and opens it only for a safety risk or with your agreement. A concern without a name is harder to act on, because nobody can ask you more.",
       "sentAnonymously": "Sent without your name. Thank you for telling us.",
       "problems": "Some answers are missing or not valid: {fields}",
       "send": "Send",
@@ -4103,6 +4103,16 @@
         "link_not_valid": "This link has been used or has expired. Ask for a new one.",
         "rate_limited": "Too many tries from here. Wait a few minutes and try again.",
         "sign_in_required": "Sign in to send this form."
+      },
+      "signInFirst": "Sign in to raise a concern",
+      "signInFirstWhy": "Concerns are raised signed in, so the panel can answer you. You can still ask to keep your name from the panel.",
+      "sealed": {
+        "sealed": "The name is sealed: it was raised signed in, and the panel reads it without the name.",
+        "opened": "The name is sealed, and was opened once, for a recorded reason.",
+        "name": "Raised by {name}.",
+        "openSafety": "Open the name: a safety risk",
+        "openAgreed": "Open the name: they agreed",
+        "hint": "Open it only for a risk to someone’s safety, or once the person has agreed. The opening is recorded with your name and the reason."
       }
     },
     "qirtas": {

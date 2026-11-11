@@ -3249,6 +3249,45 @@ export type Database = {
           },
         ];
       };
+      sealed_signers: {
+        Row: {
+          created_at: string;
+          opened_at: string | null;
+          opened_by: string | null;
+          opened_reason: string | null;
+          signer_name: string;
+          submission_id: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          opened_at?: string | null;
+          opened_by?: string | null;
+          opened_reason?: string | null;
+          signer_name: string;
+          submission_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          opened_at?: string | null;
+          opened_by?: string | null;
+          opened_reason?: string | null;
+          signer_name?: string;
+          submission_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "sealed_signers_submission_id_fkey";
+            columns: ["submission_id"];
+            isOneToOne: true;
+            referencedRelation: "form_submissions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       society_documents: {
         Row: {
           adopted_on: string | null;
@@ -3515,6 +3554,10 @@ export type Database = {
         };
         Returns: string;
       };
+      open_sealed: {
+        Args: { reason: string; submission_id: string };
+        Returns: string;
+      };
       open_voting: { Args: { election_id: string }; Returns: number };
       partner_applications: {
         Args: Record<PropertyKey, never>;
@@ -3626,6 +3669,7 @@ export type Database = {
         Args: { member: string; partner: string };
         Returns: undefined;
       };
+      sealed_state: { Args: { submission_id: string }; Returns: string };
       second_sign_form: {
         Args: { signer_name: string; submission_id: string };
         Returns: undefined;

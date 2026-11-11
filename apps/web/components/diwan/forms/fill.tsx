@@ -155,6 +155,7 @@ const sendForm = (
 ) => {
   if (!input.throughApi) {
     return forms.signForm(supabase, {
+      anonymous: input.anonymous,
       data: input.data,
       esignAgreed: input.agreed,
       form: input.formKey,
@@ -205,7 +206,7 @@ const SignerFields = ({
       {allowAnonymous ? (
         <AnonymousOption onChange={onAnonymous} value={anonymous} />
       ) : null}
-      {anonymous || signedIn ? null : (
+      {signedIn ? null : (
         <Field label={t("contact")}>
           {(fieldId) => (
             <Input
@@ -217,7 +218,7 @@ const SignerFields = ({
           )}
         </Field>
       )}
-      {anonymous ? null : <EsignAgreement onChange={onAgreed} value={agreed} />}
+      <EsignAgreement onChange={onAgreed} value={agreed} />
       {human}
     </>
   );
@@ -230,10 +231,11 @@ const signingProblems = (
   sign: { agreed: boolean; anonymous: boolean; signature: string }
 ) => {
   const found = forms.formProblems(definition, data);
-  if (!(sign.anonymous || sign.signature.trim().length >= 2)) {
+  // A sealed concern is signed too; the name is kept apart from the panel.
+  if (sign.signature.trim().length < 2) {
     found.push("signature");
   }
-  if (!(sign.anonymous || sign.agreed)) {
+  if (!sign.agreed) {
     found.push("esign");
   }
   return found;
@@ -319,6 +321,9 @@ export const FillForm = ({
       </EmptyLine>
     );
   }
+  if (forms.forms[formKey].signIn) {
+    return <SignInFirst eventSlug={eventSlug} formKey={formKey} link={link} />;
+  }
   if (forms.forms[formKey].byLink && !link) {
     return (
       <EmptyLine action={{ href: "/", label: t("home") }}>
@@ -392,9 +397,9 @@ const FormEditor = ({
   const [contact, setContact] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [sent, setSent] = useState(false);
-  // Signed out or anonymous: Turnstile, checked by /api/forms/sign.
+  // Signed out: Turnstile, checked by /api/forms/sign.
   const human = useHumanCheck("form");
-  const throughApi = !user || anonymous;
+  const throughApi = !user;
   // A member signs in the name on their account, unless they change it.
   const myName = me.data
     ? (locale === "ar" && me.data.full_name_ar) || me.data.full_name_en
@@ -423,7 +428,7 @@ const FormEditor = ({
         router.push(`/events/${eventSlug}`);
         return;
       }
-      if (user && !anonymous) {
+      if (user) {
         router.push(`/account/requests/${savedId}`);
         return;
       }
@@ -478,11 +483,11 @@ const FormEditor = ({
           hint: t("signatureHint"),
           invalid: problems.includes("signature"),
           label: t("signature"),
-          omit: anonymous,
+          omit: false,
           onChange: setSigner,
           value: signature,
         }}
-        submit={anonymous ? t("send") : t("signAndSend")}
+        submit={t("signAndSend")}
         title={labels.title()}
       >
         {event.data ? (
@@ -534,5 +539,46 @@ const FormEditor = ({
         <SignProblems error={sign.error} labels={labels} problems={problems} />
       </FormPage>
     </div>
+  );
+};
+
+/**
+ * A concern is raised signed in (decisions.md, Governance): signed out, the
+ * page offers sign-in and comes back here.
+ */
+const SignInFirst = ({
+  eventSlug,
+  formKey,
+  link,
+}: {
+  eventSlug: string | null;
+  formKey: forms.FormKey;
+  link: string | null;
+}) => {
+  const t = useTranslations("diwan.forms");
+  const { user, loading } = useAuth();
+  if (loading) {
+    return null;
+  }
+  if (!user) {
+    const number = forms.forms[formKey].code.replace("F-", "");
+    return (
+      <EmptyLine
+        action={{
+          href: `/sign-in?next=${encodeURIComponent(`/forms/${number}`)}`,
+          label: t("signInFirst"),
+        }}
+      >
+        {t("signInFirstWhy")}
+      </EmptyLine>
+    );
+  }
+  return (
+    <FormEditor
+      eventSlug={eventSlug}
+      formKey={formKey}
+      key={formKey}
+      link={link}
+    />
   );
 };

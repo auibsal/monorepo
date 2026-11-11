@@ -105,9 +105,12 @@ production; **Owner** is a step only the owner can take.
   **Migrates:** a table of pending approvals.
 
 ### 3. Governance (decisions.md, Governance)
-- [ ] "Raise a concern" requires sign-in; the person may ask to keep their
+- [x] "Raise a concern" requires sign-in; the person may ask to keep their
   name from the panel (sealed; opened only for a safety risk or with their
   agreement); the reply notes anonymous concerns are harder to act on.
+  **Migrates:** `governance.sealed_signers`, F-21 needs an account, and
+  `sign_form` seals instead of dropping the name. Concerns already sent
+  without a name stay as they are.
 - [ ] Adopted resolutions (number, title, date) open to members beside the
   approved minutes; those about partners and documents public.
 - [ ] Each election page gets a candidates' forum event in the week before

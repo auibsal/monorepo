@@ -102,17 +102,35 @@ const useMySent = () => {
   const { supabase, user } = useAuth();
   return useQuery({
     enabled: Boolean(user),
-    queryFn: async (): Promise<Sent[]> =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("form_submissions")
-          .select(
-            "id, form_key, status, submitted_at, created_at, submitted_by, subject_user_id"
-          )
-          .or(`submitted_by.eq.${user?.id},subject_user_id.eq.${user?.id}`)
-          .order("created_at", { ascending: false })
-      ) ?? [],
+    queryFn: async (): Promise<Sent[]> => {
+      // Concerns sent with the name sealed carry no name on the form itself
+      // (decisions.md, Governance); the signer finds them through the seal.
+      const sealed = (
+        unwrap(
+          await supabase
+            .schema("governance")
+            .from("sealed_signers")
+            .select("submission_id")
+        ) ?? []
+      ).map((row) => row.submission_id);
+      const mine = [
+        `submitted_by.eq.${user?.id}`,
+        `subject_user_id.eq.${user?.id}`,
+        ...(sealed.length > 0 ? [`id.in.(${sealed.join(",")})`] : []),
+      ].join(",");
+      return (
+        unwrap(
+          await supabase
+            .schema("governance")
+            .from("form_submissions")
+            .select(
+              "id, form_key, status, submitted_at, created_at, submitted_by, subject_user_id"
+            )
+            .or(mine)
+            .order("created_at", { ascending: false })
+        ) ?? []
+      );
+    },
     queryKey: ["forms", "mine", user?.id],
   });
 };

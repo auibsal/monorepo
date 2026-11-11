@@ -107,7 +107,7 @@ end;
 $$;
 grant execute on function pg_temp.as_api() to public;
 
-select plan(27);
+select plan(31);
 
 -- Forms signed on the site (decisions.md): /forms/<number>, a typed
 -- name for a signature, the signed copy keeping the signer, the time and the
@@ -177,9 +177,9 @@ select throws_ok(
   'A form kept elsewhere is not signed here'
 );
 select throws_ok(
-  $$ select governance.sign_form('f10', '{}', 'A Member', null, null, true) $$,
-  '42501', 'use_the_form_page',
-  'Anonymous forms go through the form page''s check, not the browser'
+  $$ select governance.sign_form('f10', '{}', 'A Member', null, null, true, 'none', true) $$,
+  '22023', 'anonymous_not_allowed',
+  'Only a concern may keep its name sealed'
 );
 select throws_ok(
   $$ select governance.sign_form('f11', '{}', 'A Member', null, null, false, 'president', true) $$,
@@ -193,21 +193,21 @@ select throws_ok(
   'Nobody writes submissions directly'
 );
 
--- ── Concerns (F-21): anonymity and routing ──
+-- ── Concerns (F-21): raised signed in, the name sealed if asked; routing ──
 select pg_temp.as_api();
-insert into ids select 'anon', governance.sign_form('f21', '{"what":"Something at an event"}', '', null, null, true);
 select throws_ok(
-  $$ select governance.sign_form('f11', '{}', 'A Member', null, null, true) $$,
-  '22023', 'anonymous_not_allowed',
-  'Only concerns may be anonymous'
+  $$ select governance.sign_form('f21', '{"what":"Something at an event"}', '', null, null, true) $$,
+  '42501', 'sign_in_required',
+  'A concern is raised signed in'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+insert into ids select 'sealed', governance.sign_form('f21', '{"what":"Something at an event"}', 'A Member', null, null, true, 'none', true);
 insert into ids select 'about_vp', governance.sign_form('f21', '{"what":"About the VP"}', 'A Member', null, null, false, 'vice_president', true);
-select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 1,
-  'An anonymous concern cannot be read back even by whoever sent it');
+select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 2,
+  'The signer still reads a concern whose name is sealed');
 select pg_temp.logout();
-select is((select array[submitted_by::text, signer_name] from governance.form_submissions where id = (select id from ids where name = 'anon')),
-  array[null, null]::text[], 'and no account or signature is stored with it');
+select is((select array[submitted_by::text, signer_name, signer_contact] from governance.form_submissions where id = (select id from ids where name = 'sealed')),
+  array[null, null, null]::text[], 'and the copy the panel reads holds no name');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
 select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 1,
@@ -220,9 +220,24 @@ select throws_ok(
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
 select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 2,
   'The President receives both');
+select is(governance.sealed_state((select id from ids where name = 'sealed')), 'sealed',
+  'and sees that one is sealed, not by whom');
+select throws_ok(
+  format($$ select governance.open_sealed(%L, 'curious') $$, (select id from ids where name = 'sealed')),
+  '22023', 'reason_required',
+  'A sealed name opens only for a safety risk or with the signer''s agreement'
+);
+select is(governance.open_sealed((select id from ids where name = 'sealed'), 'safety'), 'A Member',
+  'For a safety risk the handler opens it, and the opening is kept');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
 select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 2,
   'and so does the Faculty Advisor');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+select throws_ok(
+  format($$ select governance.open_sealed(%L, 'agreed') $$, (select id from ids where name = 'about_vp')),
+  '42501', 'not_allowed',
+  'Only whoever handles a concern opens a name'
+);
 
 -- ── Anyone, signed in or not, may sign a form that needs no account ──
 select pg_temp.login_anon();

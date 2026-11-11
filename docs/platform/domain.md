@@ -143,8 +143,13 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Notion templates. The signer agrees to sign electronically; the copy
   keeps the time, IP address, version and SHA-256 fingerprint, and the
   signer is emailed theirs (`forms.signed_copy`). Signing without an
-  account, and anonymous concerns, go through `/api/forms/sign`
-  (Turnstile, `TURNSTILE_SECRET_KEY`, and a limit per address); parents
+  account goes through `/api/forms/sign` (Turnstile,
+  `TURNSTILE_SECRET_KEY`, and a limit per address). A concern (F-21) is
+  raised signed in; its writer may keep their name from the panel: the
+  submission then holds no name, the signer is kept in
+  `governance.sealed_signers` (read only by them), and whoever handles it
+  opens the name only for a safety risk or with the writer's agreement
+  (`governance.open_sealed`, the opening kept); parents
   sign Qalam's F-38 and F-39 by a single-use link the Qalam lead sends
   to the teacher (`governance.form_links`). Every public form that sends
   email checks Turnstile (`lib/api/turnstile.ts`). The forms register in SAL-EXB-01 is the one source of

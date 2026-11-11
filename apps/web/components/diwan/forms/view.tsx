@@ -5,7 +5,7 @@ import type { Tables } from "@repo/database/types";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useAuth } from "@/lib/auth/provider";
@@ -98,6 +98,9 @@ export const SubmissionSheet = ({
           </p>
         ) : null}
       </header>
+      {submission.submitted_by ? null : (
+        <SealedName canOpen={Boolean(actions)} id={submission.id} />
+      )}
       <FormValues
         data={(submission.data ?? {}) as forms.FormData}
         fields={definition.fields}
@@ -162,5 +165,74 @@ export const ViewForm = () => {
       </div>
       <SubmissionSheet submission={row} />
     </div>
+  );
+};
+
+/**
+ * A concern whose name is sealed (decisions.md, Governance): the panel
+ * sees that it is sealed, and whoever handles it may open the name only
+ * for a safety risk or with the signer's agreement; the opening is kept.
+ */
+const SealedName = ({
+  canOpen,
+  id,
+}: {
+  readonly canOpen: boolean;
+  readonly id: string;
+}) => {
+  const t = useTranslations("diwan.forms.sealed");
+  const { supabase } = useAuth();
+  const state = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase.schema("governance").rpc("sealed_state", {
+          submission_id: id,
+        })
+      ),
+    queryKey: ["forms", "sealed", id],
+  });
+  const open = useMutation({
+    mutationFn: async (reason: "safety" | "agreed") =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("open_sealed", { reason, submission_id: id })
+      ),
+  });
+  if (!state.data) {
+    return null;
+  }
+  return (
+    <section className="border-line grid gap-2 border-t pt-3 print:hidden">
+      <p className="type-body">
+        {state.data === "opened" ? t("opened") : t("sealed")}
+      </p>
+      {open.data ? (
+        <p className="type-body font-medium">
+          {t("name", { name: open.data })}
+        </p>
+      ) : null}
+      {canOpen && !open.data ? (
+        <div className="flex flex-wrap gap-3">
+          <Button
+            disabled={open.isPending}
+            onClick={() => open.mutate("safety")}
+            size="sm"
+            variant="outline"
+          >
+            {t("openSafety")}
+          </Button>
+          <Button
+            disabled={open.isPending}
+            onClick={() => open.mutate("agreed")}
+            size="sm"
+            variant="outline"
+          >
+            {t("openAgreed")}
+          </Button>
+        </div>
+      ) : null}
+      {canOpen ? <p className="type-caption">{t("hint")}</p> : null}
+    </section>
   );
 };
