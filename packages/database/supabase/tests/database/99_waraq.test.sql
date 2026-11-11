@@ -101,7 +101,7 @@ delete from journal.issues;
 -- these checks count pieces from a clean desk.
 delete from journal.pieces;
 
-select plan(50);
+select plan(55);
 
 -- People.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
@@ -260,10 +260,18 @@ select throws_ok(
   $$ select journal.approve_piece(pg_temp.news(), 'chief') $$,
   '42501', null, 'A desk editor cannot give the chief approval'
 );
--- News needs only the desk editor: the rule runs at once, and the missing
--- agreement sends the piece back.
-select is(journal.approve_piece(pg_temp.news(), 'desk'), 'editing',
-  'The News Editor approves for the desk; without the agreement the rule sends it back');
+-- Every piece needs two people (the section editor, then the Editor-in-
+-- Chief or the Managing Editor) and every text piece the copy edit
+-- (decisions.md, Qirtas). With all three in, the rule runs, and the
+-- missing agreement sends the piece back.
+select is(journal.approve_piece(pg_temp.news(), 'desk'), 'author_approved',
+  'The News Editor approves for the desk; the piece waits for the second approval and the copy edit');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000e1c0');
+select is(journal.approve_piece(pg_temp.news(), 'chief'), 'author_approved',
+  'The Editor-in-Chief gives the second approval');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000c0b1');
+select is(journal.approve_piece(pg_temp.news(), 'copy'), 'editing',
+  'With the copy edit in, the rule runs; without the agreement it sends the piece back');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ae13');
 select throws_ok(
@@ -327,13 +335,18 @@ update journal.piece_bodies set body_en = '<p>Tonight.</p>' where piece_id = (se
 update journal.pieces set deck_en = 'A first Salon.' where id = (select id from staff);
 select pg_temp.login_as('00000000-0000-0000-0000-00000000c0b1');
 select lives_ok($$ select journal.approve_piece((select id from staff), 'copy') $$,
-  'The Copy Chief may record a style check before the desk');
+  'The Copy Chief copy edits it');
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ae13');
-select is(journal.approve_piece((select id from staff), 'desk'), 'published',
-  'A staff piece on a named desk needs no author approval and publishes on the desk editor''s word');
+select is(journal.approve_piece((select id from staff), 'desk'), 'editing',
+  'A staff piece needs no author approval, but one editor''s word is not enough');
+select throws_ok($$ select journal.approve_piece((select id from staff), 'chief') $$, '22023', null,
+  'The second approval comes from another person');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000e1c0');
+select is(journal.approve_piece((select id from staff), 'chief'), 'published',
+  'With the Editor-in-Chief''s approval it publishes');
 select pg_temp.logout();
-select is((select count(*) from journal.approvals where piece_id = (select id from staff))::integer, 2,
-  'Both approvals are on record');
+select is((select count(*) from journal.approvals where piece_id = (select id from staff))::integer, 3,
+  'All three approvals are on record');
 
 -- ── Letters: blind, pen name, Edition launch ────────────────────────────────
 
@@ -376,8 +389,11 @@ select is(journal.approve_piece(pg_temp.poem(), 'desk'), 'author_approved',
 select throws_ok($$ select journal.approve_piece(pg_temp.poem(), 'chief') $$, '42501', null,
   'The desk editor cannot give the chief approval');
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ae00');
-select is(journal.approve_piece(pg_temp.poem(), 'chief'), 'scheduled',
-  'With the chief''s approval the Edition piece waits for the launch; no copy check is needed');
+select is(journal.approve_piece(pg_temp.poem(), 'chief'), 'author_approved',
+  'The Managing Editor gives the second approval');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000c0b1');
+select is(journal.approve_piece(pg_temp.poem(), 'copy'), 'scheduled',
+  'With the copy edit, the Edition piece waits for the launch');
 select pg_temp.logout();
 select ok((select publish_at from journal.pieces where id = pg_temp.poem())
   = (select publish_at from journal.issues), 'and goes out at the Edition''s launch');

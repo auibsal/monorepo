@@ -55,8 +55,28 @@ Part A first).
 - [ ] **The writing workshop** moves to Tuesday, December 8, 2:30–4:00
   p.m.: an unpublished draft on the site and Planning in Notion until its
   room is confirmed, then Ready to publish.
-- [ ] **Four of the 22 backdated stories** to be reported anew by the News
-  desk (new reporting, new dates, nothing reused); the 22 stay unpublished.
+- [x] **The 22 pieces made on Oct 14** (decisions.md, Qirtas): the three
+  pre-2026 pieces and Charter Day are deleted; the 15 AUIB pieces stay
+  unpublished, each keeping its event date as the date it will carry
+  (`journal.pieces.dated_at`).
+- [ ] **The 15 AUIB pieces:** each runs once the Qirtas chat sends its
+  edited text and its writer. The editor reopens it, pastes the text,
+  bylines the writer (who confirms first), checks the date it carries
+  (Where it stands → The date it carries; each change is kept with who
+  made it) and gives the approvals: the section editor, the
+  Editor-in-Chief or the Managing Editor, and the copy edit.
+- [ ] **"From the Society": three notices to edit.** The Society's own
+  posts left News for the Announcements page (Council → Announcements),
+  unsent, with their old text: "Qirtas launches" becomes the Nov 8
+  launch, and the membership and rulebooks posts say only what happened.
+  Media edits each and the President tests and sends it; the front page
+  shows notices once sent.
+- [ ] **The copy desk:** until a Copy Chief or copy editor is appointed,
+  the Editor-in-Chief or the Managing Editor gives the copy edit on text
+  pieces (it is required on every News, Voices and Letters piece).
+- [x] **The Letters submission received on Nov 10** can go through intake:
+  the Managing Editor holds intake (PR #258), and from this PR never
+  reads blind entries or decides them.
 - [ ] **The four director openings** are posted closed until the Executive
   Board's approval is recorded on each (Diwan → Membership → Openings).
 - [ ] **Hosting and tool accounts:** they stay as they are, owned by the

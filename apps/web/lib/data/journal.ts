@@ -251,7 +251,7 @@ export const submissionSchema = z
     language: z.enum(Constants.journal.Enums.language),
     /** The partner the author submits through (partner pathway). */
     partner_id: z.uuid().optional(),
-    /** Only the Submissions Manager keeps the real name. */
+    /** Only the Editor-in-Chief and the Managing Editor keep the real name. */
     pen_name: z.string().trim().min(2).max(80).optional(),
     rights_note: z.string().max(2000).optional(),
     source_author: z.string().max(300).optional(),
@@ -324,6 +324,12 @@ export const submissionObjectPath = (
 // ── Queries ─────────────────────────────────────────────────────────────────
 
 const journal = (client: Client) => client.schema("journal");
+
+/**
+ * A topic page goes public only once it has three published pieces, and
+ * nothing links to it before then (decisions.md, Qirtas).
+ */
+const TOPIC_PUBLIC_AT = 3;
 
 export const createSubmission = async (
   client: Client,
@@ -515,12 +521,15 @@ export const approvalKinds = ["desk", "chief", "copy"] as const;
 export type ApprovalKind = (typeof approvalKinds)[number];
 
 /**
- * The approvals a piece needs before it publishes (private.required_approvals):
- * the desk editor's on a named desk; the desk editor's and the chief's on an
- * Edition desk (Letters, Gallery). The Copy Chief's check is never required.
+ * The approvals a piece needs before it publishes (private.required_approvals,
+ * decisions.md, Qirtas): two people on every piece, the section editor and
+ * then the Editor-in-Chief or the Managing Editor, and the copy edit on
+ * every text piece (News, Voices, Letters).
  */
 export const requiredApprovals = (desk: Desk): readonly ApprovalKind[] =>
-  desk === "letters" || desk === "gallery" ? ["desk", "chief"] : ["desk"];
+  desk === "news" || desk === "voices" || desk === "letters"
+    ? ["desk", "chief", "copy"]
+    : ["desk", "chief"];
 
 /** The permission each approval needs (journal.approve_piece). */
 export const approvalPermission = (kind: ApprovalKind, desk: Desk) => {
@@ -696,7 +705,7 @@ export const qirtasPiece = async (client: Client, slug: string) => {
       .order("created_at"),
     j
       .from("piece_topics")
-      .select("topic:topics(slug, name_en, name_ar)")
+      .select("topic:topics(slug, name_en, name_ar, piece_topics(count))")
       .eq("piece_id", piece.id),
     j
       .from("piece_figures")
@@ -715,7 +724,14 @@ export const qirtasPiece = async (client: Client, slug: string) => {
       ...f,
       rows: figureRows(f.rows),
     })),
-    topics: (unwrap(topics) ?? []).flatMap((t) => (t.topic ? [t.topic] : [])),
+    // Only a topic already public (three pieces or more) is linked.
+    topics: (unwrap(topics) ?? []).flatMap(({ topic }) => {
+      if (!topic || (topic.piece_topics[0]?.count ?? 0) < TOPIC_PUBLIC_AT) {
+        return [];
+      }
+      const { piece_topics: _, ...rest } = topic;
+      return [rest];
+    }),
   };
 };
 
@@ -802,9 +818,27 @@ export const parseFigureRows = (text: string): FigureRow[] | null => {
   return rows.length > 0 && rows.length <= 24 ? rows : null;
 };
 
-// ── Topics (the design review A21) ──────────────────────────────────────────
+// ── The corrections log (decisions.md, Qirtas) ─────────────────────────────
 
-/** Topics with published pieces, by name in the page's language. */
+/**
+ * Every correction made to a published piece, newest first: the public
+ * corrections log at /qirtas/corrections.
+ */
+export const correctionsLog = async (client: Client, limit = 200) =>
+  unwrap(
+    await journal(client)
+      .from("corrections")
+      .select(
+        "id, note_en, note_ar, created_at, piece:pieces!inner(slug, desk, language, title_en, title_ar, status)"
+      )
+      .eq("piece.status", "published")
+      .order("created_at", { ascending: false })
+      .limit(limit)
+  ) ?? [];
+
+// ── Topics (decisions.md, Qirtas) ────────────────────────────────────────────
+
+/** Public topics (three published pieces or more), by name. */
 export const publicTopics = async (client: Client) => {
   const rows =
     unwrap(
@@ -812,10 +846,12 @@ export const publicTopics = async (client: Client) => {
         .from("topics")
         .select("id, slug, name_en, name_ar, piece_topics!inner(piece_id)")
     ) ?? [];
-  return rows.map(({ piece_topics, ...topic }) => ({
-    ...topic,
-    count: piece_topics.length,
-  }));
+  return rows
+    .map(({ piece_topics, ...topic }) => ({
+      ...topic,
+      count: piece_topics.length,
+    }))
+    .filter((topic) => topic.count >= TOPIC_PUBLIC_AT);
 };
 
 /** A topic and its published pieces, newest first. */
@@ -846,7 +882,7 @@ export const topicPage = async (client: Client, slug: string) => {
             .in("id", ids)
             .order("published_at", { ascending: false })
         ) ?? []);
-  return { pieces, topic };
+  return pieces.length < TOPIC_PUBLIC_AT ? null : { pieces, topic };
 };
 
 /** A contributor's page: bio and every published piece. */

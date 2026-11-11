@@ -51,7 +51,7 @@ const useIntakeQueue = (issueId: string | null) => {
   });
 };
 
-/** Submissions Manager: every submission to the issue, with its author. */
+/** The Managing Editor (intake): every submission to the issue, with its author. */
 export const IntakeQueue = ({ issueId }: { issueId: string }) => {
   const t = useTranslations("diwan.admin.pipeline");
   const tj = useTranslations("diwan.admin.journal");
@@ -235,7 +235,7 @@ const AssignSlot = ({
   );
 };
 
-/** Submissions Manager: two blind reads per entry, a third when flagged. */
+/** The Managing Editor: two blind reads per entry, a third when flagged. */
 export const Readers = ({ issueId }: { issueId: string }) => {
   const t = useTranslations("diwan.admin.pipeline");
   const ts = useTranslations("diwan.journal.status");
@@ -304,7 +304,7 @@ export const Readers = ({ issueId }: { issueId: string }) => {
   );
 };
 
-// ── One submission (Submissions Manager) ────────────────────────────────────
+// ── One submission (the Managing Editor, at intake) ─────────────────────────
 
 export const SubmissionView = () => {
   const t = useTranslations("diwan.admin.pipeline");

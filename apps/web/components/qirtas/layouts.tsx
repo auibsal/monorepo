@@ -687,9 +687,14 @@ export const CorrectionNotes = async ({
         ))}
       </ul>
       {/* How Qirtas corrects its errors: the Editorial Standards (SAL-EDT-01). */}
-      <Link className="link type-caption" href="/library/editorial-standards">
-        {t("correctionsPolicy")}
-      </Link>
+      <p className="type-caption flex flex-wrap gap-x-5">
+        <Link className="link" href="/library/editorial-standards">
+          {t("correctionsPolicy")}
+        </Link>
+        <Link className="link" href="/qirtas/corrections">
+          {t("correctionsLog.title")}
+        </Link>
+      </p>
     </aside>
   );
 };

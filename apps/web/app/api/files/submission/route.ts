@@ -13,7 +13,7 @@ const body = z.object({ id: z.uuid() });
 
 /**
  * A five-minute link to an original submission file, for its author, the
- * Submissions Manager while the work is in intake, and the section's
+ * Managing Editor while the work is in intake, and the section's
  * editor or the Editor-in-Chief once it is accepted (or a section's editor
  * for named work at the desk). journal.open_original() decides, under the
  * caller's own claims, and keeps each opening for the submission's

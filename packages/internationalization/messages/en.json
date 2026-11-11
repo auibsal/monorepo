@@ -602,7 +602,7 @@
       "returned": "Returned for formatting",
       "back": "Back to Qirtas",
       "submitTitle": "Send work",
-      "submitLede": "Paste or type your work, or attach it as a file. Keep your name out of the work itself and its file names: the Submissions Manager checks formatting before blind review.",
+      "submitLede": "Paste or type your work, or attach it as a file. Keep your name out of the work itself and its file names: the Managing Editor checks formatting before blind review.",
       "noCall": "No call is open at the moment.",
       "call": "Call",
       "limits": "Up to {max} submissions to this call, and no more than {hour} in an hour.",
@@ -622,7 +622,7 @@
         },
         "intake_check": {
           "title": "Intake check",
-          "body": "The Submissions Manager checks the format and removes your name before anyone reads it."
+          "body": "The Managing Editor checks the format and removes your name before anyone reads it."
         },
         "in_review": {
           "title": "Blind reading",
@@ -658,7 +658,7 @@
         "coverNote": "Note to the editors (optional)",
         "coverHint": "Anything the editors should know. The note doesn’t go to readers.",
         "penName": "Pen name (optional)",
-        "penNameHint": "Published instead of your name. Only the Submissions Manager knows who wrote it.",
+        "penNameHint": "Published instead of your name. Only the Editor-in-Chief and the Managing Editor know who wrote it.",
         "declarations": "Declarations",
         "firstPublication": "This work has not appeared in another journal, anthology or book. Posts on my own social media, if any, are named in the note to the editors.",
         "consent": "Every identifiable person in these images has agreed to appear (a parent or guardian for anyone under 18)."
@@ -1921,7 +1921,7 @@
       },
       "pipeline": {
         "title": "Qirtas: blind reading",
-        "lede": "The blind review of submissions, from intake to decision. Each person sees only their part: the Submissions Manager holds the key and never scores; readers and editors work from blind ids; author names appear only after a decision.",
+        "lede": "The blind review of submissions, from intake to decision. Each person sees only their part: the Managing Editor holds the key and never reads or scores; readers and editors work from blind ids; author names appear only after a decision.",
         "noIssues": "No issue has you in its review team yet.",
         "tabs": {
           "reading": "My reading",
@@ -1993,7 +1993,7 @@
           "unassignConfirm": "Remove this reader? Any score they have sent for this piece is removed too."
         },
         "board": {
-          "note": "Drag a card to another column, or use its Move menu. Intake stays with the Submissions Manager, and accepting or declining is recorded on the piece.",
+          "note": "Drag a card to another column, or use its Move menu. Intake stays with the Managing Editor, and accepting or declining is recorded on the piece.",
           "moveTo": "Move to…",
           "moveLabel": "Move {id}",
           "decided": "Decided"
@@ -2094,11 +2094,11 @@
           "note": "Read it here only. Your card number and today’s date are set across the work.",
           "notPrinted": "Work under review isn’t printed.",
           "image": "Image {number}",
-          "imageUnavailable": "This image can’t be shown here. The Submissions Manager has the original."
+          "imageUnavailable": "This image can’t be shown here. The Managing Editor has the original."
         },
         "openings": {
           "line": "{date}: {name} opened the original ({file})",
-          "note": "Originals open for the Submissions Manager during intake, and for the section’s editor or the Editor-in-Chief once the work is accepted. Each opening is recorded here."
+          "note": "Originals open for the Managing Editor during intake, and for the section’s editor or the Editor-in-Chief once the work is accepted. Each opening is recorded here."
         }
       },
       "partners": {
@@ -2686,9 +2686,9 @@
           "unpublished": "Unpublished"
         },
         "problems": {
-          "desk_approval": "The desk editor’s approval",
+          "desk_approval": "The section editor’s approval",
           "chief_approval": "The Editor-in-Chief’s or Managing Editor’s approval",
-          "copy_check": "The Copy Chief’s style check",
+          "copy_approval": "The copy edit (the Copy Chief or a copy editor)",
           "author_approval": "The author’s approval of the final text",
           "agreement": "The author’s signed Publication Agreement",
           "titles": "Both an English and an Arabic title",
@@ -2698,9 +2698,9 @@
           "deck": "A deck under the headline"
         },
         "approvals": {
-          "desk": "Desk editor",
+          "desk": "Section editor",
           "chief": "Editor-in-Chief or Managing Editor",
-          "copy": "Copy Chief (style, optional)"
+          "copy": "Copy edit"
         },
         "workflow": {
           "title": "Where it stands",
@@ -2729,7 +2729,14 @@
           "frontHint": "Rank 1 is the lead story.",
           "notOnFront": "Not on the front page",
           "lead": "Lead story",
-          "rank": "Rank {rank}"
+          "rank": "Rank {rank}",
+          "datedAt": "The date it carries",
+          "datedHint": "Today or earlier, on or near its event. Each change is kept with who made it.",
+          "datedNone": "Without a date it carries the day it goes out.",
+          "setDate": "Set the date",
+          "clearDate": "Clear the date",
+          "datedLog": "Set to {date} on {when}",
+          "datedCleared": "Cleared on {when}"
         },
         "thread": {
           "title": "Conversation with the author",
@@ -3924,7 +3931,7 @@
       "contributor": {
         "title": "Your contributor details",
         "lede": "How your name is spelled in Latin and Arabic letters, and a short bio: third person, present tense, 50 words at most.",
-        "penNameLede": "This is your pen name. Only the Submissions Manager knows who wrote under it.",
+        "penNameLede": "This is your pen name. Only the Editor-in-Chief and the Managing Editor know who wrote under it.",
         "name": "Name",
         "bio": "Bio",
         "words": "English: {en} words · Arabic: {ar} words",
@@ -4770,6 +4777,12 @@
       },
       "tourPages": "Typewriter Tour pages",
       "prize": "Prize",
+      "correctionsLog": {
+        "title": "Corrections",
+        "lede": "Every correction Qirtas has made to a published piece, newest first. Each is also shown, dated, at the end of its piece.",
+        "empty": "No corrections yet."
+      },
+      "fromTheSociety": "From the Society",
       "correctionsPolicy": "How Qirtas corrects its errors",
       "haven": {
         "title": "Haven",

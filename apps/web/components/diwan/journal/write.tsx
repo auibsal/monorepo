@@ -551,7 +551,7 @@ const TranslationFields = ({
 
 /**
  * Publish under a pen name (decisions.md): the byline shows it in
- * place of the author's name; only the Submissions Manager knows whose it is.
+ * place of the author's name; only the Editor-in-Chief and the Managing Editor know whose it is.
  */
 const PenNameField = ({
   onChange,

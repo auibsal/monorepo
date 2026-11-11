@@ -1330,6 +1330,18 @@ export type Database = {
         Returns: string;
       };
       send_announcement: { Args: { id: string }; Returns: boolean };
+      society_notices: {
+        Args: { max_results?: number };
+        Returns: {
+          body_ar: string;
+          body_en: string;
+          id: string;
+          link_path: string;
+          sent_at: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       sunday_paper_recipients: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4095,6 +4107,39 @@ export type Database = {
           },
         ];
       };
+      piece_dates: {
+        Row: {
+          dated_at: string | null;
+          id: number;
+          piece_id: string;
+          set_at: string;
+          set_by: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          dated_at?: string | null;
+          id?: never;
+          piece_id: string;
+          set_at?: string;
+          set_by?: string | null;
+        };
+        Update: {
+          dated_at?: string | null;
+          id?: never;
+          piece_id?: string;
+          set_at?: string;
+          set_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "piece_dates_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       piece_figures: {
         Row: {
           created_at: string;
@@ -4277,6 +4322,7 @@ export type Database = {
           created_at: string;
           credit_ar: string | null;
           credit_en: string | null;
+          dated_at: string | null;
           deck_ar: string | null;
           deck_en: string | null;
           desk: Database["journal"]["Enums"]["desk"] | null;
@@ -4315,6 +4361,7 @@ export type Database = {
           created_at?: string;
           credit_ar?: string | null;
           credit_en?: string | null;
+          dated_at?: string | null;
           deck_ar?: string | null;
           deck_en?: string | null;
           desk?: never;
@@ -4352,6 +4399,7 @@ export type Database = {
           created_at?: string;
           credit_ar?: string | null;
           credit_en?: string | null;
+          dated_at?: string | null;
           deck_ar?: string | null;
           deck_en?: string | null;
           desk?: never;
@@ -4987,6 +5035,10 @@ export type Database = {
           title_ar: string;
           title_en: string;
         };
+        Returns: string;
+      };
+      date_piece: {
+        Args: { dated_at: string; piece_id: string };
         Returns: string;
       };
       decide: {
