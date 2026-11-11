@@ -1,4 +1,4 @@
--- The Sunday Paper, sent by hand (decisions.md, Qirtas): the Managing Editor
+-- The Sunday Paper, sent by hand (decisions §5, §19): the Managing Editor
 -- puts each issue together in the Diwan with an editor's letter, sends a
 -- test to the Editor-in-Chief, and sends it. Nothing goes on its own.
 
