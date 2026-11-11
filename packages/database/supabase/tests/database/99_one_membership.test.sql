@@ -231,7 +231,7 @@ select results_eq(
 -- ── The GetInvolved, read by anyone ───────────────────────────────────────────
 select pg_temp.logout();
 insert into programmes.openings (kind, role, owner, title_en, title_ar)
-values ('role', 'onboarding_lead', 'membership', 'Fair volunteers', 'متطوعو المعرض');
+values ('role', 'alumni_lead', 'membership', 'Fair volunteers', 'متطوعو المعرض');
 select pg_temp.login_anon();
 select results_eq(
   $$ select kind, title_en from programmes.open_places() where title_en = 'Fair volunteers' $$,

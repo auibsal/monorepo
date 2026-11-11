@@ -69,8 +69,13 @@ export const EventBooking = ({
         .eq("id", eventId)
         .maybeSingle(),
     ]);
+    // Only a required question sends the member to the calendar; the
+    // booking's own questions (accessibility, diet) are optional.
     setAsks(
-      Array.isArray(event.data?.questions) && event.data.questions.length > 0
+      Array.isArray(event.data?.questions) &&
+        event.data.questions.some(
+          (q) => (q as { required?: boolean } | null)?.required === true
+        )
     );
     if (rsvp.data) {
       setStatus("booked");
@@ -125,7 +130,7 @@ export const EventBooking = ({
       return on ? "reminded" : "cancelled";
     });
 
-  // Signed out, still loading, or questions to answer: the calendar asks.
+  // Signed out, still loading, or a required question: the calendar asks.
   if (!signedIn || status === null || (asks && !open && status === "none")) {
     return (
       <Button asChild>

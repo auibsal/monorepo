@@ -99,7 +99,7 @@ select plan(24);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b001', 'editor@auib.edu.iq', 'Content Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b002', 'reader@auib.edu.iq', 'Reader');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000b001', 'tech_admin');
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000b001', 'media_director');
 
 delete from core.outbox where kind like 'newsletter.%';
 
@@ -137,11 +137,11 @@ select throws_ok(
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b002');
 select is((select count(*) from content.newsletter_subscribers)::integer, 0,
-  'A member without content.manage sees no subscribers');
+  'A member without mailing.read sees no subscribers');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b001');
 select is((select count(*) from content.newsletter_subscribers where status = 'subscribed')::integer, 1,
-  'A content manager sees who is subscribed');
+  'Media (mailing.read) sees who is subscribed; the web lead no longer does');
 select throws_ok($$select unsubscribe_token from content.newsletter_subscribers$$, '42501', null,
   'Nobody but apps/api reads the tokens');
 

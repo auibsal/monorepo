@@ -27,6 +27,7 @@ import {
 } from "../kit";
 import { Needs } from "../needs";
 import { Declarations } from "../partners/admin";
+import { AccessReview } from "./access-review";
 import { Elections } from "./elections";
 
 const key = ["admin", "governance"];
@@ -481,6 +482,7 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
         <>
           <MeetingsList />
           <RequestQueue base="/council/motions" keys={["f10"]} />
+          <AccessReview />
         </>
       ) : null}
       {view === "requests" ? (

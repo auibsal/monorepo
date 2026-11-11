@@ -11,6 +11,13 @@ export interface RoleDefinition {
 
 /** Role bundles, mirrored from the reference-data migration. */
 export const roles = {
+  actor: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "ممثل",
+    nameEn: "Actor",
+    permissions: [],
+  },
   // While the President is abroad (decisions.md), events.
   advisory_board_member: {
     defaultScope: "global",
@@ -26,13 +33,6 @@ export const roles = {
     nameEn: "Alumni Lead",
     permissions: ["library.read"],
   },
-  arabic_editor: {
-    defaultScope: "issue",
-    isCouncil: false,
-    nameAr: "المحرر العربي",
-    nameEn: "Arabic Editor",
-    permissions: ["journal.manage", "journal.publish", "library.read"],
-  },
   artistic_director: {
     defaultScope: "global",
     isCouncil: true,
@@ -44,6 +44,20 @@ export const roles = {
       "library.read",
       "library.council",
     ],
+  },
+  assistant_director: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "مساعد المخرج",
+    nameEn: "Assistant director",
+    permissions: [],
+  },
+  assistant_stage_manager: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "مساعد مدير المسرح",
+    nameEn: "Assistant stage manager",
+    permissions: [],
   },
   club_relations_lead: {
     defaultScope: "global",
@@ -59,6 +73,13 @@ export const roles = {
     nameEn: "Social Media Lead",
     permissions: ["content.manage", "library.read"],
   },
+  copy_desk_editor: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مدقق لغوي",
+    nameEn: "Copy editor",
+    permissions: ["journal.copy", "library.read"],
+  },
   copy_editor: {
     defaultScope: "issue",
     isCouncil: false,
@@ -66,12 +87,26 @@ export const roles = {
     nameEn: "Copy Chief",
     permissions: ["journal.copy", "library.read"],
   },
+  costume_designer: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "مصمم الأزياء",
+    nameEn: "Costume designer",
+    permissions: [],
+  },
   design_lead: {
     defaultScope: "global",
     isCouncil: false,
     nameAr: "مسؤول التصميم",
     nameEn: "Design Lead",
     permissions: ["content.manage", "library.read"],
+  },
+  dramaturg: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "المستشار الدراماتورجي",
+    nameEn: "Dramaturg",
+    permissions: [],
   },
   eic: {
     defaultScope: "global",
@@ -84,7 +119,6 @@ export const roles = {
       "journal.publish",
       "journal.approve",
       "journal.frontpage",
-      "journal.edit.voices",
       "library.read",
       "qalam.manage",
       "journal.prize",
@@ -133,6 +167,20 @@ export const roles = {
       "concerns.about_president",
     ],
   },
+  front_of_house_manager: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "مسؤول الصالة",
+    nameEn: "Front-of-house manager",
+    permissions: [],
+  },
+  gallery_assistant_editor: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "محرر مساعد للمعرض",
+    nameEn: "Assistant Gallery editor",
+    permissions: ["journal.edit.gallery"],
+  },
   gallery_editor: {
     defaultScope: "global",
     isCouncil: false,
@@ -144,6 +192,13 @@ export const roles = {
       "journal.decide",
       "library.read",
     ],
+  },
+  games_assistant_editor: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "محرر مساعد للألعاب",
+    nameEn: "Assistant Games editor",
+    permissions: ["journal.edit.games"],
   },
   games_editor: {
     defaultScope: "global",
@@ -184,9 +239,16 @@ export const roles = {
   illustrator: {
     defaultScope: "global",
     isCouncil: false,
-    nameAr: "رسّام",
-    nameEn: "Illustrator",
+    nameAr: "فنان في هيئة التحرير",
+    nameEn: "Staff artist",
     permissions: ["library.read"],
+  },
+  letters_assistant_editor: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "محرر مساعد للآداب",
+    nameEn: "Assistant Letters editor",
+    permissions: ["journal.edit.letters"],
   },
   letters_editor: {
     defaultScope: "global",
@@ -200,17 +262,23 @@ export const roles = {
       "library.read",
     ],
   },
+  lighting_designer: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "مصمم الإضاءة",
+    nameEn: "Lighting designer",
+    permissions: [],
+  },
   managing_editor: {
     defaultScope: "issue",
     isCouncil: false,
     nameAr: "مدير التحرير",
     nameEn: "Managing Editor",
     permissions: [
+      "mailing.read",
       "journal.manage",
-      "journal.decide",
       "journal.publish",
       "journal.approve",
-      "journal.edit.voices",
       // Intake: the Managing Editor holds writers' names while work is
       // read blind (decisions §5).
       "journal.identity.view",
@@ -223,6 +291,7 @@ export const roles = {
     nameAr: "مدير الإعلام",
     nameEn: "Director of Media",
     permissions: [
+      "mailing.read",
       "content.manage",
       "events.checkin",
       "library.read",
@@ -244,12 +313,33 @@ export const roles = {
       "library.council",
     ],
   },
+  narrator: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "الراوي",
+    nameEn: "Narrator",
+    permissions: [],
+  },
+  news_assistant_editor: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "محرر مساعد للأخبار",
+    nameEn: "Assistant News editor",
+    permissions: ["journal.edit.news"],
+  },
   news_editor: {
     defaultScope: "global",
     isCouncil: false,
     nameAr: "محرر الأخبار",
     nameEn: "News Editor",
     permissions: ["journal.edit.news", "library.read"],
+  },
+  next_stop_crew: {
+    defaultScope: "episode",
+    isCouncil: false,
+    nameAr: "فريق «المحطة التالية»",
+    nameEn: "Next Stop crew",
+    permissions: [],
   },
   next_stop_host: {
     defaultScope: "global",
@@ -264,13 +354,6 @@ export const roles = {
     nameAr: "منتج «المحطة القادمة»",
     nameEn: "Next Stop Producer",
     permissions: ["content.manage", "library.read"],
-  },
-  onboarding_lead: {
-    defaultScope: "global",
-    isCouncil: false,
-    nameAr: "مسؤول الترحيب",
-    nameEn: "Onboarding Lead",
-    permissions: ["events.checkin", "library.read"],
   },
   // A partner's team (decisions.md), scoped to the partner: the
   // Lead invites and removes; Team keeps the page.
@@ -310,8 +393,8 @@ export const roles = {
   photographer: {
     defaultScope: "global",
     isCouncil: false,
-    nameAr: "مصوّر",
-    nameEn: "Photographer",
+    nameAr: "مصور في هيئة التحرير",
+    nameEn: "Staff photographer",
     permissions: ["library.read"],
   },
   president: {
@@ -320,6 +403,7 @@ export const roles = {
     nameAr: "الرئيس",
     nameEn: "President",
     permissions: [
+      "mailing.read",
       "members.verify",
       "members.manage",
       "roles.assign",
@@ -350,6 +434,27 @@ export const roles = {
       "forms.handle",
     ],
   },
+  production_crew: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "طاقم العمل",
+    nameEn: "Crew",
+    permissions: [],
+  },
+  production_director: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "المخرج",
+    nameEn: "Director",
+    permissions: ["productions.manage"],
+  },
+  production_producer: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "المنتج",
+    nameEn: "Producer",
+    permissions: ["productions.manage"],
+  },
   programme_lead: {
     defaultScope: "programme",
     isCouncil: false,
@@ -375,6 +480,13 @@ export const roles = {
       "certificates.sign",
     ],
   },
+  qalam_mentor: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مرشد «قلم»",
+    nameEn: "Qalam mentor",
+    permissions: [],
+  },
   reader: {
     defaultScope: "issue",
     isCouncil: false,
@@ -382,32 +494,39 @@ export const roles = {
     nameEn: "Reader",
     permissions: ["journal.review", "library.read"],
   },
-  records_lead: {
-    defaultScope: "global",
-    isCouncil: false,
-    nameAr: "مسؤول السجلات والتقدير",
-    nameEn: "Records and Recognition Lead",
-    permissions: ["certificates.prepare", "library.read"],
-  },
   reporter: {
     defaultScope: "global",
     isCouncil: false,
-    nameAr: "مراسل",
-    nameEn: "Reporter",
+    nameAr: "كاتب في هيئة التحرير",
+    nameEn: "Staff writer",
     permissions: ["library.read"],
+  },
+  set_designer: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "مصمم الديكور",
+    nameEn: "Set designer",
+    permissions: [],
+  },
+  sound_designer: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "مصمم الصوت",
+    nameEn: "Sound designer",
+    permissions: [],
   },
   stage_manager: {
     defaultScope: "global",
     isCouncil: false,
-    nameAr: "مدير الخشبة",
-    nameEn: "Stage Manager",
+    nameAr: "مدير المسرح",
+    nameEn: "Stage manager",
     permissions: ["productions.manage", "events.checkin", "library.read"],
   },
   tech_admin: {
     defaultScope: "global",
     isCouncil: false,
-    nameAr: "المسؤول التقني",
-    nameEn: "Technical Administrator",
+    nameAr: "مسؤول الموقع",
+    nameEn: "Web lead",
     permissions: [
       "members.verify",
       "settings.manage",
@@ -422,6 +541,13 @@ export const roles = {
     nameAr: "مسؤول جولة الآلة الكاتبة",
     nameEn: "Tour Lead",
     permissions: ["tour.run", "events.checkin", "library.read"],
+  },
+  understudy: {
+    defaultScope: "production",
+    isCouncil: false,
+    nameAr: "ممثل بديل",
+    nameEn: "Understudy",
+    permissions: [],
   },
   vice_president: {
     defaultScope: "global",
@@ -442,12 +568,26 @@ export const roles = {
       "members.register",
     ],
   },
+  video_assistant_editor: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "محرر مساعد للفيديو",
+    nameEn: "Assistant Video editor",
+    permissions: ["journal.edit.video"],
+  },
   video_editor: {
     defaultScope: "global",
     isCouncil: false,
     nameAr: "محرر المرئيات",
     nameEn: "Video Editor",
     permissions: ["journal.edit.video", "library.read"],
+  },
+  voices_assistant_editor: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "محرر مساعد للآراء",
+    nameEn: "Assistant Voices editor",
+    permissions: ["journal.edit.voices"],
   },
   voices_editor: {
     defaultScope: "global",

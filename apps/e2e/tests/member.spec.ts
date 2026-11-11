@@ -19,6 +19,13 @@ test("a member books a place and gives it back", async ({ page }) => {
     await expect(card.getByRole("status")).toBeVisible();
   }
   await card.getByRole("button", { name: "Book a place" }).click();
+  // The booking asks only about accessibility needs (and diet when food is
+  // served), both optional.
+  const asking = page.getByRole("dialog");
+  await asking
+    .getByLabel("Accessibility needs (optional)")
+    .fill("Step-free seat");
+  await asking.getByRole("button", { name: "Book a place" }).click();
   await expect(card.getByRole("status")).toContainText("Booked");
   await expect(card.getByText("You have a place.")).toBeVisible();
   await card.getByRole("button", { name: "Give my place back" }).click();

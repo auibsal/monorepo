@@ -404,6 +404,25 @@
         "member": "Member",
         "associate": "Associate Member",
         "honorary": "Honorary Member"
+      },
+      "roleChecklist": {
+        "title": "Your first steps as {role}",
+        "lede": "The new role holder’s checklist (F-04). The site marks what it can see; tick the rest when it’s done.",
+        "done": "Done:",
+        "todo": "To do:",
+        "go": "Go there",
+        "tick": "Mark as done",
+        "steps": {
+          "email": "The role email, with what the role does and who it works with",
+          "pledge": "The Code of Conduct and confidentiality, signed (for Qirtas, F-40 too)",
+          "declaration": "The conflict-of-interest declaration (F-06)",
+          "two_step": "Two-step sign-in or a passkey set up",
+          "diwan_group": "In the Diwan group on Telegram, through Hudhud",
+          "pages": "The role’s manual, Brand essentials and the role’s Diwan pages opened",
+          "handover": "The previous holder’s handover page walked through (F-07)",
+          "mailbox": "The seat’s mailbox received, with its password and two-step backup reset",
+          "notion": "Invited to Notion by the General Secretary"
+        }
       }
     },
     "events": {
@@ -435,7 +454,8 @@
         "closed": "Booking for this event has closed.",
         "failed": "That didn’t work. Try again in a moment.",
         "reminded": "We’ll email you a reminder the day before.",
-        "forgotten": "Done. No reminder for this one."
+        "forgotten": "Done. No reminder for this one.",
+        "fullAtTheDoor": "It’s full. From two hours before the start, places are filled at the door: come along and ask."
       },
       "byInvitation": "By invitation",
       "remind": "Remind me",
@@ -1115,7 +1135,8 @@
           "issue": "Qirtas issue",
           "campaign": "Campaign",
           "production": "Production",
-          "partner": "Partner"
+          "partner": "Partner",
+          "episode": "Next Stop episode"
         },
         "endRole": "End now",
         "endRoleConfirm": "End this assignment now? The permissions it grants stop at once.",
@@ -1130,14 +1151,14 @@
         "assignConfirm": "Give {name} the role {role}? It grants that role’s permissions from the start date.",
         "choose": "Choose…",
         "exception": "Council resolution allowing it",
-        "exceptionHint": "Only when the Council has adopted a resolution allowing this: a second Council role (to cover a seat, Constitution 6.6), more than two roles, or a second leadership role in the founding term (B5.5). Choose the resolution.",
+        "exceptionHint": "Only when the Council has adopted a resolution allowing a second Council seat (to cover a seat, Constitution 6.6). Choose the resolution.",
         "noException": "No exception",
         "rules": {
           "already_holds_role": "They already hold this role for that period.",
           "one_council_seat": "They already hold a Council seat. No person holds more than one (Constitution 6.6). End the other seat first.",
           "advisor_holds_no_other_role": "The Faculty Advisor is a member of faculty or staff (Constitution 9.1) and holds no other Society role.",
-          "two_roles_at_most": "They already hold two roles. Nobody holds more than two at once (B5.5) unless the Council agreed a founding-term exception.",
-          "one_leadership_role": "They already hold a leadership role (officer, director or event lead). Only one at a time (B5.5) unless the Council agreed a founding-term exception.",
+          "two_assistant_editors_at_most": "That section already has two assistant editors, the most it takes.",
+          "role_retired": "This role is retired: it stays on record but is no longer given.",
           "exception_needs_adopted_resolution": "The exception needs a Council resolution that has been adopted."
         },
         "twoStep": {
@@ -1232,15 +1253,8 @@
         "ends": "Ends (optional)",
         "capacity": "Capacity (empty for no limit)",
         "questions": "Registration questions",
-        "questionsHint": "Up to ten. Asked when someone books. A booking already carries their name on the platform, so there is no need to ask for it.",
-        "question": "Question {number}",
-        "questionRequired": "Required",
-        "addQuestion": "Add a question",
-        "removeQuestion": "Remove question {number}",
+        "questionsHint": "The booking asks only about accessibility needs, and diet when food is served. A booking already carries the person’s name.",
         "save": "Save event",
-        "errors": {
-          "questions": "Each question needs its English and Arabic wording."
-        },
         "attendance": "Attendance",
         "rsvps": "Bookings ({count})",
         "waitlist": "Waitlist ({count})",
@@ -1336,7 +1350,8 @@
           "withdraw": "Withdraw",
           "sent": "Invitation sent."
         },
-        "debrief": "The debrief (F-13) in Notion"
+        "debrief": "The debrief (F-13) in Notion",
+        "servesFood": "Food is served (the booking also asks about diet)"
       },
       "checkIn": {
         "title": "Check-in",
@@ -1525,12 +1540,12 @@
           "allPrograms": "Everywhere",
           "kinds": {
             "role": "A team role",
-            "event_team": "An event team",
+            "event_team": "An event’s lead",
             "qalam_mentor": "A Qalam mentor"
           },
           "kindHints": {
             "role": "A role the Society needs filled, chosen from its roles. New team members serve their first term on probation, then are confirmed.",
-            "event_team": "A place on one event’s team. Volunteer shifts are on the event’s own page.",
+            "event_team": "The lead of one event: one place, appointed through Get involved. Everyone else on the night signs up for a volunteer shift on the event’s page.",
             "qalam_mentor": "A mentor’s place in Qalam. Students never get accounts: record nothing about them here."
           },
           "event": "Event",
@@ -1748,6 +1763,14 @@
           "annual": "The Annual Meeting",
           "special": "A special meeting",
           "founding": "The Founding Meeting"
+        },
+        "accessReview": {
+          "title": "Access review",
+          "last": "Last reviewed {date}: {holders} roles held.",
+          "never": "Who holds what has not been reviewed yet.",
+          "due": "A review is due this quarter.",
+          "record": "Record this quarter’s review",
+          "note": "What you checked or changed (optional)"
         }
       },
       "settings": {
@@ -4098,13 +4121,13 @@
       },
       "kinds": {
         "role": "Team role",
-        "event_team": "Event team",
+        "event_team": "Event lead",
         "qalam_mentor": "Qalam mentor",
         "shift": "Shift",
         "audition": "Audition"
       },
       "kindLines": {
-        "event_team": "A place on this event’s team.",
+        "event_team": "Lead this event.",
         "qalam_mentor": "Mentor high school writers in Qalam, in summer 2028."
       }
     },
@@ -4164,7 +4187,7 @@
       "places": "{count, plural, one {One place} other {{n} places}}",
       "kinds": {
         "role": "Team role",
-        "event_team": "Event team",
+        "event_team": "Event lead",
         "qalam_mentor": "Qalam mentor",
         "audition": "Audition"
       },

@@ -29,15 +29,16 @@ export const roleAssignmentSchema = z
 export type RoleAssignmentInput = z.infer<typeof roleAssignmentSchema>;
 
 /**
- * The rules access.assign_role enforces (Constitution 6.6 and 9.1, Bylaws
- * B5.5 and B9.8), as the reason codes it raises.
+ * The rules access.assign_role enforces (Constitution 6.6 and 9.1; the roles
+ * standard in decisions.md, Get involved and roles), as the reason codes it
+ * raises.
  */
 const roleRules = [
   "already_holds_role",
   "one_council_seat",
   "advisor_holds_no_other_role",
-  "two_roles_at_most",
-  "one_leadership_role",
+  "two_assistant_editors_at_most",
+  "role_retired",
   "exception_needs_adopted_resolution",
 ] as const;
 
@@ -104,7 +105,7 @@ export const roles = async (client: Client) =>
     await client
       .schema("access")
       .from("roles")
-      .select("key, name_en, name_ar, is_council, sort")
+      .select("key, name_en, name_ar, is_council, sort, retired, kind")
       .order("sort")
   ) ?? [];
 
