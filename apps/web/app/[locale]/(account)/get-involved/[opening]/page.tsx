@@ -17,7 +17,7 @@ interface PageProps {
 }
 
 /**
- * One opening (decisions §17): what it is, who may apply and when it
+ * One opening (decisions.md, Get involved and roles): what it is, who may apply and when it
  * closes, then the application, for members.
  */
 const OpeningPage = async ({ params }: PageProps) => {

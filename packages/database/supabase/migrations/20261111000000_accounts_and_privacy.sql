@@ -1,4 +1,4 @@
--- Accounts and privacy after the Nov 9 audit (decisions §10, §19).
+-- Accounts and privacy after the Nov 9 audit (decisions.md, Members).
 --
 -- 1. Sign-up records one acknowledgment, the Code of Conduct (the
 --    'member' pledge); the human-authorship pledge belongs to each Write

@@ -647,7 +647,7 @@ const PAPER_TITLES = {
 } as const;
 
 /**
- * The Sunday Paper (decisions §5, §19): sent by hand by the Managing
+ * The Sunday Paper (decisions.md, Qirtas): sent by hand by the Managing
  * Editor, to members and to the public list alike: the editor's letter,
  * the month's pieces, "From the Society", What's on, the open roles and a
  * call to write, each a list of links. The stop link is
@@ -659,7 +659,7 @@ export const sundayPaper = (
     getInvolved: string;
     events: MonthEvent[];
     front: string;
-    /** The editor's letter, in this language (decisions §19). */
+    /** The editor's letter, in this language (decisions.md, Qirtas). */
     letter?: string;
     places: OpenPlace[];
     pieces: SundayItem[];
@@ -1334,7 +1334,7 @@ export type ApplicationStep =
   | "received"
   | "talking";
 
-/** An application on Get involved: each step the applicant hears of (decisions §17). */
+/** An application on Get involved: each step the applicant hears of (decisions.md, Get involved and roles). */
 export const replyUpdate = (
   lang: Lang,
   role: string,
@@ -1582,7 +1582,7 @@ export interface ReplyLine {
 
 /**
  * The hiring seats: the day's new applications, counted by role. Staff
- * alerts carry no names (decisions §17); the applications are read in the
+ * alerts carry no names (decisions.md, Get involved and roles); the applications are read in the
  * Diwan.
  */
 export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
@@ -1820,7 +1820,7 @@ export interface AnnouncementInfo {
 }
 
 /**
- * An announcement (decisions §18): the President's notice in one language,
+ * An announcement (decisions.md, Channels and email): the President's notice in one language,
  * its paragraphs as written, with a button to the page it points to.
  */
 export const announcement = (

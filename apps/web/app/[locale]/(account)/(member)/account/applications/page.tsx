@@ -5,7 +5,7 @@ export const generateMetadata = titleFrom((t) =>
   t("diwan.getInvolved.applications.title")
 );
 
-/** /account/applications: where each application stands (decisions §17). */
+/** /account/applications: where each application stands (decisions.md, Get involved and roles). */
 const ApplicationsPage = () => <Applications />;
 
 export default ApplicationsPage;

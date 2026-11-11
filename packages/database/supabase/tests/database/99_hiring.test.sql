@@ -110,7 +110,7 @@ select pg_temp.logout();
 select set_eq(
   $$ select title_en from programmes.openings where owner = 'qirtas' and is_open $$,
   $$ values ('News Editor'), ('Voices Editor'), ('Video Editor'), ('Gallery Editor'), ('Copy Chief'), ('Reader') $$,
-  'The masthead''s open seats are on Get involved; the Games Editor waits (decisions §17)'
+  'The masthead''s open seats are on Get involved; the Games Editor waits (decisions.md, Get involved and roles)'
 );
 select set_eq(
   $$ select role from programmes.openings where owner = 'council' and not is_open $$,
@@ -147,7 +147,7 @@ select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a2');
 select lives_ok(
   $$ update programmes.opening_replies set status = 'talking', talk_at = now() + interval '1 day'
      where opening_id = pg_temp.seat('News Editor') $$,
-  'The hiring seat schedules the interview (decisions §17)'
+  'The hiring seat schedules the interview (decisions.md, Get involved and roles)'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a1');

@@ -23,7 +23,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(page.getByLabel("Family name")).toHaveCount(0);
   // Students say they are (decisions §2).
   await page.getByRole("checkbox", { name: /enrolled AUIB student/u }).check();
-  // Students of any age (decisions §19): asked, not assumed.
+  // Students of any age (decisions.md, Members): asked, not assumed.
   await page.getByRole("radio", { name: "Yes, 18 or older" }).click();
   await page
     .getByRole("checkbox", { name: /I agree to the Terms of Use/u })
@@ -73,7 +73,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByRole("button", { name: "Continue" }).click();
 
   await expect(page.getByText("Step 3 of 4")).toBeVisible();
-  // The Code of Conduct is the only pledge (decisions §19).
+  // The Code of Conduct is the only pledge (decisions.md, Members).
   await page
     .getByRole("button", { name: "I acknowledge the Code of Conduct" })
     .click();
@@ -87,7 +87,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   ).toBeVisible();
   await expectAccessible(page);
 
-  // No optional details are asked for (decisions §19).
+  // No optional details are asked for (decisions.md, Members).
   await expect(
     page.getByRole("link", { name: /Tell us more about yourself/u })
   ).toHaveCount(0);
@@ -118,7 +118,7 @@ test("a whole address pasted and submitted at once signs up the right address", 
     .fill(`paste.${Date.now()}@auib.edu.iq`);
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByRole("checkbox", { name: /enrolled AUIB student/u }).check();
-  // Students of any age (decisions §19): asked, not assumed.
+  // Students of any age (decisions.md, Members): asked, not assumed.
   await page.getByRole("radio", { name: "Yes, 18 or older" }).click();
   await page
     .getByRole("checkbox", { name: /I agree to the Terms of Use/u })

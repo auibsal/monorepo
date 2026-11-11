@@ -76,7 +76,7 @@ hand. The nightly backup and how to restore it: `docs/platform/backups.md`.
 
 ## Docs
 
-- The owner’s decisions (`decisions.md`) and the Arabic glossary live in the Claude project, the source of truth; this repository keeps no copy
+- `claude/decisions.md` and `claude/glossary_ar.md`: the owner’s decisions and the Arabic glossary, a read-only mirror of the Claude project’s copies (replaced whole, never edited here)
 - `AGENTS.md`: the code conventions for people and AI agents
 - `packages/brand/BRAND-BOOK.md`: the brand rules
 - `ARCHITECTURE_AND_INTEGRATIONS.md`: how the pieces fit together

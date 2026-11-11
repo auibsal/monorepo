@@ -257,7 +257,7 @@ const Sending = ({
 };
 
 /**
- * The Council → Announcements (decisions §18): the President writes a
+ * The Council → Announcements (decisions.md, Channels and email): the President writes a
  * notice in English and Arabic, sends its test to themselves, then says
  * go: one Resend Broadcast per language to the Sunday Paper's readers,
  * and Hudhud in the members' group and to linked members.

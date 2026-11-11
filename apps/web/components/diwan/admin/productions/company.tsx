@@ -278,7 +278,7 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
 const CRITERIA = ["presence", "voice", "note", "fit", "commitment"] as const;
 
 /**
- * F-25, the audition score sheet (decisions §17): each scorer marks the
+ * F-25, the audition score sheet (decisions.md, Get involved and roles): each scorer marks the
  * criteria from 1 to 5 with a note, kept as a Diwan record; the others'
  * sheets are shown beside one's own.
  */
