@@ -145,8 +145,8 @@ Every chat in this project follows this file. Where an older document, project d
 - **No money at all:** the Society holds no budget, account or money, charges no dues and has no Treasurer. The Office of Student Life provides what it needs, through Ali Najm, Campus Recreation Officer, to the best of its ability.
 - **Needs, not numbers.** Every event, the Company, Next Stop, the Tour, Second Chapter, Qirtas, Qalam and the Council keep a needs list: the item, the quantity, the date needed, and what it is for. No document, page or form shows budgets, costs, prices, spending limits, ledgers, claims or reimbursements.
   - **Who gathers needs:** the Director of Events (events), the Director of Membership (the Tour), the Director of Partnerships (Second Chapter), the Editor-in-Chief (the paper and Qalam) and the Director of Media (Next Stop).
-  - **Who asks Student Life:** the General Secretary sends every request and logs what was asked, provided and when. Anything not provided is dropped or found through a partner, with the Council's approval.
-  - **Standing needs:** Resend Pro, Supabase Pro and Vercel Pro; Zoho Mail Lite seats beyond five; three drives for Next Stop footage; a one-time VR rental.
+  - **Who asks Student Life:** the General Secretary sends every request from the Diwan, and logs what was asked, provided and when. Anything not provided is dropped or found through a partner, with the Council's approval.
+  - **Standing needs:** Zoho Mail Lite seats if appointed directors need mailboxes; Resend Pro, Supabase Pro and Vercel Pro if the free limits are reached; three drives for Next Stop footage; a one-time VR rental.
 - **No advertising and no paid sponsorship.** Sponsors give in kind (books, printing, a venue, refreshments), never money. Each gift is a row in Needs, and the sponsor is thanked by name. Offers of money are declined or referred to Student Life.
 - **The one exception is charity collections** (Second Chapter and any other). The money belongs to the charity, is never used for costs, and has no feature on the site; each collection's record is a Notion page kept by the General Secretary.
   - **Counting:** two people count at the close of each day, record it and keep it sealed.
@@ -228,6 +228,13 @@ Every chat in this project follows this file. Where an older document, project d
 - **The Faculty Advisor:** required, invited through Student Life.
 - **The Advisory Board:** five to seven faculty, alumni and people from partner organizations (as individuals), chaired by the Faculty Advisor. They are invited by the Council for two years, have no vote, and meet once a term.
 - **Student Life:** Ali Najm, Campus Recreation Officer, is the Society's staff contact (registration, approvals, rooms, needs, the volunteer log), and Jelena Zivkovic is Director of Student Life. Neither is a member. Both are in the members' group only, marked with the "Student Life" member tag (not as admins), and exempt from Hudhud's removals.
+- **Requests to Student Life go by secure link (the American standard where there is no campus system).** At US universities, the student-activities office answers its clubs' requests in a campus system. With none at AUIB, each request goes to Student Life by email from the General Secretary's address (secretary@), with a single-use link to answer it without an account. The answer is recorded on the site, the General Secretary sees its status, and a reminder follows after 3 days. The requests:
+  - **a need:** provided, provided in part, or not provided;
+  - **a trip:** approved or not, signed electronically, which records the approval on the event;
+  - **the GPA list:** "eligible" or "not eligible" for each name, nothing more;
+  - **an event's guest list** for Security, two weeks ahead;
+  - **a room booking.**
+  Student Life staff hold no role or account on the platform.
 
 ### Holders on record (the founding team, until October 2027)
 Listed by their legal names:
@@ -525,16 +532,25 @@ Listed by their legal names:
     - Bounced and unsubscribed addresses are never added back.
   - **What Resend holds:** only the email, first name, language and topics. Source and stop stay on the site and are reported as counts only.
   - **Bounces and complaints** are suppressed automatically.
-- **Email (Zoho Mail free, owned by the Society):**
-  - **Five mailboxes,** one person each, passed on with the seat: president@, vp@, secretary@, editor@ (the Editor-in-Chief) and media@ (the Director of Media). Passwords and two-step backups are in Bitwarden and reset at handover. The free plan has no IMAP, so mail is read on the web or in Zoho's app.
-  - **Groups (no mailbox used):** hello@ (the front door for the public, partners and appeals: the Vice President and the General Secretary), council@ and qirtas@.
-  - **Aliases** on whoever holds or covers the seat:
-    - events@ and company@ on president@ (the Vice President's while the President is away);
-    - partners@ on vp@;
-    - membership@, postmaster@, abuse@ and dmarc@ on secretary@;
-    - letters@ and corrections@ on editor@;
-    - press@ and security@ on media@.
-    When a director is appointed, their alias moves to their own mailbox if one is available.
+- **Email (Zoho Mail free, owned by the Society; the American standard for student organizations):**
+  - **Role addresses only.** Mail follows the seat, never a person's name. No personal-name aliases (no shaheen@). Bots have no address: Hudhud points people to Help Desk or hello@.
+  - **Five mailboxes,** one person each, passed on with the seat: president@, vp@, secretary@, editor@ (the Editor-in-Chief) and media@ (the Director of Media). The password and two-step backup are reset at each handover (F-07). The free plan has no IMAP, so mail is read on the web or in Zoho's app.
+  - **Groups,** which use no mailbox; each lists who receives it, and every member can send as the group:
+    - **hello@** (the front door for the public, partners and appeals): the Vice President and the General Secretary. Anyone can send to it.
+    - **council@:** every Council member (the five mailboxes, plus each appointed director's AUIB email). Only Society addresses can send to it.
+    - **qirtas@** (the Sunday Paper and Qirtas's contact): the Editor-in-Chief and the Managing Editor (by AUIB email). Anyone can send to it.
+    - **Each seat without a mailbox,** as a group delivering to whoever holds or covers it: events@ and company@ (the President, or the Vice President while the President is away), partners@ (the Vice President), membership@ (the General Secretary). Once a director is appointed, their AUIB email replaces the covering officer. If Zoho doesn't allow outside members, Zoho Mail Lite seats are asked of Student Life as a need. Anyone can send to them.
+    - **elections@:** the General Secretary until the Elections Committee is appointed, then its three members.
+  - **Aliases** on a mailbox:
+    - **secretary@:** privacy@ (the Privacy Notice's contact), postmaster@, abuse@, dmarc@.
+    - **editor@:** letters@ (letters to the editor), corrections@, tips@ (news tips).
+    - **media@:** press@, security@ (security.txt), accessibility@ (GOV-06 requests), nextstop@ (people appearing in or pitching to the show).
+    - **membership@:** alumni@ (until an alumni lead is appointed).
+  - **Who writes from where:**
+    - **Seat holders** write as the Society from their seat's address or group, signed with their name and seat.
+    - **Team members and directors without a mailbox** write from their AUIB email (never a personal one), copying the seat's group, so the record stays with the seat.
+    - **The site** writes to each person at their account email (the AUIB address for students; a confirmed personal address for graduates and guests).
+    - **The public** sees only Society addresses; no personal address appears on the site or in a signature.
   - **What sends from where,** through Resend, always with replies to a monitored address (never "no-reply"): the site's emails and broadcasts from hello@, the Sunday Paper from qirtas@, and letters from the signer's seat address. The welcome is part of the confirmation email. Personal addresses are never used for Society business.
   - **Every bulk email** carries the postal address: "AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq" («جمعية الفنون والآداب في الجامعة الأمريكية في بغداد، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في بغداد، طريق المطار، بغداد، العراق»).
   - **The signature,** in the email's language: the sender's name and seat; "AUIB Society of Arts and Letters"; "The paper and the pen."; "auibsal.org · @auibsal"; "Paperless by default. Books reused through Second Chapter."
@@ -642,10 +658,8 @@ Listed by their legal names:
 - **Never Notion:** partners and members never use it.
 - **No personal storage:** no Google Drive, and no Society files in personal storage. The Society's files in the President's OneDrive move into Notion (the Tour scans into the site), and the folder is then deleted.
 - **Rows, not pages,** for small records (needs, shifts, credits, hours, roles); big records keep their own pages.
-- **Accounts and hosting:** the Vercel project, Supabase organization, Resend account, Cloudflare account and the Bitwarden organization belong to the Society.
-  - **Ownership:** each is owned by secretary@ (which passes with the seat), with a second officer as admin and two-step verification on, never by a personal account or one shared with another venture such as The IDEA.
-  - **Moves:** Vercel and Resend move to the Society's own free accounts.
-  - **Credentials:** passwords, recovery codes and two-step backups live in the Society's Bitwarden organization, rotated at each handover. Two-step sign-in is required for every Council role holder on the site.
+- **Accounts and hosting:** the tool accounts (Vercel, Supabase, Resend, Cloudflare, GitHub, Zoho, Notion) stay as they are for now: owned by the President's AUIB email, with officers added as admins and two-step verification on. Who owns them later is the owner's decision; nothing is moved or newly created until then.
+  - **Credentials:** the passwords, recovery codes and two-step backups are kept by the account owner and shared with the admins only where they need them; they are never kept in personal notes or chats, and are reset at each handover. Two-step sign-in is required for every Council role holder on the site.
 - **Claude chats:** one per department, each reading this file first:
   - Governance and the Executive Board (GOV, EXB);
   - Events (EVT);
