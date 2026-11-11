@@ -169,7 +169,7 @@ const outsideMetadata = (outside: SignUpDetails["outside"]) => {
   return "guest" in outside ? { guest: "true" } : {};
 };
 
-/** A student under 18 (decisions §19): birth month and year, the parent. */
+/** A student under 18 (decisions.md, Members): birth month and year, the parent. */
 const minorMetadata = (minor: SignUpDetails["minor"]) =>
   minor
     ? {

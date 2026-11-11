@@ -39,7 +39,7 @@ type Kind = (typeof openingKinds)[number];
 const COLUMNS =
   "id, kind, owner, role, title_en, title_ar, body_en, body_ar, eligibility_en, eligibility_ar, questions, asks_files, second_reviewer, eb_resolution, eb_approved_at, closes_at, is_open, places, event_id";
 
-/** The opening's questions, each in both languages (decisions §17). */
+/** The opening's questions, each in both languages (decisions.md, Get involved and roles). */
 const QuestionsEditor = ({
   onChange,
   value,

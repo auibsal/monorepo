@@ -4,9 +4,18 @@ import { type Locale, localizedPath } from "@repo/internationalization";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { hasSessionCookie } from "@/lib/auth/session-cookie";
-import { getSupabase } from "@/lib/diwan/supabase";
 
 type State = "hidden" | "saved" | "unsaved";
+
+/**
+ * The signed-in client, loaded only for someone signed in: visitors (and
+ * the pages that prefetch a piece) never download it.
+ */
+const savedPieces = async () =>
+  (await import("@/lib/diwan/supabase"))
+    .getSupabase()
+    .schema("journal")
+    .from("saved_pieces");
 
 /**
  * Save a piece to read later (the design review A9, Nov 4, 2026). Shown
@@ -27,13 +36,10 @@ export const SaveForLater = ({ pieceId }: { readonly pieceId: string }) => {
       return;
     }
     let live = true;
-    const supabase = getSupabase();
-    supabase
-      .schema("journal")
-      .from("saved_pieces")
-      .select("piece_id")
-      .eq("piece_id", pieceId)
-      .maybeSingle()
+    savedPieces()
+      .then((table) =>
+        table.select("piece_id").eq("piece_id", pieceId).maybeSingle()
+      )
       .then(({ data, error }) => {
         if (live && !error) {
           setState(data ? "saved" : "unsaved");
@@ -51,7 +57,7 @@ export const SaveForLater = ({ pieceId }: { readonly pieceId: string }) => {
   const toggle = async () => {
     setBusy(true);
     setFailed(false);
-    const table = getSupabase().schema("journal").from("saved_pieces");
+    const table = await savedPieces();
     const { error } =
       state === "saved"
         ? await table.delete().eq("piece_id", pieceId)

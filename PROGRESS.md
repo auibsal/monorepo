@@ -50,17 +50,19 @@ Part A first).
   the one found, "open nights" in the Company's line, is fixed by a
   migration.
 
-## Open after the Nov 11 PR (decisions §17, §19)
+## Open after the Nov 11 PR (decisions.md, Members)
 
-- [ ] **The writing workshop** (was Nov 17): an unpublished draft on the
-  site and Planning in Notion; it needs its new date before it is set to
-  Ready to publish.
+- [ ] **The writing workshop** moves to Tuesday, December 8, 2:30–4:00
+  p.m.: an unpublished draft on the site and Planning in Notion until its
+  room is confirmed, then Ready to publish.
 - [ ] **Four of the 22 backdated stories** to be reported anew by the News
   desk (new reporting, new dates, nothing reused); the 22 stay unpublished.
 - [ ] **The four director openings** are posted closed until the Executive
   Board's approval is recorded on each (Diwan → Membership → Openings).
-- [ ] **Hosting and tool accounts:** the owner is still deciding who owns
-  Vercel and Resend (`docs/platform/hosting-move.md` has the steps).
+- [ ] **Hosting and tool accounts:** they stay as they are, owned by the
+  President's AUIB email with the officers as admins and two-step
+  verification on; nothing moves until the owner decides (decisions.md,
+  Where things live).
 - [ ] **`anon` USAGE on `private`** stays: the public wrappers are SECURITY
   INVOKER and call `private` functions, so revoking it breaks the public
   pages (tried locally Nov 11). Narrowing `anon`'s EXECUTE to the
@@ -128,9 +130,6 @@ Part A first).
     `NEXT_PUBLIC_API_URL`;
   - and the GitHub secret `BACKUP_HEARTBEAT_URL`.
   Then delete the old `sal-emails` project.
-- [ ] **Accounts and hosting** (decisions §6): move the Vercel and Supabase
-  projects to the Society, owned by hello@auibsal.org with two officer
-  admins, out of The IDEA's team.
 - [ ] **Google Wallet console:** request publishing access. Until Google
   approves, only test accounts can save the card, and passes say "[TEST
   ONLY]".
@@ -242,9 +241,9 @@ Part A first).
   - F7: coverage minimums are set (PR #250, `vitest.config.ts`): two
     points under Nov 8's coverage.
   - F1: AGENTS.md is cut to the conventions (Nov 8; the domain is in
-    `docs/platform/domain.md`). decisions.md and the glossary live only in the
-    Claude project since Nov 11 (decisions §19); the repository's copies
-    and their date check are gone.
+    `docs/platform/domain.md`). `claude/decisions.md` and `claude/glossary_ar.md`
+    are a read-only mirror of the Claude project's files, replaced whole with
+    each prompt; `check:decisions` checks only the date line.
 
 ## Content still needed
 

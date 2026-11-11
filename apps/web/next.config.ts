@@ -5,12 +5,62 @@ import { config, withAnalyzer } from "@/lib/next-config";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-// One redirect only: Write for Qirtas moved to /qirtas/submit, and the
-// old address leads there until further notice (decisions §19). Otherwise
-// links point at the current address, and an old one is simply not found.
+// An address that was shared (in an email, a post, a poster or a QR code)
+// and then changed answers with a permanent redirect (308) to its new one;
+// an address never shared simply changes (decisions.md, The site).
 // www.auibsal.org → auibsal.org is a Vercel domain setting.
 // English has no prefix; Arabic is under /ar.
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;
+const MOVED: readonly [from: string, to: string][] = [
+  // Write for Qirtas's door (Qirtas).
+  ["/qirtas/write", "/qirtas/submit"],
+  ["/qirtas/write/:path*", "/qirtas/submit/:path*"],
+  ["/membership", "/account"],
+  ["/membership/:path*", "/account/:path*"],
+  ["/library/privacy", "/privacy"],
+  ["/library/terms-of-use", "/terms"],
+  ["/library/accessibility", "/accessibility"],
+  ["/partners/join", "/partners/apply"],
+  // Your account's tabs match their pages (decisions §6).
+  ["/account/society", "/account/elections"],
+  ["/account/society/stand/:position", "/account/elections/:position"],
+  ["/account/saved", "/account/work"],
+  ["/account/settings/notices", "/account/settings/notifications"],
+  ["/account/settings/declarations", "/account/settings/disclosures"],
+  // The Diwan by Council seat (decisions §6).
+  ["/diwan/society/declarations", "/diwan/council/disclosures"],
+  ["/diwan/society", "/diwan/council"],
+  ["/diwan/society/:path*", "/diwan/council/:path*"],
+  ["/diwan/people/service/certificates", "/diwan/qirtas/certificates"],
+  [
+    "/diwan/people/service/certificates/:path*",
+    "/diwan/qirtas/certificates/:path*",
+  ],
+  ["/diwan/people/partners", "/diwan/partnerships"],
+  ["/diwan/people/partners/:path*", "/diwan/partnerships/:path*"],
+  ["/diwan/people", "/diwan/membership"],
+  ["/diwan/people/:path*", "/diwan/membership/:path*"],
+  ["/diwan/qirtas/video/episodes/:path*", "/diwan/media/episodes/:path*"],
+  ["/diwan/qirtas/video/reels/:path*", "/diwan/media/reels/:path*"],
+  ["/diwan/design", "/diwan/media/design"],
+  ["/diwan/events/pitches/:path*", "/diwan/events/proposals/:path*"],
+  ["/diwan/events/:ref/door", "/diwan/events/:ref/check-in"],
+  [
+    "/account/record/:ref([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
+    "/account/record/certificates/:ref",
+  ],
+  // Filters are query strings (decisions §6).
+  ["/events/:month(\\d{4}-\\d{2})", "/events?month=:month"],
+  ["/events/:month(\\d{4}-\\d{2})/society", "/events?month=:month"],
+  ["/company/:month(\\d{4}-\\d{2})", "/events?host=company&month=:month"],
+  ["/qirtas/archive/:month(\\d{4}-\\d{2})", "/qirtas/archive?month=:month"],
+  [
+    "/qirtas/archive/:month(\\d{4}-\\d{2})/:section",
+    "/qirtas/archive?month=:month&section=:section",
+  ],
+  ["/search/:q", "/search?q=:q"],
+  ["/qirtas/editions/list", "/qirtas/editions?view=list"],
+];
 //
 // The design system (packages/brand, `bun run build:site`) is built into
 // apps/web/design. The Diwan's page /diwan/media/design shows its entries;
@@ -58,18 +108,13 @@ let nextConfig: NextConfig = {
   // streams first) and a piece's text-size buttons stopped answering.
   partialPrefetching: false,
   redirects: async () =>
-    LANGUAGE_PREFIXES.flatMap((prefix) => [
-      {
-        destination: `${prefix}/qirtas/submit`,
-        permanent: false,
-        source: `${prefix}/qirtas/write`,
-      },
-      {
-        destination: `${prefix}/qirtas/submit/:path*`,
-        permanent: false,
-        source: `${prefix}/qirtas/write/:path*`,
-      },
-    ]),
+    LANGUAGE_PREFIXES.flatMap((prefix) =>
+      MOVED.map(([from, to]) => ({
+        destination: `${prefix}${to}`,
+        permanent: true,
+        source: `${prefix}${from}`,
+      }))
+    ),
   // The design system's files, under its page in the Diwan, ahead of the
   // Diwan's routes.
   rewrites: async () => ({

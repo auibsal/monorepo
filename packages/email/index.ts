@@ -8,7 +8,7 @@ const { RESEND_TOKEN } = keys();
 /**
  * The sender, in code (audit D1): every email and Broadcast comes from the
  * Society by its full name, at an address people reply to: hello@ for the
- * site's emails; Qirtas's own box for the Sunday Paper (decisions §19).
+ * site's emails; Qirtas's own box for the Sunday Paper (decisions.md, Channels and email).
  */
 export const SENDER = `${project.name} <${project.mailboxes.hello}>`;
 export const QIRTAS_SENDER = `${project.journal.name_en}, ${project.name} <${project.mailboxes.qirtas}>`;

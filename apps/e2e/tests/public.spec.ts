@@ -47,7 +47,7 @@ test.describe("public site", () => {
     const month = new Date(Date.now() + 5 * 86_400_000 + 3 * 3_600_000)
       .toISOString()
       .slice(0, 7);
-    // A month is a query string (decisions §6); the old address redirects.
+    // A month is a query string (decisions.md, The site).
     await page.goto(`${urls.web}/events?month=${month}`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "What’s on"
@@ -63,9 +63,9 @@ test.describe("public site", () => {
       page.getByRole("link", { name: /AUIB’s calendar/u })
     ).toHaveAttribute("href", /auib\.edu\.iq/u);
     await expectAccessible(page);
-    // A month is a query string; the old path-style address is not found.
-    const old = await page.goto(`${urls.web}/events/${month}`);
-    expect(old?.status()).toBe(404);
+    // The old path-style address was shared, so it redirects to the query.
+    await page.goto(`${urls.web}/events/${month}`);
+    await expect(page).toHaveURL(new RegExp(`/events\\?month=${month}$`, "u"));
     // A month with nothing in it points to what comes next.
     await page.goto(`${urls.web}/events?month=2026-01`);
     const next = page.getByText("Next:");
@@ -156,20 +156,21 @@ test("every page in the sitemap is found, in both languages", async ({
   expect(missing).toEqual([]);
 });
 
-test("old addresses are simply not found, in both languages", async ({
+test("a shared address that changed redirects to its new one, in both languages", async ({
   request,
 }) => {
   for (const prefix of ["", "/ar"]) {
-    for (const gone of [
-      "/membership",
-      "/library/privacy",
-      "/partners/join",
-      "/search/poems",
+    for (const [from, to] of [
+      ["/membership", "/account"],
+      ["/qirtas/write", "/qirtas/submit"],
+      ["/library/privacy", "/privacy"],
+      ["/partners/join", "/partners/apply"],
     ]) {
-      const response = await request.get(`${urls.web}${prefix}${gone}`, {
+      const response = await request.get(`${urls.web}${prefix}${from}`, {
         maxRedirects: 0,
       });
-      expect(response.status(), `${prefix}${gone}`).toBe(404);
+      expect(response.status(), `${prefix}${from}`).toBe(308);
+      expect(response.headers().location).toBe(`${prefix}${to}`);
     }
   }
 });
