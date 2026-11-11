@@ -1,16 +1,25 @@
-import { formatLongDate } from "@repo/internationalization/format";
+import {
+  formatLongDate,
+  formatNumber,
+} from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader, RuledList, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
+import { readPublished } from "@/lib/supabase";
 
 export const generateMetadata = sectionMetadata("web.about", "/about");
 
 /**
- * The About page (decisions §6): the one sentence, the motto, what the
- * Society does, how it is run, then its pages. AUIB's offices are listed
- * on the partners page only.
+ * The About page (decisions.md, The site), in order: the one sentence, the
+ * motto (al-Mutanabbi's whole verse with its translation, and the story of
+ * the name Qirtas), what the Society does, how it is run, a short history,
+ * the Society by the numbers, the Council, the independence statement and
+ * the documents. AUIB's offices are listed on the partners page only.
  */
+
+/** The numbers counted by the site, in this order. */
+const NUMBERS = ["members", "events", "pieces", "editions"] as const;
 
 /** What the Society does (decisions §1), each opening its own part. */
 const DOES = [
@@ -52,12 +61,23 @@ const HUB = [
   ["contact", "/about/contact"],
   ["press", "/about/press"],
   ["verify", "/verify"],
+  ["credits", "/about/credits"],
 ] as const;
 
 const AboutPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.about" });
+  const numbers = await readPublished(
+    ["about"],
+    async (c) => {
+      const { data } = await c
+        .schema("content")
+        .rpc("society_numbers", undefined, { get: true });
+      return data?.[0] ?? null;
+    },
+    null
+  );
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
@@ -75,10 +95,23 @@ const AboutPage = async ({ params }: LocaleParams) => {
           <p className="text-4xl leading-tight font-light sm:text-5xl">
             {t("motto")}
           </p>
+          {/* The whole verse in Arabic, on both editions: an original beside its translation. */}
+          <blockquote
+            className="reading text-2xl leading-relaxed"
+            dir="rtl"
+            lang="ar"
+          >
+            <span className="block">{t("verseFirst")}</span>
+            <span className="block ps-8">{t("verseSecond")}</span>
+          </blockquote>
+          {locale === "ar" ? null : (
+            <p className="type-body">{t("verseTranslation")}</p>
+          )}
           <figcaption className="type-body text-text-secondary max-w-[60ch]">
             {t("mottoNote")}
           </figcaption>
         </figure>
+        <p className="type-body max-w-[60ch]">{t("qirtasName")}</p>
       </Section>
 
       <Section id="does" title={t("doesTitle")}>
@@ -130,6 +163,28 @@ const AboutPage = async ({ params }: LocaleParams) => {
             </li>
           ))}
         </ol>
+      </Section>
+
+      {numbers ? (
+        <Section id="numbers" title={t("numbersTitle")}>
+          <dl className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+            {NUMBERS.map((key) => (
+              <div className="border-line grid gap-1 border-t pt-3" key={key}>
+                <dt className="type-caption text-text-secondary">
+                  {t(`numbers.${key}`)}
+                </dt>
+                <dd className="text-4xl font-light">
+                  {formatNumber(numbers[key], locale)}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="type-caption">{t("numbersNote")}</p>
+        </Section>
+      ) : null}
+
+      <Section id="independence" title={t("independenceTitle")}>
+        <p className="type-body max-w-[60ch]">{t("independence")}</p>
       </Section>
 
       <Section id="society" title={t("hubTitle")}>

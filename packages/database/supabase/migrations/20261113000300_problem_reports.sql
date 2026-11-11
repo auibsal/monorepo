@@ -43,5 +43,47 @@ grant all on core.problem_reports to service_role;
 comment on table core.problem_reports is
   'Problems people report from any page (decisions.md, The site), for the web lead; a reply address only when the person isn''t signed in. Kept a year.';
 
-select cron.schedule('sal-problem-reports', '50 4 * * *',
-  $$ delete from core.problem_reports where created_at < now() - interval '1 year' $$);
+-- Kept a year, by the one retention job (decisions.md, The site).
+create function private.purge_problem_reports()
+returns integer
+language sql
+security definer
+set search_path = ''
+as $$
+  with gone as (
+    delete from core.problem_reports where created_at < now() - interval '1 year'
+    returning 1
+  )
+  select count(*)::integer from gone;
+$$;
+
+revoke all on function private.purge_problem_reports() from public, anon, authenticated;
+grant execute on function private.purge_problem_reports() to service_role;
+
+create or replace function private.retention_schedule()
+returns table (rule text, keeps text, runs text)
+language sql
+immutable
+set search_path = ''
+as $$
+  values
+    ('Unpublished Write for Qirtas submissions and their files', '12 months after the decision', null),
+    ('Write for Qirtas drafts', '12 months after the last change', 'private.purge_stale_drafts'),
+    ('Blind copies, assignments, scores and decisions of deleted submissions', '12 months', 'private.purge_blind_entries'),
+    ('Invitation lists', '30 days after the list is sent', 'private.purge_tour_lists'),
+    ('Unclaimed spring 2026 Tour pages', 'until the spring 2027 Tour (tour.unclaimed_until)', 'private.purge_unclaimed_tour_pages'),
+    ('Associate membership requests', '1 year after the decision', 'private.purge_associate_requests'),
+    ('Qalam consent forms (F-38, F-39) and the roster with attendance', '3 years after the program year', 'private.purge_qalam_records'),
+    ('Incident records (F-16)', '7 years', 'private.purge_incident_records'),
+    ('Ballots, ballot receipts and voter lists', '1 year after the vote closes', 'private.purge_expired_ballots'),
+    ('Who voted for the Prize', '1 year after the vote closes', 'private.purge_prize_vote_receipts'),
+    ('Get involved replies', '12 months after the last change', 'private.purge_opening_replies'),
+    ('Removal requests', '2 years after closing', 'private.purge_removal_requests'),
+    ('Unconfirmed Sunday Paper sign-ups', 'until the confirmation window closes', 'private.purge_unconfirmed_subscribers'),
+    ('Unconfirmed personal email requests', '7 days', 'private.purge_personal_email_requests'),
+    ('Push subscriptions and calendar feed addresses', '12 months without a sign-in', 'private.purge_idle_devices'),
+    ('Guest accounts', '2 years without a sign-in, holding no role', null),
+    ('The activity log', '12 months', 'private.purge_activity_log'),
+    ('Sent emails in the outbox', '30 days after sending', 'private.prune_outbox'),
+    ('Problem reports', '1 year', 'private.purge_problem_reports');
+$$;

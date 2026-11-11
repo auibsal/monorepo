@@ -529,6 +529,15 @@ export type Database = {
         }[];
       };
       send_sunday_paper: { Args: { month: string }; Returns: number };
+      society_numbers: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          editions: number;
+          events: number;
+          members: number;
+          pieces: number;
+        }[];
+      };
       test_sunday_paper: { Args: { month: string }; Returns: undefined };
     };
     Enums: {

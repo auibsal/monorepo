@@ -5032,7 +5032,7 @@
       "constitution": "Read the proposed Constitution",
       "mottoTitle": "Our motto",
       "motto": "The paper and the pen.",
-      "mottoNote": "From al-Mutanabbi’s most quoted line: the horses, the night and the desert know me; so do the sword, the lance, the paper and the pen. We keep only the last two.",
+      "mottoNote": "Al-Mutanabbi’s most quoted line. We keep only its last two words.",
       "doesTitle": "What the Society does",
       "does": {
         "qirtas": {
@@ -5117,9 +5117,27 @@
         "verify": {
           "title": "Verify",
           "body": "Check a membership card or a certificate the Society issued."
+        },
+        "credits": {
+          "title": "Credits",
+          "body": "The fonts, icons and software the site is made with."
         }
       },
-      "spring2026": "Spring 2026"
+      "spring2026": "Spring 2026",
+      "verseTranslation": "The horses, the night and the desert know me, and the sword, the lance, the paper and the pen.",
+      "qirtasName": "Qirtas, the name of the Society’s paper, is the Arabic word for paper: the qirtas of the same verse.",
+      "numbersTitle": "The Society by the numbers",
+      "numbers": {
+        "members": "Members of every class",
+        "events": "Events held",
+        "pieces": "Pieces in Qirtas",
+        "editions": "Editions"
+      },
+      "numbersNote": "Counted by the site from its own records.",
+      "independenceTitle": "Independence",
+      "independence": "The AUIB Society of Arts and Letters is a registered student organization at the American University of Iraq – Baghdad. Its views and publications are its own and not those of the University.",
+      "verseFirst": "الخيلُ والليلُ والبيداءُ تعرفني",
+      "verseSecond": "والسيفُ والرمحُ والقرطاسُ والقلمُ"
     },
     "join": {
       "title": "Join the Society",
@@ -5901,6 +5919,14 @@
           "meaning": "The Society’s summer writing program for school students."
         }
       ]
+    },
+    "credits": {
+      "title": "Credits",
+      "lede": "The fonts, icons and software this site is made with, and their licenses. Thank you to everyone who made them.",
+      "fonts": "Fonts",
+      "icons": "Icons",
+      "software": "Software",
+      "rights": "The site’s own code and design are the AUIB Society of Arts and Letters’; all rights reserved."
     }
   }
 }

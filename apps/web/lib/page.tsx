@@ -11,6 +11,7 @@ type SectionNamespace =
   | "web.about"
   | "web.care"
   | "web.contact"
+  | "web.credits"
   | "web.governance"
   | "web.join"
   | "web.join.tour"

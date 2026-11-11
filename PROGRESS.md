@@ -153,7 +153,7 @@ production; **Owner** is a step only the owner can take.
 - [ ] Home, when each has something: motto and Join; the next three events;
   the newest Edition or current call; latest from Qirtas; Next Stop's
   latest; open roles; From the Society.
-- [ ] About in the order of decisions.md, with the full al-Mutanabbi verse
+- [x] About in the order of decisions.md, with the full al-Mutanabbi verse
   and its translation, the story of the name Qirtas, the numbers counted by
   the site and the independence statement.
 - [x] Help: twenty common questions; "Words we use"; "Report a problem" on
@@ -165,7 +165,7 @@ production; **Owner** is a step only the owner can take.
   only in the Diwan.
 - [x] Policies: /code-of-conduct and /security beside /privacy, /terms and
   /accessibility, each with its effective date at the top.
-- [ ] /about/credits generated from the dependencies; About → Our people
+- [x] /about/credits generated from the dependencies; About → Our people
   credits the web team.
 - [ ] Partners: alphabetical, equal-size logos, grouped by kind, then "With
   the support of", then Become a partner; sponsors in kind small, on their
@@ -177,7 +177,7 @@ production; **Owner** is a step only the owner can take.
 - [ ] Every email: one subject, the action first, one button, the record
   number, why the person gets it, a preferences link unless account or
   security.
-- [ ] Senders: "AUIB Society of Arts and Letters" (site, announcements),
+- [x] Senders: "AUIB Society of Arts and Letters" (site, announcements),
   "Qirtas" (the Sunday Paper), a person's name and seat (letters).
 - [ ] Bulk email: "View in your browser" at the top; unsubscribing lands on
   a page that confirms and offers topics; sent from news.auibsal.org with
@@ -193,11 +193,11 @@ production; **Owner** is a step only the owner can take.
 
 ### 9. Platform and settings
 - [x] Speed Insights beside Web Analytics.
-- [ ] A permissions table generated from the code, for the Leadership
+- [x] A permissions table generated from the code, for the Leadership
   Handbook.
-- [ ] A stack page in the docs: every service with its plan, owner account,
+- [x] A stack page in the docs: every service with its plan, owner account,
   renewal date and exit.
-- [ ] Journey maps in the docs, one per kind of person.
+- [x] Journey maps in the docs, one per kind of person.
 - [ ] The templates index on the design page, and the certificate with two
   signatures. (Open Badges only from 2028.)
 - [ ] The monthly advisors' report on the Desk.
@@ -207,7 +207,7 @@ production; **Owner** is a step only the owner can take.
   lifetimes, network restrictions where the plan allows; Cloudflare's
   settings (WAF, bot protection, DDoS, SSL Full (strict), file caching,
   the real visitor IP passed through; Email Address Obfuscation, Rocket
-  Loader and minify off). The exact steps go in `docs/platform/settings.md`.
+  Loader and minify off). The exact steps are in `docs/platform/settings.md`.
 
 ### 10. Hudhud and Telegram
 - [ ] Hudhud's Sunday note each Sunday in term (the week's events and open

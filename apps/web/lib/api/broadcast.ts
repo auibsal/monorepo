@@ -2,7 +2,7 @@ import "server-only";
 
 import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
-import { QIRTAS_SENDER, resend, SENDER } from "@repo/email";
+import { BULK_SENDER, QIRTAS_SENDER, resend } from "@repo/email";
 import type { Built } from "@repo/email/copy";
 import {
   Notice,
@@ -345,7 +345,7 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
     }
     const sent = ok(
       await client().broadcasts.create({
-        from: job.kind === "sunday_paper" ? QIRTAS_SENDER : SENDER,
+        from: job.kind === "sunday_paper" ? QIRTAS_SENDER : BULK_SENDER,
         name: job.key,
         react: Notice({
           blocks: job.built.blocks,
