@@ -461,9 +461,12 @@ const AssignRole = ({
         title_ar: form.title.ar,
         title_en: form.title.en,
       }),
-    onSuccess: async () => {
+    onSuccess: async (id) => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      onDone();
+      // A Council role waits for a second officer (decisions.md).
+      if (id) {
+        onDone();
+      }
     },
   });
   const brokenRule = access.brokenRoleRule(assign.error);
@@ -626,6 +629,11 @@ const AssignRole = ({
           {t("assignButton")}
         </ConfirmAction>
       </div>
+      {assign.isSuccess && !assign.data ? (
+        <p className="type-body" role="status">
+          {t("waitingSecondOfficer")}
+        </p>
+      ) : null}
       {brokenRule ? (
         <p className="text-text text-sm" role="alert">
           {t(`rules.${brokenRule}`)}

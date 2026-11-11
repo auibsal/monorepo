@@ -1,3 +1,4 @@
+import { createAdminClient } from "@repo/database/admin";
 import { z } from "zod";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { toCsv } from "@/lib/api/csv";
@@ -43,6 +44,21 @@ export const POST = async (
   );
   if (!checks.some(Boolean)) {
     return json({ error: "forbidden" }, 403);
+  }
+
+  // A list for Student Life goes out only once a second officer approved
+  // this officer's request (governance.request_export); it is spent here.
+  if (definition.secondOfficer) {
+    const { data: approved } = await createAdminClient()
+      .schema("governance")
+      .rpc("spend_export", {
+        name,
+        params: parsed.data,
+        who: session.userId,
+      });
+    if (!approved) {
+      return json({ error: "second_officer_required" }, 409);
+    }
   }
 
   try {

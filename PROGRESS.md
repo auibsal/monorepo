@@ -105,9 +105,14 @@ production; **Owner** is a step only the owner can take.
 - [ ] The role agreement (the Code of Conduct, and the license for work made
   in the role), signed on accepting any role, before the
   conflict-of-interest declaration.
-- [ ] Two officers approve: removing a member, changing a legal name,
-  granting a Council role, exporting a list for Student Life.
-  **Migrates:** a table of pending approvals.
+- [x] Two officers approve: changing a legal name, granting a Council
+  role, exporting a list for Student Life. The request waits in
+  `governance.pending_actions`; another officer holding the permission
+  approves or declines it on the Desk ("For a second officer"), never the
+  one who asked; an approved export is spent once by the API route.
+  Removing a member has no removal action on the site yet (leavers become
+  guests), so it waits for one. **Migrates:** `governance.pending_actions`,
+  `governance.decide_action`, `governance.request_export`.
 
 ### 3. Governance (decisions.md, Governance)
 - [x] "Raise a concern" requires sign-in; the person may ask to keep their

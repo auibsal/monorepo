@@ -21,6 +21,9 @@ export interface ExportDefinition {
     session: ApiSession,
     params: Record<string, string>
   ) => Promise<ExportTable>;
+  /** Takes a second officer's approval first (decisions.md, Documents and
+   * forms: exporting a list for Student Life). */
+  readonly secondOfficer?: boolean;
 }
 
 const uuid = z.uuid();
@@ -182,6 +185,7 @@ export const exportsByName: Record<string, ExportDefinition> = {
           })
         ) ?? []
       ),
+    secondOfficer: true,
   },
   "student-life-council": {
     permissions: ["governance.manage"],
@@ -191,5 +195,6 @@ export const exportsByName: Record<string, ExportDefinition> = {
           await session.supabase.schema("governance").rpc("student_life_list")
         ) ?? []
       ),
+    secondOfficer: true,
   },
 };

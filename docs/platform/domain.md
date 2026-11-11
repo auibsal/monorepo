@@ -22,6 +22,13 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Council role needs an adopted Council resolution
   (`private.role_conflict`); there is no other cap, but a section takes at
   most two assistant editors.
+- **Two officers.** Granting a Council role (`governance.manage`),
+  correcting a legal name (`members.manage`) and a list exported for
+  Student Life each wait in `governance.pending_actions` until another
+  officer holding that permission approves it on the Desk
+  (`governance.decide_action`); the one who asked can’t approve it. An
+  approved export is used once (`governance.spend_export`, called by the
+  API route).
 - **The roles standard.** Every role has a kind (`access.roles.kind`): a
   seat, a team role under a seat, a scoped role (one event, production,
   Edition, election, episode or shift, ending with it) or an outside role.

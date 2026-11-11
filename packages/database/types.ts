@@ -3125,6 +3125,43 @@ export type Database = {
         };
         Relationships: [];
       };
+      pending_actions: {
+        Row: {
+          decided_at: string | null;
+          decided_by: string | null;
+          id: string;
+          kind: string;
+          payload: NonNullable<Json>;
+          permission: string;
+          requested_at: string;
+          requested_by: string;
+          status: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          kind: string;
+          payload?: NonNullable<Json>;
+          permission: string;
+          requested_at?: string;
+          requested_by?: string;
+          status?: string;
+        };
+        Update: {
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          kind?: string;
+          payload?: NonNullable<Json>;
+          permission?: string;
+          requested_at?: string;
+          requested_by?: string;
+          status?: string;
+        };
+        Relationships: [];
+      };
       positions: {
         Row: {
           election_id: string;
@@ -3491,6 +3528,10 @@ export type Database = {
         }[];
       };
       count_election: { Args: { election_id: string }; Returns: undefined };
+      decide_action: {
+        Args: { action_id: string; approve: boolean };
+        Returns: string;
+      };
       decide_candidate: {
         Args: { approve: boolean; candidate_id: string };
         Returns: undefined;
@@ -3678,6 +3719,10 @@ export type Database = {
         Args: { member: string; partner: string };
         Returns: undefined;
       };
+      request_export: {
+        Args: { name: string; params?: Json };
+        Returns: string;
+      };
       sealed_state: { Args: { submission_id: string }; Returns: string };
       second_sign_form: {
         Args: { signer_name: string; submission_id: string };
@@ -3701,6 +3746,10 @@ export type Database = {
           subject_id?: string;
         };
         Returns: string;
+      };
+      spend_export: {
+        Args: { name: string; params: Json; who: string };
+        Returns: boolean;
       };
       start_runoff: {
         Args: {

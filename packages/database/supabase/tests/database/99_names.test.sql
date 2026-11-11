@@ -97,6 +97,10 @@ $$;
 
 select plan(18);
 
+-- These test the action itself; the second officer's approval is given
+-- (99_two_officers tests asking and approving).
+select set_config('sal.second_officer', 'on', true);
+
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c0a1', 'names-a@auib.edu.iq', 'Signup Name');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c0a2', 'names-officer@auib.edu.iq', 'Officer');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000c0a2', 'membership_director');

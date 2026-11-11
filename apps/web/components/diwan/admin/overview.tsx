@@ -21,6 +21,7 @@ import { ErrorState, SectionSpinner } from "../states";
 import { doorPath, useDoorEvents } from "./events/check-in";
 import { Handover } from "./handover";
 import { AdminHeading } from "./kit";
+import { SecondOfficer } from "./second-officer";
 import { RecentActivity } from "./system/activity";
 import { EmailDelivery } from "./system/email";
 import { NotionWorkspace } from "./system/notion";
@@ -368,6 +369,7 @@ export const AdminOverview = () => {
         </div>
       ) : null}
       <Handover />
+      <SecondOfficer />
       {o.campaigns ? (
         <DiwanSection id="campaigns" title={t("campaigns")}>
           {o.campaigns.length === 0 ? (

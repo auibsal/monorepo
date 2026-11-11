@@ -1036,7 +1036,8 @@
           "hint": "The invitation is written in this language only.",
           "en": "English",
           "ar": "Arabic"
-        }
+        },
+        "exportAsked": "Asked. Download the list once a second officer approves it on the Desk."
       },
       "overview": {
         "title": "Desk",
@@ -1090,6 +1091,19 @@
             "hiring_new": "New replies to openings: {n}",
             "requests_open": "Requests open: {n}"
           }
+        },
+        "secondOfficer": {
+          "title": "For a second officer",
+          "lede": "These take two officers. Whoever asked can’t approve their own request.",
+          "kinds": {
+            "council_role": "{subject} as {detail}",
+            "legal_name": "{subject}’s legal name corrected to {detail}",
+            "student_life_export": "A list for Student Life: {detail}"
+          },
+          "asked": "Asked by {name} on {date}",
+          "yours": "Waiting for another officer.",
+          "approve": "Approve",
+          "decline": "Decline"
         }
       },
       "members": {
@@ -1234,7 +1248,7 @@
           "en": "In English",
           "ar": "In Arabic",
           "save": "Save the name",
-          "saved": "Saved. The site now shows {name}.",
+          "saved": "Asked. The site shows {name} once a second officer approves the change on the Desk.",
           "reason": "Reason for the correction",
           "preferredTitle": "Preferred name",
           "preferredBody": "Reset a preferred name that misleads or offends. The site then shows the default; the activity log keeps the reason.",
@@ -1256,7 +1270,8 @@
         },
         "studentLife": "Student Life",
         "studentLifeIsEligible": "Eligible",
-        "recoveryBy": "Not eligible; must recover by {date}"
+        "recoveryBy": "Not eligible; must recover by {date}",
+        "waitingSecondOfficer": "Asked. A Council role is assigned once a second officer approves it on the Desk."
       },
       "verification": {
         "title": "Partner applications",

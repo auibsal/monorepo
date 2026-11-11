@@ -98,6 +98,10 @@ $$;
 
 select plan(9);
 
+-- These test the action itself; the second officer's approval is given
+-- (99_two_officers tests asking and approving).
+select set_config('sal.second_officer', 'on', true);
+
 select pg_temp.make_user('00000000-0000-0000-0000-0000000072a1', 'director@auib.edu.iq', 'Membership Director');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000072a2', 'member@auib.edu.iq', 'Some Member');
 update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000072a2';
