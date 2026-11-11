@@ -5,10 +5,13 @@ import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
-import { formatNumber } from "@repo/internationalization/format";
+import {
+  formatLongDate,
+  formatNumber,
+} from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { membership, names } from "@/lib/data";
@@ -28,7 +31,7 @@ export const ProfileScreen = () => {
     bio: "",
     camera_shy: false,
     names: { ar: names.emptyParts(), en: names.emptyParts() },
-    preferred: { first_ar: "", first_en: "", last_ar: "", last_en: "" },
+    preferred: { ar: "", en: "" },
     title_form: "" as "" | "masculine" | "feminine",
   });
 
@@ -42,10 +45,8 @@ export const ProfileScreen = () => {
           en: names.partsFrom(profile.data, "en"),
         },
         preferred: {
-          first_ar: profile.data.preferred_first_ar ?? "",
-          first_en: profile.data.preferred_first_en ?? "",
-          last_ar: profile.data.preferred_last_ar ?? "",
-          last_en: profile.data.preferred_last_en ?? "",
+          ar: profile.data.preferred_name_ar ?? "",
+          en: profile.data.preferred_name_en ?? "",
         },
         title_form:
           profile.data.title_form === "feminine" ||
@@ -57,6 +58,10 @@ export const ProfileScreen = () => {
   }, [profile.data]);
 
   const words = membership.wordCount(form.bio);
+  const locale = useLocale();
+  const lockedAt = profile.data?.legal_name_locked_at ?? null;
+  // The member checks their legal name before it locks (decisions.md, Members).
+  const [checking, setChecking] = useState(false);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -64,14 +69,17 @@ export const ProfileScreen = () => {
         .schema("core")
         .from("profiles")
         .update({
-          ...names.partsUpdate(form.names.en, "en"),
-          ...names.partsUpdate(form.names.ar, "ar"),
+          // A locked legal name is not the member's to change.
+          ...(lockedAt
+            ? {}
+            : {
+                ...names.partsUpdate(form.names.en, "en"),
+                ...names.partsUpdate(form.names.ar, "ar"),
+              }),
           bio: form.bio.trim() || null,
           camera_shy: form.camera_shy,
-          preferred_first_ar: form.preferred.first_ar.trim() || null,
-          preferred_first_en: form.preferred.first_en.trim() || null,
-          preferred_last_ar: form.preferred.last_ar.trim() || null,
-          preferred_last_en: form.preferred.last_en.trim() || null,
+          preferred_name_ar: form.preferred.ar.trim() || null,
+          preferred_name_en: form.preferred.en.trim() || null,
           title_form: form.title_form || null,
         })
         .eq("id", user?.id ?? "");
@@ -83,6 +91,18 @@ export const ProfileScreen = () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.profile(user?.id ?? ""),
       }),
+  });
+
+  const lock = useMutation({
+    mutationFn: async () => {
+      // Saved first, so what is locked is what the member checked.
+      await save.mutateAsync();
+      const { error } = await supabase.schema("core").rpc("lock_legal_name");
+      if (error) {
+        throw error;
+      }
+    },
+    onSuccess: () => setChecking(false),
   });
 
   if (profile.isPending) {
@@ -99,11 +119,20 @@ export const ProfileScreen = () => {
     saveLabel = tc("saved");
   }
 
+  const preferredOk =
+    names.inScript(form.preferred.en, "en") &&
+    names.inScript(form.preferred.ar, "ar");
+  const legalComplete =
+    names.partsReady(form.names.en, "en") &&
+    names.partsReady(form.names.ar, "ar");
+
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const named =
-      names.partsComplete(form.names.en) && names.partsComplete(form.names.ar);
-    if (words <= membership.BIO_MAX_WORDS && named) {
+      lockedAt !== null ||
+      (names.partsInScript(form.names.en, "en") &&
+        names.partsInScript(form.names.ar, "ar"));
+    if (words <= membership.BIO_MAX_WORDS && named && preferredOk) {
       save.mutate();
     }
   };
@@ -121,55 +150,147 @@ export const ProfileScreen = () => {
     >
       <DiwanSection id="about-you" title={t("profile.aboutYou")}>
         <form className="grid gap-4" onSubmit={submit}>
-          {(["en", "ar"] as const).map((lang) => (
-            <fieldset className="grid gap-3" key={lang}>
-              <legend className="mb-2 text-sm font-medium">
-                {t(`setup.name.${lang}`)}
-              </legend>
-              <NamePartsFields
-                language={lang}
-                onChange={(parts) =>
-                  setForm((f) => ({
-                    ...f,
-                    names: { ...f.names, [lang]: parts },
-                  }))
-                }
-                parts={form.names[lang]}
-              />
-            </fieldset>
-          ))}
-          <p className="type-caption">{t("setup.name.hint")}</p>
-          {/* A preferred name (decisions.md, Members): shown in place of the legal
-              first or last name on the site, the card and the Council page. */}
+          <h3 className="type-subheading">{t("profile.legal.title")}</h3>
+          {lockedAt ? (
+            <div className="grid gap-2">
+              {(["en", "ar"] as const).map((lang) => (
+                <p dir={lang === "ar" ? "rtl" : "ltr"} key={lang} lang={lang}>
+                  {names.nameParts
+                    .map((part) => form.names[lang][part].trim())
+                    .filter(Boolean)
+                    .join(" ")}
+                </p>
+              ))}
+              <p className="type-caption">
+                {t("profile.legal.locked", {
+                  date: formatLongDate(lockedAt, locale),
+                })}
+              </p>
+            </div>
+          ) : (
+            <>
+              {(["en", "ar"] as const).map((lang) => (
+                <fieldset className="grid gap-3" key={lang}>
+                  <legend className="mb-2 text-sm font-medium">
+                    {t(`setup.name.${lang}`)}
+                  </legend>
+                  <NamePartsFields
+                    language={lang}
+                    onChange={(parts) => {
+                      setChecking(false);
+                      setForm((f) => ({
+                        ...f,
+                        names: { ...f.names, [lang]: parts },
+                      }));
+                    }}
+                    parts={form.names[lang]}
+                  />
+                </fieldset>
+              ))}
+              <p className="type-caption">{t("setup.name.hint")}</p>
+              {checking ? (
+                <div className="border-line grid gap-3 border-y py-4">
+                  <p className="type-body font-medium">
+                    {t("profile.legal.checkTitle")}
+                  </p>
+                  {(["en", "ar"] as const).map((lang) => (
+                    <p
+                      dir={lang === "ar" ? "rtl" : "ltr"}
+                      key={lang}
+                      lang={lang}
+                    >
+                      {names.nameParts
+                        .map((part) => form.names[lang][part].trim())
+                        .filter(Boolean)
+                        .join(" ")}
+                    </p>
+                  ))}
+                  <p className="type-body text-text-secondary">
+                    {t("profile.legal.checkBody")}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                    <Button
+                      disabled={lock.isPending}
+                      onClick={() => lock.mutate()}
+                      type="button"
+                      variant="outline"
+                    >
+                      {t("profile.legal.confirm")}
+                    </Button>
+                    <button
+                      className="link"
+                      onClick={() => setChecking(false)}
+                      type="button"
+                    >
+                      {t("profile.legal.edit")}
+                    </button>
+                  </div>
+                  {lock.isError ? (
+                    <p className="text-text" role="alert">
+                      {t("profile.legal.lockFailed")}
+                    </p>
+                  ) : null}
+                </div>
+              ) : (
+                <button
+                  className="link justify-self-start"
+                  disabled={!legalComplete}
+                  onClick={() => setChecking(true)}
+                  type="button"
+                >
+                  {t("profile.legal.check")}
+                </button>
+              )}
+            </>
+          )}
+          {/* The preferred name (decisions.md, Members): one whole name per
+              language, shown everywhere but certificates, letters and
+              signed forms. Empty means the default. */}
           <fieldset className="grid gap-3">
             <legend className="mb-2 text-sm font-medium">
               {t("profile.preferred.title")}
             </legend>
             <p className="type-caption">{t("profile.preferred.hint")}</p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {(["first_en", "last_en", "first_ar", "last_ar"] as const).map(
-                (part) => (
-                  <div className="grid gap-2" key={part}>
-                    <Label htmlFor={`${id}-${part}`}>
-                      {t(`profile.preferred.${part}`)}
-                    </Label>
-                    <Input
-                      dir={part.endsWith("_ar") ? "rtl" : "ltr"}
-                      id={`${id}-${part}`}
-                      lang={part.endsWith("_ar") ? "ar" : "en"}
-                      maxLength={60}
-                      onChange={(e) =>
-                        setForm((f) => ({
-                          ...f,
-                          preferred: { ...f.preferred, [part]: e.target.value },
-                        }))
-                      }
-                      value={form.preferred[part]}
-                    />
-                  </div>
-                )
-              )}
-            </div>
+            {(["en", "ar"] as const).map((lang) => (
+              <div className="grid max-w-xl gap-2" key={lang}>
+                <Label htmlFor={`${id}-preferred-${lang}`}>
+                  {t(`profile.preferred.${lang}`)}
+                </Label>
+                <Input
+                  aria-invalid={!names.inScript(form.preferred[lang], lang)}
+                  dir={lang === "ar" ? "rtl" : "ltr"}
+                  id={`${id}-preferred-${lang}`}
+                  lang={lang}
+                  maxLength={120}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      preferred: { ...f.preferred, [lang]: e.target.value },
+                    }))
+                  }
+                  value={form.preferred[lang]}
+                />
+                {form.preferred[lang] ? (
+                  <button
+                    className="link justify-self-start"
+                    onClick={() =>
+                      setForm((f) => ({
+                        ...f,
+                        preferred: { ...f.preferred, [lang]: "" },
+                      }))
+                    }
+                    type="button"
+                  >
+                    {t("profile.preferred.useDefault")}
+                  </button>
+                ) : null}
+              </div>
+            ))}
+            {preferredOk ? null : (
+              <p className="type-caption" role="alert">
+                {t("profile.preferred.script")}
+              </p>
+            )}
           </fieldset>
           <div className="grid gap-2">
             <Label htmlFor={`${id}-bio`}>{t("profile.bio")}</Label>

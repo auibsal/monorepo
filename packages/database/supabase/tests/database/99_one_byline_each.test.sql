@@ -106,12 +106,12 @@ set first_name_en = 'Mohammed', father_name_en = 'Ali', grandfather_name_en = 'H
 where id = '00000000-0000-0000-0000-0000000e9001';
 select is(
   (select name_en from journal.contributors where id = 'c0000000-0000-0000-0000-0000000e9c01'),
-  'Mohammed Jasim',
+  'Mohammed Ali',
   'a change to the name parts reaches the byline'
 );
 select is(
   (select slug from journal.contributors where id = 'c0000000-0000-0000-0000-0000000e9c01'),
-  'mohammed-jasim',
+  'mohammed-ali',
   'and its address follows the name'
 );
 select is_empty(

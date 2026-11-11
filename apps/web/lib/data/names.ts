@@ -1,10 +1,11 @@
 /**
- * A person's name in four parts, in English and in Arabic, as on their
- * papers (decisions.md): their name, their father's, their
- * grandfather's, and the fourth (family or last) name. All eight are
- * required. Wherever a name shows (the register, the card, bylines), it
- * is the first and the fourth: the database keeps `full_name_en` and
- * `full_name_ar` in step with the parts (`private.tidy_names`).
+ * A person's legal name in parts, in English and in Arabic, as on their
+ * papers (decisions.md, Members): their given name, their father's, their
+ * grandfather's, and the family name where there is one. English parts are
+ * in Latin letters and Arabic parts in Arabic letters. The name shown
+ * everywhere is the preferred name, or by default the given and father's
+ * names: the database keeps it in `full_name_en` and `full_name_ar`
+ * (`private.display_name`), and every surface reads those.
  */
 export const nameParts = ["first", "father", "grandfather", "last"] as const;
 
@@ -30,12 +31,39 @@ export const emptyParts = (): NameParts => ({
   last: "",
 });
 
-export const partsComplete = (parts: NameParts) =>
-  nameParts.every((part) => parts[part].trim() !== "");
+/** The parts a legal name needs; the family name is only where there is one. */
+export const requiredParts: readonly NamePart[] = [
+  "first",
+  "father",
+  "grandfather",
+];
 
-/** The name as shown: the first and the fourth. */
+export const partsComplete = (parts: NameParts) =>
+  requiredParts.every((part) => parts[part].trim() !== "");
+
+/** The default name shown: the given and father's names. */
 export const displayName = (parts: NameParts) =>
-  [parts.first.trim(), parts.last.trim()].filter(Boolean).join(" ");
+  [parts.first.trim(), parts.father.trim()].filter(Boolean).join(" ");
+
+const LATIN_NAME =
+  /^[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F\u1E00-\u1EFF'’. -]+$/u;
+const ARABIC_NAME = /^[\u0621-\u065F\u0670-\u06D3\u06FA-\u06FF ]+$/u;
+
+/**
+ * Whether a name is written in its language's script: Latin letters in
+ * English, Arabic letters in Arabic (the database checks the same,
+ * `private.latin_name` and `private.arabic_name`). Empty is fine.
+ */
+export const inScript = (value: string, language: NameLanguage) => {
+  const v = value.trim();
+  if (!v) {
+    return true;
+  }
+  return (language === "ar" ? ARABIC_NAME : LATIN_NAME).test(v);
+};
+
+export const partsInScript = (parts: NameParts, language: NameLanguage) =>
+  nameParts.every((part) => inScript(parts[part], language));
 
 type ProfileNames = Partial<Record<NameColumn, string | null>> & {
   full_name_ar?: string | null;
@@ -68,10 +96,10 @@ export const partsFrom = (
   return parts;
 };
 
-/** All eight parts are given. */
+/** The legal name is complete in both languages. */
 export const hasFourPartNames = (profile: ProfileNames | null | undefined) =>
   (["en", "ar"] as const).every((language) =>
-    nameParts.every(
+    requiredParts.every(
       (part) => (profile?.[nameColumn(part, language)] ?? "").trim() !== ""
     )
   );
@@ -79,5 +107,12 @@ export const hasFourPartNames = (profile: ProfileNames | null | undefined) =>
 /** The update that saves one language's parts. */
 export const partsUpdate = (parts: NameParts, language: NameLanguage) =>
   Object.fromEntries(
-    nameParts.map((part) => [nameColumn(part, language), parts[part].trim()])
-  ) as Partial<Record<NameColumn, string>>;
+    nameParts.map((part) => [
+      nameColumn(part, language),
+      parts[part].trim() || null,
+    ])
+  ) as Partial<Record<NameColumn, string | null>>;
+
+/** Complete and in its language's letters: ready to save. */
+export const partsReady = (parts: NameParts, language: NameLanguage) =>
+  partsComplete(parts) && partsInScript(parts, language);

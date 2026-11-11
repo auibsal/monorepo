@@ -76,15 +76,32 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `core.my_private_profile`) gives the feminine form
   (`access.roles.name_ar_feminine`) on the Council page, the masthead,
   the card's role line and letters; documents keep the glossary's form.
-- **Names.** A name in four parts in each language, as on the person's
-  papers (`first_name_en` … `last_name_ar`), all eight required
-  (`NamePartsFields`, `hasAllNames`). Wherever a name shows, it is the
-  first and the fourth (`full_name_en`/`_ar`, kept by
-  `private.tidy_names`). The parts are the owner's alone
-  (`core.my_name_parts()`). One full name belongs to one account
-  (`private.one_person_one_name`). Wherever a person is named (bylines,
-  hosts, judges, roles), pick them from the register (`MemberPicker`,
-  `BylinePicker`); never type a name.
+- **Names** (decisions.md, Members). The **legal name** is kept in parts
+  in each language (`first_name_en` … `last_name_ar`): the given,
+  father's and grandfather's names are required, the family name only
+  where there is one; English parts in Latin letters and Arabic parts in
+  Arabic letters (`private.latin_name`, `private.arabic_name`,
+  `names.inScript`). It is used only on certificates, letters, signed forms,
+  minutes and lists for Student Life. The member checks it and locks it in
+  Your account → Settings → Profile (`core.lock_legal_name`); after that
+  only `members.manage` corrects it, with a reason
+  (`membership.correct_name`), and a locked name refuses the member's own
+  edits. The **preferred name** is one whole field per language
+  (`preferred_name_en`/`_ar`); empty means the default.
+  **One function decides the name shown**, `private.display_name()`: the
+  preferred name, else the given and father's names, else (for a guest,
+  or until the legal name is complete) the name given at sign-up
+  (`signup_name_*`). `full_name_en`/`_ar` keep its result, and every
+  surface reads them: the card, profiles, bylines, the Council page, Our
+  people, the masthead, Next Stop's team and credits, playbills, event
+  lists, greetings and Resend's first name (`private.greeting_name`: the
+  first word, with «عبد …» and «أبو …» kept whole). `members.manage` resets
+  a preferred name that misleads or offends
+  (`membership.reset_preferred_name`); corrections and resets are logged
+  with their reason, never the names. The parts are the owner's alone
+  (`core.my_name_parts()`). Names need not be unique. Wherever a person is
+  named (bylines, hosts, judges, roles), pick them from the register
+  (`MemberPicker`, `BylinePicker`); never type a name.
 - **One address, one person.** The optional personal email is set only
   through `core.request_personal_email` and counts once confirmed
   (`/personal-email/confirm`); it can't be an AUIB address or anyone

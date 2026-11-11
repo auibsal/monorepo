@@ -381,7 +381,7 @@ const NameStep = ({
 }) => {
   const t = useTranslations("diwan.setup");
   const id = useId();
-  const ready = nameParts.partsComplete(names[language]);
+  const ready = nameParts.partsReady(names[language], language);
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (ready && !pending) {
@@ -426,7 +426,11 @@ const autoComplete = (language: "en" | "ar", part: nameParts.NamePart) => {
   return part === "last" ? "family-name" : "off";
 };
 
-/** The four parts of a name in one language, all required. */
+/**
+ * The parts of a legal name in one language: the given, father's and
+ * grandfather's names required, the family name where there is one; each
+ * in its language's letters (the database checks the same).
+ */
 export const NamePartsFields = ({
   describedBy,
   language,
@@ -438,15 +442,21 @@ export const NamePartsFields = ({
   onChange: (parts: nameParts.NameParts) => void;
   parts: nameParts.NameParts;
 }) => {
-  const t = useTranslations("diwan.setup.name.parts");
+  const t = useTranslations("diwan.setup.name");
   const id = useId();
+  const wrongScript = !nameParts.partsInScript(parts, language);
   return (
     <div className="grid max-w-xl gap-4 sm:grid-cols-2">
       {nameParts.nameParts.map((part) => (
         <div className="grid gap-2" key={part}>
-          <Label htmlFor={`${id}-${part}`}>{t(part)}</Label>
+          <Label htmlFor={`${id}-${part}`}>{t(`parts.${part}`)}</Label>
           <Input
-            aria-describedby={describedBy}
+            aria-describedby={
+              [describedBy, wrongScript ? `${id}-script` : null]
+                .filter(Boolean)
+                .join(" ") || undefined
+            }
+            aria-invalid={!nameParts.inScript(parts[part], language)}
             autoComplete={autoComplete(language, part)}
             dir={language === "en" ? "ltr" : "rtl"}
             id={`${id}-${part}`}
@@ -455,11 +465,20 @@ export const NamePartsFields = ({
             onChange={(event) =>
               onChange({ ...parts, [part]: event.target.value })
             }
-            required
+            required={nameParts.requiredParts.includes(part)}
             value={parts[part]}
           />
         </div>
       ))}
+      {wrongScript ? (
+        <p
+          className="type-caption sm:col-span-2"
+          id={`${id}-script`}
+          role="alert"
+        >
+          {t(`script.${language}`)}
+        </p>
+      ) : null}
     </div>
   );
 };

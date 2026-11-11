@@ -102,8 +102,8 @@ returns void language plpgsql as $$
 begin
   insert into auth.users (id, email, email_confirmed_at, raw_user_meta_data, aud, role)
   values (uid, email, null, meta || jsonb_build_object(
-    'first_name_en', 'Visitor', 'father_name_en', 'Guestly', 'grandfather_name_en', 'Outside', 'last_name_en', right(uid::text, 4),
-    'first_name_ar', 'زائر', 'father_name_ar', 'ضيف', 'grandfather_name_ar', 'خارج', 'last_name_ar', right(uid::text, 4)),
+    'first_name_en', 'Visitor', 'father_name_en', 'Guestly', 'grandfather_name_en', 'Outside', 'last_name_en', 'Fourth',
+    'first_name_ar', 'زائر', 'father_name_ar', 'ضيف', 'grandfather_name_ar', 'خارج', 'last_name_ar', 'رابع'),
     'authenticated', 'authenticated');
 end;
 $$;

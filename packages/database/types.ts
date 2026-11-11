@@ -868,6 +868,7 @@ export type Database = {
           id: string;
           last_name_ar: string | null;
           last_name_en: string | null;
+          legal_name_locked_at: string | null;
           locale: string;
           mail_news: boolean;
           mail_paper: boolean;
@@ -875,11 +876,11 @@ export type Database = {
           parent_consent_at: string | null;
           personal_email: string | null;
           personal_email_verified_at: string | null;
-          preferred_first_ar: string | null;
-          preferred_first_en: string | null;
-          preferred_last_ar: string | null;
-          preferred_last_en: string | null;
+          preferred_name_ar: string | null;
+          preferred_name_en: string | null;
           setup_completed_at: string | null;
+          signup_name_ar: string | null;
+          signup_name_en: string | null;
           title_form: string | null;
           updated_at: string;
           verified_at: string | null;
@@ -904,6 +905,7 @@ export type Database = {
           id: string;
           last_name_ar?: string | null;
           last_name_en?: string | null;
+          legal_name_locked_at?: string | null;
           locale?: string;
           mail_news?: boolean;
           mail_paper?: boolean;
@@ -911,11 +913,11 @@ export type Database = {
           parent_consent_at?: string | null;
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
-          preferred_first_ar?: string | null;
-          preferred_first_en?: string | null;
-          preferred_last_ar?: string | null;
-          preferred_last_en?: string | null;
+          preferred_name_ar?: string | null;
+          preferred_name_en?: string | null;
           setup_completed_at?: string | null;
+          signup_name_ar?: string | null;
+          signup_name_en?: string | null;
           title_form?: string | null;
           updated_at?: string;
           verified_at?: string | null;
@@ -939,6 +941,7 @@ export type Database = {
           id?: string;
           last_name_ar?: string | null;
           last_name_en?: string | null;
+          legal_name_locked_at?: string | null;
           locale?: string;
           mail_news?: boolean;
           mail_paper?: boolean;
@@ -946,11 +949,11 @@ export type Database = {
           parent_consent_at?: string | null;
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
-          preferred_first_ar?: string | null;
-          preferred_first_en?: string | null;
-          preferred_last_ar?: string | null;
-          preferred_last_en?: string | null;
+          preferred_name_ar?: string | null;
+          preferred_name_en?: string | null;
           setup_completed_at?: string | null;
+          signup_name_ar?: string | null;
+          signup_name_en?: string | null;
           title_form?: string | null;
           updated_at?: string;
           verified_at?: string | null;
@@ -1318,6 +1321,7 @@ export type Database = {
         }[];
       };
       is_partner_guest: { Args: Record<PropertyKey, never>; Returns: boolean };
+      lock_legal_name: { Args: Record<PropertyKey, never>; Returns: string };
       mailing_recipients: {
         Args: { topic: string };
         Returns: {
@@ -1346,6 +1350,7 @@ export type Database = {
           grandfather_name_en: string;
           last_name_ar: string;
           last_name_en: string;
+          legal_name_locked_at: string;
         }[];
       };
       my_personal_email: {
@@ -6087,6 +6092,7 @@ export type Database = {
           last_ar: string;
           last_en: string;
           member: string;
+          reason: string;
         };
         Returns: undefined;
       };
@@ -6200,6 +6206,10 @@ export type Database = {
       reset_calendar_token: {
         Args: Record<PropertyKey, never>;
         Returns: string;
+      };
+      reset_preferred_name: {
+        Args: { member: string; reason: string };
+        Returns: undefined;
       };
       revoke_certificate: {
         Args: { certificate_id: string; reason: string };

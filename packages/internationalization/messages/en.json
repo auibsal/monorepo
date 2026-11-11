@@ -271,15 +271,19 @@
       "submit": "Continue",
       "name": {
         "title": "Your name",
-        "hint": "Your full name in four parts, as on your ID. Your card, the Register, certificates and bylines show your first and last.",
-        "needed": "Tell us your full name in English and in Arabic, in four parts. Your first and last appear on your membership card, the Council page, the Register and your certificates.",
+        "hint": "Your legal name, as on your ID: your given name, your father’s and grandfather’s, and your family name if you have one. English in Latin letters, Arabic in Arabic letters.",
+        "needed": "Tell us your legal name in English and in Arabic, as on your ID. It goes on certificates, letters and signed forms; everywhere else shows your preferred name.",
         "en": "Your name in English",
         "ar": "Your name in Arabic",
         "parts": {
           "first": "Name",
           "father": "Father’s name",
           "grandfather": "Grandfather’s name",
-          "last": "Family name"
+          "last": "Family name (if any)"
+        },
+        "script": {
+          "en": "Write your English name in Latin letters.",
+          "ar": "Write your Arabic name in Arabic letters."
         }
       },
       "personalEmailLater": "After graduation? You can add a personal email in Profile once you’re in.",
@@ -900,12 +904,22 @@
         "feminine": "Feminine"
       },
       "preferred": {
-        "title": "Preferred name (optional)",
-        "hint": "The name you go by, shown in place of your legal first or last name on the site, your card and the Council page. Your four-part legal name stays on your records.",
-        "first_en": "First name, in English",
-        "last_en": "Last name, in English",
-        "first_ar": "First name, in Arabic",
-        "last_ar": "Last name, in Arabic"
+        "title": "Preferred name",
+        "hint": "The name shown on the site, your card, bylines and credits, one for each language. Leave it empty to use the default: your given and father’s names.",
+        "en": "In English",
+        "ar": "In Arabic",
+        "useDefault": "Use the default",
+        "script": "Write each name in its language’s letters."
+      },
+      "legal": {
+        "title": "Legal name",
+        "check": "Check it",
+        "checkTitle": "Check your legal name",
+        "checkBody": "Make sure it matches your ID exactly. Once you confirm, you can’t change it; the Director of Membership corrects it if needed.",
+        "confirm": "Confirm and lock",
+        "edit": "Edit it",
+        "locked": "Locked on {date}. To correct it, write to membership@auibsal.org.",
+        "lockFailed": "Your legal name could not be locked. Save it complete first."
       }
     },
     "admin": {
@@ -1176,12 +1190,17 @@
         "studentLifeNotEligible": "Student Life says not eligible",
         "name": {
           "title": "Their name",
-          "body": "As on their papers, in four parts, in English and in Arabic. The member can change it themselves; correct it here when it differs from their official name. The activity log keeps that it was corrected, not the name.",
+          "body": "Their legal name as on their papers, in English and in Arabic. Correct it here when it differs from their official name; say why. The activity log keeps the reason, never the name.",
           "en": "In English",
           "ar": "In Arabic",
           "save": "Save the name",
           "saved": "Saved. The site now shows {name}.",
-          "taken": "Another account already has this full name. Check both accounts before saving."
+          "reason": "Reason for the correction",
+          "preferredTitle": "Preferred name",
+          "preferredBody": "Reset a preferred name that misleads or offends. The site then shows the default; the activity log keeps the reason.",
+          "preferredReason": "Reason for the reset",
+          "reset": "Reset to the default",
+          "resetDone": "Reset. The site shows the default name."
         },
         "departure": {
           "title": "Left AUIB",

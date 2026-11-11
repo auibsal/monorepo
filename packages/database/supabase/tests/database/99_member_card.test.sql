@@ -198,9 +198,9 @@ update core.profiles set first_name_en = '  Layla ', father_name_en = 'Omar',
   first_name_ar = 'ليلى', father_name_ar = 'عمر', grandfather_name_ar = 'علي', last_name_ar = 'حسن'
 where id = '00000000-0000-0000-0000-00000000ca01';
 select is((select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000ca01'),
-  'Layla Hassan', 'A member gives their name in four parts; the first and fourth show');
+  'Layla Omar', 'A member gives their name in parts; the given and father''s names show');
 select is((select full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000ca01'),
-  'ليلى حسن', 'and in Arabic');
+  'ليلى عمر', 'and in Arabic');
 
 -- The card's record: hidden unless the member turns it on.
 -- The card's check shows the name, class, status and member since only

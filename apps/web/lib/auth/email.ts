@@ -223,7 +223,10 @@ export const signUpWithEmail = async (
       ])
     )
   );
-  const named = Object.values(parts).every((part) => part !== "");
+  // The family name is only where there is one (decisions.md, Members).
+  const named = Object.entries(parts).every(
+    ([column, part]) => column.startsWith("last_") || part !== ""
+  );
   if (!(auib || named)) {
     return { code: "names_required", ok: false };
   }

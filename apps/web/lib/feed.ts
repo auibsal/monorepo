@@ -113,7 +113,7 @@ export const eventsFeed = async ({
   const path = "/events/feed.xml";
   const upcoming = await readPublished(
     ["events"],
-    (c) => events.publicEvents(c, { limit: LIMIT }),
+    async (c) => (await events.publicEvents(c, { limit: LIMIT })) ?? [],
     []
   );
   const items = upcoming

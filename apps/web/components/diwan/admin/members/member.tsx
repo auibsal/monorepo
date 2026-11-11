@@ -3,6 +3,7 @@
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import {
   formatDateTime,
@@ -11,11 +12,10 @@ import {
 } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { access, localized, membership, names, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
-import { isNameTaken } from "@/lib/diwan/errors";
 import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
@@ -725,15 +725,18 @@ const Departure = ({ name, userId }: { name: string; userId: string }) => {
 };
 
 /**
- * The member's name as on their papers (decisions.md), in four parts and
- * both languages. The member writes it themselves; an officer who manages
- * members corrects it here (`membership.correct_name`), and the activity
- * log keeps which parts changed, never the names.
+ * The member's legal name as on their papers (decisions.md, Members), in
+ * parts and both languages. Once the member has locked it, only an officer
+ * who manages members corrects it here (`membership.correct_name`), with a
+ * reason; the activity log keeps the reason and which parts changed, never
+ * the names. A preferred name that misleads or offends is reset to the
+ * default the same way (`membership.reset_preferred_name`).
  */
 const NameCorrection = ({ userId }: { userId: string }) => {
   const t = useTranslations("diwan.admin.member.name");
   const locale = useLocale();
   const ts = useTranslations("diwan.setup.name");
+  const id = useId();
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const current = useQuery({
@@ -751,6 +754,8 @@ const NameCorrection = ({ userId }: { userId: string }) => {
     queryKey: ["admin", "member-name", userId],
   });
   const [draft, setDraft] = useState<names.FourPartNames | null>(null);
+  const [reason, setReason] = useState("");
+  const [resetReason, setResetReason] = useState("");
   const parts: names.FourPartNames = draft ?? {
     ar: names.partsFrom(current.data, "ar"),
     en: names.partsFrom(current.data, "en"),
@@ -768,13 +773,28 @@ const NameCorrection = ({ userId }: { userId: string }) => {
           last_ar: parts.ar.last.trim(),
           last_en: parts.en.last.trim(),
           member: userId,
+          reason: reason.trim(),
         })
       );
-      // The name as the site now shows it, in this page's language.
+      // The default name shown, in this page's language.
       return names.displayName(parts[locale === "ar" ? "ar" : "en"]);
     },
     onSuccess: async () => {
       setDraft(null);
+      setReason("");
+      await queryClient.invalidateQueries({ queryKey: ["admin"] });
+    },
+  });
+  const reset = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase.schema("membership").rpc("reset_preferred_name", {
+          member: userId,
+          reason: resetReason.trim(),
+        })
+      ),
+    onSuccess: async () => {
+      setResetReason("");
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
     },
   });
@@ -782,11 +802,21 @@ const NameCorrection = ({ userId }: { userId: string }) => {
     return <SectionSpinner />;
   }
   const complete =
-    names.partsComplete(parts.en) && names.partsComplete(parts.ar);
+    names.partsComplete(parts.en) &&
+    names.partsComplete(parts.ar) &&
+    names.partsInScript(parts.en, "en") &&
+    names.partsInScript(parts.ar, "ar");
+  const reasoned = reason.trim().length >= 3;
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (complete) {
+    if (complete && reasoned) {
       save.mutate();
+    }
+  };
+  const submitReset = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (resetReason.trim().length >= 3) {
+      reset.mutate();
     }
   };
   return (
@@ -805,9 +835,19 @@ const NameCorrection = ({ userId }: { userId: string }) => {
           </fieldset>
         ))}
         <p className="type-caption">{ts("hint")}</p>
+        <div className="grid max-w-xl gap-2">
+          <Label htmlFor={`${id}-reason`}>{t("reason")}</Label>
+          <Input
+            id={`${id}-reason`}
+            maxLength={300}
+            onChange={(event) => setReason(event.target.value)}
+            required
+            value={reason}
+          />
+        </div>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           <Button
-            disabled={!(complete && draft) || save.isPending}
+            disabled={!(complete && draft && reasoned) || save.isPending}
             type="submit"
             variant="outline"
           >
@@ -819,13 +859,38 @@ const NameCorrection = ({ userId }: { userId: string }) => {
             </p>
           ) : null}
         </div>
-        {isNameTaken(save.error) ? (
-          <p className="type-body" role="alert">
-            {t("taken")}
-          </p>
-        ) : (
-          <ErrorLine error={save.error} />
-        )}
+        <ErrorLine error={save.error} />
+      </form>
+      <form className="grid gap-3" onSubmit={submitReset}>
+        <h3 className="type-subheading">{t("preferredTitle")}</h3>
+        <p className="type-body text-text-secondary max-w-2xl">
+          {t("preferredBody")}
+        </p>
+        <div className="grid max-w-xl gap-2">
+          <Label htmlFor={`${id}-reset-reason`}>{t("preferredReason")}</Label>
+          <Input
+            id={`${id}-reset-reason`}
+            maxLength={300}
+            onChange={(event) => setResetReason(event.target.value)}
+            required
+            value={resetReason}
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <Button
+            disabled={resetReason.trim().length < 3 || reset.isPending}
+            type="submit"
+            variant="outline"
+          >
+            {t("reset")}
+          </Button>
+          {reset.isSuccess ? (
+            <p className="type-body" role="status">
+              {t("resetDone")}
+            </p>
+          ) : null}
+        </div>
+        <ErrorLine error={reset.error} />
       </form>
     </section>
   );

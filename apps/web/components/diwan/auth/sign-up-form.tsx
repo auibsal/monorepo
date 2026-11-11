@@ -122,8 +122,8 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   });
   const external = Boolean(outside);
   const named =
-    nameParts.partsComplete(fullNames.en) &&
-    nameParts.partsComplete(fullNames.ar);
+    nameParts.partsReady(fullNames.en, "en") &&
+    nameParts.partsReady(fullNames.ar, "ar");
   // Students join themselves and say so (decisions §2); faculty and staff
   // ask for Associate membership on /join instead.
   const [student, setStudent] = useState(false);
