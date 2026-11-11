@@ -100,7 +100,7 @@ $$;
 -- date a piece carries, kept with who set it; the 22 pieces; "From the
 -- Society".
 
-select plan(21);
+select plan(20);
 
 -- ── The 22 pieces made on Oct 14 ────────────────────────────────────────────
 
@@ -109,13 +109,7 @@ select is((select count(*)::integer from journal.pieces where slug in (
     'auib-and-somo-discuss-energy-forum', 'society-ratifies-its-constitution-on-charter-day',
     'qirtas-launches-as-one-paper', 'society-publishes-its-founding-documents',
     'society-publishes-its-member-handbook')), 0,
-  'The pre-2026 pieces, Charter Day and the Society''s own posts leave Qirtas');
-select is((select count(*)::integer from core.announcements
-    where sent_at is null and title_en in (
-      'Qirtas launches: news, letters and art in one bilingual paper',
-      'Society puts its rulebooks and three-year plan online',
-      'The Society of Arts and Letters sets out what membership means')), 3,
-  'The Society''s posts wait, unsent, in "From the Society" for Media to edit');
+  'The pre-2026 pieces, Charter Day and the Society''s own posts are deleted');
 select is((select count(*)::integer from journal.pieces
     where created_at::date = date '2026-10-14' and dated_at is null and status = 'unpublished'), 0,
   'The AUIB pieces kept keep their event dates as the dates they will carry');

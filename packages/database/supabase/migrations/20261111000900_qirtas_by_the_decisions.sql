@@ -6,9 +6,9 @@
 --      copy edited before it runs.
 --   3. An editor may set the date a piece carries (on or near its event),
 --      and each change is kept: who set it and when.
---   4. The 22 pieces made on Oct 14: the three pre-2026 pieces and Charter
---      Day are deleted; the Society's own posts leave News for "From the
---      Society", where Media edits them to what happened before they go out.
+--   4. The 22 pieces made on Oct 14: the three pre-2026 pieces, Charter Day
+--      and the Society's own posts are deleted; the 15 AUIB pieces wait for
+--      their staff writers.
 --   5. "From the Society" on the front page: the notices already sent.
 
 -- ── 1. Names or text, never both ────────────────────────────────────────────
@@ -283,42 +283,10 @@ $$;
 
 -- ── 4. The 22 pieces made on Oct 14 ─────────────────────────────────────────
 
--- The Society's own posts that stay become notices not yet sent, for Media
--- to edit to what happened ("Qirtas launches" becomes the Nov 8 launch)
--- before the President sends them.
-insert into core.announcements (title_en, title_ar, body_en, body_ar, link_path)
-select v.title_en, v.title_ar, v.body_en, v.body_ar, v.link_path
-from (values
-  (
-    'qirtas-launches-as-one-paper',
-    'Qirtas launches: news, letters and art in one bilingual paper',
-    'انطلاق «قرطاس»: الأخبار والأدب والفن في صحيفة واحدة بلغتين',
-    'The Society brings its literary journal, campus news, the gallery, Six Words and Next Stop into one paper with six sections. Edition 1 opens for submissions on October 25.',
-    'تجمع الجمعية مجلتها الأدبية وأخبار الحرم الجامعي والمعرض و«ست كلمات» و«المحطة التالية» في صحيفة واحدة من ستة أقسام. يُفتح الإصدار الأول لاستقبال المشاركات في 25 تشرين الأول.',
-    '/qirtas'
-  ),
-  (
-    'society-publishes-its-founding-documents',
-    'Society puts its rulebooks and three-year plan online',
-    'الجمعية تنشر لوائحها وخطتها للسنوات الثلاث على الإنترنت',
-    'The Bylaws, the Policy Manual, Roles and Staffing and the Strategic Plan join the Constitution in the Library at auibsal.org/library.',
-    'ينضم النظام الداخلي ودليل السياسات والأدوار والملاك والخطة الاستراتيجية إلى الدستور في المكتبة على auibsal.org/library.',
-    '/library'
-  ),
-  (
-    'society-publishes-its-member-handbook',
-    'The Society of Arts and Letters sets out what membership means',
-    'جمعية الفنون والآداب تبيّن ما تعنيه العضوية',
-    'Free, open to every AUIB student, in Arabic and English: the Member Handbook introduces Qirtas, the Company and six programs.',
-    'مجاني ومفتوح لكل طالب في الجامعة الأمريكية في بغداد، بالعربية والإنجليزية: يعرّف دليل العضو بـ«قرطاس» والفرقة وستة برامج.',
-    '/library/member-handbook'
-  )
-) as v (slug, title_en, title_ar, body_en, body_ar, link_path)
-where exists (select 1 from journal.pieces p where p.slug = v.slug and p.status <> 'published')
-  and not exists (select 1 from core.announcements a where a.title_en = v.title_en);
-
--- Deleted: the three pre-2026 pieces and Charter Day, and the Society's
--- posts now in "From the Society". Never anything already out.
+-- Deleted: the three pre-2026 pieces, Charter Day and the Society's own
+-- posts, which two "From the Society" notices dated Nov 8 replace ("auibsal.org
+-- is open" and "The Society's documents are online"), published by Media.
+-- Never anything already out.
 delete from journal.pieces
 where status <> 'published'
   and slug in (

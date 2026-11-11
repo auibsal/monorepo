@@ -56,21 +56,18 @@ Part A first).
   p.m.: an unpublished draft on the site and Planning in Notion until its
   room is confirmed, then Ready to publish.
 - [x] **The 22 pieces made on Oct 14** (decisions.md, Qirtas): the three
-  pre-2026 pieces and Charter Day are deleted; the 15 AUIB pieces stay
-  unpublished, each keeping its event date as the date it will carry
-  (`journal.pieces.dated_at`).
-- [ ] **The 15 AUIB pieces:** each runs once the Qirtas chat sends its
-  edited text and its writer. The editor reopens it, pastes the text,
-  bylines the writer (who confirms first), checks the date it carries
-  (Where it stands → The date it carries; each change is kept with who
-  made it) and gives the approvals: the section editor, the
-  Editor-in-Chief or the Managing Editor, and the copy edit.
-- [ ] **"From the Society": three notices to edit.** The Society's own
-  posts left News for the Announcements page (Council → Announcements),
-  unsent, with their old text: "Qirtas launches" becomes the Nov 8
-  launch, and the membership and rulebooks posts say only what happened.
-  Media edits each and the President tests and sends it; the front page
-  shows notices once sent.
+  pre-2026 pieces, Charter Day and the Society's own posts are deleted;
+  the 15 AUIB pieces stay unpublished, each keeping its event date as the
+  date it will carry (`journal.pieces.dated_at`).
+- [ ] **The 15 AUIB pieces** go through the staff lane: each is assigned
+  to a staff writer, who writes it anew from the Qirtas chat's fact sheet;
+  it runs under the writer's byline, dated on or near its event (Where it
+  stands → The date it carries; each change is kept with who made it).
+  The AI text is deleted once each is rewritten. Pieces 5 and 15 are the
+  News editor's call.
+- [ ] **"From the Society": two notices dated Nov 8** ("auibsal.org is
+  open" and "The Society's documents are online"), published by Media in
+  the stream.
 - [ ] **The copy desk:** until a Copy Chief or copy editor is appointed,
   the Editor-in-Chief or the Managing Editor gives the copy edit on text
   pieces (it is required on every News, Voices and Letters piece).
