@@ -222,6 +222,12 @@ test("an officer who manages members corrects a member's name to the official on
   });
   expect(created.error).toBeNull();
   const memberId = created.data.user?.id ?? "";
+  // A member who has seen how their name appears on the site.
+  await db
+    .schema("core")
+    .from("profiles")
+    .update({ name_confirmed_at: new Date().toISOString() })
+    .eq("id", memberId);
 
   // The General Secretary covers Membership and signs in with two steps.
   const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
@@ -253,18 +259,21 @@ test("an officer who manages members corrects a member's name to the official on
       "Name",
       "Father’s name",
       "Grandfather’s name",
-      "Family name",
+      "Family name (if any)",
     ];
     for (const [index, label] of labels.entries()) {
       await group.getByLabel(label, { exact: true }).fill(parts[index] ?? "");
     }
   };
-  // The grandfather's name is unique per run: one person, one full name.
-  await fill(english, ["Mariam", "Tariq", `Ziyad${stamp}`, "Jabbir"]);
-  await fill(arabic, ["مريم", "طارق", `زياد${stamp}`, "جابر"]);
+  await fill(english, ["Mariam", "Tariq", "Ziyad", "Jabbir"]);
+  await fill(arabic, ["مريم", "طارق", "زياد", "جابر"]);
+  await page
+    .getByLabel("Reason for the correction")
+    .fill("Matches the AUIB register.");
   await page.getByRole("button", { name: "Save the name" }).click();
+  // The name shown is the given and father's names.
   await expect(
-    page.getByText("Saved. The site now shows Mariam Jabbir.")
+    page.getByText("Saved. The site now shows Mariam Tariq.")
   ).toBeVisible();
 
   const saved = await db
@@ -274,8 +283,8 @@ test("an officer who manages members corrects a member's name to the official on
     .eq("id", memberId)
     .single();
   expect(saved.data).toEqual({
-    full_name_ar: "مريم جابر",
-    full_name_en: "Mariam Jabbir",
+    full_name_ar: "مريم طارق",
+    full_name_en: "Mariam Tariq",
   });
   await expectAccessible(page);
 });
