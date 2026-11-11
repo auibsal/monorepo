@@ -129,7 +129,7 @@ grant all on ids to public;
 
 select is(
   (select array_agg(code order by sort) from governance.form_types where filled = 'site'),
-  array['F-06', 'F-10', 'F-11', 'F-15', 'F-17', 'F-21', 'F-26', 'F-37', 'F-38', 'F-39', 'F-44', 'F-45'],
+  array['F-06', 'F-10', 'F-11', 'F-15', 'F-17', 'F-21', 'F-26', 'F-37', 'F-38', 'F-39', 'F-45', 'F-46'],
   'The forms signed on the site'
 );
 select is(

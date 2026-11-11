@@ -1,4 +1,4 @@
--- One person, one name, and the public forms' rate limit
+-- Names may be shared, preferred names, and the public forms' rate limit
 -- (migration 20261101001500).
 begin;
 -- <preamble>
@@ -95,48 +95,34 @@ as $$
 $$;
 -- </preamble>
 
-select plan(7);
+select plan(6);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b1a1', 'one-a@auib.edu.iq', 'One A');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b1a2', 'one-b@auib.edu.iq', 'One B');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b1a1');
 select lives_ok(
-  $$ update core.profiles set first_name_en = 'Shaheen', father_name_en = 'Karam',
-       grandfather_name_en = 'Muwafaq', last_name_en = 'Farjo'
+  $$ update core.profiles set first_name_en = 'Omar', father_name_en = 'Ali',
+       grandfather_name_en = 'Hassan', last_name_en = 'Kareem'
      where id = '00000000-0000-0000-0000-00000000b1a1' $$,
   'A member gives their full name');
 
-select pg_temp.login_as('00000000-0000-0000-0000-00000000b1a2');
-select throws_ok(
-  $$ update core.profiles set first_name_en = ' shaheen ', father_name_en = 'Karam',
-       grandfather_name_en = 'Muwafaq', last_name_en = 'FARJO'
-     where id = '00000000-0000-0000-0000-00000000b1a2' $$,
-  '23505', 'name_taken',
-  'Another account cannot take the same four parts, whatever the case or spacing');
-select lives_ok(
-  $$ update core.profiles set first_name_en = 'Shaheen', father_name_en = 'Karam',
-       grandfather_name_en = 'Muwafaq', last_name_en = 'Farjo-Ali'
-     where id = '00000000-0000-0000-0000-00000000b1a2' $$,
-  'A different fourth name is another person');
-
-select pg_temp.login_as('00000000-0000-0000-0000-00000000b1a1');
-select lives_ok(
-  $$ update core.profiles set camera_shy = true where id = '00000000-0000-0000-0000-00000000b1a1' $$,
-  'Saving anything else never trips the rule');
-
--- A name shared before the rule stays, and can still save other things.
-select pg_temp.logout();
-alter table core.profiles disable trigger one_person_one_name;
-update core.profiles set first_name_en = 'Shaheen', father_name_en = 'Karam',
-  grandfather_name_en = 'Muwafaq', last_name_en = 'Farjo'
-  where id = '00000000-0000-0000-0000-00000000b1a2';
-alter table core.profiles enable trigger one_person_one_name;
+-- Two people may share a name (decisions §19): no uniqueness rule.
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b1a2');
 select lives_ok(
-  $$ update core.profiles set first_name_en = 'Shaheen', camera_shy = true
+  $$ update core.profiles set first_name_en = 'Omar', father_name_en = 'Ali',
+       grandfather_name_en = 'Hassan', last_name_en = 'Kareem'
      where id = '00000000-0000-0000-0000-00000000b1a2' $$,
-  'An older shared name can still save the rest');
+  'Another account may have the same four parts');
+
+-- A preferred name is the one shown.
+select lives_ok(
+  $$ update core.profiles set preferred_first_en = 'Omi'
+     where id = '00000000-0000-0000-0000-00000000b1a2' $$,
+  'A member gives a preferred first name');
+select is(
+  (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000b1a2'),
+  'Omi Kareem', 'and it is the name shown');
 
 -- The public forms' rate limit (service role only).
 select pg_temp.logout();

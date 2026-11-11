@@ -96,7 +96,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(24);
+select plan(23);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
@@ -174,8 +174,8 @@ select ok(membership.is_member(), 'An approved account is a member');
 
 select is(
   (select pending_pledges from membership.my_status()),
-  array['human_authorship', 'member']::membership.pledge_type[],
-  'Both pledges are pending for a new member'
+  array['member']::membership.pledge_type[],
+  'The Code of Conduct acknowledgment is pending for a new member (decisions §19)'
 );
 select throws_ok(
   $$ select membership.accept_pledge('member', '0') $$,
@@ -183,9 +183,7 @@ select throws_ok(
   'An out-of-date pledge version is refused'
 );
 select lives_ok($$ select membership.accept_pledge('member', '1') $$, 'Accepting the current Member Pledge');
-select lives_ok($$ select membership.accept_pledge('human_authorship', '1') $$,
-  'Accepting the current Human Authorship pledge');
-select ok(membership.has_current_pledges(), 'Both pledges are current');
+select ok(membership.has_current_pledges(), 'The pledge is current');
 
 select pg_temp.logout();
 update core.settings set value = '"2"' where key = 'pledges.member.version';

@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(31);
+select plan(27);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca01', 'card.one@auib.edu.iq', 'Card One');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca02', 'card.two@auib.edu.iq', 'Card Two');
@@ -201,25 +201,6 @@ select is((select full_name_en from core.profiles where id = '00000000-0000-0000
   'Layla Hassan', 'A member gives their name in four parts; the first and fourth show');
 select is((select full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000ca01'),
   'ليلى حسن', 'and in Arabic');
-
--- Details
-insert into core.member_details (affiliation, interests, research_consent)
-values ('student', array['poetry', 'theater'], true);
-select is((select affiliation from core.member_details), 'student',
-  'A member keeps their own details');
-select throws_ok(
-  $$ insert into core.member_details (user_id, affiliation)
-     values ('00000000-0000-0000-0000-00000000ca02', 'student') $$,
-  '42501', null, 'but not anyone else''s'
-);
-
-select pg_temp.login_as('00000000-0000-0000-0000-00000000ca02');
-select is((select count(*)::integer from core.member_details), 0,
-  'Members do not read each other''s details');
-
-select pg_temp.login_as('00000000-0000-0000-0000-00000000ca04');
-select is(((core.member_insights()) ->> 'counted')::integer, 1,
-  'Member managers see counts of the members who agreed to be counted');
 
 -- The card's record: hidden unless the member turns it on.
 -- The card's check shows the name, class, status and member since only

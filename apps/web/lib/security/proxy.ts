@@ -94,6 +94,12 @@ const securityHeaders = (
   ["Cross-Origin-Opener-Policy", "same-origin"],
   ["Cross-Origin-Resource-Policy", "same-origin"],
   ["Origin-Agent-Cluster", "?1"],
+  // The camera for scanning cards at the door and at Tour stations; no
+  // microphone, location, payment or interest tracking (audit SVC-03).
+  [
+    "Permissions-Policy",
+    "camera=(self), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()",
+  ],
   // The origin on cross-site requests (analytics attribution), never the
   // full URL.
   ["Referrer-Policy", "strict-origin-when-cross-origin"],
@@ -104,7 +110,7 @@ const securityHeaders = (
   ["X-Download-Options", "noopen"],
   ...(options.frameable
     ? []
-    : ([["X-Frame-Options", "SAMEORIGIN"]] as [string, string][])),
+    : ([["X-Frame-Options", "DENY"]] as [string, string][])),
   ["X-Permitted-Cross-Domain-Policies", "none"],
   ["X-XSS-Protection", "0"],
 ];

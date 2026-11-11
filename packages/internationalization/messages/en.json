@@ -98,11 +98,11 @@
       "no_account": "No account uses this address. Check it, or create your account if you study at AUIB.",
       "breached_password": "This password has appeared in a data breach elsewhere, so it isn’t safe. Choose another.",
       "reauthentication_needed": "For your security, confirm it’s you first: enter the code we just emailed you.",
-      "terms_required": "To join, confirm that you are 18 or older and agree to the Terms of Use and the Privacy Notice."
+      "terms_required": "To join, answer whether you’re 18 or older (a student under 18 gives a parent’s email) and agree to the Terms of Use and the Privacy Notice."
     },
     "signIn": {
       "title": "Sign in",
-      "description": "The members’ portal of the AUIB Society of Arts and Letters.",
+      "description": "Your account with the AUIB Society of Arts and Letters.",
       "submit": "Sign in",
       "submitting": "Signing in…",
       "magicLink": "Email me a sign-in link instead",
@@ -137,7 +137,16 @@
       "resendIn": "Send the email again in {seconds} s",
       "resent": "Sent. Check your inbox and spam folder.",
       "student": "I’m an enrolled AUIB student. (Faculty and staff: ask for Associate membership on Join.)",
-      "agree": "I am 18 or older, and I agree to the <terms>Terms of Use</terms> and the <privacy>Privacy Notice</privacy>."
+      "agree": "I agree to the <terms>Terms of Use</terms> and the <privacy>Privacy Notice</privacy>.",
+      "adultQuestion": "Are you 18 or older?",
+      "adultYes": "Yes, 18 or older",
+      "adultNo": "No, under 18",
+      "adultGuest": "I’m 18 or older.",
+      "minorHint": "Any enrolled AUIB student may join, whatever their age. Your month and year of birth are used only to lift the rules for members under 18 when you turn 18, and are then deleted. Once you confirm your email, we send your parent or guardian a link to give their consent; until they do, your account is limited.",
+      "birthMonth": "Month of birth",
+      "birthYear": "Year of birth",
+      "parentEmail": "Your parent’s or guardian’s email",
+      "parentHint": "Used only to send the consent link."
     },
     "forgot": {
       "title": "Reset your password",
@@ -247,11 +256,11 @@
         "accept": "I make the Human Authorship pledge"
       },
       "member": {
-        "title": "Member Pledge",
-        "why": "Why we ask: every member signs it. It’s the promise that keeps the Society’s rooms, events and channels kind and safe for everyone.",
-        "body": "As a member of the Society of Arts and Letters, I will treat everyone with courtesy and every piece of work with care. I will critique the work and never the person. I will respect consent, before a camera and on the page. I will be honest with the Society’s money and its members’ trust. I will keep what is confidential, keep my word or say early that I cannot, and leave every room better than I found it.",
-        "accept": "I make the Member Pledge",
-        "read": "Read the full pledge"
+        "title": "Code of Conduct",
+        "why": "Why we ask: every member acknowledges it. It’s what keeps the Society’s rooms, events and channels kind and safe for everyone.",
+        "body": "I have read the Code of Conduct and will follow it: I treat everyone with courtesy and every piece of work with care, I critique the work and never the person, I respect consent before a camera and on the page, and I keep what is confidential.",
+        "accept": "I acknowledge the Code of Conduct",
+        "read": "Read the Code of Conduct"
       },
       "renewed": "A pledge has a new version. Please read and accept it again.",
       "preferences": "Your choices",
@@ -342,13 +351,14 @@
         "title": "Voting eligibility",
         "progress": "{count} of 2 activities this semester and last",
         "founding": "You’re one of the Society’s first 100 members, so you’re a Voting Member until {date}. After that, two recorded activities keep your vote.",
-        "rule": "A Voting Member has two recorded activities in the current or previous semester.",
+        "rule": "A Voting Member has attended two events or general meetings in the 12 months before the election’s record date.",
         "history": "Activity history",
         "noHistory": "No activities recorded yet. Checking in at an event counts."
       },
       "journal": {
         "title": "Qirtas",
         "openCall": "{call} closes {date}",
+        "openCallNoDate": "{call} is open; its closing date is still to be set",
         "daysLeft": "{days, plural, one {{daysText} day left} other {{daysText} days left}}",
         "submit": "Write for Qirtas",
         "none": "No Edition call is open. Qirtas takes work all year."
@@ -387,7 +397,8 @@
           "tour": "Your profile and the Tour’s page"
         },
         "takenDown": "The editors have kept this page off the site.",
-        "notTranscribed": "Photographed at the Tour; the Tour lead types its words in soon."
+        "notTranscribed": "Photographed at the Tour; the Tour lead types its words in soon.",
+        "fullName": "Show my full name on the Tour’s page (otherwise, first name and last initial)"
       },
       "tiers": {
         "member": "Member",
@@ -855,6 +866,14 @@
         "unset": "Not given",
         "masculine": "Masculine",
         "feminine": "Feminine"
+      },
+      "preferred": {
+        "title": "Preferred name (optional)",
+        "hint": "The name you go by, shown in place of your legal first or last name on the site, your card and the Council page. Your four-part legal name stays on your records.",
+        "first_en": "First name, in English",
+        "last_en": "Last name, in English",
+        "first_ar": "First name, in Arabic",
+        "last_ar": "Last name, in Arabic"
       }
     },
     "admin": {
@@ -1460,7 +1479,6 @@
           "lede": "Openings on Get involved: team roles, event teams and Qalam mentors. Members who say they’re interested are listed here, and each one is also emailed to the event leads. Close the opening once it’s filled.",
           "title": "Title",
           "body": "What it involves",
-          "skills": "Skills it wants",
           "closes": "Closes (optional)",
           "empty": "No openings here yet.",
           "open": "Open",
@@ -1505,7 +1523,18 @@
             "qalam_mentor": "A mentor’s place in Qalam. Students never get accounts: record nothing about them here."
           },
           "event": "Event",
-          "chooseEvent": "Choose an event"
+          "chooseEvent": "Choose an event",
+          "eligibility": "Who may apply",
+          "questions": "The application’s questions",
+          "question": "Question {n}",
+          "questionRequired": "Required",
+          "questionRemove": "Remove",
+          "questionAdd": "Add a question",
+          "asksFiles": "Ask for links to the applicant’s work",
+          "secondReviewer": "Second reviewer",
+          "ebResolution": "Executive Board resolution",
+          "ebHint": "A director seat opens on Get involved only once its approval is recorded (decisions §4).",
+          "ebPlaceholder": "R-2026-01"
         },
         "removalsTitle": "Takedown requests",
         "none": "No event is yours to run yet. Roles are assigned on a member’s page.",
@@ -2218,19 +2247,27 @@
           "receive": "Mark received",
           "notReceived": "Not yet received"
         },
-        "places": {
-          "lede": "Places with partners on Get involved: an internship, a volunteer place or a role at one of our partners. Anyone can read them; members reply.",
-          "empty": "No places with partners yet.",
-          "closed": "Closed",
-          "close": "Close",
-          "reopen": "Reopen",
-          "new": "Post a place with a partner",
-          "partner": "Partner",
-          "choose": "Choose a partner",
-          "title": "Title",
-          "body": "What it involves",
-          "post": "Post the place",
-          "back": "All places with partners"
+        "supporters": {
+          "title": "With the support of",
+          "lede": "AUIB’s own offices, shown under “With the support of” on the partners page. They support the Society but aren’t partners.",
+          "hidden": "hidden",
+          "hide": "Hide",
+          "show": "Show",
+          "remove": "Remove",
+          "removeConfirm": "The office comes off the partners page and off this list.",
+          "add": "Add an office",
+          "name": "Name",
+          "url": "Link",
+          "urlHint": "The office’s page on AUIB’s site.",
+          "logo": "Logo",
+          "noLogo": "No logo: the name is shown",
+          "logos": {
+            "auib": "AUIB",
+            "student-life": "Student Life",
+            "cas": "College of Arts and Sciences",
+            "press": "AUIB Press",
+            "library": "AUIB Library"
+          }
         }
       },
       "recognition": {
@@ -2354,7 +2391,7 @@
       },
       "productions": {
         "title": "The Company",
-        "lede": "Staged readings and productions, from proposal to the production report (Form F-25). The script’s rights are cleared before any performance.",
+        "lede": "Staged readings and productions, from proposal to the production report. The script’s rights are cleared before any performance.",
         "new": "New production",
         "newTitle": "Propose a production",
         "empty": "No productions yet. The President or Vice President proposes one; a Production Lead runs it.",
@@ -2448,7 +2485,20 @@
           "note": "Panel note",
           "notePlaceholder": "A note for the panel",
           "addNote": "Add note",
-          "notesPrivate": "Panel notes are seen only by whoever runs this production, never by the person auditioning."
+          "notesPrivate": "Panel notes are seen only by whoever runs this production, never by the person auditioning.",
+          "score": {
+            "title": "Score sheet (F-25)",
+            "criteria": {
+              "presence": "Presence",
+              "voice": "Voice and clarity",
+              "note": "Takes a note",
+              "fit": "Fit for the role",
+              "commitment": "Commitment"
+            },
+            "notes": "Notes on the work (write “recused” if you are close to them)",
+            "save": "Save my scores",
+            "total": "{total}/25"
+          }
         },
         "creditsTab": {
           "lede": "Cast, crew and the creative team. Members choose for themselves whether their name appears on the public page.",
@@ -2497,7 +2547,7 @@
           "partnersNote": "A production’s partners are the partners its performances are held with: set Host on the event in Notion, and use the event’s partner checklist."
         },
         "reportTab": {
-          "lede": "The production report (Form F-25, section B), filed once the production closes.",
+          "lede": "The production report, filed once the production closes.",
           "people": "People reached",
           "what": "What happened",
           "lessons": "Three lessons",
@@ -2895,7 +2945,7 @@
       },
       "hiring": {
         "title": "Hiring",
-        "lede": "Every role on Get involved. The General Secretary runs each one: the applications, the conversations, the offer and the onboarding. The role’s owner picks the person: the Editor-in-Chief the masthead, the President the event leads, the General Secretary the Tour Lead, each director their team.",
+        "lede": "Every role on Get involved. The seat that hires for a role runs it with a second reviewer: the applications, the interviews (F-02), the shortlist and the offer. A director seat is appointed by the President after the Executive Board’s resolution and Student Life’s “eligible”.",
         "empty": "No roles posted yet.",
         "open": "Open",
         "closed": "Closed",
@@ -2910,32 +2960,61 @@
         "closes": "Applications close",
         "owners": {
           "program": "An event team",
-          "qirtas": "Qirtas",
-          "media": "Media",
-          "partnerships": "The Vice President",
-          "membership": "The General Secretary",
-          "council": "The Council"
+          "qirtas": "The Editor-in-Chief",
+          "media": "The Director of Media",
+          "partnerships": "The Director of Partnerships",
+          "membership": "The Director of Membership",
+          "council": "The President"
         },
         "status": {
-          "new": "New",
-          "talking": "Conversation scheduled",
-          "picked": "Picked",
-          "not_picked": "Not this time",
+          "draft": "Draft",
+          "new": "Received",
+          "talking": "Interview",
+          "picked": "Shortlisted",
+          "not_picked": "Not chosen",
           "offered": "Offer made",
-          "onboarded": "Onboarded",
+          "accepted": "Accepted; to be appointed",
+          "onboarded": "Appointed",
+          "declined": "Declined",
           "withdrawn": "Withdrawn"
         },
         "steps": {
-          "picked": "Pick",
-          "not_picked": "Not this time",
-          "offered": "Offer made",
-          "onboarded": "Onboarded",
-          "withdrawn": "Withdraw"
+          "picked": "Shortlist",
+          "not_picked": "Not chosen",
+          "offered": "Make the offer"
         },
         "role": "Role",
         "roleHint": "Every role the Society has, by who picks the person. Whoever is onboarded holds it.",
         "roleTitleHint": "Leave empty to use the role’s name, or give its own title (“Tour Lead”).",
-        "back": "All roles"
+        "back": "All roles",
+        "lang": {
+          "en": "writes in English",
+          "ar": "writes in Arabic"
+        },
+        "availability": "Availability",
+        "links": "Links to work",
+        "accommodation": "Accommodation requested",
+        "gpaConsent": "Consented to the GPA check on",
+        "eligibleOn": "Student Life: eligible, {date}",
+        "eligibleWaiting": "Waiting for Student Life’s answer on the GPA check.",
+        "markEligible": "Student Life says eligible",
+        "resolution": "Executive Board resolution",
+        "appoint": "Appoint",
+        "reviews": "Reviews",
+        "recused": "recused",
+        "score": "{n} of 5",
+        "scoreLabel": "Score (1–5)",
+        "notes": "Notes",
+        "saveReview": "Save my review",
+        "recuse": "I recuse myself",
+        "interviews": "Interviews (F-02)",
+        "recommendation": "Recommendation",
+        "recordInterview": "Record the interview",
+        "recommendations": {
+          "appoint": "Appoint",
+          "second_choice": "Second choice",
+          "not_now": "Not now"
+        }
       },
       "sections": {
         "label": "The Diwan’s sections",
@@ -2973,7 +3052,9 @@
           "media": "Media",
           "council": "The Council",
           "invitations": "Invitations",
-          "announcements": "Announcements"
+          "announcements": "Announcements",
+          "sundayPaper": "The Sunday Paper",
+          "channels": "Channels"
         },
         "council": "The Council",
         "media": "Media",
@@ -3302,7 +3383,56 @@
         "sendNow": "Send now",
         "notYet": "Not yet",
         "sentOn": "Sent on {date}.",
-        "linkPlaceholder": "/qirtas/write"
+        "linkPlaceholder": "/qirtas/submit"
+      },
+      "sundayPaper": {
+        "title": "The Sunday Paper",
+        "lede": "Put each issue together and send it by hand: the editor’s letter here; the month’s pieces, “From the Society”, What’s on, the open roles and a call to write are added from the site. A test goes to the Editor-in-Chief before you send.",
+        "month": "Issue",
+        "letter": "The editor’s letter",
+        "letterHint": "Separate paragraphs with a blank line. Save, then send the test; any change asks for a new test.",
+        "test": "Send the test to the Editor-in-Chief",
+        "tested": "Test sent on {date}.",
+        "notTested": "No test sent for this letter yet.",
+        "send": "Send the Sunday Paper",
+        "sendConfirm": "The issue goes to every member who takes optional emails and to the public list, in each reader’s language. It can’t be called back.",
+        "sentOn": "Sent on {date}."
+      },
+      "channels": {
+        "title": "Channels",
+        "lede": "Hudhud’s groups and who stays in the members’ group without an account. Set here, never typed as commands in the chat.",
+        "groups": "Groups",
+        "groupsLede": "Group posts are in English with a button to the Arabic page. Connect a new group with the one-time code on the Desk.",
+        "noGroups": "No group is connected yet.",
+        "audience": "Who it’s for",
+        "audiences": {
+          "members": "Members (the members’ group)",
+          "staff": "Staff (the Diwan group)"
+        },
+        "lang": "Hudhud answers in",
+        "langHint": "The language of Hudhud’s replies in the group; posts are always in English with an Arabic button.",
+        "langs": {
+          "en": "English",
+          "ar": "Arabic"
+        },
+        "topics": "Topics",
+        "topicsHint": "For each kind of post, the topic’s number or a link to it (t.me/c/…/12). Empty: not posted. 0: General.",
+        "purposes": {
+          "announcements": "Announcements",
+          "events": "Events",
+          "qirtas": "Qirtas",
+          "word": "Daily word",
+          "brief": "Morning brief (Diwan group)"
+        },
+        "exempt": "Stays without an account",
+        "exemptLede": "Student Life’s staff and the Faculty Advisor stay in the members’ group without a member’s account. The group’s admins and anyone holding a Society role stay too.",
+        "add": "Add a person",
+        "remove": "Remove",
+        "removeConfirm": "They come off the list and are treated like anyone else without an account.",
+        "label": "Who they are",
+        "labelHint": "A name and office, for example “Student Life, events coordinator”.",
+        "telegramId": "Telegram ID",
+        "telegramIdHint": "Their numeric Telegram ID, not their username."
       }
     },
     "editor": {
@@ -3721,17 +3851,6 @@
             "student_agrees": "The student: I agree"
           }
         },
-        "f44": {
-          "title": "Contributor and image consent",
-          "action": "Give consent for a piece",
-          "purpose": "For each contributor, and anyone clearly shown in a piece’s images, before it publishes. Under 18: a parent or guardian signs.",
-          "preamble": "I give my consent for the piece named below, as set out in the Editorial Standards and Stylebook.",
-          "fields": {
-            "piece": "The piece",
-            "covers": "What the consent covers",
-            "under_18": "I am a parent or guardian signing for someone under 18"
-          }
-        },
         "f45": {
           "title": "Trip consent",
           "action": "Sign the trip consent form",
@@ -3741,6 +3860,24 @@
             "emergency_contact": "An emergency contact (name and how to reach them)",
             "health": "Health (optional, confidential): anything the trip lead should know to keep you safe",
             "agree": "I agree"
+          }
+        },
+        "f46": {
+          "title": "Parent’s consent for a member under 18",
+          "action": "Give consent for a member under 18",
+          "purpose": "Signed once by a parent or guardian, from the link the site sends when a student under 18 joins. Until it is signed, the student’s account is limited.",
+          "preamble": "I agree that my child, an enrolled AUIB student, may be a member of the AUIB Society of Arts and Letters until they turn 18, on the terms in the Terms of Use, the Privacy Notice and the Code of Conduct. Members under 18 are covered by the Society’s safeguarding: no one-on-one meetings with adults, and a separate consent for any trip. My child may hold team roles but not a Council seat until 18. I may withdraw this consent at any time by writing to hello@auibsal.org.",
+          "fields": {
+            "student_name": "The student’s name",
+            "relationship": "Your relationship to the student",
+            "photos": "Photos",
+            "consent": "I give my consent"
+          },
+          "options": {
+            "photos": {
+              "photos": "My child may appear in the Society’s photos and video",
+              "no_photos": "Please keep my child out of photos and video"
+            }
           }
         }
       },
@@ -3991,8 +4128,8 @@
     },
     "getInvolved": {
       "title": "Get involved",
-      "lede": "Every open role with the AUIB Society of Arts and Letters: team roles on the Council’s teams and in Qirtas, event teams, Qalam mentors, and the Company’s auditions.",
-      "members": "Members reply and sign up for shifts once signed in.",
+      "lede": "Every open role with the AUIB Society of Arts and Letters: Council seats and team roles, event teams, Qalam mentors and the Company’s auditions. Members apply on each role’s page.",
+      "members": "Members apply once signed in.",
       "signIn": "Sign in",
       "join": "Not a member yet? Join",
       "none": "Nothing open right now.",
@@ -4000,14 +4137,64 @@
       "closes": "closes {date}",
       "on": "{date}, {time}",
       "audition": "Auditions for {title}",
-      "term": "{from} to {to}",
       "places": "{count, plural, one {One place} other {{n} places}}",
-      "skills": "Wants: {skills}",
       "kinds": {
         "role": "Team role",
         "event_team": "Event team",
         "qalam_mentor": "Qalam mentor",
         "audition": "Audition"
+      },
+      "yours": "Your applications",
+      "eligibility": "Who may apply",
+      "apply": {
+        "title": "Apply",
+        "signInFirst": "Members apply here.",
+        "signIn": "Sign in to apply",
+        "membersOnly": "Applying is for members.",
+        "join": "Join",
+        "yours": "See your applications",
+        "sent": "Your application is in; we sent you a receipt by email.",
+        "optional": "(optional)",
+        "availability": "Your availability",
+        "availabilityHint": "The days and times you could usually give, this semester.",
+        "language": "The language we write to you in",
+        "languageHint": "Every letter about this application comes in this language.",
+        "english": "English",
+        "arabic": "Arabic",
+        "links": "Links to your work",
+        "linksHint": "Up to five, one per line, starting with https://.",
+        "accommodation": "Anything we should arrange for you (optional)",
+        "accommodationHint": "For an interview or audition: access, timing or anything else. Only the people reviewing your application see it.",
+        "gpaConsent": "A director seat needs a GPA of at least 2.0, which Student Life checks. Typing your legal name below signs your consent to that check; Student Life tells us only whether you are eligible.",
+        "gpaName": "Your legal name, as on your account",
+        "gpaHint": "Your first and last name, or all four parts, in English or Arabic.",
+        "send": "Send the application",
+        "saveDraft": "Save as a draft",
+        "draftSaved": "Draft saved. You can finish it any time before the role closes."
+      },
+      "applications": {
+        "title": "Your applications",
+        "lede": "Where each application stands. An offer is answered here, within 7 days.",
+        "none": "No applications yet.",
+        "browse": "See the open roles",
+        "finish": "Finish the draft",
+        "accept": "Accept the offer",
+        "decline": "Decline",
+        "withdraw": "Withdraw",
+        "talkOn": "interview {date} at {time}",
+        "answerBy": "answer by {date}",
+        "status": {
+          "draft": "Draft, not sent",
+          "new": "Received",
+          "talking": "Interview",
+          "picked": "Shortlisted",
+          "not_picked": "Not chosen this time",
+          "offered": "Offer made",
+          "accepted": "Accepted; waiting for the Executive Board and Student Life",
+          "onboarded": "Appointed",
+          "declined": "Declined",
+          "withdrawn": "Withdrawn"
+        }
       }
     },
     "partnerJoin": {
@@ -4096,7 +4283,7 @@
       },
       "guests": {
         "title": "Guests",
-        "lede": "Your guests may book places at events and write for Qirtas calls opened to you. Invite them by email or with a link; verify only people who belong to your organization.",
+        "lede": "Your guests may book places at events and write for Qirtas. Invite them by email or with a link; verify only people who belong to your organization.",
         "empty": "No guests yet.",
         "verify": "Verify",
         "decline": "Decline",
@@ -4256,7 +4443,8 @@
       "search": "Search",
       "diwan": "The Diwan",
       "company": "The Company",
-      "partner": "Partner dashboard"
+      "partner": "Partner dashboard",
+      "nextStop": "Next Stop"
     },
     "footer": {
       "contact": "Contact",
@@ -4505,12 +4693,6 @@
       "comingLede": "The first Edition is being made. Send your work while the call is open.",
       "writeForEdition": "Write for Qirtas",
       "reading": {
-        "textSize": "Text size",
-        "sizes": {
-          "small": "Small",
-          "medium": "Medium",
-          "large": "Large"
-        },
         "after": "Read on",
         "next": "Next",
         "inEdition": "In the Edition",
@@ -4588,7 +4770,13 @@
       },
       "tourPages": "Typewriter Tour pages",
       "prize": "Prize",
-      "correctionsPolicy": "How Qirtas corrects its errors"
+      "correctionsPolicy": "How Qirtas corrects its errors",
+      "haven": {
+        "title": "Haven",
+        "dek": "Dreams and memories · the pilot Edition of Qirtas",
+        "call": "Send a poem, a short story, a creative essay or an artwork, about a memory, a dream or both. Everything is read blind.",
+        "submit": "Submit your work now."
+      }
     },
     "about": {
       "title": "About the Society",
@@ -4691,15 +4879,15 @@
       "steps": {
         "register": {
           "title": "Register",
-          "body": "Sign up with your AUIB email and sign the Member Pledge."
+          "body": "Sign up with your AUIB email and acknowledge the Code of Conduct."
         },
         "commonRoom": {
           "title": "Join the members’ group on Telegram",
-          "body": "Our Telegram channel, where reminders and room changes go first. Follow @auibsal too."
+          "body": "The members’ group, where reminders and room changes go first. Link your account and you’re let in."
         },
         "twoThings": {
           "title": "Come to two things",
-          "body": "Any two Society activities in a semester make you a Voting Member: you can vote in elections and stand for office. For the founding year, the first 100 members vote from the day they join."
+          "body": "Attend two events or general meetings in the 12 months before an election and you are a Voting Member: you vote, and after a term as a member you can stand for office."
         }
       },
       "gives": {
@@ -4725,19 +4913,19 @@
       "firstMonth": "Sign up · join the members’ group on Telegram · come to an event with a friend · tell us after your second event what you would like to do here.",
       "cta": "Sign up",
       "ctaHint": "Use your AUIB email address.",
-      "others": "Not at AUIB? A guest’s membership comes by invitation, from the Society or one of its partners; an organization applies to partner.",
+      "others": "Not at AUIB? Make a guest account yourself to come to events and write for Qirtas; an organization applies to partner.",
       "othersLink": "Partners",
       "tour": {
         "title": "The Typewriter Tour",
         "short": "Our welcome to new students, at a typewriter.",
-        "lede": "The Typewriter Tour is the Society’s welcome to new students: sit at the typewriter, write six words, and join. It belongs to membership, run by the Director of Membership and the Tour Lead.",
+        "lede": "The Typewriter Tour is the Society’s welcome to new students: sit at the typewriter, type six words, and join. It belongs to membership, run by the Director of Membership and the Tour lead.",
         "whenTitle": "When",
         "when": "Once a year, in the spring club fair week, with the fair as one of its days. The 2027 dates follow Student Life’s fair and are posted on What’s on.",
         "wordsTitle": "Who sees your page",
         "words": "Six Words are written only on the typewriter, never on the site. Your page is private until you choose otherwise in your account: only you, your profile, or this page too. That choice is your consent, and you can change it any time.",
         "back": "Join the Society",
         "howTitle": "How it works",
-        "how": "No paper is kept. At the station you join on auibsal.org from the QR code, a volunteer photographs your typed page and attaches it to your new account, and you take the original home. Writers under 18 don’t join: they keep their page and nothing is photographed."
+        "how": "No paper is kept. At the station you join on auibsal.org from the QR code, a volunteer photographs your typed page and attaches it to your new account, and you take the original home. A writer under 18 joins too: their page stays private until a parent consents."
       },
       "tourLine": "Met us at the typewriter? Read about the Typewriter Tour.",
       "tiers": {
@@ -4748,12 +4936,12 @@
         },
         "voting": {
           "name": "Voting member",
-          "if": "attended at least two events or general meetings this academic year",
+          "if": "attended two events or general meetings in the 12 months before the election",
           "can": "also vote, online or in person, and stand for office"
         },
         "associate": {
           "name": "Associate Member",
-          "if": "are AUIB faculty, staff or an alumnus",
+          "if": "are AUIB faculty, staff or an alum",
           "can": "take part as a friend of the Society (no vote, no office)"
         },
         "honorary": {
@@ -4888,11 +5076,7 @@
         },
         "guests": {
           "title": "Bring your people",
-          "body": "Invite your people as guests: they book places at events and write for calls opened to you."
-        },
-        "places": {
-          "title": "Find people",
-          "body": "Places with your organization, posted by the Society on Get involved for its members."
+          "body": "Invite your people as guests: they book places at events and may write for Qirtas, through Write for Qirtas like everyone else."
         }
       },
       "gives": {
@@ -4993,13 +5177,6 @@
       "asList": "See the productions as a list"
     },
     "institutions": {
-      "names": {
-        "auib": "The American University of Iraq – Baghdad",
-        "studentLife": "Office of Student Life",
-        "cas": "College of Arts and Sciences",
-        "press": "AUIB Press",
-        "library": "AUIB Library"
-      },
       "withTheSupportOf": "With the support of",
       "supportedBy": "Supported by"
     },

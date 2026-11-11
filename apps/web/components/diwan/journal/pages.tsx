@@ -140,7 +140,7 @@ export const YourWork = () => {
     ...(drafts.data ?? []).map(
       (d): Sent => ({
         date: d.updated_at,
-        href: `/qirtas/write/${d.category}/${d.id}`,
+        href: `/qirtas/submit/${d.category}/${d.id}`,
         id: `d-${d.id}`,
         status: tw("draftStatus"),
         title: d.title || tw("untitledDraft"),
@@ -490,7 +490,10 @@ export const MySubmission = () => {
   });
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/qirtas/write">
+    <Link
+      className="text-sm underline underline-offset-4"
+      href="/qirtas/submit"
+    >
       {t("back")}
     </Link>
   );

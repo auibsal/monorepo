@@ -24,6 +24,8 @@ type ViewKey =
   | "events"
   | "company"
   | "newsroom"
+  | "sundayPaper"
+  | "channels"
   | "editions"
   | "prize"
   | "qalam"
@@ -91,6 +93,12 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
   events: [{ href: "/events", key: "events", module: "events" }],
   media: [
     { href: "/media", key: "nextStop", module: "media" },
+    {
+      href: "/media/channels",
+      key: "channels",
+      module: "*",
+      permission: ["settings.manage", "members.manage"],
+    },
     { href: "/media/design", key: "design", module: "*" },
   ],
   membership: [
@@ -114,6 +122,12 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
       key: "editions",
       module: "journal",
       permission: ["journal.manage", "journal.publish"],
+    },
+    {
+      href: "/qirtas/sunday-paper",
+      key: "sundayPaper",
+      module: "journal",
+      permission: "journal.publish",
     },
     {
       href: "/qirtas/prize",

@@ -1,4 +1,3 @@
-import { formatClock } from "@repo/internationalization/format";
 import { type Api, GrammyError, InlineKeyboard } from "grammy";
 import { publicEvents } from "@/lib/data/events";
 import { gameDay, gameNumber } from "@/lib/data/games";
@@ -13,17 +12,21 @@ import { staffPosts } from "./staff";
 
 /**
  * What the bot posts to connected groups, every ten minutes (pg_cron calls
- * /cron/telegram): new public events (to the events topic), a "starting soon"
- * reply to each event's post three hours before, new Qirtas pieces, and the
- * daily word at 9:00 a.m. Baghdad time, to groups and to members who asked
- * for it in their chat with Hudhud (/me). Each post is claimed in
+ * /cron/telegram): new public events no earlier than three weeks ahead (to
+ * the events topic), a reminder replying to each event's post two days
+ * before (none on the day), and new Qirtas pieces; each post in English
+ * with a button to the Arabic page (decisions §6). The daily word goes only
+ * to members who asked for it in their chat with Hudhud (/me). Each post is claimed in
  * core.telegram_posts before it is sent, so overlapping runs never post
  * twice; a failed send gives the claim back for the next run.
  */
 
 const HOUR = 60 * 60 * 1000;
-const SOON = 3 * HOUR;
-const NEW_EVENT_WINDOW = 45 * 24 * HOUR;
+// A reminder two days before, never on the day (decisions §6).
+const SOON = 48 * HOUR;
+const NOT_ON_THE_DAY = 24 * HOUR;
+// Announced no earlier than three weeks ahead.
+const NEW_EVENT_WINDOW = 21 * 24 * HOUR;
 const NEW_PIECE_WINDOW = 72 * HOUR;
 const MAX_PER_RUN = 3;
 const WORD_HOUR = 9;
@@ -139,7 +142,8 @@ const eventPost = (
         .url(
           label(group.lang, (t) => t.buttons.details),
           eventPage(linkLang(group), event.slug)
-        ),
+        )
+        .url(copy.ar.buttons.arabic, eventPage("ar", event.slug)),
     }
   );
 
@@ -199,7 +203,7 @@ const soonEvents = (run: Run, events: PublicEvent[]) =>
     events
       .filter((event) => {
         const lead = startsIn(event, run.now);
-        return lead > 0 && lead <= SOON;
+        return lead > NOT_ON_THE_DAY && lead <= SOON;
       })
       .map((event) => async () => {
         const original = await posted(run.group.chat_id, "event", event.id);
@@ -211,7 +215,7 @@ const soonEvents = (run: Run, events: PublicEvent[]) =>
             copyFor(run.group, (lang) => {
               const venue = pick(lang, event.venue_en, event.venue_ar);
               return [
-                copy[lang].postEventSoon(formatClock(event.starts_at, lang)),
+                copy[lang].postEventSoon(when(lang, event.starts_at)),
                 `<b>${escapeHtml(pick(lang, event.title_en, event.title_ar))}</b>`,
                 venue ? escapeHtml(venue) : null,
               ]
@@ -219,10 +223,12 @@ const soonEvents = (run: Run, events: PublicEvent[]) =>
                 .join("\n");
             }),
             {
-              reply_markup: new InlineKeyboard().url(
-                label(run.group.lang, (t) => t.buttons.rsvp),
-                botLink(run.username, `ev_${event.id}`)
-              ),
+              reply_markup: new InlineKeyboard()
+                .url(
+                  label(run.group.lang, (t) => t.buttons.rsvp),
+                  botLink(run.username, `ev_${event.id}`)
+                )
+                .url(copy.ar.buttons.arabic, eventPage("ar", event.slug)),
               reply_parameters: original
                 ? { allow_sending_without_reply: true, message_id: original }
                 : undefined,
@@ -263,46 +269,18 @@ const newPieces = (run: Run, pieces: PublicPiece[]) =>
             }),
             {
               link_preview_options: { url },
-              reply_markup: new InlineKeyboard().url(
-                label(run.group.lang, (t) => t.buttons.read),
-                url
-              ),
+              reply_markup: new InlineKeyboard()
+                .url(
+                  label(run.group.lang, (t) => t.buttons.read),
+                  url
+                )
+                .url(copy.ar.buttons.arabic, piecePage("ar", piece)),
             }
           )
         );
       }),
     MAX_PER_RUN
   );
-
-/** The daily word, from 9:00 a.m. in Baghdad. */
-const dailyWord = (run: Run) => {
-  if (baghdadHour(run.now) < WORD_HOUR) {
-    return Promise.resolve(0);
-  }
-  const day = gameDay(run.now);
-  return sequence(
-    [
-      () =>
-        once(run.group, "word", String(day), () =>
-          postTo(
-            run.api,
-            run.group,
-            ["word", "qirtas"],
-            copyFor(run.group, (lang) =>
-              copy[lang].postWord(String(gameNumber(day)))
-            ),
-            {
-              reply_markup: new InlineKeyboard().url(
-                label(run.group.lang, (t) => t.buttons.play),
-                mainApp(run.username)
-              ),
-            }
-          )
-        ),
-    ],
-    1
-  );
-};
 
 /**
  * The daily word in a member's own chat, for those who turned it on and
@@ -414,7 +392,7 @@ const clip = (text: string, max: number) =>
   text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 
 /**
- * The President's words as written (decisions §17): the title and body, in
+ * The President's words as written (decisions §18): the title and body, in
  * the reader's language, with the site's own button. Nothing of Hudhud's
  * Iraqi copy is added, so a message never mixes the two registers.
  */
@@ -443,7 +421,12 @@ const groupNotices = (run: Run, notices: Notice[]) =>
             copyFor(run.group, (lang) =>
               noticeText(notice, lang, GROUP_BODY_MAX)
             ),
-            { reply_markup: noticeButton(notice, linkLang(run.group)) }
+            {
+              reply_markup: noticeButton(notice, linkLang(run.group)).url(
+                copy.ar.buttons.arabic,
+                web("ar", notice.link_path ?? "/")
+              ),
+            }
           )
         )
     ),
@@ -590,7 +573,17 @@ export const runFeeds = async (
   // Groups in parallel; each group's posts in order.
   const counts = await Promise.all(
     connected.map(async (group) => {
-      const run = { api, group, now, username };
+      // The members' group reads one post in English, with a button to the
+      // Arabic page (decisions §6); the Diwan group keeps its own setting.
+      const run = {
+        api,
+        group:
+          group.audience === "staff"
+            ? group
+            : { ...group, lang: "en" as const },
+        now,
+        username,
+      };
       // The Diwan group gets the morning brief and event summaries.
       if (group.audience === "staff") {
         return staffPosts(run);
@@ -599,7 +592,7 @@ export const runFeeds = async (
       const soon = await soonEvents(run, events);
       const fresh = await newEvents(run, events);
       const written = await newPieces(run, pieces);
-      return announced + soon + fresh + written + (await dailyWord(run));
+      return announced + soon + fresh + written;
     })
   );
   return {

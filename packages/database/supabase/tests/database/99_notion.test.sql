@@ -100,7 +100,7 @@ select plan(9);
 select pg_temp.make_user('00000000-0000-0000-0000-00000000e001', 'events.lead@auib.edu.iq', 'Events Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000e002', 'member@auib.edu.iq', 'Member');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000e003', 'president@auib.edu.iq', 'President');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000e001', 'events_lead');
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000e001', 'programme_lead');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000e003', 'president');
 
 insert into core.notion_links (notion_page_id, kind, record_key)
@@ -144,7 +144,7 @@ select is(
 select ok(
   exists (
     select 1 from access.officer_directory()
-    where email = 'events.lead@auib.edu.iq' and 'Event Coordinator' = any (roles)
+    where email = 'events.lead@auib.edu.iq' and 'Event Lead' = any (roles)
   ) and not exists (select 1 from access.officer_directory() where email = 'member@auib.edu.iq'),
   'the officer directory lists role holders only'
 );

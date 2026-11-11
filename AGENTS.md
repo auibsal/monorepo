@@ -4,10 +4,13 @@ Conventions for anyone, human or AI agent, changing this repository: the
 platform of the AUIB Society of Arts and Letters (SAL), live at
 auibsal.org.
 
-Start every session by reading `claude/decisions.md` (the owner's current
-decisions and the source of truth: where this file or any older document
-disagrees, it wins) and `PROGRESS.md` (the working checklist, with what is
-blocked), and continue from the first unticked item. Before changing a
+The owner's current decisions (`decisions.md`) and the Arabic glossary
+(`glossary_ar.md`) live only in the Claude project, not in this repository
+(decisions §19): they are the source of truth, and where this file or any
+older document disagrees, they win. Start every session from them, if the
+chat has them, and from `PROGRESS.md` (the working checklist, with what is
+blocked), and continue from the first unticked item. Code cites a decision
+as "decisions §N". Before changing a
 domain (members, events, Qirtas, Notion…), read its section of
 `docs/platform/domain.md`. Where decisions.md is
 silent, do what American university student organizations and student
@@ -33,8 +36,8 @@ media do.
     `/elections/<position>`) and Settings (`/settings`, `/settings/profile`,
     `/settings/notifications`, officers' `/settings/disclosures`), with
     what you sent at `/requests` and `/requests/<id>`. Also `/company/auditions`,
-    `/qirtas/write` (public; the forms at `/qirtas/write/<type>`, a draft at
-    `/qirtas/write/<type>/<draft>`) and `/qirtas/read/<slug>` (a
+    `/qirtas/submit` (public; the forms at `/qirtas/submit/<type>`, a draft at
+    `/qirtas/submit/<type>/<draft>`) and `/qirtas/read/<slug>` (a
     members-only piece). The gates are in `components/diwan/gates.tsx`.
   - `app/[locale]/diwan`: **the Diwan**, auibsal.org/diwan, the staff's
     administration only (anyone holding a role, `RequireStaff`), one
@@ -46,8 +49,8 @@ media do.
     Life, elections, concerns, motions, disclosures, the Library); Qirtas
     (the Newsroom, one page per section, with submissions, Editions,
     contributors, the Prize, Qalam and certificates); Media
-    (`/diwan/media`: Next Stop's episodes and reels, the design system at
-    `/diwan/media/design`); the Company (`/diwan/company`); Events
+    (`/diwan/media`: Next Stop's episodes and reels, Hudhud's channels at
+    `/diwan/media/channels`, the design system at `/diwan/media/design`); the Company (`/diwan/company`); Events
     (`/diwan/events`, each event at `/diwan/events/<slug>` with its
     check-in at `.../check-in`, event proposals); Partnerships
     (`/diwan/partnerships`: applications, the register, memoranda); and
@@ -109,7 +112,7 @@ media do.
 - `docs/platform`: the platform runbooks (Markdown). There is no separate
   docs site.
 - `scripts/`: `check-placeholders.ts`, `check-rtl.ts`, `check-i18n.ts`,
-  `check-language.ts`, `check-forms-register.ts`, `check-decisions.ts`.
+  `check-language.ts`, `check-forms-register.ts`.
 
 ## Commands
 
@@ -123,7 +126,6 @@ bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
 bun run check:i18n          # UI text not in the messages files; the language standard
 bun run check:forms         # the forms registry against SAL-EXB-01 (needs NOTION_TOKEN)
-bun run check:decisions     # decisions.md's date line
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
@@ -163,13 +165,15 @@ any schema change. Integration tests run against a local stack with
   function).
 - **Migrations ship through CI.** Add a file to `supabase/migrations`;
   after merge, `.github/workflows/migrate.yml` runs `supabase db push`
-  against production once CI passes, and Vercel deploys `main` itself.
+  against production once CI passes, then calls Vercel's deploy hook (Git
+  auto-deploy of `main` is off, so the site never runs ahead of its schema).
   Never paste SQL into the production database.
 - **Accounts (decisions §11, NIST SP 800-63B).** Passwords are 12
   characters or more with no composition rules, checked against known
   breaches by k-anonymity (`lib/password.ts`, `/api/password-check`), with
-  a Show button (`PasswordInput`). Sign-up records the 18+ and Terms and
-  Privacy Notice agreement (`core.profiles.agreed_at`). A password change
+  a Show button (`PasswordInput`). Sign-up records the Terms and Privacy
+  Notice agreement (`core.profiles.agreed_at`) and asks whether the
+  student is 18 or older; the Code of Conduct is the only pledge. A password change
   on an old sign-in asks for an emailed code (secure password change);
   deleting the account needs a sign-in from the last 15 minutes
   (`signedInWithin`) and removes the person's own files. "Download your
@@ -178,7 +182,7 @@ any schema change. Integration tests run against a local stack with
   NIST SP 800-63B-4's AAL2 inactivity timeout). An AUIB sign-in address is not
   changed from the account (`private.keep_auib_address`).
 - **Two-step sign-in for sensitive roles.** Roles with `requires_mfa` (the
-  Council, the Acting President, the Elections Committee) count only on
+  Council and the Elections Committee) count only on
   an `aal2` session; `access.has_permission` enforces it. Don't add
   bypasses. A passkey is a first step only. A lost authenticator is
   recovered with one of ten recovery codes (`access.recovery_codes`,
@@ -194,11 +198,12 @@ any schema change. Integration tests run against a local stack with
   a migration: imports of personal data (such as the spring 2026 Tour,
   `programmes.import_tour`) go from the officer's browser straight to the
   database. The Register is private (the Executive Board and the
-  Director of Membership); members may opt into a members-only directory
-  (`in_directory`). Everything in `core.member_details` is optional and
-  read only by the member and `members.manage`; reports count only
-  members with `research_consent` and never show a group smaller than
-  five. No phone numbers until they can be verified. Never ask for a
+  Director of Membership), with no bulk export; members may opt into a
+  members-only directory (`in_directory`). The site keeps only what it
+  needs: no optional profile details or demographic reports. A member
+  under 18 gives the month and year of birth (deleted at 18) and a
+  parent's consent by link (F-46), and nothing shows or names them until
+  then. No phone numbers until they can be verified. Never ask for a
   student ID number: the AUIB address is the identifier, never shown
   publicly.
 - **Blind review.** Readers never receive an author's identity before a
@@ -249,7 +254,7 @@ everywhere:
   path (an event, a piece, an issue); lists are filtered with query
   strings (`/events?month=`, `/qirtas/archive?month=&section=`,
   `/search?q=`). Links point at the current
-  address; there are no redirects, and an old address is simply not
+  address; the only redirect is /qirtas/write → /qirtas/submit (for now), and an old address is simply not
   found. The address alone decides the
   language (`localeDetection: false`).
 - **Big records get pages; small rows are edited in place.** A record
@@ -268,7 +273,8 @@ everywhere:
 - **One frame.** The public pages, your account and the Diwan share one
   header (`components/masthead.tsx` with `site-header.tsx`) and one
   footer (`components/footer.tsx`, not in the Diwan). One main menu:
-  About, What's on, Qirtas, The Company, Get involved and Join (signed in,
+  What's on, Qirtas, The Company, Next Stop, Get involved and About, with
+  a Join button (signed in,
   the end of the line opens Membership; the Diwan under it for staff, the
   Partner dashboard for a partner's team, `useWays`). No link appears
   twice among the header, a menu row and the footer.
@@ -299,7 +305,7 @@ everywhere:
   Society chats: Hudhud's copy, social captions and stories, signs at the
   door. Never both in one message. Latin digits, the Iraqi month names
   (`ar-IQ`), ، ؛ ؟ and «», tanween on the letter before the alif
-  (شكرًا), one word per term (`claude/glossary_ar.md`).
+  (شكرًا), one word per term (the glossary in the Claude project).
   `scripts/check-language.ts` enforces it.
 - **One language per page.** The English pages carry no Arabic and the
   Arabic pages no English, except the language switcher, fields meant for

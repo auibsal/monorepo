@@ -15,7 +15,6 @@ type Client = SupabaseClient<Database>;
 const TABLES: readonly (readonly [string, string, string])[] = [
   ["access", "role_assignments", "user_id"],
   ["access", "two_step_resets", "user_id"],
-  ["core", "member_details", "user_id"],
   ["core", "personal_email_requests", "user_id"],
   ["core", "telegram_accounts", "user_id"],
   ["events", "check_ins", "user_id"],

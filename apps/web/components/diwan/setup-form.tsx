@@ -5,7 +5,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Database } from "@repo/database";
-import { Link, useRouter } from "@repo/internationalization/navigation";
+import { useRouter } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -30,7 +30,8 @@ import {
 import { MembershipCard } from "./home/membership-card";
 import { ErrorState, FullPageSpinner } from "./states";
 
-type PledgeKind = "human_authorship" | "member";
+/** The Code of Conduct acknowledgment, the one pledge at sign-up (decisions §10). */
+type PledgeKind = "member";
 
 /**
  * The name in each language, in four parts as on the person's papers
@@ -98,7 +99,6 @@ const usePledgeVersions = () => {
       const version = (key: string) =>
         String(rows.find((r) => r.key === key)?.value ?? "1");
       return {
-        human_authorship: version("pledges.human_authorship.version"),
         member: version("pledges.member.version"),
       } as Record<PledgeKind, string>;
     },
@@ -261,9 +261,6 @@ export const SetupForm = () => {
           <Button onClick={leave} type="button">
             {t("welcome.open")}
           </Button>
-          <Link className="link" href="/account/settings/profile#details">
-            {t("welcome.more")}
-          </Link>
         </div>
       </div>
     );
@@ -482,7 +479,7 @@ const PledgeStep = ({
   version: string;
 }) => {
   const t = useTranslations("diwan.setup");
-  const key = pledge === "human_authorship" ? "humanAuthorship" : "member";
+  const key = pledge;
   return (
     <div className="grid gap-6">
       <div className="grid gap-2">

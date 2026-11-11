@@ -171,6 +171,9 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     await group.getByLabel("Family name").fill(parts[3]);
   }
   await guest.getByRole("checkbox", { name: /18 or older/u }).check();
+  await guest
+    .getByRole("checkbox", { name: /I agree to the Terms of Use/u })
+    .check();
   const sentAt = Date.now();
   await guest.getByRole("button", { name: "Create account" }).click();
   await expect(guest.getByText("Check your inbox")).toBeVisible();
@@ -180,13 +183,12 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await guest.goto((link ?? "").replaceAll("&amp;", "&"));
   await guest.getByRole("button", { name: /continue/iu }).click();
   await guest.getByRole("button", { name: "Accept the invitation" }).click();
-  // A guest makes the pledges and answers the photo question, like a
+  // A guest acknowledges the Code of Conduct and answers the photo question, like a
   // member, then meets their card.
   await expect(guest).toHaveURL(/\/welcome/u);
   await guest
-    .getByRole("button", { name: "I make the Human Authorship pledge" })
+    .getByRole("button", { name: "I acknowledge the Code of Conduct" })
     .click();
-  await guest.getByRole("button", { name: "I make the Member Pledge" }).click();
   await guest.getByRole("button", { name: "Yes, that’s fine" }).click();
   await expect(guest.getByRole("heading", { level: 1 })).toContainText(
     "Welcome"

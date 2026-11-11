@@ -15,7 +15,7 @@ const expires = async () => {
 export const GET = async () =>
   new Response(
     [
-      `Contact: mailto:${project.supportEmail}`,
+      `Contact: mailto:${project.mailboxes.security}`,
       `Expires: ${await expires()}`,
       `Policy: ${project.url}/terms`,
       "Preferred-Languages: en, ar",

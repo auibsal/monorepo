@@ -2,7 +2,7 @@
 
 Short records of the technical choices behind auibsal.org: what was
 decided, why, and what it costs. The Society's own decisions (who does
-what, what the site offers) are in `claude/decisions.md`; these are only
+what, what the site offers) are in the owner's decisions, kept in the Claude project; these are only
 the technical ones. A new choice gets the next number; a reversed one is
 marked Superseded with a link to the record that replaces it.
 

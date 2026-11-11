@@ -116,19 +116,6 @@ test.describe("public site", () => {
     await expectAccessible(page);
   });
 
-  test("a piece's text size changes the size of its text", async ({ page }) => {
-    await page.goto(`${urls.web}/qirtas/news/qirtas-launches-as-one-paper`);
-    const text = page.locator("article .prose p").first();
-    const size = () =>
-      text.evaluate((p) => Number.parseFloat(getComputedStyle(p).fontSize));
-    await page.getByRole("button", { exact: true, name: "Medium" }).click();
-    const medium = await size();
-    await page.getByRole("button", { exact: true, name: "Large" }).click();
-    expect(await size()).toBeGreaterThan(medium);
-    await page.getByRole("button", { exact: true, name: "Small" }).click();
-    expect(await size()).toBeLessThan(medium);
-  });
-
   test("the Qirtas front page is accessible", async ({ page }) => {
     await page.goto(`${urls.web}/qirtas`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Qirtas");

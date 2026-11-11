@@ -1,19 +1,13 @@
 import { Composer } from "grammy";
 import type { BotContext } from "../../context";
-import { copy, type Purpose, purposes } from "../../copy";
 import { db } from "../../db";
-import {
-  currentGroup,
-  groupLang,
-  isStaff,
-  replyHere,
-  senderMember,
-} from "./common";
+import { isStaff, replyHere, senderMember } from "./common";
 
 /**
- * Connecting a group and telling the bot about it. /setup takes the code an
- * officer made in the Diwan (settings.manage); the rest is for the group's
- * Telegram admins: /topic, /lang, /audience.
+ * Connecting a group: /setup takes the one-time code an officer made in the
+ * Diwan (settings.manage) and is deleted from the chat at once. Everything
+ * else about a group (its topics, language and audience) is set in the
+ * Diwan, Media → Channels, never typed in the chat (decisions §6).
  */
 export const setup = new Composer<BotContext>();
 const groups = setup.chatType(["group", "supergroup"]);
@@ -41,96 +35,4 @@ groups.command("setup", async (ctx) => {
       title: ctx.chat.title,
     });
   await replyHere(ctx, ok ? ctx.t.setupOk : ctx.t.setupBad);
-});
-
-/** Admin commands that need a connected group; the handler gets the group. */
-const adminCommand = (
-  name: string,
-  handler: (
-    ctx: BotContext & { chat: { id: number } },
-    arg: string,
-    group: NonNullable<Awaited<ReturnType<typeof currentGroup>>>
-  ) => Promise<void>
-) =>
-  groups.command(name, async (ctx) => {
-    const [member, group] = await Promise.all([
-      senderMember(ctx),
-      currentGroup(ctx),
-    ]);
-    if (!group) {
-      await replyHere(ctx, ctx.t.notConnected);
-      return;
-    }
-    const t = copy[groupLang(group, ctx.lang)];
-    if (!(member && isStaff(member))) {
-      await replyHere(ctx, t.notAdmin);
-      return;
-    }
-    ctx.t = t;
-    await handler(ctx, ctx.match.trim().toLowerCase(), group);
-  });
-
-adminCommand("topic", async (ctx, arg, group) => {
-  // General (or a group without topics) is thread 0.
-  const thread = ctx.msg?.is_topic_message
-    ? (ctx.msg.message_thread_id ?? 0)
-    : 0;
-  const topics = { ...group.topics };
-  if (arg === "none") {
-    for (const [purpose, id] of Object.entries(topics)) {
-      if (id === thread) {
-        delete topics[purpose];
-      }
-    }
-  } else if (purposes.includes(arg as Purpose)) {
-    topics[arg] = thread;
-    if (arg === "qirtas") {
-      Reflect.deleteProperty(topics, "waraq");
-    }
-  } else {
-    await replyHere(ctx, ctx.t.topicUsage);
-    return;
-  }
-  await db()
-    .schema("core")
-    .from("telegram_groups")
-    .update({ topics })
-    .eq("chat_id", ctx.chat.id);
-  await replyHere(
-    ctx,
-    arg === "none"
-      ? ctx.t.topicCleared
-      : ctx.t.topicOk(ctx.t.purposeNames[arg as Purpose])
-  );
-});
-
-// Who the group is for: the main group (members) or the Diwan group
-// (staff: officers only, with the morning brief and event summaries).
-adminCommand("audience", async (ctx, arg) => {
-  if (!(arg === "staff" || arg === "members")) {
-    await replyHere(ctx, ctx.t.audienceUsage);
-    return;
-  }
-  await db()
-    .schema("core")
-    .from("telegram_groups")
-    .update({ audience: arg })
-    .eq("chat_id", ctx.chat.id);
-  await replyHere(
-    ctx,
-    arg === "staff" ? ctx.t.audienceStaff : ctx.t.audienceMembers
-  );
-});
-
-adminCommand("lang", async (ctx, arg) => {
-  if (!(arg === "en" || arg === "ar" || arg === "both")) {
-    await replyHere(ctx, ctx.t.langUsage);
-    return;
-  }
-  await db()
-    .schema("core")
-    .from("telegram_groups")
-    .update({ lang: arg })
-    .eq("chat_id", ctx.chat.id);
-  await replyHere(ctx, copy[arg === "both" ? ctx.lang : arg].langOk);
 });

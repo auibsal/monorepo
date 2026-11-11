@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(16);
+select plan(21);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000d1a1', 'gs-h@auib.edu.iq', 'General Secretary');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000d1a2', 'editor-h@auib.edu.iq', 'Editor');
@@ -108,81 +108,104 @@ select pg_temp.grant_role('00000000-0000-0000-0000-00000000d1a4', 'programme_lea
 
 select pg_temp.logout();
 select set_eq(
-  $$ select title_en from programmes.openings where owner = 'qirtas' $$,
-  $$ values ('News Editor'), ('Voices Editor'), ('Video Editor'), ('Games Editor') $$,
-  'The open masthead seats are on Get involved (Next Stop is Media''s; no Awards Coordinator)'
+  $$ select title_en from programmes.openings where owner = 'qirtas' and is_open $$,
+  $$ values ('News Editor'), ('Voices Editor'), ('Video Editor'), ('Gallery Editor'), ('Copy Chief'), ('Reader') $$,
+  'The masthead''s open seats are on Get involved; the Games Editor waits (decisions §17)'
+);
+select set_eq(
+  $$ select role from programmes.openings where owner = 'council' and not is_open $$,
+  $$ values ('artistic_director'), ('events_director'), ('membership_director'), ('partnerships_director') $$,
+  'The four director seats wait for the Executive Board''s approval'
 );
 create function pg_temp.seat(t text) returns uuid language sql as $$
   select id from programmes.openings where title_en = t;
 $$;
 grant execute on function pg_temp.seat(text) to public;
+create function pg_temp.answers() returns jsonb language sql as $$
+  select '{"why": "I read the paper every week.", "experience": "The school paper."}'::jsonb;
+$$;
+grant execute on function pg_temp.answers() to public;
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a3');
-select lives_ok(
-  $$ insert into programmes.opening_replies (opening_id) values (pg_temp.seat('Games Editor')) $$,
-  'A member applies'
-);
-update programmes.opening_replies set status = 'picked' where opening_id = pg_temp.seat('Games Editor');
 select is(
-  (select status from programmes.opening_replies where opening_id = pg_temp.seat('Games Editor')),
+  programmes.save_application(pg_temp.seat('News Editor'), pg_temp.answers(), 'Weekday evenings', 'en', '{}', null, null, true),
+  'new', 'A member applies'
+);
+update programmes.opening_replies set status = 'picked' where opening_id = pg_temp.seat('News Editor');
+select is(
+  (select status from programmes.opening_replies where opening_id = pg_temp.seat('News Editor')),
   'new', 'and cannot move their own application'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a4');
 select is(
-  (select count(*)::integer from programmes.opening_replies where opening_id = pg_temp.seat('Games Editor')),
+  (select count(*)::integer from programmes.opening_replies where opening_id = pg_temp.seat('News Editor')),
   0, 'Another owner does not see the application'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a2');
-select throws_ok(
+select lives_ok(
   $$ update programmes.opening_replies set status = 'talking', talk_at = now() + interval '1 day'
-     where opening_id = pg_temp.seat('Games Editor') $$,
-  '42501', null, 'The owner does not schedule: Membership does'
+     where opening_id = pg_temp.seat('News Editor') $$,
+  'The hiring seat schedules the interview (decisions §17)'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a1');
 select lives_ok(
-  $$ update programmes.opening_replies set status = 'talking', talk_at = now() + interval '1 day'
-     where opening_id = pg_temp.seat('Games Editor') $$,
-  'Membership schedules the conversation'
+  $$ update programmes.opening_replies set talk_at = now() + interval '2 days'
+     where opening_id = pg_temp.seat('News Editor') $$,
+  'and Membership can move it'
 );
 select throws_ok(
-  $$ update programmes.opening_replies set status = 'offered' where opening_id = pg_temp.seat('Games Editor') $$,
+  $$ update programmes.opening_replies set status = 'offered' where opening_id = pg_temp.seat('News Editor') $$,
   '22023', null, 'No offer before the owner picks'
 );
 select throws_ok(
-  $$ update programmes.opening_replies set status = 'picked' where opening_id = pg_temp.seat('Games Editor') $$,
+  $$ update programmes.opening_replies set status = 'picked' where opening_id = pg_temp.seat('News Editor') $$,
   '42501', null, 'Membership does not pick for the masthead'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a2');
 select lives_ok(
-  $$ update programmes.opening_replies set status = 'picked' where opening_id = pg_temp.seat('Games Editor') $$,
-  'The Editor picks the masthead'
+  $$ update programmes.opening_replies set status = 'picked' where opening_id = pg_temp.seat('News Editor') $$,
+  'The Editor-in-Chief picks for the masthead'
 );
 select is(
-  (select picked_by from programmes.opening_replies where opening_id = pg_temp.seat('Games Editor')),
+  (select picked_by from programmes.opening_replies where opening_id = pg_temp.seat('News Editor')),
   '00000000-0000-0000-0000-00000000d1a2'::uuid, 'and the pick is signed'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a1');
 select lives_ok(
-  $$ update programmes.opening_replies set status = 'offered' where opening_id = pg_temp.seat('Games Editor') $$,
+  $$ update programmes.opening_replies set status = 'offered' where opening_id = pg_temp.seat('News Editor') $$,
   'Membership makes the offer'
 );
+select ok(
+  (select offer_expires_at between now() + interval '6 days 23 hours' and now() + interval '7 days 1 hour'
+   from programmes.opening_replies where opening_id = pg_temp.seat('News Editor')),
+  'The offer lasts seven days'
+);
+select throws_ok(
+  $$ update programmes.opening_replies set status = 'onboarded' where opening_id = pg_temp.seat('News Editor') $$,
+  '42501', 'the_applicant_accepts', 'Only the applicant accepts'
+);
+
+select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a3');
+select is(programmes.answer_offer(pg_temp.seat('News Editor'), true), 'onboarded',
+  'The applicant accepts the offer from their account');
+select pg_temp.logout();
+select ok(
+  exists (select 1 from access.role_assignments
+    where user_id = '00000000-0000-0000-0000-00000000d1a3' and role = 'news_editor' and confirmed_at is null),
+  'and holds the role, in its first term'
+);
+
+-- Openings
+select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a1');
 select lives_ok(
   $$ insert into programmes.openings (kind, role, title_en, title_ar) values ('role', 'photo_video_lead', '', '') $$,
   'Membership posts a role for any owner'
 );
-
--- Every Society role (decisions.md): an opening names its role,
--- the role decides who picks, and whoever is onboarded holds it.
-select is(
-  (select role from programmes.openings where title_en = 'Games Editor'),
-  'games_editor', 'The masthead seats already posted name their role'
-);
-select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a1');
 insert into programmes.openings (id, kind, role, title_en, title_ar)
 values ('00000000-0000-0000-0000-00000000d1b9', 'role', 'onboarding_lead', '', '');
 select is(
@@ -191,22 +214,21 @@ select is(
 );
 select throws_ok(
   $$ insert into programmes.openings (kind, role, title_en, title_ar) values ('role', 'president', '', '') $$,
-  '22023', null, 'Elected roles are not posted on the GetInvolved'
+  '22023', null, 'Elected roles are not posted on Get involved'
 );
+
+-- Declining is kept, with its date.
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a3');
-insert into programmes.opening_replies (opening_id) values ('00000000-0000-0000-0000-00000000d1b9');
+select programmes.save_application('00000000-0000-0000-0000-00000000d1b9', '{}', null, 'en', '{}', null, null, true);
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a1');
-update programmes.opening_replies set status = 'picked'
-where opening_id = '00000000-0000-0000-0000-00000000d1b9';
-update programmes.opening_replies set status = 'offered'
-where opening_id = '00000000-0000-0000-0000-00000000d1b9';
-update programmes.opening_replies set status = 'onboarded'
-where opening_id = '00000000-0000-0000-0000-00000000d1b9';
-select pg_temp.logout();
+update programmes.opening_replies set status = 'picked' where opening_id = '00000000-0000-0000-0000-00000000d1b9';
+update programmes.opening_replies set status = 'offered' where opening_id = '00000000-0000-0000-0000-00000000d1b9';
+select pg_temp.login_as('00000000-0000-0000-0000-00000000d1a3');
+select is(programmes.answer_offer('00000000-0000-0000-0000-00000000d1b9', false), 'declined',
+  'An offer can be declined');
 select ok(
-  exists (select 1 from access.role_assignments
-    where user_id = '00000000-0000-0000-0000-00000000d1a3' and role = 'onboarding_lead'),
-  'Whoever is onboarded holds the role'
+  (select decided_at is not null from programmes.opening_replies where opening_id = '00000000-0000-0000-0000-00000000d1b9'),
+  'and the decision is dated, for deletion after 12 months'
 );
 
 select * from finish();

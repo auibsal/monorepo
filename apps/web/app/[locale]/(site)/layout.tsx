@@ -1,6 +1,5 @@
 import { routing } from "@repo/internationalization/routing";
 import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import {
@@ -53,7 +52,6 @@ const SiteLayout = async ({ children, params }: SiteLayoutProperties) => {
         <Footer />
         <ConsoleNote />
         <Analytics />
-        <SpeedInsights />
       </NextIntlClientProvider>
     </div>
   );

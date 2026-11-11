@@ -18,6 +18,11 @@
     "api": "/api"
   },
   "supportEmail": "hello@auibsal.org",
+  "mailboxes": {
+    "hello": "hello@auibsal.org",
+    "qirtas": "qirtas@auibsal.org",
+    "security": "security@auibsal.org"
+  },
   "telegram": {
     "stickerSet": "auibsal"
   },

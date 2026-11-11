@@ -1,7 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { detailsThin } from "@/components/diwan/profile/tell-us-more";
 import { planSetup } from "@/components/diwan/setup-form";
-import { membership } from "@/lib/data";
 
 const blank = { father: "", first: "", grandfather: "", last: "" };
 const none = { ar: blank, en: blank };
@@ -11,18 +9,17 @@ const all = {
 };
 
 describe("setup, one question per screen", () => {
-  test("a new member: both names, each pledge, photos, then welcome", () => {
+  test("a new member: both names, the Code of Conduct, photos, then welcome", () => {
     expect(
       planSetup({
         names: none,
-        pending: ["human_authorship", "member"],
+        pending: ["member"],
         setupDone: false,
       })
     ).toEqual({
       steps: [
         { kind: "nameEn" },
         { kind: "nameAr" },
-        { kind: "pledge", pledge: "human_authorship" },
         { kind: "pledge", pledge: "member" },
         { kind: "photos" },
       ],
@@ -67,14 +64,5 @@ describe("setup, one question per screen", () => {
       steps: [{ kind: "nameEn" }, { kind: "nameAr" }],
       welcome: false,
     });
-  });
-});
-
-describe("Tell us more", () => {
-  test("Today offers it until there are interests or skills", () => {
-    expect(detailsThin(membership.emptyDetails)).toBe(true);
-    expect(
-      detailsThin({ ...membership.emptyDetails, skills: ["writing"] })
-    ).toBe(false);
   });
 });

@@ -4,7 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 import { DiwanPage } from "../page";
-import { TellUsMoreLine } from "../profile/tell-us-more";
 import { JournalSection } from "./journal";
 import { MembershipCard } from "./membership-card";
 import { NextEvents } from "./next-events";
@@ -89,17 +88,14 @@ export const MemberHome = () => {
     >
       <MembershipCard />
       {mine.data?.kind === "member" ? (
-        <>
-          <TellUsMoreLine />
-          <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
-            <Notices />
-            <NextEvents />
-            <MyProgrammes />
-            <JournalSection />
-            <SavedReadingSection />
-            <SixWords />
-          </div>
-        </>
+        <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
+          <Notices />
+          <NextEvents />
+          <MyProgrammes />
+          <JournalSection />
+          <SavedReadingSection />
+          <SixWords />
+        </div>
       ) : null}
       {/* A guest, a partner's person, or someone not yet either. */}
       {mine.isSuccess && mine.data.kind !== "member" ? <OtherHome /> : null}

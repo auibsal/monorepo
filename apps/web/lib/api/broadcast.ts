@@ -2,7 +2,7 @@ import "server-only";
 
 import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
-import { resend, SENDER } from "@repo/email";
+import { QIRTAS_SENDER, resend, SENDER } from "@repo/email";
 import type { Built } from "@repo/email/copy";
 import {
   Notice,
@@ -220,6 +220,20 @@ export const cleanUpSegments = async (admin: AdminClient) => {
   }
 };
 
+/**
+ * Removes contacts from Resend by address (a list's, once it is deleted
+ * here). An address Resend no longer has is already gone.
+ */
+export const forgetContacts = async (emails: readonly string[]) => {
+  for (const email of emails) {
+    // biome-ignore lint/performance/noAwaitInLoops: Resend's rate limit
+    const { error } = await client().contacts.remove({ email });
+    if (error && error.name !== "not_found") {
+      throw new Error(`Resend: ${error.message}`);
+    }
+  }
+};
+
 /** Waits for a contact import; false while it is still running. */
 const importDone = async (importId: string) => {
   const started = Date.now();
@@ -331,7 +345,7 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
     }
     const sent = ok(
       await client().broadcasts.create({
-        from: SENDER,
+        from: job.kind === "sunday_paper" ? QIRTAS_SENDER : SENDER,
         name: job.key,
         react: Notice({
           blocks: job.built.blocks,
@@ -339,7 +353,10 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
           preview: job.built.preview,
         }),
         // Replies reach a person, never a no-reply box.
-        replyTo: project.supportEmail,
+        replyTo:
+          job.kind === "sunday_paper"
+            ? project.mailboxes.qirtas
+            : project.mailboxes.hello,
         segmentId: row.segment_id,
         ...(job.draft ? { send: false as const } : { send: true as const }),
         subject: job.built.subject,

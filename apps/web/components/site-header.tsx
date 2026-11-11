@@ -20,18 +20,20 @@ type SectionKey =
   | "involved"
   | "journal"
   | "events"
-  | "join";
-// About · What's on · Qirtas · The Company · Get involved · Join: programs
-// and events are one calendar, the Company stands beside Qirtas (decisions.md),
-// and "Get involved" opens the careers page. Join is for
-// visitors: signed in, the end of the line opens Membership instead.
+  | "nextStop";
+// What's on · Qirtas · The Company · Next Stop · Get involved · About, with
+// a Join button for visitors (decisions §19); signed in, the end of the
+// line opens Membership instead. The Join button is styled here, not with
+// the brand's Button, which would bring radix-ui into every public page.
+const joinButton =
+  "bg-accent text-on-accent hover:bg-accent/90 inline-flex items-center justify-center font-medium text-[0.9375rem] whitespace-nowrap";
 const sections: { href: string; key: SectionKey }[] = [
-  { href: "/about", key: "about" },
   { href: "/events", key: "events" },
   { href: "/qirtas", key: "journal" },
   { href: "/company", key: "company" },
+  { href: "/next-stop", key: "nextStop" },
   { href: "/get-involved", key: "involved" },
-  { href: "/join", key: "join" },
+  { href: "/about", key: "about" },
 ];
 
 interface SiteHeaderProps {
@@ -148,7 +150,7 @@ export const SiteHeader = ({
   useEffect(() => {
     if (pathname) {
       setSignedIn(hasSessionCookie(document.cookie));
-      setWaysHint(readWays(document.cookie));
+      setWaysHint(readWays());
     }
   }, [pathname]);
   const known = ways ?? waysHint;
@@ -183,13 +185,23 @@ export const SiteHeader = ({
           return <MembershipMenu extras={extras} way={way} />;
         }
         return (
-          <NextLink
-            className={cn(mastheadLink, "inline-flex items-center gap-1.5")}
-            href={way.href}
-          >
-            <Icon name={signedIn ? "user" : "log-in"} />
-            {way.label}
-          </NextLink>
+          <>
+            <NextLink
+              className={cn(mastheadLink, "inline-flex items-center gap-1.5")}
+              href={way.href}
+            >
+              <Icon name={signedIn ? "user" : "log-in"} />
+              {way.label}
+            </NextLink>
+            {signedIn ? null : (
+              <NextLink
+                className={cn(joinButton, "h-10 px-4 text-sm")}
+                href={localizedPath(locale, "/join")}
+              >
+                {t("join")}
+              </NextLink>
+            )}
+          </>
         );
       })()}
       home={localizedPath(locale, "/")}
@@ -218,6 +230,15 @@ export const SiteHeader = ({
                   <Icon name={signedIn ? "user" : "log-in"} />
                   {way.label}
                 </NextLink>
+                {signedIn ? null : (
+                  <NextLink
+                    className={cn(joinButton, "h-12 justify-self-start px-6")}
+                    href={localizedPath(locale, "/join")}
+                    onClick={close}
+                  >
+                    {t("join")}
+                  </NextLink>
+                )}
                 {extras.map((extra) => (
                   <NextLink
                     className="text-text-secondary hover:text-accent ms-7 font-medium"
@@ -242,13 +263,11 @@ export const SiteHeader = ({
           <Icon name="search" />
         </NextLink>
       }
-      sections={sections
-        .filter((section) => !(signedIn && section.key === "join"))
-        .map((section) => ({
-          current: pathname.startsWith(section.href),
-          href: localizedPath(locale, section.href),
-          label: t(section.key),
-        }))}
+      sections={sections.map((section) => ({
+        current: pathname.startsWith(section.href),
+        href: localizedPath(locale, section.href),
+        label: t(section.key),
+      }))}
     />
   );
 };

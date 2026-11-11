@@ -130,9 +130,9 @@ insert into governance.form_submissions (form_key, submitted_by, status, created
 insert into programmes.openings (id, programme_id, role, title_en, title_ar)
 values ('0be00000-0000-0000-0000-0000000e2a0b', (select id from core.programmes where slug = 'company'),
   'stage_manager', 'Stage Manager', 'مدير الخشبة');
-insert into programmes.opening_replies (opening_id, user_id, status, created_at, updated_at) values
-  ('0be00000-0000-0000-0000-0000000e2a0b', '00000000-0000-0000-0000-0000000e2a01', 'not_picked', now() - interval '14 months', now() - interval '13 months'),
-  ('0be00000-0000-0000-0000-0000000e2a0b', '00000000-0000-0000-0000-0000000e2a02', 'new', now() - interval '14 months', now() - interval '13 months');
+insert into programmes.opening_replies (opening_id, user_id, status, created_at, updated_at, decided_at) values
+  ('0be00000-0000-0000-0000-0000000e2a0b', '00000000-0000-0000-0000-0000000e2a01', 'not_picked', now() - interval '14 months', now() - interval '13 months', now() - interval '13 months'),
+  ('0be00000-0000-0000-0000-0000000e2a0b', '00000000-0000-0000-0000-0000000e2a02', 'new', now() - interval '14 months', now() - interval '13 months', null);
 -- A removal request closed three years ago
 insert into programmes.removal_requests (requester_name, requester_email, details, status, action_taken, closed_at)
 values ('Someone', 'someone@example.com', 'My photo', 'removed', 'Taken down', now() - interval '3 years');

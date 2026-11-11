@@ -42,7 +42,6 @@ import {
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { slugify } from "../slug";
-import { SkillsPicker } from "./skills-picker";
 
 const invalidateKey = ["admin", "programmes-module"];
 
@@ -779,7 +778,6 @@ const NewShift = ({
     ends_at: null as string | null,
     location: { ar: "", en: "" },
     role: { ar: "", en: "" },
-    skills: [] as string[],
     starts_at: null as string | null,
     station: false,
   });
@@ -797,7 +795,6 @@ const NewShift = ({
             location_en: form.location.en || null,
             role_ar: form.role.ar,
             role_en: form.role.en,
-            skills: form.skills,
             starts_at: form.starts_at ?? "",
             station: form.station,
           })
@@ -856,10 +853,6 @@ const NewShift = ({
           )}
         </Field>
       </div>
-      <SkillsPicker
-        onChange={(skills) => setForm((f) => ({ ...f, skills }))}
-        value={form.skills}
-      />
       {/* A Tour station (decisions §12): its confirmed volunteers attach
           photographed pages to live cards while it runs. */}
       <div className="flex items-start gap-2">

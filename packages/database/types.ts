@@ -349,6 +349,34 @@ export type Database = {
         };
         Relationships: [];
       };
+      sunday_paper_drafts: {
+        Row: {
+          letter_ar: string;
+          letter_en: string;
+          month: string;
+          tested_at: string | null;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          letter_ar?: string;
+          letter_en?: string;
+          month: string;
+          tested_at?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          letter_ar?: string;
+          letter_en?: string;
+          month?: string;
+          tested_at?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [];
+      };
       sunday_paper_issues: {
         Row: {
           created_at: string;
@@ -376,6 +404,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      save_sunday_paper: {
+        Args: { letter_ar: string; letter_en: string; month: string };
+        Returns: undefined;
+      };
       search: {
         Args: { max_results?: number; query: string };
         Returns: {
@@ -389,6 +421,8 @@ export type Database = {
           title_en: string;
         }[];
       };
+      send_sunday_paper: { Args: { month: string }; Returns: number };
+      test_sunday_paper: { Args: { month: string }; Returns: undefined };
     };
     Enums: {
       [_ in never]: never;
@@ -630,67 +664,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      member_details: {
-        Row: {
-          affiliation: string | null;
-          birth_year: number | null;
-          city: string | null;
-          college: string | null;
-          created_at: string;
-          gender: string | null;
-          graduation_year: number | null;
-          heard_from: string | null;
-          interests: string[];
-          languages: string[];
-          major: string | null;
-          research_consent: boolean;
-          skills: string[];
-          study_level: string | null;
-          updated_at: string;
-          user_id: string;
-          volunteer: boolean;
-        };
-        ComputedFields: never;
-        Insert: {
-          affiliation?: string | null;
-          birth_year?: number | null;
-          city?: string | null;
-          college?: string | null;
-          created_at?: string;
-          gender?: string | null;
-          graduation_year?: number | null;
-          heard_from?: string | null;
-          interests?: string[];
-          languages?: string[];
-          major?: string | null;
-          research_consent?: boolean;
-          skills?: string[];
-          study_level?: string | null;
-          updated_at?: string;
-          user_id?: string;
-          volunteer?: boolean;
-        };
-        Update: {
-          affiliation?: string | null;
-          birth_year?: number | null;
-          city?: string | null;
-          college?: string | null;
-          created_at?: string;
-          gender?: string | null;
-          graduation_year?: number | null;
-          heard_from?: string | null;
-          interests?: string[];
-          languages?: string[];
-          major?: string | null;
-          research_consent?: boolean;
-          skills?: string[];
-          study_level?: string | null;
-          updated_at?: string;
-          user_id?: string;
-          volunteer?: boolean;
-        };
-        Relationships: [];
-      };
       notion_links: {
         Row: {
           content_hash: string | null;
@@ -774,6 +747,8 @@ export type Database = {
           agreed_at: string | null;
           avatar_path: string | null;
           bio: string | null;
+          birth_month: number | null;
+          birth_year: number | null;
           camera_shy: boolean;
           created_at: string;
           father_name_ar: string | null;
@@ -789,8 +764,13 @@ export type Database = {
           last_name_en: string | null;
           locale: string;
           notify_email: boolean;
+          parent_consent_at: string | null;
           personal_email: string | null;
           personal_email_verified_at: string | null;
+          preferred_first_ar: string | null;
+          preferred_first_en: string | null;
+          preferred_last_ar: string | null;
+          preferred_last_en: string | null;
           setup_completed_at: string | null;
           title_form: string | null;
           updated_at: string;
@@ -801,6 +781,8 @@ export type Database = {
           agreed_at?: string | null;
           avatar_path?: string | null;
           bio?: string | null;
+          birth_month?: number | null;
+          birth_year?: number | null;
           camera_shy?: boolean;
           created_at?: string;
           father_name_ar?: string | null;
@@ -816,8 +798,13 @@ export type Database = {
           last_name_en?: string | null;
           locale?: string;
           notify_email?: boolean;
+          parent_consent_at?: string | null;
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
+          preferred_first_ar?: string | null;
+          preferred_first_en?: string | null;
+          preferred_last_ar?: string | null;
+          preferred_last_en?: string | null;
           setup_completed_at?: string | null;
           title_form?: string | null;
           updated_at?: string;
@@ -827,6 +814,8 @@ export type Database = {
           agreed_at?: string | null;
           avatar_path?: string | null;
           bio?: string | null;
+          birth_month?: number | null;
+          birth_year?: number | null;
           camera_shy?: boolean;
           created_at?: string;
           father_name_ar?: string | null;
@@ -842,8 +831,13 @@ export type Database = {
           last_name_en?: string | null;
           locale?: string;
           notify_email?: boolean;
+          parent_consent_at?: string | null;
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
+          preferred_first_ar?: string | null;
+          preferred_first_en?: string | null;
+          preferred_last_ar?: string | null;
+          preferred_last_en?: string | null;
           setup_completed_at?: string | null;
           title_form?: string | null;
           updated_at?: string;
@@ -1043,6 +1037,28 @@ export type Database = {
         };
         Relationships: [];
       };
+      telegram_exempt: {
+        Row: {
+          added_at: string;
+          added_by: string | null;
+          label: string;
+          telegram_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          added_at?: string;
+          added_by?: string | null;
+          label: string;
+          telegram_id: number;
+        };
+        Update: {
+          added_at?: string;
+          added_by?: string | null;
+          label?: string;
+          telegram_id?: number;
+        };
+        Relationships: [];
+      };
       telegram_groups: {
         Row: {
           audience: string;
@@ -1189,7 +1205,13 @@ export type Database = {
         }[];
       };
       is_partner_guest: { Args: Record<PropertyKey, never>; Returns: boolean };
-      member_insights: { Args: Record<PropertyKey, never>; Returns: Json };
+      my_minor_status: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          consent_pending: boolean;
+          minor: boolean;
+        }[];
+      };
       my_name_parts: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -2276,6 +2298,7 @@ export type Database = {
           id: string;
           note: string | null;
           sent_to: string;
+          subject_user: string | null;
           submission_id: string | null;
           token_hash: string;
           used_at: string | null;
@@ -2289,6 +2312,7 @@ export type Database = {
           id?: string;
           note?: string | null;
           sent_to: string;
+          subject_user?: string | null;
           submission_id?: string | null;
           token_hash: string;
           used_at?: string | null;
@@ -2301,6 +2325,7 @@ export type Database = {
           id?: string;
           note?: string | null;
           sent_to?: string;
+          subject_user?: string | null;
           submission_id?: string | null;
           token_hash?: string;
           used_at?: string | null;
@@ -3037,6 +3062,46 @@ export type Database = {
           updated_by?: string | null;
           version?: string | null;
           vote?: string | null;
+        };
+        Relationships: [];
+      };
+      supporters: {
+        Row: {
+          created_at: string;
+          id: string;
+          logo: string | null;
+          logo_width: number | null;
+          name_ar: string;
+          name_en: string;
+          shown: boolean;
+          sort: number;
+          updated_at: string;
+          url: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: string;
+          logo?: string | null;
+          logo_width?: number | null;
+          name_ar: string;
+          name_en: string;
+          shown?: boolean;
+          sort?: number;
+          updated_at?: string;
+          url?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          logo?: string | null;
+          logo_width?: number | null;
+          name_ar?: string;
+          name_en?: string;
+          shown?: boolean;
+          sort?: number;
+          updated_at?: string;
+          url?: string | null;
         };
         Relationships: [];
       };
@@ -5843,6 +5908,10 @@ export type Database = {
         Args: { approve: boolean; note?: string; request_id: string };
         Returns: undefined;
       };
+      forget_invitation_list: {
+        Args: { list_source: string };
+        Returns: number;
+      };
       has_current_pledges: { Args: { uid?: string }; Returns: boolean };
       invitation_list: {
         Args: { list: string };
@@ -6037,6 +6106,45 @@ export type Database = {
   };
   programmes: {
     Tables: {
+      application_reviews: {
+        Row: {
+          applicant: string;
+          notes: string | null;
+          opening_id: string;
+          recused: boolean;
+          reviewer: string;
+          score: number | null;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          applicant: string;
+          notes?: string | null;
+          opening_id: string;
+          recused?: boolean;
+          reviewer: string;
+          score?: number | null;
+          updated_at?: string;
+        };
+        Update: {
+          applicant?: string;
+          notes?: string | null;
+          opening_id?: string;
+          recused?: boolean;
+          reviewer?: string;
+          score?: number | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "application_reviews_opening_id_applicant_fkey";
+            columns: ["opening_id", "applicant"];
+            isOneToOne: false;
+            referencedRelation: "opening_replies";
+            referencedColumns: ["opening_id", "user_id"];
+          },
+        ];
+      };
       audition_notes: {
         Row: {
           audition_id: string;
@@ -6070,6 +6178,42 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "auditions";
             referencedColumns: ["id"];
+          },
+        ];
+      };
+      audition_scores: {
+        Row: {
+          audition_id: string;
+          notes: string | null;
+          scorer: string;
+          scores: NonNullable<Json>;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          audition_id: string;
+          notes?: string | null;
+          scorer: string;
+          scores?: NonNullable<Json>;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          audition_id?: string;
+          notes?: string | null;
+          scorer?: string;
+          scores?: NonNullable<Json>;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "audition_scores_audition_id_user_id_fkey";
+            columns: ["audition_id", "user_id"];
+            isOneToOne: false;
+            referencedRelation: "audition_signups";
+            referencedColumns: ["audition_id", "user_id"];
           },
         ];
       };
@@ -6209,6 +6353,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      interview_records: {
+        Row: {
+          applicant: string;
+          created_at: string;
+          held_at: string;
+          id: string;
+          interviewer: string;
+          notes: string | null;
+          opening_id: string;
+          recommendation: string | null;
+          scores: NonNullable<Json>;
+        };
+        ComputedFields: never;
+        Insert: {
+          applicant: string;
+          created_at?: string;
+          held_at?: string;
+          id?: string;
+          interviewer: string;
+          notes?: string | null;
+          opening_id: string;
+          recommendation?: string | null;
+          scores?: NonNullable<Json>;
+        };
+        Update: {
+          applicant?: string;
+          created_at?: string;
+          held_at?: string;
+          id?: string;
+          interviewer?: string;
+          notes?: string | null;
+          opening_id?: string;
+          recommendation?: string | null;
+          scores?: NonNullable<Json>;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "interview_records_opening_id_applicant_fkey";
+            columns: ["opening_id", "applicant"];
+            isOneToOne: false;
+            referencedRelation: "opening_replies";
+            referencedColumns: ["opening_id", "user_id"];
+          },
+        ];
+      };
       needs: {
         Row: {
           created_at: string;
@@ -6266,35 +6455,74 @@ export type Database = {
       };
       opening_replies: {
         Row: {
+          accommodation: string | null;
+          answers: NonNullable<Json>;
+          appointed_by_resolution: string | null;
+          availability: string | null;
           created_at: string;
+          decided_at: string | null;
+          files: string[];
+          gpa_consent_at: string | null;
+          gpa_consent_name: string | null;
+          lang: string | null;
           note: string | null;
+          offer_answered_at: string | null;
+          offer_expires_at: string | null;
           opening_id: string;
           picked_at: string | null;
           picked_by: string | null;
           status: string;
+          student_life_eligible_at: string | null;
+          submitted_at: string | null;
           talk_at: string | null;
           updated_at: string;
           user_id: string;
         };
         ComputedFields: never;
         Insert: {
+          accommodation?: string | null;
+          answers?: NonNullable<Json>;
+          appointed_by_resolution?: string | null;
+          availability?: string | null;
           created_at?: string;
+          decided_at?: string | null;
+          files?: string[];
+          gpa_consent_at?: string | null;
+          gpa_consent_name?: string | null;
+          lang?: string | null;
           note?: string | null;
+          offer_answered_at?: string | null;
+          offer_expires_at?: string | null;
           opening_id: string;
           picked_at?: string | null;
           picked_by?: string | null;
           status?: string;
+          student_life_eligible_at?: string | null;
+          submitted_at?: string | null;
           talk_at?: string | null;
           updated_at?: string;
           user_id?: string;
         };
         Update: {
+          accommodation?: string | null;
+          answers?: NonNullable<Json>;
+          appointed_by_resolution?: string | null;
+          availability?: string | null;
           created_at?: string;
+          decided_at?: string | null;
+          files?: string[];
+          gpa_consent_at?: string | null;
+          gpa_consent_name?: string | null;
+          lang?: string | null;
           note?: string | null;
+          offer_answered_at?: string | null;
+          offer_expires_at?: string | null;
           opening_id?: string;
           picked_at?: string | null;
           picked_by?: string | null;
           status?: string;
+          student_life_eligible_at?: string | null;
+          submitted_at?: string | null;
           talk_at?: string | null;
           updated_at?: string;
           user_id?: string;
@@ -6311,11 +6539,16 @@ export type Database = {
       };
       openings: {
         Row: {
+          asks_files: boolean;
           body_ar: string | null;
           body_en: string | null;
           closes_at: string | null;
           created_at: string;
           created_by: string | null;
+          eb_approved_at: string | null;
+          eb_resolution: string | null;
+          eligibility_ar: string | null;
+          eligibility_en: string | null;
           event_id: string | null;
           id: string;
           is_open: boolean;
@@ -6323,19 +6556,25 @@ export type Database = {
           owner: string;
           places: number | null;
           programme_id: string | null;
+          questions: NonNullable<Json>;
           role: string | null;
-          skills: string[];
+          second_reviewer: string | null;
           title_ar: string;
           title_en: string;
           updated_at: string;
         };
         ComputedFields: never;
         Insert: {
+          asks_files?: boolean;
           body_ar?: string | null;
           body_en?: string | null;
           closes_at?: string | null;
           created_at?: string;
           created_by?: string | null;
+          eb_approved_at?: string | null;
+          eb_resolution?: string | null;
+          eligibility_ar?: string | null;
+          eligibility_en?: string | null;
           event_id?: string | null;
           id?: string;
           is_open?: boolean;
@@ -6343,18 +6582,24 @@ export type Database = {
           owner?: string;
           places?: number | null;
           programme_id?: string | null;
+          questions?: NonNullable<Json>;
           role?: string | null;
-          skills?: string[];
+          second_reviewer?: string | null;
           title_ar: string;
           title_en: string;
           updated_at?: string;
         };
         Update: {
+          asks_files?: boolean;
           body_ar?: string | null;
           body_en?: string | null;
           closes_at?: string | null;
           created_at?: string;
           created_by?: string | null;
+          eb_approved_at?: string | null;
+          eb_resolution?: string | null;
+          eligibility_ar?: string | null;
+          eligibility_en?: string | null;
           event_id?: string | null;
           id?: string;
           is_open?: boolean;
@@ -6362,8 +6607,9 @@ export type Database = {
           owner?: string;
           places?: number | null;
           programme_id?: string | null;
+          questions?: NonNullable<Json>;
           role?: string | null;
-          skills?: string[];
+          second_reviewer?: string | null;
           title_ar?: string;
           title_en?: string;
           updated_at?: string;
@@ -6844,6 +7090,7 @@ export type Database = {
           publishable: boolean;
           recorded_by: string | null;
           reference: string | null;
+          show_full_name: boolean;
           show_name: boolean;
           station: string | null;
           station_shift_id: string | null;
@@ -6872,6 +7119,7 @@ export type Database = {
           publishable?: boolean;
           recorded_by?: string | null;
           reference?: string | null;
+          show_full_name?: boolean;
           show_name?: boolean;
           station?: string | null;
           station_shift_id?: string | null;
@@ -6899,6 +7147,7 @@ export type Database = {
           publishable?: boolean;
           recorded_by?: string | null;
           reference?: string | null;
+          show_full_name?: boolean;
           show_name?: boolean;
           station?: string | null;
           station_shift_id?: string | null;
@@ -6925,6 +7174,14 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      answer_offer: {
+        Args: { accept: boolean; opening_id: string };
+        Returns: string;
+      };
+      appoint_director: {
+        Args: { opening_id: string; resolution: string; user_id: string };
+        Returns: boolean;
+      };
       attach_page_to_member: {
         Args: { entry_id: string; member_id: string };
         Returns: undefined;
@@ -6959,6 +7216,26 @@ export type Database = {
         Returns: undefined;
       };
       my_station_shift: { Args: Record<PropertyKey, never>; Returns: string };
+      open_place: {
+        Args: { opening_id: string };
+        Returns: {
+          asks_files: boolean;
+          body_ar: string;
+          body_en: string;
+          closes_at: string;
+          director: boolean;
+          eligibility_ar: string;
+          eligibility_en: string;
+          id: string;
+          kind: string;
+          owner: string;
+          places: number;
+          questions: Json;
+          role: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       open_places: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6966,12 +7243,14 @@ export type Database = {
           body_en: string;
           closes_at: string;
           created_at: string;
+          eligibility_ar: string;
+          eligibility_en: string;
           event_slug: string;
           id: string;
           kind: string;
           owner: string;
           places: number;
-          skills: string[];
+          role: string;
           title_ar: string;
           title_en: string;
         }[];
@@ -7041,6 +7320,23 @@ export type Database = {
         };
         Returns: string;
       };
+      record_student_life_answer: {
+        Args: { eligible: boolean; opening_id: string; user_id: string };
+        Returns: boolean;
+      };
+      save_application: {
+        Args: {
+          accommodation: string;
+          answers: Json;
+          availability: string;
+          files: string[];
+          gpa_consent_name: string;
+          lang: string;
+          opening_id: string;
+          submit: boolean;
+        };
+        Returns: string;
+      };
       set_credit_visibility: {
         Args: { credit_id: string; visible: boolean };
         Returns: undefined;
@@ -7085,6 +7381,7 @@ export type Database = {
         Args: { lang: string; page_id: string; words: string };
         Returns: undefined;
       };
+      withdraw_application: { Args: { opening_id: string }; Returns: boolean };
     };
     Enums: {
       [_ in never]: never;

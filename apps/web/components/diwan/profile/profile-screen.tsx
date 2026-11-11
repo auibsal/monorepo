@@ -2,6 +2,7 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import { formatNumber } from "@repo/internationalization/format";
@@ -11,12 +12,10 @@ import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { membership, names } from "@/lib/data";
-import { isNameTaken } from "@/lib/diwan/errors";
 import { queryKeys, useProfile } from "@/lib/diwan/queries";
 import { DiwanPage, DiwanSection } from "../page";
 import { NamePartsFields } from "../setup-form";
 import { ErrorState, SectionSpinner } from "../states";
-import { DetailsSection } from "./details-fields";
 
 export const ProfileScreen = () => {
   const t = useTranslations("diwan");
@@ -29,6 +28,7 @@ export const ProfileScreen = () => {
     bio: "",
     camera_shy: false,
     names: { ar: names.emptyParts(), en: names.emptyParts() },
+    preferred: { first_ar: "", first_en: "", last_ar: "", last_en: "" },
     title_form: "" as "" | "masculine" | "feminine",
   });
 
@@ -40,6 +40,12 @@ export const ProfileScreen = () => {
         names: {
           ar: names.partsFrom(profile.data, "ar"),
           en: names.partsFrom(profile.data, "en"),
+        },
+        preferred: {
+          first_ar: profile.data.preferred_first_ar ?? "",
+          first_en: profile.data.preferred_first_en ?? "",
+          last_ar: profile.data.preferred_last_ar ?? "",
+          last_en: profile.data.preferred_last_en ?? "",
         },
         title_form:
           profile.data.title_form === "feminine" ||
@@ -62,6 +68,10 @@ export const ProfileScreen = () => {
           ...names.partsUpdate(form.names.ar, "ar"),
           bio: form.bio.trim() || null,
           camera_shy: form.camera_shy,
+          preferred_first_ar: form.preferred.first_ar.trim() || null,
+          preferred_first_en: form.preferred.first_en.trim() || null,
+          preferred_last_ar: form.preferred.last_ar.trim() || null,
+          preferred_last_en: form.preferred.last_en.trim() || null,
           title_form: form.title_form || null,
         })
         .eq("id", user?.id ?? "");
@@ -129,6 +139,38 @@ export const ProfileScreen = () => {
             </fieldset>
           ))}
           <p className="type-caption">{t("setup.name.hint")}</p>
+          {/* A preferred name (decisions §19): shown in place of the legal
+              first or last name on the site, the card and the Council page. */}
+          <fieldset className="grid gap-3">
+            <legend className="mb-2 text-sm font-medium">
+              {t("profile.preferred.title")}
+            </legend>
+            <p className="type-caption">{t("profile.preferred.hint")}</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {(["first_en", "last_en", "first_ar", "last_ar"] as const).map(
+                (part) => (
+                  <div className="grid gap-2" key={part}>
+                    <Label htmlFor={`${id}-${part}`}>
+                      {t(`profile.preferred.${part}`)}
+                    </Label>
+                    <Input
+                      dir={part.endsWith("_ar") ? "rtl" : "ltr"}
+                      id={`${id}-${part}`}
+                      lang={part.endsWith("_ar") ? "ar" : "en"}
+                      maxLength={60}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          preferred: { ...f.preferred, [part]: e.target.value },
+                        }))
+                      }
+                      value={form.preferred[part]}
+                    />
+                  </div>
+                )
+              )}
+            </div>
+          </fieldset>
           <div className="grid gap-2">
             <Label htmlFor={`${id}-bio`}>{t("profile.bio")}</Label>
             <Textarea
@@ -193,9 +235,7 @@ export const ProfileScreen = () => {
           </fieldset>
           {save.isError ? (
             <p className="text-text" role="alert">
-              {isNameTaken(save.error)
-                ? t("errors.nameTaken")
-                : t("errors.saveFailed")}
+              {t("errors.saveFailed")}
             </p>
           ) : null}
           <Button
@@ -207,7 +247,6 @@ export const ProfileScreen = () => {
           </Button>
         </form>
       </DiwanSection>
-      <DetailsSection />
     </DiwanPage>
   );
 };

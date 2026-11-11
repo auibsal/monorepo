@@ -6,6 +6,7 @@ import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
 import { EmailQuotaError, sendEmail } from "@repo/email";
 import {
+  type ApplicationStep,
   accountDeleted,
   agreementReminder,
   announcement,
@@ -68,6 +69,7 @@ import {
   type BroadcastContact,
   BroadcastPending,
   cleanUpSegments,
+  forgetContacts,
   pullUnsubscribes,
   runBroadcast,
 } from "@/lib/api/broadcast";
@@ -486,7 +488,8 @@ const stopLinks = (lang: Lang, userId: string) => {
 const paperContents = async (
   admin: AdminClient,
   lang: Lang,
-  sinceValue: unknown
+  sinceValue: unknown,
+  month?: string
 ) => {
   const now = new Date();
   const since =
@@ -494,40 +497,58 @@ const paperContents = async (
       ? sinceValue
       : new Date(now.getTime() - 31 * 86_400_000).toISOString();
   const base = `${webUrl()}${prefix(lang)}`;
-  const [{ data: pieces }, { data: events }, { data: places }] =
-    await Promise.all([
-      admin
-        .schema("journal")
-        .from("pieces")
-        .select("slug, desk, title_en, title_ar, published_at")
-        .eq("status", "published")
-        .gt("published_at", since)
-        .lte("published_at", now.toISOString())
-        .order("published_at", { ascending: false })
-        .limit(20),
-      admin
-        .schema("events")
-        .from("events")
-        .select("slug, title_en, title_ar, starts_at")
-        .eq("status", "published")
-        .eq("members_only", false)
-        .gt("starts_at", now.toISOString())
-        .lte(
-          "starts_at",
-          new Date(now.getTime() + 31 * 86_400_000).toISOString()
-        )
-        .order("starts_at")
-        .limit(10),
-      admin
-        .schema("programmes")
-        .from("openings")
-        .select("title_en, title_ar")
-        .eq("is_open", true)
-        .or(`closes_at.is.null,closes_at.gt.${now.toISOString()}`)
-        .order("created_at", { ascending: false })
-        .limit(10),
-    ]);
-  if ((pieces?.length ?? 0) + (events?.length ?? 0) === 0) {
+  const [
+    { data: pieces },
+    { data: events },
+    { data: places },
+    { data: society },
+    { data: draft },
+  ] = await Promise.all([
+    admin
+      .schema("journal")
+      .from("pieces")
+      .select("slug, desk, title_en, title_ar, published_at")
+      .eq("status", "published")
+      .gt("published_at", since)
+      .lte("published_at", now.toISOString())
+      .order("published_at", { ascending: false })
+      .limit(20),
+    admin
+      .schema("events")
+      .from("events")
+      .select("slug, title_en, title_ar, starts_at")
+      .eq("status", "published")
+      .eq("members_only", false)
+      .gt("starts_at", now.toISOString())
+      .lte("starts_at", new Date(now.getTime() + 31 * 86_400_000).toISOString())
+      .order("starts_at")
+      .limit(10),
+    admin
+      .schema("programmes")
+      .from("openings")
+      .select("title_en, title_ar")
+      .eq("is_open", true)
+      .or(`closes_at.is.null,closes_at.gt.${now.toISOString()}`)
+      .order("created_at", { ascending: false })
+      .limit(10),
+    // "From the Society" (decisions §5): the notices sent this month.
+    admin
+      .schema("core")
+      .from("announcements")
+      .select("title_en, title_ar, link_path")
+      .not("sent_at", "is", null)
+      .gt("sent_at", since)
+      .order("sent_at", { ascending: false })
+      .limit(10),
+    admin
+      .schema("content")
+      .from("sunday_paper_drafts")
+      .select("letter_en, letter_ar")
+      .eq("month", month ?? "")
+      .maybeSingle(),
+  ]);
+  const letter = (lang === "ar" ? draft?.letter_ar : draft?.letter_en) ?? "";
+  if ((pieces?.length ?? 0) + (events?.length ?? 0) === 0 && !letter) {
     return null;
   }
   return {
@@ -539,6 +560,7 @@ const paperContents = async (
     })),
     front: `${base}/qirtas`,
     getInvolved: `${base}/get-involved`,
+    letter,
     pieces: (pieces ?? []).map((p) => {
       const desk = deskNames[p.desk as keyof typeof deskNames];
       return {
@@ -553,6 +575,12 @@ const paperContents = async (
       title_ar: o.title_ar ?? "",
       title_en: o.title_en ?? "",
     })),
+    society: (society ?? []).map((a) => ({
+      title_ar: a.title_ar,
+      title_en: a.title_en,
+      url: `${base}${a.link_path ?? ""}`,
+    })),
+    write: `${base}/qirtas/submit`,
   };
 };
 
@@ -572,6 +600,48 @@ const eventNotice =
       await send(to, make(to.lang, event, appUrl()));
     }
   };
+
+/** One step of an application, to the applicant (decisions §17). */
+const applicationStep = async (
+  admin: AdminClient,
+  payload: Record<string, unknown>,
+  step?: ApplicationStep
+) => {
+  const [to, { data: reply }] = await Promise.all([
+    recipient(admin, payload.user_id),
+    admin
+      .schema("programmes")
+      .from("opening_replies")
+      .select("status, talk_at, opening:openings(title_en, title_ar)")
+      .eq("opening_id", String(payload.opening_id))
+      .eq("user_id", String(payload.user_id))
+      .maybeSingle(),
+  ]);
+  const status = step ?? reply?.status;
+  if (!(to && reply?.opening && isApplicationStep(status))) {
+    return;
+  }
+  const role =
+    (to.lang === "ar" ? reply.opening.title_ar : reply.opening.title_en) ??
+    reply.opening.title_en ??
+    "";
+  await send(to, replyUpdate(to.lang, role, status, reply.talk_at, appUrl()));
+};
+
+const APPLICATION_STEPS = new Set<string>([
+  "accepted",
+  "not_picked",
+  "offered",
+  "received",
+  "talking",
+]);
+const isApplicationStep = (status: unknown): status is ApplicationStep =>
+  typeof status === "string" && APPLICATION_STEPS.has(status);
+
+const PAPER_TEST_LINE = {
+  ar: "هذه تجربة لجريدة الأحد، تصل إلى رئيس التحرير وحده قبل الإرسال.",
+  en: "A test of the Sunday Paper, sent only to the Editor-in-Chief before it goes out.",
+} as const;
 
 const handlers: Record<string, Handler> = {
   // From /api/two-step/recover: the hour's tries ran out.
@@ -657,7 +727,7 @@ const handlers: Record<string, Handler> = {
       await send({ email: payload.email, lang }, accountDeleted(lang));
     }
   },
-  // The President's notice (decisions §17): one Broadcast per language to
+  // The President's notice (decisions §18): one Broadcast per language to
   // the Sunday Paper's readers, each in their own language.
   "announcement.broadcast": async (admin, payload) => {
     await cleanUpSegments(admin);
@@ -917,43 +987,34 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  // One email a day to Membership, which runs every role's applications.
+  "get_involved.received": async (admin, payload) => {
+    await applicationStep(admin, payload, "received");
+  },
+  // One email a day to Membership, which runs every role's applications:
+  // counts by role, never names (decisions §19).
   "get_involved.replies_digest": async (admin) => {
     const since = new Date(Date.now() - 86_400_000).toISOString();
     const { data: replies } = await admin
       .schema("programmes")
       .from("opening_replies")
-      .select("user_id, note, opening:openings(title_en, title_ar)")
-      .gt("created_at", since)
-      .order("created_at");
+      .select("opening_id, opening:openings(title_en, title_ar)")
+      .gt("submitted_at", since)
+      .neq("status", "draft");
     if (!replies?.length) {
       return;
     }
-    const { data: people } = await admin
-      .schema("core")
-      .from("profiles")
-      .select("id, full_name_en, full_name_ar")
-      .in(
-        "id",
-        replies.map((r) => r.user_id)
-      );
     const managers = await holders(admin, "members.manage");
     await Promise.all(
       managers.map((m) => {
-        const lines = replies.map((r) => {
-          const person = people?.find((p) => p.id === r.user_id);
-          return {
-            member:
-              (m.lang === "ar" ? person?.full_name_ar : person?.full_name_en) ??
-              person?.full_name_en ??
-              "",
-            note: r.note,
-            role:
-              (m.lang === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
-              r.opening?.title_en ??
-              "",
-          };
-        });
+        const counts = new Map<string, number>();
+        for (const r of replies) {
+          const role =
+            (m.lang === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
+            r.opening?.title_en ??
+            "";
+          counts.set(role, (counts.get(role) ?? 0) + 1);
+        }
+        const lines = [...counts].map(([role, count]) => ({ count, role }));
         return send(m, repliesDigest(m.lang, lines, appUrl()), {
           category: "officer",
         });
@@ -961,31 +1022,7 @@ const handlers: Record<string, Handler> = {
     );
   },
   "get_involved.reply_update": async (admin, payload) => {
-    const [to, { data: reply }] = await Promise.all([
-      recipient(admin, payload.user_id),
-      admin
-        .schema("programmes")
-        .from("opening_replies")
-        .select("status, talk_at, opening:openings(title_en, title_ar)")
-        .eq("opening_id", String(payload.opening_id))
-        .eq("user_id", String(payload.user_id))
-        .maybeSingle(),
-    ]);
-    const status = reply?.status;
-    if (
-      to &&
-      reply?.opening &&
-      (status === "talking" || status === "offered" || status === "not_picked")
-    ) {
-      const role =
-        (to.lang === "ar" ? reply.opening.title_ar : reply.opening.title_en) ??
-        reply.opening.title_en ??
-        "";
-      await send(
-        to,
-        replyUpdate(to.lang, role, status, reply.talk_at, appUrl())
-      );
-    }
+    await applicationStep(admin, payload);
   },
   "governance.candidacy_decided": async (admin, payload) => {
     const [to, { data }] = await Promise.all([
@@ -1039,6 +1076,27 @@ const handlers: Record<string, Handler> = {
           appUrl()
         )
       );
+    }
+  },
+  // Thirty days after a list's send (decisions §12, §19): its contacts
+  // leave Resend, then its addresses are deleted here.
+  "invitation.forget": async (admin, payload) => {
+    const source = String(payload.source ?? "");
+    const { data: rows, error } = await admin
+      .schema("membership")
+      .from("invitations")
+      .select("email")
+      .eq("source", source);
+    if (error) {
+      throw error;
+    }
+    await forgetContacts((rows ?? []).map((r) => r.email));
+    await cleanUpSegments(admin);
+    const { error: gone } = await admin
+      .schema("membership")
+      .rpc("forget_invitation_list", { list_source: source });
+    if (gone) {
+      throw gone;
     }
   },
   "membership.certificate_issued": async (admin, payload) => {
@@ -1561,7 +1619,12 @@ const handlers: Record<string, Handler> = {
     const waiting: string[] = [];
     for (const lang of ["en", "ar"] as const) {
       // biome-ignore lint/performance/noAwaitInLoops: one language at a time
-      const paper = await paperContents(admin, lang, payload.since);
+      const paper = await paperContents(
+        admin,
+        lang,
+        payload.since,
+        String(payload.month ?? "")
+      );
       if (!paper) {
         // Nothing to carry in this language this month.
         continue;
@@ -1601,6 +1664,39 @@ const handlers: Record<string, Handler> = {
     }
     if (waiting.length > 0) {
       throw new BroadcastPending(waiting.join(" "));
+    }
+  },
+  // The test (decisions §19): the issue in both languages, to the
+  // Editor-in-Chief, before the Managing Editor sends it.
+  "sunday_paper.test": async (admin, payload) => {
+    const month = String(payload.month ?? "");
+    const editors = await holders(admin, "journal.frontpage");
+    for (const lang of ["en", "ar"] as const) {
+      // biome-ignore lint/performance/noAwaitInLoops: one language at a time
+      const paper = await paperContents(admin, lang, payload.since, month);
+      if (!paper) {
+        continue;
+      }
+      const built = sundayPaper(lang, paper);
+      await Promise.all(
+        editors.map((to) =>
+          sendEmail({
+            react: Notice({
+              blocks: built.blocks,
+              footer: [{ text: PAPER_TEST_LINE[lang] }],
+              preview: built.preview,
+            }),
+            replyTo: project.mailboxes.qirtas,
+            subject: `${lang === "ar" ? "تجربة" : "Test"}: ${built.subject}`,
+            tags: [{ name: "kind", value: "sunday_paper_test" }],
+            text: noticeText({
+              blocks: built.blocks,
+              footer: [{ text: PAPER_TEST_LINE[lang] }],
+            }),
+            to: to.email,
+          })
+        )
+      );
     }
   },
   // A role or class changed (decisions §11): a saved pass shows it.

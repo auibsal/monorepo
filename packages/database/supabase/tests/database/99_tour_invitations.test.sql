@@ -95,7 +95,7 @@ $$;
 
 -- The spring 2026 Tour's import and the invitation Broadcast (decisions.md).
 
-select plan(24);
+select plan(25);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000071a1', 'lead@auib.edu.iq', 'Tour Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000071a2', 'member@auib.edu.iq', 'Plain Member');
@@ -191,8 +191,11 @@ select is((select count(*)::integer from core.outbox where kind = 'membership.in
 -- Each list deletes itself thirty days after its own send.
 update membership.invitation_lists set sent_at = now() - interval '31 days' where source = 'test_list';
 select private.purge_tour_lists();
+select is((select count(*)::integer from core.outbox where kind = 'invitation.forget' and payload ->> 'source' = 'test_list'), 1,
+  'A list sent 31 days ago goes to the outbox, which removes its contacts from Resend');
+select membership.forget_invitation_list('test_list');
 select is((select count(*)::integer from membership.invitations where source = 'test_list'), 0,
-  'A list sent 31 days ago is gone, the addresses skipped with it');
+  'and then its addresses are gone, the addresses skipped with it');
 select is((select count(*)::integer from membership.invitations where source = 'club_fair_2026'), 1,
   'A list sent today stays');
 

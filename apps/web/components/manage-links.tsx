@@ -15,7 +15,7 @@ import { readWays, type Ways } from "@/lib/staff";
  * every public page links to the Diwan, the partner's dashboard or
  * Membership, for whoever has them): officers see "Manage in the Diwan", a
  * partner's team their dashboard, a signed-in reader their own page.
- * Read from the sign-in and `sal_ways` hint cookies after the first
+ * Read from the sign-in cookie and the `sal_ways` hint after the first
  * render, so the page stays the same for everyone and is cached; each
  * area's own gate still decides.
  */
@@ -39,7 +39,7 @@ export const ManageLinks = ({
   const [ways, setWays] = useState<Ways | null>(null);
   const [signedIn, setSignedIn] = useState(false);
   useEffect(() => {
-    setWays(readWays(document.cookie));
+    setWays(readWays());
     setSignedIn(hasSessionCookie(document.cookie));
   }, []);
 

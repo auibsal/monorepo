@@ -114,7 +114,7 @@ const NextStopPage = async ({ params }: NextStopProps) => {
         </h2>
         <p className="type-body max-w-[60ch]">{t("nextStop.sendBody")}</p>
         <p className="flex flex-wrap gap-x-6 gap-y-2">
-          <Link className="link" href="/qirtas/write/reel">
+          <Link className="link" href="/qirtas/submit/reel">
             {t("nextStop.sendReel")}
           </Link>
           <Link className="link" href="/next-stop/care">

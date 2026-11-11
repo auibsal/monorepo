@@ -153,10 +153,9 @@ select is(
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000067a6');
-select lives_ok(
-  $$ insert into programmes.opening_replies (opening_id, user_id)
-     values ('00000000-0000-0000-0000-0000000067b1', auth.uid()) $$,
-  'A member says they''re interested'
+select is(
+  programmes.save_application('00000000-0000-0000-0000-0000000067b1', '{}', null, 'en', '{}', null, null, true),
+  'new', 'A member applies'
 );
 select ok(
   not exists (select 1 from access.role_permissions

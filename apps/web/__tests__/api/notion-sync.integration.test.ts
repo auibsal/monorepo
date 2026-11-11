@@ -243,11 +243,11 @@ describe.skipIf(!enabled)("Notion sync", () => {
       .eq("slug", "salon")
       .single();
     salonId = salon?.id ?? "";
-    await admin
+    const { error: roleError } = await admin
       .schema("access")
       .from("role_assignments")
       .insert([
-        { role: "events_lead", scope_type: "global", user_id: leadId },
+        { role: "programme_lead", scope_type: "global", user_id: leadId },
         {
           role: "programme_lead",
           scope_id: salonId,
@@ -255,6 +255,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
           user_id: leadId,
         },
       ]);
+    expect(roleError).toBeNull();
   });
 
   const sync = () => run(fake.client as never);

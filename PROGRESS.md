@@ -1,7 +1,8 @@
 # SAL platform: progress
 
 The working checklist for auibsal.org. Every session starts here, after
-`claude/decisions.md`, and continues from the first open item. What is
+the owner's decisions (kept in the Claude project), and continues from the
+first open item. What is
 done lives in git and the merged pull requests; this file keeps only what
 is still open.
 
@@ -48,6 +49,30 @@ Part A first).
   all 86 pages in the sitemap were read for retired names and codes, and
   the one found, "open nights" in the Company's line, is fixed by a
   migration.
+
+## Open after the Nov 11 PR (decisions §17, §19)
+
+- [ ] **The writing workshop** (was Nov 17): an unpublished draft on the
+  site and Planning in Notion; it needs its new date before it is set to
+  Ready to publish.
+- [ ] **Four of the 22 backdated stories** to be reported anew by the News
+  desk (new reporting, new dates, nothing reused); the 22 stay unpublished.
+- [ ] **The four director openings** are posted closed until the Executive
+  Board's approval is recorded on each (Diwan → Membership → Openings).
+- [ ] **Hosting and tool accounts:** the owner is still deciding who owns
+  Vercel and Resend (`docs/platform/hosting-move.md` has the steps).
+- [ ] **`anon` USAGE on `private`** stays: the public wrappers are SECURITY
+  INVOKER and call `private` functions, so revoking it breaks the public
+  pages (tried locally Nov 11). Narrowing `anon`'s EXECUTE to the
+  functions it needs is the defense in depth left to do.
+- [ ] **GOV-04 on the site:** the Notion page (both editions) is already
+  free of the Google Analytics, consent-cookie and banner text, but the
+  site still shows the Nov 7 publication. The Governance chat sets both
+  editions to Ready to publish to re-sync; they should also say that the
+  Sunday Paper comes from qirtas@auibsal.org and is sent by the Managing
+  Editor (no longer "the first Sunday").
+- [ ] **Two retention schedulers** (`vercel.json`'s `/api/cron/retention`
+  and pg_cron's `sal-retention`): keep one, or say why both.
 
 ## For the owner: dashboards and secrets
 
@@ -217,10 +242,9 @@ Part A first).
   - F7: coverage minimums are set (PR #250, `vitest.config.ts`): two
     points under Nov 8's coverage.
   - F1: AGENTS.md is cut to the conventions (Nov 8; the domain is in
-    `docs/platform/domain.md`). The decisions.md date line is checked in
-    CI (`bun run check:decisions`): a real day, its weekday right, not in
-    the future, no later "decided" date, and a new date whenever the file
-    changes.
+    `docs/platform/domain.md`). decisions.md and the glossary live only in the
+    Claude project since Nov 11 (decisions §19); the repository's copies
+    and their date check are gone.
 
 ## Content still needed
 

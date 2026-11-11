@@ -102,6 +102,7 @@ describe("signing up", () => {
     return { signUp, supabase: { auth: { signUp } } as never };
   };
   const base = {
+    adult: true,
     agreed: true,
     locale: "en" as const,
     password: "a-long-password",

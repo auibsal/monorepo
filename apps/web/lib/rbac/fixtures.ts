@@ -37,6 +37,12 @@ const personas = {
     name: "Guest",
     roles: [],
   },
+  managingEditor: {
+    email: "sm@auib.edu.iq",
+    id: "00000000-0000-0000-0000-0000000005a1",
+    name: "Managing Editor",
+    roles: [{ role: "managing_editor", scope: "issue" }],
+  },
   member: {
     email: "member@auib.edu.iq",
     id: "00000000-0000-0000-0000-0000000000a1",
@@ -48,12 +54,6 @@ const personas = {
     id: "00000000-0000-0000-0000-0000000005b1",
     name: "Reader One",
     roles: [{ role: "reader", scope: "issue" }],
-  },
-  submissionsManager: {
-    email: "sm@auib.edu.iq",
-    id: "00000000-0000-0000-0000-0000000005a1",
-    name: "Submissions Manager",
-    roles: [{ role: "submissions_manager", scope: "issue" }],
   },
 } as const satisfies Record<string, Persona>;
 

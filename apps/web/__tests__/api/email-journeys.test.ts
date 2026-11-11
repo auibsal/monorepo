@@ -6,6 +6,7 @@ import {
   applicationReceived,
   applicationWaiting,
   type Built,
+  callOpened,
   candidacyDecided,
   certificateIssued,
   eventChanged,
@@ -46,6 +47,9 @@ const every = (l: Lang): Built[] => [
   removalDone(l, "removed", null),
   replyUpdate(l, "Photographer", "talking", "2026-11-10T13:00:00Z", APP),
   replyUpdate(l, "Photographer", "not_picked", null, APP),
+  replyUpdate(l, "Photographer", "received", null, APP),
+  replyUpdate(l, "Photographer", "offered", null, APP),
+  replyUpdate(l, "Director of Events", "accepted", null, APP),
   invitation(
     l,
     {
@@ -70,11 +74,7 @@ const every = (l: Lang): Built[] => [
   ),
   welcome(l, APP),
   accountDeleted(l),
-  repliesDigest(
-    l,
-    [{ member: "A member", note: null, role: "Photographer" }],
-    APP
-  ),
+  repliesDigest(l, [{ count: 2, role: "Photographer" }], APP),
 ];
 
 describe("the email journeys", () => {
@@ -101,6 +101,31 @@ describe("the email journeys", () => {
     ).toBe(true);
   });
 
+  test("a call with no closing date yet says so, not a date in 2100", () => {
+    const open = callOpened(
+      "en",
+      {
+        closes_at: "2100-01-01T00:00:00Z",
+        title_ar: "ملاذ",
+        title_en: "Haven",
+      },
+      APP
+    );
+    const text = open.blocks[0]?.paragraphs.join(" ") ?? "";
+    expect(text).toContain("still to be set");
+    expect(text).not.toContain("2100");
+    const dated = callOpened(
+      "en",
+      {
+        closes_at: "2026-12-11T12:00:00Z",
+        title_ar: "ملاذ",
+        title_en: "Haven",
+      },
+      APP
+    );
+    expect(dated.blocks[0]?.paragraphs.join(" ")).toContain("December 11");
+  });
+
   test("a request closed links to its own page", () => {
     const built = requestUpdated("en", "f21", "closed", "abc", APP);
     expect(built.subject).toBe("We've closed your concern");
@@ -114,7 +139,7 @@ describe("the email journeys", () => {
     const items = built.blocks[0]?.lists?.[0]?.items ?? [];
     expect(items.map((i) => i.href)).toContain("https://auibsal.org/ar/events");
     const html = await render(Notice(built));
-    expect(html).toContain('href="https://auibsal.org/ar/qirtas/write"');
+    expect(html).toContain('href="https://auibsal.org/ar/qirtas/submit"');
   });
 
   test("confirmations repeat their link under the button, in HTML and text", async () => {

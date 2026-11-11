@@ -39,6 +39,14 @@ const projectSchema = z
       .refine((locale) => locale.enabled.includes(locale.default), {
         message: "locale.default must be one of locale.enabled",
       }),
+    /**
+     * The Society's mailboxes (decisions §6): hello@ sends the site's
+     * emails and takes replies; qirtas@ sends the Sunday Paper and takes
+     * its replies; security@ is in /.well-known/security.txt.
+     */
+    mailboxes: z
+      .object({ hello: z.email(), qirtas: z.email(), security: z.email() })
+      .strict(),
     motto: z.object({ ar: z.string().min(1), en: z.string().min(1) }),
     name: z.string().min(1),
     nameAr: z.string().min(1),

@@ -202,7 +202,7 @@ const PARTNER = { ar: "نادي الكتاب", en: "The Book Club" };
 const election = {
   nominations_close_at: "2027-04-11T20:59:59Z",
   nominations_open_at: "2027-04-04T05:00:00Z",
-  title_ar: "انتخابات المجلس التنفيذي 2027",
+  title_ar: "انتخابات المجلس 2027",
   title_en: "Council elections 2027",
   voting_closes_at: "2027-04-15T20:59:59Z",
   voting_opens_at: "2027-04-14T05:00:00Z",
@@ -353,9 +353,8 @@ export const RepliesDigest = email((l) =>
     l,
     [
       {
-        member: l === "ar" ? "اسم العضو" : "A member's name",
-        note: l === "ar" ? "أحب التصوير" : "I take photos for my club",
-        role: l === "ar" ? "مصوّر" : "Photographer",
+        count: 2,
+        role: l === "ar" ? "محرر الأخبار" : "News Editor",
       },
     ],
     APP

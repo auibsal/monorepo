@@ -124,7 +124,7 @@ select pg_temp.grant_role('00000000-0000-0000-0000-00000000ae12', 'letters_edito
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000c0b1', 'copy_editor');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000ae13', 'news_editor');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000ae13', 'managing_editor');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000005a1', 'submissions_manager');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000005a1', 'managing_editor');
 
 insert into membership.pledges (user_id, pledge_type, version)
 select u, t, '1'

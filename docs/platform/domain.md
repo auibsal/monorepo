@@ -3,7 +3,7 @@
 How the AUIB Society of Arts and Letters works, as the code models it:
 the Council, members, cards, numbers, forms, events, partners, Qirtas,
 Notion, documents, Hudhud and email. Read the section for the domain you
-are changing before you change it. `claude/decisions.md` wins wherever it
+are changing before you change it. The owner's decisions (in the Claude project) win wherever they
 disagrees; the conventions for every change are in `AGENTS.md`.
 
 ## People, roles and records
@@ -12,11 +12,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   General Secretary) and six directors (Editor-in-Chief, Director of
   Media, Artistic Director, Director of Events, Director of Partnerships,
   Director of Membership); `isCouncil` in `lib/rbac/roles.ts`, mirrored
-  from the database. Until a seat is filled, the President covers Events
-  and the Artistic Director, the Vice President Partnerships, the General
-  Secretary Membership; the role bundles give them those permissions. The
-  Acting President (`acting_president`) is assigned for the President's
-  time abroad. The Council page (`/about/council`,
+  from the database. Each role is hired by its hiring seat
+  (`access.roles.hiring_owner`), whoever holds the permissions for it; no
+  seat is named in code as covering another. While the President is
+  recorded absent, the Vice President acts (there is no Acting President
+  role). The Council page (`/about/council`,
   `governance.council_seats()`) lists the nine seats by full title, held
   or open, from the roles people hold: nothing is typed by hand. A second
   Council role needs an adopted Council resolution
@@ -234,7 +234,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Gallery, Video, Games. Types are the editors' (`type_label`). Voices
   keeps the opinion rule (no party politics, religion, sect or
   ethnicity).
-- **Write for Qirtas** (`/qirtas/write`) is the one door: public to read,
+- **Write for Qirtas** (`/qirtas/submit`) is the one door: public to read,
   members send work in every section except Games, at any time, and
   everything is read blind. Drafts (`journal.submission_drafts`) are their
   writer's alone. Every decision carries its reason (`journal.decide`).

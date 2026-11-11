@@ -1,5 +1,7 @@
 "use client";
 
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Label } from "@repo/brand/components/ui/label";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
@@ -33,6 +35,11 @@ export const SixWords = () => {
       id: string;
       visibility: programmes.PageVisibility;
     }) => programmes.setPageVisibility(supabase, id, visibility),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
+  const naming = useMutation({
+    mutationFn: ({ full, id }: { full: boolean; id: string }) =>
+      programmes.setPageFullName(supabase, id, full),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
   });
   if (!pages.data?.length) {
@@ -77,13 +84,31 @@ export const SixWords = () => {
                 ))}
               </SelectInput>
             </div>
+            {page.visibility === "tour" ? (
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  checked={page.show_full_name}
+                  disabled={naming.isPending}
+                  id={`full-name-${page.id}`}
+                  onCheckedChange={(checked) =>
+                    naming.mutate({ full: checked === true, id: page.id })
+                  }
+                />
+                <Label
+                  className="leading-normal"
+                  htmlFor={`full-name-${page.id}`}
+                >
+                  {t("fullName")}
+                </Label>
+              </div>
+            ) : null}
             {page.publishable ? null : (
               <p className="type-caption">{t("takenDown")}</p>
             )}
           </li>
         ))}
       </ul>
-      <ErrorLine error={choose.error} />
+      <ErrorLine error={choose.error ?? naming.error} />
     </Section>
   );
 };

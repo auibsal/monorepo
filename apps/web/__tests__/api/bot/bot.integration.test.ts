@@ -2,7 +2,7 @@
 /**
  * The bot end to end against a local stack, with Telegram replaced by a
  * recorder: linking, RSVP through the member's own rules, the daily word,
- * connecting a group, topics, the scheduled posts and a join request.
+ * connecting a group, its topics (set in the Diwan), the scheduled posts and a join request.
  * Needs: SUPABASE_INTEGRATION=1 API_URL=… PUBLISHABLE_KEY=… SECRET_KEY=…
  */
 import { createHash } from "node:crypto";
@@ -276,10 +276,12 @@ describe.skipIf(!enabled)("Hudhud", () => {
     expect(lastText()).toContain("Connected");
     expect(sent("deleteMessage").length).toBeGreaterThan(0);
 
-    await bot.handleUpdate(
-      message("/topic events", { chat: chatId, thread: 5 })
-    );
-    expect(lastText()).toContain("now for events");
+    // Topics are chosen in the Diwan (Media → Channels), not in the chat.
+    await admin
+      .schema("core")
+      .from("telegram_groups")
+      .update({ topics: { events: 5 } })
+      .eq("chat_id", chatId);
 
     const before = sent().length;
     await runFeeds(bot.api, "sal_test_bot");
@@ -351,9 +353,10 @@ describe.skipIf(!enabled)("Hudhud", () => {
     await bot.handleUpdate(
       message("Hello all", { chat: chatId, thread: 5, user: stranger })
     );
+    // The notice goes to them privately, not to the group.
     const warning = sent().at(-1);
     expect(String(warning?.payload.text)).toContain("within a week");
-    expect(warning?.payload.message_thread_id).toBe(5);
+    expect(warning?.payload.chat_id).toBe(stranger);
     // Once only.
     const once = sent().length;
     await bot.handleUpdate(message("Again", { chat: chatId, user: stranger }));
@@ -375,8 +378,14 @@ describe.skipIf(!enabled)("Hudhud", () => {
   });
 
   test("in the Diwan group, lets in only officers and posts the brief", async () => {
-    await bot.handleUpdate(message("/audience staff", { chat: chatId }));
-    expect(lastText()).toContain("for the Society's officers now");
+    // Who a group is for is set in the Diwan (Media → Channels).
+    const audience = (value: "members" | "staff") =>
+      admin
+        .schema("core")
+        .from("telegram_groups")
+        .update({ audience: value })
+        .eq("chat_id", chatId);
+    await audience("staff");
 
     // A linked member without a Society role waits for the admins.
     await bot.handleUpdate(joinRequest(tgUser, "q3"));
@@ -401,8 +410,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
     expect(briefs).toHaveLength(1);
     expect(String(briefs[0]?.payload.text)).toContain("Waiting in the Diwan");
 
-    await bot.handleUpdate(message("/audience members", { chat: chatId }));
-    expect(lastText()).toContain("for the Society's members now");
+    await audience("members");
   });
 
   test("answers a guest mention with the matching event", async () => {

@@ -10,6 +10,7 @@ import {
   PieceColumn,
   pieceHref,
 } from "@/components/qirtas/cards";
+import { HavenCall } from "@/components/qirtas/haven-call";
 import { journal, localized } from "@/lib/data";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
@@ -130,6 +131,8 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
         {nothing ? (
           <p className="type-lede text-center">{t("firstEdition")}</p>
         ) : null}
+
+        <HavenCall locale={locale} />
 
         {lead ? (
           <section
