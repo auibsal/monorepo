@@ -21,7 +21,6 @@ import {
   AdminHeading,
   type Column,
   DataTable,
-  ExportButton,
   RowCount,
   SelectInput,
 } from "../kit";
@@ -132,14 +131,12 @@ export const MembersDirectory = () => {
     <div className="grid gap-6">
       <AdminHeading
         actions={
-          <>
-            {hasPermission(grants.data, "members.manage") ? (
-              <Link className="link" href="/membership/guests">
-                {t("guests.link")}
-              </Link>
-            ) : null}
-            <ExportButton fileName="sal-members.csv" name="members" />
-          </>
+          // No bulk export of the Register (decisions §10): counts only.
+          hasPermission(grants.data, "members.manage") ? (
+            <Link className="link" href="/membership/guests">
+              {t("guests.link")}
+            </Link>
+          ) : null
         }
         title={t("title")}
       >

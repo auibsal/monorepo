@@ -8,7 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { localized, type membership, unwrap } from "@/lib/data";
+import { localized, programmes, unwrap } from "@/lib/data";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermission, hasPermissionAnywhere } from "@/lib/rbac";
@@ -35,7 +35,6 @@ import {
   picks,
   type Reply,
 } from "../members/hiring";
-import { SkillsPicker } from "./skills-picker";
 
 /**
  * What an opening offers (decisions.md: open roles only): a team role
@@ -44,6 +43,15 @@ import { SkillsPicker } from "./skills-picker";
  * each event.
  */
 export const openingKinds = ["role", "event_team", "qalam_mentor"] as const;
+
+/** The appointed director seats (decisions §4). */
+const DIRECTOR_ROLES = new Set([
+  "artistic_director",
+  "events_director",
+  "partnerships_director",
+  "membership_director",
+  "media_director",
+]);
 type OpeningKind = (typeof openingKinds)[number];
 type PlaceKind = Exclude<OpeningKind, "role">;
 
@@ -52,7 +60,6 @@ const blank = {
   closes_at: null as string | null,
   event_id: "",
   places: "",
-  skills: [] as (typeof membership.skills)[number][],
   title: { ar: "", en: "" },
 };
 
@@ -66,7 +73,7 @@ const useOpenings = () => {
           .schema("programmes")
           .from("openings")
           .select(
-            "id, kind, owner, programme_id, event_id, title_en, title_ar, closes_at, is_open, opening_replies(opening_id, user_id, note, status, talk_at, created_at)"
+            "id, kind, owner, role, programme_id, event_id, title_en, title_ar, closes_at, is_open, questions, opening_replies(opening_id, user_id, note, status, talk_at, created_at, answers, availability, files, accommodation, lang, gpa_consent_at, submitted_at, offer_expires_at, student_life_eligible_at)"
           )
           .order("created_at", { ascending: false })
       ) ?? [],
@@ -183,8 +190,10 @@ const OpeningItem = ({
             return (
               <Application
                 canPick={canPick}
+                director={DIRECTOR_ROLES.has(o.role ?? "")}
                 key={reply.user_id}
                 name={person ? memberName(person, locale) : "—"}
+                questions={programmes.questionsOf(o.questions)}
                 reply={reply as Reply}
                 runs={runs}
               />
@@ -327,7 +336,6 @@ const PlaceForm = ({
             kind,
             owner: kind === "event_team" ? "program" : "qirtas",
             places: form.places ? Number(form.places) : null,
-            skills: form.skills,
             title_ar: form.title.ar,
             title_en: form.title.en,
           })
@@ -379,10 +387,6 @@ const PlaceForm = ({
         onChange={(body) => setForm((f) => ({ ...f, body }))}
         rows={3}
         value={form.body}
-      />
-      <SkillsPicker
-        onChange={(skills) => setForm((f) => ({ ...f, skills }))}
-        value={form.skills}
       />
       <Field label={t("places")}>
         {(id) => (

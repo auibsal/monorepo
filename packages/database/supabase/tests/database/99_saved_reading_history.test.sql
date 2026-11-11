@@ -102,7 +102,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000d4002', 'other.d4@auib.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000d4003', 'editor.d4@auib.edu.iq', 'Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000d4004', 'events.d4@auib.edu.iq', 'Events Lead');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000d4003', 'eic');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000d4004', 'events_lead');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000d4004', 'programme_lead');
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000d4005', 'writer.d4@auib.edu.iq', 'D4 Writer');
 insert into journal.contributors (id, slug, name_en, name_ar, user_id) values

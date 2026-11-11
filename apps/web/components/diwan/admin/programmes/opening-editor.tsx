@@ -1,13 +1,15 @@
 "use client";
 
 import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { localized, unwrap } from "@/lib/data";
+import { localized, programmes, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, PageSpinner } from "../../states";
@@ -20,13 +22,86 @@ import {
   Field,
   SaveButton,
 } from "../kit";
+import { MemberPicker, type Person, useMemberNames } from "../member-picker";
 import type { openingKinds } from "./openings";
-import { SkillsPicker } from "./skills-picker";
+
+/** The appointed director seats: they open after the Executive Board's approval. */
+const DIRECTOR_ROLES = new Set([
+  "artistic_director",
+  "events_director",
+  "partnerships_director",
+  "membership_director",
+  "media_director",
+]);
 
 type Kind = (typeof openingKinds)[number];
 
 const COLUMNS =
-  "id, kind, owner, role, title_en, title_ar, body_en, body_ar, skills, closes_at, is_open, places, event_id";
+  "id, kind, owner, role, title_en, title_ar, body_en, body_ar, eligibility_en, eligibility_ar, questions, asks_files, second_reviewer, eb_resolution, eb_approved_at, closes_at, is_open, places, event_id";
+
+/** The opening's questions, each in both languages (decisions §18). */
+const QuestionsEditor = ({
+  onChange,
+  value,
+}: {
+  readonly onChange: (questions: programmes.Question[]) => void;
+  readonly value: readonly programmes.Question[];
+}) => {
+  const t = useTranslations("diwan.admin.programmes.openings");
+  const set = (index: number, change: Partial<programmes.Question>) =>
+    onChange(value.map((q, i) => (i === index ? { ...q, ...change } : q)));
+  return (
+    <fieldset className="grid gap-4">
+      <legend className="text-sm font-medium">{t("questions")}</legend>
+      {value.map((q, index) => (
+        <div className="border-line grid gap-3 border-t pt-3" key={q.key}>
+          <BilingualField
+            label={t("question", { n: String(index + 1) })}
+            maxLength={300}
+            onChange={(text) => set(index, { ar: text.ar, en: text.en })}
+            value={{ ar: q.ar, en: q.en }}
+          />
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <span className="flex items-center gap-2">
+              <Checkbox
+                checked={q.required}
+                id={`q-${q.key}`}
+                onCheckedChange={(v) => set(index, { required: v === true })}
+              />
+              <Label htmlFor={`q-${q.key}`}>{t("questionRequired")}</Label>
+            </span>
+            <button
+              className="link type-caption"
+              onClick={() => onChange(value.filter((_, i) => i !== index))}
+              type="button"
+            >
+              {t("questionRemove")}
+            </button>
+          </div>
+        </div>
+      ))}
+      {value.length < 8 ? (
+        <button
+          className="link justify-self-start text-sm"
+          onClick={() =>
+            onChange([
+              ...value,
+              {
+                ar: "",
+                en: "",
+                key: `q${Date.now().toString(36)}`,
+                required: true,
+              },
+            ])
+          }
+          type="button"
+        >
+          {t("questionAdd")}
+        </button>
+      ) : null}
+    </fieldset>
+  );
+};
 
 /** Where an opening lives in the Diwan: its list, which the page returns to. */
 export interface OpeningEditorProps {
@@ -65,25 +140,41 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
   const kind = (opening.data?.kind ?? "role") as Kind;
 
   const [form, setForm] = useState({
+    asks_files: false,
     body: { ar: "", en: "" },
     closes_at: null as string | null,
+    eb_resolution: "",
+    eligibility: { ar: "", en: "" },
     places: "",
-    skills: [] as string[],
+    questions: [] as programmes.Question[],
+    second_reviewer: null as Person | null,
     title: { ar: "", en: "" },
   });
+  const reviewerNames = useMemberNames([opening.data?.second_reviewer]);
   // The form starts from the opening as saved.
   useEffect(() => {
     const row = opening.data;
     if (row) {
+      const reviewer = reviewerNames.data?.find(
+        (p) => p.id === row.second_reviewer
+      );
       setForm({
+        asks_files: row.asks_files,
         body: { ar: row.body_ar ?? "", en: row.body_en ?? "" },
         closes_at: row.closes_at,
+        eb_resolution: row.eb_resolution ?? "",
+        eligibility: {
+          ar: row.eligibility_ar ?? "",
+          en: row.eligibility_en ?? "",
+        },
         places: row.places ? String(row.places) : "",
-        skills: row.skills ?? [],
+        questions: programmes.questionsOf(row.questions),
+        second_reviewer: reviewer ?? null,
         title: { ar: row.title_ar ?? "", en: row.title_en ?? "" },
       });
     }
-  }, [opening.data]);
+  }, [opening.data, reviewerNames.data]);
+  const director = DIRECTOR_ROLES.has(opening.data?.role ?? "");
 
   const refresh = () =>
     Promise.all([
@@ -101,11 +192,20 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
           .schema("programmes")
           .from("openings")
           .update({
+            asks_files: form.asks_files,
             body_ar: form.body.ar || null,
             body_en: form.body.en || null,
             closes_at: form.closes_at,
+            eb_approved_at:
+              director && form.eb_resolution.trim()
+                ? (opening.data?.eb_approved_at ?? new Date().toISOString())
+                : null,
+            eb_resolution: director ? form.eb_resolution.trim() || null : null,
+            eligibility_ar: form.eligibility.ar || null,
+            eligibility_en: form.eligibility.en || null,
             places: place && form.places ? Number(form.places) : null,
-            skills: form.skills,
+            questions: form.questions.filter((q) => q.en.trim() && q.ar.trim()),
+            second_reviewer: form.second_reviewer?.id ?? null,
             title_ar: form.title.ar,
             title_en: form.title.en,
           })
@@ -183,10 +283,53 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
           rows={4}
           value={form.body}
         />
-        <SkillsPicker
-          onChange={(skills) => setForm((f) => ({ ...f, skills }))}
-          value={form.skills}
+        <BilingualField
+          label={t("eligibility")}
+          maxLength={600}
+          multiline
+          onChange={(eligibility) => setForm((f) => ({ ...f, eligibility }))}
+          rows={2}
+          value={form.eligibility}
         />
+        <QuestionsEditor
+          onChange={(questions) => setForm((f) => ({ ...f, questions }))}
+          value={form.questions}
+        />
+        <div className="flex items-start gap-3">
+          <Checkbox
+            checked={form.asks_files}
+            id={`${id}-files`}
+            onCheckedChange={(v) =>
+              setForm((f) => ({ ...f, asks_files: v === true }))
+            }
+          />
+          <Label className="leading-normal" htmlFor={`${id}-files`}>
+            {t("asksFiles")}
+          </Label>
+        </div>
+        <MemberPicker
+          label={t("secondReviewer")}
+          onChange={(second_reviewer) =>
+            setForm((f) => ({ ...f, second_reviewer }))
+          }
+          value={form.second_reviewer}
+        />
+        {director ? (
+          <Field hint={t("ebHint")} label={t("ebResolution")}>
+            {(fieldId) => (
+              <Input
+                className="max-w-xs"
+                dir="ltr"
+                id={fieldId}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, eb_resolution: e.target.value }))
+                }
+                placeholder={t("ebPlaceholder")}
+                value={form.eb_resolution}
+              />
+            )}
+          </Field>
+        ) : null}
         {kind === "role" ? null : (
           <Field label={t("places")}>
             {(fieldId) => (

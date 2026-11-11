@@ -110,15 +110,24 @@ const captcha = (captchaToken?: string) =>
 const SHOWN: EmailAuthErrorCode[] = ["captcha_failed", "rate_limited"];
 
 export interface SignUpDetails {
+  /** 18 or older; a student under 18 gives `minor` instead (decisions §10). */
+  adult: boolean;
   /**
-   * That the person is 18 or older and agrees to the Terms of Use and the
-   * Privacy Notice (decisions §11); recorded with the account.
+   * That the person agrees to the Terms of Use and the Privacy Notice
+   * (decisions §4); recorded with the account.
    */
   agreed: boolean;
   /** From the Turnstile widget, when the human check is on. */
   captchaToken?: string;
   email: string;
   locale: "ar" | "en";
+  /**
+   * A student under 18 (decisions §10, Minors): the month and year of
+   * birth, kept only to lift the minors' rules at 18, and the parent's
+   * address, where the consent link (F-46) goes once the account is
+   * confirmed.
+   */
+  minor?: { birthMonth: number; birthYear: number; parentEmail: string };
   /**
    * The name in English and in Arabic, each in four parts as on the
    * person's papers: name, father's, grandfather's and last (decisions.md). Required for addresses outside AUIB, which a partner verifies by
@@ -146,6 +155,31 @@ const NAME_PARTS = ["first", "father", "grandfather", "last"] as const;
 /** One language's name: name, father's, grandfather's and last. */
 type NameParts = Record<(typeof NAME_PARTS)[number], string>;
 
+/** Where an outside address came from, for the profile trigger. */
+const outsideMetadata = (outside: SignUpDetails["outside"]) => {
+  if (!outside) {
+    return {};
+  }
+  if ("invitation" in outside) {
+    return { invitation: outside.invitation };
+  }
+  if ("partnerApplicant" in outside) {
+    return { partner_applicant: "true" };
+  }
+  return "guest" in outside ? { guest: "true" } : {};
+};
+
+/** A student under 18 (decisions §18): birth month and year, the parent. */
+const minorMetadata = (minor: SignUpDetails["minor"]) =>
+  minor
+    ? {
+        adult: "false",
+        birth_month: String(minor.birthMonth),
+        birth_year: String(minor.birthYear),
+        parent_email: normalizeEmail(minor.parentEmail),
+      }
+    : {};
+
 /**
  * Creates an account. Metadata here only fills in the profile; it is never
  * used for authorization (roles live in access.role_assignments).
@@ -163,6 +197,10 @@ export const signUpWithEmail = async (
     return { code: "weak_password", ok: false };
   }
   if (!details.agreed) {
+    return { code: "terms_required", ok: false };
+  }
+  // Under 18 only as an AUIB student, with the parent's address.
+  if (!(details.adult || (details.minor && isAuibEmail(email)))) {
     return { code: "terms_required", ok: false };
   }
   const auib = isAuibEmail(email);
@@ -190,16 +228,9 @@ export const signUpWithEmail = async (
       ...captcha(details.captchaToken),
       data: {
         ...(named ? parts : {}),
-        ...(details.outside && "invitation" in details.outside
-          ? { invitation: details.outside.invitation }
-          : {}),
-        ...(details.outside && "partnerApplicant" in details.outside
-          ? { partner_applicant: "true" }
-          : {}),
-        ...(details.outside && "guest" in details.outside
-          ? { guest: "true" }
-          : {}),
+        ...outsideMetadata(details.outside),
         agreed_at: new Date().toISOString(),
+        ...minorMetadata(details.minor),
         locale: details.locale,
       },
       emailRedirectTo: details.redirectTo,

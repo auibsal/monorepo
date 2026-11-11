@@ -155,12 +155,12 @@ select lives_ok(
   'Two roles are allowed (B5.5)'
 );
 select throws_ok(
-  $$ select access.assign_role('00000000-0000-0000-0000-0000000000a2', 'event_staff') $$,
+  $$ select access.assign_role('00000000-0000-0000-0000-0000000000a2', 'photographer') $$,
   '23P01', 'two_roles_at_most',
   'a third is not'
 );
 select throws_ok(
-  $$ select access.assign_role('00000000-0000-0000-0000-0000000000a2', 'event_staff',
+  $$ select access.assign_role('00000000-0000-0000-0000-0000000000a2', 'photographer',
        exception_resolution => '00000000-0000-0000-0000-00000000e002') $$,
   '23P01', 'exception_needs_adopted_resolution',
   'unless the Council adopted an exception (a draft is not enough)'

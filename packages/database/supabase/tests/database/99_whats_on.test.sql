@@ -100,7 +100,7 @@ select plan(17);
 select pg_temp.make_user('00000000-0000-0000-0000-0000000057a1', 'whats.on@auib.edu.iq', 'Whats On');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000057a2', 'invited@auib.edu.iq', 'Invited');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000057a3', 'events.lead@auib.edu.iq', 'Events Lead');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000057a3', 'events_lead');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000057a3', 'programme_lead');
 
 insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, rsvp_enabled, entry, status) values
   ('e0000000-0000-0000-0000-0000000057e1', 'open-night', (select id from core.programmes where slug = 'open-pages'),

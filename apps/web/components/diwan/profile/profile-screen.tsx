@@ -16,7 +16,6 @@ import { queryKeys, useProfile } from "@/lib/diwan/queries";
 import { DiwanPage, DiwanSection } from "../page";
 import { NamePartsFields } from "../setup-form";
 import { ErrorState, SectionSpinner } from "../states";
-import { DetailsSection } from "./details-fields";
 
 export const ProfileScreen = () => {
   const t = useTranslations("diwan");
@@ -207,7 +206,6 @@ export const ProfileScreen = () => {
           </Button>
         </form>
       </DiwanSection>
-      <DetailsSection />
     </DiwanPage>
   );
 };

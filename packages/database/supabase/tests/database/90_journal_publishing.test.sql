@@ -115,7 +115,7 @@ insert into journal.calls (id, issue_id, title_en, title_ar, opens_at, closes_at
   ('ca000000-0000-0000-0000-000000000001', '1a000000-0000-0000-0000-000000000001',
     'Issue 1', 'العدد الأول', now() - interval '1 day', now() + interval '30 days', true);
 
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000005a1', 'submissions_manager', 'issue', '1a000000-0000-0000-0000-000000000001');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000005a1', 'managing_editor', 'issue', '1a000000-0000-0000-0000-000000000001');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000005e1', 'eic', 'issue', '1a000000-0000-0000-0000-000000000001');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000005c1', 'copy_editor', 'issue', '1a000000-0000-0000-0000-000000000001');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000005d1', 'copy_editor', 'issue', '1a000000-0000-0000-0000-000000000002');

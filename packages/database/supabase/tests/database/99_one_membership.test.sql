@@ -211,7 +211,7 @@ select throws_ok(
   '42501', 'one_membership', 'A partner''s Lead cannot also be a guest'
 );
 select throws_ok(
-  $$ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000b1', 'events_lead') $$,
+  $$ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000b1', 'programme_lead') $$,
   '42501', 'one_membership', 'A guest holds none of the Society''s roles'
 );
 

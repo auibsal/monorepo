@@ -130,77 +130,109 @@ export const timeLeft = (dueAt: string, now = currentDate()) => {
   };
 };
 
-// ── Get involved ────────────────────────────────────────────────────────────
+// ── Get involved (decisions §18) ────────────────────────────────────────────
 
-/** Open roles on Get involved (RLS shows members the open ones). */
-export const openings = async (client: Client) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .from("openings")
-      .select(
-        "id, kind, owner, programme_id, event_id, places, title_en, title_ar, body_en, body_ar, skills, closes_at, is_open, created_at"
-      )
-      .order("created_at", { ascending: false })
-  ) ?? [];
+/** The application's states, as the database names them. */
+export const APPLICATION_STATUSES = [
+  "draft",
+  "new",
+  "talking",
+  "picked",
+  "not_picked",
+  "offered",
+  "accepted",
+  "onboarded",
+  "declined",
+  "withdrawn",
+] as const;
+export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
-/**
- * Every open role, for anyone (decisions.md: Get involved lists open
- * roles only): Council and team roles, event teams, Qalam mentors and the
- * Company's auditions.
- */
+/** A question an opening asks (programmes.openings.questions). */
+export const questionSchema = z.object({
+  ar: z.string().trim().min(1).max(300),
+  en: z.string().trim().min(1).max(300),
+  key: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9_]{1,40}$/u),
+  required: z.boolean(),
+});
+export type Question = z.infer<typeof questionSchema>;
+
+export const questionsOf = (value: unknown): Question[] =>
+  z.array(questionSchema).catch([]).parse(value);
+
+/** Open roles for anyone (decisions §1): the public list. */
 export const openPlaces = async (client: Client) =>
   unwrap(await client.schema("programmes").rpc("open_places")) ?? [];
 
-/** The openings the signed-in member said they are interested in. */
-export const myOpeningReplies = async (client: Client, userId: string) =>
+/** One open opening, with its questions. */
+export const openPlace = async (client: Client, openingId: string) =>
+  (unwrap(
+    await client
+      .schema("programmes")
+      .rpc("open_place", { opening_id: openingId })
+  ) ?? [])[0] ?? null;
+
+/** The signed-in member's applications, with each opening's title. */
+export const myApplications = async (client: Client, userId: string) =>
   unwrap(
     await client
       .schema("programmes")
       .from("opening_replies")
-      .select("opening_id, status")
+      .select(
+        "opening_id, status, answers, availability, lang, files, accommodation, gpa_consent_name, submitted_at, talk_at, offer_expires_at, updated_at, opening:openings(title_en, title_ar, role)"
+      )
       .eq("user_id", userId)
+      .order("updated_at", { ascending: false })
   ) ?? [];
 
-export const replyToOpening = async (
+export interface ApplicationInput {
+  readonly accommodation: string;
+  readonly answers: Record<string, string>;
+  readonly availability: string;
+  readonly files: readonly string[];
+  readonly gpaConsentName: string;
+  readonly lang: "ar" | "en";
+  readonly openingId: string;
+}
+
+/** Saves a draft, or sends the application (`submit`). */
+export const saveApplication = async (
+  client: Client,
+  input: ApplicationInput,
+  submit: boolean
+) =>
+  unwrap(
+    await client.schema("programmes").rpc("save_application", {
+      accommodation: input.accommodation,
+      answers: input.answers,
+      availability: input.availability,
+      files: [...input.files],
+      gpa_consent_name: input.gpaConsentName,
+      lang: input.lang,
+      opening_id: input.openingId,
+      submit,
+    })
+  );
+
+export const withdrawApplication = async (client: Client, openingId: string) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .rpc("withdraw_application", { opening_id: openingId })
+  );
+
+export const answerOffer = async (
   client: Client,
   openingId: string,
-  note?: string
+  accept: boolean
 ) =>
   unwrap(
     await client
       .schema("programmes")
-      .from("opening_replies")
-      .insert({ note: note?.trim() || null, opening_id: openingId })
+      .rpc("answer_offer", { accept, opening_id: openingId })
   );
 
-export const withdrawReply = async (
-  client: Client,
-  openingId: string,
-  userId: string
-) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .from("opening_replies")
-      .delete()
-      .eq("opening_id", openingId)
-      .eq("user_id", userId)
-  );
-
-/** The skills a role asks for that the member has. */
-export const matchingSkills = (
-  wanted: readonly string[],
-  mine: readonly string[]
-) => wanted.filter((s) => mine.includes(s));
-
-/** Rows that match the member's skills come first; the order is otherwise kept. */
-export const matchedFirst = <T extends { skills: readonly string[] }>(
-  rows: readonly T[],
-  mine: readonly string[]
-) =>
-  [...rows].sort(
-    (a, b) =>
-      Number(matchingSkills(b.skills, mine).length > 0) -
-      Number(matchingSkills(a.skills, mine).length > 0)
-  );
+/** Links to the applicant's work: http(s) only, five at most. */
+export const WORK_LINK = /^https?:\/\/\S+$/u;

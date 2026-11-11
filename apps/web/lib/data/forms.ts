@@ -81,8 +81,8 @@ export const formKeys = [
   "f37",
   "f38",
   "f39",
-  "f44",
   "f45",
+  "f46",
 ] as const;
 
 export type FormKey = (typeof formKeys)[number];
@@ -264,16 +264,6 @@ export const forms: Record<FormKey, FormDefinition> = {
     key: "f39",
     preamble: true,
   },
-  f44: {
-    code: "F-44",
-    fields: [
-      { key: "piece", max: 300, required: true, type: "text" },
-      { key: "covers", max: 1000, required: true, type: "textarea" },
-      { key: "under_18", type: "check" },
-    ],
-    key: "f44",
-    preamble: true,
-  },
   f45: {
     code: "F-45",
     fields: [
@@ -282,6 +272,26 @@ export const forms: Record<FormKey, FormDefinition> = {
       { key: "agree", required: true, type: "check" },
     ],
     key: "f45",
+    preamble: true,
+  },
+  // A parent's consent for a member under 18 (decisions §10, Minors),
+  // signed only through the single-use link sent when the student's
+  // account is confirmed.
+  f46: {
+    byLink: true,
+    code: "F-46",
+    fields: [
+      { key: "student_name", max: 200, required: true, type: "text" },
+      { key: "relationship", max: 80, required: true, type: "text" },
+      {
+        key: "photos",
+        options: ["photos", "no_photos"],
+        required: true,
+        type: "choice",
+      },
+      { key: "consent", required: true, type: "check" },
+    ],
+    key: "f46",
     preamble: true,
   },
 };
@@ -356,15 +366,16 @@ export const registerFields: Record<FormKey, readonly string[]> = {
     "title · section of qirtas · language · the student's name · school",
     "i agree",
   ],
-  f44: [
-    "the piece",
-    "what the consent covers",
-    "under 18: a parent or guardian signs",
-  ],
   f45: [
     "the trip",
     "an emergency contact (name and how to reach them)",
     "health, optional and confidential",
+  ],
+  f46: [
+    "the student's name",
+    "relationship to the student",
+    "photos",
+    "i consent",
   ],
 };
 

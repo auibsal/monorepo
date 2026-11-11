@@ -1,5 +1,3 @@
-"use client";
-
 import type { Locale } from "@repo/internationalization";
 import {
   formatClock,
@@ -7,114 +5,80 @@ import {
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { useLocale, useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { RowList } from "@/components/diwan/page";
-import {
-  EmptyLine,
-  ErrorState,
-  SectionSpinner,
-} from "@/components/diwan/states";
-import { useAuth } from "@/lib/auth/provider";
-import { localized, programmes } from "@/lib/data";
-
-/**
- * Every open role, for anyone to read, in one list (decisions.md:
- * open roles only): team roles, event teams, Qalam mentors and the
- * Company's auditions, soonest first. Each says what it is, where and when
- * it closes. Replying takes membership.
- */
-export const OpenPlaces = () => {
-  const t = useTranslations("diwan.getInvolved");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const places = useQuery({
-    queryFn: () => programmes.openPlaces(supabase),
-    queryKey: ["open-places"],
-  });
-  if (places.isPending) {
-    return <SectionSpinner />;
-  }
-  if (places.isError) {
-    return <ErrorState onRetry={() => places.refetch()} />;
-  }
-  if (places.data.length === 0) {
-    return <EmptyLine>{t("none")}</EmptyLine>;
-  }
-  return (
-    <RowList>
-      {places.data.map((row) => (
-        <PlaceRow key={row.id} locale={locale} row={row} />
-      ))}
-    </RowList>
-  );
-};
+import { localized, type programmes } from "@/lib/data";
 
 type Place = Awaited<ReturnType<typeof programmes.openPlaces>>[number];
 
 const KINDS = ["role", "event_team", "qalam_mentor", "audition"] as const;
 
-const PlaceRow = ({ locale, row }: { locale: Locale; row: Place }) => {
-  const t = useTranslations("diwan.getInvolved");
-  const td = useTranslations("diwan.details");
-  const kind = KINDS.find((k) => k === row.kind) ?? "role";
-  let when: string | null = null;
-  if (kind === "audition" && row.closes_at) {
-    when = t("on", {
-      date: formatLongDate(row.closes_at, locale),
-      time: formatClock(row.closes_at, locale),
-    });
-  } else if (row.closes_at) {
-    when = t("closes", { date: formatLongDate(row.closes_at, locale) });
+/**
+ * Every open role, for anyone to read, in one list rendered on the server
+ * (decisions §1, §18): team roles, Council seats, event teams, Qalam
+ * mentors and the Company's auditions, soonest closing first. Each opens
+ * its own page, where members apply.
+ */
+export const OpenPlaces = async ({
+  locale,
+  places,
+}: {
+  readonly locale: Locale;
+  readonly places: readonly Place[];
+}) => {
+  const t = await getTranslations({ locale, namespace: "diwan.getInvolved" });
+  if (places.length === 0) {
+    return <p className="type-body">{t("none")}</p>;
   }
   return (
-    <li className="grid gap-1 py-4">
-      <p className="font-medium">
-        {kind === "audition" ? (
-          <Link className="hover:underline" href="/company/auditions">
-            {t("audition", { title: localized(row, "title", locale) })}
-          </Link>
-        ) : null}
-        {kind === "event_team" && row.event_slug ? (
-          <Link className="hover:underline" href={`/events/${row.event_slug}`}>
-            {localized(row, "title", locale)}
-          </Link>
-        ) : null}
-        {kind === "audition" || (kind === "event_team" && row.event_slug)
-          ? null
-          : localized(row, "title", locale)}
-      </p>
-      <p className="type-caption">
-        {[t(`kinds.${kind}`), when].filter(Boolean).join(" · ")}
-      </p>
-      {localized(row, "body", locale) ? (
-        <p className="type-body whitespace-pre-line" dir="auto">
-          {localized(row, "body", locale)}
-        </p>
-      ) : null}
-      {/* What a reader weighs before replying: how many places and the
-          skills it wants. */}
-      {row.places > 1 || row.skills.length > 0 ? (
-        <p className="type-caption text-text-secondary">
-          {[
-            row.places > 1
-              ? t("places", {
-                  count: row.places,
-                  n: formatNumber(row.places),
-                })
-              : null,
-            row.skills.length > 0
-              ? t("skills", {
-                  skills: row.skills
-                    .map((skill) => td(`skills.${skill}` as never))
-                    .join(", "),
-                })
-              : null,
-          ]
-            .filter(Boolean)
-            .join(" · ")}
-        </p>
-      ) : null}
-    </li>
+    <RowList>
+      {places.map((row) => {
+        const kind = KINDS.find((k) => k === row.kind) ?? "role";
+        let when: string | null = null;
+        if (kind === "audition" && row.closes_at) {
+          when = t("on", {
+            date: formatLongDate(row.closes_at, locale),
+            time: formatClock(row.closes_at, locale),
+          });
+        } else if (row.closes_at) {
+          when = t("closes", { date: formatLongDate(row.closes_at, locale) });
+        }
+        let href = `/get-involved/${row.id}`;
+        if (kind === "audition") {
+          href = "/company/auditions";
+        } else if (kind === "event_team" && row.event_slug) {
+          href = `/events/${row.event_slug}`;
+        }
+        const title = localized(row, "title", locale);
+        return (
+          <li className="grid gap-1" key={row.id}>
+            <p className="font-medium">
+              <Link className="hover:underline" href={href}>
+                {kind === "audition" ? t("audition", { title }) : String(title)}
+              </Link>
+            </p>
+            <p className="type-caption">
+              {[
+                t(`kinds.${kind}`),
+                when,
+                row.places && row.places > 1
+                  ? t("places", {
+                      count: row.places,
+                      n: formatNumber(row.places),
+                    })
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+            {localized(row, "body", locale) ? (
+              <p className="type-body text-text-secondary line-clamp-3 whitespace-pre-line">
+                {localized(row, "body", locale)}
+              </p>
+            ) : null}
+          </li>
+        );
+      })}
+    </RowList>
   );
 };

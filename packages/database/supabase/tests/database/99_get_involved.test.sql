@@ -1,4 +1,4 @@
--- The GetInvolved: openings, replies, and skills on shifts.
+-- Get involved: openings with questions, and applications (decisions §18).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -94,7 +94,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(13);
+select plan(18);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a1', 'volunteer@auib.edu.iq', 'Volunteer');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a2', 'stage.lead@auib.edu.iq', 'Stage Lead');
@@ -112,15 +112,11 @@ select throws_ok(
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a2');
 select lives_ok(
-  $$ insert into programmes.openings (id, programme_id, role, title_en, title_ar, skills)
+  $$ insert into programmes.openings (id, programme_id, role, title_en, title_ar, questions)
      values ('0be00000-0000-0000-0000-0000000070b1', (select id from core.programmes where slug = 'company'),
-       'stage_manager', 'Stage Manager', 'مدير الخشبة', array['photography']) $$,
-  'A program''s managers post openings'
-);
-select throws_ok(
-  $$ insert into programmes.openings (programme_id, role, title_en, title_ar, skills)
-     values ((select id from core.programmes where slug = 'company'), 'stage_manager', 'Juggler', 'مهرّج', array['juggling']) $$,
-  '23514', null, 'Skills come from the Profile list'
+       'stage_manager', 'Stage Manager', 'مدير الخشبة',
+       '[{"key": "why", "en": "Why this role?", "ar": "لماذا هذا الدور؟", "required": true}]') $$,
+  'A program''s managers post openings with their questions'
 );
 select throws_ok(
   $$ insert into programmes.openings (programme_id, role, title_en, title_ar)
@@ -131,47 +127,69 @@ insert into programmes.openings (id, programme_id, role, title_en, title_ar, is_
 values ('0be00000-0000-0000-0000-0000000070b2', (select id from core.programmes where slug = 'company'),
   'stage_manager', 'Closed role', 'دور مغلق', false);
 
+select pg_temp.logout();
+select throws_ok(
+  $$ insert into programmes.openings (role, owner, title_en, title_ar)
+     values ('media_director', 'council', 'Director of Media', 'مدير الإعلام') $$,
+  'P0001', 'eb_approval_first', 'A director seat opens only once the Executive Board approves it'
+);
+
+select pg_temp.login_anon();
+select ok(
+  exists (select 1 from programmes.open_places() where id = '0be00000-0000-0000-0000-0000000070b1'),
+  'Visitors read the open roles on Get involved'
+);
+
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
 select is((select count(*)::integer from programmes.openings where programme_id = (select id from core.programmes where slug = 'company')), 1, 'Members see open openings only');
-select lives_ok(
-  $$ insert into programmes.opening_replies (opening_id, note)
-     values ('0be00000-0000-0000-0000-0000000070b1', 'I have a camera') $$,
-  'A member says they are interested'
+
+-- Applications
+select throws_ok(
+  $$ insert into programmes.opening_replies (opening_id) values ('0be00000-0000-0000-0000-0000000070b1') $$,
+  '42501', null, 'Applications go through the function, not the table'
+);
+select is(
+  programmes.save_application('0be00000-0000-0000-0000-0000000070b1', '{}', 'Evenings', 'en', '{}', null, null, false),
+  'draft', 'A member saves a draft'
+);
+
+select pg_temp.login_as('00000000-0000-0000-0000-0000000070a2');
+select is((select count(*)::integer from programmes.opening_replies), 0, 'A draft stays the applicant''s');
+
+select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
+select throws_ok(
+  $$ select programmes.save_application('0be00000-0000-0000-0000-0000000070b1', '{}', null, 'en', '{}', null, null, true) $$,
+  '22023', 'answer_required', 'A required question must be answered to send'
+);
+select is(
+  programmes.save_application('0be00000-0000-0000-0000-0000000070b1', '{"why": "I keep lists."}',
+    'Evenings', 'en', '{}', 'A seat near the door', null, true),
+  'new', 'and then it is sent'
+);
+select pg_temp.logout();
+select ok(
+  exists (select 1 from core.outbox o where o.kind = 'get_involved.received'),
+  'The applicant gets a receipt by email'
+);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
+select throws_ok(
+  $$ select programmes.save_application('0be00000-0000-0000-0000-0000000070b1', '{"why": "Again"}', null, 'en', '{}', null, null, true) $$,
+  'P0001', 'already_applied', 'One application per opening'
 );
 select throws_ok(
-  $$ insert into programmes.opening_replies (opening_id) values ('0be00000-0000-0000-0000-0000000070b2') $$,
-  '42501', null, 'but not in a closed opening'
+  $$ select programmes.save_application('0be00000-0000-0000-0000-0000000070b2', '{}', null, 'en', '{}', null, null, false) $$,
+  'P0001', 'opening_closed', 'A closed opening takes none'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a3', '{"aal":"aal1"}');
 select is((select count(*)::integer from programmes.openings), 0, 'Accounts that are not members see no openings');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a2');
-select is((select note from programmes.opening_replies), 'I have a camera', 'The program''s managers read the replies');
-
-select pg_temp.logout();
-select ok(private.daily_notices() >= 1, 'The daily notices run');
-select ok(
-  exists (select 1 from core.outbox o where o.kind = 'get_involved.replies_digest'),
-  'and tell them of the replies in one digest a day'
-);
+select is((select answers ->> 'why' from programmes.opening_replies), 'I keep lists.', 'The program''s managers read the application');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
-select lives_ok(
-  $$ delete from programmes.opening_replies where opening_id = '0be00000-0000-0000-0000-0000000070b1' $$,
-  'A member takes their reply back'
-);
-
--- Skills on shifts
-select pg_temp.logout();
-insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
-values ('0be00000-0000-0000-0000-0000000070c1', 'door-night-gi', 'Door night', 'ليلة الباب', now() + interval '3 days', 'published', 'open');
-select throws_ok(
-  $$ insert into programmes.shifts (event_id, role_en, role_ar, starts_at, ends_at, skills)
-     values ('0be00000-0000-0000-0000-0000000070c1', 'Door', 'الباب', now() + interval '1 day',
-       now() + interval '1 day 2 hours', array['nonsense']) $$,
-  '23514', null, 'Shifts take skills from the same list'
-);
+select ok(programmes.withdraw_application('0be00000-0000-0000-0000-0000000070b1'), 'A member withdraws');
+select is((select status from programmes.opening_replies), 'withdrawn', 'and the application is kept as withdrawn');
 
 select * from finish();
 rollback;

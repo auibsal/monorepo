@@ -137,7 +137,16 @@
       "resendIn": "Send the email again in {seconds} s",
       "resent": "Sent. Check your inbox and spam folder.",
       "student": "I’m an enrolled AUIB student. (Faculty and staff: ask for Associate membership on Join.)",
-      "agree": "I am 18 or older, and I agree to the <terms>Terms of Use</terms> and the <privacy>Privacy Notice</privacy>."
+      "agree": "I agree to the <terms>Terms of Use</terms> and the <privacy>Privacy Notice</privacy>.",
+      "adultQuestion": "Are you 18 or older?",
+      "adultYes": "Yes, 18 or older",
+      "adultNo": "No, under 18",
+      "adultGuest": "I’m 18 or older.",
+      "minorHint": "Any enrolled AUIB student may join, whatever their age. Your month and year of birth are used only to lift the rules for members under 18 when you turn 18, and are then deleted. Once you confirm your email, we send your parent or guardian a link to give their consent; until they do, your account is limited.",
+      "birthMonth": "Month of birth",
+      "birthYear": "Year of birth",
+      "parentEmail": "Your parent’s or guardian’s email",
+      "parentHint": "Used only to send the consent link."
     },
     "forgot": {
       "title": "Reset your password",
@@ -247,11 +256,11 @@
         "accept": "I make the Human Authorship pledge"
       },
       "member": {
-        "title": "Member Pledge",
-        "why": "Why we ask: every member signs it. It’s the promise that keeps the Society’s rooms, events and channels kind and safe for everyone.",
-        "body": "As a member of the Society of Arts and Letters, I will treat everyone with courtesy and every piece of work with care. I will critique the work and never the person. I will respect consent, before a camera and on the page. I will be honest with the Society’s money and its members’ trust. I will keep what is confidential, keep my word or say early that I cannot, and leave every room better than I found it.",
-        "accept": "I make the Member Pledge",
-        "read": "Read the full pledge"
+        "title": "Code of Conduct",
+        "why": "Why we ask: every member acknowledges it. It’s what keeps the Society’s rooms, events and channels kind and safe for everyone.",
+        "body": "I have read the Code of Conduct and will follow it: I treat everyone with courtesy and every piece of work with care, I critique the work and never the person, I respect consent before a camera and on the page, and I keep what is confidential.",
+        "accept": "I acknowledge the Code of Conduct",
+        "read": "Read the Code of Conduct"
       },
       "renewed": "A pledge has a new version. Please read and accept it again.",
       "preferences": "Your choices",
@@ -1460,7 +1469,6 @@
           "lede": "Openings on Get involved: team roles, event teams and Qalam mentors. Members who say they’re interested are listed here, and each one is also emailed to the event leads. Close the opening once it’s filled.",
           "title": "Title",
           "body": "What it involves",
-          "skills": "Skills it wants",
           "closes": "Closes (optional)",
           "empty": "No openings here yet.",
           "open": "Open",
@@ -1505,7 +1513,18 @@
             "qalam_mentor": "A mentor’s place in Qalam. Students never get accounts: record nothing about them here."
           },
           "event": "Event",
-          "chooseEvent": "Choose an event"
+          "chooseEvent": "Choose an event",
+          "eligibility": "Who may apply",
+          "questions": "The application’s questions",
+          "question": "Question {n}",
+          "questionRequired": "Required",
+          "questionRemove": "Remove",
+          "questionAdd": "Add a question",
+          "asksFiles": "Ask for links to the applicant’s work",
+          "secondReviewer": "Second reviewer",
+          "ebResolution": "Executive Board resolution",
+          "ebHint": "A director seat opens on Get involved only once its approval is recorded (decisions §4).",
+          "ebPlaceholder": "R-2026-01"
         },
         "removalsTitle": "Takedown requests",
         "none": "No event is yours to run yet. Roles are assigned on a member’s page.",
@@ -2895,7 +2914,7 @@
       },
       "hiring": {
         "title": "Hiring",
-        "lede": "Every role on Get involved. The General Secretary runs each one: the applications, the conversations, the offer and the onboarding. The role’s owner picks the person: the Editor-in-Chief the masthead, the President the event leads, the General Secretary the Tour Lead, each director their team.",
+        "lede": "Every role on Get involved. The seat that hires for a role runs it with a second reviewer: the applications, the interviews (F-02), the shortlist and the offer. A director seat is appointed by the President after the Executive Board’s resolution and Student Life’s “eligible”.",
         "empty": "No roles posted yet.",
         "open": "Open",
         "closed": "Closed",
@@ -2910,32 +2929,61 @@
         "closes": "Applications close",
         "owners": {
           "program": "An event team",
-          "qirtas": "Qirtas",
-          "media": "Media",
-          "partnerships": "The Vice President",
-          "membership": "The General Secretary",
-          "council": "The Council"
+          "qirtas": "The Editor-in-Chief",
+          "media": "The Director of Media",
+          "partnerships": "The Director of Partnerships",
+          "membership": "The Director of Membership",
+          "council": "The President"
         },
         "status": {
-          "new": "New",
-          "talking": "Conversation scheduled",
-          "picked": "Picked",
-          "not_picked": "Not this time",
+          "draft": "Draft",
+          "new": "Received",
+          "talking": "Interview",
+          "picked": "Shortlisted",
+          "not_picked": "Not chosen",
           "offered": "Offer made",
-          "onboarded": "Onboarded",
+          "accepted": "Accepted; to be appointed",
+          "onboarded": "Appointed",
+          "declined": "Declined",
           "withdrawn": "Withdrawn"
         },
         "steps": {
-          "picked": "Pick",
-          "not_picked": "Not this time",
-          "offered": "Offer made",
-          "onboarded": "Onboarded",
-          "withdrawn": "Withdraw"
+          "picked": "Shortlist",
+          "not_picked": "Not chosen",
+          "offered": "Make the offer"
         },
         "role": "Role",
         "roleHint": "Every role the Society has, by who picks the person. Whoever is onboarded holds it.",
         "roleTitleHint": "Leave empty to use the role’s name, or give its own title (“Tour Lead”).",
-        "back": "All roles"
+        "back": "All roles",
+        "lang": {
+          "en": "writes in English",
+          "ar": "writes in Arabic"
+        },
+        "availability": "Availability",
+        "links": "Links to work",
+        "accommodation": "Accommodation requested",
+        "gpaConsent": "Consented to the GPA check on",
+        "eligibleOn": "Student Life: eligible, {date}",
+        "eligibleWaiting": "Waiting for Student Life’s answer on the GPA check.",
+        "markEligible": "Student Life says eligible",
+        "resolution": "Executive Board resolution",
+        "appoint": "Appoint",
+        "reviews": "Reviews",
+        "recused": "recused",
+        "score": "{n} of 5",
+        "scoreLabel": "Score (1–5)",
+        "notes": "Notes",
+        "saveReview": "Save my review",
+        "recuse": "I recuse myself",
+        "interviews": "Interviews (F-02)",
+        "recommendation": "Recommendation",
+        "recordInterview": "Record the interview",
+        "recommendations": {
+          "appoint": "Appoint",
+          "second_choice": "Second choice",
+          "not_now": "Not now"
+        }
       },
       "sections": {
         "label": "The Diwan’s sections",
@@ -3721,17 +3769,6 @@
             "student_agrees": "The student: I agree"
           }
         },
-        "f44": {
-          "title": "Contributor and image consent",
-          "action": "Give consent for a piece",
-          "purpose": "For each contributor, and anyone clearly shown in a piece’s images, before it publishes. Under 18: a parent or guardian signs.",
-          "preamble": "I give my consent for the piece named below, as set out in the Editorial Standards and Stylebook.",
-          "fields": {
-            "piece": "The piece",
-            "covers": "What the consent covers",
-            "under_18": "I am a parent or guardian signing for someone under 18"
-          }
-        },
         "f45": {
           "title": "Trip consent",
           "action": "Sign the trip consent form",
@@ -3741,6 +3778,24 @@
             "emergency_contact": "An emergency contact (name and how to reach them)",
             "health": "Health (optional, confidential): anything the trip lead should know to keep you safe",
             "agree": "I agree"
+          }
+        },
+        "f46": {
+          "title": "Parent’s consent for a member under 18",
+          "action": "Give consent for a member under 18",
+          "purpose": "Signed once by a parent or guardian, from the link the site sends when a student under 18 joins. Until it is signed, the student’s account is limited.",
+          "preamble": "I agree that my child, an enrolled AUIB student, may be a member of the AUIB Society of Arts and Letters until they turn 18, on the terms in the Terms of Use, the Privacy Notice and the Code of Conduct. Members under 18 are covered by the Society’s safeguarding: no one-on-one meetings with adults, and a separate consent for any trip. My child may hold team roles but not a Council seat until 18. I may withdraw this consent at any time by writing to hello@auibsal.org.",
+          "fields": {
+            "student_name": "The student’s name",
+            "relationship": "Your relationship to the student",
+            "photos": "Photos",
+            "consent": "I give my consent"
+          },
+          "options": {
+            "photos": {
+              "photos": "My child may appear in the Society’s photos and video",
+              "no_photos": "Please keep my child out of photos and video"
+            }
           }
         }
       },
@@ -3991,8 +4046,8 @@
     },
     "getInvolved": {
       "title": "Get involved",
-      "lede": "Every open role with the AUIB Society of Arts and Letters: team roles on the Council’s teams and in Qirtas, event teams, Qalam mentors, and the Company’s auditions.",
-      "members": "Members reply and sign up for shifts once signed in.",
+      "lede": "Every open role with the AUIB Society of Arts and Letters: Council seats and team roles, event teams, Qalam mentors and the Company’s auditions. Members apply on each role’s page.",
+      "members": "Members apply once signed in.",
       "signIn": "Sign in",
       "join": "Not a member yet? Join",
       "none": "Nothing open right now.",
@@ -4000,14 +4055,64 @@
       "closes": "closes {date}",
       "on": "{date}, {time}",
       "audition": "Auditions for {title}",
-      "term": "{from} to {to}",
       "places": "{count, plural, one {One place} other {{n} places}}",
-      "skills": "Wants: {skills}",
       "kinds": {
         "role": "Team role",
         "event_team": "Event team",
         "qalam_mentor": "Qalam mentor",
         "audition": "Audition"
+      },
+      "yours": "Your applications",
+      "eligibility": "Who may apply",
+      "apply": {
+        "title": "Apply",
+        "signInFirst": "Members apply here.",
+        "signIn": "Sign in to apply",
+        "membersOnly": "Applying is for members.",
+        "join": "Join",
+        "yours": "See your applications",
+        "sent": "Your application is in; we sent you a receipt by email.",
+        "optional": "(optional)",
+        "availability": "Your availability",
+        "availabilityHint": "The days and times you could usually give, this semester.",
+        "language": "The language we write to you in",
+        "languageHint": "Every letter about this application comes in this language.",
+        "english": "English",
+        "arabic": "Arabic",
+        "links": "Links to your work",
+        "linksHint": "Up to five, one per line, starting with https://.",
+        "accommodation": "Anything we should arrange for you (optional)",
+        "accommodationHint": "For an interview or audition: access, timing or anything else. Only the people reviewing your application see it.",
+        "gpaConsent": "A director seat needs a GPA of at least 2.0, which Student Life checks. Typing your legal name below signs your consent to that check; Student Life tells us only whether you are eligible.",
+        "gpaName": "Your legal name, as on your account",
+        "gpaHint": "Your first and last name, or all four parts, in English or Arabic.",
+        "send": "Send the application",
+        "saveDraft": "Save as a draft",
+        "draftSaved": "Draft saved. You can finish it any time before the role closes."
+      },
+      "applications": {
+        "title": "Your applications",
+        "lede": "Where each application stands. An offer is answered here, within 7 days.",
+        "none": "No applications yet.",
+        "browse": "See the open roles",
+        "finish": "Finish the draft",
+        "accept": "Accept the offer",
+        "decline": "Decline",
+        "withdraw": "Withdraw",
+        "talkOn": "interview {date} at {time}",
+        "answerBy": "answer by {date}",
+        "status": {
+          "draft": "Draft, not sent",
+          "new": "Received",
+          "talking": "Interview",
+          "picked": "Shortlisted",
+          "not_picked": "Not chosen this time",
+          "offered": "Offer made",
+          "accepted": "Accepted; waiting for the Executive Board and Student Life",
+          "onboarded": "Appointed",
+          "declined": "Declined",
+          "withdrawn": "Withdrawn"
+        }
       }
     },
     "partnerJoin": {

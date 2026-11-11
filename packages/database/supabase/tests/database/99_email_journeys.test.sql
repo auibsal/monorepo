@@ -206,7 +206,7 @@ select ok(
 
 -- 8. A new role says so; a partner's team role doesn't.
 insert into access.role_assignments (user_id, role)
-values ('00000000-0000-0000-0000-0000000e0a02', 'section_editor');
+values ('00000000-0000-0000-0000-0000000e0a02', 'letters_editor');
 select ok(
   pg_temp.queued('access.role_assigned', '00000000-0000-0000-0000-0000000e0a02'),
   'A new role is announced to its holder'

@@ -22,6 +22,7 @@ import { useAuthError } from "@/lib/diwan/auth-messages";
 import { callbackUrl, safeNextPath } from "@/lib/diwan/navigation";
 import { useScreenTop } from "@/lib/diwan/use-screen-top";
 import { isBreachedPassword } from "@/lib/password";
+import { ChoiceInput } from "../admin/choice-input";
 import { NamePartsFields } from "../setup-form";
 import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
@@ -46,6 +47,59 @@ interface SignUpFormProps {
   readonly outside?: OutsideSignUp;
 }
 
+/** A birth year for a student under 18: four digits. */
+const MINOR_YEAR = /^(19|20)\d{2}$/u;
+const EMAIL_SHAPE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/u;
+const NOT_DIGITS = /\D/gu;
+
+/** January to December in the page's language (Iraqi month names in Arabic). */
+const monthNames = (locale: string) => {
+  const format = new Intl.DateTimeFormat(locale === "ar" ? "ar-IQ" : "en-US", {
+    month: "long",
+    timeZone: "UTC",
+  });
+  return Array.from({ length: 12 }, (_, m) =>
+    format.format(new Date(Date.UTC(2026, m, 1)))
+  );
+};
+
+interface MinorForm {
+  readonly month: string;
+  readonly parent: string;
+  readonly year: string;
+}
+
+/** Guests are 18 or older; a student under 18 gives month, year and parent. */
+const isAgeAnswered = (
+  adult: "" | "no" | "yes",
+  external: boolean,
+  minor: MinorForm
+) => {
+  if (adult === "yes") {
+    return true;
+  }
+  return (
+    !external &&
+    adult === "no" &&
+    minor.month !== "" &&
+    MINOR_YEAR.test(minor.year) &&
+    EMAIL_SHAPE.test(minor.parent.trim())
+  );
+};
+
+const minorDetails = (
+  adult: "" | "no" | "yes",
+  external: boolean,
+  minor: MinorForm
+) =>
+  adult === "no" && !external
+    ? {
+        birthMonth: Number(minor.month),
+        birthYear: Number(minor.year),
+        parentEmail: minor.parent.trim(),
+      }
+    : undefined;
+
 export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   const t = useTranslations("auth");
   const errorText = useAuthError();
@@ -66,19 +120,25 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
     ar: nameParts.emptyParts(),
     en: nameParts.emptyParts(),
   });
+  const external = Boolean(outside);
   const named =
     nameParts.partsComplete(fullNames.en) &&
     nameParts.partsComplete(fullNames.ar);
   // Students join themselves and say so (decisions §2); faculty and staff
   // ask for Associate membership on /join instead.
   const [student, setStudent] = useState(false);
-  // 18 or older, and the Terms of Use and the Privacy Notice (decisions §11).
+  // Any enrolled student may join, whatever their age (decisions §10,
+  // Minors): under 18, the month and year of birth (deleted at 18) and a
+  // parent's address for the consent link. Guests are 18 or older.
+  const [adult, setAdult] = useState<"" | "no" | "yes">("");
+  const [minor, setMinor] = useState({ month: "", parent: "", year: "" });
+  const ageAnswered = isAgeAnswered(adult, external, minor);
+  // The Terms of Use and the Privacy Notice (decisions §4).
   const [agreed, setAgreed] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
   useScreenTop(sentTo);
-  const external = Boolean(outside);
   const email = external
     ? values.email.trim()
     : `${auibLocalPart(values.email)}@${AUIB_DOMAIN}`;
@@ -98,10 +158,12 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
       return;
     }
     const result = await signUpWithEmail(supabase, {
+      adult: adult === "yes",
       agreed,
       captchaToken: human.token,
       email,
       locale: locale === "ar" ? "ar" : "en",
+      minor: minorDetails(adult, external, minor),
       names: external ? fullNames : undefined,
       outside: outside?.reason,
       password: values.password,
@@ -238,6 +300,90 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
             </Label>
           </div>
         )}
+        {external ? (
+          <div className="flex items-start gap-3">
+            <Checkbox
+              checked={adult === "yes"}
+              id={`${id}-adult`}
+              onCheckedChange={(v) => setAdult(v === true ? "yes" : "")}
+            />
+            <Label className="leading-normal" htmlFor={`${id}-adult`}>
+              {t("signUp.adultGuest")}
+            </Label>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor={`${id}-adult`}>{t("signUp.adultQuestion")}</Label>
+              <ChoiceInput
+                id={`${id}-adult`}
+                onChange={(event) =>
+                  setAdult(event.target.value as "no" | "yes")
+                }
+                value={adult}
+              >
+                <option value="yes">{t("signUp.adultYes")}</option>
+                <option value="no">{t("signUp.adultNo")}</option>
+              </ChoiceInput>
+            </div>
+            {adult === "no" ? (
+              <div className="grid gap-4">
+                <p className="type-caption">{t("signUp.minorHint")}</p>
+                <div className="grid gap-2">
+                  <Label htmlFor={`${id}-month`}>
+                    {t("signUp.birthMonth")}
+                  </Label>
+                  <ChoiceInput
+                    id={`${id}-month`}
+                    onChange={(event) =>
+                      setMinor((m) => ({ ...m, month: event.target.value }))
+                    }
+                    value={minor.month}
+                  >
+                    {monthNames(locale).map((name, index) => (
+                      <option key={name} value={String(index + 1)}>
+                        {name}
+                      </option>
+                    ))}
+                  </ChoiceInput>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor={`${id}-year`}>{t("signUp.birthYear")}</Label>
+                  <Input
+                    dir="ltr"
+                    id={`${id}-year`}
+                    inputMode="numeric"
+                    maxLength={4}
+                    onChange={(event) =>
+                      setMinor((m) => ({
+                        ...m,
+                        year: event.target.value.replace(NOT_DIGITS, ""),
+                      }))
+                    }
+                    value={minor.year}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor={`${id}-parent`}>
+                    {t("signUp.parentEmail")}
+                  </Label>
+                  <Input
+                    autoComplete="off"
+                    dir="ltr"
+                    id={`${id}-parent`}
+                    inputMode="email"
+                    onChange={(event) =>
+                      setMinor((m) => ({ ...m, parent: event.target.value }))
+                    }
+                    type="email"
+                    value={minor.parent}
+                  />
+                  <p className="type-caption">{t("signUp.parentHint")}</p>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        )}
         <div className="flex items-start gap-3">
           <Checkbox
             checked={agreed}
@@ -270,6 +416,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
             pending ||
             !human.ready ||
             !agreed ||
+            !ageAnswered ||
             (external ? !named : auibLocalPart(values.email) === "" || !student)
           }
           type="submit"

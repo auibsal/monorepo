@@ -20,13 +20,18 @@ const read = (name: string) =>
   );
 // The forms register of Nov 7, 2026: the forms signed on the site.
 const migration = read("20261107000300_forms_and_guests.sql");
+// Nov 11 (decisions §18): F-44 taken down, F-46 (a parent's consent) added.
+const accounts = read("20261111000000_accounts_and_privacy.sql");
 describe("forms", () => {
   test("every form here is in the database registry, and only those", () => {
     const registered = [
       ...migration.matchAll(
         /\('(f\d{2})', 'F-\d{2}', '[^']+', '[^']+', 'site'/gu
       ),
-    ].map((m) => m[1]);
+      ...accounts.matchAll(/values \('(f\d{2})', 'F-\d{2}'/gu),
+    ]
+      .map((m) => m[1])
+      .filter((key) => !accounts.includes(`where key = '${key}';`));
     expect(registered.sort()).toEqual([...formKeys].sort());
   });
 

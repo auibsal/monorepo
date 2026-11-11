@@ -150,9 +150,9 @@ values ('00000000-0000-0000-0000-00000000f002', 'other-show', 'Other show', 'Ø¹Ø
 select pg_temp.logout();
 
 select lives_ok(
-  $$ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'production_lead', 'production',
+  $$ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'stage_manager', 'production',
        '00000000-0000-0000-0000-00000000f001') $$,
-  'A Production Lead is assigned for one production'
+  'A Stage Manager is assigned for one production'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');

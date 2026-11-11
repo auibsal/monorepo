@@ -5,7 +5,7 @@
  * source of every form's number, title, fields and wording. This compares
  * the site with it:
  *
- * - every register entry (F-01 to F-45, F-22 removed) is a row of
+ * - every register entry (F-01 to F-46, F-22 and F-44 removed) is a row of
  *   `governance.form_types` with the same code and title, and no row is
  *   missing from the register;
  * - a form the register says is filled at auibsal.org/forms/F-xx is a site
