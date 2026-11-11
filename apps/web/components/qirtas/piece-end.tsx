@@ -33,6 +33,7 @@ export const PieceEnd = async ({
           <Link
             className="link justify-self-start"
             href={`/qirtas/submit#${desk}`}
+            prefetch={false}
           >
             {t("end.writeLink")}
           </Link>

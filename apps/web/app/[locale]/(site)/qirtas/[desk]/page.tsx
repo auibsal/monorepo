@@ -70,7 +70,11 @@ const DeskPage = async ({ params }: DeskProps) => {
             {t("feed")}
           </a>
           {journal.sendableCategories(desk).length > 0 ? (
-            <Link className="link" href={`/qirtas/submit#${desk}`}>
+            <Link
+              className="link"
+              href={`/qirtas/submit#${desk}`}
+              prefetch={false}
+            >
               {t("sendTo", { desk: t(`desks.${desk}`) })}
             </Link>
           ) : null}
