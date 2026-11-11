@@ -105,10 +105,6 @@
       "description": "Your account with the AUIB Society of Arts and Letters.",
       "submit": "Sign in",
       "submitting": "Signing in…",
-      "magicLink": "Email me a sign-in link instead",
-      "usePassword": "Use my password instead",
-      "sendLink": "Send the link",
-      "linkSent": "A sign-in email is on its way to {email}. Open its link, or type its code below.",
       "forgot": "Forgot your password?",
       "noAccount": "New to the Society?",
       "createAccount": "Create an account",
@@ -602,7 +598,7 @@
     },
     "twoStep": {
       "setupTitle": "Set up two-step sign-in",
-      "setupBody": "Your role reaches the Society’s records, votes or the charity collection, so it needs a second step at sign-in: a six-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or similar). It takes a minute and you do it once.",
+      "setupBody": "Your role reaches members’ personal data, the Society’s records or votes, so it needs a second step at sign-in: a six-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or similar), or a sign-in with a passkey. It takes a minute and you do it once.",
       "verifyTitle": "Enter your sign-in code",
       "verifyBody": "Open your authenticator app and enter the six-digit code for SAL. Your administration tools open once it’s accepted.",
       "start": "Set up my authenticator",
@@ -615,7 +611,12 @@
       "recoveryBody": "Enter one of the recovery codes you saved. It removes the lost authenticator app, and you set up a new one straight away. Each code works once.",
       "recoveryLabel": "Recovery code",
       "recoveryUse": "Use this code",
-      "recoveryFailed": "That code didn’t work. Check it, or try another one. If none are left, ask whoever assigns roles to reset your two-step sign-in."
+      "recoveryFailed": "That code didn’t work. Check it, or try another one. If none are left, ask whoever assigns roles to reset your two-step sign-in.",
+      "settingsTitle": "Two-step sign-in",
+      "settingsOffer": "Optional for you: after your password, a six-digit code from an authenticator app on your phone. Signing in with a passkey counts as two steps on its own.",
+      "settingsFrom": "From {date}, one of your roles needs two-step sign-in: after your password, a six-digit code from an authenticator app on your phone. Set it up now, or sign in with a passkey, which counts as two steps on its own.",
+      "settingsOn": "On. You enter a code from your authenticator app after your password.",
+      "settingsOnNextTime": "On. You’ll enter a code from your authenticator app where a page needs it."
     },
     "journal": {
       "status": {

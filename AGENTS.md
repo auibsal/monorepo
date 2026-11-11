@@ -184,10 +184,15 @@ any schema change. Integration tests run against a local stack with
   after an hour with no use of your account or the Diwan (`IdleSignOut`,
   NIST SP 800-63B-4's AAL2 inactivity timeout). An AUIB sign-in address is not
   changed from the account (`private.keep_auib_address`).
-- **Two-step sign-in for sensitive roles.** Roles with `requires_mfa` (the
-  Council and the Elections Committee) count only on
-  an `aal2` session; `access.has_permission` enforces it. Don't add
-  bypasses. A passkey is a first step only. A lost authenticator is
+- **Two-step sign-in (decisions.md, Members).** An authenticator app is
+  offered to everyone (Settings). Roles with `requires_mfa` (the Council,
+  the Elections Committee and, from Sun Nov 22, 2026, every role that sees
+  personal data: `requires_mfa_from`, turned on by the hourly
+  `sal-two-step-from` job) count only on a two-step session
+  (`private.session_two_step()`: `aal2`, or a passkey sign-in, which is two
+  factors on its own); `access.has_permission` enforces it. Don't add
+  bypasses. A new role that sees personal data gets `requires_mfa` in its
+  migration. A lost authenticator is
   recovered with one of ten recovery codes (`access.recovery_codes`,
   `/api/two-step/recover`) or reset by whoever holds `roles.assign`
   (`/api/two-step/reset`); either is recorded in `access.two_step_resets`
@@ -361,7 +366,9 @@ everywhere:
 - **Package manager:** Bun with the hoisted linker (`bunfig.toml`).
   Declare every dependency a workspace imports; keep versions aligned. Bun
   installs and runs scripts; Next.js runs on Node.
-- **Auth:** email sign-in (AUIB address first; magic link or password). In
+- **Auth:** email and password (AUIB address first), a passkey as an
+  optional other way in; no sign-in link by email (email only confirms the
+  address and resets a password). In
   your account and the Diwan, query with `useAuth().supabase` so RLS
   applies. In the API routes, identify callers with
   `authenticateRequest` and re-check permissions with `hasPermission`

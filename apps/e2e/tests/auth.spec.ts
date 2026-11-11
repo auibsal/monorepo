@@ -3,6 +3,9 @@ import { admin, member, PASSWORD } from "../fixtures";
 import { urls } from "../playwright.config";
 import { expectAccessible, latestMail, signInWithPassword } from "./helpers";
 
+// No button offers a sign-in link by email.
+const LINK = /link/iu;
+
 test("sign up with an AUIB address, confirm by email, finish setup", async ({
   page,
 }) => {
@@ -151,36 +154,14 @@ test("signing in with an address that has no account says only that it doesn't m
   await expect(page.getByText("No account uses this address.")).toHaveCount(0);
 });
 
-test("an AUIB address signs in by password, with a link one click away", async ({
+test("an AUIB address signs in by password; no sign-in link is offered", async ({
   page,
 }) => {
   await page.goto(`${urls.web}/sign-in`);
   await page.getByLabel("Email").fill(member.email);
-  await expect(
-    page.getByRole("button", { name: "Email me a sign-in link instead" })
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: LINK })).toHaveCount(0);
   await signInWithPassword(page, member.email);
   await expectAccessible(page);
-});
-
-test("a sign-in email's code works where its link can't be opened", async ({
-  page,
-}) => {
-  await page.goto(`${urls.web}/sign-in`);
-  await page.getByLabel("Email").fill(member.email);
-  await page
-    .getByRole("button", { name: "Email me a sign-in link instead" })
-    .click();
-  const sentAt = Date.now();
-  await page.getByRole("button", { name: "Send the link" }).click();
-  await expect(page.getByRole("status")).toContainText("type its code");
-
-  const mail = await latestMail(member.email, sentAt);
-  const code = /letter-spacing:0\.25em[^>]*>(\d{6,10})</u.exec(mail.HTML)?.[1];
-  expect(code).toBeTruthy();
-  await page.getByLabel("Code from the email").fill(code ?? "");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
 });
 
 test("a member with a name from before the four parts is asked for them at sign-in", async ({

@@ -3,6 +3,9 @@ import { expect, test, vi } from "vitest";
 import { SignInForm } from "@/components/diwan/auth/sign-in-form";
 import { fakeSupabase, renderWithApp } from "./render";
 
+// No button offers a sign-in link by email.
+const LINK = /link/iu;
+
 test("shows a translated error for wrong credentials", async () => {
   const signInWithPassword = vi.fn(async () => ({
     data: {},
@@ -38,43 +41,7 @@ test("shows a translated error for wrong credentials", async () => {
   });
 });
 
-test("magic links never reveal whether an account exists", async () => {
-  const signInWithOtp = vi.fn(async () => ({
-    data: {},
-    error: { code: "otp_disabled", status: 422 },
-  }));
-  const supabase = fakeSupabase({
-    auth: {
-      getSession: vi.fn(async () => ({ data: { session: null } })),
-      onAuthStateChange: vi.fn(() => ({
-        data: { subscription: { unsubscribe: vi.fn() } },
-      })),
-      signInWithOtp,
-    },
-  });
-
-  renderWithApp(<SignInForm />, { locale: "ar", supabase });
-  fireEvent.click(
-    screen.getByRole("button", {
-      name: "أرسل لي رابط دخول بالبريد بدلًا من ذلك",
-    })
-  );
-  fireEvent.change(screen.getByLabelText("البريد الإلكتروني"), {
-    target: { value: "nobody@gmail.com" },
-  });
-  fireEvent.click(screen.getByRole("button", { name: "أرسل الرابط" }));
-
-  await waitFor(() =>
-    expect(screen.getByRole("status").textContent).toContain("nobody@gmail.com")
-  );
-  expect(signInWithOtp).toHaveBeenCalledWith(
-    expect.objectContaining({
-      options: expect.objectContaining({ shouldCreateUser: false }),
-    })
-  );
-});
-
-test("an AUIB address signs in by password, with a link one click away", () => {
+test("signing in is by password, with no email link to ask for", () => {
   const supabase = fakeSupabase({
     auth: {
       getSession: vi.fn(async () => ({ data: { session: null } })),
@@ -90,9 +57,5 @@ test("an AUIB address signs in by password, with a link one click away", () => {
     target: { value: "student@auib.edu.iq" },
   });
   expect(screen.getByLabelText("Password")).toBeTruthy();
-  fireEvent.click(
-    screen.getByRole("button", { name: "Email me a sign-in link instead" })
-  );
-  expect(screen.queryByLabelText("Password")).toBeNull();
-  expect(screen.getByRole("button", { name: "Send the link" })).toBeTruthy();
+  expect(screen.queryByRole("button", { name: LINK })).toBeNull();
 });

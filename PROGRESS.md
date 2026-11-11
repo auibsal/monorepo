@@ -30,16 +30,19 @@ production; **Owner** is a step only the owner can take.
   the Sunday Paper, the feed and the brand kit.
 
 ### 1. Accounts and sign-in (decisions.md, Members)
-- [ ] **Sign-in:** email and password stays the main way; the passkey is an
+- [x] **Sign-in:** email and password stays the main way; the passkey is an
   optional other way in, never pushed; no sign-in link by email (the
   "email me a link" path and its callback go). Email only confirms the
   address and resets a password.
-- [ ] **Two-step:** an authenticator app offered to everyone; required for
+- [x] **Two-step:** an authenticator app offered to everyone; required for
   officers, Council seats and every role that sees personal data from
   **Sunday, November 22**. A passkey sign-in meets it on its own
-  (`private.session_two_step()` accepts the passkey's `amr`).
-  **Migrates:** `requires_mfa` on the roles that see personal data, from
-  Nov 22.
+  (`private.session_two_step()` accepts the passkey's `amr`). Settings
+  offers the app to everyone and names the date a role starts to need it.
+  **Migrates:** `requires_mfa_from` = Nov 22 on every role with a
+  personal-data permission (check-in, members, the Tour, identities, the
+  mailing list, forms, concerns, partners, productions, Qalam, settings,
+  the audit log); the hourly job `sal-two-step-from` turns it on.
 - [ ] **Sessions:** Settings lists signed-in devices with "Sign out
   everywhere else"; a sign-in from an unfamiliar device sends an email.
   **Migrates:** a table of the account's known devices.

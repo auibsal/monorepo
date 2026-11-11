@@ -225,6 +225,7 @@ export type Database = {
           name_ar_feminine: string | null;
           name_en: string;
           requires_mfa: boolean;
+          requires_mfa_from: string | null;
           retired: boolean;
           sort: number;
         };
@@ -239,6 +240,7 @@ export type Database = {
           name_ar_feminine?: string | null;
           name_en: string;
           requires_mfa?: boolean;
+          requires_mfa_from?: string | null;
           retired?: boolean;
           sort?: number;
         };
@@ -252,6 +254,7 @@ export type Database = {
           name_ar_feminine?: string | null;
           name_en?: string;
           requires_mfa?: boolean;
+          requires_mfa_from?: string | null;
           retired?: boolean;
           sort?: number;
         };
@@ -378,6 +381,7 @@ export type Database = {
         Args: { assignment_id: string; step: string };
         Returns: boolean;
       };
+      two_step_from: { Args: Record<PropertyKey, never>; Returns: string };
     };
     Enums: {
       [_ in never]: never;

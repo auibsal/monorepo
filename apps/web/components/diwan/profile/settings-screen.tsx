@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useIsStaff } from "@/components/account/member-shell";
 import { useMyMembership } from "@/lib/diwan/queries";
 import { RecoveryCodes } from "../auth/recovery-codes";
+import { TwoStepSettings } from "../auth/two-step";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { DeleteAccount } from "./delete-account";
 import { DownloadData } from "./download-data";
@@ -88,6 +89,7 @@ export const SettingsScreen = () => {
       </DiwanSection>
       {member ? <PersonalEmailSection /> : null}
       <ChangePassword />
+      <TwoStepSettings />
       <Passkeys />
       <RecoveryCodes />
       <DownloadData />

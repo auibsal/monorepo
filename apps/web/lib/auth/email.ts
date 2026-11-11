@@ -278,34 +278,6 @@ export const signInWithPassword = async (
     : { ok: true, value: undefined };
 };
 
-/** Magic link for existing accounts (it never creates one). */
-export const sendMagicLink = async (
-  supabase: Client,
-  email: string,
-  redirectTo: string,
-  captchaToken?: string
-): Promise<AuthResult> => {
-  if (!isValidEmail(email)) {
-    return { code: "invalid_email", ok: false };
-  }
-
-  const { error } = await supabase.auth.signInWithOtp({
-    email: normalizeEmail(email),
-    options: {
-      ...captcha(captchaToken),
-      emailRedirectTo: redirectTo,
-      shouldCreateUser: false,
-    },
-  });
-
-  // Don't reveal whether an account exists.
-  const code = error ? toEmailAuthError(error) : null;
-  if (code && SHOWN.includes(code)) {
-    return { code, ok: false };
-  }
-  return { ok: true, value: undefined };
-};
-
 const CODE = /^\d{6,10}$/u;
 
 /**
