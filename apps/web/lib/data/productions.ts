@@ -201,3 +201,28 @@ export const setCreditVisibility = async (
       .schema("programmes")
       .rpc("set_credit_visibility", { credit_id: creditId, visible })
   );
+
+/** The Company's public productions, the newest first (rights cleared). */
+export const publicProductions = async (client: Client) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("productions")
+      .select(
+        "id, slug, kind, stage, title_en, title_ar, summary_en, summary_ar, playwright"
+      )
+      .eq("is_public", true)
+      .eq("rights_status", "cleared")
+      .order("created_at", { ascending: false })
+  ) ?? [];
+
+/**
+ * A production's playbill: everyone holding a role scoped to it, in the
+ * roles' order (decisions.md, the Company), named from the site.
+ */
+export const playbill = async (client: Client, productionId: string) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .rpc("production_playbill", { production: productionId })
+  ) ?? [];

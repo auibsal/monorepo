@@ -242,9 +242,14 @@ select results_eq(
 -- Get involved is one list (decisions.md): the Company's coming
 -- auditions are in it, for a public production that is auditioning only.
 select pg_temp.logout();
+-- No rights, no show: the public one has its rights cleared.
+insert into programmes.productions (slug, programme_id, title_en, title_ar, stage, is_public, rights_status,
+  script_origin, rights_cleared_by, rights_cleared_at)
+values
+  ('om-open-play', (select id from core.programmes where slug = 'company'), 'Open Play', 'مسرحية مفتوحة', 'auditions', true, 'cleared',
+    'public_domain', (select id from auth.users order by created_at limit 1), now());
 insert into programmes.productions (slug, programme_id, title_en, title_ar, stage, is_public, rights_status)
 values
-  ('om-open-play', (select id from core.programmes where slug = 'company'), 'Open Play', 'مسرحية مفتوحة', 'auditions', true, 'pending'),
   ('om-hidden-play', (select id from core.programmes where slug = 'company'), 'Hidden Play', 'مسرحية خفية', 'auditions', false, 'pending');
 insert into programmes.auditions (production_id, starts_at, ends_at)
 select id, now() + interval '3 days', now() + interval '3 days 2 hours'

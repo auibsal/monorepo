@@ -3729,8 +3729,8 @@
       "showName": "Show my name on the public page",
       "rehearsalsTitle": "Upcoming rehearsals",
       "noRehearsals": "No rehearsals are called yet.",
-      "auditionsTitle": "Open auditions",
-      "noAuditions": "No auditions are open right now. Production leads post them here.",
+      "auditionsTitle": "Auditions",
+      "noAuditions": "No auditions now. They are announced on What’s on and Get involved at least two weeks ahead.",
       "findShift": "Find a shift instead",
       "by": "By {name}",
       "prepare": "Prepare: {what}",
@@ -5561,9 +5561,14 @@
       "failed": "Something went wrong. Try again later."
     },
     "company": {
+      "season": "The first season",
+      "seasonPlan": "A staged reading in fall 2027 and a full production in spring 2028, set by the Council once the Artistic Director is appointed.",
+      "openingTitle": "The Artistic Director",
+      "openingBody": "The Company is looking for its Artistic Director, the Council seat that leads it. Read the opening and apply.",
+      "productions": "Plays",
+      "by": "By {playwright}",
       "auditions": "Auditions",
-      "auditionsLede": "The Company casts each production in open auditions. Members sign up for a time.",
-      "auditionsLink": "Sign up for an audition",
+      "auditionsLede": "Auditions are announced on What’s on and Get involved at least two weeks ahead.",
       "dates": "The Company’s dates on What’s on"
     },
     "tour": {

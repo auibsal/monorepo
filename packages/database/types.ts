@@ -7539,6 +7539,17 @@ export type Database = {
           title_en: string;
         }[];
       };
+      production_playbill: {
+        Args: { production: string };
+        Returns: {
+          name_ar: string;
+          name_en: string;
+          role_ar: string;
+          role_en: string;
+          role_key: string;
+          role_order: number;
+        }[];
+      };
       profile_six_words: {
         Args: { author_slug: string };
         Returns: {
