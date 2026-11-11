@@ -20,7 +20,18 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `governance.council_seats()`) lists the nine seats by full title, held
   or open, from the roles people hold: nothing is typed by hand. A second
   Council role needs an adopted Council resolution
-  (`private.role_conflict`).
+  (`private.role_conflict`); there is no other cap, but a section takes at
+  most two assistant editors.
+- **The roles standard.** Every role has a kind (`access.roles.kind`): a
+  seat, a team role under a seat, a scoped role (one event, production,
+  issue, election, episode or shift, ending with it) or an outside role.
+  A retired role (`retired`) stays on record and is never shown or given.
+  Covering an open seat or section is a dated delegation
+  (`role_assignments.covering`) that ends when the role is given for good.
+  The General Secretary records the quarterly access review on the
+  Council page (`access.record_access_review`). F-04, the new role
+  holder's checklist, is in Your account for 120 days from the day a role
+  is given (`access.my_role_checklist`).
 - **The first term.** Anyone newly joining a team serves a first term on
   probation; whoever appointed them confirms them; Council seats (elected
   or appointed directors) serve none
@@ -134,7 +145,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Diwan (`EventEditor` with `EventPartsAdmin`), with only the standard
   parts: its access (`events.events.entry`: `open`, `rsvp`, `members` or
   `invite` (Private); `members_only` is derived from it), RSVP and
-  check-in, registration questions, a needs list,
+  check-in (the booking asks only about accessibility needs, and diet
+  when `serves_food`; the waitlist moves by email until two hours before,
+  then the door fills places; places not claimed 10 minutes before are
+  released), a needs list,
   volunteer shifts (on the event only, logging no hours), a partner
   checklist (`events.joint_tasks`) and links from the night
   (`events.session_links`, https only). Off campus is a standard field:
@@ -186,8 +200,9 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   go (`membership.send_invitations(list)`), as one Broadcast, and is
   deleted thirty days after its own send.
 - **Get involved** (`/get-involved`, `programmes.open_places()`) lists open
-  roles only, soonest first: Council and team roles, event teams, Qalam
-  mentors, auditions. Members reply "I'm interested" in one step;
+  roles only, soonest first: Council and team roles, an event's lead
+  (one place; the rest of the night are shifts), Qalam mentors,
+  auditions. Members reply "I'm interested" in one step;
   Membership runs every application, and the role's owner picks the
   person (`private.picks_opening`); whoever is onboarded holds the role.
 - **Partners.** One register, `governance.partners`. `/partners` is the

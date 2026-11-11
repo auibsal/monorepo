@@ -206,7 +206,6 @@ const publishDocument = async (
     slug: v.slug,
     title_en: v.title,
     ...(v.summary ? { summary_en: v.summary } : {}),
-    ...(v.dated ? { dated: v.dated } : {}),
     ...(v.keeper ? { owner: v.keeper } : {}),
   };
   const { data, error } = existing

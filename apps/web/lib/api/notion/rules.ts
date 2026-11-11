@@ -208,7 +208,6 @@ export const RETIRED_DOCUMENT_FAMILY =
 export interface DocumentValues {
   audience: "internal" | "public";
   code: string;
-  dated: string | null;
   /** The seat that keeps the document (Owner), for its header (§13). */
   keeper: string | null;
   slug: string;
@@ -255,7 +254,6 @@ export const checkDocument = (
     values: {
       audience: audience as "internal" | "public",
       code,
-      dated: read.date(page, "Dated")?.start?.slice(0, 10) ?? null,
       keeper: read.select(page, "Owner") ?? null,
       slug,
       summary: optional(summary),

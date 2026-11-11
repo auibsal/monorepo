@@ -89,14 +89,56 @@ Part A first).
   INVOKER and call `private` functions, so revoking it breaks the public
   pages (tried locally Nov 11). Narrowing `anon`'s EXECUTE to the
   functions it needs is the defense in depth left to do.
-- [ ] **GOV-04 on the site:** the Notion page (both editions) is already
-  free of the Google Analytics, consent-cookie and banner text, but the
-  site still shows the Nov 7 publication. The Governance chat sets both
-  editions to Ready to publish to re-sync; they should also say that the
-  Sunday Paper comes from qirtas@auibsal.org and is sent by the Managing
-  Editor (no longer "the first Sunday").
+- [x] **GOV-02, 03, 04 and 06 republished** from Notion on Nov 11 (the
+  Platform note on each row says so).
+- [ ] **GOV-04's text:** check that it says the Sunday Paper comes from
+  qirtas@auibsal.org and is sent by the Managing Editor (no longer "the
+  first Sunday").
 - [ ] **Two retention schedulers** (`vercel.json`'s `/api/cron/retention`
   and pg_cron's `sal-retention`): keep one, or say why both.
+
+## Open after PR #263 (the roles standard and the Nov 11 follow-up)
+
+Done in #263: forms F-08 and F-31 retired (42 active); F-04, the new role
+holder's checklist; the roles standard (kinds, retired roles, the
+manuals' names, the Company's and Next Stop's scoped roles, assistant
+editors, no cap but one seat, covering, the mailing list for Media and the
+Managing Editor, the quarterly access review); booking (accessibility and
+diet only, the waitlist until two hours before, places released 10 minutes
+before); an event's opening is for its lead; EDT-02 set to Ready to publish
+in Notion so the sync takes it off the Library; the documents sync no
+longer reads Notion's Dated.
+
+- [ ] **EDT-02:** confirm that the Library no longer lists it once the sync
+  has run. If it still does, the sync's run log (Desk → Connected) shows why.
+- [ ] **Notion's "Dated" property** (Documents): delete it once #263 is
+  deployed (the sync no longer reads it). It wasn't deleted in Notion
+  this session.
+- [ ] **Two-step for the roles that see personal data** (decisions.md, Get
+  involved and roles): every officer has no second factor yet, so turning
+  it on locks them out of the Diwan. The owner sets the date; until then
+  the Council and the Elections Committee need it (as now).
+- [ ] **A passkey counts as two-step** (the same section): Supabase reports
+  a passkey sign-in as `aal1`; this needs a site-side `aal2` for a passkey
+  sign-in, or Supabase's WebAuthn MFA when it is available.
+- [ ] **The Diwan Telegram group, 7 days after a role ends:** the bot
+  removes the person from the staff group (today only on leaving the
+  Society).
+- [ ] **The event lead from Notion:** the sync checks the Lead property but
+  does not store it, so the event's lead isn't on the site; the event-lead
+  role scoped to the event should be given from it (by AUIB email).
+- [ ] **The team list** (one component): the Council page with covering,
+  Our people, the grouped masthead, Next Stop's credits, the Company's
+  playbills, and an event's lead and team.
+- [ ] **One mailing list with two topics**, the Tour import and its counts,
+  the `tour_2026_corrected` check (not sent), and the December 7 cleanup.
+- [ ] **The Qirtas staff lane:** the 15 assignments, and letters to the
+  editor and outside opinion with verified identities (never blind).
+- [ ] **Onboarding journeys and the email catalog**, the Arabic form at
+  sign-up, Student Life requests by secure link, the seats' email
+  addresses, Hudhud's items, the site standards (GPC, headers,
+  NewsArticle, RSS, Creative Commons), and a check of the Executive
+  Board's resolution flow.
 
 ## For the owner: dashboards and secrets
 
