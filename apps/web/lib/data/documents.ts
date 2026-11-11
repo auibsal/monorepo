@@ -38,7 +38,7 @@ export interface SalDocument {
 }
 
 const LISTING =
-  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, status, version, dated, ratification, adopted_on, vote, sort, updated_at, notion_url";
+  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, status, version, dated, ratification, adopted_on, vote, sort, updated_at, notion_url, owner";
 
 /** The public documents, without their text (for listings and the sitemap). */
 export const publicDocuments = async (client: Client) =>
@@ -82,6 +82,24 @@ const WEBSITE_POLICIES = new Set(["SAL-GOV-04", "SAL-GOV-05", "SAL-GOV-06"]);
  */
 export const isWebsitePolicy = (doc: Pick<SalDocument, "code">) =>
   WEBSITE_POLICIES.has(doc.code);
+
+/**
+ * Who a document is for (decisions.md, the Library: everyone, members,
+ * staff), from its code: the Member Handbook family (SAL-MEM) is for
+ * members, the role manuals (SAL-MAN) for staff, the rest for everyone.
+ * Staff manuals stay in the Diwan, so the public Library rarely shows them.
+ */
+export const readers = ["everyone", "members", "staff"] as const;
+export type Reader = (typeof readers)[number];
+export const readerOf = (doc: Pick<SalDocument, "code">): Reader => {
+  if (doc.code.startsWith("SAL-MEM-")) {
+    return "members";
+  }
+  if (doc.code.startsWith("SAL-MAN-")) {
+    return "staff";
+  }
+  return "everyone";
+};
 
 /** The title in the page's language (English when there is no Arabic). */
 export const documentTitle = (

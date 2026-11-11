@@ -198,9 +198,11 @@ production; **Owner** is a step only the owner can take.
   every page, reaching the web lead in the Diwan.
 - [x] Contact: one page routing by topic to the role address, with the
   answer time; signed-in details from the account.
-- [ ] The Library grouped by who it is for (code, keeper, status, a
-  two-line summary), searchable, both editions together; staff manuals
-  only in the Diwan.
+- [x] The Library grouped by who it is for (everyone, members, officers
+  and teams, from the code family: SAL-MEM for members, SAL-MAN for
+  staff), each with its code, keeper, status and a two-line summary, with
+  a find line; both editions together on each document's page; staff
+  manuals only in the Diwan.
 - [x] Policies: /code-of-conduct and /security beside /privacy, /terms and
   /accessibility, each with its effective date at the top.
 - [x] /about/credits generated from the dependencies; About → Our people

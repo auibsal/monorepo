@@ -55,6 +55,12 @@ const SEATS_AR: Record<string, string> = {
   "Vice President": "نائب الرئيس",
 };
 
+/** The seat that keeps a document, in the page's language. */
+export const seatName = (owner: string, locale: string) =>
+  locale === "ar"
+    ? (SEATS_AR[owner] ?? owner)
+    : owner.replace("General Secretary", "Secretary");
+
 /** GOV-04 to GOV-06 took effect with the site (decisions §13). */
 const SITE_POLICIES = new Set(["SAL-GOV-04", "SAL-GOV-05", "SAL-GOV-06"]);
 const FOUNDING = new Set(["SAL-GOV-01", "SAL-GOV-02"]);
@@ -92,12 +98,7 @@ const DocumentLine = async ({ doc, locale }: { doc: Doc; locale: Locale }) => {
   const other = locale === "ar" ? "en" : "ar";
   const hasOther = other === "ar" ? Boolean(doc.body_ar) : Boolean(doc.body_en);
   const keeper = doc.owner
-    ? t("keptBy", {
-        seat:
-          locale === "ar"
-            ? (SEATS_AR[doc.owner] ?? doc.owner)
-            : doc.owner.replace("General Secretary", "Secretary"),
-      })
+    ? t("keptBy", { seat: seatName(doc.owner, locale) })
     : null;
   return (
     <p className="type-caption">

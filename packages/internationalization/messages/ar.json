@@ -4793,11 +4793,6 @@
       "contents": "المحتويات",
       "empty": "ستظهر الوثائق هنا.",
       "noText": "لم يُدخل نص هذه الوثيقة بعد.",
-      "shelves": {
-        "society": "وثائق الجمعية",
-        "policies": "سياسات الموقع"
-      },
-      "proposedShort": "مقترحة",
       "header": {
         "keptBy": "يحفظها {seat}",
         "adopted": "النسخة {version} · نافذة منذ {date}",
@@ -4808,6 +4803,18 @@
           "ar": "العربية",
           "en": "English"
         }
+      },
+      "find": "ابحث عن وثيقة",
+      "noMatch": "لا توجد وثيقة مطابقة.",
+      "readers": {
+        "everyone": "للجميع",
+        "members": "للأعضاء",
+        "staff": "للمسؤولين والفرق"
+      },
+      "statuses": {
+        "proposed": "مقترحة",
+        "adopted": "معتمدة",
+        "rescinded": "ملغاة"
       }
     },
     "events": {

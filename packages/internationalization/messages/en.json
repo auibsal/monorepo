@@ -4793,11 +4793,6 @@
       "contents": "Contents",
       "empty": "The documents will appear here.",
       "noText": "The text of this document has not been entered yet.",
-      "shelves": {
-        "society": "Society documents",
-        "policies": "Website policies"
-      },
-      "proposedShort": "Proposed",
       "header": {
         "keptBy": "Kept by the {seat}",
         "adopted": "Version {version} · Effective {date}",
@@ -4808,6 +4803,18 @@
           "ar": "العربية",
           "en": "English"
         }
+      },
+      "find": "Find a document",
+      "noMatch": "No document matches.",
+      "readers": {
+        "everyone": "For everyone",
+        "members": "For members",
+        "staff": "For officers and teams"
+      },
+      "statuses": {
+        "proposed": "Proposed",
+        "adopted": "Adopted",
+        "rescinded": "Rescinded"
       }
     },
     "events": {
