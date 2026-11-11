@@ -171,6 +171,9 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     await group.getByLabel("Family name").fill(parts[3]);
   }
   await guest.getByRole("checkbox", { name: /18 or older/u }).check();
+  await guest
+    .getByRole("checkbox", { name: /I agree to the Terms of Use/u })
+    .check();
   const sentAt = Date.now();
   await guest.getByRole("button", { name: "Create account" }).click();
   await expect(guest.getByText("Check your inbox")).toBeVisible();

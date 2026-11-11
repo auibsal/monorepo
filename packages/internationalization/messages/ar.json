@@ -358,6 +358,7 @@
       "journal": {
         "title": "قرطاس",
         "openCall": "تُغلق دعوة «{call}» يوم {date}",
+        "openCallNoDate": "دعوة «{call}» مفتوحة، ولم يُحدَّد موعد إغلاقها بعد",
         "daysLeft": "{days, plural, zero {اليوم الأخير} one {يوم واحد متبقٍّ} two {يومان متبقيان} few {{daysText} أيام متبقية} many {{daysText} يومًا متبقيًا} other {{daysText} يوم متبقٍّ}}",
         "submit": "اكتب لقرطاس",
         "none": "لا دعوة مفتوحة للعدد المطبوع. وقرطاس يستقبل الأعمال طوال العام."

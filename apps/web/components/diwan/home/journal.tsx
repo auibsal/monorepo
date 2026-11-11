@@ -6,7 +6,7 @@ import {
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { localized } from "@/lib/data";
+import { journal, localized } from "@/lib/data";
 import { useOpenCalls } from "@/lib/diwan/queries";
 import { EmptyLine } from "../states";
 import { Section } from "./section";
@@ -32,17 +32,26 @@ export const JournalSection = () => {
           0,
           Math.ceil((new Date(call.closes_at).getTime() - Date.now()) / DAY)
         );
+        const title = localized(call, "title", locale);
         return (
           <div className="grid gap-1" key={call.id}>
-            <p className="type-body">
-              {t("openCall", {
-                call: localized(call, "title", locale),
-                date: formatLongDate(call.closes_at, locale),
-              })}
-            </p>
-            <p className="type-caption">
-              {t("daysLeft", { days, daysText: formatNumber(days) })}
-            </p>
+            {journal.hasDeadline(call) ? (
+              <>
+                <p className="type-body">
+                  {t("openCall", {
+                    call: title,
+                    date: formatLongDate(call.closes_at, locale),
+                  })}
+                </p>
+                <p className="type-caption">
+                  {t("daysLeft", { days, daysText: formatNumber(days) })}
+                </p>
+              </>
+            ) : (
+              <p className="type-body">
+                {t("openCallNoDate", { call: title })}
+              </p>
+            )}
             <Link
               className="link type-caption justify-self-start"
               href="/qirtas/submit"

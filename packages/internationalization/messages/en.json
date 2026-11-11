@@ -358,6 +358,7 @@
       "journal": {
         "title": "Qirtas",
         "openCall": "{call} closes {date}",
+        "openCallNoDate": "{call} is open; its closing date is still to be set",
         "daysLeft": "{days, plural, one {{daysText} day left} other {{daysText} days left}}",
         "submit": "Write for Qirtas",
         "none": "No Edition call is open. Qirtas takes work all year."

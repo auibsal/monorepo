@@ -57,7 +57,7 @@ test("a member saves a draft, comes back to it and sends it", async ({
   await page.keyboard.type("Half a line, kept for later.");
   await page.getByRole("button", { name: "Save draft" }).click();
   // The first save gives the draft its own address.
-  await expect(page).toHaveURL(/\/qirtas\/write\/poetry\/[0-9a-f-]{36}$/u);
+  await expect(page).toHaveURL(/\/qirtas\/submit\/poetry\/[0-9a-f-]{36}$/u);
   await expect(page.getByRole("button", { name: "Draft saved" })).toBeVisible();
 
   // Write for Qirtas lists the current drafts (decisions §18).

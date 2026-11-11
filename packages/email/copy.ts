@@ -267,6 +267,24 @@ export interface CallInfo {
   title_en: string;
 }
 
+/**
+ * A call closing in 2100 or later has no deadline yet (the Editor-in-Chief
+ * sets the dates; the standing call never closes).
+ */
+export const callHasDeadline = (closesAt: string) =>
+  new Date(closesAt).getUTCFullYear() < 2100;
+
+const callClosing = (closesAt: string, l: Lang) => {
+  if (!callHasDeadline(closesAt)) {
+    return l === "ar"
+      ? "لم يُحدَّد موعد الإغلاق بعد. أرسل عملك من صفحة الكتابة لقرطاس."
+      : "Its closing date is still to be set. Send yours from Write for Qirtas.";
+  }
+  return l === "ar"
+    ? `تستقبل الدعوة الأعمال حتى ${formatLongDate(closesAt, l)}. أرسل عملك من صفحة الكتابة لقرطاس.`
+    : `It takes work until ${formatLongDate(closesAt, l)}. Send yours from Write for Qirtas.`;
+};
+
 /** "Tell me when": a Qirtas call has opened. */
 export const callOpened = (lang: Lang, call: CallInfo, app: string) =>
   build(lang, (l) => ({
@@ -276,9 +294,7 @@ export const callOpened = (lang: Lang, call: CallInfo, app: string) =>
         ? `فُتحت دعوة قرطاس: ${call.title_ar}`
         : `A Qirtas call is open: ${call.title_en}`,
     paragraphs: [
-      l === "ar"
-        ? `تستقبل الدعوة الأعمال حتى ${formatLongDate(call.closes_at, l)}. أرسل عملك من صفحة الكتابة لقرطاس.`
-        : `It takes work until ${formatLongDate(call.closes_at, l)}. Send yours from Write for Qirtas.`,
+      callClosing(call.closes_at, l),
       l === "ar"
         ? "وصلتك هذه الرسالة لأنك طلبت أن نخبرك. يمكنك إيقافها من الصفحة نفسها."
         : "You asked us to tell you. You can stop these from the same page.",

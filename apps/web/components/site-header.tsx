@@ -1,7 +1,6 @@
 "use client";
 
 import { Icon } from "@repo/brand/components/sal/icon";
-import { buttonVariants } from "@repo/brand/components/ui/button";
 import { cn } from "@repo/brand/lib/utils";
 import { diwanPath, localizedPath } from "@repo/internationalization";
 import { type Locale, locales } from "@repo/internationalization/config";
@@ -24,7 +23,10 @@ type SectionKey =
   | "nextStop";
 // What's on · Qirtas · The Company · Next Stop · Get involved · About, with
 // a Join button for visitors (decisions §19); signed in, the end of the
-// line opens Membership instead.
+// line opens Membership instead. The Join button is styled here, not with
+// the brand's Button, which would bring radix-ui into every public page.
+const joinButton =
+  "bg-accent text-on-accent hover:bg-accent/90 inline-flex items-center justify-center font-medium text-[0.9375rem] whitespace-nowrap";
 const sections: { href: string; key: SectionKey }[] = [
   { href: "/events", key: "events" },
   { href: "/qirtas", key: "journal" },
@@ -193,7 +195,7 @@ export const SiteHeader = ({
             </NextLink>
             {signedIn ? null : (
               <NextLink
-                className={buttonVariants({ size: "sm" })}
+                className={cn(joinButton, "h-10 px-4 text-sm")}
                 href={localizedPath(locale, "/join")}
               >
                 {t("join")}
@@ -230,7 +232,7 @@ export const SiteHeader = ({
                 </NextLink>
                 {signedIn ? null : (
                   <NextLink
-                    className={cn(buttonVariants(), "justify-self-start")}
+                    className={cn(joinButton, "h-12 justify-self-start px-6")}
                     href={localizedPath(locale, "/join")}
                     onClick={close}
                   >

@@ -361,6 +361,13 @@ export const openCalls = async (client: Client, now = currentDate()) =>
   );
 
 /**
+ * A call closing in 2100 or later has no deadline yet: the Editor-in-Chief
+ * sets the dates (Haven, decisions §18), and the standing call never closes.
+ */
+export const hasDeadline = (call: { readonly closes_at: string }) =>
+  new Date(call.closes_at).getUTCFullYear() < 2100;
+
+/**
  * Open calls for the printed Edition: the standing call (no Edition, always
  * open) is left out wherever calls are announced.
  */

@@ -6,6 +6,7 @@ import {
   applicationReceived,
   applicationWaiting,
   type Built,
+  callOpened,
   candidacyDecided,
   certificateIssued,
   eventChanged,
@@ -98,6 +99,31 @@ describe("the email journeys", () => {
         p.startsWith("Tuesday, November 17")
       )
     ).toBe(true);
+  });
+
+  test("a call with no closing date yet says so, not a date in 2100", () => {
+    const open = callOpened(
+      "en",
+      {
+        closes_at: "2100-01-01T00:00:00Z",
+        title_ar: "ملاذ",
+        title_en: "Haven",
+      },
+      APP
+    );
+    const text = open.blocks[0]?.paragraphs.join(" ") ?? "";
+    expect(text).toContain("still to be set");
+    expect(text).not.toContain("2100");
+    const dated = callOpened(
+      "en",
+      {
+        closes_at: "2026-12-11T12:00:00Z",
+        title_ar: "ملاذ",
+        title_en: "Haven",
+      },
+      APP
+    );
+    expect(dated.blocks[0]?.paragraphs.join(" ")).toContain("December 11");
   });
 
   test("a request closed links to its own page", () => {

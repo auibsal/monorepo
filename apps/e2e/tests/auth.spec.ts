@@ -24,8 +24,10 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   // Students say they are (decisions §2).
   await page.getByRole("checkbox", { name: /enrolled AUIB student/u }).check();
   // Students of any age (decisions §19): asked, not assumed.
-  await page.getByRole("button", { name: /Are you 18 or older/u }).click();
-  await page.getByRole("option", { name: "Yes, 18 or older" }).click();
+  await page.getByRole("radio", { name: "Yes, 18 or older" }).click();
+  await page
+    .getByRole("checkbox", { name: /I agree to the Terms of Use/u })
+    .check();
   // Scrolled down to the button, as on a phone.
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.getByRole("button", { name: "Create account" }).click();
@@ -42,7 +44,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   // One question per screen.
   // One question per screen, each at its own address.
   await expect(page).toHaveURL(/\/welcome\/1(\?|$)/u);
-  await expect(page.getByText("Step 1 of 5")).toBeVisible();
+  await expect(page.getByText("Step 1 of 4")).toBeVisible();
   await expectAccessible(page);
   // The name in four parts, in English, then in Arabic.
   await page.getByLabel("Name", { exact: true }).fill("New");
@@ -51,7 +53,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByLabel("Family name").fill("Member");
   await page.getByLabel("Family name").press("Enter");
 
-  await expect(page.getByText("Step 2 of 5")).toBeVisible();
+  await expect(page.getByText("Step 2 of 4")).toBeVisible();
   await expect(page).toHaveURL(/\/welcome\/2(\?|$)/u);
   await page.getByLabel("Name", { exact: true }).fill("عضو");
   await page.getByLabel("Father’s name", { exact: true }).fill("كريم");
@@ -70,7 +72,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(page.getByLabel("Family name")).toHaveValue("جديد");
   await page.getByRole("button", { name: "Continue" }).click();
 
-  await expect(page.getByText("Step 3 of 5")).toBeVisible();
+  await expect(page.getByText("Step 3 of 4")).toBeVisible();
   // The Code of Conduct is the only pledge (decisions §19).
   await page
     .getByRole("button", { name: "I acknowledge the Code of Conduct" })
@@ -117,8 +119,10 @@ test("a whole address pasted and submitted at once signs up the right address", 
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByRole("checkbox", { name: /enrolled AUIB student/u }).check();
   // Students of any age (decisions §19): asked, not assumed.
-  await page.getByRole("button", { name: /Are you 18 or older/u }).click();
-  await page.getByRole("option", { name: "Yes, 18 or older" }).click();
+  await page.getByRole("radio", { name: "Yes, 18 or older" }).click();
+  await page
+    .getByRole("checkbox", { name: /I agree to the Terms of Use/u })
+    .check();
   await page.getByLabel("Password", { exact: true }).press("Enter");
   const status = page.getByRole("status").first();
   await expect(status).toContainText("@auib.edu.iq");
