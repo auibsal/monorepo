@@ -33,7 +33,7 @@ test("a member sends work to Qirtas and sees the reading timeline", async ({
   page,
 }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/qirtas/write/poetry`);
+  await page.goto(`${urls.web}/qirtas/submit/poetry`);
   await page.getByLabel("Title").fill(`A small poem ${Date.now()}`);
   await page.locator('[contenteditable="true"]').first().click();
   await page.keyboard.type("The paper and the pen, and the hour between them.");
@@ -51,7 +51,7 @@ test("a member saves a draft, comes back to it and sends it", async ({
 }) => {
   const title = `A draft poem ${Date.now()}`;
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/qirtas/write/poetry`);
+  await page.goto(`${urls.web}/qirtas/submit/poetry`);
   await page.getByLabel("Title").fill(title);
   await page.locator('[contenteditable="true"]').first().click();
   await page.keyboard.type("Half a line, kept for later.");
@@ -61,7 +61,7 @@ test("a member saves a draft, comes back to it and sends it", async ({
   await expect(page.getByRole("button", { name: "Draft saved" })).toBeVisible();
 
   // Write for Qirtas lists the current drafts (decisions §17).
-  await page.goto(`${urls.web}/qirtas/write`);
+  await page.goto(`${urls.web}/qirtas/submit`);
   const drafts = page.getByRole("region", { name: "Your drafts" });
   const item = drafts.getByRole("listitem").filter({ hasText: title });
   await expect(item).toContainText("Poetry");
@@ -77,7 +77,7 @@ test("a member saves a draft, comes back to it and sends it", async ({
   await page.getByRole("button", { name: "Send to Qirtas" }).click();
   await expect(page).toHaveURL(/\/account\/work\/submissions\//u);
   // Sent, it is a submission; the draft is gone from Write for Qirtas.
-  await page.goto(`${urls.web}/qirtas/write`);
+  await page.goto(`${urls.web}/qirtas/submit`);
   await expect(page.getByRole("heading", { name: "Haven" })).toBeVisible();
   await expect(page.getByRole("link", { name: title })).toHaveCount(0);
 });
@@ -86,7 +86,7 @@ test("a manuscript's text fills the editor, and the file goes with the work", as
   page,
 }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/qirtas/write/poetry`);
+  await page.goto(`${urls.web}/qirtas/submit/poetry`);
   const editor = page.locator('[contenteditable="true"]').first();
   await page
     .getByLabel("Manuscript (PDF or Word)")

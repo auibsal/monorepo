@@ -5,9 +5,10 @@ import { config, withAnalyzer } from "@/lib/next-config";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-// No redirects: links point at the current address, and an old one is
-// simply not found. www.auibsal.org → auibsal.org is a Vercel domain
-// setting.
+// One redirect only: Write for Qirtas moved to /qirtas/submit, and the
+// old address leads there until further notice (decisions §17). Otherwise
+// links point at the current address, and an old one is simply not found.
+// www.auibsal.org → auibsal.org is a Vercel domain setting.
 // English has no prefix; Arabic is under /ar.
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 //
@@ -56,6 +57,19 @@ let nextConfig: NextConfig = {
   // Off: with it, a missing event or piece answered 200 (its shared shell
   // streams first) and a piece's text-size buttons stopped answering.
   partialPrefetching: false,
+  redirects: async () =>
+    LANGUAGE_PREFIXES.flatMap((prefix) => [
+      {
+        destination: `${prefix}/qirtas/submit`,
+        permanent: false,
+        source: `${prefix}/qirtas/write`,
+      },
+      {
+        destination: `${prefix}/qirtas/submit/:path*`,
+        permanent: false,
+        source: `${prefix}/qirtas/write/:path*`,
+      },
+    ]),
   // The design system's files, under its page in the Diwan, ahead of the
   // Diwan's routes.
   rewrites: async () => ({

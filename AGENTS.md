@@ -33,8 +33,8 @@ media do.
     `/elections/<position>`) and Settings (`/settings`, `/settings/profile`,
     `/settings/notifications`, officers' `/settings/disclosures`), with
     what you sent at `/requests` and `/requests/<id>`. Also `/company/auditions`,
-    `/qirtas/write` (public; the forms at `/qirtas/write/<type>`, a draft at
-    `/qirtas/write/<type>/<draft>`) and `/qirtas/read/<slug>` (a
+    `/qirtas/submit` (public; the forms at `/qirtas/submit/<type>`, a draft at
+    `/qirtas/submit/<type>/<draft>`) and `/qirtas/read/<slug>` (a
     members-only piece). The gates are in `components/diwan/gates.tsx`.
   - `app/[locale]/diwan`: **the Diwan**, auibsal.org/diwan, the staff's
     administration only (anyone holding a role, `RequireStaff`), one
@@ -178,7 +178,7 @@ any schema change. Integration tests run against a local stack with
   NIST SP 800-63B-4's AAL2 inactivity timeout). An AUIB sign-in address is not
   changed from the account (`private.keep_auib_address`).
 - **Two-step sign-in for sensitive roles.** Roles with `requires_mfa` (the
-  Council, the Acting President, the Elections Committee) count only on
+  Council and the Elections Committee) count only on
   an `aal2` session; `access.has_permission` enforces it. Don't add
   bypasses. A passkey is a first step only. A lost authenticator is
   recovered with one of ten recovery codes (`access.recovery_codes`,
@@ -249,7 +249,7 @@ everywhere:
   path (an event, a piece, an issue); lists are filtered with query
   strings (`/events?month=`, `/qirtas/archive?month=&section=`,
   `/search?q=`). Links point at the current
-  address; there are no redirects, and an old address is simply not
+  address; the only redirect is /qirtas/write → /qirtas/submit (for now), and an old address is simply not
   found. The address alone decides the
   language (`localeDetection: false`).
 - **Big records get pages; small rows are edited in place.** A record

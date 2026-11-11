@@ -15,7 +15,7 @@ const KEY = ["saved-reading"];
 /**
  * What a reader saved to read later (the design review A9 and C22, Nov 4,
  * 2026): published pieces only, newest saved first. Their own work, sent
- * or in draft, never shows here; it lives on /qirtas/write.
+ * or in draft, never shows here; it lives on /qirtas/submit.
  */
 const useSaved = (limit?: number) => {
   const { supabase } = useAuth();

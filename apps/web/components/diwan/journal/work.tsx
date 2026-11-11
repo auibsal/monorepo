@@ -140,7 +140,10 @@ export const MyPiece = () => {
   });
 
   const back = (
-    <Link className="text-sm underline underline-offset-4" href="/qirtas/write">
+    <Link
+      className="text-sm underline underline-offset-4"
+      href="/qirtas/submit"
+    >
       {t("back")}
     </Link>
   );

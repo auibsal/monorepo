@@ -56,7 +56,7 @@ const VisitorDoor = () => {
       <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
         <Link
           className="bg-accent text-on-accent hover:bg-accent/90 inline-flex h-12 items-center px-6 text-[0.9375rem] font-medium"
-          href={{ pathname: "/sign-in", query: { next: "/qirtas/write" } }}
+          href={{ pathname: "/sign-in", query: { next: "/qirtas/submit" } }}
         >
           {tw("door.signIn")}
         </Link>
@@ -89,7 +89,7 @@ const HowItWorks = () => {
 };
 
 /**
- * /qirtas/write (decisions.md; the gateway revised Nov 5, 2026):
+ * /qirtas/submit (decisions.md; the gateway revised Nov 5, 2026):
  * one door, readable by anyone. Visitors learn what Qirtas takes and how it
  * is read, then sign in (and come back here) or join; members and guests
  * see their current drafts. The current issue's call (Haven) leads; work
@@ -126,7 +126,7 @@ export const WriteHome = () => {
                     <li key={category}>
                       <Link
                         className="link text-sm font-medium"
-                        href={`/qirtas/write/${category}`}
+                        href={`/qirtas/submit/${category}`}
                       >
                         {tj(`categories.${category}`)}
                       </Link>
@@ -193,7 +193,7 @@ const CurrentDrafts = () => {
           <li className="grid gap-1" key={d.id}>
             <Link
               className="font-medium underline underline-offset-4"
-              href={`/qirtas/write/${d.category}/${d.id}`}
+              href={`/qirtas/submit/${d.category}/${d.id}`}
             >
               {d.title || tw("untitledDraft")}
             </Link>
@@ -242,8 +242,8 @@ const missingReason = (pledged: boolean, work: boolean) => {
 };
 
 /**
- * The form for one type, at /qirtas/write/<type>; a saved draft opens at
- * /qirtas/write/<type>/<draft> (decisions.md: drafts in their work).
+ * The form for one type, at /qirtas/submit/<type>; a saved draft opens at
+ * /qirtas/submit/<type>/<draft> (decisions.md: drafts in their work).
  */
 export const WriteType = ({
   draftId,
@@ -910,7 +910,7 @@ const useDraft = (type: journal.Category, draftId: string | undefined) => {
         window.history.replaceState(
           null,
           "",
-          localizedPath(locale, `/qirtas/write/${type}/${id}`)
+          localizedPath(locale, `/qirtas/submit/${type}/${id}`)
         );
       }
       await queryClient.invalidateQueries({ queryKey: queryKeys.drafts });
@@ -963,7 +963,7 @@ const DraftRow = ({
   const router = useRouter();
   const remove = useMutation({
     mutationFn: draft.discard,
-    onSuccess: () => router.push("/qirtas/write"),
+    onSuccess: () => router.push("/qirtas/submit"),
   });
   let label = t("saveDraft");
   if (draft.save.isPending) {
@@ -1007,7 +1007,7 @@ const MissingDraft = ({ type }: { readonly type: journal.Category }) => {
     <div className="grid gap-4">
       <WriteHeading type={type} />
       <p className="type-body">{t("draftMissing")}</p>
-      <Link className="link justify-self-start" href="/qirtas/write">
+      <Link className="link justify-self-start" href="/qirtas/submit">
         {t("back")}
       </Link>
     </div>
@@ -1045,7 +1045,7 @@ const WriteHeading = ({ type }: { readonly type: journal.Category }) => {
       actions={
         <Link
           className="text-sm underline underline-offset-4"
-          href="/qirtas/write"
+          href="/qirtas/submit"
         >
           {t("back")}
         </Link>

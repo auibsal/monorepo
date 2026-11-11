@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "@repo/brand/components/sal/icon";
+import { buttonVariants } from "@repo/brand/components/ui/button";
 import { cn } from "@repo/brand/lib/utils";
 import { diwanPath, localizedPath } from "@repo/internationalization";
 import { type Locale, locales } from "@repo/internationalization/config";
@@ -20,18 +21,17 @@ type SectionKey =
   | "involved"
   | "journal"
   | "events"
-  | "join";
-// About · What's on · Qirtas · The Company · Get involved · Join: programs
-// and events are one calendar, the Company stands beside Qirtas (decisions.md),
-// and "Get involved" opens the careers page. Join is for
-// visitors: signed in, the end of the line opens Membership instead.
+  | "nextStop";
+// What's on · Qirtas · The Company · Next Stop · Get involved · About, with
+// a Join button for visitors (decisions §18); signed in, the end of the
+// line opens Membership instead.
 const sections: { href: string; key: SectionKey }[] = [
-  { href: "/about", key: "about" },
   { href: "/events", key: "events" },
   { href: "/qirtas", key: "journal" },
   { href: "/company", key: "company" },
+  { href: "/next-stop", key: "nextStop" },
   { href: "/get-involved", key: "involved" },
-  { href: "/join", key: "join" },
+  { href: "/about", key: "about" },
 ];
 
 interface SiteHeaderProps {
@@ -183,13 +183,23 @@ export const SiteHeader = ({
           return <MembershipMenu extras={extras} way={way} />;
         }
         return (
-          <NextLink
-            className={cn(mastheadLink, "inline-flex items-center gap-1.5")}
-            href={way.href}
-          >
-            <Icon name={signedIn ? "user" : "log-in"} />
-            {way.label}
-          </NextLink>
+          <>
+            <NextLink
+              className={cn(mastheadLink, "inline-flex items-center gap-1.5")}
+              href={way.href}
+            >
+              <Icon name={signedIn ? "user" : "log-in"} />
+              {way.label}
+            </NextLink>
+            {signedIn ? null : (
+              <NextLink
+                className={buttonVariants({ size: "sm" })}
+                href={localizedPath(locale, "/join")}
+              >
+                {t("join")}
+              </NextLink>
+            )}
+          </>
         );
       })()}
       home={localizedPath(locale, "/")}
@@ -218,6 +228,15 @@ export const SiteHeader = ({
                   <Icon name={signedIn ? "user" : "log-in"} />
                   {way.label}
                 </NextLink>
+                {signedIn ? null : (
+                  <NextLink
+                    className={cn(buttonVariants(), "justify-self-start")}
+                    href={localizedPath(locale, "/join")}
+                    onClick={close}
+                  >
+                    {t("join")}
+                  </NextLink>
+                )}
                 {extras.map((extra) => (
                   <NextLink
                     className="text-text-secondary hover:text-accent ms-7 font-medium"
@@ -242,13 +261,11 @@ export const SiteHeader = ({
           <Icon name="search" />
         </NextLink>
       }
-      sections={sections
-        .filter((section) => !(signedIn && section.key === "join"))
-        .map((section) => ({
-          current: pathname.startsWith(section.href),
-          href: localizedPath(locale, section.href),
-          label: t(section.key),
-        }))}
+      sections={sections.map((section) => ({
+        current: pathname.startsWith(section.href),
+        href: localizedPath(locale, section.href),
+        label: t(section.key),
+      }))}
     />
   );
 };

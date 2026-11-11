@@ -150,6 +150,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@react-email/components": "1.0.12",
+        "@repo/config": "workspace:*",
         "@repo/internationalization": "workspace:*",
         "@t3-oss/env-nextjs": "^0.13.11",
         "react": "19.3.1",

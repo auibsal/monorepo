@@ -3,19 +3,21 @@ import { WriteType } from "@/components/diwan/journal/write";
 import { journal } from "@/lib/data";
 import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("diwan.journal.title"));
+export const generateMetadata = titleFrom((t) =>
+  t("diwan.journal.write.draftTitle")
+);
 
 interface PageProps {
-  readonly params: Promise<{ type: string }>;
+  readonly params: Promise<{ draft: string; type: string }>;
 }
 
-/** /qirtas/write/<type>: the form for one type. */
+/** /qirtas/submit/<type>/<draft>: a saved draft, back in its form. */
 const Page = async ({ params }: PageProps) => {
-  const { type } = await params;
+  const { draft, type } = await params;
   if (!journal.isWritableType(type)) {
     notFound();
   }
-  return <WriteType type={type} />;
+  return <WriteType draftId={draft} type={type} />;
 };
 
 export default Page;

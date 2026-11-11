@@ -111,7 +111,7 @@ export const sendableCategories = (desk: Desk) =>
     ? deskCategories(desk).filter((c) => !closedCategories.includes(c))
     : [];
 
-/** Every type a member can send, at /qirtas/write/<type>. */
+/** Every type a member can send, at /qirtas/submit/<type>. */
 const writableTypes = desks.flatMap(sendableCategories);
 
 export const isWritableType = (value: string): value is Category =>

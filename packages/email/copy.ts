@@ -171,7 +171,7 @@ export const submissionReceived = (
   desk: DeskKind = "blind"
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/write"),
+    action: account(app, l, "/qirtas/submit"),
     heading:
       l === "ar" ? `شكرًا، وصلنا ${work}` : `Thank you: we received ${work}`,
     paragraphs: RECEIVED[desk][l],
@@ -184,7 +184,7 @@ export const returnedForFormatting = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/write"),
+    action: account(app, l, "/qirtas/submit"),
     heading:
       l === "ar"
         ? `تعديل واحد قبل القراءة: ${work}`
@@ -219,7 +219,7 @@ export const decision = (
   build(lang, (l) => {
     if (outcome === "decline") {
       return {
-        action: account(app, l, "/qirtas/write"),
+        action: account(app, l, "/qirtas/submit"),
         heading:
           l === "ar" ? `شكرًا لإرسالك ${work}` : `Thank you for sending ${work}`,
         paragraphs:
@@ -235,7 +235,7 @@ export const decision = (
       };
     }
     return {
-      action: account(app, l, "/qirtas/write"),
+      action: account(app, l, "/qirtas/submit"),
       heading:
         l === "ar" ? `قُبل ${work} في قرطاس` : `${work} is accepted for Qirtas`,
       paragraphs: [
@@ -249,7 +249,7 @@ export const decision = (
 
 export const agreementReminder = (lang: Lang, work: string, app: string) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/write"),
+    action: account(app, l, "/qirtas/submit"),
     heading:
       l === "ar"
         ? `بانتظار توقيعك: اتفاقية نشر ${work}`
@@ -270,7 +270,7 @@ export interface CallInfo {
 /** "Tell me when": a Qirtas call has opened. */
 export const callOpened = (lang: Lang, call: CallInfo, app: string) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/write"),
+    action: account(app, l, "/qirtas/submit"),
     heading:
       l === "ar"
         ? `فُتحت دعوة قرطاس: ${call.title_ar}`
@@ -1208,80 +1208,96 @@ export const removalDone = (
   });
 
 const REPLY_LINES: Record<
-  "talking" | "offered" | "not_picked",
-  Record<
-    Lang,
-    {
-      at: (time: string) => string;
-      body: string;
-      heading: string;
-      soon: string;
-    }
-  >
+  ApplicationStep,
+  Record<Lang, { body: (time: string | null) => string; heading: string }>
 > = {
-  not_picked: {
+  accepted: {
     ar: {
-      at: () => "",
-      body: "اختير غيرك لهذا الدور هذه المرة. شكرًا لاهتمامك؛ تُنشر أدوار وأماكن جديدة في «شارك» طوال العام.",
-      heading: "بشأن",
-      soon: "",
+      body: () =>
+        "قبلتَ العرض. يُعيَّن المدير بعد قرار الهيئة التنفيذية وتأكيد شؤون الطلبة أهليته، وسنكتب إليك حينها.",
+      heading: "قبلتَ",
     },
     en: {
-      at: () => "",
-      body: "Someone else was chosen for this role this time. Thank you for your interest; new roles and places open on Get involved all year.",
+      body: () =>
+        "You accepted. A director is appointed once the Executive Board has resolved and Student Life has confirmed eligibility; we'll write to you then.",
+      heading: "You accepted",
+    },
+  },
+  not_picked: {
+    ar: {
+      body: () =>
+        "اختير غيرك لهذا الدور هذه المرة. شكرًا لتقدّمك؛ تُنشر أدوار جديدة في «شارك معنا» طوال العام. يُحذف طلبك بعد 12 شهرًا.",
+      heading: "بشأن",
+    },
+    en: {
+      body: () =>
+        "Someone else was chosen for this role this time. Thank you for applying; new roles open on Get involved all year. Your application is deleted after 12 months.",
       heading: "About",
-      soon: "",
     },
   },
   offered: {
     ar: {
-      at: () => "",
-      body: "الدور لك إن أردته. سيتواصل معك فريق العضوية لتبدأ.",
+      body: () =>
+        "الدور لك إن أردته. اقبله أو اعتذر عنه من «طلباتك» في حسابك خلال 7 أيام.",
       heading: "عرض",
-      soon: "",
     },
     en: {
-      at: () => "",
-      body: "The role is yours if you'd like it. The Director of Membership will be in touch to get you started.",
+      body: () =>
+        "The role is yours if you'd like it. Accept or decline it from Your applications in your account within 7 days.",
       heading: "An offer",
-      soon: "",
+    },
+  },
+  received: {
+    ar: {
+      body: () =>
+        "وصل طلبك. يقرؤه المقعد الذي يوظّف لهذا الدور مع مراجع ثانٍ، وترى حالته في «طلباتك» في حسابك. يمكنك سحبه من هناك متى شئت.",
+      heading: "وصل طلبك",
+    },
+    en: {
+      body: () =>
+        "Your application arrived. The seat hiring for this role reads it with a second reviewer, and you can follow it, or withdraw it, from Your applications in your account.",
+      heading: "Application received",
     },
   },
   talking: {
     ar: {
-      at: (time) => `يودّ فريق العضوية الحديث معك عن هذا الدور في ${time}.`,
-      body: "إن لم يناسبك الموعد، فردّ على هذه الرسالة.",
-      heading: "لنتحدث",
-      soon: "يودّ فريق العضوية الحديث معك عن هذا الدور، وسيتواصل معك لتحديد موعد.",
+      body: (time) =>
+        time
+          ? `يودّ فريق هذا الدور مقابلتك يوم ${time}. إن لم يناسبك الموعد، فردّ على هذه الرسالة.`
+          : "يودّ فريق هذا الدور مقابلتك، وسيتواصل معك لتحديد موعد.",
+      heading: "مقابلة",
     },
     en: {
-      at: (time) =>
-        `The Director of Membership would like to talk with you about this role on ${time}.`,
-      body: "If the time doesn't suit you, reply to this email.",
-      heading: "Let's talk",
-      soon: "The Director of Membership would like to talk with you about this role and will be in touch to set a time.",
+      body: (time) =>
+        time
+          ? `The team hiring for this role would like to interview you on ${time}. If the time doesn't suit you, reply to this email.`
+          : "The team hiring for this role would like to interview you and will be in touch to set a time.",
+      heading: "An interview",
     },
   },
 };
 
-/** A member who said "I'm interested" in a role: what happens next. */
+export type ApplicationStep =
+  | "accepted"
+  | "not_picked"
+  | "offered"
+  | "received"
+  | "talking";
+
+/** An application on Get involved: each step the applicant hears of (decisions §18). */
 export const replyUpdate = (
   lang: Lang,
   role: string,
-  status: "talking" | "offered" | "not_picked",
+  status: ApplicationStep,
   talkAt: string | null,
   app: string
 ) =>
   build(lang, (l) => {
     const lines = REPLY_LINES[status][l];
-    const time = talkAt ? when(talkAt, l) : null;
     return {
-      action: account(app, l, "/get-involved"),
+      action: account(app, l, "/account/applications"),
       heading: `${lines.heading}: ${role}`,
-      paragraphs: [
-        ...(status === "talking" ? [time ? lines.at(time) : lines.soon] : []),
-        lines.body,
-      ],
+      paragraphs: [lines.body(talkAt ? when(talkAt, l) : null)],
     };
   });
 
@@ -1436,7 +1452,7 @@ export const welcome = (lang: Lang, app: string) =>
                   : "What's on: readings, book discussions, writing workshops and more",
             },
             {
-              href: link("/qirtas/write"),
+              href: link("/qirtas/submit"),
               title:
                 l === "ar"
                   ? "اكتب لقرطاس: أي قسم، في أي وقت"
@@ -1510,32 +1526,32 @@ export const accountDeleted = (lang: Lang) =>
   }));
 
 export interface ReplyLine {
-  member: string;
-  note: string | null;
+  count: number;
   role: string;
 }
 
-/** Membership: the day's replies on Get involved, in one email. */
+/**
+ * The hiring seats: the day's new applications, counted by role. Staff
+ * alerts carry no names (decisions §18); the applications are read in the
+ * Diwan.
+ */
 export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
   build(lang, (l) => ({
     action: diwan(app, l, "/membership/openings"),
     heading:
       l === "ar"
-        ? `ردود جديدة في «شارك» (${replies.length})`
-        : `New replies on Get involved (${replies.length})`,
+        ? `طلبات جديدة في «شارك معنا» (${replies.reduce((n, r) => n + r.count, 0)})`
+        : `New applications on Get involved (${replies.reduce((n, r) => n + r.count, 0)})`,
     lists: [
       {
-        items: replies.map((r) => ({
-          meta: r.role,
-          title: r.note ? `${r.member}: ${r.note}` : r.member,
-        })),
+        items: replies.map((r) => ({ meta: String(r.count), title: r.role })),
         title: l === "ar" ? "منذ الأمس" : "Since yesterday",
       },
     ],
     paragraphs: [
       l === "ar"
-        ? "أعضاء قالوا «أنا مهتم». حدّد مواعيد الحديث في «الفرص»."
-        : "Members who said they're interested. Set times to talk in Openings.",
+        ? "اقرأ الطلبات وقيّمها في الديوان."
+        : "Read and review the applications in the Diwan.",
     ],
   }));
 

@@ -73,7 +73,8 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `events.changed` | A published event canceled, or its day, time or place changed | Everyone booked, waiting or asking to be reminded; edits within ten minutes make one email | Service |
 | `events.shift_reminder` | The day before a shift | Whoever is on it | Optional |
 | `company.audition_update` | An audition time booked; called back, cast or not cast | The member | Service |
-| `get_involved.reply_update` | The General Secretary's team sets a time to talk, makes an offer, or picks someone else | The member who said "I'm interested" | Service |
+| `get_involved.received` | A member sends an application on Get involved | The applicant (a receipt) | Service |
+| `get_involved.reply_update` | The hiring seat sets an interview, an offer is made (answered within 7 days from Your applications), the applicant accepts a director seat, or someone else is chosen (at the latest 14 days after the opening closes) | The applicant | Service |
 | `access.role_assigned` | A Society role assigned (not a partner's team role) | The holder: what it opens; two-step sign-in first when it needs it | Officer |
 | `access.role_ending` | Seven days before a role ends | The holder | Officer |
 | `access.two_step_reset` | An authenticator removed (by an officer or a recovery code) | The person | Service |
@@ -90,14 +91,14 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `partners.application_received` | An application to partner | The applicant; Partnerships and the President (that it waits) | Direct; officer |
 | `partners.application_decided` | Signed (active) or not taken forward | The applicant | Direct |
 | `partners.invitation` | A partner's or the Society's email invitation | The invited address | Direct |
-| `sunday_paper.broadcast` (a Resend Broadcast) | The first Sunday of the month | Members who take optional emails; the public list, one Broadcast per language | Optional (each person's own stop link) |
+| `sunday_paper.broadcast` (a Resend Broadcast, from qirtas@auibsal.org, replies to it) | The Managing Editor's send, from the Diwan, after a preview and a test to the Editor-in-Chief (decisions §18) | Members who take optional emails; the public list, one Broadcast per language | Optional (each person's own stop link) |
 | `membership.invitations` (a draft Resend Broadcast) | The President's go, once per list (Membership → Invitations; `membership.send_invitations(list)`), only after the list's test has reached the President ("Send the test to the President", `/api/invitations/test`, recorded as `invitation_lists.tested_at`): the site makes the draft, the President sends it from Resend. The President's letter, from hello@auibsal.org like every site email, signed with their signature (`/api/email/signature`). Each list's addresses are deleted thirty days after its own send | One list: the spring 2026 Tour writers (sent Nov 7), or the fall 2026 club fair's paper sign-ups typed in by staff; addresses with an account are skipped | Direct (its stop link takes the address off the list) |
 | `announcement.broadcast` (a Resend Broadcast) | The President's go (The Council → Announcements; `core.send_announcement(id)`), only after the notice's test has reached the President in both languages (`/api/announcements/test`, recorded as `announcements.tested_at`, cleared by any change). Hudhud posts the same notice | The Sunday Paper's readers (`core.sunday_paper_recipients()`), one Broadcast per language | Optional (each person's own stop link) |
 | `newsletter.confirm` | A public sign-up | The address (double opt-in) | Direct |
 | `personal_email.confirm` | A personal email added | The new address only | Direct |
 | `removal.requested`, `removal.overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
 | `removal.done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |
-| `get_involved.replies_digest` | Daily, when there were replies on Get involved | The General Secretary's team (`members.manage`) | Officer |
+| `get_involved.replies_digest` | Daily, when applications arrived on Get involved: counts by role, no names (decisions §18) | Membership (`members.manage`) | Officer |
 | `membership.verification_decided` | An account from outside AUIB decided (requests from before partners verified their own) | The account | Service |
 | `platform.cron_failed` | A database job failed in the last day | Administrators | Officer |
 | `account.deleted` | An account deleted | The address it had (the last email) | Direct |

@@ -353,9 +353,8 @@ export const RepliesDigest = email((l) =>
     l,
     [
       {
-        member: l === "ar" ? "اسم العضو" : "A member's name",
-        note: l === "ar" ? "أحب التصوير" : "I take photos for my club",
-        role: l === "ar" ? "مصوّر" : "Photographer",
+        count: 2,
+        role: l === "ar" ? "محرر الأخبار" : "News Editor",
       },
     ],
     APP

@@ -27,7 +27,7 @@ export const PieceReader = () => {
   const back = (
     <Link
       className="type-caption underline underline-offset-4"
-      href="/qirtas/write"
+      href="/qirtas/submit"
     >
       {t("back")}
     </Link>

@@ -2250,6 +2250,28 @@
           "body": "What it involves",
           "post": "Post the place",
           "back": "All places with partners"
+        },
+        "supporters": {
+          "title": "With the support of",
+          "lede": "AUIB’s own offices, shown under “With the support of” on the partners page. They support the Society but aren’t partners.",
+          "hidden": "hidden",
+          "hide": "Hide",
+          "show": "Show",
+          "remove": "Remove",
+          "removeConfirm": "The office comes off the partners page and off this list.",
+          "add": "Add an office",
+          "name": "Name",
+          "url": "Link",
+          "urlHint": "The office’s page on AUIB’s site.",
+          "logo": "Logo",
+          "noLogo": "No logo: the name is shown",
+          "logos": {
+            "auib": "AUIB",
+            "student-life": "Student Life",
+            "cas": "College of Arts and Sciences",
+            "press": "AUIB Press",
+            "library": "AUIB Library"
+          }
         }
       },
       "recognition": {
@@ -3350,7 +3372,7 @@
         "sendNow": "Send now",
         "notYet": "Not yet",
         "sentOn": "Sent on {date}.",
-        "linkPlaceholder": "/qirtas/write"
+        "linkPlaceholder": "/qirtas/submit"
       }
     },
     "editor": {
@@ -4361,7 +4383,8 @@
       "search": "Search",
       "diwan": "The Diwan",
       "company": "The Company",
-      "partner": "Partner dashboard"
+      "partner": "Partner dashboard",
+      "nextStop": "Next Stop"
     },
     "footer": {
       "contact": "Contact",
@@ -5098,13 +5121,6 @@
       "asList": "See the productions as a list"
     },
     "institutions": {
-      "names": {
-        "auib": "The American University of Iraq – Baghdad",
-        "studentLife": "Office of Student Life",
-        "cas": "College of Arts and Sciences",
-        "press": "AUIB Press",
-        "library": "AUIB Library"
-      },
       "withTheSupportOf": "With the support of",
       "supportedBy": "Supported by"
     },

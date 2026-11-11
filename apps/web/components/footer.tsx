@@ -37,7 +37,6 @@ export const Footer = async () => {
         ["/about/council", t("governance")],
         ["/library", tn("documents")],
         ["/partners", t("partners")],
-        ["/next-stop", t("nextStop")],
         ["/about/contact", t("contact")],
         ["/about/press", t("mediaKit")],
         ["/verify", t("verify")],

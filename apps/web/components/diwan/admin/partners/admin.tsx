@@ -38,6 +38,7 @@ import { memberName } from "../members/directory";
 import { VerificationQueue } from "../members/verification";
 import { RecordHistory } from "../record-history";
 import { CouncilVote } from "./council-vote";
+import { Supporters } from "./supporters";
 
 const key = ["admin", "partners"];
 
@@ -1027,7 +1028,12 @@ export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
       {here === "applications" && (canManage || canSign) ? (
         <VerificationQueue />
       ) : null}
-      {here === "register" && canManage ? <Register /> : null}
+      {here === "register" && canManage ? (
+        <>
+          <Register />
+          <Supporters />
+        </>
+      ) : null}
       {here === "agreements" ? <Agreements /> : null}
     </div>
   );

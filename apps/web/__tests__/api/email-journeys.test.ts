@@ -46,6 +46,9 @@ const every = (l: Lang): Built[] => [
   removalDone(l, "removed", null),
   replyUpdate(l, "Photographer", "talking", "2026-11-10T13:00:00Z", APP),
   replyUpdate(l, "Photographer", "not_picked", null, APP),
+  replyUpdate(l, "Photographer", "received", null, APP),
+  replyUpdate(l, "Photographer", "offered", null, APP),
+  replyUpdate(l, "Director of Events", "accepted", null, APP),
   invitation(
     l,
     {
@@ -70,11 +73,7 @@ const every = (l: Lang): Built[] => [
   ),
   welcome(l, APP),
   accountDeleted(l),
-  repliesDigest(
-    l,
-    [{ member: "A member", note: null, role: "Photographer" }],
-    APP
-  ),
+  repliesDigest(l, [{ count: 2, role: "Photographer" }], APP),
 ];
 
 describe("the email journeys", () => {
@@ -114,7 +113,7 @@ describe("the email journeys", () => {
     const items = built.blocks[0]?.lists?.[0]?.items ?? [];
     expect(items.map((i) => i.href)).toContain("https://auibsal.org/ar/events");
     const html = await render(Notice(built));
-    expect(html).toContain('href="https://auibsal.org/ar/qirtas/write"');
+    expect(html).toContain('href="https://auibsal.org/ar/qirtas/submit"');
   });
 
   test("confirmations repeat their link under the button, in HTML and text", async () => {

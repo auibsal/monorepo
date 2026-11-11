@@ -179,7 +179,7 @@ describe("outbox and the email sending limit", () => {
     expect(notice).toMatchObject({ lang: "en", tag: "outbox-8" });
     expect(notice.title).toContain("The paper and the pen");
     expect(notice.url.startsWith("https://auibsal.org/")).toBe(true);
-    expect(notice.url).toContain("/qirtas/write");
+    expect(notice.url).toContain("/qirtas/submit");
     expect(notice.url).not.toContain("/en/");
   });
 

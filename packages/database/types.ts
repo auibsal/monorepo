@@ -3009,6 +3009,46 @@ export type Database = {
         };
         Relationships: [];
       };
+      supporters: {
+        Row: {
+          created_at: string;
+          id: string;
+          logo: string | null;
+          logo_width: number | null;
+          name_ar: string;
+          name_en: string;
+          shown: boolean;
+          sort: number;
+          updated_at: string;
+          url: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: string;
+          logo?: string | null;
+          logo_width?: number | null;
+          name_ar: string;
+          name_en: string;
+          shown?: boolean;
+          sort?: number;
+          updated_at?: string;
+          url?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          logo?: string | null;
+          logo_width?: number | null;
+          name_ar?: string;
+          name_en?: string;
+          shown?: boolean;
+          sort?: number;
+          updated_at?: string;
+          url?: string | null;
+        };
+        Relationships: [];
+      };
       voters: {
         Row: {
           election_id: string;

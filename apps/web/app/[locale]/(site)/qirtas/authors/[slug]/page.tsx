@@ -48,7 +48,7 @@ export const generateMetadata = async ({
  * published work, the Editions it appeared in (the design review C18, Nov
  * 4, 2026) and the Typewriter Tour pages they chose to show on their
  * profile (decisions.md). Work in
- * progress stays private, as drafts on /qirtas/write. A pen name shows
+ * progress stays private, as drafts on /qirtas/submit. A pen name shows
  * its published work only.
  */
 const AuthorPage = async ({ params }: AuthorProps) => {

@@ -1,3 +1,4 @@
+import { project } from "@repo/config";
 import type { ReactElement } from "react";
 import { Resend } from "resend";
 import { keys } from "./keys";
@@ -5,10 +6,12 @@ import { keys } from "./keys";
 const { RESEND_TOKEN } = keys();
 
 /**
- * The one sender, in code (audit D1): every email and Broadcast comes from
- * the Society by its full name, at the address people reply to.
+ * The sender, in code (audit D1): every email and Broadcast comes from the
+ * Society by its full name, at an address people reply to: hello@ for the
+ * site's emails; Qirtas's own box for the Sunday Paper (decisions §18).
  */
-export const SENDER = "AUIB Society of Arts and Letters <hello@auibsal.org>";
+export const SENDER = `${project.name} <${project.mailboxes.hello}>`;
+export const QIRTAS_SENDER = `${project.journal.name_en}, ${project.name} <${project.mailboxes.qirtas}>`;
 
 export const resend = RESEND_TOKEN ? new Resend(RESEND_TOKEN) : undefined;
 

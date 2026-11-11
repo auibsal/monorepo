@@ -151,7 +151,7 @@ export const OtherHome = () => {
                 <p className="type-caption">{t("bookLine")}</p>
               </li>
               <li className="grid gap-1">
-                <Link className="link font-medium" href="/qirtas/write">
+                <Link className="link font-medium" href="/qirtas/submit">
                   {t("write")}
                 </Link>
                 <p className="type-caption">{t("writeLine")}</p>

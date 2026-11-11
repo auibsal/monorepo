@@ -6,6 +6,7 @@ import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
 import { EmailQuotaError, sendEmail } from "@repo/email";
 import {
+  type ApplicationStep,
   accountDeleted,
   agreementReminder,
   announcement,
@@ -573,6 +574,43 @@ const eventNotice =
     }
   };
 
+/** One step of an application, to the applicant (decisions §18). */
+const applicationStep = async (
+  admin: AdminClient,
+  payload: Record<string, unknown>,
+  step?: ApplicationStep
+) => {
+  const [to, { data: reply }] = await Promise.all([
+    recipient(admin, payload.user_id),
+    admin
+      .schema("programmes")
+      .from("opening_replies")
+      .select("status, talk_at, opening:openings(title_en, title_ar)")
+      .eq("opening_id", String(payload.opening_id))
+      .eq("user_id", String(payload.user_id))
+      .maybeSingle(),
+  ]);
+  const status = step ?? reply?.status;
+  if (!(to && reply?.opening && isApplicationStep(status))) {
+    return;
+  }
+  const role =
+    (to.lang === "ar" ? reply.opening.title_ar : reply.opening.title_en) ??
+    reply.opening.title_en ??
+    "";
+  await send(to, replyUpdate(to.lang, role, status, reply.talk_at, appUrl()));
+};
+
+const APPLICATION_STEPS = new Set<string>([
+  "accepted",
+  "not_picked",
+  "offered",
+  "received",
+  "talking",
+]);
+const isApplicationStep = (status: unknown): status is ApplicationStep =>
+  typeof status === "string" && APPLICATION_STEPS.has(status);
+
 const handlers: Record<string, Handler> = {
   // From /api/two-step/recover: the hour's tries ran out.
   "access.recovery_attempts": async (admin, payload) => {
@@ -917,43 +955,34 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  // One email a day to Membership, which runs every role's applications.
+  "get_involved.received": async (admin, payload) => {
+    await applicationStep(admin, payload, "received");
+  },
+  // One email a day to Membership, which runs every role's applications:
+  // counts by role, never names (decisions §18).
   "get_involved.replies_digest": async (admin) => {
     const since = new Date(Date.now() - 86_400_000).toISOString();
     const { data: replies } = await admin
       .schema("programmes")
       .from("opening_replies")
-      .select("user_id, note, opening:openings(title_en, title_ar)")
-      .gt("created_at", since)
-      .order("created_at");
+      .select("opening_id, opening:openings(title_en, title_ar)")
+      .gt("submitted_at", since)
+      .neq("status", "draft");
     if (!replies?.length) {
       return;
     }
-    const { data: people } = await admin
-      .schema("core")
-      .from("profiles")
-      .select("id, full_name_en, full_name_ar")
-      .in(
-        "id",
-        replies.map((r) => r.user_id)
-      );
     const managers = await holders(admin, "members.manage");
     await Promise.all(
       managers.map((m) => {
-        const lines = replies.map((r) => {
-          const person = people?.find((p) => p.id === r.user_id);
-          return {
-            member:
-              (m.lang === "ar" ? person?.full_name_ar : person?.full_name_en) ??
-              person?.full_name_en ??
-              "",
-            note: r.note,
-            role:
-              (m.lang === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
-              r.opening?.title_en ??
-              "",
-          };
-        });
+        const counts = new Map<string, number>();
+        for (const r of replies) {
+          const role =
+            (m.lang === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
+            r.opening?.title_en ??
+            "";
+          counts.set(role, (counts.get(role) ?? 0) + 1);
+        }
+        const lines = [...counts].map(([role, count]) => ({ count, role }));
         return send(m, repliesDigest(m.lang, lines, appUrl()), {
           category: "officer",
         });
@@ -961,31 +990,7 @@ const handlers: Record<string, Handler> = {
     );
   },
   "get_involved.reply_update": async (admin, payload) => {
-    const [to, { data: reply }] = await Promise.all([
-      recipient(admin, payload.user_id),
-      admin
-        .schema("programmes")
-        .from("opening_replies")
-        .select("status, talk_at, opening:openings(title_en, title_ar)")
-        .eq("opening_id", String(payload.opening_id))
-        .eq("user_id", String(payload.user_id))
-        .maybeSingle(),
-    ]);
-    const status = reply?.status;
-    if (
-      to &&
-      reply?.opening &&
-      (status === "talking" || status === "offered" || status === "not_picked")
-    ) {
-      const role =
-        (to.lang === "ar" ? reply.opening.title_ar : reply.opening.title_en) ??
-        reply.opening.title_en ??
-        "";
-      await send(
-        to,
-        replyUpdate(to.lang, role, status, reply.talk_at, appUrl())
-      );
-    }
+    await applicationStep(admin, payload);
   },
   "governance.candidacy_decided": async (admin, payload) => {
     const [to, { data }] = await Promise.all([
