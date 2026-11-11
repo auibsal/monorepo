@@ -260,10 +260,17 @@ jobs:
       - name: Browsers
         working-directory: apps/e2e
         run: |
+          # The runner image already has Chromium's libraries; the system
+          # step adds only extra fonts. When Ubuntu's mirrors can't be
+          # reached, carry on with the browser alone rather than fail.
           if [ "${{ steps.browsers.outputs.cache-hit }}" = "true" ]; then
-            bunx playwright install-deps chromium
+            bunx playwright install-deps chromium \
+              || echo "::warning::Playwright's system packages could not be installed; running with the runner's own."
           else
-            bunx playwright install --with-deps chromium
+            bunx playwright install --with-deps chromium || {
+              echo "::warning::Playwright's system packages could not be installed; installing the browser alone."
+              bunx playwright install chromium
+            }
           fi
       # The journeys run against production builds (next start), not the dev
       # server: faster, and what actually ships. Their data is seeded first:

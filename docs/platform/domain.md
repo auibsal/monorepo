@@ -244,6 +244,24 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **The Newsroom** is the Diwan's Qirtas section: staff write and publish
   directly, and read what members send on the same pages
   (`/diwan/qirtas/submissions/<id>`).
+- **Intake and blind review.** The Managing Editor handles intake and
+  holds writers' names (`journal.identity.view`), and never reads a
+  blind entry: whoever holds the names is never an issue editor
+  (`private.is_issue_editor`) and never gets the text
+  (`private.can_read_entry`). Section editors decide.
+- **Approvals.** Every piece needs two people
+  (`private.required_approvals`): the section editor, then the
+  Editor-in-Chief or the Managing Editor; every text piece (News, Voices,
+  Letters) also needs the copy edit, which the Editor-in-Chief or the
+  Managing Editor gives while no one holds `journal.copy`.
+- **The date a piece carries** (`journal.date_piece`, today or earlier):
+  set by the section editor, the Editor-in-Chief or the Managing Editor,
+  on or near the piece's event; publishing takes it as `published_at`, and
+  each change is kept with who set it (`journal.piece_dates`).
+- **Corrections** are made in place with a note, shown at the end of the
+  piece and listed in the public log at `/qirtas/corrections`.
+- **"From the Society"** on the front page shows the Society's sent
+  notices (`core.society_notices`), never in News and never bylined.
 - **Reading.** One nameplate on every page of the paper
   (`components/qirtas/nameplate.tsx`); the masthead at `/qirtas/masthead`
   (`journal.masthead()`). A piece's address comes from `journal.piecePath`.
@@ -251,7 +269,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Notes and pull quotes (`withNotes`), contents for long reads
   (`withContents`), figures (`journal.piece_figures`), an original beside
   a translation (`journal.piece_bodies.original`), topics
-  (`/qirtas/topics`), a reading and a clip (`reading_path`, `clip_id`),
+  (`/qirtas/topics`, a topic public only from three pieces), a reading and a clip (`reading_path`, `clip_id`),
   Save for later (`journal.saved_pieces`, `/account/work`), Gallery
   selections shared by address (`/qirtas/selection/...`, nothing stored).
   RSS at `/qirtas/feed.xml` and per section; the archive at

@@ -78,7 +78,7 @@ type Piece = NonNullable<PieceRecord["piece"]>;
 export type Problem =
   | "desk_approval"
   | "chief_approval"
-  | "copy_check"
+  | "copy_approval"
   | "author_approval"
   | "agreement"
   | "titles"
@@ -95,8 +95,11 @@ const usePieceRights = (piece: Piece | null | undefined) => {
     hasPermission(grants.data, permission, "issue", piece?.issue_id ?? null);
   const desk = (piece?.desk ?? "news") as journal.Desk;
   return {
+    // The copy edit: the Copy Chief or a copy editor, or, while no one
+    // holds the copy desk, the Editor-in-Chief or the Managing Editor.
     approve: (kind: journal.ApprovalKind) =>
-      can(journal.approvalPermission(kind, desk)),
+      can(journal.approvalPermission(kind, desk)) ||
+      (kind === "copy" && can("journal.approve")),
     chief: can("journal.approve"),
     deskEditor: can(`journal.edit.${desk}`),
     front: hasPermission(grants.data, "journal.frontpage"),
@@ -320,6 +323,88 @@ const Schedule = ({
   );
 };
 
+/**
+ * The date the piece carries (decisions.md, Qirtas): on or near its event,
+ * set by an editor; each change is kept in journal.piece_dates.
+ */
+const Dated = ({
+  move,
+  piece,
+}: {
+  move: ReturnType<typeof useMove>;
+  piece: Piece;
+}) => {
+  const t = useTranslations("diwan.admin.qirtas.workflow");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const [datedAt, setDatedAt] = useState<string | null>(piece.dated_at);
+  const log = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("piece_dates")
+          .select("id, dated_at, set_at")
+          .eq("piece_id", piece.id)
+          .order("set_at", { ascending: false })
+      ) ?? [],
+    queryKey: ["admin", "journal", "piece", piece.id, "dates", piece.dated_at],
+  });
+  return (
+    <div className="grid max-w-md gap-2">
+      <DateTimeField
+        label={t("datedAt")}
+        onChange={setDatedAt}
+        value={datedAt}
+      />
+      <p className="type-caption">
+        {piece.dated_at ? t("datedHint") : t("datedNone")}
+      </p>
+      <div className="flex flex-wrap gap-3">
+        <Button
+          disabled={move.pending || !datedAt || datedAt === piece.dated_at}
+          onClick={() =>
+            move.run("date_piece", { dated_at: datedAt, piece_id: piece.id })
+          }
+          size="sm"
+          variant="outline"
+        >
+          {t("setDate")}
+        </Button>
+        {piece.dated_at ? (
+          <Button
+            disabled={move.pending}
+            onClick={() => {
+              setDatedAt(null);
+              move.run("date_piece", { dated_at: null, piece_id: piece.id });
+            }}
+            size="sm"
+            variant="ghost"
+          >
+            {t("clearDate")}
+          </Button>
+        ) : null}
+      </div>
+      {(log.data ?? []).length > 0 ? (
+        <ul className="grid gap-1">
+          {(log.data ?? []).map((entry) => (
+            <li className="type-caption" key={entry.id}>
+              {entry.dated_at
+                ? t("datedLog", {
+                    date: formatLongDate(entry.dated_at, locale, true),
+                    when: formatLongDate(entry.set_at, locale, true),
+                  })
+                : t("datedCleared", {
+                    when: formatLongDate(entry.set_at, locale, true),
+                  })}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+};
+
 const Unpublish = ({
   move,
   piece,
@@ -420,6 +505,9 @@ export const Workflow = ({ record }: { record: PieceRecord }) => {
       ) : null}
       {out ? null : <Approvals move={move} record={record} />}
       {!out && editor ? <Schedule move={move} piece={piece} /> : null}
+      {editor && status !== "unpublished" ? (
+        <Dated move={move} piece={piece} />
+      ) : null}
       {status === "published" && editor ? (
         <Unpublish move={move} piece={piece} />
       ) : null}

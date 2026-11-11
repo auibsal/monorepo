@@ -742,6 +742,8 @@ const handlers: Record<string, Handler> = {
     if (!notice?.sent_at) {
       return;
     }
+    // "From the Society" on Qirtas's front page shows it from now on.
+    revalidate(["journal"]);
     const { data: everyone, error } = await admin
       .schema("core")
       .rpc("sunday_paper_recipients");

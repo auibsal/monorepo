@@ -66,3 +66,12 @@ export const announcementSchema = z
     message: "ends_before_start",
     path: ["ends_at"],
   });
+
+/**
+ * "From the Society" (decisions.md, Qirtas): the Society's notices already
+ * sent, newest first, as a labeled stream on Qirtas's front page.
+ */
+export const societyNotices = async (client: Client, limit = 3) =>
+  unwrap(
+    await client.schema("core").rpc("society_notices", { max_results: limit })
+  ) ?? [];

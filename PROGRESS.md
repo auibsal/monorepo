@@ -55,8 +55,25 @@ Part A first).
 - [ ] **The writing workshop** moves to Tuesday, December 8, 2:30–4:00
   p.m.: an unpublished draft on the site and Planning in Notion until its
   room is confirmed, then Ready to publish.
-- [ ] **Four of the 22 backdated stories** to be reported anew by the News
-  desk (new reporting, new dates, nothing reused); the 22 stay unpublished.
+- [x] **The 22 pieces made on Oct 14** (decisions.md, Qirtas): the three
+  pre-2026 pieces, Charter Day and the Society's own posts are deleted;
+  the 15 AUIB pieces stay unpublished, each keeping its event date as the
+  date it will carry (`journal.pieces.dated_at`).
+- [ ] **The 15 AUIB pieces** go through the staff lane: each is assigned
+  to a staff writer, who writes it anew from the Qirtas chat's fact sheet;
+  it runs under the writer's byline, dated on or near its event (Where it
+  stands → The date it carries; each change is kept with who made it).
+  The AI text is deleted once each is rewritten. Pieces 5 and 15 are the
+  News editor's call.
+- [ ] **"From the Society": two notices dated Nov 8** ("auibsal.org is
+  open" and "The Society's documents are online"), published by Media in
+  the stream.
+- [ ] **The copy desk:** until a Copy Chief or copy editor is appointed,
+  the Editor-in-Chief or the Managing Editor gives the copy edit on text
+  pieces (it is required on every News, Voices and Letters piece).
+- [x] **The Letters submission received on Nov 10** can go through intake:
+  the Managing Editor holds intake (PR #258), and from this PR never
+  reads blind entries or decides them.
 - [ ] **The four director openings** are posted closed until the Executive
   Board's approval is recorded on each (Diwan → Membership → Openings).
 - [ ] **Hosting and tool accounts:** they stay as they are, owned by the
