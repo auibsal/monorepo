@@ -98,6 +98,7 @@ $$;
 select plan(27);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca01', 'card.one@auib.edu.iq', 'Card One');
+update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-00000000ca01';
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca02', 'card.two@auib.edu.iq', 'Card Two');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca03', 'door@auib.edu.iq', 'Door');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca04', 'secretary@auib.edu.iq', 'Secretary');

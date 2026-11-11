@@ -66,3 +66,31 @@ describe("setup, one question per screen", () => {
     });
   });
 });
+
+describe("how a member's name appears", () => {
+  const threeParts = {
+    ar: { father: "ب", first: "أ", grandfather: "ج", last: "" },
+    en: { father: "B", first: "A", grandfather: "C", last: "" },
+  };
+  test("a member who hasn't seen it is asked once, after their names", () => {
+    expect(
+      planSetup({
+        nameSeen: false,
+        names: threeParts,
+        pending: [],
+        setupDone: true,
+      }).steps
+    ).toEqual([{ kind: "shownName" }]);
+  });
+  test("a partner's person is never asked", () => {
+    expect(
+      planSetup({
+        member: false,
+        nameSeen: false,
+        names: threeParts,
+        pending: [],
+        setupDone: true,
+      }).steps
+    ).toEqual([]);
+  });
+});

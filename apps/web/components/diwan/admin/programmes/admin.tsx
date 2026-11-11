@@ -968,6 +968,175 @@ const EpisodeCredits = ({ episodeId }: { readonly episodeId: string }) => {
   );
 };
 
+const IDEA_STATUSES = [
+  "idea",
+  "asked",
+  "agreed",
+  "declined",
+  "appeared",
+] as const;
+
+/**
+ * Next Stop's guest ideas (decisions.md, Next Stop): people the show might
+ * invite, kept here so no names are kept in Notion. Only the Director of
+ * Media, the producer and the host see it (media.guest_ideas).
+ */
+const GuestIdeas = () => {
+  const t = useTranslations("diwan.admin.programmes.guestIdeas");
+  const { supabase } = useAuth();
+  const grants = useGrants();
+  const queryClient = useQueryClient();
+  const allowed = hasPermissionAnywhere(grants.data, "media.guest_ideas");
+  const key = [...invalidateKey, "guest-ideas"];
+  const ideas = useQuery({
+    enabled: allowed,
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("next_stop_guest_ideas")
+          .select("id, name, why, status")
+          .order("created_at", { ascending: false })
+      ) ?? [],
+    queryKey: key,
+  });
+  const refresh = () => queryClient.invalidateQueries({ queryKey: key });
+  const setStatus = useMutation({
+    mutationFn: async (input: { id: string; status: string }) =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("next_stop_guest_ideas")
+          .update({ status: input.status })
+          .eq("id", input.id)
+      ),
+    onSuccess: refresh,
+  });
+  const remove = useMutation({
+    mutationFn: async (id: string) =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("next_stop_guest_ideas")
+          .delete()
+          .eq("id", id)
+      ),
+    onSuccess: refresh,
+  });
+  if (!allowed) {
+    return null;
+  }
+  return (
+    <DiwanSection id="guest-ideas" title={t("title")}>
+      <p className="type-body text-text-secondary max-w-2xl">{t("body")}</p>
+      <ul className="border-line grid border-b">
+        {(ideas.data ?? []).map((idea) => (
+          <li
+            className="border-line flex flex-wrap items-start justify-between gap-3 border-t py-3"
+            key={idea.id}
+          >
+            <div className="grid gap-1">
+              <p className="font-medium">{idea.name}</p>
+              {idea.why ? <p className="type-caption">{idea.why}</p> : null}
+            </div>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <Field label={t("status")}>
+                {(id) => (
+                  <SelectInput
+                    id={id}
+                    onChange={(e) =>
+                      setStatus.mutate({ id: idea.id, status: e.target.value })
+                    }
+                    value={idea.status}
+                  >
+                    {IDEA_STATUSES.map((status) => (
+                      <option key={status} value={status}>
+                        {t(`statuses.${status}`)}
+                      </option>
+                    ))}
+                  </SelectInput>
+                )}
+              </Field>
+              <button
+                className="link"
+                disabled={remove.isPending}
+                onClick={() => remove.mutate(idea.id)}
+                type="button"
+              >
+                {t("remove")}
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <ErrorLine error={setStatus.error ?? remove.error} />
+      <AddInPlace label={t("add")}>
+        {(close) => (
+          <AddGuestIdea
+            onDone={() => {
+              close();
+              refresh();
+            }}
+          />
+        )}
+      </AddInPlace>
+    </DiwanSection>
+  );
+};
+
+const AddGuestIdea = ({ onDone }: { readonly onDone: () => void }) => {
+  const t = useTranslations("diwan.admin.programmes.guestIdeas");
+  const { supabase } = useAuth();
+  const [name, setName] = useState("");
+  const [why, setWhy] = useState("");
+  const add = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("next_stop_guest_ideas")
+          .insert({ name: name.trim(), why: why.trim() || null })
+      ),
+    onSuccess: onDone,
+  });
+  return (
+    <form
+      className="grid max-w-xl gap-3"
+      onSubmit={(event) => {
+        event.preventDefault();
+        add.mutate();
+      }}
+    >
+      <Field label={t("name")}>
+        {(id) => (
+          <Input
+            id={id}
+            maxLength={120}
+            onChange={(e) => setName(e.target.value)}
+            required
+            value={name}
+          />
+        )}
+      </Field>
+      <Field label={t("why")}>
+        {(id) => (
+          <Textarea
+            id={id}
+            maxLength={1000}
+            onChange={(e) => setWhy(e.target.value)}
+            rows={3}
+            value={why}
+          />
+        )}
+      </Field>
+      <Button disabled={add.isPending || name.trim().length < 2} type="submit">
+        {t("add")}
+      </Button>
+      <ErrorLine error={add.error} />
+    </form>
+  );
+};
+
 // ── Reels ───────────────────────────────────────────────────────────────────
 
 const platforms = ["instagram", "tiktok", "youtube_shorts"] as const;
@@ -1699,6 +1868,7 @@ export const MediaAdmin = () => {
           <DiwanSection id="reels" title={t("tabs.reels")}>
             <Reels programmeId={nextStop.id} />
           </DiwanSection>
+          <GuestIdeas />
         </>
       ) : null}
       <DiwanSection id="removals" title={t("removalsTitle")}>

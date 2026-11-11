@@ -97,6 +97,7 @@ $$;
 select plan(3);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e9001', 'writer.e9@auib.edu.iq', 'Old Name');
+update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000e9001';
 insert into journal.contributors (id, slug, name_en, name_ar, user_id) values
   ('c0000000-0000-0000-0000-0000000e9c01', 'old-name-e9', 'Old Name', 'اسم', '00000000-0000-0000-0000-0000000e9001');
 

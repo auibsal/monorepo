@@ -101,6 +101,8 @@ export const RequireMember = ({ children }: GateProps) => {
     mine.isSuccess &&
     profile.isSuccess &&
     (!hasAllNames(profile.data) ||
+      // A member sees how their name appears before the default shows.
+      (kind === "member" && !profile.data?.name_confirmed_at) ||
       (pledges &&
         ((status.data?.pending_pledges.length ?? 0) > 0 ||
           !profile.data?.setup_completed_at)));

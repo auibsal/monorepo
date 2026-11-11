@@ -22,7 +22,11 @@ alter table core.profiles
   add column preferred_name_ar text check (char_length(preferred_name_ar) <= 120),
   add column signup_name_en text check (char_length(signup_name_en) <= 120),
   add column signup_name_ar text check (char_length(signup_name_ar) <= 120),
-  add column legal_name_locked_at timestamptz;
+  add column legal_name_locked_at timestamptz,
+  add column name_confirmed_at timestamptz;
+
+comment on column core.profiles.name_confirmed_at is
+  'When the person saw how their name appears on the site (or chose their own). Until then the name given at sign-up shows (decisions.md, Members: names; in place of a 14-day notice).';
 
 comment on column core.profiles.preferred_name_en is
   'The whole name the person wants shown in English (decisions.md, Members); empty means the default (private.display_name).';
@@ -100,7 +104,8 @@ security definer
 set search_path = ''
 as $$
   -- A guest (or a partner's person) is shown by the name given at sign-up.
-  with q as (select private.is_guest(p.id) as guest)
+  -- The default shows only once the person has seen it (name_confirmed_at).
+  with q as (select private.is_guest(p.id) or p.name_confirmed_at is null as guest)
   select case lang
     when 'ar' then coalesce(
       p.preferred_name_ar,
@@ -147,6 +152,14 @@ begin
   new.last_name_ar := nullif(left(btrim(new.last_name_ar), 60), '');
   new.preferred_name_en := nullif(left(regexp_replace(btrim(new.preferred_name_en), '\s+', ' ', 'g'), 120), '');
   new.preferred_name_ar := nullif(left(regexp_replace(btrim(new.preferred_name_ar), '\s+', ' ', 'g'), 120), '');
+
+  -- Choosing one's own preferred name is seeing how it appears.
+  if new.name_confirmed_at is null
+    and (new.preferred_name_en is not null or new.preferred_name_ar is not null)
+    and (tg_op = 'INSERT' or new.preferred_name_en is distinct from old.preferred_name_en
+      or new.preferred_name_ar is distinct from old.preferred_name_ar) then
+    new.name_confirmed_at := now();
+  end if;
 
   if tg_op = 'INSERT' then
     new.signup_name_en := coalesce(nullif(left(btrim(new.signup_name_en), 120), ''),
@@ -209,16 +222,16 @@ alter table core.profiles
 create trigger tidy_names before insert or update of full_name_en, full_name_ar,
   first_name_en, father_name_en, grandfather_name_en, last_name_en,
   first_name_ar, father_name_ar, grandfather_name_ar, last_name_ar,
-  preferred_name_en, preferred_name_ar, signup_name_en, signup_name_ar
+  preferred_name_en, preferred_name_ar, signup_name_en, signup_name_ar, name_confirmed_at
   on core.profiles
   for each row execute function private.tidy_names();
 
-grant select (preferred_name_en, preferred_name_ar, legal_name_locked_at),
+grant select (preferred_name_en, preferred_name_ar, legal_name_locked_at, name_confirmed_at),
   update (preferred_name_en, preferred_name_ar)
   on core.profiles to authenticated;
 
--- The name shown follows the new rule now (no preferred name is set, so
--- this is the default for everyone; the existing scripts are not checked).
+-- The name shown follows the new rule now. No one has seen the default yet,
+-- so everyone keeps the name they show today until their next sign-in.
 alter table core.profiles disable trigger tidy_names;
 update core.profiles p
 set full_name_en = left(btrim(coalesce(private.display_name(p, 'en'), p.full_name_en, '')), 120),
@@ -483,3 +496,28 @@ as $$
   order by w.created_at desc
   limit least(greatest(max_results, 1), 500);
 $$;
+
+-- The member has seen how their name appears ("Keep it" at sign-in).
+create function private.confirm_shown_name()
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  update core.profiles set name_confirmed_at = coalesce(name_confirmed_at, now())
+  where id = (select auth.uid());
+$$;
+revoke all on function private.confirm_shown_name() from public, anon;
+grant execute on function private.confirm_shown_name() to authenticated;
+
+create function core.confirm_shown_name()
+returns void
+language sql
+security invoker
+set search_path = ''
+as $$ select private.confirm_shown_name() $$;
+revoke all on function core.confirm_shown_name() from public, anon;
+grant execute on function core.confirm_shown_name() to authenticated;
+
+comment on function core.confirm_shown_name() is
+  'The member keeps the default name shown on the site, having seen it at sign-in.';

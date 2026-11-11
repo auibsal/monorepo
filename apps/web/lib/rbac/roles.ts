@@ -291,11 +291,12 @@ export const roles = {
     nameAr: "مدير الإعلام",
     nameEn: "Director of Media",
     permissions: [
-      "mailing.read",
       "content.manage",
       "events.checkin",
-      "library.read",
       "library.council",
+      "library.read",
+      "mailing.read",
+      "media.guest_ideas",
     ],
   },
   membership_director: {
@@ -346,14 +347,14 @@ export const roles = {
     isCouncil: false,
     nameAr: "مقدّم «المحطة التالية»",
     nameEn: "Next Stop host",
-    permissions: ["library.read"],
+    permissions: ["library.read", "media.guest_ideas"],
   },
   next_stop_producer: {
     defaultScope: "global",
     isCouncil: false,
     nameAr: "منتج «المحطة التالية»",
     nameEn: "Next Stop producer",
-    permissions: ["content.manage", "library.read"],
+    permissions: ["content.manage", "library.read", "media.guest_ideas"],
   },
   // A partner's team (decisions.md), scoped to the partner: the
   // Lead invites and removes; Team keeps the page.

@@ -10,6 +10,7 @@ export const permissions = [
   "events.manage",
   "events.checkin",
   "content.manage",
+  "media.guest_ideas",
   "journal.manage",
   "journal.review",
   "journal.advise",

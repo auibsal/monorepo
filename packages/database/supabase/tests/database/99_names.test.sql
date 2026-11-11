@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(16);
+select plan(18);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c0a1', 'names-a@auib.edu.iq', 'Signup Name');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c0a2', 'names-officer@auib.edu.iq', 'Officer');
@@ -122,6 +122,10 @@ select lives_ok(
        first_name_ar = 'عمر', father_name_ar = 'علي', grandfather_name_ar = 'حسن'
      where id = '00000000-0000-0000-0000-00000000c0a1' $$,
   'A legal name with no family name is complete');
+select is(
+  (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
+  'Signup Name', 'Until the member has seen the default, the sign-up name still shows');
+select lives_ok($$ select core.confirm_shown_name() $$, 'The member keeps the name shown at sign-in');
 select is(
   (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
   'Omar Ali / عمر علي', 'The default is the given and father''s names, in each language');

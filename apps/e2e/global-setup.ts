@@ -40,9 +40,9 @@ export default async function globalSetup() {
   const editor2Id = await ensureUser(editor2.email, editor2.name);
   const presidentId = await ensureUser(president.email, president.name);
 
-  // One person, one name (decisions.md): each account's grandfather's
-  // name differs, so no two share all four parts. The name shown (the first
-  // and the fourth) stays "E2E Tester".
+  // Each account's grandfather's name differs. The name shown, the given
+  // and father's names (decisions.md, Members: names), is "Tess Tester",
+  // and each has seen it, so sign-in goes straight in.
   const grandfathers: Record<string, [string, string]> = {
     [editor2Id]: ["Second", "ثان"],
     [editorId]: ["Editor", "محرر"],
@@ -77,16 +77,16 @@ export default async function globalSetup() {
       .schema("core")
       .from("profiles")
       .update({
-        // A name in each language, in four parts: the gate asks for all
-        // eight; the name shown is the first and the fourth.
+        // A legal name in each language, in its own letters.
         father_name_ar: "تجريبي",
-        father_name_en: "Test",
+        father_name_en: "Tester",
         first_name_ar: "اختبار",
-        first_name_en: "E2E",
+        first_name_en: "Tess",
         grandfather_name_ar: grandfatherOf(id)[1],
         grandfather_name_en: grandfatherOf(id)[0],
         last_name_ar: "تجريبي",
         last_name_en: "Tester",
+        name_confirmed_at: new Date().toISOString(),
         setup_completed_at: new Date().toISOString(),
       })
       .eq("id", id);

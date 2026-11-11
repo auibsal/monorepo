@@ -78,6 +78,7 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 select plan(10);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'lina-names@auib.edu.iq', 'Lina Tamimi');
+update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000000a1';
 
 select is(
   (select first_name_en from core.profiles where id = '00000000-0000-0000-0000-0000000000a1'),
@@ -142,6 +143,7 @@ insert into auth.users (id, email, email_confirmed_at, raw_user_meta_data, aud, 
 values ('00000000-0000-0000-0000-0000000000b1', 'guest-names@example.org', now(),
   '{"first_name_en":"Sara","father_name_en":"Ali","grandfather_name_en":"Omar","last_name_en":"Hadi","first_name_ar":"سارة","father_name_ar":"علي","grandfather_name_ar":"عمر","last_name_ar":"هادي"}',
   'authenticated', 'authenticated');
+update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000000b1';
 select is(
   (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-0000000000b1'),
   'Sara Ali / سارة علي',

@@ -307,6 +307,20 @@
         "body": "You’re a member of the AUIB Society of Arts and Letters. This is your membership card: show it at the door.",
         "open": "Open your account",
         "more": "Tell us more about yourself (two minutes, optional)"
+      },
+      "shownName": {
+        "title": "This is how your name appears on the site",
+        "why": "Your card, your profile, bylines and every list show this name. Keep it, or choose the name you go by in each language.",
+        "en": "In English",
+        "ar": "In Arabic",
+        "preferred": {
+          "en": "Your name in English",
+          "ar": "Your name in Arabic"
+        },
+        "hint": "Leave one empty to keep the name above. Write each in its language’s letters. You can change it any time in Settings.",
+        "keep": "Keep it",
+        "change": "Change it",
+        "save": "Save my name"
       }
     },
     "home": {
@@ -1705,6 +1719,22 @@
           "toTranscribe": "Photographed at the station; its words not yet typed in.",
           "transcribeHint": "Type the words exactly as on the page.",
           "saveWords": "Save the words"
+        },
+        "guestIdeas": {
+          "title": "Guest ideas",
+          "body": "People the show might invite, with why. Only the Director of Media, the producer and the host see this list; names are never kept in Notion.",
+          "name": "Name",
+          "why": "Why them",
+          "status": "Where it stands",
+          "statuses": {
+            "idea": "An idea",
+            "asked": "Asked",
+            "agreed": "Agreed",
+            "declined": "Declined",
+            "appeared": "Appeared"
+          },
+          "add": "Add a guest idea",
+          "remove": "Remove"
         }
       },
       "governance": {

@@ -875,6 +875,7 @@ export type Database = {
           locale: string;
           mail_news: boolean;
           mail_paper: boolean;
+          name_confirmed_at: string | null;
           notify_email: boolean;
           parent_consent_at: string | null;
           personal_email: string | null;
@@ -912,6 +913,7 @@ export type Database = {
           locale?: string;
           mail_news?: boolean;
           mail_paper?: boolean;
+          name_confirmed_at?: string | null;
           notify_email?: boolean;
           parent_consent_at?: string | null;
           personal_email?: string | null;
@@ -948,6 +950,7 @@ export type Database = {
           locale?: string;
           mail_news?: boolean;
           mail_paper?: boolean;
+          name_confirmed_at?: string | null;
           notify_email?: boolean;
           parent_consent_at?: string | null;
           personal_email?: string | null;
@@ -1286,6 +1289,10 @@ export type Database = {
         Returns: number;
       };
       confirm_personal_email: { Args: { token: string }; Returns: string };
+      confirm_shown_name: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
       current_semester: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6725,6 +6732,48 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [];
+      };
+      next_stop_guest_ideas: {
+        Row: {
+          added_by: string | null;
+          created_at: string;
+          episode_id: string | null;
+          id: string;
+          name: string;
+          status: string;
+          updated_at: string;
+          why: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          added_by?: string | null;
+          created_at?: string;
+          episode_id?: string | null;
+          id?: string;
+          name: string;
+          status?: string;
+          updated_at?: string;
+          why?: string | null;
+        };
+        Update: {
+          added_by?: string | null;
+          created_at?: string;
+          episode_id?: string | null;
+          id?: string;
+          name?: string;
+          status?: string;
+          updated_at?: string;
+          why?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "next_stop_guest_ideas_episode_id_fkey";
+            columns: ["episode_id"];
+            isOneToOne: false;
+            referencedRelation: "episodes";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       opening_replies: {
         Row: {

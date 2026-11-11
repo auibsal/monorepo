@@ -90,8 +90,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (`preferred_name_en`/`_ar`); empty means the default.
   **One function decides the name shown**, `private.display_name()`: the
   preferred name, else the given and father's names, else (for a guest,
-  or until the legal name is complete) the name given at sign-up
-  (`signup_name_*`). `full_name_en`/`_ar` keep its result, and every
+  until the legal name is complete, or until the member has seen how it
+  appears) the name given at sign-up (`signup_name_*`). Each member is
+  shown "This is how your name appears on the site" once, at sign-in
+  (`/welcome`), and keeps it (`core.confirm_shown_name`) or chooses their
+  own; that sets `name_confirmed_at`, in place of a 14-day notice. `full_name_en`/`_ar` keep its result, and every
   surface reads them: the card, profiles, bylines, the Council page, Our
   people, the masthead, Next Stop's team and credits, playbills, event
   lists, greetings and Resend's first name (`private.greeting_name`: the
@@ -349,7 +352,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   request naming an episode's address hides it at once. The kit's video
   files are in the private `brand-kit` bucket, listed in
   `packages/brand/assets/video/manifest.json`, uploaded by Media and
-  downloaded by staff through `/api/brand-kit/<file>`.
+  downloaded by staff through `/api/brand-kit/<file>`. Guest ideas, people
+  the show might invite, are a private list in Media → Next Stop
+  (`programmes.next_stop_guest_ideas`, `media.guest_ideas`: the Director of
+  Media, the producer and the host), never in Notion.
 - **The mailing list** (decisions.md, Channels and email): one audience
   with two topics, "The Sunday Paper" (`paper`) and "Society news and
   events" (`news`). Members are on both from sign-up unless they untick

@@ -30,7 +30,9 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
     .fill("ملاحظات الجمعية");
   // A byline is a member chosen from the register, here under a pen name:
   // the member first, then the pen name.
-  await page.getByRole("searchbox", { name: "Contributor" }).fill("E2E Tester");
+  await page
+    .getByRole("searchbox", { name: "Contributor" })
+    .fill("Tess Tester");
   await page.getByRole("button", { name: "Choose" }).first().click();
   await page.getByLabel("Pen name (optional)").fill("The Night Editor");
   await page.getByRole("button", { name: "Use this byline" }).click();
