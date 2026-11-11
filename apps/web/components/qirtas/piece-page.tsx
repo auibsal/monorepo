@@ -182,7 +182,7 @@ export const PieceArticle = async ({
                 {" · "}
                 <Link
                   className="hover:underline"
-                  href={`/qirtas/editions/${issue.slug}`}
+                  href={`/qirtas/issues/${issue.slug}`}
                 >
                   {localized(issue, "title", locale)}
                 </Link>
@@ -296,7 +296,7 @@ const ReadOn = async ({
       {issue ? (
         <Link
           className="group grid gap-1"
-          href={`/qirtas/editions/${issue.slug}`}
+          href={`/qirtas/issues/${issue.slug}`}
         >
           <span className="type-caption">{t("reading.inEdition")}</span>
           <span className="type-title group-hover:text-accent">

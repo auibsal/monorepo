@@ -102,8 +102,12 @@ select plan(13);
 
 select is((select count(*) from journal.calls where issue_id is null)::integer, 1,
   'There is one standing call, which belongs to no Edition');
-select ok((select desks @> '{news,games,letters}'::journal.desk[] from journal.calls where issue_id is null),
-  'and it takes every section');
+select is((select desks from journal.calls where issue_id is null), '{letters,gallery}'::journal.desk[],
+  'and it takes Letters and Gallery for now');
+
+-- The standing call takes only Letters and Gallery for now (decisions.md,
+-- Qirtas); these checks exercise every section, so they reopen it.
+update journal.calls set desks = enum_range(null::journal.desk) where issue_id is null;
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000099a1', 'door@auib.edu.iq', 'Door Writer');
 insert into membership.pledges (user_id, pledge_type, version)

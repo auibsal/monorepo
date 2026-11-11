@@ -111,9 +111,9 @@ const FromTheSociety = async ({ locale }: { locale: Locale }) => {
             <p className="type-body text-text-secondary">
               {localized(notice, "body", locale)}
             </p>
-            {notice.sent_at ? (
+            {notice.shown_at ? (
               <p className="type-caption text-text-secondary">
-                {formatLongDate(notice.sent_at, locale, true)}
+                {formatLongDate(notice.shown_at, locale, true)}
               </p>
             ) : null}
           </li>
@@ -304,7 +304,7 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
               </h2>
               <Link
                 className="type-title hover:text-accent"
-                href={`/qirtas/editions/${edition.slug}`}
+                href={`/qirtas/issues/${edition.slug}`}
               >
                 {localized(edition, "title", locale)}
               </Link>

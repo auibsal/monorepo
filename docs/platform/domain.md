@@ -260,8 +260,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   each change is kept with who set it (`journal.piece_dates`).
 - **Corrections** are made in place with a note, shown at the end of the
   piece and listed in the public log at `/qirtas/corrections`.
-- **"From the Society"** on the front page shows the Society's sent
-  notices (`core.society_notices`), never in News and never bylined.
+- **"From the Society"** on the front page shows the Society's notices
+  by the date each carries (`core.announcements.shown_at`,
+  `core.society_notices`), never in News and never bylined: the
+  President's email puts a notice there, and Media can post one with a
+  date and no email (`core.post_notice`).
 - **Reading.** One nameplate on every page of the paper
   (`components/qirtas/nameplate.tsx`); the masthead at `/qirtas/masthead`
   (`journal.masthead()`). A piece's address comes from `journal.piecePath`.
@@ -274,10 +277,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   selections shared by address (`/qirtas/selection/...`, nothing stored).
   RSS at `/qirtas/feed.xml` and per section; the archive at
   `/qirtas/archive`. Pieces print on white without the site's frame.
-- **The Edition** is printed once a year, a year in review
-  (`/qirtas/editions`, a Shelf, with the plain list as a view,
-  `?view=list`); its record keeps the print run, printer and
-  date.
+- **Issues** are themed online collections (`journal.issues`,
+  `/qirtas/issues`, a Shelf, with the plain list as a view, `?view=list`):
+  Haven is the pilot issue (`pilot`, no number), Issue 1 comes in spring
+  2027. **The Edition** is only the printed year-in-review; an issue's
+  record keeps the print run, printer and date for it.
 - **Games**, daily, made in the reader's browser and the same for everyone
   on a Baghdad day (`lib/data/games`): the word, the word search,
   the crossword and the anagrams at `/qirtas/games/...`, checked ahead by

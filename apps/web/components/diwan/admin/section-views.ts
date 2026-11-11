@@ -81,12 +81,9 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
       module: "governance",
       permission: ["governance.manage", "partners.sign"],
     },
-    {
-      href: "/council/announcements",
-      key: "announcements",
-      module: "governance",
-      permission: "roles.assign",
-    },
+    // The President sends notices; Media (content.manage) writes them and
+    // posts to "From the Society" (decisions.md, Qirtas).
+    { href: "/council/announcements", key: "announcements", module: "media" },
     { href: "/council/library", key: "library", module: "library" },
   ],
   desk: [{ href: "/", key: "desk", module: "*" }],
@@ -118,7 +115,7 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
   qirtas: [
     { href: "/qirtas", key: "newsroom", module: "journal" },
     {
-      href: "/qirtas/editions",
+      href: "/qirtas/issues",
       key: "editions",
       module: "journal",
       permission: ["journal.manage", "journal.publish"],

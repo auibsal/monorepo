@@ -66,8 +66,13 @@ Part A first).
   The AI text is deleted once each is rewritten. Pieces 5 and 15 are the
   News editor's call.
 - [ ] **"From the Society": two notices dated Nov 8** ("auibsal.org is
-  open" and "The Society's documents are online"), published by Media in
-  the stream.
+  open" and "The Society's documents are online"): Media writes each on
+  The Council → Announcements and posts it to From the Society dated
+  Nov 8 (no email goes out).
+- [ ] **Haven, the pilot issue:** its call closes Sunday, December 6, at
+  11:59 p.m. Baghdad time (two entries each); decision letters wait for
+  December 13; the issue is set for Wednesday, December 16, and stays a
+  draft until the Editor-in-Chief schedules it (Qirtas → Issues).
 - [ ] **The copy desk:** until a Copy Chief or copy editor is appointed,
   the Editor-in-Chief or the Managing Editor gives the copy edit on text
   pieces (it is required on every News, Voices and Letters piece).

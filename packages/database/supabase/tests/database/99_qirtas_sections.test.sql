@@ -95,6 +95,11 @@ $$;
 -- </preamble>
 select plan(14);
 
+-- The standing call takes only Letters and Gallery for now (decisions.md,
+-- Qirtas); these checks exercise every section, so they reopen it.
+update journal.calls set desks = enum_range(null::journal.desk) where issue_id is null;
+
+
 select is(
   (select array_agg(d order by d)::text[] from unnest(enum_range(null::journal.desk)) d),
   array['news', 'letters', 'gallery', 'video', 'voices', 'games'],

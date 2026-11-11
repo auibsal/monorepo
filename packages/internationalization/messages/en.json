@@ -361,7 +361,7 @@
         "openCallNoDate": "{call} is open; its closing date is still to be set",
         "daysLeft": "{days, plural, one {{daysText} day left} other {{daysText} days left}}",
         "submit": "Write for Qirtas",
-        "none": "No Edition call is open. Qirtas takes work all year."
+        "none": "No issue’s call is open. Qirtas takes work all year."
       },
       "programmes": {
         "title": "My events",
@@ -729,7 +729,7 @@
         "blind": "Read without your name first, then edited with you by the {section} editor.",
         "closed": "Qirtas is not taking this type of work right now.",
         "where": "Where",
-        "whereHint": "The printed Edition, while its call is open, or Qirtas online.",
+        "whereHint": "An issue, while its call is open, or Qirtas online.",
         "send": "Send to Qirtas",
         "manuscript": {
           "reading": "Reading your file…",
@@ -775,7 +775,18 @@
         "haven": {
           "title": "Haven",
           "dek": "Dreams and memories · the pilot issue of Qirtas",
-          "memories": "Our memories and dreams are the most intimate parts of ourselves. Each of us holds a memory from childhood, or a dream close to the heart, that refuses to die."
+          "memories": "Our memories and dreams are the most intimate parts of ourselves. Each of us holds a memory from childhood, or a dream close to the heart, that refuses to die.",
+          "call": "A poem, a short story, a creative essay or an artwork about a memory, a dream or both.",
+          "rulesTitle": "What to send",
+          "rules": {
+            "length": "Up to 40 lines of poetry (up to three poems count as one entry), 2,500 words of prose, or three images (JPG, PNG or PDF, 10 MB each, each with a title and a one-line caption).",
+            "entries": "Up to two entries each, in Arabic or English, one language per entry. A translation is its own entry, with the rights to the original.",
+            "new": "Work not published before, except on your own social media. You may send it elsewhere too; withdraw it here if it is taken.",
+            "who": "Open to members of every class and to guests 18 or older. Members under 18 may send work, and nothing shows or names them without a parent’s consent. Only student Members are eligible for the Mutanabbi Prize.",
+            "own": "Your own work: no text or images generated with AI."
+          },
+          "closes": "Submissions close {date} at {time}, Baghdad time. You hear back within the week.",
+          "published": "The pilot issue is published {date}."
         },
         "drafts": {
           "title": "Your drafts",
@@ -1101,7 +1112,7 @@
           "global": "Society-wide",
           "programme": "The Company or Qirtas",
           "event": "One event",
-          "issue": "Qirtas Edition",
+          "issue": "Qirtas issue",
           "campaign": "Campaign",
           "production": "Production",
           "partner": "Partner"
@@ -1788,7 +1799,7 @@
         }
       },
       "journal": {
-        "title": "Qirtas: Editions",
+        "title": "Qirtas: Issues",
         "lede": "Issues, pieces and contributors. Accepted work becomes a draft piece here; nothing from a submission is published before its author signs the Publication Agreement.",
         "newIssue": "New issue",
         "newPiece": "New piece",
@@ -1867,12 +1878,12 @@
           "notFound": "No issue with this link, or your roles don’t cover it.",
           "publishConfirm": "Publish this issue? It appears on auibsal.org at once; its published pieces go with it.",
           "printed": "Printed edition",
-          "printedHint": "How many copies, who printed it and when. The Edition page shows it as one line once all three are filled in.",
+          "printedHint": "How many copies, who printed it and when (for a printed Edition). The issue page shows it as one line once all three are filled in.",
           "printRun": "Print run (copies)",
           "printedOn": "Printed on",
           "printer": "Printer",
           "launchNight": "The launch event",
-          "launchNightHint": "The event that launches this Edition. The Editions page shows it beside the call.",
+          "launchNightHint": "The event that launches this issue. The Issues page shows it beside the call.",
           "noLaunchNight": "Not chosen yet"
         },
         "piece": {
@@ -2075,7 +2086,7 @@
           "new": "New call",
           "partners": "Also open to partners’ members",
           "partnersHint": "Members of these partners may answer the call once the Society has verified them, under the same rules and blind review. Only partners whose signed memorandum allows Journal submissions are listed.",
-          "back": "The Edition",
+          "back": "The issue",
           "missing": "This call is not here",
           "title": "A call"
         },
@@ -2643,13 +2654,13 @@
         "tabs": {
           "games": "Games"
         },
-        "edition": "Edition",
+        "edition": "Issue",
         "launch": "Launch",
         "launchNotSet": "Launch not set",
-        "editionsLede": "An Edition is the semester’s curated issue of the best Letters and Gallery work. Its launch is when every piece tagged to it goes out.",
-        "newEdition": "New Edition",
+        "editionsLede": "An issue is a themed online collection: Haven is the pilot issue, and Issue 1 comes in spring 2027. Its launch is when every piece tagged to it goes out.",
+        "newEdition": "New issue",
         "season": "Season",
-        "launchHint": "Every piece in this Edition without its own time publishes at the launch. Leave it empty until the time is known.",
+        "launchHint": "Every piece in this issue without its own time publishes at the launch. Leave it empty until the time is known.",
         "untitled": "Untitled",
         "piece": "Piece",
         "type": "Type",
@@ -2662,9 +2673,9 @@
         "noPieces": "No pieces in this section yet. Write one with New staff piece; work members send appears above, read blind.",
         "newPieceLede": "A piece written by the newsroom, in any section. It needs no submission and no Publication Agreement.",
         "choose": "Choose…",
-        "noEdition": "No Edition",
+        "noEdition": "No issue",
         "create": "Create the piece",
-        "frontLede": "Rank 1 is the lead story. The front page also shows the latest news, a Letters spread, a Gallery strip and the current Edition.",
+        "frontLede": "Rank 1 is the lead story. The front page also shows the latest news, a Letters spread, a Gallery strip and the current issue.",
         "noPublished": "Nothing is published yet.",
         "penName": "Pen name",
         "text": "The piece",
@@ -2865,7 +2876,7 @@
         },
         "sections": "Sections",
         "calls": "Calls",
-        "noEditions": "No Editions yet. Start one with New Edition.",
+        "noEditions": "No issues yet. Start one with New issue.",
         "event": "Event",
         "noEvent": "No event",
         "extras": {
@@ -3043,7 +3054,7 @@
           "library": "Library",
           "qirtas": "Qirtas",
           "newsroom": "Newsroom",
-          "editions": "Editions",
+          "editions": "Issues",
           "meetings": "Meetings",
           "tour": "Typewriter Tour",
           "prize": "Mutanabbi Prize",
@@ -3130,7 +3141,7 @@
           "journal_calls": "the call",
           "journal_corrections": "a correction",
           "journal_decisions": "a decision",
-          "journal_issues": "the Edition",
+          "journal_issues": "the issue",
           "journal_pieces": "the piece",
           "journal_puzzles": "the game",
           "membership_certificates": "a certificate",
@@ -3370,7 +3381,7 @@
       },
       "announcements": {
         "title": "Announcements",
-        "lede": "A notice written once, in English and in Arabic. Send its test to yourself, read it, then send it: one email in each reader’s language to everyone who takes the Sunday Paper, a post in the members’ group’s Announcements topic, and a message from Hudhud to each linked member who keeps notices on.",
+        "lede": "A notice written once, in English and in Arabic. Media and the President write it. The President sends its test to themselves, reads it, then sends it: one email in each reader’s language to everyone who takes the Sunday Paper, a post in the members’ group’s Announcements topic, a message from Hudhud to each linked member who keeps notices on, and a place in From the Society. Media may also post a notice to From the Society with a date and no email.",
         "new": "New announcement",
         "none": "No announcements yet.",
         "titleEn": "Title in English",
@@ -3390,7 +3401,13 @@
         "sendNow": "Send now",
         "notYet": "Not yet",
         "sentOn": "Sent on {date}.",
-        "linkPlaceholder": "/qirtas/submit"
+        "linkPlaceholder": "/qirtas/submit",
+        "streamTitle": "From the Society",
+        "streamDate": "The date it carries",
+        "streamHint": "Shows the notice on Qirtas’s front page with this date (today or earlier). No email goes out.",
+        "post": "Post to From the Society",
+        "takeDown": "Take it out of From the Society",
+        "shownOn": "In From the Society, dated {date}."
       },
       "sundayPaper": {
         "title": "The Sunday Paper",
@@ -4642,10 +4659,10 @@
       },
       "tagline": "AUIB’s paper of news, letters and art",
       "sections": "Sections",
-      "editions": "Editions",
+      "editions": "Issues",
       "firstEdition": "The first pieces arrive with the News desk on November 15.",
       "lead": "Lead story",
-      "currentEdition": "The current Edition",
+      "currentEdition": "The current issue",
       "sendNews": "Write for Qirtas",
       "deskLedes": {
         "news": "Campus and Society news: reports, features, interviews, profiles, event coverage and explainers, by named reporters.",
@@ -4667,9 +4684,9 @@
       "readingTime": "{minutes} min read",
       "firstPublished": "First published in Qirtas. The author keeps the copyright.",
       "moreFrom": "More from {desk}",
-      "editionsLede": "Once a year the printed Edition gathers the year in review: the best of Qirtas, launched at an event of its own.",
-      "noEditions": "No Edition has been published yet.",
-      "edition": "Edition",
+      "editionsLede": "Qirtas’s themed online collections: Haven is the pilot issue, and Issue 1 comes in spring 2027.",
+      "noEditions": "No issue has been published yet.",
+      "edition": "Issue",
       "games": "Games",
       "newsletter": "The Sunday Paper",
       "newsletterLede": "One email a month: what Qirtas published and the Society’s coming public events.",
@@ -4691,28 +4708,28 @@
         "guest": "Guest"
       },
       "nothingYet": "Nothing published yet.",
-      "editionsAsList": "See the Editions as a list",
-      "editionsOnShelf": "See the Editions on the shelf",
-      "editionNumber": "Edition {number}",
-      "launchTitle": "The Edition’s launch",
-      "shelfPrevious": "Previous Edition",
-      "shelfNext": "Next Edition",
-      "comingLede": "The first Edition is being made. Send your work while the call is open.",
+      "editionsAsList": "See the issues as a list",
+      "editionsOnShelf": "See the issues on the shelf",
+      "editionNumber": "Issue {number}",
+      "launchTitle": "The issue’s launch",
+      "shelfPrevious": "Previous issue",
+      "shelfNext": "Next issue",
+      "comingLede": "The pilot issue is being made. Send your work while the call is open.",
       "writeForEdition": "Write for Qirtas",
       "reading": {
         "after": "Read on",
         "next": "Next",
-        "inEdition": "In the Edition",
+        "inEdition": "In the issue",
         "notes": "Notes",
         "translation": "The translation",
         "original": "The original, in {language}",
         "contents": "Contents"
       },
       "contents": "Contents",
-      "otherEditions": "Other Editions",
-      "previousEdition": "The Edition before",
-      "nextEdition": "The Edition after",
-      "theEdition": "The Edition",
+      "otherEditions": "Other issues",
+      "previousEdition": "The issue before",
+      "nextEdition": "The issue after",
+      "theEdition": "The issue",
       "photoOf": "{n} of {total}",
       "archive": {
         "title": "The archive",
@@ -4735,7 +4752,7 @@
         "empty": "Nothing saved yet. Save a piece from Qirtas to read it later.",
         "browse": "Read Qirtas"
       },
-      "authorEditions": "In the Editions",
+      "authorEditions": "In the issues",
       "authorShortlisted": "{title} · shortlisted, {award}",
       "authorWon": "{title} · winner, {award}",
       "listen": "Hear it read",
@@ -4786,10 +4803,11 @@
       "correctionsPolicy": "How Qirtas corrects its errors",
       "haven": {
         "title": "Haven",
-        "dek": "Dreams and memories · the pilot Edition of Qirtas",
+        "dek": "Dreams and memories · the pilot issue of Qirtas",
         "call": "Send a poem, a short story, a creative essay or an artwork, about a memory, a dream or both. Everything is read blind.",
         "submit": "Submit your work now."
-      }
+      },
+      "pilotIssue": "The pilot issue"
     },
     "about": {
       "title": "About the Society",
