@@ -27,7 +27,7 @@ This is SAL-MED-02, Brand and Identity, Version 1, proposed until the Council ad
 - American English everywhere, with no exceptions: program, color, center, traveled, canceled, catalog, organization.
 - Partners with Arabic names are named in their own language first.
 - No emoji, no exclamation marks in headlines. Tag @auibsal on every post, and always give the date.
-- **One language standard** (Guide, Voice, "Language standard", with the glossary). English: the Chicago Manual of Style with Merriam-Webster: curly quotes in prose, the serial comma, en dashes for ranges, the ellipsis character; sentence case for interface labels. Arabic: Latin digits, the Iraqi month names, ، ؛ ؟ and «», tanween on the letter before the alif (شكرًا), one word per term from the one glossary (`claude/glossary_ar.md`: the Council المجلس, the Executive Board الهيئة التنفيذية, What's on «ما يجري», piece عمل). Iraqi Arabic, with گ، چ، پ, only where the Society chats.
+- **One language standard** (Guide, Voice, "Language standard", with the glossary). English: the Chicago Manual of Style with Merriam-Webster: curly quotes in prose, the serial comma, en dashes for ranges, the ellipsis character; sentence case for interface labels. Arabic: Latin digits, the Iraqi month names, ، ؛ ؟ and «», tanween on the letter before the alif (شكرًا), one word per term from the one glossary (kept with the decisions in the Claude project: the Council المجلس, the Executive Board الهيئة التنفيذية, What's on «ما يجري», piece عمل). Iraqi Arabic, with گ، چ، پ, only where the Society chats.
 
 ## Color
 

@@ -6,7 +6,7 @@ import { config, withAnalyzer } from "@/lib/next-config";
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 // One redirect only: Write for Qirtas moved to /qirtas/submit, and the
-// old address leads there until further notice (decisions §17). Otherwise
+// old address leads there until further notice (decisions §19). Otherwise
 // links point at the current address, and an old one is simply not found.
 // www.auibsal.org → auibsal.org is a Vercel domain setting.
 // English has no prefix; Arabic is under /ar.

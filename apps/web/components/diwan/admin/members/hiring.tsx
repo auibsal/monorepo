@@ -83,7 +83,7 @@ export interface Reply {
 
 /**
  * One application and the next steps open to whoever is looking
- * (decisions §18): the answers; each reviewer's reading (the hiring seat
+ * (decisions §17): the answers; each reviewer's reading (the hiring seat
  * and the second reviewer, either of whom may recuse); interviews,
  * scheduled and recorded on F-02; the shortlist and the offer; and for a
  * director seat, Student Life's answer and the appointment.
@@ -213,7 +213,7 @@ const Steps = ({
   );
 };
 
-/** What the applicant sent (decisions §18). */
+/** What the applicant sent (decisions §17). */
 const ApplicationDetails = ({
   director,
   questions,
@@ -381,7 +381,7 @@ const DirectorSteps = ({
   );
 };
 
-/** Each reviewer's score and notes, or their recusal (decisions §18). */
+/** Each reviewer's score and notes, or their recusal (decisions §17). */
 const Reviews = ({ reply }: { readonly reply: Reply }) => {
   const t = useTranslations("diwan.admin.hiring");
   const { supabase, user } = useAuth();

@@ -16,7 +16,7 @@ export type Lang = "en" | "ar";
 export const langOf = (code: string | undefined): Lang =>
   code?.toLowerCase().startsWith("ar") ? "ar" : "en";
 
-export const purposes = [
+const purposes = [
   "announcements",
   "events",
   "qirtas",

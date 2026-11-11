@@ -1,4 +1,4 @@
--- "With the support of" (decisions §2, §18): AUIB's own offices, listed
+-- "With the support of" (decisions §2, §19): AUIB's own offices, listed
 -- on the partners page only. They support the Society but aren't
 -- partners. Partnerships keeps the list in the Diwan; the logos are AUIB's
 -- standard set, served from apps/web/public/institutions.

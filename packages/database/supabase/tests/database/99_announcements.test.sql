@@ -93,7 +93,7 @@ as $$
 $$;
 -- </preamble>
 
--- Announcements (decisions §17): the President writes, tests and sends.
+-- Announcements (decisions §18): the President writes, tests and sends.
 
 select plan(10);
 

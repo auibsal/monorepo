@@ -3,7 +3,7 @@
 How the AUIB Society of Arts and Letters works, as the code models it:
 the Council, members, cards, numbers, forms, events, partners, Qirtas,
 Notion, documents, Hudhud and email. Read the section for the domain you
-are changing before you change it. `claude/decisions.md` wins wherever it
+are changing before you change it. The owner's decisions (in the Claude project) win wherever they
 disagrees; the conventions for every change are in `AGENTS.md`.
 
 ## People, roles and records

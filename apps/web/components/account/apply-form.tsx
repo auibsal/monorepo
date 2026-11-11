@@ -19,7 +19,7 @@ import { useMyMembership } from "@/lib/diwan/queries";
 const MAX_LINKS = 5;
 
 /**
- * The application (decisions §18): the opening's questions, availability,
+ * The application (decisions §17): the opening's questions, availability,
  * the language to be written to in, links to work when asked, an optional
  * request for accommodation and, for a director seat, the consent to
  * Student Life's GPA check, signed by typing one's legal name. A draft can

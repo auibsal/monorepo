@@ -139,7 +139,7 @@ export const ProfileScreen = () => {
             </fieldset>
           ))}
           <p className="type-caption">{t("setup.name.hint")}</p>
-          {/* A preferred name (decisions §18): shown in place of the legal
+          {/* A preferred name (decisions §19): shown in place of the legal
               first or last name on the site, the card and the Council page. */}
           <fieldset className="grid gap-3">
             <legend className="mb-2 text-sm font-medium">

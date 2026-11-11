@@ -6,7 +6,7 @@ export const generateMetadata = titleFrom((t) =>
 );
 
 /**
- * Hudhud's groups and the exempt list (decisions §6, §18): kept here, never
+ * Hudhud's groups and the exempt list (decisions §6, §19): kept here, never
  * typed as commands in the chat. RLS decides what each officer sees.
  */
 const ChannelsPage = () => <Channels />;

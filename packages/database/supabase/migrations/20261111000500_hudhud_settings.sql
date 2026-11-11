@@ -1,4 +1,4 @@
--- Hudhud (decisions §6, §18): a group's settings are kept in the Diwan
+-- Hudhud (decisions §6, §19): a group's settings are kept in the Diwan
 -- (Media → Channels), never typed as commands in the chat; the people who
 -- stay in the members' group without an account (Student Life's staff,
 -- the Faculty Advisor) are a list in the Diwan too.

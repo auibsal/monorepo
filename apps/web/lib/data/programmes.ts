@@ -67,7 +67,7 @@ export const setPageVisibility = async (
 
 /**
  * On the Tour's wall a page shows the first name and last initial unless
- * the writer chooses the full name (decisions §18).
+ * the writer chooses the full name (decisions §19).
  */
 export const setPageFullName = async (
   client: Client,
@@ -147,10 +147,10 @@ export const timeLeft = (dueAt: string, now = currentDate()) => {
   };
 };
 
-// ── Get involved (decisions §18) ────────────────────────────────────────────
+// ── Get involved (decisions §17) ────────────────────────────────────────────
 
 /** The application's states, as the database names them. */
-export const APPLICATION_STATUSES = [
+const APPLICATION_STATUSES = [
   "draft",
   "new",
   "talking",
@@ -165,7 +165,7 @@ export const APPLICATION_STATUSES = [
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
 /** A question an opening asks (programmes.openings.questions). */
-export const questionSchema = z.object({
+const questionSchema = z.object({
   ar: z.string().trim().min(1).max(300),
   en: z.string().trim().min(1).max(300),
   key: z

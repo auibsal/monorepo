@@ -2,7 +2,7 @@ import type { Api, RawApi } from "grammy";
 import type { ChatMember } from "grammy/types";
 import type { BotContext } from "../../context";
 import { type Copy, copy, type Lang, type Purpose } from "../../copy";
-import { type Group, group as loadGroup } from "../../db";
+import type { Group } from "../../db";
 import { bilingual } from "../../format";
 
 type Other = Parameters<Api<RawApi>["sendMessage"]>[2];
@@ -73,7 +73,3 @@ export const postTo = (
     ...other,
   });
 };
-
-/** The connected group of this update, or null. */
-export const currentGroup = (ctx: BotContext) =>
-  ctx.chat && ctx.chat.type !== "private" ? loadGroup(ctx.chat.id) : null;

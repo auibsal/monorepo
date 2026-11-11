@@ -23,7 +23,7 @@ type SectionKey =
   | "events"
   | "nextStop";
 // What's on · Qirtas · The Company · Next Stop · Get involved · About, with
-// a Join button for visitors (decisions §18); signed in, the end of the
+// a Join button for visitors (decisions §19); signed in, the end of the
 // line opens Membership instead.
 const sections: { href: string; key: SectionKey }[] = [
   { href: "/events", key: "events" },

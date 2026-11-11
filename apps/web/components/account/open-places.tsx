@@ -15,7 +15,7 @@ const KINDS = ["role", "event_team", "qalam_mentor", "audition"] as const;
 
 /**
  * Every open role, for anyone to read, in one list rendered on the server
- * (decisions §1, §18): team roles, Council seats, event teams, Qalam
+ * (decisions §1, §17): team roles, Council seats, event teams, Qalam
  * mentors and the Company's auditions, soonest closing first. Each opens
  * its own page, where members apply.
  */

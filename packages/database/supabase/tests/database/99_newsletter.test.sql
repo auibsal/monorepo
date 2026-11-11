@@ -145,7 +145,7 @@ select is((select count(*) from content.newsletter_subscribers where status = 's
 select throws_ok($$select unsubscribe_token from content.newsletter_subscribers$$, '42501', null,
   'Nobody but apps/api reads the tokens');
 
--- The Sunday Paper, sent by hand (decisions §18): the Managing Editor
+-- The Sunday Paper, sent by hand (decisions §19): the Managing Editor
 -- writes the letter, sends a test to the Editor-in-Chief, then sends it.
 select pg_temp.logout();
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b0e1', 'me-paper@auib.edu.iq', 'Managing Editor');

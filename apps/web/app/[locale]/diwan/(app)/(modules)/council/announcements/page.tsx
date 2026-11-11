@@ -6,7 +6,7 @@ export const generateMetadata = titleFrom((t) =>
   t("diwan.admin.sections.tabs.announcements")
 );
 
-/** The Council → Announcements: the President's notices (decisions §17). */
+/** The Council → Announcements: the President's notices (decisions §18). */
 const AnnouncementsPage = () => (
   <RequireModule module="governance">
     <Announcements />

@@ -1,4 +1,4 @@
--- Get involved as an application system (decisions §18, the American
+-- Get involved as an application system (decisions §17, the American
 -- standard for student organizations).
 --
 -- Openings carry their own questions, whether files are asked for, and who
@@ -37,7 +37,7 @@ alter table programmes.openings
 create index openings_second_reviewer_idx on programmes.openings (second_reviewer);
 
 comment on column programmes.openings.questions is
-  'The questions an application answers: [{key, en, ar, required}] (decisions §18).';
+  'The questions an application answers: [{key, en, ar, required}] (decisions §17).';
 comment on column programmes.openings.eb_resolution is
   'For a director seat: the Executive Board resolution approving the opening (decisions §4); it opens only once recorded.';
 
@@ -183,7 +183,7 @@ alter table programmes.opening_replies
   add column appointed_by_resolution text check (char_length(appointed_by_resolution) <= 40);
 
 comment on column programmes.opening_replies.status is
-  'draft → new (submitted) → talking (interview) → picked (shortlisted) → offered → accepted (a director awaiting the Executive Board and Student Life) → onboarded; or not_picked, declined, withdrawn (kept, decisions §18).';
+  'draft → new (submitted) → talking (interview) → picked (shortlisted) → offered → accepted (a director awaiting the Executive Board and Student Life) → onboarded; or not_picked, declined, withdrawn (kept, decisions §17).';
 
 update programmes.opening_replies set submitted_at = created_at where status <> 'draft' and submitted_at is null;
 
@@ -801,7 +801,7 @@ begin
 end;
 $$;
 
--- ── The postings that open now (decisions §11, §13, §18) ────────────────────
+-- ── The postings that open now (decisions §11, §13, §17) ────────────────────
 
 update programmes.openings set is_open = false where role = 'games_editor';
 update programmes.openings set is_open = true where role in ('news_editor', 'voices_editor', 'video_editor');

@@ -23,7 +23,9 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(page.getByLabel("Family name")).toHaveCount(0);
   // Students say they are (decisions §2).
   await page.getByRole("checkbox", { name: /enrolled AUIB student/u }).check();
-  await page.getByRole("checkbox", { name: /18 or older/u }).check();
+  // Students of any age (decisions §19): asked, not assumed.
+  await page.getByRole("button", { name: /Are you 18 or older/u }).click();
+  await page.getByRole("option", { name: "Yes, 18 or older" }).click();
   // Scrolled down to the button, as on a phone.
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.getByRole("button", { name: "Create account" }).click();
@@ -69,10 +71,10 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByRole("button", { name: "Continue" }).click();
 
   await expect(page.getByText("Step 3 of 5")).toBeVisible();
+  // The Code of Conduct is the only pledge (decisions §19).
   await page
-    .getByRole("button", { name: "I make the Human Authorship pledge" })
+    .getByRole("button", { name: "I acknowledge the Code of Conduct" })
     .click();
-  await page.getByRole("button", { name: "I make the Member Pledge" }).click();
   await expect(
     page.getByRole("heading", { name: "Happy to appear in event photos?" })
   ).toBeVisible();
@@ -83,30 +85,10 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   ).toBeVisible();
   await expectAccessible(page);
 
-  // The optional details are part of Profile (Nov 4, 2026).
-  await page
-    .getByRole("link", { name: /Tell us more about yourself/u })
-    .click();
-  await expect(page).toHaveURL(/\/account\/settings\/profile/u);
-  const details = page.getByRole("region", { name: "More about you" });
-  // Five answers: chosen from a list under the field, not a row.
-  await details.getByRole("button", { name: /You are/u }).click();
-  await details.getByRole("option", { name: "A student at AUIB" }).click();
-  await details.getByRole("checkbox", { name: "Poetry" }).check();
-  await details.getByRole("checkbox", { name: "Theater" }).check();
-  await details.getByRole("button", { name: "Save" }).click();
-  await expect(details.getByRole("status")).toHaveText("Saved.");
-  await expectAccessible(page);
-  const users = await admin().auth.admin.listUsers({ perPage: 1000 });
-  const id = users.data.users.find((u) => u.email === email)?.id ?? "";
-  const { data } = await admin()
-    .schema("core")
-    .from("member_details")
-    .select("affiliation, interests")
-    .eq("user_id", id)
-    .single();
-  expect(data?.affiliation).toBe("student");
-  expect(data?.interests).toEqual(["poetry", "theater"]);
+  // No optional details are asked for (decisions §19).
+  await expect(
+    page.getByRole("link", { name: /Tell us more about yourself/u })
+  ).toHaveCount(0);
 });
 
 test("sign-up takes only AUIB addresses", async ({ page }) => {
@@ -134,7 +116,9 @@ test("a whole address pasted and submitted at once signs up the right address", 
     .fill(`paste.${Date.now()}@auib.edu.iq`);
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByRole("checkbox", { name: /enrolled AUIB student/u }).check();
-  await page.getByRole("checkbox", { name: /18 or older/u }).check();
+  // Students of any age (decisions §19): asked, not assumed.
+  await page.getByRole("button", { name: /Are you 18 or older/u }).click();
+  await page.getByRole("option", { name: "Yes, 18 or older" }).click();
   await page.getByLabel("Password", { exact: true }).press("Enter");
   const status = page.getByRole("status").first();
   await expect(status).toContainText("@auib.edu.iq");

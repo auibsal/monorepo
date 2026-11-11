@@ -20,7 +20,7 @@ const read = (name: string) =>
   );
 // The forms register of Nov 7, 2026: the forms signed on the site.
 const migration = read("20261107000300_forms_and_guests.sql");
-// Nov 11 (decisions §18): F-44 taken down, F-46 (a parent's consent) added.
+// Nov 11 (decisions §19): F-44 taken down, F-46 (a parent's consent) added.
 const accounts = read("20261111000000_accounts_and_privacy.sql");
 describe("forms", () => {
   test("every form here is in the database registry, and only those", () => {

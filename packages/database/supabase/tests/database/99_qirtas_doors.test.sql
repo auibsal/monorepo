@@ -191,7 +191,7 @@ select lives_ok(
 select pg_temp.login_anon();
 select is(
   (select author_en from programmes.six_words_wall() where id = (select id from unsigned)),
-  'Writer O.', 'and is named on it by first name and last initial (decisions §18)'
+  'Writer O.', 'and is named on it by first name and last initial (decisions §19)'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000060a2');

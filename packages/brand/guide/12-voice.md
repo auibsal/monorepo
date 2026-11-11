@@ -59,7 +59,7 @@ One standard for every word the platform writes (owner, Nov 4, 2026). `bun run c
 
 ### Glossary
 
-One glossary for every Arabic word the Society uses, kept with the decisions (`claude/glossary_ar.md`). The terms used most:
+One glossary for every Arabic word the Society uses, kept with the decisions in the Claude project. The terms used most:
 
 | English | Arabic |
 | --- | --- |

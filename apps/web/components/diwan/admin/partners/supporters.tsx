@@ -35,7 +35,7 @@ const isLogo = (value: string): value is (typeof SUPPORTER_LOGOS)[number] =>
   (SUPPORTER_LOGOS as readonly string[]).includes(value);
 
 /**
- * "With the support of" on /partners (decisions §2, §18): AUIB's own
+ * "With the support of" on /partners (decisions §2, §19): AUIB's own
  * offices, kept here by Partnerships. Small rows, added in place; hiding
  * one keeps it on file.
  */

@@ -5908,6 +5908,10 @@ export type Database = {
         Args: { approve: boolean; note?: string; request_id: string };
         Returns: undefined;
       };
+      forget_invitation_list: {
+        Args: { list_source: string };
+        Returns: number;
+      };
       has_current_pledges: { Args: { uid?: string }; Returns: boolean };
       invitation_list: {
         Args: { list: string };

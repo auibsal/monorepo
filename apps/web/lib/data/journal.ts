@@ -100,7 +100,7 @@ export const deskCategories = (desk: Desk): readonly Category[] =>
 export const closedCategories: readonly Category[] = [...sectionTypes.games];
 
 /**
- * The sections taking work for now (decisions §17): Letters and Gallery
+ * The sections taking work for now (decisions §18): Letters and Gallery
  * only. The other sections reopen by adding them back here.
  */
 const openDesks: readonly Desk[] = ["letters", "gallery"];

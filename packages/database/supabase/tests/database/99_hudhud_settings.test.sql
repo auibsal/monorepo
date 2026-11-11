@@ -1,4 +1,4 @@
--- Hudhud's settings in the Diwan and the exempt list (decisions §6, §18).
+-- Hudhud's settings in the Diwan and the exempt list (decisions §6, §19).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files

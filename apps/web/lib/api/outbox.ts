@@ -69,6 +69,7 @@ import {
   type BroadcastContact,
   BroadcastPending,
   cleanUpSegments,
+  forgetContacts,
   pullUnsubscribes,
   runBroadcast,
 } from "@/lib/api/broadcast";
@@ -600,7 +601,7 @@ const eventNotice =
     }
   };
 
-/** One step of an application, to the applicant (decisions §18). */
+/** One step of an application, to the applicant (decisions §17). */
 const applicationStep = async (
   admin: AdminClient,
   payload: Record<string, unknown>,
@@ -726,7 +727,7 @@ const handlers: Record<string, Handler> = {
       await send({ email: payload.email, lang }, accountDeleted(lang));
     }
   },
-  // The President's notice (decisions §17): one Broadcast per language to
+  // The President's notice (decisions §18): one Broadcast per language to
   // the Sunday Paper's readers, each in their own language.
   "announcement.broadcast": async (admin, payload) => {
     await cleanUpSegments(admin);
@@ -990,7 +991,7 @@ const handlers: Record<string, Handler> = {
     await applicationStep(admin, payload, "received");
   },
   // One email a day to Membership, which runs every role's applications:
-  // counts by role, never names (decisions §18).
+  // counts by role, never names (decisions §19).
   "get_involved.replies_digest": async (admin) => {
     const since = new Date(Date.now() - 86_400_000).toISOString();
     const { data: replies } = await admin
@@ -1075,6 +1076,27 @@ const handlers: Record<string, Handler> = {
           appUrl()
         )
       );
+    }
+  },
+  // Thirty days after a list's send (decisions §12, §19): its contacts
+  // leave Resend, then its addresses are deleted here.
+  "invitation.forget": async (admin, payload) => {
+    const source = String(payload.source ?? "");
+    const { data: rows, error } = await admin
+      .schema("membership")
+      .from("invitations")
+      .select("email")
+      .eq("source", source);
+    if (error) {
+      throw error;
+    }
+    await forgetContacts((rows ?? []).map((r) => r.email));
+    await cleanUpSegments(admin);
+    const { error: gone } = await admin
+      .schema("membership")
+      .rpc("forget_invitation_list", { list_source: source });
+    if (gone) {
+      throw gone;
     }
   },
   "membership.certificate_issued": async (admin, payload) => {
@@ -1644,7 +1666,7 @@ const handlers: Record<string, Handler> = {
       throw new BroadcastPending(waiting.join(" "));
     }
   },
-  // The test (decisions §18): the issue in both languages, to the
+  // The test (decisions §19): the issue in both languages, to the
   // Editor-in-Chief, before the Managing Editor sends it.
   "sunday_paper.test": async (admin, payload) => {
     const month = String(payload.month ?? "");

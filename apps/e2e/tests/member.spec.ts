@@ -60,7 +60,7 @@ test("a member saves a draft, comes back to it and sends it", async ({
   await expect(page).toHaveURL(/\/qirtas\/write\/poetry\/[0-9a-f-]{36}$/u);
   await expect(page.getByRole("button", { name: "Draft saved" })).toBeVisible();
 
-  // Write for Qirtas lists the current drafts (decisions §17).
+  // Write for Qirtas lists the current drafts (decisions §18).
   await page.goto(`${urls.web}/qirtas/submit`);
   const drafts = page.getByRole("region", { name: "Your drafts" });
   const item = drafts.getByRole("listitem").filter({ hasText: title });

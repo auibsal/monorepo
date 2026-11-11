@@ -41,7 +41,7 @@ the bot has their notices turned off.
 | `/setup <code>` | Group admins | Connects the group, once. The code comes from the Diwan; the message is deleted at once. |
 | `/events` | Everyone | What's coming up, with buttons that open the bot. |
 
-Nothing else is typed in the chat (decisions §18). A group's settings are
+Nothing else is typed in the chat (decisions §19). A group's settings are
 kept in the Diwan, Media → Channels (`settings.manage`): who it is for
 (members, or staff for the Diwan group: see below), the language Hudhud
 answers in, and the topic for each kind of post (`announcements`,
@@ -70,7 +70,7 @@ And without commands:
   (`qirtas`, else `announcements`). The daily word goes only to members'
   own chats, never to a group. A purpose without a topic gets no posts.
   Each post goes out once (`core.telegram_posts`).
-- **Announcements** (decisions §17): a notice the President sends from the
+- **Announcements** (decisions §18): a notice the President sends from the
   Diwan (The Council → Announcements) is posted once to the members' group
   (`announcements` only) and sent to each linked member who keeps notices
   on, in their language, 25 a run (`core.announcement_deliveries`), for

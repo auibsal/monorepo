@@ -3,7 +3,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { getTranslations } from "next-intl/server";
 
 /**
- * Haven's call (decisions §14, §17): Qirtas's pilot Edition, on dreams and
+ * Haven's call (decisions §14, §18): Qirtas's pilot Edition, on dreams and
  * memories, taking Letters and Gallery through Write for Qirtas. No
  * deadline is given until the Editor-in-Chief sets the dates.
  */

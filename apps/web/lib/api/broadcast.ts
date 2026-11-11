@@ -220,6 +220,20 @@ export const cleanUpSegments = async (admin: AdminClient) => {
   }
 };
 
+/**
+ * Removes contacts from Resend by address (a list's, once it is deleted
+ * here). An address Resend no longer has is already gone.
+ */
+export const forgetContacts = async (emails: readonly string[]) => {
+  for (const email of emails) {
+    // biome-ignore lint/performance/noAwaitInLoops: Resend's rate limit
+    const { error } = await client().contacts.remove({ email });
+    if (error && error.name !== "not_found") {
+      throw new Error(`Resend: ${error.message}`);
+    }
+  }
+};
+
 /** Waits for a contact import; false while it is still running. */
 const importDone = async (importId: string) => {
   const started = Date.now();

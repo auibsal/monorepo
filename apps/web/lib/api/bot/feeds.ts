@@ -392,7 +392,7 @@ const clip = (text: string, max: number) =>
   text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 
 /**
- * The President's words as written (decisions §17): the title and body, in
+ * The President's words as written (decisions §18): the title and body, in
  * the reader's language, with the site's own button. Nothing of Hudhud's
  * Iraqi copy is added, so a message never mixes the two registers.
  */

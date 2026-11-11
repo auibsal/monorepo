@@ -167,7 +167,7 @@ const Haven = () => {
 };
 
 /**
- * The member's current drafts, the two most recent (decisions §17): what
+ * The member's current drafts, the two most recent (decisions §18): what
  * they have sent lives in Your account → Work, so it isn't repeated here.
  */
 const CurrentDrafts = () => {
@@ -1025,7 +1025,7 @@ const useWriteCall = (
   const pathway = useSubmitPathway(open, callId, partnerId);
   const call =
     pathway.callable.find((c) => c.id === callId) ??
-    // An Edition's call first: Haven's, for now (decisions §17).
+    // An Edition's call first: Haven's, for now (decisions §18).
     pathway.callable.find((c) => c.issue_id) ??
     pathway.callable[0];
   return {

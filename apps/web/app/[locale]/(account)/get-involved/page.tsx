@@ -20,7 +20,7 @@ interface PageProps {
 }
 
 /**
- * Get involved (decisions §1, §18): open roles only, rendered on the
+ * Get involved (decisions §1, §17): open roles only, rendered on the
  * server so the list is there without JavaScript. Each opening has its
  * own page, where members apply.
  */

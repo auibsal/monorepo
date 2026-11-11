@@ -1,4 +1,4 @@
--- Get involved: openings with questions, and applications (decisions §18).
+-- Get involved: openings with questions, and applications (decisions §17).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files

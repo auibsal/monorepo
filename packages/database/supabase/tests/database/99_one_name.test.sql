@@ -107,7 +107,7 @@ select lives_ok(
      where id = '00000000-0000-0000-0000-00000000b1a1' $$,
   'A member gives their full name');
 
--- Two people may share a name (decisions §18): no uniqueness rule.
+-- Two people may share a name (decisions §19): no uniqueness rule.
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b1a2');
 select lives_ok(
   $$ update core.profiles set first_name_en = 'Omar', father_name_en = 'Ali',
