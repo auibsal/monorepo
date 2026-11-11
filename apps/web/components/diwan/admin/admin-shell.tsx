@@ -1,6 +1,5 @@
 "use client";
 
-import { Icon } from "@repo/brand/components/sal/icon";
 import { cn } from "@repo/brand/lib/utils";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
@@ -49,7 +48,7 @@ const useVisibleSections = () => {
  * the officer's roles reach. On phones, one line naming the section opens
  * the list.
  */
-export const DiwanNav = () => {
+export const DiwanNav = ({ side = false }: { readonly side?: boolean }) => {
   const t = useTranslations("diwan.admin.sections");
   const pathname = usePathname();
   const { sections } = useVisibleSections();
@@ -57,21 +56,18 @@ export const DiwanNav = () => {
     return null;
   }
   const current = sectionOfPath(pathname);
-  const link = (section: (typeof sections)[number], phone: boolean) => {
+  const links = sections.map((section) => {
     const here = section.key === current;
     return (
-      <li className={phone ? undefined : "shrink-0"} key={section.key}>
+      <li className={side ? undefined : "shrink-0"} key={section.key}>
         <Link
           aria-current={here ? "page" : undefined}
           className={cn(
-            phone
-              ? "hover:text-accent block py-3 text-sm"
-              : "hover:text-accent block border-b-[1.5px] py-3 text-sm font-medium whitespace-nowrap",
-            phone && (here ? "text-accent font-medium" : "text-text"),
-            !phone &&
-              (here
-                ? "border-accent text-text"
-                : "text-text-secondary border-transparent")
+            "hover:text-accent block text-sm font-medium whitespace-nowrap",
+            side ? "border-s-[1.5px] py-2 ps-3" : "border-b-[1.5px] py-3",
+            here
+              ? "border-accent text-text"
+              : "text-text-secondary border-transparent"
           )}
           href={section.path}
         >
@@ -79,29 +75,24 @@ export const DiwanNav = () => {
         </Link>
       </li>
     );
-  };
-  return (
-    <nav aria-label={t("label")} className="border-line border-b print:hidden">
-      <details
-        className="group mx-auto w-full max-w-6xl px-4 md:hidden"
-        key={pathname}
-      >
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
-          <span>{t(current)}</span>
-          <Icon
-            className="size-4 transition-transform group-open:rotate-180"
-            name="chevron-down"
-          />
-        </summary>
-        <ul className="divide-line border-line grid divide-y border-t">
-          {sections.map((section) => link(section, true))}
-        </ul>
-      </details>
-      <div className="mx-auto hidden w-full max-w-6xl px-4 md:block">
-        <ul className="flex min-w-0 gap-x-6 overflow-x-auto">
-          {sections.map((section) => link(section, false))}
-        </ul>
-      </div>
+  });
+  // A computer: a side list, the Desk first; a phone: one row across the
+  // top (decisions.md, The site).
+  return side ? (
+    <nav
+      aria-label={t("label")}
+      className="sticky top-6 hidden self-start pt-12 sm:pt-16 lg:block print:hidden"
+    >
+      <ul className="grid gap-1">{links}</ul>
+    </nav>
+  ) : (
+    <nav
+      aria-label={t("label")}
+      className="border-line border-b lg:hidden print:hidden"
+    >
+      <ul className="mx-auto flex w-full max-w-6xl min-w-0 gap-x-6 overflow-x-auto px-4">
+        {links}
+      </ul>
     </nav>
   );
 };

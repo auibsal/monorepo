@@ -1,5 +1,6 @@
 import { routing } from "@repo/internationalization/routing";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import {
@@ -10,6 +11,7 @@ import {
 import type { ReactNode } from "react";
 import { ConsoleNote } from "@/components/console-note";
 import { Footer } from "@/components/footer";
+import { FooterSwitch } from "@/components/footer-switch";
 import { SiteHeader } from "@/components/site-header";
 import { JsonLd, organization } from "@/lib/json-ld";
 
@@ -49,9 +51,10 @@ const SiteLayout = async ({ children, params }: SiteLayoutProperties) => {
         <main className="flex-1" id="main">
           {children}
         </main>
-        <Footer />
+        <FooterSwitch full={<Footer />} qirtas={<Footer qirtas />} />
         <ConsoleNote />
         <Analytics />
+        <SpeedInsights />
       </NextIntlClientProvider>
     </div>
   );

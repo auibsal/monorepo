@@ -129,20 +129,20 @@ production; **Owner** is a step only the owner can take.
   deleted a week after the trip.
 
 ### 6. The frame (decisions.md, The site)
-- [ ] Header: logo, menu, search, language, theme, then Join or the account
+- [x] Header: logo, menu, search, language, theme, then Join or the account
   menu.
-- [ ] Public footer in four columns (The Society; Take part; Read and
+- [x] Public footer in four columns (The Society; Take part; Read and
   watch; Policies), then social links, "Raise a concern", the postal
   address, the paperless line and "© 2026 AUIB Society of Arts and
   Letters. All rights reserved." (2026–<year> from 2027). Qirtas's pages
   add that each piece belongs to its writer under its license; "Set in
   Ubuntu and Markazi Text. Written in Baghdad." moves to Qirtas.
-- [ ] Private spaces (your account, the partner dashboard, the Diwan): a
+- [x] Private spaces (your account, the partner dashboard, the Diwan): a
   slim footer (Help, Privacy, Terms, Report a problem); the Diwan's adds
   the version and build.
 - [ ] The partner dashboard keeps its own tabs: Events, Checklist, Guests,
   Team, Memorandum.
-- [ ] The Diwan's seats: a side list on a computer (the Desk first), across
+- [x] The Diwan's seats: a side list on a computer (the Desk first), across
   the top on a phone.
 
 ### 7. Pages (decisions.md, The site)
@@ -192,7 +192,7 @@ production; **Owner** is a step only the owner can take.
   Resend, or the hook's secret (steps in `docs/platform/email.md`).
 
 ### 9. Platform and settings
-- [ ] Speed Insights beside Web Analytics.
+- [x] Speed Insights beside Web Analytics.
 - [ ] A permissions table generated from the code, for the Leadership
   Handbook.
 - [ ] A stack page in the docs: every service with its plan, owner account,

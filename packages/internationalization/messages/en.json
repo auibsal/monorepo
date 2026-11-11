@@ -4614,22 +4614,46 @@
       "nextStop": "Next Stop"
     },
     "footer": {
-      "contact": "Contact",
-      "mediaKit": "Press kit",
-      "privacy": "Privacy and photo policy",
-      "partners": "Partners",
-      "newsletter": "The Sunday Paper",
-      "governance": "The Council",
-      "terms": "Terms of use",
-      "accessibility": "Accessibility",
       "columns": {
-        "society": "Society",
-        "contactHeading": "Stay in touch",
-        "email": "hello@auibsal.org",
-        "programs": "Events"
+        "society": "The Society",
+        "takePart": "Take part",
+        "read": "Read and watch",
+        "policies": "Policies"
       },
-      "verify": "Verify a card or certificate",
-      "nextStop": "Next Stop"
+      "about": "About",
+      "council": "The Council",
+      "press": "Press",
+      "partners": "Partners",
+      "contact": "Contact",
+      "join": "Join",
+      "involved": "Get involved",
+      "events": "Events",
+      "write": "Write for Qirtas",
+      "qirtas": "Qirtas",
+      "editions": "Editions",
+      "nextStop": "Next Stop",
+      "company": "The Company",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "accessibility": "Accessibility",
+      "conduct": "Code of Conduct",
+      "security": "Security",
+      "social": {
+        "instagram": "Instagram",
+        "telegram": "Telegram",
+        "youtube": "YouTube",
+        "linkedin": "LinkedIn"
+      },
+      "concern": "Raise a concern",
+      "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
+      "address": "AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq",
+      "paperless": "Paperless by default. Books reused through Second Chapter.",
+      "pieces": "Each piece belongs to its writer, under the license shown on it.",
+      "copyright": "© {years} AUIB Society of Arts and Letters. All rights reserved.",
+      "help": "Help",
+      "report": "Report a problem",
+      "version": "Version {version}, build {build}",
+      "local": "local"
     },
     "home": {
       "metaTitle": "The paper and the pen",
@@ -4978,7 +5002,8 @@
       "pilotIssue": "The pilot",
       "fromTheSocietyLede": "The Society’s notices, newest first: calls, openings, elections and results, and what changes.",
       "fromTheSocietyEmpty": "No notices yet.",
-      "fromTheSocietyAll": "All notices"
+      "fromTheSocietyAll": "All notices",
+      "colophon": "Set in Ubuntu and Markazi Text. Written in Baghdad."
     },
     "about": {
       "title": "About the Society",
@@ -5389,16 +5414,6 @@
       "search": "Search the site",
       "line": "The best companion, in any age, is a book.",
       "lineBy": "al-Mutanabbi"
-    },
-    "footerExtra": {
-      "copyright": "© {year} AUIB Society of Arts and Letters. All rights reserved.",
-      "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
-      "colophon": "Set in Ubuntu and Markazi Text. Written in Baghdad.",
-      "paperless": "Paperless by default. Books reused through Second Chapter.",
-      "instagram": "Instagram",
-      "telegram": "Telegram",
-      "youtube": "YouTube",
-      "linkedin": "LinkedIn"
     },
     "games": {
       "title": "Games",

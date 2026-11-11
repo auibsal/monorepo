@@ -7,6 +7,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { AppProviders } from "@/components/diwan/providers";
+import { SlimFooter } from "@/components/footer";
 
 // Rendered for each request, so Next can put the request's CSP nonce on
 // its scripts (apps/web/proxy.ts): the layout waits for the request, and
@@ -43,8 +44,8 @@ export const generateMetadata = async ({
 
 /**
  * The Diwan, the officers' administration at /diwan on
- * the one site, under the site's own header; a workspace, so no footer
- * (the overhaul, Oct 30, 2026). Members' pages are on
+ * the one site, under the site's own header; a workspace, with the slim
+ * footer and the site's version and build (decisions.md, The site). Members' pages are on
  * the site itself (/account and the rest; decisions.md). Client-
  * rendered: every read and write goes to Supabase with the officer's token
  * (Row Level Security decides) or to the API routes under /api with it.
@@ -65,7 +66,10 @@ const DiwanLayout = async ({ children, params }: DiwanLayoutProperties) => {
       messages={{ auth, common, diwan, web: { nav: web.nav } }}
     >
       <AppProviders>
-        <div className="flex min-h-svh flex-col">{children}</div>
+        <div className="flex min-h-svh flex-col">
+          {children}
+          <SlimFooter build />
+        </div>
       </AppProviders>
     </NextIntlClientProvider>
   );
