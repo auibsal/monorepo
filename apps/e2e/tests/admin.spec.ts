@@ -271,20 +271,34 @@ test("an officer who manages members corrects a member's name to the official on
     .getByLabel("Reason for the correction")
     .fill("Matches the AUIB register.");
   await page.getByRole("button", { name: "Save the name" }).click();
-  // The name shown is the given and father's names.
+  // A legal name takes two officers (decisions.md): it waits for another
+  // officer holding members.manage; the name shown would be the given and
+  // father's names.
   await expect(
-    page.getByText("Saved. The site now shows Mariam Tariq.")
+    page.getByText(
+      "Asked. The site shows Mariam Tariq once a second officer approves the change on the Desk."
+    )
   ).toBeVisible();
 
-  const saved = await db
+  const unchanged = await db
     .schema("core")
     .from("profiles")
-    .select("full_name_en, full_name_ar")
+    .select("full_name_en")
     .eq("id", memberId)
     .single();
-  expect(saved.data).toEqual({
-    full_name_ar: "مريم طارق",
-    full_name_en: "Mariam Tariq",
-  });
+  expect(unchanged.data?.full_name_en).toBe("Mariam AlHakimi");
+  const waiting = await db
+    .schema("governance")
+    .from("pending_actions")
+    .select("kind, status")
+    .eq("payload->>member", memberId);
+  expect(waiting.data).toEqual([{ kind: "legal_name", status: "pending" }]);
+
+  // The Desk lists it; the one who asked waits for someone else.
+  await page.goto(urls.app);
+  const second = page.getByRole("region", { name: "For a second officer" });
+  await expect(
+    second.getByText("Waiting for another officer.").first()
+  ).toBeVisible();
   await expectAccessible(page);
 });
