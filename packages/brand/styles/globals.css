@@ -587,13 +587,6 @@
   }
 }
 
-/* The reader's text size (TextSize in apps/web): it scales the reading column only. */
-:root[data-reading-size="small"] {
-  --reading-scale: 0.9;
-}
-:root[data-reading-size="large"] {
-  --reading-scale: 1.18;
-}
 /*
  * It reaches the article's text in every layout (decisions.md: the
  * sizes did nothing). `prose` sets its own size, which the reading column's

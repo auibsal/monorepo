@@ -245,7 +245,7 @@ grant execute on function core.my_minor_status() to authenticated;
 insert into governance.form_types (key, code, submit_rule, handle_permission, anonymous_ok, ongoing,
   subject_reads, sort, title_en, title_ar, version, filled, needs_account, by_link)
 values ('f46', 'F-46', 'anyone', 'members.manage', false, false, false, 460,
-  'Parent''s consent for a member under 18', 'موافقة ولي الأمر لعضو دون الثامنة عشرة', 1, 'site', false, true)
+  'Parent’s consent for a member under 18', 'موافقة ولي الأمر لعضو دون الثامنة عشرة', 1, 'site', false, true)
 on conflict (key) do nothing;
 
 alter table governance.form_links

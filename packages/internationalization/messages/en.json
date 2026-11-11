@@ -98,11 +98,11 @@
       "no_account": "No account uses this address. Check it, or create your account if you study at AUIB.",
       "breached_password": "This password has appeared in a data breach elsewhere, so it isn’t safe. Choose another.",
       "reauthentication_needed": "For your security, confirm it’s you first: enter the code we just emailed you.",
-      "terms_required": "To join, confirm that you are 18 or older and agree to the Terms of Use and the Privacy Notice."
+      "terms_required": "To join, answer whether you’re 18 or older (a student under 18 gives a parent’s email) and agree to the Terms of Use and the Privacy Notice."
     },
     "signIn": {
       "title": "Sign in",
-      "description": "The members’ portal of the AUIB Society of Arts and Letters.",
+      "description": "Your account with the AUIB Society of Arts and Letters.",
       "submit": "Sign in",
       "submitting": "Signing in…",
       "magicLink": "Email me a sign-in link instead",
@@ -351,7 +351,7 @@
         "title": "Voting eligibility",
         "progress": "{count} of 2 activities this semester and last",
         "founding": "You’re one of the Society’s first 100 members, so you’re a Voting Member until {date}. After that, two recorded activities keep your vote.",
-        "rule": "A Voting Member has two recorded activities in the current or previous semester.",
+        "rule": "A Voting Member has attended two events or general meetings in the 12 months before the election’s record date.",
         "history": "Activity history",
         "noHistory": "No activities recorded yet. Checking in at an event counts."
       },
@@ -2246,20 +2246,6 @@
           "receive": "Mark received",
           "notReceived": "Not yet received"
         },
-        "places": {
-          "lede": "Places with partners on Get involved: an internship, a volunteer place or a role at one of our partners. Anyone can read them; members reply.",
-          "empty": "No places with partners yet.",
-          "closed": "Closed",
-          "close": "Close",
-          "reopen": "Reopen",
-          "new": "Post a place with a partner",
-          "partner": "Partner",
-          "choose": "Choose a partner",
-          "title": "Title",
-          "body": "What it involves",
-          "post": "Post the place",
-          "back": "All places with partners"
-        },
         "supporters": {
           "title": "With the support of",
           "lede": "AUIB’s own offices, shown under “With the support of” on the partners page. They support the Society but aren’t partners.",
@@ -2404,7 +2390,7 @@
       },
       "productions": {
         "title": "The Company",
-        "lede": "Staged readings and productions, from proposal to the production report (Form F-25). The script’s rights are cleared before any performance.",
+        "lede": "Staged readings and productions, from proposal to the production report. The script’s rights are cleared before any performance.",
         "new": "New production",
         "newTitle": "Propose a production",
         "empty": "No productions yet. The President or Vice President proposes one; a Production Lead runs it.",
@@ -2498,7 +2484,20 @@
           "note": "Panel note",
           "notePlaceholder": "A note for the panel",
           "addNote": "Add note",
-          "notesPrivate": "Panel notes are seen only by whoever runs this production, never by the person auditioning."
+          "notesPrivate": "Panel notes are seen only by whoever runs this production, never by the person auditioning.",
+          "score": {
+            "title": "Score sheet (F-25)",
+            "criteria": {
+              "presence": "Presence",
+              "voice": "Voice and clarity",
+              "note": "Takes a note",
+              "fit": "Fit for the role",
+              "commitment": "Commitment"
+            },
+            "notes": "Notes on the work (write “recused” if you are close to them)",
+            "save": "Save my scores",
+            "total": "{total}/25"
+          }
         },
         "creditsTab": {
           "lede": "Cast, crew and the creative team. Members choose for themselves whether their name appears on the public page.",
@@ -2547,7 +2546,7 @@
           "partnersNote": "A production’s partners are the partners its performances are held with: set Host on the event in Notion, and use the event’s partner checklist."
         },
         "reportTab": {
-          "lede": "The production report (Form F-25, section B), filed once the production closes.",
+          "lede": "The production report, filed once the production closes.",
           "people": "People reached",
           "what": "What happened",
           "lessons": "Three lessons",
@@ -4283,7 +4282,7 @@
       },
       "guests": {
         "title": "Guests",
-        "lede": "Your guests may book places at events and write for Qirtas calls opened to you. Invite them by email or with a link; verify only people who belong to your organization.",
+        "lede": "Your guests may book places at events and write for Qirtas. Invite them by email or with a link; verify only people who belong to your organization.",
         "empty": "No guests yet.",
         "verify": "Verify",
         "decline": "Decline",
@@ -4693,12 +4692,6 @@
       "comingLede": "The first Edition is being made. Send your work while the call is open.",
       "writeForEdition": "Write for Qirtas",
       "reading": {
-        "textSize": "Text size",
-        "sizes": {
-          "small": "Small",
-          "medium": "Medium",
-          "large": "Large"
-        },
         "after": "Read on",
         "next": "Next",
         "inEdition": "In the Edition",
@@ -4885,15 +4878,15 @@
       "steps": {
         "register": {
           "title": "Register",
-          "body": "Sign up with your AUIB email and sign the Member Pledge."
+          "body": "Sign up with your AUIB email and acknowledge the Code of Conduct."
         },
         "commonRoom": {
           "title": "Join the members’ group on Telegram",
-          "body": "Our Telegram channel, where reminders and room changes go first. Follow @auibsal too."
+          "body": "The members’ group, where reminders and room changes go first. Link your account and you’re let in."
         },
         "twoThings": {
           "title": "Come to two things",
-          "body": "Any two Society activities in a semester make you a Voting Member: you can vote in elections and stand for office. For the founding year, the first 100 members vote from the day they join."
+          "body": "Attend two events or general meetings in the 12 months before an election and you are a Voting Member: you vote, and after a term as a member you can stand for office."
         }
       },
       "gives": {
@@ -4919,19 +4912,19 @@
       "firstMonth": "Sign up · join the members’ group on Telegram · come to an event with a friend · tell us after your second event what you would like to do here.",
       "cta": "Sign up",
       "ctaHint": "Use your AUIB email address.",
-      "others": "Not at AUIB? A guest’s membership comes by invitation, from the Society or one of its partners; an organization applies to partner.",
+      "others": "Not at AUIB? Make a guest account yourself to come to events and write for Qirtas; an organization applies to partner.",
       "othersLink": "Partners",
       "tour": {
         "title": "The Typewriter Tour",
         "short": "Our welcome to new students, at a typewriter.",
-        "lede": "The Typewriter Tour is the Society’s welcome to new students: sit at the typewriter, write six words, and join. It belongs to membership, run by the Director of Membership and the Tour Lead.",
+        "lede": "The Typewriter Tour is the Society’s welcome to new students: sit at the typewriter, type six words, and join. It belongs to membership, run by the Director of Membership and the Tour lead.",
         "whenTitle": "When",
         "when": "Once a year, in the spring club fair week, with the fair as one of its days. The 2027 dates follow Student Life’s fair and are posted on What’s on.",
         "wordsTitle": "Who sees your page",
         "words": "Six Words are written only on the typewriter, never on the site. Your page is private until you choose otherwise in your account: only you, your profile, or this page too. That choice is your consent, and you can change it any time.",
         "back": "Join the Society",
         "howTitle": "How it works",
-        "how": "No paper is kept. At the station you join on auibsal.org from the QR code, a volunteer photographs your typed page and attaches it to your new account, and you take the original home. Writers under 18 don’t join: they keep their page and nothing is photographed."
+        "how": "No paper is kept. At the station you join on auibsal.org from the QR code, a volunteer photographs your typed page and attaches it to your new account, and you take the original home. A writer under 18 joins too: their page stays private until a parent consents."
       },
       "tourLine": "Met us at the typewriter? Read about the Typewriter Tour.",
       "tiers": {
@@ -4942,12 +4935,12 @@
         },
         "voting": {
           "name": "Voting member",
-          "if": "attended at least two events or general meetings this academic year",
+          "if": "attended two events or general meetings in the 12 months before the election",
           "can": "also vote, online or in person, and stand for office"
         },
         "associate": {
           "name": "Associate Member",
-          "if": "are AUIB faculty, staff or an alumnus",
+          "if": "are AUIB faculty, staff or an alum",
           "can": "take part as a friend of the Society (no vote, no office)"
         },
         "honorary": {
@@ -5082,11 +5075,7 @@
         },
         "guests": {
           "title": "Bring your people",
-          "body": "Invite your people as guests: they book places at events and write for calls opened to you."
-        },
-        "places": {
-          "title": "Find people",
-          "body": "Places with your organization, posted by the Society on Get involved for its members."
+          "body": "Invite your people as guests: they book places at events and may write for Qirtas, through Write for Qirtas like everyone else."
         }
       },
       "gives": {

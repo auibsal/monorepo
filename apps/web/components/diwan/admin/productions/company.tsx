@@ -257,6 +257,11 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
                         {t("addNote")}
                       </Button>
                     </form>
+                    <AuditionScore
+                      auditionId={a.id}
+                      nameOf={nameOf}
+                      userId={s.user_id}
+                    />
                   </li>
                 );
               })}
@@ -266,6 +271,139 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
       })}
       <p className="type-caption">{t("notesPrivate")}</p>
     </div>
+  );
+};
+
+/** The criteria F-25 scores, 1 to 5 each, out of 25 (SAL-EXB-01). */
+const CRITERIA = ["presence", "voice", "note", "fit", "commitment"] as const;
+
+/**
+ * F-25, the audition score sheet (decisions §17): each scorer marks the
+ * criteria from 1 to 5 with a note, kept as a Diwan record; the others'
+ * sheets are shown beside one's own.
+ */
+const AuditionScore = ({
+  auditionId,
+  nameOf,
+  userId,
+}: {
+  readonly auditionId: string;
+  readonly nameOf: (id: string) => string;
+  readonly userId: string;
+}) => {
+  const t = useTranslations("diwan.admin.productions.auditionsTab.score");
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
+  const key = ["admin", "audition-scores", auditionId, userId];
+  const sheets = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("audition_scores")
+          .select("scorer, scores, notes")
+          .eq("audition_id", auditionId)
+          .eq("user_id", userId)
+      ) ?? [],
+    queryKey: key,
+  });
+  const mine = sheets.data?.find((x) => x.scorer === user?.id);
+  const [scores, setScores] = useState<Record<string, string>>({});
+  const [notes, setNotes] = useState<string | null>(null);
+  const own = (mine?.scores ?? {}) as Record<string, number>;
+  const save = useMutation({
+    mutationFn: async () => {
+      const picked = Object.fromEntries(
+        CRITERIA.map((c) => [c, Number(scores[c] ?? own[c] ?? 0)]).filter(
+          ([, n]) => Number(n) >= 1 && Number(n) <= 5
+        )
+      );
+      unwrap(
+        await supabase
+          .schema("programmes")
+          .from("audition_scores")
+          .upsert({
+            audition_id: auditionId,
+            notes: (notes ?? mine?.notes ?? "").trim() || null,
+            scorer: user?.id ?? "",
+            scores: picked,
+            user_id: userId,
+          })
+      );
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
+  if (userId === user?.id) {
+    return null;
+  }
+  const others = (sheets.data ?? []).filter((x) => x.scorer !== user?.id);
+  return (
+    <details className="grid gap-2">
+      <summary className="type-caption cursor-pointer">{t("title")}</summary>
+      <form
+        className="grid gap-3 pt-2"
+        onSubmit={(event) => {
+          event.preventDefault();
+          save.mutate();
+        }}
+      >
+        <div className="flex flex-wrap gap-3">
+          {CRITERIA.map((c) => (
+            <label className="grid gap-1" key={c}>
+              <span className="type-caption">{t(`criteria.${c}`)}</span>
+              <Input
+                className="w-20"
+                dir="ltr"
+                inputMode="numeric"
+                max={5}
+                min={1}
+                onChange={(e) =>
+                  setScores((x) => ({ ...x, [c]: e.target.value }))
+                }
+                type="number"
+                value={scores[c] ?? (own[c] ? String(own[c]) : "")}
+              />
+            </label>
+          ))}
+        </div>
+        <Input
+          aria-label={t("notes")}
+          dir="auto"
+          maxLength={2000}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder={t("notes")}
+          value={notes ?? mine?.notes ?? ""}
+        />
+        <Button
+          className="justify-self-start"
+          disabled={save.isPending}
+          size="sm"
+          type="submit"
+          variant="outline"
+        >
+          {t("save")}
+        </Button>
+      </form>
+      {others.map((sheet) => (
+        <p className="type-caption" key={sheet.scorer}>
+          {nameOf(sheet.scorer)}:{" "}
+          {CRITERIA.map(
+            (c) =>
+              `${t(`criteria.${c}`)} ${String((sheet.scores as Record<string, number>)[c] ?? "–")}`
+          ).join(" · ")}
+          {` · ${t("total", {
+            total: String(
+              CRITERIA.reduce(
+                (sum, c) =>
+                  sum + ((sheet.scores as Record<string, number>)[c] ?? 0),
+                0
+              )
+            ),
+          })}`}
+          {sheet.notes ? ` · ${sheet.notes}` : ""}
+        </p>
+      ))}
+    </details>
   );
 };
 

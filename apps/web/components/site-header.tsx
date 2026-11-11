@@ -148,7 +148,7 @@ export const SiteHeader = ({
   useEffect(() => {
     if (pathname) {
       setSignedIn(hasSessionCookie(document.cookie));
-      setWaysHint(readWays(document.cookie));
+      setWaysHint(readWays());
     }
   }, [pathname]);
   const known = ways ?? waysHint;

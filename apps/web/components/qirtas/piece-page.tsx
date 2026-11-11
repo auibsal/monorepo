@@ -15,7 +15,7 @@ import { PairedClip, Reading } from "@/components/qirtas/clip-and-reading";
 import { SelectionToggle } from "@/components/qirtas/gallery-selection";
 import { CorrectionNotes, PieceBody, texts } from "@/components/qirtas/layouts";
 import { PieceEnd } from "@/components/qirtas/piece-end";
-import { ReadingProgress, TextSize } from "@/components/qirtas/reading-tools";
+import { ReadingProgress } from "@/components/qirtas/reading-tools";
 import { SaveForLater } from "@/components/qirtas/save-for-later";
 import { ShareLink } from "@/components/share";
 import { journal, localized } from "@/lib/data";
@@ -213,7 +213,6 @@ export const PieceArticle = async ({
             locale={locale}
             topics={piece.topics}
           />
-          {lockedText ? null : <TextSize />}
           {/* Never on a members-only piece: the database refuses it. */}
           <Reading locale={locale} path={piece.reading_path} />
           {proseTypes.includes(category) && words > 0 ? (

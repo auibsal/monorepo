@@ -165,7 +165,8 @@ any schema change. Integration tests run against a local stack with
   function).
 - **Migrations ship through CI.** Add a file to `supabase/migrations`;
   after merge, `.github/workflows/migrate.yml` runs `supabase db push`
-  against production once CI passes, and Vercel deploys `main` itself.
+  against production once CI passes, then calls Vercel's deploy hook (Git
+  auto-deploy of `main` is off, so the site never runs ahead of its schema).
   Never paste SQL into the production database.
 - **Accounts (decisions §11, NIST SP 800-63B).** Passwords are 12
   characters or more with no composition rules, checked against known

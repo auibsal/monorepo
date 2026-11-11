@@ -17,7 +17,7 @@ const REACH = ["auib", "iraq", "international"] as const;
  * review C7, Nov 4, 2026).
  */
 const SIDES = {
-  gets: ["together", "guests", "places"],
+  gets: ["together", "guests"],
   gives: ["side", "team"],
 } as const;
 

@@ -413,7 +413,7 @@ export const twoStepReset = (
     paragraphs: [
       TWO_STEP_RESET[via][l],
       l === "ar"
-        ? "إن لم تطلب ذلك، فردّ على هذه الرسالة فورًا وأخبر المجلس التنفيذي."
+        ? "إن لم تطلب ذلك، فردّ على هذه الرسالة فورًا وأخبر المجلس."
         : "If you didn't ask for this, reply to this email right away and tell the Council.",
     ],
   }));
