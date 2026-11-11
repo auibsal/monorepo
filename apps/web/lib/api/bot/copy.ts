@@ -27,11 +27,6 @@ export type Purpose = (typeof purposes)[number];
 
 const en = {
   alreadyLinked: (name: string) => `You're linked as ${name}.`,
-  audienceMembers:
-    "This group is for the Society's members now: I let in anyone with a linked SAL account.",
-  audienceStaff:
-    "This group is for the Society's officers now: I let in only linked accounts that hold a Society role, post the morning brief at 8:00 a.m. and a short summary after each event. /topic brief chooses where they go.",
-  audienceUsage: "Use /audience staff or /audience members.",
   briefBooked: (booked: string, capacity: string) =>
     `${booked} booked of ${capacity}`,
   briefBookedOpen: (booked: string) => `${booked} booked`,
@@ -75,15 +70,12 @@ const en = {
   },
   by: (author: string) => `by ${author}`,
   commands: {
-    audience: "Who this group is for: staff or members",
     events: "What's coming up",
     help: "What I can do",
-    lang: "Language of my posts: en, ar or both",
     me: "Your membership and your places",
     qirtas: "New in Qirtas",
     setup: "Connect this group (code from the Diwan)",
     start: "Say hello",
-    topic: "Tell me what this topic is for",
     word: "Play today's word",
   },
   description:
@@ -124,8 +116,6 @@ const en = {
     `${group} is for the Society's officers. If you hold a Society role, link your SAL account and I'll let you in right away; otherwise an admin will look at your request.`,
   joinWaiting: (group: string) =>
     `Thank you for asking to join ${group}. An admin will look at your request soon. If you have a SAL account, link it and I'll let you in right away.`,
-  langOk: "I'll post in this language from now on.",
-  langUsage: "Use /lang en, /lang ar or /lang both.",
   linked: (name: string) =>
     `Linked. Good to meet you properly, ${name}. Your notices will come here too; /me turns them off.`,
   linkFailed:
@@ -187,7 +177,7 @@ const en = {
 
   // Group: connecting
   setupOk:
-    "Connected. I'm the Society's messenger here now.\n\nNext:\n1. Make me an admin who can invite users.\n2. In each topic, send /topic with what it's for: announcements, events, qirtas or word.\n3. Turn on <b>Approve new members</b> for the invite link: I let linked members in at once and leave everyone else to you.",
+    "Connected. I'm the Society's messenger here now.\n\nNext:\n1. Make me an admin who can invite users.\n2. Choose each topic's purpose, the language and who the group is for in the Diwan, under Media → Channels.\n3. Turn on <b>Approve new members</b> for the invite link: I let linked members in at once and leave everyone else to you.",
   setupUsage: "Send /setup with the code from the Diwan (Settings, Telegram).",
   shortDescription:
     "The messenger of the AUIB Society of Arts and Letters: events, Qirtas and a daily word.",
@@ -195,10 +185,6 @@ const en = {
     `${came} came: ${booked} who booked, ${walkIns} without a booking`,
   summaryNoShows: (n: string) => `${n} booked and didn't come`,
   summaryTitle: "<b>After the event</b>",
-  topicCleared: "This topic is no longer for anything in particular.",
-  topicOk: (purpose: string) => `This topic is now for ${purpose}.`,
-  topicUsage:
-    "Send it inside a topic: /topic announcements, events, qirtas, word or brief. /topic none clears it.",
   unlinked:
     "Unlinked. Your SAL account no longer gets notices here. You can link it again from Settings in Your account.",
   waitlisted: "You're on the waitlist.",
@@ -219,11 +205,6 @@ type Copy = {
 
 const ar: Copy = {
   alreadyLinked: (name: string) => `انت مربوط باسم ${name}.`,
-  audienceMembers:
-    "هالمجموعة هسه لأعضاء الجمعية: أدخّل كل واحد رابط حسابه بالجمعية.",
-  audienceStaff:
-    "هالمجموعة هسه لمسؤولي الجمعية: ما أدخّل غير الحسابات المربوطة اللي عدها دور بالجمعية، وأنزّل موجز الصبح الساعة 8:00 وملخص قصير بعد كل فعالية. /topic brief يحدد وين ينزلن.",
-  audienceUsage: "اكتب /audience staff أو /audience members.",
   briefBooked: (booked: string, capacity: string) =>
     `${booked} حاجزين من ${capacity}`,
   briefBookedOpen: (booked: string) => `${booked} حاجزين`,
@@ -265,15 +246,12 @@ const ar: Copy = {
   },
   by: (author: string) => `بقلم ${author}`,
   commands: {
-    audience: "هالمجموعة لمنو: staff أو members",
     events: "شنو جاي",
     help: "شنو أگدر أسوي",
-    lang: "لغة منشوراتي: en أو ar أو both",
     me: "عضويتك ومقاعدك",
     qirtas: "الجديد بقرطاس",
     setup: "اربط هالمجموعة (رمز من الديوان)",
     start: "سلّم عليّ",
-    topic: "گلّي هالموضوع لشنو",
     word: "إلعب كلمة اليوم",
   },
   // The bot's profile in Telegram is read by people who don't know the
@@ -313,8 +291,6 @@ const ar: Copy = {
     `${group} لمسؤولي الجمعية. إذا عندك دور بالجمعية اربط حسابك وأدخّلك هسه، وإلا واحد من المشرفين راح يشوف طلبك.`,
   joinWaiting: (group: string) =>
     `شكرًا لأنك طلبت تنضم لـ${group}. واحد من المشرفين راح يشوف طلبك قريب. وإذا عندك حساب بالجمعية اربطه وأدخّلك هسه.`,
-  langOk: "من هسه أنزّل بهاللغة.",
-  langUsage: "اكتب /lang en أو /lang ar أو /lang both.",
   linked: (name: string) =>
     `انربط. تشرفنا صدگ يا ${name}. إشعاراتك هم راح توصلك هنا، وتگدر تطفيها من /me.`,
   linkFailed:
@@ -368,7 +344,7 @@ const ar: Copy = {
     "هالرمز ما اشتغل. واحد من المسؤولين يگدر يسوي رمز جديد من الديوان: الإعدادات، تيليغرام.",
 
   setupOk:
-    "انربطت. من هسه آني حامل رسائل الجمعية هنا.\n\nبعدين:\n1. سوّوني مشرف يگدر يدعي مستخدمين.\n2. بكل موضوع، دزّوا /topic ويّا الغرض منه: announcements أو events أو qirtas أو word.\n3. فعّلوا <b>الموافقة على الأعضاء الجدد</b> لرابط الدعوة: أدخّل الأعضاء المربوطين هسه وأخلّي الباقين عليكم.",
+    "انربطت. من هسه آني حامل رسائل الجمعية هنا.\n\nبعدين:\n1. سوّوني مشرف يگدر يدعي مستخدمين.\n2. اختاروا غرض كل موضوع، واللغة، ولمنو المجموعة من الديوان، بـ«الإعلام ← القنوات».\n3. فعّلوا <b>الموافقة على الأعضاء الجدد</b> لرابط الدعوة: أدخّل الأعضاء المربوطين هسه وأخلّي الباقين عليكم.",
   setupUsage: "دز /setup ويّا الرمز من الديوان (الإعدادات، تيليغرام).",
   shortDescription:
     "حامل رسائل جمعية الفنون والآداب: الفعاليات وقرطاس وكلمة كل يوم.",
@@ -376,10 +352,6 @@ const ar: Copy = {
     `إجو ${came}: ${booked} من اللي حجزوا و${walkIns} بلا حجز`,
   summaryNoShows: (n: string) => `${n} حجزوا وما إجو`,
   summaryTitle: "<b>بعد الفعالية</b>",
-  topicCleared: "هالموضوع ما بقى مخصص لشي معيّن.",
-  topicOk: (purpose: string) => `هالموضوع صار مخصص لـ${purpose}.`,
-  topicUsage:
-    "دزها داخل موضوع: /topic announcements أو events أو qirtas أو word أو brief. و/topic none يشيل التخصيص.",
   unlinked:
     "انفصل. حسابك بالجمعية ما راح توصله إشعارات هنا بعد. تگدر تربطه مرة لخ من الإعدادات بـ«حسابك».",
   waitlisted: "انت بقائمة الانتظار.",
