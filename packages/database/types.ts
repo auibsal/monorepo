@@ -5268,6 +5268,7 @@ export type Database = {
       masthead: {
         Args: Record<PropertyKey, never>;
         Returns: {
+          covered_by: string;
           full_name_ar: string;
           full_name_en: string;
           role: string;
@@ -6895,8 +6896,6 @@ export type Database = {
           poster_path: string | null;
           programme_id: string | null;
           report_lessons: string | null;
-          report_money_in_iqd: number | null;
-          report_money_out_iqd: number | null;
           report_people_reached: number | null;
           report_repeat: string | null;
           report_signed_at: string | null;
@@ -6928,8 +6927,6 @@ export type Database = {
           poster_path?: string | null;
           programme_id?: string | null;
           report_lessons?: string | null;
-          report_money_in_iqd?: number | null;
-          report_money_out_iqd?: number | null;
           report_people_reached?: number | null;
           report_repeat?: string | null;
           report_signed_at?: string | null;
@@ -6960,8 +6957,6 @@ export type Database = {
           poster_path?: string | null;
           programme_id?: string | null;
           report_lessons?: string | null;
-          report_money_in_iqd?: number | null;
-          report_money_out_iqd?: number | null;
           report_people_reached?: number | null;
           report_repeat?: string | null;
           report_signed_at?: string | null;

@@ -161,6 +161,24 @@ const useHavenCall = () => {
   });
 };
 
+/**
+ * The call's closing line as the owner wrote it (decisions.md, Qirtas):
+ * "Sunday, December 6" and "11:59 p.m."; in Arabic «الأحد 6 كانون الأول»
+ * and «11:59 مساءً».
+ */
+const closingDate = (value: string, locale: string) => {
+  const date = formatLongDate(value, locale as "en");
+  return locale === "ar" ? date.replace("،", "") : date;
+};
+const closingTime = (value: string, locale: string) => {
+  const time = formatClock(value, locale as "en");
+  return locale === "ar"
+    ? time.replace(EVENING_AR, " مساءً").replace(MORNING_AR, " صباحًا")
+    : time;
+};
+const EVENING_AR = / م$/u;
+const MORNING_AR = / ص$/u;
+
 const HAVEN_RULES = ["length", "entries", "new", "who", "own"] as const;
 
 /**
@@ -198,8 +216,8 @@ const Haven = () => {
       {closes ? (
         <p className="type-body max-w-[60ch] font-medium">
           {tw("closes", {
-            date: formatLongDate(closes, locale, true),
-            time: formatClock(closes, locale),
+            date: closingDate(closes, locale),
+            time: closingTime(closes, locale),
           })}
         </p>
       ) : null}

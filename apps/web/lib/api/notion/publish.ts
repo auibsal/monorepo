@@ -566,3 +566,65 @@ export const syncRsvpCounts = async (ctx: SyncContext) => {
     }
   }
 };
+
+/** Notion's times are to the minute; a write-back lands just after saving. */
+const GRACE_MS = 2 * 60_000;
+
+/**
+ * Published events whose Notion row a person edited after the site's last
+ * copy, and Published rows the site has no copy of (PROGRESS.md: the site's
+ * copies of some events were older than Notion's rows). Reported in the
+ * Connected panel, never changed silently: setting the row to "Ready to
+ * publish" again updates the site with the editor's permission checked.
+ */
+export const reportStaleEvents = async (
+  ctx: SyncContext,
+  bots: Set<string>
+) => {
+  const rows = await ctx.notion.query(
+    ctx.sources.events,
+    statusFilter(["Published"])
+  );
+  const { data, error } = await ctx.admin
+    .schema("core")
+    .from("notion_links")
+    .select("notion_page_id, synced_at")
+    .in("kind", ["event", "event_ar"]);
+  if (error) {
+    throw error;
+  }
+  const synced = new Map(
+    (data ?? []).map((l) => [l.notion_page_id, Date.parse(l.synced_at)])
+  );
+  const stale: string[] = [];
+  const missing: string[] = [];
+  for (const page of rows) {
+    const title = read.text(page, "Title") || bareId(page.id);
+    const at = synced.get(bareId(page.id));
+    if (at === undefined) {
+      missing.push(title);
+      continue;
+    }
+    const editor = page.last_edited_by?.id;
+    if (
+      Date.parse(page.last_edited_time) > at + GRACE_MS &&
+      !(editor && bots.has(editor))
+    ) {
+      stale.push(title);
+    }
+  }
+  count(ctx, "event.stale", stale.length);
+  count(ctx, "event.missing", missing.length);
+  if (stale.length > 0) {
+    problem(
+      ctx,
+      `Edited in Notion after publishing (set to Ready to publish to update the site): ${stale.join("; ")}`
+    );
+  }
+  if (missing.length > 0) {
+    problem(
+      ctx,
+      `Marked Published in Notion but not on the site (set to Ready to publish): ${missing.join("; ")}`
+    );
+  }
+};

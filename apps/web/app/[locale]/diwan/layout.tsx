@@ -20,17 +20,25 @@ interface DiwanLayoutProperties {
   }>;
 }
 
-export const metadata: Metadata = {
-  // Installable, so phones can show notifications (iPhone needs it).
-  appleWebApp: { capable: true, title: "Diwan" },
-  icons: { apple: "/icons/sal-avatar-180.png" },
-  manifest: "/manifest.webmanifest",
-  // The Diwan is for officers: keep it out of search engines.
-  robots: { follow: false, index: false },
-  title: {
-    default: `The Diwan · ${project.shortName}`,
-    template: "%s · The Diwan",
-  },
+/** The Diwan's titles, in the page's language (decisions.md, Standards). */
+export const generateMetadata = async ({
+  params,
+}: {
+  readonly params: Promise<{ locale: string }>;
+}): Promise<Metadata> => {
+  const { locale } = await params;
+  const ar = locale === "ar";
+  const diwan = ar ? "الديوان" : "The Diwan";
+  const society = ar ? "الجمعية" : project.shortName;
+  return {
+    // Installable, so phones can show notifications (iPhone needs it).
+    appleWebApp: { capable: true, title: ar ? "الديوان" : "Diwan" },
+    icons: { apple: "/icons/sal-avatar-180.png" },
+    manifest: "/manifest.webmanifest",
+    // The Diwan is for officers: keep it out of search engines.
+    robots: { follow: false, index: false },
+    title: { default: `${diwan} · ${society}`, template: `%s · ${diwan}` },
+  };
 };
 
 /**

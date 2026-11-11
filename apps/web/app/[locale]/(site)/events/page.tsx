@@ -21,6 +21,7 @@ export const generateMetadata = async ({
   const t = await getTranslations({ locale, namespace: "web.events" });
   return localizedMetadata(locale, "/events", {
     description: t("lede"),
+    feed: "/events/feed.xml",
     title: t("title"),
   });
 };

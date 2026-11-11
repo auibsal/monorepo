@@ -1,5 +1,5 @@
 import { internationalizationMiddleware } from "@repo/internationalization/proxy";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   contentSecurityPolicy,
   createNonce,
@@ -36,11 +36,24 @@ const PER_REQUEST =
   /^(\/[a-z]{2})?\/(account|auth|company\/auditions|continue|diwan|forgot-password|forms|get-involved|invite|partners\/(apply|dashboard)|qirtas\/(read|write)|sign-in|sign-up|welcome)(\/|$)/u;
 const themeHash = scriptHash(themeScript);
 
+// English has no prefix (AGENTS.md, URLs): "/en/..." is the same page
+// without it, for good, so the redirect is permanent (308), not
+// next-intl's temporary one.
+const ENGLISH_PREFIX = /^\/en(\/|$)/u;
+
 // The proxy picks the language and sets the security headers. Sign-in and
 // permissions stay in the browser (UX) and in Row Level Security and the
 // API routes (security); the members' pages and the Diwan check them client-side.
 export default async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
+  if (ENGLISH_PREFIX.test(path)) {
+    const url = request.nextUrl.clone();
+    url.pathname = path.replace(ENGLISH_PREFIX, "/");
+    return withSecurityHeaders(
+      NextResponse.redirect(url, 308),
+      securityOptions
+    );
+  }
   if (PER_REQUEST.test(path)) {
     const options = withNonce(securityOptions, createNonce(), [
       await themeHash,

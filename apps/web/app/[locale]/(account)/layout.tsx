@@ -22,17 +22,23 @@ interface AccountLayoutProperties {
   }>;
 }
 
-export const metadata: Metadata = {
-  // Installable, so phones can show notifications (iPhone needs it).
-  appleWebApp: { capable: true, title: project.shortName },
-  icons: { apple: "/icons/sal-avatar-180.png" },
-  manifest: "/manifest.webmanifest",
-  // Personal pages: keep them out of search engines.
-  robots: { follow: false, index: false },
-  title: {
-    default: project.shortName,
-    template: `%s · ${project.shortName}`,
-  },
+/** The account's titles, in the page's language (decisions.md, Standards). */
+export const generateMetadata = async ({
+  params,
+}: {
+  readonly params: Promise<{ locale: string }>;
+}): Promise<Metadata> => {
+  const { locale } = await params;
+  const society = locale === "ar" ? "الجمعية" : project.shortName;
+  return {
+    // Installable, so phones can show notifications (iPhone needs it).
+    appleWebApp: { capable: true, title: society },
+    icons: { apple: "/icons/sal-avatar-180.png" },
+    manifest: "/manifest.webmanifest",
+    // Personal pages: keep them out of search engines.
+    robots: { follow: false, index: false },
+    title: { default: society, template: `%s · ${society}` },
+  };
 };
 
 /**

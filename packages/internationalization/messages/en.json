@@ -806,7 +806,7 @@
             "who": "Open to members of every class and to guests 18 or older. Members under 18 may send work, and nothing shows or names them without a parent’s consent. Only student Members are eligible for the Mutanabbi Prize.",
             "own": "Your own work: no text or images generated with AI."
           },
-          "closes": "Submissions close {date} at {time}, Baghdad time. You hear back within the week.",
+          "closes": "Closes {date}, at {time} Baghdad time. You hear back within the week.",
           "published": "The pilot issue is published {date}."
         },
         "drafts": {
@@ -4818,7 +4818,9 @@
         "link": "Masthead",
         "title": "Masthead",
         "lede": "The people who make Qirtas, from the roles they hold at the Society.",
-        "empty": "The masthead is being formed."
+        "empty": "The masthead is being formed.",
+        "coveredByEditorInChief": "Covered by the Editor-in-Chief",
+        "checkedByManagingEditor": "Checked by the Managing Editor"
       },
       "sendTo": "Send your work to {desk}",
       "end": {
@@ -4868,7 +4870,7 @@
       "does": {
         "qirtas": {
           "title": "Qirtas",
-          "body": "The Society’s paper of news, letters and art, with its own masthead and editorial independence. It includes Qalam, its summer program for high school students. Anyone can write for it, at any time."
+          "body": "The Society’s paper of news, letters and art, with its own masthead and editorial independence. It includes Qalam, its summer program for high school students. Members and guests write for it through Write for Qirtas."
         },
         "company": {
           "title": "The Company",
