@@ -1,0 +1,46 @@
+{
+  "about": "The kit's sound and video files (SAL-MED-02; decisions.md, Brand and design: Video). The WAV is kept here; video files stay out of git, in the private brand-kit bucket, downloaded by staff from /diwan/media/design.",
+  "files": [
+    {
+      "file": "SAL-MED-02-sound-logo.wav",
+      "format": "WAV, 48 kHz, 24-bit, stereo, 2.2 s",
+      "name": "Sound logo",
+      "where": "kit",
+      "path": "sound/SAL-MED-02-sound-logo.wav"
+    },
+    {
+      "file": "SAL-MED-02-sound-logo-vertical-EN.mp4",
+      "format": "MP4, 1080 × 1920, 25 fps, 2.2 s",
+      "name": "Sound logo, vertical, English",
+      "where": "bucket"
+    },
+    {
+      "file": "SAL-MED-02-sound-logo-vertical-AR.mp4",
+      "format": "MP4, 1080 × 1920, 25 fps, 2.2 s",
+      "name": "Sound logo, vertical, Arabic",
+      "where": "bucket"
+    },
+    {
+      "file": "SAL-MED-02-sound-logo-16x9-EN.mp4",
+      "format": "MP4, 1920 × 1080, 25 fps, 3.0 s (the landscape opening)",
+      "name": "Sound logo, 16:9, English",
+      "where": "bucket"
+    },
+    {
+      "file": "SAL-MED-02-sound-logo-16x9-AR.mp4",
+      "format": "MP4, 1920 × 1080, 25 fps, 3.0 s (the landscape opening)",
+      "name": "Sound logo, 16:9, Arabic",
+      "where": "bucket"
+    }
+  ],
+  "inReview": [
+    "Next Stop: opening titles",
+    "Next Stop: the four part cards",
+    "Next Stop: take card and the two verdicts",
+    "Next Stop: name captions (landscape and vertical)",
+    "Next Stop: credits and end screen",
+    "Next Stop: reel ending",
+    "Next Stop: thumbnail template",
+    "The launch film"
+  ]
+}

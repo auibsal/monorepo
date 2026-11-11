@@ -1454,7 +1454,47 @@
           "unpublish": "Unpublish",
           "careNote": "Before publishing: releases signed, camera-shy members not shown, guests given their 48-hour review.",
           "back": "Video",
-          "missing": "This episode is not here"
+          "missing": "This episode is not here",
+          "youtubeAr": "YouTube video, Arabic edition",
+          "youtubeArHint": "Only when the episode has one video per language; leave empty for one video with both caption tracks.",
+          "releasedOn": "Release date",
+          "thumbnail": "Thumbnail (16:9)",
+          "chapters": "Chapters",
+          "chaptersHint": "The cold open, The ride, The task, The long way home, The exit, the credits: each with its start time.",
+          "chapterTime": "Starts at",
+          "chapterTitle": "Chapter",
+          "chapterRemove": "Remove the chapter",
+          "chapterAdd": "Add a chapter",
+          "chapterTimeError": "Write each chapter’s start as minutes and seconds, such as 4:30.",
+          "releasesMissing": "Everyone on camera signs the media release (F-15) before the episode is published.",
+          "captions": {
+            "en": "English captions (WebVTT)",
+            "ar": "Arabic captions (WebVTT)",
+            "remove": "Remove"
+          },
+          "onCamera": {
+            "title": "On camera",
+            "body": "Everyone who appears signs the media release (F-15) on the site, by a single-use link to their address. The episode can’t be published until all have signed.",
+            "unsent": "Release not sent",
+            "sent": "Link sent, not signed yet",
+            "signed": "Release signed",
+            "guest": "Guest",
+            "send": "Send the release link",
+            "resend": "Send the link again",
+            "remove": "Remove",
+            "add": "Add someone on camera",
+            "member": "A member",
+            "asGuest": "Credit them as a guest",
+            "guestName": "Or a guest’s name",
+            "guestEmail": "The guest’s email address"
+          },
+          "credits": {
+            "title": "Credits",
+            "body": "The crew’s credits for this episode, in the order they roll. The standing producer and host are credited when none is named; guests come from the list above. Names come from the site, never a Society title.",
+            "add": "Add a credit",
+            "member": "Who",
+            "credit": "Credit"
+          }
         },
         "reels": {
           "new": "New reel",
@@ -3191,6 +3231,7 @@
           "membership_memberships": "a membership",
           "membership_service_records": "service hours",
           "membership_verification_requests": "a verification request",
+          "programmes_episode_on_camera": "who is on camera",
           "programmes_episodes": "the episode",
           "programmes_needs": "a need",
           "programmes_opening_replies": "an application",
@@ -3420,6 +3461,13 @@
           "Emails": "Emails",
           "Social": "Social",
           "Print": "Print"
+        },
+        "video": {
+          "title": "Video files",
+          "body": "The approved sound-logo clips, kept out of git in a private bucket. Upload each file as Media receives it; staff download them from Foundations → Sound and video.",
+          "choose": "Upload {file}",
+          "done": "Uploaded.",
+          "failed": "The file could not be uploaded. It must be an MP4."
         }
       },
       "announcements": {
@@ -4756,14 +4804,37 @@
       "newsletterLede": "One email a month: what Qirtas published and the Society’s coming public events.",
       "nextStop": {
         "title": "Next Stop",
-        "lede": "The Society’s video show about campus, from the Director of Media’s team: the people, the places and what happens there. Be a guest, or join the crew.",
+        "lede": "The Society’s video show: a reality-sitcom about AUIB, made by the Director of Media’s team.",
         "care": "Next Stop’s promise",
+        "latest": "The latest episode",
         "episodes": "Episodes",
         "asList": "Every episode, as a list",
+        "none": "No episodes yet.",
         "team": "The team",
-        "sendTitle": "Send a reel",
-        "sendBody": "Members send reels from Write for Qirtas, like any other work, and every one is read blind.",
-        "sendReel": "Send a reel"
+        "contact": "Want to be on the show, or have an idea for it? Write to nextstop@auibsal.org.",
+        "pilot": "A pilot episode comes out this fall, before finals. The first season runs in spring 2027.",
+        "qirtas": "Members’ own films run in Qirtas’s Video section.",
+        "episode": "Episode {number}",
+        "released": "Released {date}",
+        "play": "Play the episode",
+        "playNote": "Plays from YouTube (youtube-nocookie.com), which sets no cookies until you play.",
+        "edition": "Watch in",
+        "chapters": "Chapters",
+        "credits": "Credits",
+        "watchOnYouTube": "Watch on YouTube",
+        "credit": {
+          "directed_by": "Directed by",
+          "produced_by": "Produced by",
+          "host": "Host",
+          "guests": "Guests",
+          "director_of_photography": "Director of Photography",
+          "edited_by": "Edited by",
+          "original_music": "Original Music",
+          "title_design": "Title Design"
+        },
+        "closing": "Filmed on location at the American University of Iraq – Baghdad with the support of the Office of Student Life. A production of the AUIB Society of Arts and Letters.",
+        "captions": "Captions",
+        "captionsFile": "{language} captions (WebVTT)"
       },
       "printed": "Printed by {printer}, {date}: {copies} copies.",
       "authorKinds": {

@@ -332,7 +332,24 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   is staff only (`/diwan/qirtas/qalam`, `qalam.manage`), never in Notion,
   deleted three years on. High school students never get accounts.
 - **Next Stop** is the Director of Media's video show at `/next-stop`
-  (episodes, its promise at `/next-stop/care`), not part of Qirtas.
+  (its promise at `/next-stop/care`), not part of Qirtas. Episodes are
+  `programmes.episodes`, edited in the Diwan (Media → Next Stop): number,
+  title and description in both languages, one YouTube video per language
+  edition (or one with both caption tracks), release date, chapters,
+  WebVTT captions and a thumbnail. Each has its page at
+  `/next-stop/episodes/<slug>` with a click-to-load player on
+  youtube-nocookie.com, TVEpisode JSON-LD, and a place in the sitemap.
+  Everyone on camera is listed (`programmes.episode_on_camera`, Media only)
+  and signs F-15 by a single-use link to their address
+  (`programmes.episode_release_link`); an episode can't be published until
+  all have signed (`private.episode_releases_signed`). Credits come from
+  Next Stop crew roles scoped to the episode, each with its `credit`
+  (`programmes.credit_episode`), plus guests and the standing producer and
+  host, in the American order (`programmes.episode_credits`). A removal
+  request naming an episode's address hides it at once. The kit's video
+  files are in the private `brand-kit` bucket, listed in
+  `packages/brand/assets/video/manifest.json`, uploaded by Media and
+  downloaded by staff through `/api/brand-kit/<file>`.
 - **The mailing list** (decisions.md, Channels and email): one audience
   with two topics, "The Sunday Paper" (`paper`) and "Society news and
   events" (`news`). Members are on both from sign-up unless they untick

@@ -2,8 +2,7 @@ import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { loadEpisodes } from "@/components/next-stop";
-import { PieceCardView } from "@/components/qirtas/cards";
+import { EpisodeCard, loadEpisodes } from "@/components/next-stop";
 import { localizedMetadata } from "@/lib/metadata";
 
 interface EpisodesProps {
@@ -26,7 +25,7 @@ const EpisodesPage = async ({ params }: EpisodesProps) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  const episodes = await loadEpisodes(locale);
+  const episodes = await loadEpisodes();
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
       <header className="grid gap-2">
@@ -38,12 +37,12 @@ const EpisodesPage = async ({ params }: EpisodesProps) => {
         </p>
       </header>
       {episodes.length === 0 ? (
-        <p className="type-body text-text-secondary">{t("noPieces")}</p>
+        <p className="type-body text-text-secondary">{t("nextStop.none")}</p>
       ) : (
         <ul className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {episodes.map((piece) => (
-            <li key={piece.id}>
-              <PieceCardView heading="h2" image locale={locale} piece={piece} />
+          {episodes.map((episode) => (
+            <li key={episode.id}>
+              <EpisodeCard episode={episode} heading="h2" locale={locale} />
             </li>
           ))}
         </ul>

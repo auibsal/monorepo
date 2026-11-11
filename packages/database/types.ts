@@ -82,6 +82,7 @@ export type Database = {
           confirmed_by: string | null;
           covering: boolean;
           created_at: string;
+          credit: string | null;
           ends_at: string | null;
           exception_resolution_id: string | null;
           id: string;
@@ -104,6 +105,7 @@ export type Database = {
           confirmed_by?: string | null;
           covering?: boolean;
           created_at?: string;
+          credit?: string | null;
           ends_at?: string | null;
           exception_resolution_id?: string | null;
           id?: string;
@@ -125,6 +127,7 @@ export type Database = {
           confirmed_by?: string | null;
           covering?: boolean;
           created_at?: string;
+          credit?: string | null;
           ends_at?: string | null;
           exception_resolution_id?: string | null;
           id?: string;
@@ -6505,55 +6508,121 @@ export type Database = {
           },
         ];
       };
-      episodes: {
+      episode_on_camera: {
         Row: {
           created_at: string;
+          episode_id: string;
+          form_link_id: string | null;
+          guest_name_ar: string | null;
+          guest_name_en: string | null;
+          id: string;
+          is_guest: boolean;
+          release_id: string | null;
+          user_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          episode_id: string;
+          form_link_id?: string | null;
+          guest_name_ar?: string | null;
+          guest_name_en?: string | null;
+          id?: string;
+          is_guest?: boolean;
+          release_id?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          episode_id?: string;
+          form_link_id?: string | null;
+          guest_name_ar?: string | null;
+          guest_name_en?: string | null;
+          id?: string;
+          is_guest?: boolean;
+          release_id?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "episode_on_camera_episode_id_fkey";
+            columns: ["episode_id"];
+            isOneToOne: false;
+            referencedRelation: "episodes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      episodes: {
+        Row: {
+          captions_ar_path: string | null;
+          captions_en_path: string | null;
+          chapters: NonNullable<Json>;
+          created_at: string;
+          duration_seconds: number | null;
           id: string;
           number: number | null;
           programme_id: string;
           published_at: string | null;
+          released_on: string | null;
           season: number | null;
           segment: string | null;
           slug: string;
           summary_ar: string | null;
           summary_en: string | null;
+          thumbnail_path: string | null;
           title_ar: string;
           title_en: string;
           updated_at: string;
           youtube_id: string;
+          youtube_id_ar: string | null;
         };
         ComputedFields: never;
         Insert: {
+          captions_ar_path?: string | null;
+          captions_en_path?: string | null;
+          chapters?: NonNullable<Json>;
           created_at?: string;
+          duration_seconds?: number | null;
           id?: string;
           number?: number | null;
           programme_id: string;
           published_at?: string | null;
+          released_on?: string | null;
           season?: number | null;
           segment?: string | null;
           slug: string;
           summary_ar?: string | null;
           summary_en?: string | null;
+          thumbnail_path?: string | null;
           title_ar: string;
           title_en: string;
           updated_at?: string;
           youtube_id: string;
+          youtube_id_ar?: string | null;
         };
         Update: {
+          captions_ar_path?: string | null;
+          captions_en_path?: string | null;
+          chapters?: NonNullable<Json>;
           created_at?: string;
+          duration_seconds?: number | null;
           id?: string;
           number?: number | null;
           programme_id?: string;
           published_at?: string | null;
+          released_on?: string | null;
           season?: number | null;
           segment?: string | null;
           slug?: string;
           summary_ar?: string | null;
           summary_en?: string | null;
+          thumbnail_path?: string | null;
           title_ar?: string;
           title_en?: string;
           updated_at?: string;
           youtube_id?: string;
+          youtube_id_ar?: string | null;
         };
         Relationships: [];
       };
@@ -7392,6 +7461,23 @@ export type Database = {
       clear_production_rights: {
         Args: { production_id: string };
         Returns: undefined;
+      };
+      credit_episode: {
+        Args: { credit: string; episode: string; member: string };
+        Returns: string;
+      };
+      episode_credits: {
+        Args: { episode: string };
+        Returns: {
+          credit: string;
+          credit_order: number;
+          name_ar: string;
+          name_en: string;
+        }[];
+      };
+      episode_release_link: {
+        Args: { on_camera: string; sent_to?: string };
+        Returns: string;
       };
       import_tour: { Args: { invitations: Json; pages: Json }; Returns: Json };
       member_productions: {

@@ -54,6 +54,7 @@ const THINGS = {
   "membership.memberships": "membership",
   "membership.service_records": "membership",
   "membership.verification_requests": "membership",
+  "programmes.episode_on_camera": "qirtas",
   "programmes.episodes": "qirtas",
   "programmes.needs": "events",
   "programmes.opening_replies": "membership",

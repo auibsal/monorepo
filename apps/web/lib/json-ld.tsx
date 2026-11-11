@@ -108,3 +108,47 @@ export const articleLd = (
   mainEntityOfPage: pageUrl(locale, a.path),
   publisher: { "@id": `${project.url}/#organization` },
 });
+
+/**
+ * A Next Stop episode (decisions.md, Next Stop): a TVEpisode in the
+ * Society's series, with its video as a VideoObject.
+ */
+export const episodeLd = (
+  locale: string,
+  episode: {
+    description: string | null;
+    duration?: number | null;
+    image?: string | null;
+    number: number | null;
+    released: string | null;
+    slug: string;
+    title: string;
+    youtubeId: string;
+  }
+): Thing => {
+  const url = pageUrl(locale, `/next-stop/episodes/${episode.slug}`);
+  return {
+    "@type": "TVEpisode",
+    datePublished: episode.released ?? undefined,
+    description: episode.description ?? undefined,
+    episodeNumber: episode.number ?? undefined,
+    inLanguage: locale,
+    name: episode.title,
+    partOfSeries: {
+      "@type": "TVSeries",
+      name: "Next Stop",
+      url: pageUrl(locale, "/next-stop"),
+    },
+    productionCompany: { "@id": `${project.url}/#organization` },
+    url,
+    video: {
+      "@type": "VideoObject",
+      description: episode.description ?? episode.title,
+      duration: episode.duration ? `PT${episode.duration}S` : undefined,
+      embedUrl: `https://www.youtube-nocookie.com/embed/${episode.youtubeId}`,
+      name: episode.title,
+      thumbnailUrl: episode.image ?? undefined,
+      uploadDate: episode.released ?? undefined,
+    },
+  };
+};

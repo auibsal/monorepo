@@ -9,7 +9,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { MetadataRoute } from "next";
 import { cacheLife } from "next/cache";
 import { pieceHref } from "@/components/qirtas/cards";
-import { content, documents, journal } from "@/lib/data";
+import { content, documents, journal, programmes } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 
 /**
@@ -99,13 +99,15 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
   // deploy.
   "use cache";
   cacheLife("hours");
-  const [docs, pieces, eventPages, issues, editions] = await Promise.all([
-    readPublished(["documents"], (c) => documents.publicDocuments(c), []),
-    readPublished(["journal"], (c) => journal.publishedPieceSlugs(c), []),
-    readPublished(["events"], publicEventPages, []),
-    readPublished(["news"], (c) => content.sundayPaperIssues(c), []),
-    readPublished(["journal"], publishedEditions, []),
-  ]);
+  const [docs, pieces, eventPages, issues, editions, episodes] =
+    await Promise.all([
+      readPublished(["documents"], (c) => documents.publicDocuments(c), []),
+      readPublished(["journal"], (c) => journal.publishedPieceSlugs(c), []),
+      readPublished(["events"], publicEventPages, []),
+      readPublished(["news"], (c) => content.sundayPaperIssues(c), []),
+      readPublished(["journal"], publishedEditions, []),
+      readPublished(["journal"], (c) => programmes.publicEpisodes(c), []),
+    ]);
   return [
     ...staticPaths,
     ...docs.map((doc) => documents.documentPath(doc.slug)),
@@ -125,9 +127,16 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
           new Date(edition.updated_at)
         )
       ),
+      // Next Stop's episodes, the Society's show (not Qirtas).
+      episodes.flatMap((episode) =>
+        localized(
+          `/next-stop/episodes/${episode.slug}`,
+          episode.published_at ? new Date(episode.published_at) : undefined
+        )
+      ),
       // Qirtas: every published piece, dated when it came out, in the
       // language it was written in (one language per page; bilingual
-      // pieces in both). Next Stop's episodes are pieces too.
+      // pieces in both).
       pieces.flatMap((piece) =>
         localized(
           pieceHref(piece),
