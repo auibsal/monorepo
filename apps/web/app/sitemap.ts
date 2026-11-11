@@ -51,7 +51,6 @@ const staticPaths = [
   "/library",
   "/about/council",
   "/partners",
-  "/code-of-conduct",
   "/security",
   "/help",
   "/help/words",
@@ -116,6 +115,10 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
   return [
     ...staticPaths,
     ...docs.map((doc) => documents.documentPath(doc.slug)),
+    // The Code of Conduct is Article II of the Policy Manual.
+    ...(docs.some((doc) => doc.slug === "policy-manual")
+      ? ["/code-of-conduct"]
+      : []),
   ]
     .flatMap((path) => localized(path))
     .concat(

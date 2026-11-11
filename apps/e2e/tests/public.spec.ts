@@ -120,14 +120,18 @@ test.describe("public site", () => {
     await expectAccessible(page);
   });
 
-  test("the Issues page shows the pilot issue's call, and the list has its own path", async ({
+  test("the Editions page shows the pilot's call, and the list has its own path", async ({
     page,
   }) => {
     await page.goto(`${urls.web}/qirtas/editions`);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Issues");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Editions"
+    );
     await expectAccessible(page);
     await page.goto(`${urls.web}/qirtas/editions?view=list`);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Issues");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Editions"
+    );
     await expectAccessible(page);
   });
 });
@@ -159,7 +163,7 @@ test("a shared address that changed redirects to its new one, in both languages"
       ["/qirtas/write", "/qirtas/submit"],
       ["/library/privacy", "/privacy"],
       ["/partners/join", "/partners/apply"],
-      ["/qirtas/editions", "/qirtas/editions"],
+      ["/qirtas/issues", "/qirtas/editions"],
       [
         "/events/writing-workshop-2026-11-17",
         "/events/writing-workshop-2026-12-08",
