@@ -125,9 +125,12 @@ const DocumentLine = async ({ doc, locale }: { doc: Doc; locale: Locale }) => {
  */
 export const DocumentArticle = async ({
   locale,
+  section,
   slug,
 }: {
   locale: Locale;
+  /** Only one section, under its own title (the Code of Conduct). */
+  section?: { heading: RegExp; title: string };
   slug: string;
 }) => {
   const doc = await load(slug);
@@ -157,7 +160,11 @@ export const DocumentArticle = async ({
       return id && ref ? [[id, ref] as const] : [];
     })
   );
-  const { contents, html } = documents.documentSections(body.html, refs, pages);
+  const sections = documents.documentSections(body.html, refs, pages);
+  const html = section
+    ? documents.documentSection(sections.html, section.heading)
+    : sections.html;
+  const contents = section ? [] : sections.contents;
 
   return (
     <article className="mx-auto grid w-full max-w-4xl gap-10 px-4 py-16">
@@ -167,8 +174,10 @@ export const DocumentArticle = async ({
       >
         {t("all")}
       </Link>
-      <DocumentHeader title={documents.documentTitle(doc, locale)}>
-        {documents.documentSummary(doc, locale) ? (
+      <DocumentHeader
+        title={section?.title ?? documents.documentTitle(doc, locale)}
+      >
+        {!section && documents.documentSummary(doc, locale) ? (
           <p className="type-lede max-w-3xl">
             {documents.documentSummary(doc, locale)}
           </p>

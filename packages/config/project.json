@@ -21,7 +21,13 @@
   "mailboxes": {
     "hello": "hello@auibsal.org",
     "qirtas": "qirtas@auibsal.org",
-    "security": "security@auibsal.org"
+    "security": "security@auibsal.org",
+    "press": "press@auibsal.org",
+    "letters": "letters@auibsal.org",
+    "nextstop": "nextstop@auibsal.org",
+    "accessibility": "accessibility@auibsal.org",
+    "privacy": "privacy@auibsal.org",
+    "partners": "partners@auibsal.org"
   },
   "telegram": {
     "stickerSet": "auibsal"

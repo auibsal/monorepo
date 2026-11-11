@@ -51,6 +51,10 @@ const staticPaths = [
   "/library",
   "/about/council",
   "/partners",
+  "/code-of-conduct",
+  "/security",
+  "/help",
+  "/help/words",
 ];
 
 const localized = (

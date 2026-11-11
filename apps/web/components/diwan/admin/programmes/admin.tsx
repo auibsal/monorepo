@@ -49,6 +49,7 @@ import {
 } from "../kit";
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { ProblemReports } from "../problem-reports";
 import { slugify } from "../slug";
 
 const invalidateKey = ["admin", "programmes-module"];
@@ -1874,6 +1875,7 @@ export const MediaAdmin = () => {
       <DiwanSection id="removals" title={t("removalsTitle")}>
         <Removals />
       </DiwanSection>
+      <ProblemReports />
     </div>
   );
 };

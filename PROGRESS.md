@@ -156,14 +156,14 @@ production; **Owner** is a step only the owner can take.
 - [ ] About in the order of decisions.md, with the full al-Mutanabbi verse
   and its translation, the story of the name Qirtas, the numbers counted by
   the site and the independence statement.
-- [ ] Help: twenty common questions; "Words we use"; "Report a problem" on
+- [x] Help: twenty common questions; "Words we use"; "Report a problem" on
   every page, reaching the web lead in the Diwan.
-- [ ] Contact: one page routing by topic to the role address, with the
+- [x] Contact: one page routing by topic to the role address, with the
   answer time; signed-in details from the account.
 - [ ] The Library grouped by who it is for (code, keeper, status, a
   two-line summary), searchable, both editions together; staff manuals
   only in the Diwan.
-- [ ] Policies: /code-of-conduct and /security beside /privacy, /terms and
+- [x] Policies: /code-of-conduct and /security beside /privacy, /terms and
   /accessibility, each with its effective date at the top.
 - [ ] /about/credits generated from the dependencies; About → Our people
   credits the web team.

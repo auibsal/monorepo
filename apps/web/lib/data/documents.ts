@@ -268,6 +268,24 @@ export const documentSections = (
 };
 
 /**
+ * One section of a document's HTML: from the heading that matches to the
+ * next heading of the same level (the Code of Conduct, Article II of the
+ * Policy Manual, at /code-of-conduct). Null when no heading matches.
+ */
+export const documentSection = (html: string, heading: RegExp) => {
+  const headings = [...html.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/gu)];
+  const start = headings.findIndex((match) =>
+    heading.test(plain(match[1] ?? ""))
+  );
+  if (start === -1) {
+    return null;
+  }
+  const from = headings[start]?.index ?? 0;
+  const to = headings[start + 1]?.index ?? html.length;
+  return html.slice(from, to);
+};
+
+/**
  * The Privacy Notice, Terms of Use and Accessibility Statement (GOV-04 to
  * GOV-06) have their own addresses (decisions §6); every other document is
  * at /library/<slug>.

@@ -855,6 +855,46 @@ export type Database = {
         };
         Relationships: [];
       };
+      problem_reports: {
+        Row: {
+          created_at: string;
+          handled_at: string | null;
+          handled_by: string | null;
+          id: string;
+          lang: string;
+          message: string;
+          page: string;
+          reply_to: string | null;
+          status: string;
+          user_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          handled_at?: string | null;
+          handled_by?: string | null;
+          id?: string;
+          lang?: string;
+          message: string;
+          page: string;
+          reply_to?: string | null;
+          status?: string;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          handled_at?: string | null;
+          handled_by?: string | null;
+          id?: string;
+          lang?: string;
+          message?: string;
+          page?: string;
+          reply_to?: string | null;
+          status?: string;
+          user_id?: string | null;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           agreed_at: string | null;

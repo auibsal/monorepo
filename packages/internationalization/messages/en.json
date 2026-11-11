@@ -4592,6 +4592,27 @@
       },
       "photoAlt": "The typed page, as the station photographed it",
       "seePage": "See the page"
+    },
+    "report": {
+      "title": "Report a problem",
+      "lede": "Something on the site not working, wrong or hard to use? Tell the web lead, who reads every report.",
+      "page": "The page",
+      "message": "What happened",
+      "messageHint": "What you did, what you expected and what you saw. Don’t include passwords or anyone’s personal details.",
+      "signedIn": "Your account goes with the report, so the web lead can reply.",
+      "replyTo": "Your email, for a reply (optional)",
+      "send": "Send the report",
+      "sent": "Sent. Thank you: the web lead reads every report and fixes what they can.",
+      "failed": "That didn’t send. Try again in a moment.",
+      "rate_limited": "You’ve sent several reports just now. Try again in a few minutes.",
+      "admin": {
+        "title": "Reported problems",
+        "lede": "From “Report a problem” on every page. Fix what you can, then close each one.",
+        "empty": "No open reports.",
+        "member": "from a signed-in member",
+        "fixed": "Fixed",
+        "close": "Close without a fix"
+      }
     }
   },
   "web": {
@@ -5197,16 +5218,50 @@
     },
     "contact": {
       "title": "Contact",
-      "lede": "Find us on Instagram and in the members’ group on Telegram, or talk to us at any event.",
-      "instagram": "Instagram",
-      "telegram": "Telegram",
-      "telegramName": "The Common Room",
-      "email": "Email",
-      "concernTitle": "Raising a concern",
-      "concern": "If something is wrong, tell any officer, our Faculty Advisor or the Office of Student Life, in person, or raise a concern in your account, under Society. Harassment, safety and anything involving a child go straight to Student Life.",
-      "concernSource": "Member Handbook",
+      "lede": "Choose what you’re writing about: each goes straight to the person who answers it, and says when to expect a reply.",
+      "topics": {
+        "question": {
+          "title": "A question",
+          "time": "Within two working days"
+        },
+        "press": {
+          "title": "The press",
+          "time": "Within one working day"
+        },
+        "letter": {
+          "title": "A letter to the editor",
+          "time": "Within a week"
+        },
+        "nextStop": {
+          "title": "Next Stop: appearing or pitching",
+          "time": "Within two working days"
+        },
+        "accessibility": {
+          "title": "Accessibility",
+          "time": "Within three working days"
+        },
+        "privacy": {
+          "title": "Privacy and your data",
+          "time": "Within 30 days"
+        },
+        "removal": {
+          "title": "A photo or video of you",
+          "action": "Ask for it to be removed",
+          "time": "Hidden at once; decided within two working days"
+        },
+        "concern": {
+          "title": "A concern",
+          "action": "Raise a concern",
+          "time": "Decided within 14 days"
+        },
+        "partnership": {
+          "title": "A partnership",
+          "action": "Apply to be a partner",
+          "time": "Within two working days"
+        }
+      },
       "photoTitle": "A photo or video of you",
-      "photo": "Ask here: whatever on the site you point to is hidden at once, and within two business days we take it down from the Society’s channels or tell you why not."
+      "photo": "Ask here: whatever on the site you point to is hidden at once, and within two working days we take it down from the Society’s channels or tell you why not."
     },
     "mediaKit": {
       "title": "Press kit",
@@ -5647,6 +5702,205 @@
         "qalam": "Qalam"
       },
       "finalScore": "{score} of 100"
+    },
+    "policies": {
+      "conduct": "Code of Conduct",
+      "conductLede": "How everyone in the Society treats one another: Article II of the Policy Manual.",
+      "security": "Security",
+      "securityLede": "How to tell the Society about a security problem with auibsal.org, and what it does next.",
+      "securityEffective": "Effective November 12, 2026",
+      "securitySections": {
+        "scope": {
+          "title": "What this covers",
+          "body": "auibsal.org and everything under it: the public pages, your account, the Diwan, the partner dashboard and the API, and the emails the site sends."
+        },
+        "report": {
+          "title": "How to report",
+          "body": "Write to {address} with what you found, the address where it happens and the steps to see it again. Write in English or Arabic. Please don’t include anyone’s personal data beyond what shows the problem."
+        },
+        "ask": {
+          "title": "What we ask",
+          "body": "Test only with your own account. Don’t read, change or delete other people’s data, don’t disrupt the site for others, and don’t use automated scanning that floods it. Give us a reasonable time to fix a problem before you tell anyone else."
+        },
+        "promise": {
+          "title": "What we do",
+          "body": "We reply within three working days, keep you told as we fix it, and thank you by name when it’s fixed if you’d like. The Society is a student organization with no money, so there is no bounty."
+        },
+        "safe": {
+          "title": "Good faith",
+          "body": "If you follow this page, the Society won’t take action against you for your research and will say so to anyone who asks."
+        },
+        "out": {
+          "title": "Not covered",
+          "body": "Reports that only list missing headers or software versions with no way to use them, social engineering of members or officers, and the services the site uses (report those to their makers)."
+        }
+      }
+    },
+    "help": {
+      "title": "Help",
+      "lede": "Answers to the questions people ask most. Can’t find yours? Contact will route it.",
+      "questions": "Common questions",
+      "words": "Words we use",
+      "wordsLede": "The Society’s own words, and what each one means.",
+      "report": "Report a problem",
+      "reportLine": "Something on the site not working? Tell the web lead.",
+      "contact": "Contact",
+      "items": [
+        {
+          "q": "Who can join the Society?",
+          "a": "Every AUIB student: students in a degree, and students in the English Language Academy on the way to one. Faculty, staff and alumni join as Associate Members; everyone else 18 or older can make a guest account."
+        },
+        {
+          "q": "Are there dues?",
+          "a": "No. The Society has no dues, prices or payments."
+        },
+        {
+          "q": "How do I join?",
+          "a": "Go to auibsal.org/join and sign up with your AUIB email. It takes three short screens: your address and password, your name, and the agreements."
+        },
+        {
+          "q": "I’m not an AUIB student. Can I take part?",
+          "a": "Yes, as a guest: you can RSVP to open events and write for Qirtas in any section but Games. Faculty, staff and alumni can ask for Associate membership on the Join page."
+        },
+        {
+          "q": "What’s the difference between a Member, an Associate and a guest?",
+          "a": "Members are AUIB students: they vote, hold office and can win the Mutanabbi Prize. Associates (faculty, staff and alumni) and guests come to events and write, but don’t vote."
+        },
+        {
+          "q": "I’m under 18. Can I join?",
+          "a": "Yes, if you’re an AUIB student. A parent gives consent once by a link we email them; until then your account stays private."
+        },
+        {
+          "q": "How do I RSVP to an event?",
+          "a": "Open the event on Events and choose RSVP. Its confirmation stays on the page and comes by email; if it’s full, you join the waitlist."
+        },
+        {
+          "q": "How do I cancel an RSVP?",
+          "a": "Open the event, or Your account → Calendar, and choose Cancel before it starts. Your place goes to the next person on the waitlist."
+        },
+        {
+          "q": "How do I write for Qirtas?",
+          "a": "Go to Write for Qirtas (auibsal.org/qirtas/submit), pick a section and send your work. You get an email with a record number, then one at each step."
+        },
+        {
+          "q": "Is my work read without my name?",
+          "a": "Yes. Readers see your work without your name until a decision is made. Letters to the editor and outside opinion pieces are the exception: they carry your name."
+        },
+        {
+          "q": "How do I get a role?",
+          "a": "Open Get involved, choose an open role and apply. Each opening says what it involves and the hours it needs."
+        },
+        {
+          "q": "Where is my membership card?",
+          "a": "In Your account, with its live code for the door. You can add it to Google Wallet from there."
+        },
+        {
+          "q": "How do I change the name shown on the site?",
+          "a": "Your account → Settings → Profile. You can change the name you’re shown by at any time, in each language. Your legal name is changed only by the Director of Membership, on your request."
+        },
+        {
+          "q": "How do I set up two-step sign-in?",
+          "a": "Your account → Settings → Two-step sign-in, with an authenticator app on your phone. Signing in with a passkey counts as two steps on its own."
+        },
+        {
+          "q": "I forgot my password.",
+          "a": "On the sign-in page, choose “Forgot your password?” and we email you a link to set a new one."
+        },
+        {
+          "q": "How do I stop the Society’s emails?",
+          "a": "Use the unsubscribe link at the foot of any newsletter, or Your account → Settings → Notices. Emails about your account and security always come."
+        },
+        {
+          "q": "How do I download or delete my data?",
+          "a": "Your account → Settings: “Download your data” gives a readable page and a file; “Delete my account” deletes it after 30 days, unless you sign in again first."
+        },
+        {
+          "q": "How do I raise a concern?",
+          "a": "Use “Raise a concern” at the foot of any page. It goes only to those who must handle it, never to the person it’s about."
+        },
+        {
+          "q": "How do I ask for a photo or video of me to be removed?",
+          "a": "Use the removal request on Contact. What you point to is hidden at once while staff look at it."
+        },
+        {
+          "q": "How do I reach the Society?",
+          "a": "Contact routes your question to the right person and says when to expect an answer. The general address is hello@auibsal.org."
+        }
+      ],
+      "terms": [
+        {
+          "term": "The Society",
+          "meaning": "The AUIB Society of Arts and Letters (SAL), AUIB’s student organization for literature and the arts."
+        },
+        {
+          "term": "The Council",
+          "meaning": "The Society’s nine elected and appointed seats: the President, the Vice President, the Secretary and six directors."
+        },
+        {
+          "term": "The Diwan",
+          "meaning": "The staff’s side of the site, at auibsal.org/diwan, where officers do the Society’s work."
+        },
+        {
+          "term": "Your account",
+          "meaning": "Your own pages on the site: Today, your events, your work, your card and your settings."
+        },
+        {
+          "term": "Qirtas",
+          "meaning": "AUIB’s paper of news, letters and art, published by the Society on the site."
+        },
+        {
+          "term": "Edition",
+          "meaning": "Qirtas’s themed collection, made from one call for work. Haven is the pilot."
+        },
+        {
+          "term": "The Sunday Paper",
+          "meaning": "Qirtas’s monthly email, on the first Sunday of the month."
+        },
+        {
+          "term": "From the Society",
+          "meaning": "The Society’s own announcements, on Qirtas’s front page."
+        },
+        {
+          "term": "Next Stop",
+          "meaning": "The Society’s video series."
+        },
+        {
+          "term": "The Company",
+          "meaning": "The Society’s theater company."
+        },
+        {
+          "term": "The Typewriter Tour",
+          "meaning": "Where anyone types six words on a typewriter, for the Society’s six-word pages."
+        },
+        {
+          "term": "Second Chapter",
+          "meaning": "The Society’s used-book drive: books are reused, not thrown away."
+        },
+        {
+          "term": "Hudhud",
+          "meaning": "The Society’s Telegram bot, for reminders and the members’ group."
+        },
+        {
+          "term": "Member, Associate, Honorary Member, Guest",
+          "meaning": "The four classes: AUIB students; faculty, staff and alumni; those the Council honors; everyone else."
+        },
+        {
+          "term": "Get involved",
+          "meaning": "The open roles you can apply for, each with what it involves."
+        },
+        {
+          "term": "The Register",
+          "meaning": "The private list of members, seen only by the Executive Board and the Director of Membership."
+        },
+        {
+          "term": "The Mutanabbi Prize",
+          "meaning": "The Society’s yearly prize for writing and art, open to Members."
+        },
+        {
+          "term": "Qalam",
+          "meaning": "The Society’s summer writing program for school students."
+        }
+      ]
     }
   }
 }
