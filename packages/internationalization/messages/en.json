@@ -1540,12 +1540,12 @@
           "allPrograms": "Everywhere",
           "kinds": {
             "role": "A team role",
-            "event_team": "An event team",
+            "event_team": "An event’s lead",
             "qalam_mentor": "A Qalam mentor"
           },
           "kindHints": {
             "role": "A role the Society needs filled, chosen from its roles. New team members serve their first term on probation, then are confirmed.",
-            "event_team": "A place on one event’s team. Volunteer shifts are on the event’s own page.",
+            "event_team": "The lead of one event: one place, appointed through Get involved. Everyone else on the night signs up for a volunteer shift on the event’s page.",
             "qalam_mentor": "A mentor’s place in Qalam. Students never get accounts: record nothing about them here."
           },
           "event": "Event",
@@ -4121,13 +4121,13 @@
       },
       "kinds": {
         "role": "Team role",
-        "event_team": "Event team",
+        "event_team": "Event lead",
         "qalam_mentor": "Qalam mentor",
         "shift": "Shift",
         "audition": "Audition"
       },
       "kindLines": {
-        "event_team": "A place on this event’s team.",
+        "event_team": "Lead this event.",
         "qalam_mentor": "Mentor high school writers in Qalam, in summer 2028."
       }
     },
@@ -4187,7 +4187,7 @@
       "places": "{count, plural, one {One place} other {{n} places}}",
       "kinds": {
         "role": "Team role",
-        "event_team": "Event team",
+        "event_team": "Event lead",
         "qalam_mentor": "Qalam mentor",
         "audition": "Audition"
       },
