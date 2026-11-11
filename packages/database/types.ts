@@ -2477,6 +2477,7 @@ export type Database = {
           created_by: string | null;
           electorate: string;
           eligible_count: number | null;
+          forum_event_id: string | null;
           id: string;
           kind: string;
           nominations_close_at: string;
@@ -2501,6 +2502,7 @@ export type Database = {
           created_by?: string | null;
           electorate?: string;
           eligible_count?: number | null;
+          forum_event_id?: string | null;
           id?: string;
           kind?: string;
           nominations_close_at: string;
@@ -2524,6 +2526,7 @@ export type Database = {
           created_by?: string | null;
           electorate?: string;
           eligible_count?: number | null;
+          forum_event_id?: string | null;
           id?: string;
           kind?: string;
           nominations_close_at?: string;

@@ -116,8 +116,11 @@ production; **Owner** is a step only the owner can take.
   **Migrates:** `governance.resolutions.subject` (partner, document or
   other; the Council's partner votes marked partner); the public reads
   only partners' and documents' resolutions from now on.
-- [ ] Each election page gets a candidates' forum event in the week before
-  voting, recorded.
+- [x] Each election page gets a candidates' forum event in the week before
+  voting, recorded. The forum is made in Notion like any event; the
+  Elections Committee chooses it on the election, members see it there,
+  and its recording goes on the event's links. **Migrates:**
+  `governance.elections.forum_event_id`, checked to fall in the week.
 
 ### 4. Qirtas (decisions.md, Qirtas)
 - [ ] The nameplate and the line "AUIB's paper of news, letters and art" /

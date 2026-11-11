@@ -584,7 +584,8 @@
         "tied": "Tied: decided by lot at a public meeting",
         "byLot": "{name} (decided by lot)",
         "votingPoint": "In person: {place}.",
-        "votingPointAt": "In person: {place}, {when}."
+        "votingPointAt": "In person: {place}, {when}.",
+        "forum": "Candidates’ forum on {when}:"
       },
       "takePart": {
         "title": "Take part",
@@ -1887,7 +1888,13 @@
           "studentLifeList": "Candidates for Student Life (CSV)",
           "councilList": "The Council for Student Life (CSV)",
           "votingPoint": "The voting point in person",
-          "votingPointAt": "When the voting point is open"
+          "votingPointAt": "When the voting point is open",
+          "forum": {
+            "title": "Candidates’ forum",
+            "hint": "Make the forum in Notion’s Events like any event, in the seven days before voting opens, then choose it here. Afterward, add its recording to the event’s links, for those who couldn’t come.",
+            "none": "No event falls in the week before voting yet. Make the forum in Notion, and it appears here after the next sync.",
+            "notYet": "Not chosen yet"
+          }
         },
         "bodies": {
           "council": "The Council",

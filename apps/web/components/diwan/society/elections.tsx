@@ -38,7 +38,7 @@ const useElections = () => {
             .schema("governance")
             .from("elections")
             .select(
-              "id, title_en, title_ar, status, nominations_open_at, nominations_close_at, voting_opens_at, voting_closes_at, voting_point_en, voting_point_ar, voting_point_at, runoff_of, positions!positions_election_id_fkey(id, title_en, title_ar, sort, candidates(id, user_id, status, statement_en, statement_ar))"
+              "id, title_en, title_ar, status, nominations_open_at, nominations_close_at, voting_opens_at, voting_closes_at, voting_point_en, voting_point_ar, voting_point_at, runoff_of, forum_event_id, positions!positions_election_id_fkey(id, title_en, title_ar, sort, candidates(id, user_id, status, statement_en, statement_ar))"
             )
             .neq("status", "draft")
             .order("voting_opens_at", { ascending: false })
@@ -425,7 +425,6 @@ const ElectionCard = ({
     voting && !data.voted.has(election.id) && data.voter.has(election.id);
   const when = (iso: string) =>
     `${formatLongDate(iso, locale)} · ${formatClock(iso, locale)}`;
-  const votingPoint = votingPointLine(election, locale, t, when);
 
   return (
     <article className="border-line pt-space-4 grid gap-4 border-t">
@@ -440,7 +439,7 @@ const ElectionCard = ({
             voting: when(election.voting_closes_at),
           })}
         </p>
-        {votingPoint ? <p className="type-caption">{votingPoint}</p> : null}
+        <ElectionPlaces election={election} when={when} />
       </header>
 
       {voting && data.voted.has(election.id) ? (
@@ -566,5 +565,65 @@ export const Elections = () => {
         />
       ))}
     </SocietySection>
+  );
+};
+
+/**
+ * The candidates' forum, in the week before voting (decisions.md,
+ * Governance); its event page carries the recording afterward.
+ */
+const ForumLine = ({
+  eventId,
+  when,
+}: {
+  readonly eventId: string;
+  readonly when: (iso: string) => string;
+}) => {
+  const t = useTranslations("diwan.society.elections");
+  const locale = useLocale() as Lang;
+  const { supabase } = useAuth();
+  const forum = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .from("events")
+          .select("slug, title_en, title_ar, starts_at")
+          .eq("id", eventId)
+          .maybeSingle()
+      ),
+    queryKey: ["election-forum", eventId],
+  });
+  if (!forum.data) {
+    return null;
+  }
+  return (
+    <p className="type-caption">
+      {t("forum", { when: when(forum.data.starts_at) })}{" "}
+      <Link className="link" href={`/events/${forum.data.slug}`}>
+        {localized(forum.data, "title", locale)}
+      </Link>
+    </p>
+  );
+};
+
+/** Where members vote in person, and the candidates' forum, if set. */
+const ElectionPlaces = ({
+  election,
+  when,
+}: {
+  readonly election: Election;
+  readonly when: (iso: string) => string;
+}) => {
+  const t = useTranslations("diwan.society.elections");
+  const locale = useLocale() as Lang;
+  const votingPoint = votingPointLine(election, locale, t, when);
+  return (
+    <>
+      {votingPoint ? <p className="type-caption">{votingPoint}</p> : null}
+      {election.forum_event_id ? (
+        <ForumLine eventId={election.forum_event_id} when={when} />
+      ) : null}
+    </>
   );
 };
