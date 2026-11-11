@@ -27,7 +27,7 @@ export const generateMetadata = async ({
 };
 
 /**
- * What's on, this month; another month and a host are query strings
+ * Events, this month; another month and a host are query strings
  * (/events?month=2026-11&host=company, decisions §6).
  */
 const EventsPage = async ({ params, searchParams }: EventsProps) => {

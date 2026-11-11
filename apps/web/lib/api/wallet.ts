@@ -139,7 +139,7 @@ const passFor = (card: WalletCard) => {
           uri: site(card.locale, "/account"),
         },
         {
-          description: ar ? "ما يجري" : "What's on",
+          description: ar ? "الفعاليات" : "Events",
           id: "events",
           uri: site(card.locale, "/events"),
         },

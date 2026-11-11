@@ -9,7 +9,7 @@ const projectSchema = z
   .object({
     /**
      * AUIB's public calendar (iCal): its dates sit beside the Society's on
-     * What's on, and its semesters are the Society's terms.
+     * Events, and its semesters are the Society's terms.
      */
     campusCalendar: z.url(),
     /**

@@ -21,7 +21,7 @@ type SectionKey =
   | "journal"
   | "events"
   | "nextStop";
-// What's on · Qirtas · The Company · Next Stop · Get involved · About, with
+// Events · Qirtas · The Company · Next Stop · Get involved · About, with
 // a Join button for visitors (decisions.md, The site); signed in, the end of the
 // line opens Membership instead. The Join button is styled here, not with
 // the brand's Button, which would bring radix-ui into every public page.

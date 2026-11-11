@@ -139,7 +139,7 @@ select throws_ok(
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
 select lives_ok(
   $$ update governance.society_documents set body_en = body_en || '<p>Amended.</p>' where slug = 'bylaws' $$,
-  'The General Secretary edits a document in the Diwan'
+  'The Secretary edits a document in the Diwan'
 );
 select is((select updated_by from governance.society_documents where slug = 'bylaws'),
   '00000000-0000-0000-0000-0000000000a3'::uuid, 'and is recorded as its last editor');

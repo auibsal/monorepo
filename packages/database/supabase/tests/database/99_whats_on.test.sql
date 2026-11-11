@@ -1,4 +1,4 @@
--- What's on: ways in (open, rsvp, invite), invitations, reminders and the
+-- Events: ways in (open, rsvp, invite), invitations, reminders and the
 -- calendar's members-only teasers.
 begin;
 -- <preamble>

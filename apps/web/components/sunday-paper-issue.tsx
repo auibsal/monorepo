@@ -47,7 +47,7 @@ export const pastIssues = async () => {
 /**
  * One issue of the Sunday Paper, in a newspaper's layout (design review
  * C17): the nameplate and its Sunday, Qirtas's pieces of the month before
- * in columns by section, and What's on for the month after. Rebuilt from
+ * in columns by section, and Events for the month after. Rebuilt from
  * the same records the email was made from; the open places of the time
  * are not kept, so they are not shown.
  */

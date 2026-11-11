@@ -131,7 +131,7 @@ values ('e1000000-0000-0000-0000-000000000001', 'Spring 2027', 'ربيع ٢٠٢�
   now() + interval '8 days', now() + interval '15 days', now() + interval '15 days', now() + interval '17 days');
 insert into governance.positions (id, election_id, role_key, title_en, title_ar) values
   ('b1000000-0000-0000-0000-000000000001', 'e1000000-0000-0000-0000-000000000001', 'president', 'President', 'الرئيس'),
-  ('b1000000-0000-0000-0000-000000000002', 'e1000000-0000-0000-0000-000000000001', 'general_secretary', 'General Secretary', 'الأمين العام');
+  ('b1000000-0000-0000-0000-000000000002', 'e1000000-0000-0000-0000-000000000001', 'general_secretary', 'Secretary', 'أمين السر');
 
 create function pg_temp.candidate(n integer) returns text language sql as $$
   select c.id::text from governance.candidates c where c.user_id = pg_temp.voter(n);
@@ -237,7 +237,7 @@ select throws_ok(
 );
 
 -- One choice per seat (plurality). President: v1, v2, v4 stand.
--- General Secretary: v3 alone, so the choice is elect or reopen nominations.
+-- Secretary: v3 alone, so the choice is elect or reopen nominations.
 select throws_ok(
   $$ select pg_temp.vote(pg_temp.voter(1), jsonb_build_array(pg_temp.candidate(1), pg_temp.candidate(2)), '[]') $$,
   '22023', 'One choice per seat', 'A ballot has one choice per seat, not a ranking'

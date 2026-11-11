@@ -74,7 +74,7 @@ describe("the newsletter", () => {
     );
   });
 
-  test("the Sunday Paper lists pieces, What's on and open places as links", () => {
+  test("the Sunday Paper lists pieces, Events and open places as links", () => {
     const built = sundayPaper("en", {
       events: [{ ...event, url: "https://auibsal.org/events/the-salon" }],
       front: "https://auibsal.org/qirtas",

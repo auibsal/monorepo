@@ -30,7 +30,7 @@ Events are made here only: the Diwan shows them and keeps the site's own
 parts (bookings, check-in, registration questions, shifts, the partner
 checklist, approvals). Until the **Members only** checkbox is removed from
 the database, a ticked row with Way in Open or RSVP counts as Members. An off-campus event is kept
-as a draft in the Diwan until the General Secretary records Student Life's
+as a draft in the Diwan until the Secretary records Student Life's
 written approval on its page there; the row then goes back to Planning with
 a note, and Ready to publish again publishes it. Notion never brings an
 event back on campus. There is no Program link: no event belongs to a

@@ -125,7 +125,7 @@ select ok(
   exists (select 1 from access.role_permissions where role = 'general_secretary' and permission = 'tour.run')
   and exists (select 1 from access.role_permissions where role = 'tour_lead' and permission = 'tour.run')
   and exists (select 1 from access.roles where key = 'tour_lead' and hiring_owner = 'membership'),
-  'The General Secretary and the Tour Lead run the Typewriter Tour'
+  'The Secretary and the Tour Lead run the Typewriter Tour'
 );
 select is(
   (select name_en || ' / ' || name_ar from access.roles where key = 'programme_lead'),

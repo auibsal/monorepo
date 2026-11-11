@@ -361,7 +361,7 @@ export const fromZonedInputValue = (value: string) => {
 export const toZonedDateValue = (value: DateInput | null | undefined) =>
   toZonedInputValue(value).slice(0, 10);
 
-// ── Months (the What's on calendar) ─────────────────────────────────────────
+// ── Months (the Events calendar) ─────────────────────────────────────────
 
 /** Midnight on the first of a month in Baghdad, as an instant. */
 export const zonedMonthStart = (year: number, monthIndex: number) =>

@@ -29,7 +29,7 @@ We speak two kinds of Arabic, as our members do (owner, Nov 4, 2026).
 ## Names and pictures
 
 - “AUIB Society of Arts and Letters” in full on first use; then “the Society” or “SAL”. Never “the club”, never “Art and Letter”.
-- Call Qirtas “the Society’s paper”. Events are named as What’s on lists them; none is a program.
+- Call Qirtas “the Society’s paper”. Events are named as the Events page lists them; none is a program.
 - Partners with Arabic names are named in their own language first.
 - Icons come only from the Society's set; they stand alone when they say enough (see Icons). No emoji. Mark wrong examples with a plain “×”.
 - Describe the Society with the motto, "The paper and the pen." («والقرطاسُ والقلمُ»), on posters, bios, stickers and anywhere short: no list of its parts. Where a full sentence is needed (the About page, the press kit, LinkedIn's About, letters to partners), use only this one: "The AUIB Society of Arts and Letters publishes Qirtas, AUIB's paper of news, letters and art; runs the Company, its theater; makes Next Stop, its show; and holds events all year."
@@ -77,7 +77,7 @@ One glossary for every Arabic word the Society uses, kept with the decisions in 
 | the Founding Meeting | الاجتماع التأسيسي |
 | member | عضو |
 | event · event lead | فعالية · قائد الفعالية |
-| What's on | «ما يجري» |
+| Events | «الفعاليات» |
 | Get involved | «شارك معنا» |
 | the Edition | الإصدار |
 | piece | عمل (the writer's own: عملك) |

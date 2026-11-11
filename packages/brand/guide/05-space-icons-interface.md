@@ -42,7 +42,7 @@ One set across the board: the site, posts, stories, highlights, documents and pr
 | Group | Meanings |
 | --- | --- |
 | Interface | Menu, close, search, go/next, opens another site, more, language, light mode, dark mode, account, sign in, done/confirmed, error, note, download, link, share, send, email, document, reminder |
-| Events | Date and What's on, time, place, RSVP, members and attendance |
+| Events | Date and Events, time, place, RSVP, members and attendance |
 | Qirtas | Qirtas and News, Voices, Letters, Gallery, Video, Games, Next Stop, an episode |
 | The Society | Books and the book fair, tea and conversation, book discussions, writing workshops, listening sessions, the Company, events, the Typewriter Tour, Join, Get involved |
 

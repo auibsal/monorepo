@@ -27,7 +27,7 @@ interface OffCampusEvent {
 /**
  * Off campus, a standard field of every event (decisions.md): an event
  * away from campus is published only once Student Life's written approval,
- * its date and who approved, is on record, which the General Secretary
+ * its date and who approved, is on record, which the Secretary
  * records (governance.manage); participants sign the trip consent form
  * (F-45) on the site before they book.
  */

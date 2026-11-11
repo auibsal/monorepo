@@ -45,7 +45,7 @@ const useVisibleSections = () => {
 
 /**
  * The Diwan's row (the overhaul, Oct 30, 2026), like the members' own:
- * Desk · What's on · Qirtas · The Company · People · Society, only those
+ * Desk · Events · Qirtas · The Company · People · Society, only those
  * the officer's roles reach. On phones, one line naming the section opens
  * the list.
  */

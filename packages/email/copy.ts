@@ -623,9 +623,9 @@ const pick = (l: Lang, ar: string, en: string) =>
 
 const PAPER_TITLES = {
   ar: {
-    events: "ما يجري هذا الشهر",
+    events: "فعاليات هذا الشهر",
     heading: "جريدة الأحد",
-    lede: "ما نُشر في قرطاس هذا الشهر، وما يجري في الجمعية، والأماكن المفتوحة لمن يريد أن يشارك.",
+    lede: "ما نُشر في قرطاس هذا الشهر، وفعاليات الجمعية، والأماكن المفتوحة لمن يريد أن يشارك.",
     open: "افتح قرطاس",
     pieces: "جديد قرطاس",
     places: "أدوار مفتوحة في «شارك معنا»",
@@ -634,7 +634,7 @@ const PAPER_TITLES = {
     writeTitle: "اكتب لقرطاس",
   },
   en: {
-    events: "What's on this month",
+    events: "Events this month",
     heading: "The Sunday Paper",
     lede: "This month in Qirtas, what's on at the Society, and the places open to anyone who wants to get involved.",
     open: "Open Qirtas",
@@ -649,7 +649,7 @@ const PAPER_TITLES = {
 /**
  * The Sunday Paper (decisions.md, Qirtas): sent by hand by the Managing
  * Editor, to members and to the public list alike: the editor's letter,
- * the month's pieces, "From the Society", What's on, the open roles and a
+ * the month's pieces, "From the Society", Events, the open roles and a
  * call to write, each a list of links. The stop link is
  * in the footer and the List-Unsubscribe header.
  */
@@ -838,8 +838,8 @@ export const eventChanged = (
               ? `لن تُقام ${title(e, l)} في ${when(e.starts_at, l)}. ألغينا حجزك، ولا شيء عليك أن تفعله.`
               : `${title(e, l)} on ${when(e.starts_at, l)} won't take place. Your booking is canceled; there's nothing you need to do.`,
             l === "ar"
-              ? "نأسف لذلك. ما يجري بعدها في «تقويمي» وفي صفحة «ما يجري»."
-              : "We're sorry. What's coming up next is on My calendar and What's on.",
+              ? "نأسف لذلك. ما يجري بعدها في «تقويمي» وفي صفحة «الفعاليات»."
+              : "We're sorry. What's coming up next is on My calendar and Events.",
           ],
         }
       : {
@@ -1498,8 +1498,8 @@ export const welcome = (lang: Lang, app: string) =>
               href: link("/events"),
               title:
                 l === "ar"
-                  ? "ما يجري: أمسيات القراءة، ونقاشات الكتب، وورش الكتابة، وغيرها"
-                  : "What's on: readings, book discussions, writing workshops and more",
+                  ? "الفعاليات: أمسيات القراءة، ونقاشات الكتب، وورش الكتابة، وغيرها"
+                  : "Events: readings, book discussions, writing workshops and more",
             },
             {
               href: link("/qirtas/submit"),

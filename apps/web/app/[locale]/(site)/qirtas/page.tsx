@@ -307,7 +307,7 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
               </h2>
               <Link
                 className="type-title hover:text-accent"
-                href={`/qirtas/issues/${edition.slug}`}
+                href={`/qirtas/editions/${edition.slug}`}
               >
                 {localized(edition, "title", locale)}
               </Link>

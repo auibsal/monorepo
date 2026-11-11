@@ -277,7 +277,7 @@ everywhere:
 - **One frame.** The public pages, your account and the Diwan share one
   header (`components/masthead.tsx` with `site-header.tsx`) and one
   footer (`components/footer.tsx`, not in the Diwan). One main menu:
-  What's on, Qirtas, The Company, Next Stop, Get involved and About, with
+  Events, Qirtas, The Company, Next Stop, Get involved and About, with
   a Join button (signed in,
   the end of the line opens Membership; the Diwan under it for staff, the
   Partner dashboard for a partner's team, `useWays`). No link appears

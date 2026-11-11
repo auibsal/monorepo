@@ -174,7 +174,7 @@ const sendMinutes = async (
   const publisher = await publisherFor(ctx, email);
   if (!publisher) {
     await refuse(ctx, page, [
-      `${email} does not hold governance.manage in the Diwan. Ask the General Secretary to set Minutes in the Diwan.`,
+      `${email} does not hold governance.manage in the Diwan. Ask the Secretary to set Minutes in the Diwan.`,
     ]);
     return;
   }

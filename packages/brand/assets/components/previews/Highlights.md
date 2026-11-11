@@ -1,8 +1,8 @@
 # Highlights
 
-The six Instagram highlights on @auibsal, always in this order: What's on, Qirtas, The Company, Next Stop, Join (with the Typewriter Tour), Partners (with Second Chapter).
+The six Instagram highlights on @auibsal, always in this order: Events, Qirtas, The Company, Next Stop, Join (with the Typewriter Tour), Partners (with Second Chapter).
 
-**Covers.** Plain crimson with the highlight's icon alone, in white, centered. No name (Instagram writes it under the circle, and the two never disagree), no Bookmark, no other text. Icons: What's on `calendar`, Qirtas `newspaper`, The Company `drama`, Next Stop `bus`, Join `user-plus`, Partners `handshake`. Export each at 1080 × 1080 and keep the icon inside the middle 760 px, so the circle crop never touches it.
+**Covers.** Plain crimson with the highlight's icon alone, in white, centered. No name (Instagram writes it under the circle, and the two never disagree), no Bookmark, no other text. Icons: Events `calendar`, Qirtas `newspaper`, The Company `drama`, Next Stop `bus`, Join `user-plus`, Partners `handshake`. Export each at 1080 × 1080 and keep the icon inside the middle 760 px, so the circle crop never touches it.
 
 **Markup:** `<div class="sal-highlight">` wrapping `.sal-highlight__frame` and an inline `svg.sal-highlight__icon` with an `aria-label` naming the highlight. Add `sal-highlight--round` to preview the circle crop.
 
@@ -16,4 +16,4 @@ The six Instagram highlights on @auibsal, always in this order: What's on, Qirta
 **Rules**
 - Keep every word 250 px clear of the top and 340 px clear of the bottom.
 - English only: the account is in English. Arabic stories are posted separately.
-- Update the What's on banner every term, and the Qirtas banner each Edition.
+- Update the Events banner every term, and the Qirtas banner each Edition.

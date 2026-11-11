@@ -16,7 +16,7 @@ export const maxDuration = 60;
  * calendar (`campusCalendar` in the project file) into core.external_events,
  * and the terms it opens and closes into core.semesters (role terms, voting
  * standing and declarations follow them). Events that left the feed are
- * removed from the window the feed covers. What's on (/events) shows them.
+ * removed from the window the feed covers. Events (/events) shows them.
  */
 const sync = async (request: Request) => {
   if (!hasBearer(request, env.CRON_SECRET)) {
@@ -96,7 +96,7 @@ const sync = async (request: Request) => {
     })
   );
   const terms = stored.filter(Boolean).length;
-  // What's on shows these dates; refresh its cached reads.
+  // Events shows these dates; refresh its cached reads.
   revalidateTag("events", "max");
   return Response.json({ synced: events.length, terms });
 };

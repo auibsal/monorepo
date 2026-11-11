@@ -48,8 +48,10 @@ const SEATS_AR: Record<string, string> = {
   "Director of Membership": "مدير العضوية",
   "Director of Partnerships": "مدير الشراكات",
   "Editor-in-Chief": "رئيس التحرير",
-  "General Secretary": "الأمين العام",
+  // Notion's older owner value reads as the seat's current name.
+  "General Secretary": "أمين السر",
   President: "الرئيس",
+  Secretary: "أمين السر",
   "Vice President": "نائب الرئيس",
 };
 
@@ -91,7 +93,10 @@ const DocumentLine = async ({ doc, locale }: { doc: Doc; locale: Locale }) => {
   const hasOther = other === "ar" ? Boolean(doc.body_ar) : Boolean(doc.body_en);
   const keeper = doc.owner
     ? t("keptBy", {
-        seat: locale === "ar" ? (SEATS_AR[doc.owner] ?? doc.owner) : doc.owner,
+        seat:
+          locale === "ar"
+            ? (SEATS_AR[doc.owner] ?? doc.owner)
+            : doc.owner.replace("General Secretary", "Secretary"),
       })
     : null;
   return (

@@ -32,7 +32,7 @@ interface EventProps {
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 
-// /events/<slug> is an event (a month of What's on is /events?month=;
+// /events/<slug> is an event (a month of Events is /events?month=;
 // old month addresses redirect, next.config.ts). The Supabase reads stay
 // cached by tag until an event is published.
 

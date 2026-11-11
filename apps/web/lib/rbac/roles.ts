@@ -210,8 +210,8 @@ export const roles = {
   general_secretary: {
     defaultScope: "global",
     isCouncil: true,
-    nameAr: "الأمين العام",
-    nameEn: "General Secretary",
+    nameAr: "أمين السر",
+    nameEn: "Secretary",
     permissions: [
       "members.verify",
       "members.manage",
@@ -535,7 +535,7 @@ export const roles = {
       "content.manage",
     ],
   },
-  // The General Secretary's team (decisions.md).
+  // The Secretary's team (decisions.md).
   tour_lead: {
     defaultScope: "global",
     isCouncil: false,

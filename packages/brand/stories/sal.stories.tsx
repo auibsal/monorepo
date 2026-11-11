@@ -316,7 +316,7 @@ export const LetterStory: Story = {
       reference="LTR-2026-001"
       signer={{
         name: "Yaqoob Ghassan Mahmood Hussein",
-        role: "General Secretary",
+        role: "Secretary",
       }}
       subject="Service letter"
       verify={{
@@ -350,7 +350,7 @@ export const LetterArabic: Story = {
         locale="ar"
         recipient={["لينا حسن", "الجامعة الأمريكية في بغداد"]}
         reference="LTR-2026-001"
-        signer={{ name: "يعقوب غسان العزاوي", role: "الأمين العام" }}
+        signer={{ name: "يعقوب غسان العزاوي", role: "أمين السر" }}
         subject="رسالة خدمة"
         verify={{
           code: "SVC-2027-4K8P",

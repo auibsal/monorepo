@@ -97,7 +97,7 @@ ${items}
 };
 
 /**
- * What's on as an RSS 2.0 feed (decisions.md, Standards): the coming public
+ * Events as an RSS 2.0 feed (decisions.md, Standards): the coming public
  * events, soonest first, in the page's language; an event with no title in
  * that language is left out. Members-only events never appear.
  */

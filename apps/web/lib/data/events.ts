@@ -141,7 +141,7 @@ export const myRsvps = async (client: Client, userId: string) =>
   );
 
 /**
- * What's on between two times: everything the caller may see, and
+ * Events between two times: everything the caller may see, and
  * members-only events as teasers (title, time and program only) for those
  * who may not. Invitation-only events reach only the invited.
  */

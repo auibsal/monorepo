@@ -59,6 +59,12 @@ const ARABIC: Rule[] = [
     why: "Arabic punctuation: ، ؛ ؟",
   },
   { pattern: /[ء-ي][^\n]*[“”]|[“”][^\n]*[ء-ي]/u, why: "«» quotes in Arabic" },
+  // decisions.md, Retired names: «أمين السر», never «الأمين العام»; Events
+  // is «الفعاليات».
+  {
+    pattern: /الأمين العام|الأمينة العامة|«ما يجري»|المحطة القادمة/u,
+    why: "a retired name (the glossary)",
+  },
 ];
 
 // Iraqi spellings and words (گ, چ, پ and common colloquial words).
@@ -82,7 +88,7 @@ const ENGLISH: Rule[] = [
   // Owner, Nov 7, 2026 (decisions.md, "Retired names"): never use these.
   {
     pattern:
-      /\b(the Salon|Book Circle|Open Pages|Listening Room|Launch Night|[Oo]pen nights?|[Ss]tation days?|Candidates’ Reading|the Ribbon|[Ww]orst-poem contest|Apprenticeships?|First Ink|[Tt]rial term|General Assembly|AGM|Qirtas Awards?|(Tabari|Jahiz|Nazik|Wasiti|Ibn al-Haytham) Award|Qirtas Prizes|[Cc]hapbook|Fellows?|Fellowship|Life Members?|Majlis|Munazara|Mutanabbi Friday|Bad Poetry Night|Open Stage|Scratch Night|Motion Night|Mutanabbi Walk|Productions|Gallery Wall|Month in Qirtas|Side Quest|BusTalks|Waraq|Nexus|Book of (Members|Fellows)|Charter (Night|Day)|Director of (the Company|Letters|Stage and Arts|Programs)|Editor of Qirtas|(Deputy )?Treasurer|Green Room|AUIB SAL HQ|Callboard|Program Leads?|Salon|[Ll]edgers?|[Rr]otas?|[Bb]ook votes?|[Pp]rompt cards?|[Ss]ix programs|Standing Programs?|[Ff]lagships?|the Evenings|the Specials|[Ww]eekly evenings?|[Ff]our-week cycle|[Ee]very fourth week|Arts and Sciences College)\b/u,
+      /\b(the Salon|Book Circle|Open Pages|Listening Room|Launch Night|[Oo]pen nights?|[Ss]tation days?|Candidates’ Reading|the Ribbon|[Ww]orst-poem contest|Apprenticeships?|First Ink|[Tt]rial term|General Assembly|AGM|Qirtas Awards?|(Tabari|Jahiz|Nazik|Wasiti|Ibn al-Haytham) Award|Qirtas Prizes|[Cc]hapbook|Fellows?|Fellowship|Life Members?|Majlis|Munazara|Mutanabbi Friday|Bad Poetry Night|Open Stage|Scratch Night|Motion Night|Mutanabbi Walk|Productions|Gallery Wall|Month in Qirtas|Side Quest|BusTalks|Waraq|Nexus|Book of (Members|Fellows)|Charter (Night|Day)|Director of (the Company|Letters|Stage and Arts|Programs)|Editor of Qirtas|(Deputy )?Treasurer|Green Room|AUIB SAL HQ|Callboard|Program Leads?|Salon|[Ll]edgers?|[Rr]otas?|[Bb]ook votes?|[Pp]rompt cards?|[Ss]ix programs|Standing Programs?|[Ff]lagships?|the Evenings|the Specials|[Ww]eekly evenings?|[Ff]our-week cycle|[Ee]very fourth week|Arts and Sciences College|What[’']s on|General Secretary|Acting President|Submissions Manager|Event Coordinator|Venues and Logistics Lead|Production Lead|Event Staff|Arabic Editor|Onboarding Lead|Records and Recognition Lead|Technical Administrator|Founders[’'] Roll|Honorary Fellows?|[Pp]aperless pledge|Ubuntu Arabic|Issue 1|[Pp]ilot issue|printed year-in-review)\b/u,
     why: "a retired name",
   },
   // Document codes (decisions.md): GOV, EXB, EVT, MEM, PTN, MED, ART

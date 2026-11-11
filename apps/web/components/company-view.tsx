@@ -15,7 +15,7 @@ import { monthFrom } from "@/lib/whats-on";
  * The Company, the Society's theater company (decisions.md, What the
  * Society does: the Company): what it is, the first season's plan, how
  * auditions are announced (never open here: they are RSVP events on
- * What's on, scored on F-25), the Artistic Director opening while it is
+ * Events, scored on F-25), the Artistic Director opening while it is
  * open, and each public production with its playbill from the roles
  * scoped to it. Performances are ordinary events. No rights, no show: a
  * production is listed only once its rights are cleared.

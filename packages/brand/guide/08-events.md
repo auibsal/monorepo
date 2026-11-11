@@ -4,7 +4,7 @@ Qirtas is the Society's paper, the Company its theater and Next Stop its video s
 
 ## One standard event page
 
-Every event, Council meetings, general meetings and the Edition's launch among them, uses the same page on What's on (auibsal.org/events). Only the details change: the title, the date and time, the place, the description, one image, the lead and the links. No event has its own look, its own components or its own name treatment.
+Every event, Council meetings, general meetings and the Edition's launch among them, uses the same page on Events (auibsal.org/events). Only the details change: the title, the date and time, the place, the description, one image, the lead and the links. No event has its own look, its own components or its own name treatment.
 
 | Access | Who comes |
 | --- | --- |

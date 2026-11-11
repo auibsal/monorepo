@@ -58,7 +58,7 @@ describe("documents", () => {
     ]);
     const { html } = documentSections(
       '<p>النسخة العربية: <a href="https://app.notion.com/p/4108">النظام الداخلي</a></p>' +
-        "<p>SAL-GOV-02 · Bylaws · Version 1, proposed · Owner: General Secretary</p>" +
+        "<p>SAL-GOV-02 · Bylaws · Version 1, proposed · Owner: Secretary</p>" +
         "<p>Proposed until the Founding Meeting.</p>" +
         '<p>Full text: SAL-GOV-03 Policy Manual <a href="https://app.notion.com/p/40e8">Policy Manual</a>.</p>' +
         "<p>As SAL-GOV-01 says, and SAL-EXB-01 · F-43.</p>" +

@@ -28,7 +28,7 @@ const personas = {
   generalSecretary: {
     email: "gs@auib.edu.iq",
     id: "00000000-0000-0000-0000-0000000000d2",
-    name: "General Secretary",
+    name: "Secretary",
     roles: [{ role: "general_secretary" }],
   },
   guest: {

@@ -9,7 +9,7 @@ import stickers from "../assets/print/stickers/stickers.json";
  * printables as one HTML page, and the sizes each piece is printed at
  * (Notion, Brand essentials). Paperless by default: print from the browser,
  * only to the confirmed need (the RSVP count plus 10%, or the number asked
- * for), requested from Student Life through the General Secretary.
+ * for), requested from Student Life through the Secretary.
  */
 const meta = {
   title: "Print",

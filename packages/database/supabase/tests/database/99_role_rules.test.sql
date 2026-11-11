@@ -125,7 +125,7 @@ select throws_ok(
 select throws_ok(
   $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'general_secretary') $$,
   '23P01', 'one_council_seat',
-  'so the President is never also the General Secretary'
+  'so the President is never also the Secretary'
 );
 select access.end_role_assignment(
   (select id from access.role_assignments where user_id = '00000000-0000-0000-0000-0000000000a1'),

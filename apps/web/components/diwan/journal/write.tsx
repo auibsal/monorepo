@@ -182,7 +182,7 @@ const MORNING_AR = / ص$/u;
 const HAVEN_RULES = ["length", "entries", "new", "who", "own"] as const;
 
 /**
- * Haven, Qirtas's pilot issue (decisions.md, Qirtas): the poster's words,
+ * Haven, Qirtas's pilot Edition (decisions.md, Qirtas): the poster's words,
  * the call's terms and its dates, read from the call itself. Work for it
  * goes through Letters and Gallery below.
  */

@@ -215,7 +215,7 @@ select hasnt_column('core', 'profiles', 'show_certificates_on_card',
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ca04');
 select results_eq(
   $$ select role_en, role_ar, since from membership.my_card_face() $$,
-  $$ values ('General Secretary'::text, 'الأمين العام'::text,
+  $$ values ('Secretary'::text, 'أمين السر'::text,
     extract(year from now() at time zone 'Asia/Baghdad')::integer) $$,
   'The card shows the role held on its second line and the year since'
 );
@@ -228,7 +228,7 @@ select set_config('test.gs_digits', (select private.totp(secret, floor(extract(e
 select pg_temp.login_anon();
 select is(
   (select role_en from membership.verify_card(current_setting('test.gs_code'), current_setting('test.gs_digits'))),
-  'General Secretary', 'The check page shows the same second line for a live code'
+  'Secretary', 'The check page shows the same second line for a live code'
 );
 select throws_ok($$ select * from membership.wallet_card('00000000-0000-0000-0000-00000000ca04') $$,
   '42501', null, 'Only the platform reads what a Wallet pass carries');

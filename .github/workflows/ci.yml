@@ -274,7 +274,7 @@ jobs:
           fi
       # The journeys run against production builds (next start), not the dev
       # server: faster, and what actually ships. Their data is seeded first:
-      # the build caches what it reads (What's on's current month, for one),
+      # the build caches what it reads (the Events page's current month, for one),
       # and seeded rows bypass the publish path that would revalidate it.
       - name: Seed the journeys' data
         run: |

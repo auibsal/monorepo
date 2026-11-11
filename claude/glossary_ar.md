@@ -19,7 +19,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Hudhud | هدهد |
 | the Council | المجلس |
 | the Executive Board | الهيئة التنفيذية |
-| President / Vice President / General Secretary | الرئيس / نائب الرئيس / الأمين العام |
+| President / Vice President / Secretary | الرئيس / نائب الرئيس / أمين السر |
 | Editor-in-Chief / Managing Editor | رئيس التحرير / مدير التحرير |
 | Director of Media | مدير الإعلام |
 | Artistic Director | المدير الفني |
@@ -34,7 +34,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Our people (About) | «فريقنا» |
 | credits (production, episode) | فريق العمل |
 | stage manager / front-of-house manager | مدير المسرح / مسؤول الصالة |
-| pilot issue / pilot episode | العدد التجريبي / الحلقة التجريبية |
+| pilot episode | الحلقة التجريبية |
 | sound logo | الشعار الصوتي |
 | cold open / opening titles / end credits / end screen | الافتتاحية / شارة البداية / شارة النهاية / الشاشة الختامية |
 | name caption (lower third) | شريط الاسم |
@@ -86,13 +86,21 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | amendment | تعديل |
 | the first term (probation) | فترة التجربة |
 | event / event lead | فعالية / قائد الفعالية |
-| What's on | «ما يجري» |
+| Parent account / Qalam account / Student Life (outside role) | حساب وليّ الأمر / حساب «قلم» / شؤون الطلبة (دور خارجي) |
+| Sign as … (signing) | «وقّع باسم …» |
+| One Book, One Campus / Poem in Your Pocket Day | «كتاب واحد، حرم واحد» / «يوم القصيدة في جيبك» |
+| press page / logo pack / press release | صفحة الصحافة / حزمة الشعار / بيان صحفي |
+| Events (the calendar and its page) | «الفعاليات» |
 | Get involved | «شارك معنا» |
 | needs list | قائمة الاحتياجات |
 | charity collection | جمع التبرعات لجهة خيرية |
-| the Edition | الإصدار |
-| issue (themed online collection) / Issue 1 | العدد / العدد 1 |
-| Haven (the pilot issue) | «ملاذ» |
+| Edition / Edition 1 / the pilot (Haven) | الإصدار / الإصدار 1 / الإصدار التجريبي |
+| the standing flow / table of contents / contributors' notes / cover artist | التدفق المستمر / المحتويات / نبذة عن المساهمين / فنان الغلاف |
+| Submit (Qirtas's button) / Save / Saved | «أرسل عملك» / حفظ / «المحفوظات» |
+| Your account's tabs: Today / Events / Work / Applications / Roles and service / Documents / Card / Settings | «اليوم» / «الفعاليات» / «أعمالك» / «طلباتك» / «الأدوار والخدمة» / «المستندات» / «البطاقة» / «الإعدادات» |
+| Sign out | تسجيل الخروج |
+| agreements and consents / Raise a concern / Pitch an event | الاتفاقيات والموافقات / «أبلغ عن مخاوف» / «اقترح فعالية» |
+| Haven (the pilot) | «ملاذ» |
 | topic (Qirtas) | موضوع |
 | section editor / assistant editor | محرر القسم / محرر مساعد |
 | copy editor | مدقق لغوي |
@@ -118,7 +126,19 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | names of people | the person's preferred name from the site, in the edition's language (one field in English, one in Arabic); never typed or transliterated by hand |
 | Jelena Zivkovic / Ali Najm | يلينا زيفكوفيتش / علي نجم |
 | Qirtas (grammar) | قرطاس is masculine (قرطاس يصدر، نشره قرطاس); when the word «صحيفة» is used, agree with it |
+| Help / Words we use / Report a problem | المساعدة / كلمات نستخدمها / أبلِغ عن مشكلة |
+| Contact / Raise a concern | تواصل معنا / أبلِغ عن مخاوف |
+| sign in / sign out / sign out everywhere else | تسجيل الدخول / تسجيل الخروج / الخروج من الأجهزة الأخرى |
+| password / authenticator app | كلمة المرور / تطبيق المصادقة |
+| Download your data / I'm still here (renewal) | نزّل بياناتك / ما زلت معكم |
+| outside role / partner dashboard | دور خارجي / لوحة الشريك |
+| role agreement / receipt / record number | اتفاقية الدور / إيصال / رقم السجل |
+| the Library / Credits (/about/credits) | المكتبة / الاعتمادات |
+| status page | صفحة حالة الموقع |
+| colophon | بيانات النشر |
+| the independence statement | «جمعية الفنون والآداب في الجامعة الأمريكية في بغداد منظمةٌ طلابية مسجّلة في الجامعة. آراؤها ومنشوراتها تخصّها وحدها، ولا تمثّل الجامعة.» |
+| Qirtas's line | «صحيفة الجامعة الأمريكية في بغداد للأخبار والآداب والفن» |
 
 **Titles of named holders and Arabic forms:** every account chooses its Arabic form («عضو» / «عضوة»); never guessed.
 
-**Titles of named holders:** a title that names a woman takes تاء التأنيث (نائبة الرئيس، الأمينة العامة، رئيسة التحرير، مديرة الإعلام) with feminine verbs and pronouns; a seat named in the abstract keeps the form above and avoids pronouns where it can. The Vice President is «نائبة الرئيس».
+**Titles of named holders:** a title that names a woman takes تاء التأنيث (نائبة الرئيس، أمينة السر، رئيسة التحرير، مديرة الإعلام) with feminine verbs and pronouns; a seat named in the abstract keeps the form above and avoids pronouns where it can. The Vice President is «نائبة الرئيس».

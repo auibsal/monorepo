@@ -9,7 +9,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 ## People, roles and records
 
 - **The Council of nine.** The Executive Board (President, Vice President,
-  General Secretary) and six directors (Editor-in-Chief, Director of
+  Secretary) and six directors (Editor-in-Chief, Director of
   Media, Artistic Director, Director of Events, Director of Partnerships,
   Director of Membership); `isCouncil` in `lib/rbac/roles.ts`, mirrored
   from the database. Each role is hired by its hiring seat
@@ -24,11 +24,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   most two assistant editors.
 - **The roles standard.** Every role has a kind (`access.roles.kind`): a
   seat, a team role under a seat, a scoped role (one event, production,
-  issue, election, episode or shift, ending with it) or an outside role.
+  Edition, election, episode or shift, ending with it) or an outside role.
   A retired role (`retired`) stays on record and is never shown or given.
   Covering an open seat or section is a dated delegation
   (`role_assignments.covering`) that ends when the role is given for good.
-  The General Secretary records the quarterly access review on the
+  The Secretary records the quarterly access review on the
   Council page (`access.record_access_review`). F-04, the new role
   holder's checklist, is in Your account for 120 days from the day a role
   is given (`access.my_role_checklist`).
@@ -172,7 +172,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   volunteer shifts (on the event only, logging no hours), a partner
   checklist (`events.joint_tasks`) and links from the night
   (`events.session_links`, https only). Off campus is a standard field:
-  such an event publishes only once the General Secretary records Student
+  such an event publishes only once the Secretary records Student
   Life's written approval (`events.record_approval`), and participants
   sign the trip consent, F-45. Nothing is built for one event or one kind
   of event. An event that recurs is made again for each date; there are
@@ -180,7 +180,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `programmes` schema, `programme_id`, `programs.manage`; copy says
   "event" or "event lead"). Minutes and resolutions are governance records
   pointing at their meeting's event (`governance.minutes.event_id`).
-- **What's on is one calendar**: `/events`, a month at
+- **Events is one calendar page**: `/events`, a month at
   `/events?month=<yyyy-mm>`, the Company's dates at `/events?host=company`,
   each event at `/events/<slug>`. The public calendar shows members-only
   events as teasers; SECURITY DEFINER code checks visibility with
@@ -250,7 +250,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   claims, reimbursements, payments or ads anywhere; sponsors give in kind
   only. Every event, Qirtas and the Tour keep a needs list
   (`programmes.needs`: item, quantity, date needed, purpose), and the
-  General Secretary sends each request to Student Life and logs what was
+  Secretary sends each request to Student Life and logs what was
   provided (Council → Requests), and by whom: Student Life, or a partner
   in kind (`needs.given_by`, picked from the register), whom the event's
   page then thanks under "Supported by" (`events.event_sponsors`: listed,
@@ -281,7 +281,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (`/diwan/qirtas/submissions/<id>`).
 - **Intake and blind review.** The Managing Editor handles intake and
   holds writers' names (`journal.identity.view`), and never reads a
-  blind entry: whoever holds the names is never an issue editor
+  blind entry: whoever holds the names is never an Edition's editor
   (`private.is_issue_editor`) and never gets the text
   (`private.can_read_entry`). Section editors decide.
 - **Approvals.** Every piece needs two people
@@ -312,11 +312,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   selections shared by address (`/qirtas/selection/...`, nothing stored).
   RSS at `/qirtas/feed.xml` and per section; the archive at
   `/qirtas/archive`. Pieces print on white without the site's frame.
-- **Issues** are themed online collections (`journal.issues`,
-  `/qirtas/issues`, a Shelf, with the plain list as a view, `?view=list`):
-  Haven is the pilot issue (`pilot`, no number), Issue 1 comes in spring
-  2027. **The Edition** is only the printed year-in-review; an issue's
-  record keeps the print run, printer and date for it.
+- **Editions** are Qirtas's themed collections (`journal.issues`,
+  `/qirtas/editions`, a Shelf, with the plain list as a view,
+  `?view=list`): Haven is the pilot (`pilot`, no number), Edition 1 comes
+  in spring 2027. An Edition's record keeps the print run, printer and
+  date when it is printed. Only the Sunday Paper has issues.
 - **Games**, daily, made in the reader's browser and the same for everyone
   on a Baghdad day (`lib/data/games`): the word, the word search,
   the crossword and the anagrams at `/qirtas/games/...`, checked ahead by
@@ -328,7 +328,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `/diwan/qirtas/prize`): Qirtas and Qalam categories, the outside judge's
   score 70% and the members' vote 30% (`journal.prize_results`), voting on
   Society while a round is open (`journal.open_prize_round`), the count
-  checked by the Editor-in-Chief and the General Secretary; a winner
+  checked by the Editor-in-Chief and the Secretary; a winner
   chooses whether to be named (`prize_entries.winner_named`), and anyone
   connected to a work steps aside from it (`journal.prize_recusals`).
 - **Qalam**, Qirtas's summer program for high school students. Its roster
@@ -374,7 +374,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `/qirtas/from-the-society`.
 - **The Sunday Paper** («جريدة الأحد»), monthly, to its topic, sent as one
   Resend Broadcast per language (outbox kind `sunday_paper.broadcast`): the
-  letter, the month's pieces, From the Society, What's on, open roles and
+  letter, the month's pieces, From the Society, Events, open roles and
   a call to write. Past issues are at `/sunday-paper/<yyyy-mm>`,
   only those sent (`content.sunday_paper_issues`), rebuilt from the
   records (`lib/sunday-paper.ts`). The sign-up (`NewsletterSignup`) never

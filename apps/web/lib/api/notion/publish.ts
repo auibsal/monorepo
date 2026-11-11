@@ -291,7 +291,7 @@ const publishEvent = async (
       "Diwan ID": prop.text(id),
       "Off campus": prop.checkbox(true),
       "Platform note": prop.text(
-        `Saved in the Diwan as a draft (${stamp()}): an event off campus is published once the General Secretary records Student Life's written approval on its page in the Diwan. Then set Ready to publish again.`
+        `Saved in the Diwan as a draft (${stamp()}): an event off campus is published once the Secretary records Student Life's written approval on its page in the Diwan. Then set Ready to publish again.`
       ),
       Slug: prop.text(v.slug),
       Status: prop.select("Planning"),

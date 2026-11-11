@@ -97,7 +97,7 @@ $$;
 
 select plan(21);
 
-select pg_temp.make_user('00000000-0000-0000-0000-00000000d1a1', 'gs-h@auib.edu.iq', 'General Secretary');
+select pg_temp.make_user('00000000-0000-0000-0000-00000000d1a1', 'gs-h@auib.edu.iq', 'Secretary');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000d1a2', 'editor-h@auib.edu.iq', 'Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000d1a3', 'applicant-h@auib.edu.iq', 'Applicant');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000d1a4', 'lead-h@auib.edu.iq', 'Salon Lead');

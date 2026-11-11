@@ -27,7 +27,7 @@ const thisMonth = () => currentDate().toISOString().slice(0, 7);
 /**
  * The Sunday Paper, by hand (decisions.md, Qirtas): the Managing Editor
  * writes the editor's letter, sends a test to the Editor-in-Chief and then
- * sends the issue. The pieces, "From the Society", What's on and the open
+ * sends the issue. The pieces, "From the Society", Events and the open
  * roles are filled in from the site when it goes. Changing the letter
  * asks for a new test.
  */

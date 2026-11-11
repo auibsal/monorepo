@@ -229,7 +229,7 @@ test("an officer who manages members corrects a member's name to the official on
     .update({ name_confirmed_at: new Date().toISOString() })
     .eq("id", memberId);
 
-  // The General Secretary covers Membership and signs in with two steps.
+  // The Secretary covers Membership and signs in with two steps.
   const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
   const secretaryId = users.users.find((u) => u.email === editor2.email)?.id;
   if (secretaryId) {

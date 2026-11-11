@@ -26,7 +26,7 @@ export const generateMetadata = async ({
 }: EditionsProps): Promise<Metadata> => {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  return localizedMetadata(locale, "/qirtas/issues", {
+  return localizedMetadata(locale, "/qirtas/editions", {
     description: t("editionsLede"),
     title: `${t("editions")} · ${t("title")}`,
   });
@@ -53,7 +53,7 @@ const EditionsPage = async ({ params, searchParams }: EditionsProps) => {
             <li className="border-line py-space-4 border-t" key={edition.id}>
               <Link
                 className="group grid gap-1"
-                href={`/qirtas/issues/${edition.slug}`}
+                href={`/qirtas/editions/${edition.slug}`}
               >
                 <span className="type-heading group-hover:underline">
                   {localized(edition, "title", locale)}
@@ -72,7 +72,7 @@ const EditionsPage = async ({ params, searchParams }: EditionsProps) => {
             </li>
           ))}
         </ul>
-        <Link className="link justify-self-start" href="/qirtas/issues">
+        <Link className="link justify-self-start" href="/qirtas/editions">
           {t("editionsOnShelf")}
         </Link>
       </div>
@@ -86,7 +86,7 @@ const EditionsPage = async ({ params, searchParams }: EditionsProps) => {
         }))}
         label={t("editions")}
         listLink={
-          <Link className="link" href="/qirtas/issues?view=list">
+          <Link className="link" href="/qirtas/editions?view=list">
             {t("editionsAsList")}
           </Link>
         }

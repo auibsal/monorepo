@@ -28,7 +28,7 @@ export const Footer = async () => {
   const email = t("columns.email");
 
   // The Society's pages and the ways to stay in touch, then the fine
-  // print (decisions.md: no event series to list; What's on is in
+  // print (decisions.md: no event series to list; Events is in
   // the header).
   const columns = [
     {

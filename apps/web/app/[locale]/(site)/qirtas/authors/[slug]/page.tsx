@@ -96,7 +96,7 @@ const AuthorPage = async ({ params }: AuthorProps) => {
           <ul className="border-line grid border-b">
             {editions.map((issue) => (
               <li className="border-line border-t py-3" key={issue.slug}>
-                <Link className="link" href={`/qirtas/issues/${issue.slug}`}>
+                <Link className="link" href={`/qirtas/editions/${issue.slug}`}>
                   {localized(issue, "title", locale)}
                 </Link>
               </li>

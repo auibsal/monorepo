@@ -112,7 +112,7 @@ select plan(27);
 -- Forms signed on the site (decisions.md): /forms/<number>, a typed
 -- name for a signature, the signed copy keeping the signer, the time and the
 -- form's version. a1 a member, a2 the President, a3 the Vice President, a4
--- the Faculty Advisor, a6 the General Secretary.
+-- the Faculty Advisor, a6 the Secretary.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member-fm@auib.edu.iq', 'A Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-fm@auib.edu.iq', 'The President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'vp-fm@auib.edu.iq', 'The VP');

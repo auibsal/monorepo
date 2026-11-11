@@ -16,7 +16,7 @@ Each family is a Council seat; GOV is the members' own. 01 is the family's gener
 
 | Family | Owner | Documents |
 | --- | --- | --- |
-| SAL-GOV | The members (kept by the General Secretary) | 01 Constitution, 02 Bylaws, 03 Policy Manual, 04 Privacy Notice, 05 Terms of Use, 06 Accessibility Statement |
+| SAL-GOV | The members (kept by the Secretary) | 01 Constitution, 02 Bylaws, 03 Policy Manual, 04 Privacy Notice, 05 Terms of Use, 06 Accessibility Statement |
 | SAL-EXB | The Executive Board | 01 Leadership Handbook (with the forms register), 02 Annual Plan |
 | SAL-EVT | Director of Events | 01 Events Manual |
 | SAL-MEM | Director of Membership | 01 Membership Manual, 02 Member Handbook, 03 Typewriter Tour Playbook |

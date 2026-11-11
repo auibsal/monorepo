@@ -482,7 +482,7 @@ const stopLinks = (lang: Lang, userId: string) => {
 
 /**
  * What the Sunday Paper carries (decisions.md): the month's pieces,
- * What's on for the month ahead, and Get involved's open places. Null
+ * Events for the month ahead, and Get involved's open places. Null
  * when there is nothing to send.
  */
 const paperContents = async (

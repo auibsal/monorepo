@@ -22,7 +22,7 @@ export const isHost = (value: unknown): value is Host =>
   (HOSTS as readonly unknown[]).includes(value);
 
 /**
- * Where a month of What's on is: filters are query strings (decisions §6),
+ * Where a month of Events is: filters are query strings (decisions §6),
  * /events?month=2026-11 and /events?month=2026-11&host=company.
  */
 export const whatsOnPath = (month: Month, host?: Host) => {
@@ -34,7 +34,7 @@ export const whatsOnPath = (month: Month, host?: Host) => {
 };
 
 /**
- * What's on: the Society's events in one calendar, a month at a time. The
+ * Events: the Society's events in one calendar, a month at a time. The
  * public see members-only events as teasers; members book from the
  * members' events page. AUIB's own calendar is one link, not dates beside
  * the Society's (decisions §10).
