@@ -39,6 +39,7 @@ import {
   rsvpConfirmed,
   serviceLetterWritten,
   shiftReminder,
+  submissionInReading,
   submissionReceived,
   sundayPaper,
   twoStepReset,
@@ -162,7 +163,10 @@ export const ReturnedForFormatting = email((l) =>
 export const RoleEnding = email((l) => roleEnding(l, role, APP));
 export const RsvpConfirmed = email((l) => rsvpConfirmed(l, event, APP));
 export const SubmissionReceived = email((l) =>
-  submissionReceived(l, WORK, APP)
+  submissionReceived(l, WORK, APP, "blind", "SUB-2026-001")
+);
+export const SubmissionInReading = email((l) =>
+  submissionInReading(l, WORK, APP, "SUB-2026-001")
 );
 export const WaitlistPromoted = email((l) => waitlistPromoted(l, event, APP));
 export const SubmissionReceivedNamed = email((l) =>

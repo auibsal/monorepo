@@ -6,8 +6,12 @@ import { journal } from "@/lib/data";
 import { roughlyNow } from "@/lib/this-year";
 import { DeskNav } from "./desk-nav";
 
+/** The paper's name in both languages: the page's own first. */
+const NAMES = { ar: "قرطاس", en: "Qirtas" } as const;
+
 /**
- * The paper's nameplate: the name in Medium, a dateline between two ink
+ * The paper's nameplate (decisions.md, Qirtas): "Qirtas" with «قرطاس», in
+ * Ubuntu Light, a dateline between two ink
  * rules ending in the Masthead, the Editions, Topics and the Prize (decisions.md), and the sections. One nameplate on every page of the paper
  * (decisions.md): it belongs to the Qirtas layout, so it never
  * changes or reloads between the front page, a section and a piece.
@@ -16,13 +20,20 @@ export const Nameplate = async ({ locale }: { locale: Locale }) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });
   return (
     <header className="grid gap-6">
-      <div className="grid justify-items-center pt-4 text-center">
+      <div className="grid justify-items-center gap-1 pt-4 text-center">
         <Link
-          className="hover:text-accent text-[clamp(4.5rem,13vw,10rem)] leading-[0.95] font-medium tracking-[-0.04em]"
+          className="hover:text-accent text-[clamp(4.5rem,13vw,10rem)] leading-[0.95] font-light tracking-[-0.04em]"
           href="/qirtas"
         >
           {t("title")}
         </Link>
+        <span
+          className="text-text-secondary text-[clamp(1.5rem,3vw,2.25rem)] font-light"
+          dir={locale === "ar" ? "ltr" : "rtl"}
+          lang={locale === "ar" ? "en" : "ar"}
+        >
+          {locale === "ar" ? NAMES.en : NAMES.ar}
+        </span>
       </div>
       <p className="border-text grid gap-1 border-y py-2.5 text-[0.8125rem] font-medium sm:grid-cols-3 sm:items-center">
         <span>

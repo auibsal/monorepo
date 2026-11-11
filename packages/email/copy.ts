@@ -211,13 +211,47 @@ export const submissionReceived = (
   lang: Lang,
   work: string,
   app: string,
-  desk: DeskKind = "blind"
+  desk: DeskKind = "blind",
+  reference: string | null = null
 ) =>
   build(lang, (l) => ({
     action: account(app, l, "/qirtas/submit"),
     heading:
       l === "ar" ? `شكرًا، وصلنا ${work}` : `Thank you: we received ${work}`,
-    paragraphs: RECEIVED[desk][l],
+    paragraphs: [
+      ...(reference
+        ? [
+            l === "ar"
+              ? `رقم السجل: ${reference}.`
+              : `Record number: ${reference}.`,
+          ]
+        : []),
+      ...RECEIVED[desk][l],
+    ],
+  }));
+
+/** In reading (decisions.md, Qirtas): it passed its check; readers have it. */
+export const submissionInReading = (
+  lang: Lang,
+  work: string,
+  app: string,
+  reference: string | null = null
+) =>
+  build(lang, (l) => ({
+    action: account(app, l, "/qirtas/submit"),
+    heading: l === "ar" ? `قيد القراءة: ${work}` : `In reading: ${work}`,
+    paragraphs: [
+      l === "ar"
+        ? "اجتاز عملك الفحص الأول، وهو الآن بين أيدي القرّاء. ستسمع منا حين يُتَّخذ القرار."
+        : "Your work passed its first check and is now with the readers. You’ll hear from us when there’s a decision.",
+      ...(reference
+        ? [
+            l === "ar"
+              ? `رقم السجل: ${reference}.`
+              : `Record number: ${reference}.`,
+          ]
+        : []),
+    ],
   }));
 
 export const returnedForFormatting = (

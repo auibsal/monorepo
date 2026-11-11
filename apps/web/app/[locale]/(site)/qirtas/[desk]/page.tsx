@@ -1,3 +1,4 @@
+import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
@@ -6,7 +7,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PieceCardView } from "@/components/qirtas/cards";
 import { SelectionBar } from "@/components/qirtas/gallery-selection";
-import { journal } from "@/lib/data";
+import { journal, localized } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -36,7 +37,42 @@ export const generateMetadata = async ({
   });
 };
 
-/** A section of the paper: News, Voices, Letters, Gallery or Video. */
+/**
+ * The section's editor, from the masthead (decisions.md, Qirtas): the
+ * person holding <desk>_editor, or who covers the seat while it is open.
+ */
+const deskEditor = async (desk: journal.Desk, locale: Locale) => {
+  const people = await readPublished(
+    ["journal"],
+    (c) => journal.masthead(c),
+    []
+  );
+  const seat = people.find((p) => p.role === `${desk}_editor`);
+  if (!seat) {
+    return null;
+  }
+  if (seat.full_name_en) {
+    return {
+      covered: null,
+      name: localized(
+        {
+          full_name_ar: seat.full_name_ar ?? "",
+          full_name_en: seat.full_name_en,
+        },
+        "full_name",
+        locale
+      ),
+    };
+  }
+  return { covered: seat.covered_by, name: null };
+};
+
+/**
+ * A section of the paper: News, Voices, Letters, Gallery or Video. Every
+ * section front follows one pattern (decisions.md, Qirtas): its title, one
+ * sentence, its call as the action, its editor from the masthead, then the
+ * list.
+ */
 const DeskPage = async ({ params }: DeskProps) => {
   const { desk, locale } = await params;
   setRequestLocale(locale);
@@ -53,12 +89,31 @@ const DeskPage = async ({ params }: DeskProps) => {
     locale
   );
   const pictures = desk === "gallery" || desk === "video";
+  const editor = await deskEditor(desk, locale);
+  const takesWork = journal.sendableCategories(desk).length > 0;
+  let editorLine: string | null = null;
+  if (editor?.name) {
+    editorLine = t("deskEditor", { name: editor.name });
+  } else if (editor?.covered) {
+    editorLine =
+      editor.covered === "managing_editor"
+        ? t("masthead.checkedByManagingEditor")
+        : t("masthead.coveredByEditorInChief");
+  }
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
-      <header className="grid gap-2">
+      <header className="grid gap-3">
         <h1 className="type-display">{t(`desks.${desk}`)}</h1>
         <p className="type-lede max-w-3xl">{t(`deskLedes.${desk}`)}</p>
+        {takesWork ? (
+          <Button asChild className="justify-self-start">
+            <Link href={`/qirtas/submit#${desk}`} prefetch={false}>
+              {t("sendTo", { desk: t(`desks.${desk}`) })}
+            </Link>
+          </Button>
+        ) : null}
+        {editorLine ? <p className="type-caption">{editorLine}</p> : null}
         <p className="type-caption flex flex-wrap gap-x-5">
           <Link className="link" href="/qirtas/archive">
             {t("archive.open")}
@@ -69,15 +124,6 @@ const DeskPage = async ({ params }: DeskProps) => {
           >
             {t("feed")}
           </a>
-          {journal.sendableCategories(desk).length > 0 ? (
-            <Link
-              className="link"
-              href={`/qirtas/submit#${desk}`}
-              prefetch={false}
-            >
-              {t("sendTo", { desk: t(`desks.${desk}`) })}
-            </Link>
-          ) : null}
         </p>
         {desk === "gallery" ? <SelectionBar /> : null}
       </header>

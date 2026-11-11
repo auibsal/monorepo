@@ -2909,7 +2909,11 @@
           "setDate": "Set the date",
           "clearDate": "Clear the date",
           "datedLog": "Set to {date} on {when}",
-          "datedCleared": "Cleared on {when}"
+          "datedCleared": "Cleared on {when}",
+          "factChecked": "Every fact checked against a second source or document on {date}.",
+          "factCheckNeeded": "News: every fact is checked against a second source or document before the second approval.",
+          "recordFactCheck": "Record the second-source check",
+          "disclosure": "The writer’s ties to what this covers: {text}"
         },
         "thread": {
           "title": "Conversation with the author",
@@ -4154,6 +4158,10 @@
         "bio": "Bio",
         "words": "English: {en} words · Arabic: {ar} words",
         "save": "Save"
+      },
+      "disclosure": {
+        "label": "Your ties to what this covers",
+        "hint": "Anything that could look like a conflict: a club you belong to, a friend or relative in the story, a role you hold. The editors reassign or note it. Leave it empty if there’s nothing."
       }
     },
     "details": {
@@ -5124,7 +5132,8 @@
       "fromTheSocietyLede": "The Society’s notices, newest first: calls, openings, elections and results, and what changes.",
       "fromTheSocietyEmpty": "No notices yet.",
       "fromTheSocietyAll": "All notices",
-      "colophon": "Set in Ubuntu and Markazi Text. Written in Baghdad."
+      "colophon": "Set in Ubuntu and Markazi Text. Written in Baghdad.",
+      "deskEditor": "Edited by {name}"
     },
     "about": {
       "title": "About the Society",

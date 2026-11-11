@@ -98,7 +98,7 @@ $$;
 -- Start from an empty journal: migrations seed the real Issue 1 call.
 delete from journal.issues;
 
-select plan(40);
+select plan(42);
 
 -- People: founder, Submissions Manager, EIC, three readers, authors.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
@@ -339,6 +339,16 @@ select is(
   'Author 1',
   'The agreement is signed in the author''s name on the platform, not a typed one'
 );
+
+-- Writers hear at each step (decisions.md, Qirtas): every submission has
+-- its record number, and "in reading" is sent when readers have it.
+select pg_temp.logout();
+select ok(
+  not exists (select 1 from journal.submissions where reference !~ '^SUB-[0-9]{4}-[0-9]{3,}$'),
+  'Every submission has its record number');
+select ok(
+  exists (select 1 from core.outbox where kind = 'qirtas.in_reading'),
+  'Writers hear when their work is in reading');
 
 select * from finish();
 rollback;

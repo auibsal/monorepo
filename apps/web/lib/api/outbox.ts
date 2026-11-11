@@ -54,6 +54,7 @@ import {
   rsvpConfirmed,
   serviceLetterWritten,
   shiftReminder,
+  submissionInReading,
   submissionReceived,
   sundayPaper,
   twoStepReset,
@@ -387,14 +388,18 @@ const pieceTitle = (
 
 const webUrl = origin;
 
-const submissionTitle = async (admin: AdminClient, submissionId: unknown) => {
+const submissionTitle = async (admin: AdminClient, submissionId: unknown) =>
+  (await submissionRecord(admin, submissionId))?.title ?? null;
+
+/** A submission's title and record number (SUB-<year>-<n>). */
+const submissionRecord = async (admin: AdminClient, submissionId: unknown) => {
   const { data } = await admin
     .schema("journal")
     .from("submissions")
-    .select("title")
+    .select("title, reference")
     .eq("id", String(submissionId))
     .maybeSingle();
-  return data?.title ?? null;
+  return data;
 };
 
 /** Holders of programs.manage for the program (or globally). */
@@ -1511,6 +1516,18 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
+  "qirtas.in_reading": async (admin, payload) => {
+    const [to, work] = await Promise.all([
+      recipient(admin, payload.user_id),
+      submissionRecord(admin, payload.submission_id),
+    ]);
+    if (to && work) {
+      await send(
+        to,
+        submissionInReading(to.lang, work.title, appUrl(), work.reference)
+      );
+    }
+  },
   "qirtas.piece_note": async (admin, payload) => {
     const [to, piece] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -1558,13 +1575,15 @@ const handlers: Record<string, Handler> = {
   "qirtas.submission_received": async (admin, payload) => {
     const [to, work, desk] = await Promise.all([
       recipient(admin, payload.user_id),
-      submissionTitle(admin, payload.submission_id),
+      submissionRecord(admin, payload.submission_id),
       submissionDesk(admin, payload.submission_id),
     ]);
     if (to && work) {
-      await send(to, submissionReceived(to.lang, work, appUrl(), desk), {
-        sticker: "sent",
-      });
+      await send(
+        to,
+        submissionReceived(to.lang, work.title, appUrl(), desk, work.reference),
+        { sticker: "sent" }
+      );
     }
   },
   "removal.done": async (admin, payload) => {

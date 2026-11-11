@@ -123,18 +123,22 @@ production; **Owner** is a step only the owner can take.
   `governance.elections.forum_event_id`, checked to fall in the week.
 
 ### 4. Qirtas (decisions.md, Qirtas)
-- [ ] The nameplate and the line "AUIB's paper of news, letters and art" /
+- [x] The nameplate and the line "AUIB's paper of news, letters and art" /
   «صحيفة الجامعة الأمريكية في بغداد للأخبار والآداب والفن».
-- [ ] Section fronts: title, one sentence, the call as the action, the
+- [x] Section fronts: title, one sentence, the call as the action, the
   section's editor from the masthead, then the list.
-- [ ] Contributor pages listing each person's pieces (preferred or pen
+- [x] Contributor pages listing each person's pieces (preferred or pen
   name; Anonymous left out; minors only with consent).
-- [ ] The colophon on Qirtas's pages and in each Edition, not the site
+- [x] The colophon on Qirtas's pages and in each Edition, not the site
   footer.
 - [ ] Writers' emails at each step: received (record number), in reading,
   the decision (accepted, declined with a standard note, revise and
-  resend), edits to approve, published with the link.
-- [ ] Newsroom: a checker field for News's second-source check and a
+  resend), edits to approve, published with the link. Done: the record
+  number (SUB-<year>-<n>) and "in reading"; received, accepted, declined,
+  edits to approve and published were already sent. Open: "revise and
+  resend", a new decision that sends the work back to its writer and into
+  reading again (a change to the blind-review pipeline).
+- [x] Newsroom: a checker field for News's second-source check and a
   conflict-disclosure field for writers.
 
 ### 5. Events (decisions.md, Events)

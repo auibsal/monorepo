@@ -414,7 +414,7 @@ export const latestPieces = async (client: Client, limit = 6) =>
     await journal(client)
       .from("pieces")
       .select(
-        "id, slug, desk, title_en, title_ar, category, language, members_only, published_at, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar)"
+        "id, slug, desk, title_en, title_ar, category, language, members_only, published_at, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar, is_anonymous)"
       )
       .order("published_at", { ascending: false })
       .limit(limit)
@@ -457,7 +457,7 @@ export const submitScore = async (
 // would not show drafts either; RLS is still the boundary.
 
 const pieceListColumns =
-  "id, slug, title_en, title_ar, category, language, members_only, published_at, sort, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar)";
+  "id, slug, title_en, title_ar, category, language, members_only, published_at, sort, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar, is_anonymous)";
 
 const published = <
   T extends {
@@ -594,7 +594,7 @@ export const deskQueue = async (client: Client) =>
 // Published rows only, whoever asks (RLS is still the boundary).
 
 const cardColumns =
-  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar), media:piece_media(storage_path, alt_en, alt_ar, width, height, sort)";
+  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar, is_anonymous), media:piece_media(storage_path, alt_en, alt_ar, width, height, sort)";
 
 const fullColumns =
   "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, updated_at, front_rank, video_url, image_path, credit_en, credit_ar, issue_id, event_id, clip_id, reading_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar, is_anonymous), media:piece_media(storage_path, alt_en, alt_ar, caption_en, caption_ar, width, height, sort), issue:issues(slug, title_en, title_ar)";

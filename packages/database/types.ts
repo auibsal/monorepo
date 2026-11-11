@@ -4621,7 +4621,10 @@ export type Database = {
           author_approved_at: string | null;
           author_requested_at: string | null;
           category: Database["journal"]["Enums"]["category"];
+          checked_at: string | null;
+          checked_by: string | null;
           clip_id: string | null;
+          conflict_disclosure: string | null;
           contributor_id: string;
           created_at: string;
           credit_ar: string | null;
@@ -4660,7 +4663,10 @@ export type Database = {
           author_approved_at?: string | null;
           author_requested_at?: string | null;
           category: Database["journal"]["Enums"]["category"];
+          checked_at?: string | null;
+          checked_by?: string | null;
           clip_id?: string | null;
+          conflict_disclosure?: string | null;
           contributor_id: string;
           created_at?: string;
           credit_ar?: string | null;
@@ -4698,7 +4704,10 @@ export type Database = {
           author_approved_at?: string | null;
           author_requested_at?: string | null;
           category?: Database["journal"]["Enums"]["category"];
+          checked_at?: string | null;
+          checked_by?: string | null;
           clip_id?: string | null;
+          conflict_disclosure?: string | null;
           contributor_id?: string;
           created_at?: string;
           credit_ar?: string | null;
@@ -5165,6 +5174,7 @@ export type Database = {
           language: Database["journal"]["Enums"]["language"];
           partner_id: string | null;
           pen_name: string | null;
+          reference: string | null;
           rights_note: string | null;
           source_author: string | null;
           source_text: string | null;
@@ -5194,6 +5204,7 @@ export type Database = {
           language: Database["journal"]["Enums"]["language"];
           partner_id?: string | null;
           pen_name?: string | null;
+          reference?: string | null;
           rights_note?: string | null;
           source_author?: string | null;
           source_text?: string | null;
@@ -5222,6 +5233,7 @@ export type Database = {
           language?: Database["journal"]["Enums"]["language"];
           partner_id?: string | null;
           pen_name?: string | null;
+          reference?: string | null;
           rights_note?: string | null;
           source_author?: string | null;
           source_text?: string | null;
@@ -5541,6 +5553,7 @@ export type Database = {
         }[];
       };
       publish_readiness: { Args: { piece_id: string }; Returns: string };
+      record_fact_check: { Args: { piece_id: string }; Returns: string };
       reopen_piece: { Args: { piece_id: string }; Returns: undefined };
       request_author_approval: {
         Args: { piece_id: string };
@@ -5561,6 +5574,10 @@ export type Database = {
       schedule_piece: {
         Args: { piece_id: string; publish_at: string };
         Returns: string;
+      };
+      set_conflict_disclosure: {
+        Args: { disclosure: string; piece_id: string };
+        Returns: undefined;
       };
       set_front: {
         Args: { front_rank: number; piece_id: string };
