@@ -396,6 +396,9 @@ export type Database = {
           email: string;
           id: string;
           lang: string;
+          news: boolean;
+          paper: boolean;
+          source: string;
           status: string;
           unsubscribe_token: string;
           unsubscribed_at: string | null;
@@ -411,6 +414,9 @@ export type Database = {
           email: string;
           id?: string;
           lang?: string;
+          news?: boolean;
+          paper?: boolean;
+          source?: string;
           status?: string;
           unsubscribe_token?: string;
           unsubscribed_at?: string | null;
@@ -425,6 +431,9 @@ export type Database = {
           email?: string;
           id?: string;
           lang?: string;
+          news?: boolean;
+          paper?: boolean;
+          source?: string;
           status?: string;
           unsubscribe_token?: string;
           unsubscribed_at?: string | null;
@@ -486,6 +495,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      mailing_counts: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          lang: string;
+          readers: number;
+          source: string;
+          topic: string;
+        }[];
+      };
       save_sunday_paper: {
         Args: { letter_ar: string; letter_en: string; month: string };
         Returns: undefined;
@@ -589,6 +607,7 @@ export type Database = {
           created_at: string;
           created_by: string | null;
           id: string;
+          instagram_done_at: string | null;
           link_path: string | null;
           sent_at: string | null;
           shown_at: string | null;
@@ -604,6 +623,7 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           id?: string;
+          instagram_done_at?: string | null;
           link_path?: string | null;
           sent_at?: string | null;
           shown_at?: string | null;
@@ -618,6 +638,7 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           id?: string;
+          instagram_done_at?: string | null;
           link_path?: string | null;
           sent_at?: string | null;
           shown_at?: string | null;
@@ -848,6 +869,8 @@ export type Database = {
           last_name_ar: string | null;
           last_name_en: string | null;
           locale: string;
+          mail_news: boolean;
+          mail_paper: boolean;
           notify_email: boolean;
           parent_consent_at: string | null;
           personal_email: string | null;
@@ -882,6 +905,8 @@ export type Database = {
           last_name_ar?: string | null;
           last_name_en?: string | null;
           locale?: string;
+          mail_news?: boolean;
+          mail_paper?: boolean;
           notify_email?: boolean;
           parent_consent_at?: string | null;
           personal_email?: string | null;
@@ -915,6 +940,8 @@ export type Database = {
           last_name_ar?: string | null;
           last_name_en?: string | null;
           locale?: string;
+          mail_news?: boolean;
+          mail_paper?: boolean;
           notify_email?: boolean;
           parent_consent_at?: string | null;
           personal_email?: string | null;
@@ -1247,6 +1274,7 @@ export type Database = {
     };
     Functions: {
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
+      announcement_instagram_done: { Args: { id: string }; Returns: undefined };
       apply_broadcast_unsubscribes: {
         Args: { emails: string[] };
         Returns: number;
@@ -1290,6 +1318,16 @@ export type Database = {
         }[];
       };
       is_partner_guest: { Args: Record<PropertyKey, never>; Returns: boolean };
+      mailing_recipients: {
+        Args: { topic: string };
+        Returns: {
+          email: string;
+          first_name: string;
+          lang: string;
+          token: string;
+          user_id: string;
+        }[];
+      };
       my_minor_status: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1325,6 +1363,13 @@ export type Database = {
           notify_email: boolean;
           personal_email: string;
           title_form: string;
+        }[];
+      };
+      my_topics: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          news: boolean;
+          paper: boolean;
         }[];
       };
       outbox_health: {
@@ -1416,6 +1461,10 @@ export type Database = {
         Returns: string;
       };
       send_announcement: { Args: { id: string }; Returns: boolean };
+      set_my_topics: {
+        Args: { news: boolean; paper: boolean };
+        Returns: undefined;
+      };
       society_notices: {
         Args: { max_results?: number };
         Returns: {

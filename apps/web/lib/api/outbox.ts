@@ -531,14 +531,16 @@ const paperContents = async (
       .or(`closes_at.is.null,closes_at.gt.${now.toISOString()}`)
       .order("created_at", { ascending: false })
       .limit(10),
-    // "From the Society" (decisions §5): the notices sent this month.
+    // "From the Society" (decisions.md, Qirtas): the month's notices, sent
+    // or posted, one line each.
     admin
       .schema("core")
       .from("announcements")
       .select("title_en, title_ar, link_path")
-      .not("sent_at", "is", null)
-      .gt("sent_at", since)
-      .order("sent_at", { ascending: false })
+      .not("shown_at", "is", null)
+      .gt("shown_at", since)
+      .lte("shown_at", now.toISOString())
+      .order("shown_at", { ascending: false })
       .limit(10),
     admin
       .schema("content")
@@ -578,7 +580,7 @@ const paperContents = async (
     society: (society ?? []).map((a) => ({
       title_ar: a.title_ar,
       title_en: a.title_en,
-      url: `${base}${a.link_path ?? ""}`,
+      url: `${base}${a.link_path ?? "/qirtas/from-the-society"}`,
     })),
     write: `${base}/qirtas/submit`,
   };
@@ -744,9 +746,10 @@ const handlers: Record<string, Handler> = {
     }
     // "From the Society" on Qirtas's front page shows it from now on.
     revalidate(["journal"]);
+    // "Society news and events" (decisions.md, Channels and email).
     const { data: everyone, error } = await admin
       .schema("core")
-      .rpc("sunday_paper_recipients");
+      .rpc("mailing_recipients", { topic: "news" });
     if (error) {
       throw error;
     }
@@ -756,6 +759,7 @@ const handlers: Record<string, Handler> = {
         .filter((person) => person.lang === lang)
         .map((person) => ({
           email: person.email,
+          firstName: person.first_name,
           properties: {
             stop_url: person.user_id
               ? stopLinks(lang, person.user_id).page
@@ -1611,9 +1615,10 @@ const handlers: Record<string, Handler> = {
   "sunday_paper.broadcast": async (admin, payload) => {
     await cleanUpSegments(admin);
     await pullUnsubscribes(admin);
+    // "The Sunday Paper" topic (decisions.md, Channels and email).
     const { data: everyone, error } = await admin
       .schema("core")
-      .rpc("sunday_paper_recipients");
+      .rpc("mailing_recipients", { topic: "paper" });
     if (error) {
       throw error;
     }
@@ -1635,6 +1640,7 @@ const handlers: Record<string, Handler> = {
         .filter((person) => person.lang === lang)
         .map((person) => ({
           email: person.email,
+          firstName: person.first_name,
           properties: {
             stop_url: person.user_id
               ? stopLinks(lang, person.user_id).page

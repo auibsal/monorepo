@@ -122,6 +122,12 @@ export interface SignUpDetails {
   email: string;
   locale: "ar" | "en";
   /**
+   * The mailing list's two topics, the Sunday Paper and Society news and
+   * events (decisions.md, Channels and email): ticked for members (an
+   * opt-out box), unticked for guests.
+   */
+  mailing?: boolean;
+  /**
    * A student under 18 (decisions §10, Minors): the month and year of
    * birth, kept only to lift the minors' rules at 18, and the parent's
    * address, where the consent link (F-46) goes once the account is
@@ -232,6 +238,7 @@ export const signUpWithEmail = async (
         agreed_at: new Date().toISOString(),
         ...minorMetadata(details.minor),
         locale: details.locale,
+        mailing: details.mailing ? "true" : "false",
       },
       emailRedirectTo: details.redirectTo,
     },

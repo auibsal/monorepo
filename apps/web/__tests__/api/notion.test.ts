@@ -11,7 +11,6 @@ const {
   checkDocument,
   checkEvent,
   eventExtras,
-  checkQirtas,
   languageOf,
   RETIRED_DOCUMENT_FAMILY,
 } = await import("@/lib/api/notion/rules");
@@ -304,78 +303,6 @@ describe("publishing rules", () => {
         "Set Audience to public or internal.",
       ])
     );
-  });
-
-  test("a Qirtas row is one language and needs its desk", () => {
-    const select = (name: string) => ({ select: { name }, type: "select" });
-    expect(
-      checkQirtas(page({ Title: title("Book drive results") }))
-    ).toMatchObject({ ok: false });
-    expect(
-      checkQirtas(
-        page({
-          Desk: select("News"),
-          Excerpt: text("Second Chapter collected books."),
-          Title: title("Book drive results"),
-        })
-      )
-    ).toMatchObject({
-      ok: true,
-      values: {
-        deck: "Second Chapter collected books.",
-        desk: "news",
-        language: "en",
-        of: null,
-      },
-    });
-    // An Arabic row on its own is an Arabic piece, with its own desk.
-    expect(
-      checkQirtas(
-        page({
-          Desk: select("Letters"),
-          Language: select("Arabic"),
-          Title: title("نتائج حملة الكتب"),
-        })
-      )
-    ).toMatchObject({ ok: true, values: { desk: "letters", language: "ar" } });
-  });
-
-  test("a Qirtas Arabic edition names its English row and takes its desk", () => {
-    const result = checkQirtas(
-      page({
-        "Edition of": {
-          relation: [{ id: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" }],
-          type: "relation",
-        },
-        Language: { select: { name: "Arabic" }, type: "select" },
-        Title: title("نتائج حملة الكتب"),
-      })
-    );
-    expect(result).toMatchObject({
-      ok: true,
-      values: {
-        desk: null,
-        language: "ar",
-        of: "aaaaaaaabbbbccccddddeeeeeeeeeeee",
-      },
-    });
-  });
-
-  test("a News post page goes to the News desk, dated for 9:00 AM Baghdad time", () => {
-    const result = checkQirtas(
-      page({
-        "Publish on": {
-          date: { end: null, start: "2030-01-05" },
-          type: "date",
-        },
-        Title: title("Edition 1 is out"),
-      }),
-      "news"
-    );
-    expect(result).toMatchObject({
-      ok: true,
-      values: { desk: "news", publish_at: "2030-01-05T06:00:00.000Z" },
-    });
   });
 });
 

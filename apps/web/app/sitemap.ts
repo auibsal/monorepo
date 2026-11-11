@@ -34,6 +34,8 @@ const staticPaths = [
   "/qirtas/games/crossword",
   "/qirtas/games/anagram",
   "/qirtas/masthead",
+  "/qirtas/corrections",
+  "/qirtas/from-the-society",
   "/qirtas/archive",
   "/qirtas/submit",
   "/next-stop/episodes",

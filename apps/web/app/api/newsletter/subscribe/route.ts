@@ -13,6 +13,10 @@ export const OPTIONS = preflight;
 const requestSchema = z.object({
   email: z.email().max(320),
   lang: z.enum(["en", "ar"]).default("en"),
+  /** "Society news and events" (decisions.md, Channels and email). */
+  news: z.boolean().default(false),
+  /** "The Sunday Paper". */
+  paper: z.boolean().default(true),
   /** Left empty by people; filled by bots (the form hides it). */
   /** Cloudflare Turnstile's token (none locally). */
   token: z.string().max(4096).nullish(),
@@ -41,7 +45,10 @@ export const POST = async (request: Request) => {
   if (!parsed.success) {
     return json({ error: "invalid_email" }, 400);
   }
-  const { lang, token: humanToken, website } = parsed.data;
+  const { lang, news, paper, token: humanToken, website } = parsed.data;
+  if (!(paper || news)) {
+    return json({ error: "no_topic" }, 400);
+  }
   const email = parsed.data.email.trim().toLowerCase();
   if (website) {
     return json({ ok: true });
@@ -55,6 +62,16 @@ export const POST = async (request: Request) => {
   }
 
   const admin = createAdminClient();
+  // A bounced or complaining address is never added back.
+  const { data: suppressed } = await admin
+    .schema("core")
+    .from("email_suppressions")
+    .select("email")
+    .eq("email", email)
+    .maybeSingle();
+  if (suppressed) {
+    return json({ ok: true });
+  }
   const table = admin.schema("content").from("newsletter_subscribers");
   const { data: existing } = await table
     .select("id, status, confirm_sent_at, confirm_sends, confirm_window_at")
@@ -89,6 +106,8 @@ export const POST = async (request: Request) => {
     confirm_token: token,
     confirm_window_at: windowOpen ? existing?.confirm_window_at : now,
     lang,
+    news,
+    paper,
     status: "pending",
   };
   const { error } = existing

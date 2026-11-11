@@ -57,6 +57,13 @@ Every chat in this project follows this file. Where an older document, project d
   - **Plays suggested to the panel,** with an original student play first if one is ready: Ahmad Shawqi's "Majnun Layla" (Arabic, the reading) and Oscar Wilde's "The Importance of Being Earnest" (English, the production).
   - **Its Notion project** is "The Company: first season". Rights are kept on the site ("no rights, no show").
 - **Next Stop** is the Society's video show, made by the Director of Media's team (a producer and the host): ~30-minute episodes, longer specials and reels, a reality-sitcom about AUIB. It is not part of Qirtas, and it can become its own club if it outgrows the Society. A pilot episode is released this fall (2026), before finals, and the first season runs in spring 2027, set by Media. Guests and pitches come in through nextstop@.
+  - **Its name is "Next Stop"** only (never "Next Stop @ AUIB"), and its title shows the name alone; the host is credited, never added to the title.
+  - **Its package,** built once in the brand kit (§15): an illustrated paper collage in natural colors, uncluttered and grown-up, never childish, with no real places or photographs.
+    - **An episode runs:** the Society's sound logo; the cold open; the opening titles; four parts, each opened by a ticket card (The ride, The task, The long way home, The exit); the credits; the end screen.
+    - **The opening titles (about 17 seconds):** a clapper slate; then the campus bus, the same size and seen from the same side throughout, drives past the College of Business across the water, the sports courts and the palace stretch after the ELA, with the presenting line, the host and the director on paper tags; it pulls in to the Food Court stop, arriving from the other side of the road; the "Next Stop" title is cut from paper; and a ticket types "Next stop: [guest]" as the bus bell rings.
+    - **Inside an episode:** the guest's take on a take card, stamped with the bus's verdict ("Approved by the bus" or "Overruled"); name captions (the name from the site and one line, bottom left, for five seconds).
+    - **The end:** the credits roll on crimson beside the outtakes, then the 20-second end screen. Reels end on "Who's next? Nominate a guest: nextstop@auibsal.org", then the sound logo.
+    - **The music:** an original jazz-hop theme (Rhodes, upright bass, dusty drums and a vibraphone hook). Episodes follow the Society's video standard (§15).
 - **Events.** There are no standing programs and no series. Events are made as needed, by the Society or for any party within or outside it, titled plainly for what they are, and recurring events are made again for each date. The Council sets a calendar of at least one event a month each term. Ways to run an event are kept in the Events Manual as plain formats: a reading with a guest, a book discussion, a writing workshop, a listening session, a debate, a trip, a performance.
 - **Traditions:** an event gets a name only once it has run at least twice and the Council agrees. There are two:
   - **The Typewriter Tour** (membership): once a year in the spring club fair week, with the fair as one of its days (§11).
@@ -100,8 +107,8 @@ Every chat in this project follows this file. Where an older document, project d
   - **Roles:** team roles yes, Council seats only from 18.
   - **No birthdays** are collected otherwise, shown or celebrated. Qalam is a separate program.
 - **Names (as US universities keep them):**
-  - **The legal name,** as on official papers, is required for Members in English and Arabic. It is entered in parts (given name, father's, grandfather's, and family name where there is one) and used only on certificates, letters, signed forms, minutes and lists for Student Life.
-  - **The preferred name** (a first and last name in each language, chosen by the person) is shown everywhere else: the card, the profile, bylines, the Council page and the masthead.
+  - **The legal name,** as on official papers, is required for Members in English and Arabic. It is entered in parts (given name, father's, grandfather's, and family name where there is one), each in its own language's script, and used only on certificates, letters, signed forms, minutes and lists for Student Life. Once it is complete, the member can't change it; the Director of Membership corrects it on the member's request.
+  - **The preferred name** is one field in each language, the whole name as the person wants it shown. By default it is the given and father's names from the legal name (for a guest, or until the legal name is complete, the name given at sign-up), and the person can change it at any time, though not to mislead or offend (the Director of Membership may reset it). It is shown everywhere else: the card, the profile, bylines, the Council page, the masthead, and every credit and name caption in the Society's videos. Credits, captions and lists take the name from the site; nobody types a name by hand.
   - **Guests and partners' people** give a preferred name, plus their full name when they sign. Names never need to be unique. Documents name seats only.
 - **Accounts (NIST SP 800-63B, OWASP ASVS):**
   - **Passwords:** at least 12 characters, with no composition rules, a show-password toggle and a breached-password check.
@@ -237,14 +244,14 @@ Every chat in this project follows this file. Where an older document, project d
   Student Life staff hold no role or account on the platform.
 
 ### Holders on record (the founding team, until October 2027)
-Listed by their legal names:
+Wherever a name is shown (the site, credits, captions, the masthead), it is the holder's preferred name from the site (§4). Two are set by choice: the President's, "Shaheen Farjo" («شاهين فرجو»), and the host's, "Hassan Sadeq" («حسن صادق»); the others show the default until each sets their own.
 - **President:** Shaheen Farjo (also covers Events and the Artistic Director).
 - **Vice President:** Fejer Saif Khalid Ezzet (also covers Partnerships).
 - **General Secretary:** Yaqoob Ghassan Mahmood Hussein (also covers Membership).
 - **Editor-in-Chief:** Mohammed-Ali Ehsan Ohmaid.
 - **Managing Editor:** Mia Hakimi.
 - **Director of Media:** Ali Hayder.
-- **Next Stop host:** Hassan Sadiq.
+- **Next Stop host:** Hasan Sadeq (his legal name is to be entered on the site; he is shown as Hassan Sadeq).
 - **Faculty Advisor:** none yet.
 - **The Tour lead for 2027** is appointed.
 - **The President is abroad Jan 24 – May 15, 2027.** There is no Acting President.
@@ -260,7 +267,7 @@ Listed by their legal names:
     - scoped roles (tied to one event, production, issue, election or shift, and ending with it automatically);
     - outside roles (the Partner Lead and the partner's team, the Faculty Advisor, the Advisory Board).
   - **Covering a seat** is a dated delegation record that ends when the seat is filled, never built into the officer's own role. One person holds at most one Council seat, with no other cap on roles.
-  - **Two-step sign-in** is required for every role that sees personal data, and a passkey counts.
+  - **Two-step sign-in** is required for every role that sees personal data, and a passkey counts. It is enforced from Sun Nov 22, 2026, once the site counts a passkey; the Council sets theirs up at the Nov 18 meeting.
   - **Access ends** the day the role ends (on the site at once; in the Diwan Telegram group 7 days later). The General Secretary reviews who holds what every quarter, and every grant and removal is logged.
   - **Personal data is seen only where the job needs it:** member profiles by Membership and the Executive Board; the mailing list by Media and the Managing Editor; writers' names by the Managing Editor only.
   - **Assignment:** roles are given only after an application or election and an appointment on record, by an officer on the member's page.
@@ -330,7 +337,7 @@ Listed by their legal names:
   - **Who:** members of every class and guests 18 or older. Members under 18 may send work, but nothing shows or names them without a parent's consent. Only student Members are eligible for the Prize.
   - **Dates:** submissions close Sun Dec 6, 2026, 11:59 p.m. Baghdad time; writers hear back within the week; the pilot issue is published Wed Dec 16, 2026, before finals end; it leads the Jan 3, 2027 Sunday Paper.
 - **Topics** are a short list kept by the editors; a topic page goes public only once it has three pieces, and nothing links to it before then.
-- **"From the Society":** the Society's announcements appear on Qirtas's front page in this labeled stream, owned by Media, never in News, never bylined and never chosen by editors. Qirtas may cover an announcement as its own piece. The Society's own news never appears as News.
+- **"From the Society":** every announcement the Society sends (§14) is published in this labeled stream, on Qirtas's front page and at its own address, dated and in both languages. Media owns it; it is never in News, never bylined and never chosen by editors. Qirtas may cover an announcement as its own piece. The Society's own news never appears as News.
 - **The 22 pieces made on Oct 14** were compiled with an AI writing tool, so none runs as written:
   - **The 15 about AUIB news since spring 2026** (Mar 31 to Oct 14) go through the staff lane. Each is assigned to a staff writer, who reports and writes it anew from the Qirtas chat's fact sheet and AUIB's own announcement. It runs under the writer's byline, dated on or close to its event (the owner's choice against SPJ, which dates a piece by its publication). Piece 5 (the Times Higher Education shortlist; KAUST won on Nov 4) and piece 15 (the plan to 2031, with no event) are left to the News editor, as new items or not at all. The AI text is deleted once each piece is rewritten.
   - **The Society's posts** become two "From the Society" notices dated Nov 8: "auibsal.org is open" and "The Society's documents are online" (the Member Handbook among them). Charter Day is out.
@@ -342,8 +349,8 @@ Listed by their legal names:
   - **Print specification:** A5, about 80 pages (a multiple of 4), 100 gsm text, 8 color pages for Gallery, a 300 gsm cover, perfect bound; the run is the confirmed need.
   - **Retired:** calls for the Edition; it draws from published work.
 - **The Sunday Paper:** the monthly newsletter, sent by hand on the first Sunday, from qirtas@ with replies there. It is one of the two topics of the Society's mailing list (§14).
-  - **Each issue:** the editor's letter, the month's pieces, "From the Society" (the month's notices), What's on, the open roles and a call to write.
-  - **Sending:** the Managing Editor writes the letter in the Diwan (Qirtas → The Sunday Paper), sends a test to the Editor-in-Chief, then sends. Sent issues are archived publicly.
+  - **Each issue,** in this order: the editor's letter; the month's pieces; "From the Society" (the month's announcements, one line each with a link); What's on (the coming month's events); the open roles; a call to write. Everything but the letter is filled in from the site when it is sent.
+  - **Sending:** the Managing Editor writes the letter in the Diwan (Qirtas → The Sunday Paper), in English and Arabic, sends a test to the Editor-in-Chief, whose go is the approval, then sends one edition per language to the topic. Sent issues are archived publicly at /sunday-paper.
   - **The first issue, Dec 6:** put together from Nov 30, with the test on Dec 3.
 - **The Mutanabbi Prize:** one prize in two categories, given at the Annual Meeting each April from 2028, for the year to March. Winners are featured in the Edition, and the reward is a certificate with no cash.
   - **Qirtas category:** the best work published in Qirtas by a student Member (not Associate or Honorary), April 1 to March 31; the first covers launch to March 31, 2028. Anonymous or pen-name work is eligible when the Editor-in-Chief knows the writer, and a winner chooses whether to be named.
@@ -389,7 +396,7 @@ Listed by their legal names:
 - **Page numbers:** TOUR-<year>-<three digits>, with the stop as its own field. 2026 pages keep their TT26- reference.
 - **The spring 2026 pages:** scanned, with consent from the import file. The slips are shredded, and the originals are offered back at the membership table; any not collected are shredded at the end of fall 2026. Pages with no email stay private: a writer claims one through Help Desk and an editor attaches it by hand. Pages still unclaimed after the spring 2027 Tour are deleted.
 - **The spring 2026 invitation:** sent from the site on Sat Nov 7, 2026 by the President, to the Tour writers (168 sent, 13 bounced, 155 delivered).
-  - **Ten of the 13 bounces were typing errors,** corrected on Nov 11. Two of those writers had already joined, and their pages are attached. The other eight get the invitation as their own list ("Typewriter Tour, spring 2026: corrected addresses"), tested on the President and sent on the President's go.
+  - **Ten of the 13 bounces were typing errors,** corrected on Nov 11. Two of those writers had already joined, and their pages are attached. The other eight got the invitation as their own list ("Typewriter Tour, spring 2026: corrected addresses"), tested on the President and sent on Nov 11.
   - **Three addresses are still unknown** (amer.1241347, asmaa.1241540, murtada.1230198). Those pages stay private and claimable through Help Desk.
 - **The fall 2026 club fair sign-ups** get the same invitation once their paper sheets are logged on the site; the sheets are then shredded. Their list keeps its place, empty, until then.
 - **The invitation lists are temporary.** Once the fall list is sent, the lists, the Tour import and their test-and-send page are removed from the site. Later invitations to join go out as announcements to the mailing list. From 2027, any such invitation is sent by the Director of Membership.
@@ -502,7 +509,7 @@ Listed by their legal names:
   - **Removed:** AUIB's academic calendar (one link instead), Gallery selections, text-size buttons, the Sources box (sources are inline links) and "Sign in with SAL".
 - **Menus, buttons and choices:** menus, tabs and action buttons sit in horizontal rows, wrapping on small screens; choices are a vertical list. They are built once in the brand kit.
 - **Addresses:** public pages by task, the staff area by seat.
-  - **Public:** /join (the Tour at /join/typewriter-tour), /sign-up, /sign-in, /events, /qirtas (/qirtas/submit, /qirtas/corrections, /qirtas/masthead), /company, /next-stop, /about, /about/council, /about/press, /library, /partners (/partners/apply), /privacy, /terms, /accessibility, /forms/F-xx, /verify, /sunday-paper.
+  - **Public:** /join (the Tour at /join/typewriter-tour), /sign-up, /sign-in, /events, /qirtas (/qirtas/submit, /qirtas/corrections, /qirtas/masthead, /qirtas/from-the-society), /company, /next-stop, /about, /about/council, /about/press, /library, /partners (/partners/apply), /privacy, /terms, /accessibility, /forms/F-xx, /verify, /sunday-paper.
   - **Signed in:** /account ("Your account", «حسابك») for everyone with an account: Today, calendar, record, work, applications, elections and settings. A partner's team also has /partners/dashboard.
   - **The Diwan, by Council seat:**
     - /diwan (Desk);
@@ -531,17 +538,23 @@ Listed by their legal names:
 ## 14. Channels and email
 - **Who runs them:** every channel is run by the Director of Media, owned by a Society account (never a personal one), with two officer admins and two-step verification wherever offered.
   - **Telegram is the exception:** Telegram ties ownership to a person, so the members' group, the Diwan group and Hudhud are owned by the President's account. The Vice President, the General Secretary and the Director of Media are full admins, and ownership is transferred in writing at each handover (F-07).
-- **Announcements:** written once and copied out.
-  - **How they're sent:** the President sends a notice from the Diwan (The Council → Announcements) in English and Arabic, after a test to the President in both languages; any change clears the test.
-  - **Where it goes:** one Resend broadcast per language to the mailing list's "Society news and events" topic; the members' group's Announcements topic; and Hudhud to each linked member who keeps notices on.
-  - **Also:** events and news written in Notion show on the site, the Sunday Paper collects the month, and Media makes the Instagram post or story.
+- **What the Society sends, by kind** (each has one home, and nothing is sent twice):
+  - **Announcements** (openings, calls, elections and results, a new episode or production, policy changes): written once in the Diwan (The Council → Announcements), in English and Arabic. Media drafts; the President approves and sends after a test to the President in both languages (any change clears the test); the Vice President while the President is away.
+    - **Sending one** publishes it in "From the Society" (§9) and, unless it is marked "post only", sends one Resend broadcast per language to the "Society news and events" topic, posts it in the members' group's Announcements topic and sends Hudhud's notice to each linked member who keeps notices on. Media makes the Instagram post or story from it.
+    - **At most one announcement email a week;** anything else waits for the Sunday Paper.
+  - **Events** live on their own page. People hear of them through What's on, Hudhud's post (three weeks ahead) and reminder (two days before), the Sunday Paper, and the term's "What's on" announcement; those who RSVP get emails about changes, cancellations and waitlist places. An event is never an announcement email of its own.
+  - **The Sunday Paper,** monthly, to its own topic (§9).
+  - **Personal and staff messages:** account, security, application, form and RSVP emails go to one person and have no topic; staff alerts go to the team's topic in the Diwan group and the Diwan's Desk, never by bulk email.
 - **The mailing list (CAN-SPAM; the Gmail and Yahoo sender rules):** one audience for every bulk email, with two topics a reader can leave separately: "The Sunday Paper" and "Society news and events". Every email has one-click unsubscribe from everything and a no-login preferences page.
   - **Who is on it:**
-    - members, from sign-up (opt-out box);
-    - the public, by double opt-in at /sunday-paper (a signed-in member is never asked);
+    - members, on both topics from sign-up (opt-out box);
+    - guests, only if they tick the box at sign-up;
+    - the public, choosing their topics, by double opt-in at /sunday-paper (a signed-in member is never asked);
     - the spring 2026 Tour writers and fall 2026 fair sign-ups, who agreed in person, recorded with that consent, their source and stop.
     - Bounced and unsubscribed addresses are never added back.
   - **What Resend holds:** only the email, first name, language and topics. Source and stop stay on the site and are reported as counts only.
+  - **Where staff see it:** Media → Channels shows each topic's counts by language, with no names; the list itself is seen only by Media and the Managing Editor (§8).
+  - **The first sends:** Haven's call is the first announcement, sent once the list is built and by Sun Nov 22; the first Sunday Paper goes on Sun Dec 6 (put together from Nov 30, tested Dec 3).
   - **Bounces and complaints** are suppressed automatically.
 - **Email (Zoho Mail free, owned by the Society; the American standard for student organizations):**
   - **Role addresses only.** Mail follows the seat, never a person's name. No personal-name aliases (no shaheen@). Bots have no address: Hudhud points people to Help Desk or hello@.
@@ -616,7 +629,8 @@ Listed by their legal names:
   - **Bio:** "The paper and the pen at @auibaghdad.", with the links auibsal.org, /events and /join.
   - **Six highlights,** in order: What's on, Qirtas, The Company, Next Stop, Join (with the Tour), Partners (with Second Chapter). Covers are plain crimson with the icon only.
   - **The launch sequence:** day 1 "Come in" (carousel and a story linking to /join); day 2 the Haven carousel (a story linking to /qirtas/submit); day 4 the launch film; day 6 "Get involved", once the openings are up. Haven's call is also the first email announcement, once the mailing list is built.
-  - **The launch film:** 20 to 30 seconds, vertical (1080 × 1920), in the manner of Google's feature launches: the real site in clean screen recordings with gentle motion (joining, the card in Wallet, Write for Qirtas with Haven, What's on and an RSVP, then the motto and auibsal.org/join). It has an English version and an Arabic version, captions only and no voice, with 10-second cutdowns per feature to follow. Claude drafts it, the owner approves, and Media posts it.
+  - **The launch film** (vertical, about 27 seconds; English and Arabic versions; on-screen text only, no voice), remade to feel made for students, impressive, literary and fun at once: the motto typed on paper; "Write for Qirtas." over the live submit page; "Ride with Next Stop." as the bus pulls in; "Take the stage." as the Company's curtain opens; a montage of Qirtas's sections; then "Join the Society at auibsal.org/join", the page pulled out onto crimson and the sound logo. It keeps the original score, with every scene on the beat. The owner approves it and Media posts it.
+  - **No "free" anywhere public:** the Society's videos, posts, site and emails never sell membership as free; everyone knows it is.
   - **The kit:** a "Write for Qirtas" post is added, and "Qirtas: the Edition's call" is retired.
   - **Posts:** each event gets its own post, titled for what it is, once its room is confirmed. There is no standing weekly post. The term calendar goes out once as a "What's on this spring" carousel, and "Get involved" goes with the open call. A story may go out on an event's day.
   - **Icons:** Instagram and the members' group use the Bookmark in white on crimson; the Diwan group uses it in white on ink; Hudhud keeps the hoopoe.
@@ -635,6 +649,15 @@ Listed by their legal names:
 - **The source:** the brand kit in `packages/brand` in the monorepo is the source, shown to staff at /diwan/media/design and to the public at /about/press. Its Notion rows say where it lives, and Brand essentials in Guides is the staff quick guide.
 - **The Design System** "AUIB Society of Arts and Letters" is the only Claude artifact: a read-only copy, refreshed whenever the kit changes. Where they differ, the monorepo wins.
 - **Type:** Ubuntu, called "Ubuntu" in both languages (never "Ubuntu Arabic"); the Arabic files are served under the one family name with an Arabic unicode-range. Markazi Text is used for the reading text of Qirtas pieces in both languages, replacing Literata; headlines, the nameplate and the interface stay Ubuntu, and the Diwan uses Ubuntu. Mrs Saint Delafield is for signatures only.
+- **Video (the American standard for student media):**
+  - **The sound logo:** the Society's own sound, rebuilt for it from the typewriter ending of the fall 2026 club fair video and kept in the brand kit (never a stock sound): the carriage slides, clunks and rings its bell, with no music under it (about 2 seconds). It plays with the logo alone on crimson: the Bookmark slides in on the carriage and lands on the bell. A reel's call to action (such as auibsal.org/join) comes just before it.
+  - **The end card:** every vertical video ends on it, with the sound logo.
+  - **Format:** everything at 25 frames per second (Iraq's 50 Hz lighting, so no flicker); landscape 1920 × 1080; vertical 1080 × 1920, with text kept clear of the top 220 and bottom 400 pixels; sound mixed to −14 LUFS with true peaks at or below −1 dBTP; captions burned in on vertical videos, and as a caption file in each language on YouTube.
+  - **The kit's video files:** the sound logo as a 48 kHz, 24-bit WAV and as two clips, vertical and 16:9 (held for 3 seconds to open landscape productions), and Next Stop's package (§3): the opening titles, the four part cards, the take card and the two verdicts, the name captions (landscape and vertical, with transparency), the credits and end screen, the reel ending and the thumbnail template, each in English and Arabic.
+  - **Openings:** one sound logo, two placements. Vertical videos (Reels, Shorts, stories) have no intro: they open on the hook and end on the sound logo. Landscape productions (Next Stop episodes, the Company's recorded productions, YouTube films) open with it, held for 3 seconds on flat crimson, then their cold open and their own title, and end on their credits and end screen.
+  - **Standard parts,** built once in the kit: the question card (white, with crimson text), name captions in Ubuntu, burned-in subtitles in white, and the end card.
+  - **Credits:** follow American film and series practice. Reels credit the people and crew in the caption, with "Music: original, AUIB Society of Arts and Letters". Opening titles run the presenting line first ("AUIB Society of Arts and Letters presents"), then the host, and the director last, as "Directed by" (a director is credited by name, never by a Society title; every name comes from the site, §4). Next Stop and long films end with a slow credit roll in this order: Directed by, Produced by, Host, Guests, Director of Photography, Edited by, Original Music, Title Design, then "Filmed on location at the American University of Iraq – Baghdad with the support of the Office of Student Life", "A production of the AUIB Society of Arts and Letters" and "© <year> AUIB Society of Arts and Letters. All rights reserved." The YouTube end screen follows (the last 20 seconds: a still of the host with the episode's guest, the show's logo, Subscribe and the next episode).
+  - **Rights:** whoever films, edits or makes music keeps their copyright and gives the Society a license to publish; everyone on camera signs the media release (F-15). Music is original or licensed for the use, never a song without rights.
 - **Icons:** one Lucide set (1.5 px line, square ends), used alone when the meaning is plain and with a word when it could be misread. Every icon has a screen-reader label. Never in a headline or as decoration, and never the Bookmark. No emoji.
 - **Components:** built once in the kit (form page, letter, membership card, certificate, menus and choices). The printables page keeps only paper-only things:
   - name badges;
@@ -650,7 +673,7 @@ Listed by their legal names:
   - **The Society poster:** the motto and "Join at auibsal.org/join" with the QR, nothing else.
   - **The Haven poster:** paper-colored with no texture; the lockup at the top on the side the language reads from; "Haven" («ملاذ») large in Ubuntu; the call in Markazi Text; "Submit your work now." beside the QR to /qirtas/submit.
     - **Sizes:** A2 for single-language boards; an A4 handout (English front, Arabic back); and an A3 landscape sheet with the two A4 editions side by side (English left, Arabic right).
-    - **Printing (the professional print standard):** the A4 handout is printed two to an A3 sheet with 3 mm bleed and crop marks, then trimmed on Student Life's cutter. The A3 sheet can't have bleed (A3 is the largest paper), so its design keeps an even white margin.
+    - **Printing:** at Student Life, each size on paper of the same size (the A4 handout on A4, the A3 sheet on A3), with no bleed or cutting. The office printer can't print to the paper's edge, so both designs keep an even 10 mm white margin. (Two A4s to an A3 with bleed can't be done: A3 is exactly two A4s and the largest paper.)
     - **The carousel:** 1080 × 1350, an English slide then an Arabic slide.
     - **Telegram:** posters and calls go to Telegram at 1080 × 1350, with the URL written as tappable text and no QR code (QR codes are for paper only).
   - **Every poster:** no personal photo, name, degree or email; no signing, disclaimer, archiving, anthology or prize.
@@ -660,7 +683,7 @@ Listed by their legal names:
 
 | Home | What lives there |
 |---|---|
-| **Notion** (staff only) | Events (the events manager), news, every document, needs, tasks, projects, meetings and minutes; copied to the site. The Diwan shows these read-only and keeps only what is the site's own. |
+| **Notion** (staff only) | Events (the events manager), every document, needs, tasks, projects, meetings and minutes; copied to the site. Announcements and Qirtas's pieces are written on the site, never in Notion. The Diwan shows these read-only and keeps only what is the site's own. |
 | **The site** | Accounts, the Register, the partner register, RSVPs and check-in, elections and ballots, applications, Qirtas's newsroom (written, edited, read blind and published there), six-word pages, staff hours and service, confidential forms, the mailing list. |
 | **Telegram** | Talking: the members' group, Hudhud, the Diwan group. Nothing is recorded there. |
 | **Instagram, YouTube, LinkedIn** | Publishing. |
@@ -687,7 +710,7 @@ Listed by their legal names:
 - **AUIB's week:** classes run Sunday to Wednesday, 8:00 a.m. to 2:00 p.m. (some until 5:00 p.m.). On Thursdays only ELA students and some labs are on campus. Friday is off, and Saturday is only for invited or RSVP events. The Society schedules around it, and holds no events in finals week (fall 2026 finals end Thu Dec 17).
 - **Fall 2026:**
   - **Wed Nov 18, 2:15–3:45 p.m.: the first Council meeting** (agenda sent Mon Nov 16). It ratifies the founding team's actions and every decision in this file up to the meeting; sets the term calendar and the room; plans general meetings; records the President's absence; approves the open call; and covers the founding team's GPA check, the Faculty Advisor invitation and the Founding Proposal's timeline. The launch is reported, not decided.
-  - **Sun Nov 22:** the May applicants' deadline to apply on Get involved.
+  - **Sun Nov 22:** the May applicants' deadline to apply on Get involved; two-step sign-in enforced for roles that see personal data; Haven's call sent as the first announcement (by this date).
   - **Wed Nov 25:** the founding team's GPA list goes to Student Life, and the Faculty Advisor invitation goes out.
   - **Tue Dec 1, 2:30–4:00 p.m.: the pilot,** a reading with a guest (the station access is tested).
   - **Wed Dec 2, 2:15–3:00 p.m.:** general meeting.

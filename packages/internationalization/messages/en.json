@@ -146,7 +146,8 @@
       "birthMonth": "Month of birth",
       "birthYear": "Year of birth",
       "parentEmail": "Your parent’s or guardian’s email",
-      "parentHint": "Used only to send the consent link."
+      "parentHint": "Used only to send the consent link.",
+      "mailing": "Send me the Sunday Paper and Society news and events. You can stop either at any time."
     },
     "forgot": {
       "title": "Reset your password",
@@ -265,7 +266,7 @@
       "renewed": "A pledge has a new version. Please read and accept it again.",
       "preferences": "Your choices",
       "locale": "Language for the website and emails",
-      "notifications": "Email me about events, calls and Society notices",
+      "notifications": "Email me reminders for the events I book",
       "cameraShyHint": "You’ll get a camera-shy sticker at events, and we’ll leave you out of SAL photos and videos.",
       "submit": "Continue",
       "name": {
@@ -3430,7 +3431,11 @@
         "streamHint": "Shows the notice on Qirtas’s front page with this date (today or earlier). No email goes out.",
         "post": "Post to From the Society",
         "takeDown": "Take it out of From the Society",
-        "shownOn": "In From the Society, dated {date}."
+        "shownOn": "In From the Society, dated {date}.",
+        "oneAWeek": "An announcement email went out in the last seven days: one a week at most. Post this one to From the Society only, or let it wait for the Sunday Paper.",
+        "instagramToDo": "Media: make the Instagram post or story from it.",
+        "instagramMade": "Instagram post made",
+        "instagramDone": "Instagram post made {date}."
       },
       "sundayPaper": {
         "title": "The Sunday Paper",
@@ -3479,7 +3484,24 @@
         "label": "Who they are",
         "labelHint": "A name and office, for example “Student Life, events coordinator”.",
         "telegramId": "Telegram ID",
-        "telegramIdHint": "Their numeric Telegram ID, not their username."
+        "telegramIdHint": "Their numeric Telegram ID, not their username.",
+        "mailing": {
+          "title": "The mailing list",
+          "lede": "One list for every bulk email, with two topics each reader leaves separately. Counts only: the list itself is for Media and the Managing Editor.",
+          "topics": {
+            "paper": "The Sunday Paper",
+            "news": "Society news and events"
+          },
+          "byLanguage": "{en} in English, {ar} in Arabic",
+          "sources": {
+            "member": "members",
+            "guest": "guests",
+            "public": "signed up here",
+            "tour_2026": "spring 2026 Tour",
+            "fair_2026": "fall 2026 fair"
+          },
+          "stopped": "{stopped} stopped; {suppressed} suppressed after a bounce or complaint."
+        }
       }
     },
     "editor": {
@@ -4830,7 +4852,10 @@
         "call": "Send a poem, a short story, a creative essay or an artwork, about a memory, a dream or both. Everything is read blind.",
         "submit": "Submit your work now."
       },
-      "pilotIssue": "The pilot issue"
+      "pilotIssue": "The pilot issue",
+      "fromTheSocietyLede": "The Society’s notices, newest first: calls, openings, elections and results, and what changes.",
+      "fromTheSocietyEmpty": "No notices yet.",
+      "fromTheSocietyAll": "All notices"
     },
     "about": {
       "title": "About the Society",
@@ -5333,8 +5358,8 @@
     },
     "newsletter": {
       "title": "The Sunday Paper",
-      "lede": "One email a month, on the first Sunday: the pieces Qirtas published that month, What’s on at the AUIB Society of Arts and Letters, and the places open on Get involved. Anyone can subscribe.",
-      "members": "Members who receive email get it already: no need to sign up here.",
+      "lede": "One email a month from Qirtas: the editor’s letter, the month’s pieces, news from the Society, what’s on and the roles open. Anyone can subscribe.",
+      "members": "Members choose their emails in Your account: no need to sign up here.",
       "email": "Your email address",
       "submit": "Subscribe",
       "sending": "Sending…",
@@ -5344,23 +5369,26 @@
       "errors": {
         "invalid_email": "That address cannot receive email. Check it and try again.",
         "rate_limited": "Too many tries. Wait a few minutes and try again.",
-        "failed": "Something went wrong. Try again later."
+        "failed": "Something went wrong. Try again later.",
+        "no_topic": "Choose at least one."
       },
       "confirm": {
         "title": "Confirm your subscription",
         "lede": "Press the button to start receiving the Sunday Paper.",
         "button": "Confirm",
-        "done": "You are subscribed. The next Sunday Paper arrives on the first Sunday of the month.",
+        "done": "You are subscribed. The next Sunday Paper arrives when it is sent.",
         "invalid": "This link has expired or was already used. Subscribe again to get a new one.",
         "failed": "Something went wrong. Try again later."
       },
       "unsubscribe": {
-        "title": "Unsubscribe",
-        "lede": "Press the button to stop receiving the Sunday Paper.",
-        "button": "Unsubscribe",
+        "title": "Your emails",
+        "lede": "Choose what you receive from the AUIB Society of Arts and Letters, or stop everything. No sign-in needed.",
+        "button": "Unsubscribe from everything",
         "done": "You are unsubscribed. You will not get another email from us.",
         "invalid": "This link is not valid.",
-        "failed": "Something went wrong. Try again later."
+        "failed": "Something went wrong. Try again later.",
+        "save": "Save",
+        "saved": "Saved."
       },
       "archive": {
         "title": "Past issues",
@@ -5371,7 +5399,12 @@
         "subscribe": "Get the next one by email",
         "first": "The first issue comes out on {date}."
       },
-      "notices": "Email notices are in Settings."
+      "notices": "Email notices are in Settings.",
+      "topics": {
+        "legend": "What you’d like",
+        "paper": "The Sunday Paper",
+        "news": "Society news and events"
+      }
     },
     "governance": {
       "title": "The Council",
@@ -5428,9 +5461,9 @@
       "failed": "Something went wrong. Please try again."
     },
     "stopEmails": {
-      "title": "Stop Society emails",
-      "lede": "Press the button to stop the Sunday Paper and the reminders for events you booked. Emails about your own requests, work and account still come.",
-      "button": "Stop these emails",
+      "title": "Your emails",
+      "lede": "Choose what you receive from the Society, or stop everything optional: the Sunday Paper, Society news and events, and reminders for events you booked. Emails about your own account, requests and work still come.",
+      "button": "Stop everything optional",
       "done": "Done. You can turn them back on in Settings.",
       "invalid": "This link is not valid.",
       "failed": "Something went wrong. Try again later."

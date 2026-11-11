@@ -9,6 +9,7 @@ import { DiwanPage, DiwanSection, RowList } from "../page";
 import { DeleteAccount } from "./delete-account";
 import { DownloadData } from "./download-data";
 import { EmailNotices } from "./email-notices";
+import { MailTopics } from "./mail-topics";
 import { Passkeys } from "./passkeys";
 import { ChangePassword } from "./password";
 import { PersonalEmail } from "./personal-email";
@@ -24,6 +25,7 @@ export const NoticesScreen = () => {
   return (
     <DiwanPage lede={t("noticesLede")} narrow title={t("notices")}>
       <DiwanSection id="email" title={t("noticesEmail")}>
+        <MailTopics />
         <EmailNotices />
       </DiwanSection>
       <PhoneNotifications />

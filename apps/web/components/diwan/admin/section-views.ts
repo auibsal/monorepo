@@ -94,7 +94,12 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
       href: "/media/channels",
       key: "channels",
       module: "*",
-      permission: ["settings.manage", "members.manage"],
+      permission: [
+        "settings.manage",
+        "members.manage",
+        "content.manage",
+        "mailing.read",
+      ],
     },
     { href: "/media/design", key: "design", module: "*" },
   ],

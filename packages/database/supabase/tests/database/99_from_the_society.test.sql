@@ -99,6 +99,9 @@ $$;
 
 select plan(13);
 
+-- The two notices of Nov 8 are in the stream already; start empty.
+delete from core.announcements;
+
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f5101', 'member@auib.edu.iq', 'Plain Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f5102', 'media@auib.edu.iq', 'Media Director');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000f5102', 'media_director');

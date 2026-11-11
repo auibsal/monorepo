@@ -316,11 +316,26 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   deleted three years on. High school students never get accounts.
 - **Next Stop** is the Director of Media's video show at `/next-stop`
   (episodes, its promise at `/next-stop/care`), not part of Qirtas.
-- **The Sunday Paper** («جريدة الأحد»), monthly on the first Sunday, to
-  members who take optional email and to the public list
-  (`content.newsletter_subscribers`), sent as one Resend Broadcast per
-  language (`private.queue_sunday_paper`, outbox kind
-  `sunday_paper.broadcast`). Past issues are at `/sunday-paper/<yyyy-mm>`,
+- **The mailing list** (decisions.md, Channels and email): one audience
+  with two topics, "The Sunday Paper" (`paper`) and "Society news and
+  events" (`news`). Members are on both from sign-up unless they untick
+  the box (`core.profiles.mail_paper`, `mail_news`); guests only if they
+  tick it; the public chooses at /sunday-paper by double opt-in
+  (`content.newsletter_subscribers.paper`, `news`, `source`); the Tour's
+  writers come from the invitation list when it is sent
+  (`private.mailing_from_invitations`). `core.mailing_recipients(topic)`
+  is who gets a bulk email (never a suppressed address); Media → Channels
+  shows counts only (`content.mailing_counts()`). Every bulk email links a
+  no-login preferences page (the two topics, or stop everything).
+- **Announcements** go to "Society news and events" once the President
+  sends them (one email a week at most, `core.send_announcement`); Media
+  posts a notice to "From the Society" alone (`core.post_notice`), and
+  marks the Instagram post made. All notices are at
+  `/qirtas/from-the-society`.
+- **The Sunday Paper** («جريدة الأحد»), monthly, to its topic, sent as one
+  Resend Broadcast per language (outbox kind `sunday_paper.broadcast`): the
+  letter, the month's pieces, From the Society, What's on, open roles and
+  a call to write. Past issues are at `/sunday-paper/<yyyy-mm>`,
   only those sent (`content.sunday_paper_issues`), rebuilt from the
   records (`lib/sunday-paper.ts`). The sign-up (`NewsletterSignup`) never
   asks a signed-in member to subscribe.

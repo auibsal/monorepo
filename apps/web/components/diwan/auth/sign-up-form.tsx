@@ -135,6 +135,9 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   const ageAnswered = isAgeAnswered(adult, external, minor);
   // The Terms of Use and the Privacy Notice (decisions §4).
   const [agreed, setAgreed] = useState(false);
+  // The mailing list (decisions.md, Channels and email): members are on it
+  // unless they untick the box; guests only if they tick it.
+  const [mailing, setMailing] = useState(!external);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
@@ -163,6 +166,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
       captchaToken: human.token,
       email,
       locale: locale === "ar" ? "ar" : "en",
+      mailing,
       minor: minorDetails(adult, external, minor),
       names: external ? fullNames : undefined,
       outside: outside?.reason,
@@ -403,6 +407,16 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
                 </Link>
               ),
             })}
+          </Label>
+        </div>
+        <div className="flex items-start gap-3">
+          <Checkbox
+            checked={mailing}
+            id={`${id}-mailing`}
+            onCheckedChange={(v) => setMailing(v === true)}
+          />
+          <Label className="leading-normal" htmlFor={`${id}-mailing`}>
+            {t("signUp.mailing")}
           </Label>
         </div>
         {human.element}
