@@ -1,6 +1,6 @@
 import { DocumentHeader } from "@repo/brand/components/sal/document-header";
 import { type Locale, localizedPath } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
+import { formatPlainDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -74,12 +74,12 @@ const DocumentLine = async ({ doc, locale }: { doc: Doc; locale: Locale }) => {
   let status: string;
   if (doc.status === "adopted" && doc.adopted_on) {
     status = t("adopted", {
-      date: formatLongDate(doc.adopted_on, locale),
+      date: formatPlainDate(doc.adopted_on, locale),
       version,
     });
   } else if (SITE_POLICIES.has(doc.code)) {
     status = t("effective", {
-      date: formatLongDate(SITE_LAUNCH, locale),
+      date: formatPlainDate(SITE_LAUNCH, locale),
       version,
     });
   } else if (FOUNDING.has(doc.code)) {

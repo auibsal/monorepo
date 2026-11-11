@@ -100,39 +100,40 @@ select plan(9);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000072a1', 'director@auib.edu.iq', 'Membership Director');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000072a2', 'member@auib.edu.iq', 'Some Member');
+update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000072a2';
 select pg_temp.make_user('00000000-0000-0000-0000-0000000072a3', 'other@auib.edu.iq', 'Other Member');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000072a1', 'membership_director');
 
 -- Not someone without members.manage, even a member themselves.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000072a3');
 select throws_ok($$ select membership.correct_name('00000000-0000-0000-0000-0000000072a2',
-  'A', 'B', 'C', 'D', 'أ', 'ب', 'ج', 'د') $$,
+  'A', 'B', 'C', 'D', 'أ', 'ب', 'ج', 'د', 'Papers') $$,
   '42501', null, 'Only an officer who manages members corrects a name');
 select pg_temp.logout();
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000072a1');
 select throws_ok($$ select membership.correct_name('00000000-0000-0000-0000-0000000072a2',
-  'Mariam', 'Tariq', ' ', 'Jabbir', 'مريم', 'طارق', 'زياد', 'جابر') $$,
+  'Mariam', 'Tariq', ' ', 'Jabbir', 'مريم', 'طارق', 'زياد', 'جابر', 'Papers') $$,
   '22023', 'name_parts_required', 'Every part is required');
 select lives_ok($$ select membership.correct_name('00000000-0000-0000-0000-0000000072a2',
-  ' Mariam ', 'Tariq', 'Ziyad', 'Jabbir', 'مريم', 'طارق', 'زياد', 'جابر') $$,
+  ' Mariam ', 'Tariq', 'Ziyad', 'Jabbir', 'مريم', 'طارق', 'زياد', 'جابر', 'As on the passport') $$,
   'The officer corrects the name');
 select pg_temp.logout();
 
 select is((select first_name_en || ' ' || last_name_en from core.profiles where id = '00000000-0000-0000-0000-0000000072a2'),
   'Mariam Jabbir', 'The parts are saved, trimmed');
 select is((select full_name_en from core.profiles where id = '00000000-0000-0000-0000-0000000072a2'),
-  'Mariam Jabbir', 'The name shown follows: first and last');
+  'Mariam Tariq', 'The name shown follows: given and father''s');
 select is((select full_name_ar from core.profiles where id = '00000000-0000-0000-0000-0000000072a2'),
-  'مريم جابر', 'in Arabic too');
+  'مريم طارق', 'in Arabic too');
 select ok((select changed @> array['last_name_en', 'first_name_ar'] from core.activity_log
   where table_name = 'profiles' and row_id = '00000000-0000-0000-0000-0000000072a2'
   order by id desc limit 1), 'The activity log keeps which parts changed');
-select ok((select not (new_row::text like '%Jabbir%' or old_row::text like '%Some%') from core.activity_log
+select ok((select not (new_row::text like '%Jabbir%' or old_row::text like '%Some%' or new_row->>'reason' <> 'As on the passport') from core.activity_log
   where table_name = 'profiles' and row_id = '00000000-0000-0000-0000-0000000072a2'
-  order by id desc limit 1), 'and never the names');
+  order by id desc limit 1), 'and the reason, never the names');
 select throws_ok($$ select private.correct_member_name('00000000-0000-0000-0000-0000000072a2',
-  'A', 'B', 'C', 'D', 'أ', 'ب', 'ج', 'د') $$,
+  'A', 'B', 'C', 'D', 'أ', 'ب', 'ج', 'د', 'Papers') $$,
   '42501', null, 'No one signed in corrects anything');
 
 select * from finish();

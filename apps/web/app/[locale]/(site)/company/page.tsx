@@ -4,6 +4,10 @@ import { setRequestLocale } from "next-intl/server";
 import { CompanyView } from "@/components/company-view";
 import { loadProgramme, seriesMetadata } from "@/components/series";
 
+// Made on its first visit (its productions and openings change), then kept
+// until something is published again.
+export const instant = false;
+
 interface CompanyProps {
   readonly params: Promise<{ locale: Locale }>;
 }

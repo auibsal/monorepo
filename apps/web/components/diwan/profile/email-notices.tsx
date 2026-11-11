@@ -10,9 +10,8 @@ import { queryKeys, useProfile } from "@/lib/diwan/queries";
 import { ErrorLine } from "../admin/kit";
 
 /**
- * "Email me about events, calls and Society notices" (decisions.md:
- * kept on Notices only): the optional emails, the Sunday Paper and booked
- * event reminders. Saved as soon as it is ticked.
+ * Reminders for the events the member booked (the mailing list's topics
+ * are MailTopics). Saved as soon as it is ticked.
  */
 export const EmailNotices = () => {
   const t = useTranslations("diwan");

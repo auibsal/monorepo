@@ -42,6 +42,7 @@ export type Names = nameParts.FourPartNames;
 type SetupStep =
   | { kind: "nameEn" }
   | { kind: "nameAr" }
+  | { kind: "shownName" }
   | { kind: "pledge"; pledge: PledgeKind }
   | { kind: "photos" };
 
@@ -61,10 +62,16 @@ export interface SetupPlan {
  */
 export const planSetup = ({
   member = true,
+  nameSeen = true,
   names,
   pending,
   setupDone,
 }: {
+  /**
+   * Whether a member has seen how their name appears (decisions.md,
+   * Members: names). Until then the site shows the name given at sign-up.
+   */
+  nameSeen?: boolean;
   /** False for a partner's representative who is not a member: names only. */
   member?: boolean;
   names: Names;
@@ -74,6 +81,7 @@ export const planSetup = ({
   steps: [
     ...(nameParts.partsComplete(names.en) ? [] : [{ kind: "nameEn" } as const]),
     ...(nameParts.partsComplete(names.ar) ? [] : [{ kind: "nameAr" } as const]),
+    ...(member && !nameSeen ? [{ kind: "shownName" } as const] : []),
     ...(member
       ? pending.map((pledge) => ({ kind: "pledge", pledge }) as const)
       : []),
@@ -117,6 +125,7 @@ const stepUrl = (index: number) =>
 type Answer =
   | { kind: "nameEn"; names: Names }
   | { kind: "nameAr"; names: Names }
+  | { kind: "shownName"; preferred: { ar: string; en: string } }
   | { kind: "pledge"; pledge: PledgeKind }
   | { kind: "photos"; cameraShy: boolean };
 
@@ -153,6 +162,7 @@ export const SetupForm = () => {
       // Members and guests make the pledges; a partner's people, and
       // anyone with no membership yet, only give their names.
       member: kind === "member" || kind === "guest",
+      nameSeen: kind !== "member" || Boolean(profile.data.name_confirmed_at),
       names: current,
       pending: (status.data.pending_pledges ?? []) as PledgeKind[],
       setupDone: Boolean(profile.data.setup_completed_at),
@@ -205,6 +215,20 @@ export const SetupForm = () => {
         await update(nameParts.partsUpdate(answer.names.en, "en"));
       } else if (answer.kind === "nameAr") {
         await update(nameParts.partsUpdate(answer.names.ar, "ar"));
+      } else if (answer.kind === "shownName") {
+        const chosen = {
+          preferred_name_ar: answer.preferred.ar.trim() || null,
+          preferred_name_en: answer.preferred.en.trim() || null,
+        };
+        if (chosen.preferred_name_ar || chosen.preferred_name_en) {
+          await update(chosen);
+        }
+        const { error } = await supabase
+          .schema("core")
+          .rpc("confirm_shown_name");
+        if (error) {
+          throw error;
+        }
       } else if (answer.kind === "pledge") {
         await membership.acceptPledge(
           supabase,
@@ -316,6 +340,18 @@ export const SetupForm = () => {
           pending={save.isPending}
         />
       ) : null}
+      {step.kind === "shownName" ? (
+        <ShownNameStep
+          back={back}
+          failed={failed}
+          heading={heading}
+          names={names}
+          onSubmit={(preferred) =>
+            save.mutate({ kind: "shownName", preferred })
+          }
+          pending={save.isPending}
+        />
+      ) : null}
       {step.kind === "pledge" ? (
         <PledgeStep
           back={back}
@@ -381,7 +417,7 @@ const NameStep = ({
 }) => {
   const t = useTranslations("diwan.setup");
   const id = useId();
-  const ready = nameParts.partsComplete(names[language]);
+  const ready = nameParts.partsReady(names[language], language);
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (ready && !pending) {
@@ -426,7 +462,11 @@ const autoComplete = (language: "en" | "ar", part: nameParts.NamePart) => {
   return part === "last" ? "family-name" : "off";
 };
 
-/** The four parts of a name in one language, all required. */
+/**
+ * The parts of a legal name in one language: the given, father's and
+ * grandfather's names required, the family name where there is one; each
+ * in its language's letters (the database checks the same).
+ */
 export const NamePartsFields = ({
   describedBy,
   language,
@@ -438,15 +478,21 @@ export const NamePartsFields = ({
   onChange: (parts: nameParts.NameParts) => void;
   parts: nameParts.NameParts;
 }) => {
-  const t = useTranslations("diwan.setup.name.parts");
+  const t = useTranslations("diwan.setup.name");
   const id = useId();
+  const wrongScript = !nameParts.partsInScript(parts, language);
   return (
     <div className="grid max-w-xl gap-4 sm:grid-cols-2">
       {nameParts.nameParts.map((part) => (
         <div className="grid gap-2" key={part}>
-          <Label htmlFor={`${id}-${part}`}>{t(part)}</Label>
+          <Label htmlFor={`${id}-${part}`}>{t(`parts.${part}`)}</Label>
           <Input
-            aria-describedby={describedBy}
+            aria-describedby={
+              [describedBy, wrongScript ? `${id}-script` : null]
+                .filter(Boolean)
+                .join(" ") || undefined
+            }
+            aria-invalid={!nameParts.inScript(parts[part], language)}
             autoComplete={autoComplete(language, part)}
             dir={language === "en" ? "ltr" : "rtl"}
             id={`${id}-${part}`}
@@ -455,12 +501,110 @@ export const NamePartsFields = ({
             onChange={(event) =>
               onChange({ ...parts, [part]: event.target.value })
             }
-            required
+            required={nameParts.requiredParts.includes(part)}
             value={parts[part]}
           />
         </div>
       ))}
+      {wrongScript ? (
+        <p
+          className="type-caption sm:col-span-2"
+          id={`${id}-script`}
+          role="alert"
+        >
+          {t(`script.${language}`)}
+        </p>
+      ) : null}
     </div>
+  );
+};
+
+/**
+ * How the member's name appears on the site (decisions.md, Members: names):
+ * the default, the given and father's names in each language, to keep or
+ * change before it is shown, in place of a 14-day notice.
+ */
+const ShownNameStep = ({
+  back,
+  failed,
+  heading,
+  names,
+  onSubmit,
+  pending,
+}: StepProps & {
+  names: Names;
+  onSubmit: (preferred: { ar: string; en: string }) => void;
+}) => {
+  const t = useTranslations("diwan.setup.shownName");
+  const id = useId();
+  const [changing, setChanging] = useState(false);
+  const [preferred, setPreferred] = useState({ ar: "", en: "" });
+  const ready =
+    nameParts.inScript(preferred.en, "en") &&
+    nameParts.inScript(preferred.ar, "ar");
+  return (
+    <form
+      className="grid gap-6"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (ready) {
+          onSubmit(changing ? preferred : { ar: "", en: "" });
+        }
+      }}
+    >
+      <div className="grid gap-2">
+        <StepHeading heading={heading}>{t("title")}</StepHeading>
+        <p className="type-body text-text-secondary">{t("why")}</p>
+      </div>
+      <dl className="border-line grid border-y">
+        {(["en", "ar"] as const).map((lang) => (
+          <div className="grid gap-1 py-3" key={lang}>
+            <dt className="type-label">{t(lang)}</dt>
+            <dd dir={lang === "ar" ? "rtl" : "ltr"} lang={lang}>
+              {nameParts.displayName(names[lang])}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {changing ? (
+        <div className="grid max-w-xl gap-4">
+          {(["en", "ar"] as const).map((lang) => (
+            <div className="grid gap-2" key={lang}>
+              <Label htmlFor={`${id}-${lang}`}>{t(`preferred.${lang}`)}</Label>
+              <Input
+                aria-invalid={!nameParts.inScript(preferred[lang], lang)}
+                dir={lang === "ar" ? "rtl" : "ltr"}
+                id={`${id}-${lang}`}
+                lang={lang}
+                maxLength={120}
+                onChange={(event) =>
+                  setPreferred((p) => ({ ...p, [lang]: event.target.value }))
+                }
+                placeholder={nameParts.displayName(names[lang])}
+                value={preferred[lang]}
+              />
+            </div>
+          ))}
+          <p className="type-caption">{t("hint")}</p>
+        </div>
+      ) : null}
+      {failed}
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <Button disabled={pending || !ready} type="submit">
+          {changing ? t("save") : t("keep")}
+        </Button>
+        {changing ? null : (
+          <Button
+            onClick={() => setChanging(true)}
+            type="button"
+            variant="link"
+          >
+            {t("change")}
+          </Button>
+        )}
+        {back}
+      </div>
+    </form>
   );
 };
 

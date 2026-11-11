@@ -47,13 +47,28 @@ const MastheadPage = async ({ params }: MastheadProps) => {
           {people.map((p) => (
             <div
               className="border-line grid gap-1 border-t py-4 sm:grid-cols-[1fr_1.4fr] sm:gap-6"
-              key={`${p.role}-${p.full_name_en}`}
+              key={`${p.role}-${p.full_name_en ?? "open"}`}
             >
               <dt className="type-caption font-medium tracking-wider uppercase">
                 {localized(p, "title", locale)}
               </dt>
               <dd className="type-heading">
-                {localized(p, "full_name", locale)}
+                {p.covered_by ? (
+                  <span className="text-text-secondary">
+                    {p.covered_by === "managing_editor"
+                      ? t("masthead.checkedByManagingEditor")
+                      : t("masthead.coveredByEditorInChief")}
+                  </span>
+                ) : (
+                  localized(
+                    {
+                      full_name_ar: p.full_name_ar ?? "",
+                      full_name_en: p.full_name_en ?? "",
+                    },
+                    "full_name",
+                    locale
+                  )
+                )}
               </dd>
             </div>
           ))}

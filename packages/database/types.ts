@@ -82,6 +82,7 @@ export type Database = {
           confirmed_by: string | null;
           covering: boolean;
           created_at: string;
+          credit: string | null;
           ends_at: string | null;
           exception_resolution_id: string | null;
           id: string;
@@ -104,6 +105,7 @@ export type Database = {
           confirmed_by?: string | null;
           covering?: boolean;
           created_at?: string;
+          credit?: string | null;
           ends_at?: string | null;
           exception_resolution_id?: string | null;
           id?: string;
@@ -125,6 +127,7 @@ export type Database = {
           confirmed_by?: string | null;
           covering?: boolean;
           created_at?: string;
+          credit?: string | null;
           ends_at?: string | null;
           exception_resolution_id?: string | null;
           id?: string;
@@ -396,6 +399,9 @@ export type Database = {
           email: string;
           id: string;
           lang: string;
+          news: boolean;
+          paper: boolean;
+          source: string;
           status: string;
           unsubscribe_token: string;
           unsubscribed_at: string | null;
@@ -411,6 +417,9 @@ export type Database = {
           email: string;
           id?: string;
           lang?: string;
+          news?: boolean;
+          paper?: boolean;
+          source?: string;
           status?: string;
           unsubscribe_token?: string;
           unsubscribed_at?: string | null;
@@ -425,6 +434,9 @@ export type Database = {
           email?: string;
           id?: string;
           lang?: string;
+          news?: boolean;
+          paper?: boolean;
+          source?: string;
           status?: string;
           unsubscribe_token?: string;
           unsubscribed_at?: string | null;
@@ -486,6 +498,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      mailing_counts: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          lang: string;
+          readers: number;
+          source: string;
+          topic: string;
+        }[];
+      };
       save_sunday_paper: {
         Args: { letter_ar: string; letter_en: string; month: string };
         Returns: undefined;
@@ -589,6 +610,7 @@ export type Database = {
           created_at: string;
           created_by: string | null;
           id: string;
+          instagram_done_at: string | null;
           link_path: string | null;
           sent_at: string | null;
           shown_at: string | null;
@@ -604,6 +626,7 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           id?: string;
+          instagram_done_at?: string | null;
           link_path?: string | null;
           sent_at?: string | null;
           shown_at?: string | null;
@@ -618,6 +641,7 @@ export type Database = {
           created_at?: string;
           created_by?: string | null;
           id?: string;
+          instagram_done_at?: string | null;
           link_path?: string | null;
           sent_at?: string | null;
           shown_at?: string | null;
@@ -847,16 +871,20 @@ export type Database = {
           id: string;
           last_name_ar: string | null;
           last_name_en: string | null;
+          legal_name_locked_at: string | null;
           locale: string;
+          mail_news: boolean;
+          mail_paper: boolean;
+          name_confirmed_at: string | null;
           notify_email: boolean;
           parent_consent_at: string | null;
           personal_email: string | null;
           personal_email_verified_at: string | null;
-          preferred_first_ar: string | null;
-          preferred_first_en: string | null;
-          preferred_last_ar: string | null;
-          preferred_last_en: string | null;
+          preferred_name_ar: string | null;
+          preferred_name_en: string | null;
           setup_completed_at: string | null;
+          signup_name_ar: string | null;
+          signup_name_en: string | null;
           title_form: string | null;
           updated_at: string;
           verified_at: string | null;
@@ -881,16 +909,20 @@ export type Database = {
           id: string;
           last_name_ar?: string | null;
           last_name_en?: string | null;
+          legal_name_locked_at?: string | null;
           locale?: string;
+          mail_news?: boolean;
+          mail_paper?: boolean;
+          name_confirmed_at?: string | null;
           notify_email?: boolean;
           parent_consent_at?: string | null;
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
-          preferred_first_ar?: string | null;
-          preferred_first_en?: string | null;
-          preferred_last_ar?: string | null;
-          preferred_last_en?: string | null;
+          preferred_name_ar?: string | null;
+          preferred_name_en?: string | null;
           setup_completed_at?: string | null;
+          signup_name_ar?: string | null;
+          signup_name_en?: string | null;
           title_form?: string | null;
           updated_at?: string;
           verified_at?: string | null;
@@ -914,16 +946,20 @@ export type Database = {
           id?: string;
           last_name_ar?: string | null;
           last_name_en?: string | null;
+          legal_name_locked_at?: string | null;
           locale?: string;
+          mail_news?: boolean;
+          mail_paper?: boolean;
+          name_confirmed_at?: string | null;
           notify_email?: boolean;
           parent_consent_at?: string | null;
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
-          preferred_first_ar?: string | null;
-          preferred_first_en?: string | null;
-          preferred_last_ar?: string | null;
-          preferred_last_en?: string | null;
+          preferred_name_ar?: string | null;
+          preferred_name_en?: string | null;
           setup_completed_at?: string | null;
+          signup_name_ar?: string | null;
+          signup_name_en?: string | null;
           title_form?: string | null;
           updated_at?: string;
           verified_at?: string | null;
@@ -1247,11 +1283,16 @@ export type Database = {
     };
     Functions: {
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
+      announcement_instagram_done: { Args: { id: string }; Returns: undefined };
       apply_broadcast_unsubscribes: {
         Args: { emails: string[] };
         Returns: number;
       };
       confirm_personal_email: { Args: { token: string }; Returns: string };
+      confirm_shown_name: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
       current_semester: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1290,6 +1331,17 @@ export type Database = {
         }[];
       };
       is_partner_guest: { Args: Record<PropertyKey, never>; Returns: boolean };
+      lock_legal_name: { Args: Record<PropertyKey, never>; Returns: string };
+      mailing_recipients: {
+        Args: { topic: string };
+        Returns: {
+          email: string;
+          first_name: string;
+          lang: string;
+          token: string;
+          user_id: string;
+        }[];
+      };
       my_minor_status: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1308,6 +1360,7 @@ export type Database = {
           grandfather_name_en: string;
           last_name_ar: string;
           last_name_en: string;
+          legal_name_locked_at: string;
         }[];
       };
       my_personal_email: {
@@ -1325,6 +1378,13 @@ export type Database = {
           notify_email: boolean;
           personal_email: string;
           title_form: string;
+        }[];
+      };
+      my_topics: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          news: boolean;
+          paper: boolean;
         }[];
       };
       outbox_health: {
@@ -1416,6 +1476,10 @@ export type Database = {
         Returns: string;
       };
       send_announcement: { Args: { id: string }; Returns: boolean };
+      set_my_topics: {
+        Args: { news: boolean; paper: boolean };
+        Returns: undefined;
+      };
       society_notices: {
         Args: { max_results?: number };
         Returns: {
@@ -5219,6 +5283,7 @@ export type Database = {
       masthead: {
         Args: Record<PropertyKey, never>;
         Returns: {
+          covered_by: string;
           full_name_ar: string;
           full_name_en: string;
           role: string;
@@ -6037,6 +6102,7 @@ export type Database = {
           last_ar: string;
           last_en: string;
           member: string;
+          reason: string;
         };
         Returns: undefined;
       };
@@ -6150,6 +6216,10 @@ export type Database = {
       reset_calendar_token: {
         Args: Record<PropertyKey, never>;
         Returns: string;
+      };
+      reset_preferred_name: {
+        Args: { member: string; reason: string };
+        Returns: undefined;
       };
       revoke_certificate: {
         Args: { certificate_id: string; reason: string };
@@ -6445,55 +6515,121 @@ export type Database = {
           },
         ];
       };
-      episodes: {
+      episode_on_camera: {
         Row: {
           created_at: string;
+          episode_id: string;
+          form_link_id: string | null;
+          guest_name_ar: string | null;
+          guest_name_en: string | null;
+          id: string;
+          is_guest: boolean;
+          release_id: string | null;
+          user_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          episode_id: string;
+          form_link_id?: string | null;
+          guest_name_ar?: string | null;
+          guest_name_en?: string | null;
+          id?: string;
+          is_guest?: boolean;
+          release_id?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          episode_id?: string;
+          form_link_id?: string | null;
+          guest_name_ar?: string | null;
+          guest_name_en?: string | null;
+          id?: string;
+          is_guest?: boolean;
+          release_id?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "episode_on_camera_episode_id_fkey";
+            columns: ["episode_id"];
+            isOneToOne: false;
+            referencedRelation: "episodes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      episodes: {
+        Row: {
+          captions_ar_path: string | null;
+          captions_en_path: string | null;
+          chapters: NonNullable<Json>;
+          created_at: string;
+          duration_seconds: number | null;
           id: string;
           number: number | null;
           programme_id: string;
           published_at: string | null;
+          released_on: string | null;
           season: number | null;
           segment: string | null;
           slug: string;
           summary_ar: string | null;
           summary_en: string | null;
+          thumbnail_path: string | null;
           title_ar: string;
           title_en: string;
           updated_at: string;
           youtube_id: string;
+          youtube_id_ar: string | null;
         };
         ComputedFields: never;
         Insert: {
+          captions_ar_path?: string | null;
+          captions_en_path?: string | null;
+          chapters?: NonNullable<Json>;
           created_at?: string;
+          duration_seconds?: number | null;
           id?: string;
           number?: number | null;
           programme_id: string;
           published_at?: string | null;
+          released_on?: string | null;
           season?: number | null;
           segment?: string | null;
           slug: string;
           summary_ar?: string | null;
           summary_en?: string | null;
+          thumbnail_path?: string | null;
           title_ar: string;
           title_en: string;
           updated_at?: string;
           youtube_id: string;
+          youtube_id_ar?: string | null;
         };
         Update: {
+          captions_ar_path?: string | null;
+          captions_en_path?: string | null;
+          chapters?: NonNullable<Json>;
           created_at?: string;
+          duration_seconds?: number | null;
           id?: string;
           number?: number | null;
           programme_id?: string;
           published_at?: string | null;
+          released_on?: string | null;
           season?: number | null;
           segment?: string | null;
           slug?: string;
           summary_ar?: string | null;
           summary_en?: string | null;
+          thumbnail_path?: string | null;
           title_ar?: string;
           title_en?: string;
           updated_at?: string;
           youtube_id?: string;
+          youtube_id_ar?: string | null;
         };
         Relationships: [];
       };
@@ -6596,6 +6732,48 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [];
+      };
+      next_stop_guest_ideas: {
+        Row: {
+          added_by: string | null;
+          created_at: string;
+          episode_id: string | null;
+          id: string;
+          name: string;
+          status: string;
+          updated_at: string;
+          why: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          added_by?: string | null;
+          created_at?: string;
+          episode_id?: string | null;
+          id?: string;
+          name: string;
+          status?: string;
+          updated_at?: string;
+          why?: string | null;
+        };
+        Update: {
+          added_by?: string | null;
+          created_at?: string;
+          episode_id?: string | null;
+          id?: string;
+          name?: string;
+          status?: string;
+          updated_at?: string;
+          why?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "next_stop_guest_ideas_episode_id_fkey";
+            columns: ["episode_id"];
+            isOneToOne: false;
+            referencedRelation: "episodes";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       opening_replies: {
         Row: {
@@ -6846,8 +7024,6 @@ export type Database = {
           poster_path: string | null;
           programme_id: string | null;
           report_lessons: string | null;
-          report_money_in_iqd: number | null;
-          report_money_out_iqd: number | null;
           report_people_reached: number | null;
           report_repeat: string | null;
           report_signed_at: string | null;
@@ -6879,8 +7055,6 @@ export type Database = {
           poster_path?: string | null;
           programme_id?: string | null;
           report_lessons?: string | null;
-          report_money_in_iqd?: number | null;
-          report_money_out_iqd?: number | null;
           report_people_reached?: number | null;
           report_repeat?: string | null;
           report_signed_at?: string | null;
@@ -6911,8 +7085,6 @@ export type Database = {
           poster_path?: string | null;
           programme_id?: string | null;
           report_lessons?: string | null;
-          report_money_in_iqd?: number | null;
-          report_money_out_iqd?: number | null;
           report_people_reached?: number | null;
           report_repeat?: string | null;
           report_signed_at?: string | null;
@@ -7339,6 +7511,23 @@ export type Database = {
         Args: { production_id: string };
         Returns: undefined;
       };
+      credit_episode: {
+        Args: { credit: string; episode: string; member: string };
+        Returns: string;
+      };
+      episode_credits: {
+        Args: { episode: string };
+        Returns: {
+          credit: string;
+          credit_order: number;
+          name_ar: string;
+          name_en: string;
+        }[];
+      };
+      episode_release_link: {
+        Args: { on_camera: string; sent_to?: string };
+        Returns: string;
+      };
       import_tour: { Args: { invitations: Json; pages: Json }; Returns: Json };
       member_productions: {
         Args: Record<PropertyKey, never>;
@@ -7397,6 +7586,17 @@ export type Database = {
           role: string;
           title_ar: string;
           title_en: string;
+        }[];
+      };
+      production_playbill: {
+        Args: { production: string };
+        Returns: {
+          name_ar: string;
+          name_en: string;
+          role_ar: string;
+          role_en: string;
+          role_key: string;
+          role_order: number;
         }[];
       };
       profile_six_words: {

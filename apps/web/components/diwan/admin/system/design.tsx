@@ -1,13 +1,18 @@
 "use client";
 
+import manifest from "@repo/brand/assets/video/manifest.json";
 import { cn } from "@repo/brand/lib/utils";
+import { apiPath } from "@repo/internationalization";
 import { diwanPath, localizedPath } from "@repo/internationalization/config";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { DiwanPage } from "@/components/diwan/page";
 import { SectionSpinner } from "@/components/diwan/states";
+import { useAuth } from "@/lib/auth/provider";
 import { Link, useRouter } from "@/lib/diwan/navigation";
+import { useGrants } from "@/lib/diwan/queries";
+import { hasPermissionAnywhere } from "@/lib/rbac";
 
 /**
  * The design system (SAL-MED-02) as the Diwan's own page: the Diwan's
@@ -226,6 +231,80 @@ export const DesignSystem = ({ entryId }: { entryId: string | null }) => {
           <Canvas entry={entry} key={entry.id} kit={kit} />
         </div>
       ) : null}
+      <VideoUploads />
     </DiwanPage>
+  );
+};
+
+const BUCKET_FILES = manifest.files.filter((f) => f.where === "bucket");
+
+/**
+ * Media uploads the kit's approved video files, kept out of git in a
+ * private bucket (decisions.md, Brand and design: Video); every staff
+ * member downloads them from Foundations → Sound and video.
+ */
+const VideoUploads = () => {
+  const t = useTranslations("diwan.admin.design.video");
+  const { supabase } = useAuth();
+  const grants = useGrants();
+  const upload = useMutation({
+    mutationFn: async ({ file, name }: { file: File; name: string }) => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const body = new FormData();
+      body.set("file", file);
+      const response = await fetch(apiPath(`/brand-kit/${name}`), {
+        body,
+        headers: { Authorization: `Bearer ${session?.access_token ?? ""}` },
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("upload_failed");
+      }
+      return name;
+    },
+  });
+  if (!hasPermissionAnywhere(grants.data, "content.manage")) {
+    return null;
+  }
+  return (
+    <section className="border-line grid gap-3 border-t pt-6">
+      <h2 className="type-heading">{t("title")}</h2>
+      <p className="type-body text-text-secondary max-w-2xl">{t("body")}</p>
+      <ul className="grid gap-3">
+        {BUCKET_FILES.map((f) => (
+          <li
+            className="flex flex-wrap items-center gap-x-4 gap-y-2"
+            key={f.file}
+          >
+            <span className="type-body" dir="ltr">
+              {f.file}
+            </span>
+            <input
+              accept="video/mp4"
+              aria-label={t("choose", { file: f.file })}
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (file) {
+                  upload.mutate({ file, name: f.file });
+                }
+              }}
+              type="file"
+            />
+            {upload.data === f.file ? (
+              <span className="type-caption" role="status">
+                {t("done")}
+              </span>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+      {upload.isError ? (
+        <p className="type-caption" role="alert">
+          {t("failed")}
+        </p>
+      ) : null}
+    </section>
   );
 };

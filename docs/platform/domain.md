@@ -76,15 +76,35 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `core.my_private_profile`) gives the feminine form
   (`access.roles.name_ar_feminine`) on the Council page, the masthead,
   the card's role line and letters; documents keep the glossary's form.
-- **Names.** A name in four parts in each language, as on the person's
-  papers (`first_name_en` … `last_name_ar`), all eight required
-  (`NamePartsFields`, `hasAllNames`). Wherever a name shows, it is the
-  first and the fourth (`full_name_en`/`_ar`, kept by
-  `private.tidy_names`). The parts are the owner's alone
-  (`core.my_name_parts()`). One full name belongs to one account
-  (`private.one_person_one_name`). Wherever a person is named (bylines,
-  hosts, judges, roles), pick them from the register (`MemberPicker`,
-  `BylinePicker`); never type a name.
+- **Names** (decisions.md, Members). The **legal name** is kept in parts
+  in each language (`first_name_en` … `last_name_ar`): the given,
+  father's and grandfather's names are required, the family name only
+  where there is one; English parts in Latin letters and Arabic parts in
+  Arabic letters (`private.latin_name`, `private.arabic_name`,
+  `names.inScript`). It is used only on certificates, letters, signed forms,
+  minutes and lists for Student Life. The member checks it and locks it in
+  Your account → Settings → Profile (`core.lock_legal_name`); after that
+  only `members.manage` corrects it, with a reason
+  (`membership.correct_name`), and a locked name refuses the member's own
+  edits. The **preferred name** is one whole field per language
+  (`preferred_name_en`/`_ar`); empty means the default.
+  **One function decides the name shown**, `private.display_name()`: the
+  preferred name, else the given and father's names, else (for a guest,
+  until the legal name is complete, or until the member has seen how it
+  appears) the name given at sign-up (`signup_name_*`). Each member is
+  shown "This is how your name appears on the site" once, at sign-in
+  (`/welcome`), and keeps it (`core.confirm_shown_name`) or chooses their
+  own; that sets `name_confirmed_at`, in place of a 14-day notice. `full_name_en`/`_ar` keep its result, and every
+  surface reads them: the card, profiles, bylines, the Council page, Our
+  people, the masthead, Next Stop's team and credits, playbills, event
+  lists, greetings and Resend's first name (`private.greeting_name`: the
+  first word, with «عبد …» and «أبو …» kept whole). `members.manage` resets
+  a preferred name that misleads or offends
+  (`membership.reset_preferred_name`); corrections and resets are logged
+  with their reason, never the names. The parts are the owner's alone
+  (`core.my_name_parts()`). Names need not be unique. Wherever a person is
+  named (bylines, hosts, judges, roles), pick them from the register
+  (`MemberPicker`, `BylinePicker`); never type a name.
 - **One address, one person.** The optional personal email is set only
   through `core.request_personal_email` and counts once confirmed
   (`/personal-email/confirm`); it can't be an AUIB address or anyone
@@ -315,12 +335,47 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   is staff only (`/diwan/qirtas/qalam`, `qalam.manage`), never in Notion,
   deleted three years on. High school students never get accounts.
 - **Next Stop** is the Director of Media's video show at `/next-stop`
-  (episodes, its promise at `/next-stop/care`), not part of Qirtas.
-- **The Sunday Paper** («جريدة الأحد»), monthly on the first Sunday, to
-  members who take optional email and to the public list
-  (`content.newsletter_subscribers`), sent as one Resend Broadcast per
-  language (`private.queue_sunday_paper`, outbox kind
-  `sunday_paper.broadcast`). Past issues are at `/sunday-paper/<yyyy-mm>`,
+  (its promise at `/next-stop/care`), not part of Qirtas. Episodes are
+  `programmes.episodes`, edited in the Diwan (Media → Next Stop): number,
+  title and description in both languages, one YouTube video per language
+  edition (or one with both caption tracks), release date, chapters,
+  WebVTT captions and a thumbnail. Each has its page at
+  `/next-stop/episodes/<slug>` with a click-to-load player on
+  youtube-nocookie.com, TVEpisode JSON-LD, and a place in the sitemap.
+  Everyone on camera is listed (`programmes.episode_on_camera`, Media only)
+  and signs F-15 by a single-use link to their address
+  (`programmes.episode_release_link`); an episode can't be published until
+  all have signed (`private.episode_releases_signed`). Credits come from
+  Next Stop crew roles scoped to the episode, each with its `credit`
+  (`programmes.credit_episode`), plus guests and the standing producer and
+  host, in the American order (`programmes.episode_credits`). A removal
+  request naming an episode's address hides it at once. The kit's video
+  files are in the private `brand-kit` bucket, listed in
+  `packages/brand/assets/video/manifest.json`, uploaded by Media and
+  downloaded by staff through `/api/brand-kit/<file>`. Guest ideas, people
+  the show might invite, are a private list in Media → Next Stop
+  (`programmes.next_stop_guest_ideas`, `media.guest_ideas`: the Director of
+  Media, the producer and the host), never in Notion.
+- **The mailing list** (decisions.md, Channels and email): one audience
+  with two topics, "The Sunday Paper" (`paper`) and "Society news and
+  events" (`news`). Members are on both from sign-up unless they untick
+  the box (`core.profiles.mail_paper`, `mail_news`); guests only if they
+  tick it; the public chooses at /sunday-paper by double opt-in
+  (`content.newsletter_subscribers.paper`, `news`, `source`); the Tour's
+  writers come from the invitation list when it is sent
+  (`private.mailing_from_invitations`). `core.mailing_recipients(topic)`
+  is who gets a bulk email (never a suppressed address); Media → Channels
+  shows counts only (`content.mailing_counts()`). Every bulk email links a
+  no-login preferences page (the two topics, or stop everything).
+- **Announcements** go to "Society news and events" once the President
+  sends them (one email a week at most, `core.send_announcement`); Media
+  posts a notice to "From the Society" alone (`core.post_notice`), and
+  marks the Instagram post made. All notices are at
+  `/qirtas/from-the-society`.
+- **The Sunday Paper** («جريدة الأحد»), monthly, to its topic, sent as one
+  Resend Broadcast per language (outbox kind `sunday_paper.broadcast`): the
+  letter, the month's pieces, From the Society, What's on, open roles and
+  a call to write. Past issues are at `/sunday-paper/<yyyy-mm>`,
   only those sent (`content.sunday_paper_issues`), rebuilt from the
   records (`lib/sunday-paper.ts`). The sign-up (`NewsletterSignup`) never
   asks a signed-in member to subscribe.

@@ -131,7 +131,7 @@ select is((select count(*)::int from journal.author_card('the-night-owl')), 0,
 
 -- A name change moves the page.
 select pg_temp.logout();
-update core.profiles set full_name_en = 'Leila Haddad' where id = '00000000-0000-0000-0000-0000000009a1';
+update core.profiles set preferred_name_en = 'Leila Haddad' where id = '00000000-0000-0000-0000-0000000009a1';
 select is(
   (select slug from journal.contributors where user_id = '00000000-0000-0000-0000-0000000009a1' and not is_pen_name),
   'leila-haddad',

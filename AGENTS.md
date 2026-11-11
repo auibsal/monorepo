@@ -30,7 +30,7 @@ media do.
     site: `/sign-in`, `/sign-up` (and `/sign-up/guest`), `/auth/*`,
     `/welcome`, `/get-involved` (public), `/forms/<number>`,
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
-    members, everything under `/account`, in six tabs (decisions §6):
+    members, everything under `/account`, in six tabs (decisions.md, The site):
     Today, Calendar (`/calendar`), Record (`/record`, certificates at
     `/record/certificates/<ref>`, letters at `/record/letters/<ref>`, a year
     at `/record/year/<yyyy>`), Work (`/work`: drafts, submissions at
@@ -44,7 +44,7 @@ media do.
     members-only piece). The gates are in `components/diwan/gates.tsx`.
   - `app/[locale]/diwan`: **the Diwan**, auibsal.org/diwan, the staff's
     administration only (anyone holding a role, `RequireStaff`), one
-    section per Council seat (decisions §6; `adminSections` in
+    section per Council seat (decisions.md, The site; `adminSections` in
     `lib/rbac`; `DiwanNav` and `SectionTabs` in `admin-shell.tsx`): the
     Desk (`/diwan`: what needs you, quick actions, Waiting, what happened,
     the Connected panel for Notion, Hudhud and email); the Council
@@ -171,7 +171,7 @@ any schema change. Integration tests run against a local stack with
   against production once CI passes, then calls Vercel's deploy hook (Git
   auto-deploy of `main` is off, so the site never runs ahead of its schema).
   Never paste SQL into the production database.
-- **Accounts (decisions §11, NIST SP 800-63B).** Passwords are 12
+- **Accounts (decisions.md, Members; NIST SP 800-63B).** Passwords are 12
   characters or more with no composition rules, checked against known
   breaches by k-anonymity (`lib/password.ts`, `/api/password-check`), with
   a Show button (`PasswordInput`). Sign-up records the Terms and Privacy
@@ -315,7 +315,7 @@ everywhere:
   Arabic pages no English, except the language switcher, fields meant for
   the other language, an original beside its translation, and AUIB's
   English-only dates.
-- **Retired names** (decisions.md §9) never appear in copy;
+- **Retired names** (decisions.md, Retired names) never appear in copy;
   `scripts/check-language.ts` refuses them. "Your account" («حسابك») names
   the members' pages; "the Diwan" names staff spaces only.
 - **How the Society names itself:** "AUIB Society of Arts and Letters" on

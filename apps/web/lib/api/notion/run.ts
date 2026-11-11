@@ -11,7 +11,7 @@ import type { Admin, Sources, SyncContext } from "./context";
 import { publishDocuments, syncAdoptionRecords } from "./documents";
 import { sendMinutesToDiwan } from "./minutes";
 import { mirrorJournal, mirrorOfficers, peopleByEmail } from "./mirrors";
-import { publishWaiting, syncRsvpCounts } from "./publish";
+import { publishWaiting, reportStaleEvents, syncRsvpCounts } from "./publish";
 import { unpublishFromNotion } from "./unpublish";
 
 const SOURCE_KEYS = [
@@ -76,6 +76,14 @@ const steps: [
   ["off the site", (ctx) => unpublishFromNotion(ctx)],
   ["minutes", (ctx) => sendMinutesToDiwan(ctx)],
   ["rsvps", (ctx) => syncRsvpCounts(ctx)],
+  [
+    "stale events",
+    (ctx, users) =>
+      reportStaleEvents(
+        ctx,
+        new Set(users.filter((u) => u.type === "bot").map((u) => u.id))
+      ),
+  ],
 ];
 
 export const runNotionSync = async (

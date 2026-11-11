@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
 import { TokenAction } from "@/components/newsletter/token-action";
+import { TopicPreferences } from "@/components/newsletter/topic-preferences";
 
 interface PageProps {
   readonly params: Promise<{ locale: Locale }>;
@@ -31,6 +32,9 @@ const Page = async ({ params }: PageProps) => {
     <div className="mx-auto grid w-full max-w-3xl gap-6 px-4 py-16">
       <h1 className="type-display">{t("title")}</h1>
       <p className="type-lede">{t("lede")}</p>
+      <Suspense fallback={null}>
+        <TopicPreferences kind="member" />
+      </Suspense>
       <Suspense fallback={null}>
         <TokenAction action="stopEmails" />
       </Suspense>

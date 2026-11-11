@@ -117,9 +117,9 @@ select lives_ok(
 
 -- A preferred name is the one shown.
 select lives_ok(
-  $$ update core.profiles set preferred_first_en = 'Omi'
+  $$ update core.profiles set preferred_name_en = 'Omi Kareem'
      where id = '00000000-0000-0000-0000-00000000b1a2' $$,
-  'A member gives a preferred first name');
+  'A member gives a preferred name');
 select is(
   (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000b1a2'),
   'Omi Kareem', 'and it is the name shown');

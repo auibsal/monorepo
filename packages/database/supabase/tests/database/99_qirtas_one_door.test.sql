@@ -131,7 +131,7 @@ values ('door-writer', 'Typed Name', '00000000-0000-0000-0000-0000000099a1');
 select is((select name_en from journal.contributors
   where user_id = '00000000-0000-0000-0000-0000000099a1' and not is_pen_name), 'Door Writer',
   'A member''s byline takes the name from their profile');
-update core.profiles set full_name_en = 'Door W. Writer', full_name_ar = 'كاتب الباب'
+update core.profiles set preferred_name_en = 'Door W. Writer', preferred_name_ar = 'كاتب الباب'
 where id = '00000000-0000-0000-0000-0000000099a1';
 select is((select name_ar from journal.contributors
   where user_id = '00000000-0000-0000-0000-0000000099a1' and not is_pen_name), 'كاتب الباب',

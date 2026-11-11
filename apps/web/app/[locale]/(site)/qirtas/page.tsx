@@ -119,6 +119,9 @@ const FromTheSociety = async ({ locale }: { locale: Locale }) => {
           </li>
         ))}
       </ul>
+      <Link className="link justify-self-start" href="/qirtas/from-the-society">
+        {t("fromTheSocietyAll")}
+      </Link>
     </section>
   );
 };

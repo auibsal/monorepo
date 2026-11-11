@@ -253,3 +253,92 @@ export const answerOffer = async (
 
 /** Links to the applicant's work: http(s) only, five at most. */
 export const WORK_LINK = /^https?:\/\/\S+$/u;
+
+// ── Next Stop's episodes (decisions.md, Next Stop) ──────────────────────────
+
+const EPISODE_COLUMNS =
+  "id, slug, number, season, title_en, title_ar, summary_en, summary_ar, youtube_id, youtube_id_ar, released_on, published_at, chapters, captions_en_path, captions_ar_path, thumbnail_path, duration_seconds";
+
+const chapterSchema = z.object({
+  at: z.number().int().min(0),
+  title_ar: z.string().max(80),
+  title_en: z.string().max(80),
+});
+
+export type Chapter = z.infer<typeof chapterSchema>;
+
+/** An episode's chapters, in time order; anything malformed is left out. */
+export const chaptersOf = (value: unknown): Chapter[] =>
+  (Array.isArray(value) ? value : [])
+    .map((c) => chapterSchema.safeParse(c))
+    .flatMap((r) => (r.success ? [r.data] : []))
+    .sort((a, b) => a.at - b.at);
+
+/** "1:05" or "1:02:05", for a chapter's start. */
+export const clockOf = (seconds: number) => {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = String(seconds % 60).padStart(2, "0");
+  return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${s}` : `${m}:${s}`;
+};
+
+const DIGITS = /^\d+$/u;
+
+/** "1:05" or "1:02:05" back to seconds; null when it isn't a time. */
+export const secondsOf = (value: string) => {
+  const parts = value.trim().split(":");
+  if (
+    parts.length < 2 ||
+    parts.length > 3 ||
+    parts.some((p) => !DIGITS.test(p))
+  ) {
+    return null;
+  }
+  return parts.map(Number).reduce((total, n) => total * 60 + n, 0);
+};
+
+/** The published episodes, the latest first. */
+export const publicEpisodes = async (client: Client) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("episodes")
+      .select(EPISODE_COLUMNS)
+      .not("published_at", "is", null)
+      .order("released_on", { ascending: false, nullsFirst: false })
+      .order("published_at", { ascending: false })
+  ) ?? [];
+
+export type PublicEpisode = Awaited<ReturnType<typeof publicEpisodes>>[number];
+
+export const publicEpisode = async (client: Client, slug: string) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .from("episodes")
+      .select(EPISODE_COLUMNS)
+      .eq("slug", slug)
+      .not("published_at", "is", null)
+      .maybeSingle()
+  );
+
+/** The credits in the American order (programmes.episode_credits). */
+export const episodeCredits = async (client: Client, episodeId: string) =>
+  unwrap(
+    await client
+      .schema("programmes")
+      .rpc("episode_credits", { episode: episodeId })
+  ) ?? [];
+
+export const CREDITS = [
+  "directed_by",
+  "produced_by",
+  "host",
+  "guests",
+  "director_of_photography",
+  "edited_by",
+  "original_music",
+  "title_design",
+] as const;
+
+export type Credit = (typeof CREDITS)[number];

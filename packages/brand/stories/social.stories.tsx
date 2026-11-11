@@ -36,7 +36,7 @@ export const PostsEnglish: Story = {
       <SocialPost
         date="Until December 3 · auibsal.org/qirtas"
         ground="crimson"
-        headline={<>Edition 1 is open.</>}
+        headline={<>Haven is open for submissions.</>}
         lede="Poems, stories, essays, photographs and drawings."
       />
       <SocialPost
@@ -49,7 +49,7 @@ export const PostsEnglish: Story = {
         date="auibsal.org/join"
         ground="ink"
         headline={<>Come in.</>}
-        lede="Membership is free and open to every AUIB student."
+        lede="Membership is open to every AUIB student, with no audition and no portfolio."
       />
     </div>
   ),
@@ -61,14 +61,14 @@ export const PostsArabic: Story = {
       <SocialPost
         date="حتى 3 كانون الأول · auibsal.org/ar/qirtas"
         ground="crimson"
-        headline={<>الإصدار الأول مفتوح.</>}
+        headline={<>باب المشاركة في «ملاذ» مفتوح.</>}
         lang="ar"
         lede="قصائد وقصص ومقالات وصور ورسوم."
       />
       <SocialPost
         date="الخميس 19 تشرين الثاني · 6:00 مساءً"
         ground="white"
-        headline={<>المحطة القادمة، العرض الأول.</>}
+        headline={<>المحطة التالية، العرض الأول.</>}
         lang="ar"
         lede="الحلقة الأولى من السلسلة الجامعية، مصوّرة في حافلة الجامعة."
       />
@@ -77,7 +77,7 @@ export const PostsArabic: Story = {
         ground="ink"
         headline="تفضّلوا."
         lang="ar"
-        lede="العضوية مجانية ومفتوحة لكل طلبة الجامعة."
+        lede="العضوية مفتوحة لكل طالب في الجامعة، دون اختبار أو ملف أعمال."
       />
     </div>
   ),
@@ -237,7 +237,11 @@ const StoryFrame = ({ lang }: { lang: "ar" | "en" }) => {
             width={ar ? 253 : 264}
           />
           <h2 className="sal-post__headline">
-            {ar ? <>الإصدار الأول مفتوح.</> : <>Edition 1 is open.</>}
+            {ar ? (
+              <>باب المشاركة في «ملاذ» مفتوح.</>
+            ) : (
+              <>Haven is open for submissions.</>
+            )}
           </h2>
           <p className="sal-post__lede">
             {ar

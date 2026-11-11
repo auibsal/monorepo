@@ -28,6 +28,7 @@ const TYPES: Record<string, string> = {
   ".svg": "image/svg+xml",
   ".ttf": "font/ttf",
   ".txt": "text/plain; charset=utf-8",
+  ".wav": "audio/wav",
   ".webp": "image/webp",
   ".woff": "font/woff",
   ".woff2": "font/woff2",

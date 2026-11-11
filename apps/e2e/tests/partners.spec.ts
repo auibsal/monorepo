@@ -27,7 +27,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
       father_name_ar: "تجريبي",
       father_name_en: "Test",
       first_name_ar: "ممثل",
-      first_name_en: "E2E",
+      first_name_en: "Tess",
       grandfather_name_ar: "آلي",
       grandfather_name_en: "Auto",
       last_name_ar: "الشريك",
@@ -49,7 +49,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   // Signed in the applicant's name on the platform, never typed: a
   // signature in the signature face, with their card number and the date.
   await expect(
-    applicant.getByRole("figure").filter({ hasText: "E2E Partner" })
+    applicant.getByRole("figure").filter({ hasText: "Tess Partner" })
   ).toBeVisible();
   await applicant
     .getByRole("checkbox", { name: /I sign this memorandum/u })

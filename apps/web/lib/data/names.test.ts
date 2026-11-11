@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 import {
   displayName,
   hasFourPartNames,
+  inScript,
   nameColumns,
   partsFrom,
   partsUpdate,
@@ -21,7 +22,7 @@ describe("four-part names", () => {
     ]);
   });
 
-  test("the name shown is the first and the fourth", () => {
+  test("the default name shown is the given and father's names", () => {
     expect(
       displayName({
         father: "Kareem",
@@ -29,7 +30,16 @@ describe("four-part names", () => {
         grandfather: "Hasan",
         last: "Al-Tamimi",
       })
-    ).toBe("Lina Al-Tamimi");
+    ).toBe("Lina Kareem");
+  });
+
+  test("each language in its own script", () => {
+    expect(inScript("Mohammed-Ali O’Hara", "en")).toBe(true);
+    expect(inScript("محمد", "en")).toBe(false);
+    expect(inScript("عبد الله", "ar")).toBe(true);
+    expect(inScript("Omar", "ar")).toBe(false);
+    expect(inScript("4", "ar")).toBe(false);
+    expect(inScript("", "ar")).toBe(true);
   });
 
   test("a name kept whole offers its first and last words", () => {

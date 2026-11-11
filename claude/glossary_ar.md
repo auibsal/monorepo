@@ -35,6 +35,22 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | credits (production, episode) | فريق العمل |
 | stage manager / front-of-house manager | مدير المسرح / مسؤول الصالة |
 | pilot issue / pilot episode | العدد التجريبي / الحلقة التجريبية |
+| sound logo | الشعار الصوتي |
+| cold open / opening titles / end credits / end screen | الافتتاحية / شارة البداية / شارة النهاية / الشاشة الختامية |
+| name caption (lower third) | شريط الاسم |
+| outtakes | لقطات من الكواليس |
+| an episode's parts: The ride / The task / The long way home / The exit | أجزاء الحلقة: «الرحلة» / «المهمة» / «الطريق الطويل إلى البيت» / «الختام» |
+| take card / the bus's verdict: "Approved by the bus" / "Overruled" | بطاقة الرأي / حكم الحافلة: «وافقت الحافلة» / «رفضت الحافلة» |
+| "Next stop: [guest]" (the opening's ticket) | «المحطة التالية: [الضيف]» |
+| "Who's next? Nominate a guest:" (reel ending) | «مَن التالي؟ رشّح ضيفًا:» |
+| episode / scene / take (the slate) | الحلقة / المشهد / اللقطة |
+| Subscribe / Next episode (end screen) | اشترك / الحلقة التالية |
+| credit labels: Directed by / Produced by / Host / Guests / Director of Photography / Edited by / Original Music / Title Design | إخراج / إنتاج / تقديم / الضيوف / مدير التصوير / مونتاج / موسيقى أصلية / تصميم العناوين |
+| "AUIB Society of Arts and Letters presents" | «جمعية الفنون والآداب في الجامعة الأمريكية في بغداد تقدّم» |
+| "Filmed on location at the American University of Iraq – Baghdad with the support of the Office of Student Life" | «صُوّر في الجامعة الأمريكية في بغداد بمساندة مكتب شؤون الطلبة» |
+| "A production of the AUIB Society of Arts and Letters" / "All rights reserved." | «من إنتاج جمعية الفنون والآداب في الجامعة الأمريكية في بغداد» / «جميع الحقوق محفوظة.» |
+| audition / auditions | تجربة أداء / تجارب الأداء |
+| "Join the Society at" (end of a reel) | «انضم إلى الجمعية عبر» |
 | staff lane / contributor lane (Qirtas) | مسار هيئة التحرير / مسار المساهمين |
 | Faculty Advisor | المستشار من أعضاء هيئة التدريس |
 | Advisory Board | المجلس الاستشاري |
@@ -56,6 +72,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | invitation (single-use, by email) / shareable link | دعوة (لمرة واحدة، بالبريد الإلكتروني) / رابط قابل للمشاركة |
 | mailing list / topic / preferences page / unsubscribe | القائمة البريدية / موضوع / صفحة التفضيلات / إلغاء الاشتراك |
 | Society news and events (mailing topic) | «أخبار الجمعية وفعالياتها» |
+| announcement / Announcements (the Diwan's section; the members' group topic) / "post only" | إعلان / «الإعلانات» / «نشر فقط» |
 | member in good standing / voting member | عضو في وضع جيد / عضو له حق التصويت |
 | the Register | سجل الأعضاء |
 | general meeting | الاجتماع العام |
@@ -98,7 +115,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Version 1, proposed | النسخة 1، مقترحة |
 | Article / Section (governing documents) | المادة / البند |
 | camera-shy sticker | ملصق «بلا تصوير» |
-| names of people | in Arabic editions, written in Arabic script as in the Founding Proposal (شاهين فرجو، فجر سيف خالد عزت، يعقوب غسان محمود حسين، محمد علي إحسان أحميد، علي حيدر، مية حكيمي، حسن صادق) |
+| names of people | the person's preferred name from the site, in the edition's language (one field in English, one in Arabic); never typed or transliterated by hand |
 | Jelena Zivkovic / Ali Najm | يلينا زيفكوفيتش / علي نجم |
 | Qirtas (grammar) | قرطاس is masculine (قرطاس يصدر، نشره قرطاس); when the word «صحيفة» is used, agree with it |
 

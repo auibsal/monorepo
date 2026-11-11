@@ -212,6 +212,7 @@ select throws_ok($$ select count(*) from journal.piece_dates $$, '42501', null,
 -- ── "From the Society" ──────────────────────────────────────────────────────
 
 select pg_temp.logout();
+delete from core.announcements;
 insert into core.announcements (title_en, title_ar, body_en, body_ar, sent_at, shown_at)
 values ('Sent', 'أُرسل', 'Sent.', 'أُرسل.', now(), now());
 select pg_temp.login_anon();

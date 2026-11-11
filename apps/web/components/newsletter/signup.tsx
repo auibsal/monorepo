@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { apiPath } from "@repo/internationalization";
@@ -30,6 +31,7 @@ type State =
   | "sending"
   | "sent"
   | "invalid_email"
+  | "no_topic"
   | "rate_limited"
   | "failed";
 
@@ -87,6 +89,10 @@ export const NewsletterSignup = ({
         body: JSON.stringify({
           email: data.get("email"),
           lang: locale === "ar" ? "ar" : "en",
+          // The two topics (decisions.md, Channels and email); the compact
+          // form, where the Sunday Paper is offered, asks for it alone.
+          news: compact ? false : data.get("news") === "on",
+          paper: compact ? true : data.get("paper") === "on",
           token,
           website: data.get("website") || undefined,
         }),
@@ -102,6 +108,8 @@ export const NewsletterSignup = ({
         setState("rate_limited");
       } else if (result.error === "invalid_email") {
         setState("invalid_email");
+      } else if (result.error === "no_topic") {
+        setState("no_topic");
       } else {
         setState("failed");
       }
@@ -151,6 +159,19 @@ export const NewsletterSignup = ({
           {state === "sending" ? t("sending") : t("submit")}
         </Button>
       </div>
+      {compact ? null : (
+        <fieldset className="grid gap-2">
+          <legend className="type-label mb-2">{t("topics.legend")}</legend>
+          <div className="flex items-center gap-2">
+            <Checkbox defaultChecked id={`${id}-paper`} name="paper" />
+            <Label htmlFor={`${id}-paper`}>{t("topics.paper")}</Label>
+          </div>
+          <div className="flex items-center gap-2">
+            <Checkbox id={`${id}-news`} name="news" />
+            <Label htmlFor={`${id}-news`}>{t("topics.news")}</Label>
+          </div>
+        </fieldset>
+      )}
       {started ? (
         <Suspense fallback={null}>
           <HumanCheck action="newsletter" key={round} onToken={setToken} />
@@ -164,6 +185,7 @@ export const NewsletterSignup = ({
         </label>
       </div>
       {state === "invalid_email" ||
+      state === "no_topic" ||
       state === "rate_limited" ||
       state === "failed" ? (
         <p className="text-text" role="alert">

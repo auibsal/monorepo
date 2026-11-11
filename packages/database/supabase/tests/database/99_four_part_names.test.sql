@@ -78,6 +78,7 @@ update core.settings set value = '0' where key = 'membership.founding_voters';
 select plan(10);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'lina-names@auib.edu.iq', 'Lina Tamimi');
+update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000000a1';
 
 select is(
   (select first_name_en from core.profiles where id = '00000000-0000-0000-0000-0000000000a1'),
@@ -99,8 +100,8 @@ select lives_ok(
 );
 select is(
   (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-0000000000a1'),
-  'Lina Al-Tamimi',
-  'and the name shown is the first and the fourth, trimmed'
+  'Lina Kareem',
+  'and the name shown is the given and father''s names, trimmed'
 );
 select is(
   (select full_name_ar from core.profiles where id = '00000000-0000-0000-0000-0000000000a1'),
@@ -112,15 +113,15 @@ update core.profiles set first_name_ar = 'لينا', father_name_ar = 'كريم'
 where id = '00000000-0000-0000-0000-0000000000a1';
 select is(
   (select full_name_ar from core.profiles where id = '00000000-0000-0000-0000-0000000000a1'),
-  null,
-  'Three parts are not a name'
+  'لينا كريم',
+  'Three parts are a name: the family name only where there is one'
 );
 update core.profiles set last_name_ar = 'التميمي'
 where id = '00000000-0000-0000-0000-0000000000a1';
 select is(
   (select full_name_ar from core.profiles where id = '00000000-0000-0000-0000-0000000000a1'),
-  'لينا التميمي',
-  'Four are, shown as the first and the fourth'
+  'لينا كريم',
+  'A family name does not change the name shown'
 );
 
 select is(
@@ -142,10 +143,11 @@ insert into auth.users (id, email, email_confirmed_at, raw_user_meta_data, aud, 
 values ('00000000-0000-0000-0000-0000000000b1', 'guest-names@example.org', now(),
   '{"first_name_en":"Sara","father_name_en":"Ali","grandfather_name_en":"Omar","last_name_en":"Hadi","first_name_ar":"سارة","father_name_ar":"علي","grandfather_name_ar":"عمر","last_name_ar":"هادي"}',
   'authenticated', 'authenticated');
+update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000000b1';
 select is(
   (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-0000000000b1'),
-  'Sara Hadi / سارة هادي',
-  'Sign-up keeps the parts and shows the first and the fourth'
+  'Sara Ali / سارة علي',
+  'Sign-up keeps the parts and shows the given and father''s names'
 );
 
 select * from finish();

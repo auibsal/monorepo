@@ -14,15 +14,12 @@ import {
   type SyncContext,
   saveLink,
 } from "./context";
-import { named, prop, read, slugify } from "./props";
+import { named, prop, read } from "./props";
 import {
   checkArabicEdition,
   checkEvent,
-  checkQirtas,
   eventExtras,
   languageOf,
-  type QirtasDesk,
-  type QirtasValues,
 } from "./rules";
 
 /**
@@ -31,8 +28,8 @@ import {
  * cancels a published event. One language per row (Nov 4, 2026): the
  * English row publishes the event, and its Arabic edition (Language
  * Arabic, Edition of the English row) gives the event its Arabic title,
- * summary, venue and text. News ("News post" or "Qirtas" pages) goes to
- * Qirtas's newsroom, in Editing. The person who last edited the page must
+ * summary, venue and text. Announcements and Qirtas pieces are written on
+ * the site, never in Notion. The person who last edited the page must
  * hold the permission in the Diwan, matched by email.
  * Results go back to the page: status, links, and a note saying what was
  * done or what to fix (also left as a comment).
@@ -491,297 +488,24 @@ const publishArabicEvent = async (
   count(ctx, "event_ar.published");
 };
 
-/** The type a Notion piece starts as on each desk (editors change it). */
-const STARTING_TYPE = {
-  gallery: "art",
-  games: "crossword",
-  letters: "creative_nonfiction",
-  news: "report",
-  video: "video_report",
-  voices: "column",
-} as const satisfies Record<QirtasDesk, string>;
-
-/** The publisher's own byline: their contributor record, made if needed. */
-const bylineFor = async (ctx: SyncContext, userId: string) => {
-  const j = ctx.admin.schema("journal");
-  const { data: found } = await j
-    .from("contributors")
-    .select("id")
-    .eq("user_id", userId)
-    .eq("is_pen_name", false)
-    .limit(1)
-    .maybeSingle();
-  if (found) {
-    return found.id;
-  }
-  const { data: profile } = await ctx.admin
-    .schema("core")
-    .from("profiles")
-    .select("full_name_en, full_name_ar")
-    .eq("id", userId)
-    .maybeSingle();
-  const name = profile?.full_name_en?.trim() || "Qirtas";
-  const base = slugify(name) || "contributor";
-  const { data: taken } = await j
-    .from("contributors")
-    .select("slug")
-    .like("slug", `${base}%`);
-  const used = new Set((taken ?? []).map((c) => c.slug));
-  let slug = base;
-  for (let n = 2; used.has(slug); n += 1) {
-    slug = `${base}-${n}`;
-  }
-  const { data, error } = await j
-    .from("contributors")
-    .insert({
-      name_ar: profile?.full_name_ar ?? null,
-      name_en: name,
-      slug,
-      user_id: userId,
-    })
-    .select("id")
-    .single();
-  if (error) {
-    throw error;
-  }
-  return data.id;
-};
-
-const pieceSlug = async (ctx: SyncContext, title: string) => {
-  const base = (slugify(title) || "piece").slice(0, 70);
-  const { data: taken } = await ctx.admin
-    .schema("journal")
-    .from("pieces")
-    .select("slug")
-    .like("slug", `${base}%`);
-  const used = new Set((taken ?? []).map((p) => p.slug));
-  let slug = base;
-  for (let n = 2; used.has(slug); n += 1) {
-    slug = `${base}-${n}`;
-  }
-  return slug;
-};
-
-/** Who may send a row to a desk: the desk's editor or the Editor-in-Chief. */
-const deskPublisher = async (
-  ctx: SyncContext,
-  email: string,
-  desk: QirtasDesk
-) => {
-  const rpc = (permission: string) =>
-    ctx.admin.schema("access").rpc("notion_publisher", {
-      email,
-      permission,
-      scope_type: "global",
-    });
-  const [editor, chief] = await Promise.all([
-    rpc(`journal.edit.${desk}`),
-    rpc("journal.approve"),
-  ]);
-  return (editor.data ?? chief.data) as string | null;
-};
-
-const STILL_EDITING = ["editing", "author_approved"];
-
-const PAST_EDITING =
-  "This piece is past editing in the Diwan. Change it there (or reopen it there first).";
-
-const editingNote = () =>
-  `In the Qirtas newsroom since ${stamp()}, in Editing: the approvals and publishing happen in the Diwan.`;
-
-/**
- * An Arabic edition of a Qirtas row: its title, excerpt and page text
- * become the Arabic of the English row's piece, which must be imported
- * first and still be in editing.
- */
-const importQirtasEdition = async (
-  ctx: SyncContext,
-  page: NotionPage,
-  email: string,
-  v: QirtasValues & { of: string }
-) => {
-  const j = ctx.admin.schema("journal");
-  const pieceId = await recordFor(ctx, "piece", v.of);
-  const { data: piece } = pieceId
-    ? await j
-        .from("pieces")
-        .select("desk, status")
-        .eq("id", pieceId)
-        .maybeSingle()
-    : { data: null };
-  if (!(pieceId && piece?.desk)) {
-    await needsChanges(ctx, page, [
-      "Send the English row (Edition of) first; this edition then adds its Arabic.",
-    ]);
-    return;
-  }
-  if (!(await deskPublisher(ctx, email, piece.desk as QirtasDesk))) {
-    await needsChanges(ctx, page, [
-      `${email} does not edit the ${piece.desk} desk in the Diwan. Ask its editor or the Editor-in-Chief to set Ready to publish.`,
-    ]);
-    return;
-  }
-  if (!STILL_EDITING.includes(piece.status)) {
-    await needsChanges(ctx, page, [PAST_EDITING]);
-    return;
-  }
-  const body = await bodyOf(ctx, page);
-  const { error } = await j
-    .from("pieces")
-    .update({
-      language: "bilingual",
-      title_ar: v.title,
-      ...(v.deck ? { deck_ar: v.deck } : {}),
-    })
-    .eq("id", pieceId);
-  if (error) {
-    throw error;
-  }
-  if (body) {
-    await j
-      .from("piece_bodies")
-      .update({ body_ar: body })
-      .eq("piece_id", pieceId);
-  }
-  await saveLink(ctx, "piece_ar", page.id, pieceId, null);
-  await ctx.notion.updatePage(page.id, {
-    Diwan: prop.url(`${ctx.appUrl}/qirtas/pieces/${pieceId}`),
-    "Diwan ID": prop.text(pieceId),
-    "Platform note": prop.text(editingNote()),
-    Status: prop.select("In editing"),
-  });
-  count(ctx, "qirtas.edition");
-};
-
-/**
- * Staff writing for Qirtas (Kind "Qirtas", or "News post" for the News
- * desk), one language per row: imported as a piece in Editing, where it
- * goes through the same approvals as everything else. The person who set
- * Ready to publish needs the desk's permission (or journal.approve) and
- * becomes the byline. A page already imported updates its piece while it
- * is still in editing. An Arabic edition adds its Arabic to the English
- * row's piece.
- */
-const importQirtas = async (
-  ctx: SyncContext,
-  page: NotionPage,
-  email: string,
-  fallbackDesk?: QirtasDesk
-) => {
-  const checked = checkQirtas(page, fallbackDesk);
-  if (!checked.ok) {
-    await needsChanges(ctx, page, checked.problems);
-    return;
-  }
-  const v = checked.values;
-  if (v.of) {
-    await importQirtasEdition(ctx, page, email, { ...v, of: v.of });
-    return;
-  }
-  const desk = v.desk as QirtasDesk;
-  const publisher = await deskPublisher(ctx, email, desk);
-  if (!publisher) {
-    await needsChanges(ctx, page, [
-      `${email} does not edit the ${desk} desk in the Diwan. Ask its editor or the Editor-in-Chief to set Ready to publish.`,
-    ]);
-    return;
-  }
-  const body = await bodyOf(ctx, page);
-  const ar = v.language === "ar";
-  const text = ar
-    ? { deck_ar: v.deck, title_ar: v.title }
-    : { deck_en: v.deck, title_en: v.title };
-  let bodies: { body_ar?: string; body_en?: string } = {};
-  if (body) {
-    bodies = ar ? { body_ar: body } : { body_en: body };
-  }
-  const j = ctx.admin.schema("journal");
-  const existing = await recordFor(ctx, "piece", page.id);
-  let id = existing;
-  if (id) {
-    const { data: piece } = await j
-      .from("pieces")
-      .select("status")
-      .eq("id", id)
-      .maybeSingle();
-    if (piece && !STILL_EDITING.includes(piece.status)) {
-      await needsChanges(ctx, page, [PAST_EDITING]);
-      return;
-    }
-    const { error } = await j
-      .from("pieces")
-      .update({ ...text, publish_at: v.publish_at })
-      .eq("id", id);
-    if (error) {
-      throw error;
-    }
-    if (body) {
-      await j.from("piece_bodies").update(bodies).eq("piece_id", id);
-    }
-  } else {
-    const { data, error } = await j
-      .from("pieces")
-      .insert({
-        ...text,
-        category: STARTING_TYPE[desk],
-        contributor_id: await bylineFor(ctx, publisher),
-        language: v.language,
-        publish_at: v.publish_at,
-        slug: await pieceSlug(ctx, v.title),
-        status: "editing",
-      })
-      .select("id")
-      .single();
-    if (error) {
-      throw error;
-    }
-    ({ id } = data);
-    await j.from("piece_bodies").insert({ piece_id: id, ...bodies });
-  }
-  await saveLink(ctx, "piece", page.id, id, null);
-  await ctx.notion.updatePage(page.id, {
-    Diwan: prop.url(`${ctx.appUrl}/qirtas/pieces/${id}`),
-    "Diwan ID": prop.text(id),
-    "Platform note": prop.text(editingNote()),
-    Status: prop.select("In editing"),
-  });
-  count(ctx, existing ? "qirtas.updated" : "qirtas.imported");
-};
-
 const statusFilter = (statuses: string[]) => ({
   or: statuses.map((s) => ({ property: "Status", select: { equals: s } })),
 });
 
 /** Pages waiting for the platform, handled one at a time. */
 export const publishWaiting = async (ctx: SyncContext) => {
-  const [events, news, qirtas] = await Promise.all([
-    ctx.notion.query(ctx.sources.events, statusFilter([READY, CANCEL])),
-    ctx.notion.query(ctx.sources.news, {
-      and: [
-        { property: "Kind", select: { equals: "News post" } },
-        statusFilter([READY]),
-      ],
-    }),
-    ctx.notion.query(ctx.sources.news, {
-      and: [
-        // Notion refuses a filter on an option the property no longer
-        // has, so the old name "Waraq" is not asked for.
-        { property: "Kind", select: { equals: "Qirtas" } },
-        statusFilter([READY]),
-      ],
-    }),
-  ]);
+  // Announcements and Qirtas pieces are written on the site (decisions.md,
+  // Where things live): Notion publishes events only (and documents).
+  const events = await ctx.notion.query(
+    ctx.sources.events,
+    statusFilter([READY, CANCEL])
+  );
   // English rows before their Arabic editions, so an edition finds its
   // event published in the same run.
-  const byLanguage = [...events].sort(
+  const queue = [...events].sort(
     (a, b) => Number(languageOf(a) === "ar") - Number(languageOf(b) === "ar")
   );
-  const queue: [Kind | "news" | "waraq", NotionPage][] = [
-    ...byLanguage.map((p): [Kind, NotionPage] => ["event", p]),
-    ...news.map((p): ["news", NotionPage] => ["news", p]),
-    ...qirtas.map((p): ["waraq", NotionPage] => ["waraq", p]),
-  ];
-  for (const [kind, page] of queue) {
+  for (const page of queue) {
     if (outOfTime(ctx)) {
       return;
     }
@@ -792,12 +516,7 @@ export const publishWaiting = async (ctx: SyncContext) => {
         await needsChanges(ctx, page, [NO_EMAIL]);
         continue;
       }
-      if (kind === "waraq") {
-        await importQirtas(ctx, page, email);
-      } else if (kind === "news") {
-        // The old news posts are Qirtas's News desk now.
-        await importQirtas(ctx, page, email, "news");
-      } else if (languageOf(page) === "ar") {
+      if (languageOf(page) === "ar") {
         await publishArabicEvent(ctx, page, email);
       } else if (read.select(page, "Status") === CANCEL) {
         await cancelEvent(ctx, page, email);
@@ -805,7 +524,7 @@ export const publishWaiting = async (ctx: SyncContext) => {
         await publishEvent(ctx, page, email);
       }
     } catch (error) {
-      problem(ctx, `${kind} ${bareId(page.id)}: ${(error as Error).message}`);
+      problem(ctx, `event ${bareId(page.id)}: ${(error as Error).message}`);
     }
   }
 };
@@ -845,5 +564,67 @@ export const syncRsvpCounts = async (ctx: SyncContext) => {
     } catch (error) {
       problem(ctx, `rsvps ${eventId}: ${(error as Error).message}`);
     }
+  }
+};
+
+/** Notion's times are to the minute; a write-back lands just after saving. */
+const GRACE_MS = 2 * 60_000;
+
+/**
+ * Published events whose Notion row a person edited after the site's last
+ * copy, and Published rows the site has no copy of (PROGRESS.md: the site's
+ * copies of some events were older than Notion's rows). Reported in the
+ * Connected panel, never changed silently: setting the row to "Ready to
+ * publish" again updates the site with the editor's permission checked.
+ */
+export const reportStaleEvents = async (
+  ctx: SyncContext,
+  bots: Set<string>
+) => {
+  const rows = await ctx.notion.query(
+    ctx.sources.events,
+    statusFilter(["Published"])
+  );
+  const { data, error } = await ctx.admin
+    .schema("core")
+    .from("notion_links")
+    .select("notion_page_id, synced_at")
+    .in("kind", ["event", "event_ar"]);
+  if (error) {
+    throw error;
+  }
+  const synced = new Map(
+    (data ?? []).map((l) => [l.notion_page_id, Date.parse(l.synced_at)])
+  );
+  const stale: string[] = [];
+  const missing: string[] = [];
+  for (const page of rows) {
+    const title = read.text(page, "Title") || bareId(page.id);
+    const at = synced.get(bareId(page.id));
+    if (at === undefined) {
+      missing.push(title);
+      continue;
+    }
+    const editor = page.last_edited_by?.id;
+    if (
+      Date.parse(page.last_edited_time) > at + GRACE_MS &&
+      !(editor && bots.has(editor))
+    ) {
+      stale.push(title);
+    }
+  }
+  count(ctx, "event.stale", stale.length);
+  count(ctx, "event.missing", missing.length);
+  if (stale.length > 0) {
+    problem(
+      ctx,
+      `Edited in Notion after publishing (set to Ready to publish to update the site): ${stale.join("; ")}`
+    );
+  }
+  if (missing.length > 0) {
+    problem(
+      ctx,
+      `Marked Published in Notion but not on the site (set to Ready to publish): ${missing.join("; ")}`
+    );
   }
 };

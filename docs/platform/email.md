@@ -91,9 +91,9 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `partners.application_received` | An application to partner | The applicant; Partnerships and the President (that it waits) | Direct; officer |
 | `partners.application_decided` | Signed (active) or not taken forward | The applicant | Direct |
 | `partners.invitation` | A partner's or the Society's email invitation | The invited address | Direct |
-| `sunday_paper.broadcast` (a Resend Broadcast, from qirtas@auibsal.org, replies to it) | The Managing Editor's send, from the Diwan, after a preview and a test to the Editor-in-Chief (decisions.md, Qirtas) | Members who take optional emails; the public list, one Broadcast per language | Optional (each person's own stop link) |
+| `sunday_paper.broadcast` (a Resend Broadcast, from qirtas@auibsal.org, replies to it) | The Managing Editor's send, from the Diwan, after a preview and a test to the Editor-in-Chief (decisions.md, Qirtas) | "The Sunday Paper" topic (`core.mailing_recipients('paper')`), one Broadcast per language | Optional (each person's own preferences page) |
 | `membership.invitations` (a draft Resend Broadcast) | The President's go, once per list (Membership → Invitations; `membership.send_invitations(list)`), only after the list's test has reached the President ("Send the test to the President", `/api/invitations/test`, recorded as `invitation_lists.tested_at`): the site makes the draft, the President sends it from Resend. The President's letter, from hello@auibsal.org like every site email, signed with their signature (`/api/email/signature`). Each list's addresses are deleted thirty days after its own send, and its contacts leave Resend first (`invitation.forget`, decisions.md, Qirtas) | One list: the spring 2026 Tour writers (sent Nov 7), or the fall 2026 club fair's paper sign-ups typed in by staff; addresses with an account are skipped | Direct (its stop link takes the address off the list) |
-| `announcement.broadcast` (a Resend Broadcast) | The President's go (The Council → Announcements; `core.send_announcement(id)`), only after the notice's test has reached the President in both languages (`/api/announcements/test`, recorded as `announcements.tested_at`, cleared by any change). Hudhud posts the same notice | The Sunday Paper's readers (`core.sunday_paper_recipients()`), one Broadcast per language | Optional (each person's own stop link) |
+| `announcement.broadcast` (a Resend Broadcast) | The President's go (The Council → Announcements; `core.send_announcement(id)`), only after the notice's test has reached the President in both languages (`/api/announcements/test`, recorded as `announcements.tested_at`, cleared by any change). Hudhud posts the same notice | "Society news and events" (`core.mailing_recipients('news')`), one Broadcast per language; at most one a week | Optional (each person's own preferences page) |
 | `newsletter.confirm` | A public sign-up | The address (double opt-in) | Direct |
 | `personal_email.confirm` | A personal email added | The new address only | Direct |
 | `removal.requested`, `removal.overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
@@ -103,11 +103,11 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `platform.cron_failed` | A database job failed in the last day | Administrators | Officer |
 | `account.deleted` | An account deleted | The address it had (the last email) | Direct |
 
-"Email me about events, calls and Society notices" (`notify_email`, on
-Membership → Settings → Notices) covers the optional ones: the Sunday
-Paper and reminders of booked events and shifts. The stop link turns it
-off without signing in; the link is signed (`lib/api/email-stop.ts`) and
-the page needs a button press.
+The two mailing topics (Your account → Settings → Notices) and "Email me
+reminders for the events I book" (`notify_email`) are the optional
+emails. The preferences link changes the topics or stops everything
+without signing in; the link is signed (`lib/api/email-stop.ts`), and the
+one-click unsubscribe (List-Unsubscribe) stops everything.
 
 Merged or removed in the audit: one email per reply on Get involved
 became the daily digest; "in progress" on a request sends nothing (taken

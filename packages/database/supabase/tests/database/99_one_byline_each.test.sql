@@ -97,6 +97,7 @@ $$;
 select plan(3);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e9001', 'writer.e9@auib.edu.iq', 'Old Name');
+update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000e9001';
 insert into journal.contributors (id, slug, name_en, name_ar, user_id) values
   ('c0000000-0000-0000-0000-0000000e9c01', 'old-name-e9', 'Old Name', 'اسم', '00000000-0000-0000-0000-0000000e9001');
 
@@ -106,12 +107,12 @@ set first_name_en = 'Mohammed', father_name_en = 'Ali', grandfather_name_en = 'H
 where id = '00000000-0000-0000-0000-0000000e9001';
 select is(
   (select name_en from journal.contributors where id = 'c0000000-0000-0000-0000-0000000e9c01'),
-  'Mohammed Jasim',
+  'Mohammed Ali',
   'a change to the name parts reaches the byline'
 );
 select is(
   (select slug from journal.contributors where id = 'c0000000-0000-0000-0000-0000000e9c01'),
-  'mohammed-jasim',
+  'mohammed-ali',
   'and its address follows the name'
 );
 select is_empty(

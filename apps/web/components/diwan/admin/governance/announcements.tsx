@@ -21,6 +21,7 @@ interface Notice {
   body_ar: string;
   body_en: string;
   id: string;
+  instagram_done_at: string | null;
   link_path: string | null;
   sent_at: string | null;
   shown_at: string | null;
@@ -29,7 +30,10 @@ interface Notice {
   title_en: string;
 }
 
-type Draft = Omit<Notice, "id" | "sent_at" | "shown_at" | "tested_at"> & {
+type Draft = Omit<
+  Notice,
+  "id" | "instagram_done_at" | "sent_at" | "shown_at" | "tested_at"
+> & {
   id: string | null;
 };
 
@@ -51,7 +55,7 @@ const useNotices = () => {
           .schema("core")
           .from("announcements")
           .select(
-            "id, title_en, title_ar, body_en, body_ar, link_path, tested_at, sent_at, shown_at"
+            "id, title_en, title_ar, body_en, body_ar, link_path, tested_at, sent_at, shown_at, instagram_done_at"
           )
           .order("created_at", { ascending: false })
       ) ?? []) as Notice[],
@@ -254,7 +258,62 @@ const Sending = ({
         </div>
       ) : null}
       <p className="type-caption text-text-secondary">{t("testNote")}</p>
-      <ErrorLine error={send.error} />
+      {send.error instanceof Error &&
+      send.error.message.includes("one_email_a_week") ? (
+        <p className="text-text text-sm" role="alert">
+          {t("oneAWeek")}
+        </p>
+      ) : (
+        <ErrorLine error={send.error} />
+      )}
+    </div>
+  );
+};
+
+/**
+ * Media makes the Instagram post or story from each notice sent or posted
+ * (decisions.md, Channels and email), and marks it made here.
+ */
+const Instagram = ({
+  notice,
+  refresh,
+}: {
+  notice: Notice;
+  refresh: () => Promise<void>;
+}) => {
+  const t = useTranslations("diwan.admin.announcements");
+  const locale = useLocale();
+  const { supabase } = useAuth();
+  const done = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .rpc("announcement_instagram_done", { id: notice.id })
+      ),
+    onSuccess: refresh,
+  });
+  if (!notice.shown_at) {
+    return null;
+  }
+  return notice.instagram_done_at ? (
+    <p className="type-caption text-text-secondary">
+      {t("instagramDone", {
+        date: formatLongDate(new Date(notice.instagram_done_at), locale),
+      })}
+    </p>
+  ) : (
+    <div className="flex flex-wrap items-center gap-3">
+      <p className="type-body">{t("instagramToDo")}</p>
+      <Button
+        disabled={done.isPending}
+        onClick={() => done.mutate()}
+        size="sm"
+        variant="outline"
+      >
+        {t("instagramMade")}
+      </Button>
+      <ErrorLine error={done.error} />
     </div>
   );
 };
@@ -389,6 +448,7 @@ export const Announcements = () => {
                     date: formatLongDate(new Date(notice.sent_at), locale),
                   })}
                 </p>
+                <Instagram notice={notice} refresh={refresh} />
               </>
             ) : (
               <>
@@ -401,6 +461,7 @@ export const Announcements = () => {
                   <Sending notice={notice} refresh={refresh} />
                 ) : null}
                 <Stream notice={notice} refresh={refresh} />
+                <Instagram notice={notice} refresh={refresh} />
               </>
             )}
           </li>

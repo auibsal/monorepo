@@ -1,6 +1,6 @@
 import type { Locale } from "@repo/internationalization";
 import { siteUrl } from "@repo/internationalization";
-import { journal, localized } from "@/lib/data";
+import { events, journal, localized } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 
 const ESCAPES: Record<string, string> = {
@@ -81,6 +81,62 @@ export const qirtasFeed = async ({
 <channel>
 <title>${xml(title)}</title>
 <link>${xml(siteUrl(locale, path.replace(FEED, "")))}</link>
+<atom:link href="${xml(siteUrl(locale, path))}" rel="self" type="application/rss+xml"/>
+<description>${xml(description)}</description>
+<language>${locale}</language>
+${items}
+</channel>
+</rss>
+`;
+  return new Response(body, {
+    headers: {
+      "Cache-Control": "public, max-age=900, s-maxage=900",
+      "Content-Type": "application/rss+xml; charset=utf-8",
+    },
+  });
+};
+
+/**
+ * What's on as an RSS 2.0 feed (decisions.md, Standards): the coming public
+ * events, soonest first, in the page's language; an event with no title in
+ * that language is left out. Members-only events never appear.
+ */
+export const eventsFeed = async ({
+  description,
+  locale,
+  title,
+}: {
+  description: string;
+  locale: Locale;
+  title: string;
+}) => {
+  const path = "/events/feed.xml";
+  const upcoming = await readPublished(
+    ["events"],
+    async (c) => (await events.publicEvents(c, { limit: LIMIT })) ?? [],
+    []
+  );
+  const items = upcoming
+    .filter((event) => (locale === "ar" ? event.title_ar : event.title_en))
+    .map((event) => {
+      const link = siteUrl(locale, `/events/${event.slug}`);
+      const summary = localized(event, "summary", locale);
+      return [
+        "<item>",
+        `<title>${xml(localized(event, "title", locale))}</title>`,
+        `<link>${xml(link)}</link>`,
+        `<guid isPermaLink="true">${xml(link)}</guid>`,
+        `<pubDate>${new Date(event.starts_at).toUTCString()}</pubDate>`,
+        summary ? `<description>${xml(summary)}</description>` : "",
+        "</item>",
+      ].join("");
+    })
+    .join("\n");
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>${xml(title)}</title>
+<link>${xml(siteUrl(locale, "/events"))}</link>
 <atom:link href="${xml(siteUrl(locale, path))}" rel="self" type="application/rss+xml"/>
 <description>${xml(description)}</description>
 <language>${locale}</language>

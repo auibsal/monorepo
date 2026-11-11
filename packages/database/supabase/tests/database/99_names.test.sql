@@ -1,5 +1,5 @@
--- The new names (migration 20261024000800): programs renamed in place,
--- Gallery Wall unpublished but kept, the Company added as a flagship.
+-- Names (decisions.md, Members): the legal name in parts and in its script,
+-- locked by the member; the preferred name per language; the name shown.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -94,30 +94,80 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(7);
 
-select is((select name_en from core.programmes where slug = 'waraq'), 'Qirtas',
-  'The paper is called Qirtas; its slug stays');
-select is((select name_en from core.programmes where slug = 'next-stop'), 'Next Stop',
-  'Side Quest is Next Stop');
-select ok(
-  not exists (select 1 from core.programmes where slug = 'open-stage'),
-  'Open Stage is part of the Company: the program is removed'
-);
-select ok(
-  exists (select 1 from core.programmes where slug = 'gallery-wall' and not is_active),
-  'Gallery Wall is unpublished, not deleted'
-);
-select ok(
-  exists (select 1 from core.programmes where slug = 'company' and is_active and kind <> 'format'),
-  'The Company is one of the programs'
-);
-select ok(
-  exists (select 1 from core.programmes where slug = 'waraq' and not is_active),
-  'Qirtas is the paper, not a program: its row is unpublished'
-);
-select is((select count(*) from core.settings where key like 'journal.name_%')::integer, 0,
-  'The paper''s name is fixed in the project file, not kept as a setting');
+select plan(18);
+
+select pg_temp.make_user('00000000-0000-0000-0000-00000000c0a1', 'names-a@auib.edu.iq', 'Signup Name');
+select pg_temp.make_user('00000000-0000-0000-0000-00000000c0a2', 'names-officer@auib.edu.iq', 'Officer');
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000c0a2', 'membership_director');
+
+select is(
+  (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
+  'Signup Name', 'Until the legal name is complete, the name given at sign-up shows');
+
+select pg_temp.login_as('00000000-0000-0000-0000-00000000c0a1');
+select throws_ok(
+  $$ update core.profiles set first_name_en = 'عمر' where id = '00000000-0000-0000-0000-00000000c0a1' $$,
+  '22023', 'name_script_en', 'An English part in Arabic letters is refused');
+select throws_ok(
+  $$ update core.profiles set first_name_ar = 'Omar' where id = '00000000-0000-0000-0000-00000000c0a1' $$,
+  '22023', 'name_script_ar', 'An Arabic part in Latin letters is refused');
+select throws_ok(
+  $$ select core.lock_legal_name() $$,
+  '22023', 'legal_name_incomplete', 'An incomplete legal name cannot be locked');
+
+select lives_ok(
+  $$ update core.profiles set first_name_en = 'Omar', father_name_en = 'Ali',
+       grandfather_name_en = 'Hassan', last_name_en = null,
+       first_name_ar = 'عمر', father_name_ar = 'علي', grandfather_name_ar = 'حسن'
+     where id = '00000000-0000-0000-0000-00000000c0a1' $$,
+  'A legal name with no family name is complete');
+select is(
+  (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
+  'Signup Name', 'Until the member has seen the default, the sign-up name still shows');
+select lives_ok($$ select core.confirm_shown_name() $$, 'The member keeps the name shown at sign-in');
+select is(
+  (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
+  'Omar Ali / عمر علي', 'The default is the given and father''s names, in each language');
+
+select lives_ok(
+  $$ update core.profiles set preferred_name_ar = 'عمر الحسن'
+     where id = '00000000-0000-0000-0000-00000000c0a1' $$,
+  'A member sets a preferred name in Arabic');
+select is(
+  (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
+  'Omar Ali / عمر الحسن', 'and only the Arabic name changes');
+
+select isnt((select core.lock_legal_name()), null, 'The member locks a complete legal name');
+select throws_ok(
+  $$ update core.profiles set father_name_en = 'Alee' where id = '00000000-0000-0000-0000-00000000c0a1' $$,
+  '42501', 'legal_name_locked', 'A locked legal name cannot be changed by the member');
+select lives_ok(
+  $$ update core.profiles set preferred_name_en = 'Omi'
+     where id = '00000000-0000-0000-0000-00000000c0a1' $$,
+  'The preferred name stays the member''s to change');
+
+select throws_ok(
+  $$ select membership.reset_preferred_name('00000000-0000-0000-0000-00000000c0a1', 'Misleading') $$,
+  '42501', null, 'A member cannot reset names');
+
+select pg_temp.login_as('00000000-0000-0000-0000-00000000c0a2');
+select throws_ok(
+  $$ select membership.correct_name('00000000-0000-0000-0000-00000000c0a1',
+       'Omar', 'Aly', 'Hassan', null, 'عمر', 'علي', 'حسن', null, '') $$,
+  '22023', 'reason_required', 'A correction needs a reason');
+select lives_ok(
+  $$ select membership.correct_name('00000000-0000-0000-0000-00000000c0a1',
+       'Omar', 'Aly', 'Hassan', null, 'عمر', 'علي', 'حسن', null, 'As on the passport') $$,
+  'The Director of Membership corrects a locked legal name');
+select lives_ok(
+  $$ select membership.reset_preferred_name('00000000-0000-0000-0000-00000000c0a1', 'Misleading') $$,
+  'and resets a preferred name');
+
+select pg_temp.logout();
+select is(
+  (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
+  'Omar Aly / عمر علي', 'The name shown is the default again, with the corrected part');
 
 select * from finish();
 rollback;

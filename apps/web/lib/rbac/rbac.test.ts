@@ -167,6 +167,8 @@ describe("mirror of the reference data in the migrations", () => {
     // the Faculty Advisor countersigns certificates; a partner's own page is
     // its representatives' (they hold partners.manage anyway).
     const withheld = new Set([
+      // Next Stop's guest ideas: the Director of Media, producer and host only.
+      "media.guest_ideas",
       "partners.own",
       "partners.lead",
       "concerns.about_president",

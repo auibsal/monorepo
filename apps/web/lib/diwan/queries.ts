@@ -62,7 +62,7 @@ export const useProfile = () => {
         .schema("core")
         .from("profiles")
         .select(
-          "id, full_name_en, full_name_ar, preferred_first_en, preferred_last_en, preferred_first_ar, preferred_last_ar, bio, avatar_path, locale, camera_shy, setup_completed_at, verified_at, created_at, updated_at"
+          "id, full_name_en, full_name_ar, preferred_name_en, preferred_name_ar, name_confirmed_at, bio, avatar_path, locale, camera_shy, setup_completed_at, verified_at, created_at, updated_at"
         )
         .eq("id", userId)
         .single(),

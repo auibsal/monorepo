@@ -2,6 +2,7 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
+import { formatNumber } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -43,15 +44,99 @@ export const Channels = () => {
   const grants = useGrants();
   const settings = hasPermissionAnywhere(grants.data, "settings.manage");
   const members = hasPermissionAnywhere(grants.data, "members.manage");
+  // The mailing list's counts (decisions.md, Channels and email): Media,
+  // the Managing Editor and whoever runs the channels.
+  const mailing =
+    settings ||
+    members ||
+    hasPermissionAnywhere(grants.data, "content.manage") ||
+    hasPermissionAnywhere(grants.data, "mailing.read");
   if (grants.isPending) {
     return <SectionSpinner />;
   }
   return (
     <div className="grid gap-10">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      {mailing ? <MailingCounts /> : null}
       {settings ? <Groups /> : null}
       {members ? <Exempt /> : null}
     </div>
+  );
+};
+
+interface Count {
+  lang: string | null;
+  readers: number;
+  source: string | null;
+  topic: string;
+}
+
+/**
+ * The mailing list, as counts only: each topic's readers by language and
+ * where they came from, those who stopped, and the addresses suppressed
+ * after a bounce or complaint. No names here.
+ */
+const MailingCounts = () => {
+  const t = useTranslations("diwan.admin.channels.mailing");
+  const { supabase } = useAuth();
+  const counts = useQuery({
+    queryFn: async () =>
+      (unwrap(await supabase.schema("content").rpc("mailing_counts")) ??
+        []) as Count[],
+    queryKey: ["admin", "mailing", "counts"],
+  });
+  if (!counts.data) {
+    return counts.isPending ? <SectionSpinner /> : null;
+  }
+  const sum = (topic: string, lang?: string) =>
+    counts.data
+      .filter((c) => c.topic === topic && (!lang || c.lang === lang))
+      .reduce((n, c) => n + c.readers, 0);
+  const sources = (topic: string) =>
+    [
+      ...new Set(
+        counts.data.filter((c) => c.topic === topic).map((c) => c.source ?? "")
+      ),
+    ]
+      .filter(Boolean)
+      .map((source) => ({
+        n: counts.data
+          .filter((c) => c.topic === topic && c.source === source)
+          .reduce((m, c) => m + c.readers, 0),
+        source,
+      }));
+  return (
+    <DiwanSection id="mailing" title={t("title")}>
+      <p className="type-body text-text-secondary max-w-prose">{t("lede")}</p>
+      <RowList>
+        {(["paper", "news"] as const).map((topic) => (
+          <li className="grid gap-1" key={topic}>
+            <span className="font-medium">
+              {t(`topics.${topic}`)}: {formatNumber(sum(topic))}
+            </span>
+            <span className="text-text-secondary text-sm">
+              {t("byLanguage", {
+                ar: formatNumber(sum(topic, "ar")),
+                en: formatNumber(sum(topic, "en")),
+              })}
+              {" · "}
+              {sources(topic)
+                .map(
+                  (s) =>
+                    `${t(`sources.${s.source as "member"}`)} ${formatNumber(s.n)}`
+                )
+                .join(" · ")}
+            </span>
+          </li>
+        ))}
+        <li className="text-text-secondary text-sm">
+          {t("stopped", {
+            stopped: formatNumber(sum("stopped")),
+            suppressed: formatNumber(sum("suppressed")),
+          })}
+        </li>
+      </RowList>
+    </DiwanSection>
   );
 };
 
