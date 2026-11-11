@@ -1610,6 +1610,7 @@ export type Database = {
           questions: NonNullable<Json>;
           rsvp_enabled: boolean;
           search: unknown;
+          serves_food: boolean;
           slug: string;
           starts_at: string;
           status: string;
@@ -1642,6 +1643,7 @@ export type Database = {
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
           search?: never;
+          serves_food?: boolean;
           slug: string;
           starts_at: string;
           status?: string;
@@ -1673,6 +1675,7 @@ export type Database = {
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
           search?: never;
+          serves_food?: boolean;
           slug?: string;
           starts_at?: string;
           status?: string;

@@ -101,6 +101,7 @@ type NoticeKey =
   | "forgotten"
   | "notVerified"
   | "closed"
+  | "fullAtTheDoor"
   | "failed";
 type StateKey =
   | "canceled"
@@ -136,7 +137,11 @@ const GiveBack = ({
 
 /** A plain message for each refusal the booking RPC can raise. */
 const errorKey = (error: unknown): NoticeKey => {
-  const code = (error as { code?: string } | null)?.code;
+  const { code, message } =
+    (error as { code?: string; message?: string } | null) ?? {};
+  if (message === "full_at_the_door") {
+    return "fullAtTheDoor";
+  }
   if (code === "42501") {
     return "notVerified";
   }

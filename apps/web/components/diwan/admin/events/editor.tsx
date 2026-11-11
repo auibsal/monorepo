@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
@@ -13,12 +12,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { events, localized, unwrap } from "@/lib/data";
+import { type events, localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
-import { AdminHeading, BilingualField, ErrorLine, SaveButton } from "../kit";
+import { AdminHeading, ErrorLine, SaveButton } from "../kit";
 import { NotionManaged } from "../notion-managed";
 import { RecordHistory } from "../record-history";
 import { Attendance } from "./attendance";
@@ -37,8 +36,6 @@ interface Question {
 const asQuestions = (value: unknown): Question[] =>
   Array.isArray(value) ? (value as Question[]) : [];
 
-const newQuestionId = () => `q${Math.random().toString(36).slice(2, 8)}`;
-
 /** A published event's public page, from its page in the Diwan. */
 const PublicPage = ({
   slug,
@@ -54,7 +51,8 @@ const PublicPage = ({
 /**
  * An event in the Diwan (decisions §8): what Notion holds (the date, the
  * place, the access and the text) is shown, not edited; the site's own
- * parts are kept here: registration questions, invitations, bookings and
+ * parts are kept here: whether food is served (the booking's questions),
+ * invitations, bookings and
  * check-in, and the standard parts.
  */
 /** The event's debrief (F-13) in Notion, for its staff (decisions §13). */
@@ -93,8 +91,7 @@ export const EventEditor = () => {
   const eventId = useQueryParam("id");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [problem, setProblem] = useState<string | null>(null);
+  const [servesFood, setServesFood] = useState(false);
 
   const existing = useQuery({
     enabled: Boolean(eventId),
@@ -112,23 +109,19 @@ export const EventEditor = () => {
 
   useEffect(() => {
     if (existing.data) {
-      setQuestions(asQuestions(existing.data.questions));
+      setServesFood(existing.data.serves_food);
     }
   }, [existing.data]);
 
   const save = useMutation({
     mutationFn: async () => {
-      const parsed = events.eventQuestionsSchema.safeParse(questions);
-      if (!parsed.success) {
-        setProblem(t("errors.questions"));
-        throw new Error("invalid");
-      }
-      setProblem(null);
+      // The questions follow from it (decisions.md, Events: accessibility
+      // always, diet when food is served); the database writes them.
       unwrap(
         await supabase
           .schema("events")
           .from("events")
-          .update({ questions: parsed.data })
+          .update({ serves_food: servesFood })
           .eq("id", eventId ?? "")
       );
     },
@@ -146,10 +139,6 @@ export const EventEditor = () => {
     return <p className="type-body text-text-secondary">{t("notFound")}</p>;
   }
 
-  const setQuestion = (index: number, patch: Partial<Question>) =>
-    setQuestions((qs) =>
-      qs.map((q, i) => (i === index ? { ...q, ...patch } : q))
-    );
   const submit = (e: FormEvent) => {
     e.preventDefault();
     save.mutate();
@@ -201,76 +190,18 @@ export const EventEditor = () => {
         <form className="grid max-w-4xl gap-4" onSubmit={submit}>
           <h2 className="type-subheading">{t("questions")}</h2>
           <p className="type-caption">{t("questionsHint")}</p>
-          {questions.map((question, index) => (
-            <div
-              className="border-line pt-space-4 grid gap-3 border-t"
-              key={question.id}
-            >
-              <BilingualField
-                label={t("question", { number: formatNumber(index + 1) })}
-                maxLength={200}
-                onChange={(label) =>
-                  setQuestion(index, { label_ar: label.ar, label_en: label.en })
-                }
-                value={{ ar: question.label_ar, en: question.label_en }}
-              />
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    checked={question.required}
-                    id={`${id}-q-${question.id}`}
-                    onCheckedChange={(v) =>
-                      setQuestion(index, { required: v === true })
-                    }
-                  />
-                  <Label htmlFor={`${id}-q-${question.id}`}>
-                    {t("questionRequired")}
-                  </Label>
-                </div>
-                <Button
-                  onClick={() =>
-                    setQuestions((qs) => qs.filter((_, i) => i !== index))
-                  }
-                  size="sm"
-                  type="button"
-                  variant="ghost"
-                >
-                  {t("removeQuestion", { number: formatNumber(index + 1) })}
-                </Button>
-              </div>
-            </div>
-          ))}
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={servesFood}
+              id={`${id}-food`}
+              onCheckedChange={(v) => setServesFood(v === true)}
+            />
+            <Label htmlFor={`${id}-food`}>{t("servesFood")}</Label>
+          </div>
           <div className="flex flex-wrap items-center gap-3">
-            {questions.length < 10 ? (
-              <Button
-                onClick={() =>
-                  setQuestions((qs) => [
-                    ...qs,
-                    {
-                      id: newQuestionId(),
-                      label_ar: "",
-                      label_en: "",
-                      required: false,
-                    },
-                  ])
-                }
-                size="sm"
-                type="button"
-                variant="outline"
-              >
-                {t("addQuestion")}
-              </Button>
-            ) : null}
             <SaveButton pending={save.isPending} success={save.isSuccess} />
           </div>
-          {problem ? (
-            <p className="text-text text-sm" role="alert">
-              {problem}
-            </p>
-          ) : null}
-          {save.error && save.error.message !== "invalid" ? (
-            <ErrorLine error={save.error} />
-          ) : null}
+          {save.error ? <ErrorLine error={save.error} /> : null}
         </form>
       )}
 

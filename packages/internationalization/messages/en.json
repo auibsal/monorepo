@@ -454,7 +454,8 @@
         "closed": "Booking for this event has closed.",
         "failed": "That didn’t work. Try again in a moment.",
         "reminded": "We’ll email you a reminder the day before.",
-        "forgotten": "Done. No reminder for this one."
+        "forgotten": "Done. No reminder for this one.",
+        "fullAtTheDoor": "It’s full. From two hours before the start, places are filled at the door: come along and ask."
       },
       "byInvitation": "By invitation",
       "remind": "Remind me",
@@ -1252,15 +1253,8 @@
         "ends": "Ends (optional)",
         "capacity": "Capacity (empty for no limit)",
         "questions": "Registration questions",
-        "questionsHint": "Up to ten. Asked when someone books. A booking already carries their name on the platform, so there is no need to ask for it.",
-        "question": "Question {number}",
-        "questionRequired": "Required",
-        "addQuestion": "Add a question",
-        "removeQuestion": "Remove question {number}",
+        "questionsHint": "The booking asks only about accessibility needs, and diet when food is served. A booking already carries the person’s name.",
         "save": "Save event",
-        "errors": {
-          "questions": "Each question needs its English and Arabic wording."
-        },
         "attendance": "Attendance",
         "rsvps": "Bookings ({count})",
         "waitlist": "Waitlist ({count})",
@@ -1356,7 +1350,8 @@
           "withdraw": "Withdraw",
           "sent": "Invitation sent."
         },
-        "debrief": "The debrief (F-13) in Notion"
+        "debrief": "The debrief (F-13) in Notion",
+        "servesFood": "Food is served (the booking also asks about diet)"
       },
       "checkIn": {
         "title": "Check-in",
