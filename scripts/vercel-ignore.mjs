@@ -1,7 +1,7 @@
 // Vercel's Ignored Build Step for every project in this repository
 // (vercel.json → ignoreCommand). Exit 0 skips the build, 1 builds.
 //
-// Production only, until further notice (the owner, Nov 11): a preview
+// Production only, until further notice (the owner's instruction): a preview
 // (a pull request's or a branch's push) builds nothing. Production is
 // built from main by the deploy hook once the migrations are applied
 // (.github/workflows/migrate.yml), so it still builds.
