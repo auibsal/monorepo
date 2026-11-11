@@ -5561,7 +5561,8 @@
       "signedBy": {
         "qalam": "Signed on this website by the Qalam lead and the Editor-in-Chief.",
         "prize": "Signed on this website by the Editor-in-Chief and the President."
-      }
+      },
+      "tooMany": "Too many checks from here in a short time. Try again in ten minutes."
     },
     "verifyCard": {
       "title": "Membership card",
@@ -5582,7 +5583,8 @@
       "statusInactive": "Not active",
       "notLiveHint": "It may be a screenshot or an old link. Ask to see the card on the holder’s own phone.",
       "number": "No.",
-      "role": "Role"
+      "role": "Role",
+      "tooMany": "Too many checks from here in a short time. Try again in ten minutes."
     },
     "productions": {
       "title": "Plays",

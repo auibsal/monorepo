@@ -207,8 +207,11 @@ production; **Owner** is a step only the owner can take.
 - [ ] Partners: alphabetical, equal-size logos, grouped by kind, then "With
   the support of", then Become a partner; sponsors in kind small, on their
   event and its thank-you only.
-- [ ] /verify: long random codes, rate-limited, never indexed, only what the
-  record needs.
+- [x] /verify: long random codes (new certificates and letters: 96 bits;
+  printed codes keep working), at most 30 checks in ten minutes from one
+  visitor (`VERIFY_LIMIT`), read live, `X-Robots-Tag: noindex` on every
+  check page, and only what the record needs (a Qalam student by first
+  name and initial). **Migrates:** the codes' default.
 
 ### 8. Email (decisions.md, Channels and email)
 - [ ] Every email: one subject, the action first, one button, the record

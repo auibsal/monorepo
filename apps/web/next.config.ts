@@ -110,6 +110,13 @@ let nextConfig: NextConfig = {
       ],
       source: `${prefix}/diwan/media/design/kit/:path*`,
     })),
+    // The checks for codes are never indexed (decisions.md, The site).
+    ...LANGUAGE_PREFIXES.flatMap((prefix) =>
+      [`${prefix}/verify`, `${prefix}/verify/:path*`].map((source) => ({
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+        source,
+      }))
+    ),
   ],
   outputFileTracingIncludes: {
     "/api/design/[...path]": ["./design/**/*"],

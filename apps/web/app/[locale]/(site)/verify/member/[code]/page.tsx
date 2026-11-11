@@ -4,6 +4,7 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/section";
+import { pageWithinRateLimit, VERIFY_LIMIT } from "@/lib/api/rate-limit";
 import { localized, membership } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readLive } from "@/lib/supabase";
@@ -50,6 +51,13 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   const tt = await getTranslations({ locale, namespace: "diwan.home.tiers" });
   const tk = await getTranslations({ locale, namespace: "diwan.home.kinds" });
   const valid = membership.CARD_CODE.test(code);
+  if (valid && !(await pageWithinRateLimit("verify", VERIFY_LIMIT))) {
+    return (
+      <div className="mx-auto grid w-full max-w-xl gap-6 px-4 py-16">
+        <PageHeader lede={t("tooMany")} title={t("title")} />
+      </div>
+    );
+  }
   const card = valid
     ? await readLive((c) => membership.verifyCard(c, code, live), null)
     : null;
