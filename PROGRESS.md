@@ -204,9 +204,10 @@ production; **Owner** is a step only the owner can take.
   /accessibility, each with its effective date at the top.
 - [x] /about/credits generated from the dependencies; About → Our people
   credits the web team.
-- [ ] Partners: alphabetical, equal-size logos, grouped by kind, then "With
-  the support of", then Become a partner; sponsors in kind small, on their
-  event and its thank-you only.
+- [x] Partners: alphabetical, equal-size logos, grouped by kind (clubs;
+  culture and the press; charities; schools and universities; others),
+  then "With the support of", then Become a partner; sponsors in kind only
+  on their event ("Supported by").
 - [x] /verify: long random codes (new certificates and letters: 96 bits;
   printed codes keep working), at most 30 checks in ten minutes from one
   visitor (`VERIFY_LIMIT`), read live, `X-Robots-Tag: noindex` on every

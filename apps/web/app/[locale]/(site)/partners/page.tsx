@@ -10,7 +10,24 @@ import { readPublished } from "@/lib/supabase";
 
 export const generateMetadata = sectionMetadata("web.partners", "/partners");
 
-const REACH = ["auib", "iraq", "international"] as const;
+/**
+ * Partners by kind (decisions.md, Partners and sponsors on the site): each
+ * group alphabetical, every logo the same size, no tiers or ranking.
+ */
+const GROUPS = {
+  charities: ["charity", "foundation"],
+  clubs: ["club"],
+  culture: ["cultural", "publisher", "archive", "media"],
+  others: ["department", "business", "other"],
+  schools: ["university"],
+} as const;
+const GROUP_ORDER = [
+  "clubs",
+  "culture",
+  "charities",
+  "schools",
+  "others",
+] as const;
 
 /**
  * What a partner gets and gives, before anyone signs in (the design
@@ -66,43 +83,22 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           </ul>
         </Section>
       ))}
-      <Section id="work-with-us" title={t("workTitle")}>
-        <p className="type-body">{t("work")}</p>
-        <p className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          <Link
-            className="text-accent font-medium hover:underline"
-            href="/partners/apply"
-          >
-            {t("apply")}
-          </Link>
-          <Link
-            className="link"
-            href={{
-              pathname: "/sign-in",
-              query: { next: "/partners/dashboard" },
-            }}
-          >
-            {t("teamSignIn")}
-          </Link>
-        </p>
-      </Section>
-      {/* Second Chapter (decisions.md): kept by the Director of
-          Partnerships; its collection's record is a Notion page. */}
-      <Section id="second-chapter" title={t("secondChapter.title")}>
-        <p className="type-body max-w-[60ch]">{t("secondChapter.body")}</p>
-      </Section>
       {list.length === 0 ? <p className="type-body">{t("empty")}</p> : null}
-      {REACH.map((reach) => {
-        const group = list.filter((p) => p.reach === reach);
-        if (group.length === 0) {
+      {GROUP_ORDER.map((group) => {
+        const kinds: readonly string[] = GROUPS[group];
+        const members = list
+          .filter((p) => kinds.includes(p.kind ?? "other"))
+          .map((p) => ({ ...p, shown: localized(p, "name", locale) }))
+          .sort((a, b) => a.shown.localeCompare(b.shown, locale));
+        if (members.length === 0) {
           return null;
         }
         return (
-          <Section id={reach} key={reach} title={t(`reach.${reach}`)}>
+          <Section id={group} key={group} title={t(`groups.${group}`)}>
             <ul className="grid gap-4 sm:grid-cols-2">
-              {group.map((partner) => {
+              {members.map((partner) => {
                 const logo = mediaUrl(partner.logo_path);
-                const name = localized(partner, "name", locale);
+                const name = partner.shown;
                 return (
                   <li
                     className="border-line py-space-4 grid content-start gap-3 border-t"
@@ -112,8 +108,8 @@ const PartnersPage = async ({ params }: LocaleParams) => {
                       // biome-ignore lint/performance/noImgElement: a partner logo from the media bucket
                       <img
                         alt=""
-                        className="h-12 w-auto justify-self-start object-contain"
-                        height={48}
+                        className="h-16 w-40 object-contain"
+                        height={64}
                         src={logo}
                         width={160}
                       />
@@ -148,6 +144,31 @@ const PartnersPage = async ({ params }: LocaleParams) => {
         locale={locale}
         logos
       />
+      <Section id="work-with-us" title={t("workTitle")}>
+        <p className="type-body">{t("work")}</p>
+        <p className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <Link
+            className="text-accent font-medium hover:underline"
+            href="/partners/apply"
+          >
+            {t("apply")}
+          </Link>
+          <Link
+            className="link"
+            href={{
+              pathname: "/sign-in",
+              query: { next: "/partners/dashboard" },
+            }}
+          >
+            {t("teamSignIn")}
+          </Link>
+        </p>
+      </Section>
+      {/* Second Chapter (decisions.md): kept by the Director of
+          Partnerships; its collection's record is a Notion page. */}
+      <Section id="second-chapter" title={t("secondChapter.title")}>
+        <p className="type-body max-w-[60ch]">{t("secondChapter.body")}</p>
+      </Section>
     </div>
   );
 };

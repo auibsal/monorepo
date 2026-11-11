@@ -5486,11 +5486,6 @@
       "title": "Partners",
       "lede": "The AUIB Society of Arts and Letters works with clubs, departments, charities and cultural organizations whose aims fit its own. Every partnership has a memorandum, signed by both sides.",
       "empty": "Our first partnerships are being agreed. They will appear here once signed.",
-      "reach": {
-        "auib": "At AUIB",
-        "iraq": "In Iraq",
-        "international": "Beyond Iraq"
-      },
       "visit": "Visit {name}",
       "workTitle": "Work with us",
       "work": "Clubs, departments, charities and cultural organizations apply here and sign the memorandum by name; the Society’s Council votes on each. Sponsors are acknowledged and never have editorial influence.",
@@ -5521,6 +5516,13 @@
       "secondChapter": {
         "title": "Second Chapter",
         "body": "Second Chapter is our book drive and sale for a charity, at the fall club fair, from October 2027. Books find new readers, and what the sale raises goes to the charity, never to the Society. The Director of Partnerships chooses the charity and runs it with them."
+      },
+      "groups": {
+        "clubs": "Clubs",
+        "culture": "Culture and the press",
+        "charities": "Charities",
+        "schools": "Schools and universities",
+        "others": "Others"
       }
     },
     "verify": {
