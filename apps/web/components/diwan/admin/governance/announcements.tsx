@@ -11,7 +11,9 @@ import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
-import { AdminHeading, ErrorLine } from "../kit";
+import { useGrants } from "@/lib/diwan/queries";
+import { hasPermission } from "@/lib/rbac";
+import { AdminHeading, DateTimeField, ErrorLine } from "../kit";
 
 const key = ["admin", "council", "announcements"];
 
@@ -21,12 +23,13 @@ interface Notice {
   id: string;
   link_path: string | null;
   sent_at: string | null;
+  shown_at: string | null;
   tested_at: string | null;
   title_ar: string;
   title_en: string;
 }
 
-type Draft = Omit<Notice, "id" | "sent_at" | "tested_at"> & {
+type Draft = Omit<Notice, "id" | "sent_at" | "shown_at" | "tested_at"> & {
   id: string | null;
 };
 
@@ -48,7 +51,7 @@ const useNotices = () => {
           .schema("core")
           .from("announcements")
           .select(
-            "id, title_en, title_ar, body_en, body_ar, link_path, tested_at, sent_at"
+            "id, title_en, title_ar, body_en, body_ar, link_path, tested_at, sent_at, shown_at"
           )
           .order("created_at", { ascending: false })
       ) ?? []) as Notice[],
@@ -257,6 +260,74 @@ const Sending = ({
 };
 
 /**
+ * "From the Society" (decisions.md, Qirtas): Media posts a notice to the
+ * stream with the date it carries, with no email, or takes it out.
+ */
+const Stream = ({
+  notice,
+  refresh,
+}: {
+  notice: Notice;
+  refresh: () => Promise<void>;
+}) => {
+  const t = useTranslations("diwan.admin.announcements");
+  const locale = useLocale();
+  const { supabase } = useAuth();
+  const [shownAt, setShownAt] = useState<string | null>(notice.shown_at);
+  const post = useMutation({
+    mutationFn: async (at: string | null) =>
+      unwrap(
+        await supabase
+          .schema("core")
+          .rpc("post_notice", { id: notice.id, shown_at: at as string })
+      ),
+    onSuccess: refresh,
+  });
+  return (
+    <div className="border-line grid gap-3 border-t pt-4">
+      <h3 className="type-label">{t("streamTitle")}</h3>
+      {notice.shown_at ? (
+        <p className="type-caption">
+          {t("shownOn", {
+            date: formatLongDate(new Date(notice.shown_at), locale),
+          })}
+        </p>
+      ) : null}
+      <div className="max-w-md">
+        <DateTimeField
+          label={t("streamDate")}
+          onChange={setShownAt}
+          value={shownAt}
+        />
+      </div>
+      <p className="type-caption text-text-secondary">{t("streamHint")}</p>
+      <div className="flex flex-wrap gap-3">
+        <Button
+          disabled={!shownAt || post.isPending || shownAt === notice.shown_at}
+          onClick={() => post.mutate(shownAt)}
+          variant="outline"
+        >
+          {t("post")}
+        </Button>
+        {notice.shown_at ? (
+          <Button
+            disabled={post.isPending}
+            onClick={() => {
+              setShownAt(null);
+              post.mutate(null);
+            }}
+            variant="ghost"
+          >
+            {t("takeDown")}
+          </Button>
+        ) : null}
+      </div>
+      <ErrorLine error={post.error} />
+    </div>
+  );
+};
+
+/**
  * The Council → Announcements (decisions.md, Channels and email): the President writes a
  * notice in English and Arabic, sends its test to themselves, then says
  * go: one Resend Broadcast per language to the Sunday Paper's readers,
@@ -267,6 +338,9 @@ export const Announcements = () => {
   const locale = useLocale();
   const queryClient = useQueryClient();
   const notices = useNotices();
+  const grants = useGrants();
+  // The President sends; Media writes and posts to the stream.
+  const president = hasPermission(grants.data, "roles.assign");
   const [adding, setAdding] = useState(false);
   const refresh = () => queryClient.invalidateQueries({ queryKey: key });
   return (
@@ -323,7 +397,10 @@ export const Announcements = () => {
                   key={`${notice.id}-${notice.tested_at ?? ""}`}
                   onSaved={refresh}
                 />
-                <Sending notice={notice} refresh={refresh} />
+                {president ? (
+                  <Sending notice={notice} refresh={refresh} />
+                ) : null}
+                <Stream notice={notice} refresh={refresh} />
               </>
             )}
           </li>

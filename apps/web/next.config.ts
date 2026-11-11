@@ -63,6 +63,11 @@ const MOVED: readonly [from: string, to: string][] = [
   // Themed online collections are issues; "the Edition" is only the
   // printed year-in-review (decisions.md, Qirtas).
   ["/qirtas/editions", "/qirtas/issues"],
+  // The writing workshop moved to Tue Dec 8 (decisions.md, Events).
+  [
+    "/events/writing-workshop-2026-11-17",
+    "/events/writing-workshop-2026-12-08",
+  ],
   ["/qirtas/editions/:slug", "/qirtas/issues/:slug"],
   ["/diwan/qirtas/editions", "/diwan/qirtas/issues"],
   ["/diwan/qirtas/editions/:ref", "/diwan/qirtas/issues/:ref"],

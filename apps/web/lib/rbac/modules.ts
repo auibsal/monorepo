@@ -112,7 +112,8 @@ export const adminSections = [
   { key: "desk", modules: ["activity"], path: "/" },
   {
     key: "council",
-    modules: ["governance", "library", "forms"],
+    // "media": Media writes the notices on The Council → Announcements.
+    modules: ["governance", "library", "forms", "media"],
     path: "/council",
   },
   {

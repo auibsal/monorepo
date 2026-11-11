@@ -98,6 +98,11 @@ $$;
 
 select plan(11);
 
+-- The standing call takes only Letters and Gallery for now (decisions.md,
+-- Qirtas); these checks exercise every section, so they reopen it.
+update journal.calls set desks = enum_range(null::journal.desk) where issue_id is null;
+
+
 select pg_temp.make_user('00000000-0000-0000-0000-00000000a001', 'puzzler@auib.edu.iq', 'Games Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000a002', 'reader@auib.edu.iq', 'Reader');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000a001', 'games_editor');

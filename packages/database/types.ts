@@ -509,6 +509,7 @@ export type Database = {
           id: string;
           link_path: string | null;
           sent_at: string | null;
+          shown_at: string | null;
           tested_at: string | null;
           title_ar: string;
           title_en: string;
@@ -523,6 +524,7 @@ export type Database = {
           id?: string;
           link_path?: string | null;
           sent_at?: string | null;
+          shown_at?: string | null;
           tested_at?: string | null;
           title_ar: string;
           title_en: string;
@@ -536,6 +538,7 @@ export type Database = {
           id?: string;
           link_path?: string | null;
           sent_at?: string | null;
+          shown_at?: string | null;
           tested_at?: string | null;
           title_ar?: string;
           title_en?: string;
@@ -1261,6 +1264,7 @@ export type Database = {
           value: Json;
         }[];
       };
+      post_notice: { Args: { id: string; shown_at: string }; Returns: string };
       previous_semester: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1337,7 +1341,7 @@ export type Database = {
           body_en: string;
           id: string;
           link_path: string;
-          sent_at: string;
+          shown_at: string;
           title_ar: string;
           title_en: string;
         }[];

@@ -103,6 +103,11 @@ delete from journal.pieces;
 
 select plan(55);
 
+-- The standing call takes only Letters and Gallery for now (decisions.md,
+-- Qirtas); these checks exercise every section, so they reopen it.
+update journal.calls set desks = enum_range(null::journal.desk) where issue_id is null;
+
+
 -- People.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');

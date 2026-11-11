@@ -3381,7 +3381,7 @@
       },
       "announcements": {
         "title": "Announcements",
-        "lede": "A notice written once, in English and in Arabic. Send its test to yourself, read it, then send it: one email in each reader’s language to everyone who takes the Sunday Paper, a post in the members’ group’s Announcements topic, and a message from Hudhud to each linked member who keeps notices on.",
+        "lede": "A notice written once, in English and in Arabic. Media and the President write it. The President sends its test to themselves, reads it, then sends it: one email in each reader’s language to everyone who takes the Sunday Paper, a post in the members’ group’s Announcements topic, a message from Hudhud to each linked member who keeps notices on, and a place in From the Society. Media may also post a notice to From the Society with a date and no email.",
         "new": "New announcement",
         "none": "No announcements yet.",
         "titleEn": "Title in English",
@@ -3401,7 +3401,13 @@
         "sendNow": "Send now",
         "notYet": "Not yet",
         "sentOn": "Sent on {date}.",
-        "linkPlaceholder": "/qirtas/submit"
+        "linkPlaceholder": "/qirtas/submit",
+        "streamTitle": "From the Society",
+        "streamDate": "The date it carries",
+        "streamHint": "Shows the notice on Qirtas’s front page with this date (today or earlier). No email goes out.",
+        "post": "Post to From the Society",
+        "takeDown": "Take it out of From the Society",
+        "shownOn": "In From the Society, dated {date}."
       },
       "sundayPaper": {
         "title": "The Sunday Paper",

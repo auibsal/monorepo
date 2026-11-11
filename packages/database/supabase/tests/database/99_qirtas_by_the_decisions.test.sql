@@ -212,8 +212,8 @@ select throws_ok($$ select count(*) from journal.piece_dates $$, '42501', null,
 -- ── "From the Society" ──────────────────────────────────────────────────────
 
 select pg_temp.logout();
-insert into core.announcements (title_en, title_ar, body_en, body_ar, sent_at)
-values ('Sent', 'أُرسل', 'Sent.', 'أُرسل.', now());
+insert into core.announcements (title_en, title_ar, body_en, body_ar, sent_at, shown_at)
+values ('Sent', 'أُرسل', 'Sent.', 'أُرسل.', now(), now());
 select pg_temp.login_anon();
 select is((select array_agg(title_en) from core.society_notices(50)), array['Sent'],
   'Visitors read the notices sent, and none waiting');
