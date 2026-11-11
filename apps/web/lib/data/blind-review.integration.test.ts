@@ -90,7 +90,7 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
       .from("role_assignments")
       .insert([
         {
-          role: "submissions_manager",
+          role: "managing_editor",
           scope_id: issueId,
           scope_type: "issue",
           user_id: people.manager.id,

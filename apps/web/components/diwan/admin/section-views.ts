@@ -24,6 +24,7 @@ type ViewKey =
   | "events"
   | "company"
   | "newsroom"
+  | "sundayPaper"
   | "editions"
   | "prize"
   | "qalam"
@@ -114,6 +115,12 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
       key: "editions",
       module: "journal",
       permission: ["journal.manage", "journal.publish"],
+    },
+    {
+      href: "/qirtas/sunday-paper",
+      key: "sundayPaper",
+      module: "journal",
+      permission: "journal.publish",
     },
     {
       href: "/qirtas/prize",

@@ -3043,7 +3043,8 @@
           "media": "Media",
           "council": "The Council",
           "invitations": "Invitations",
-          "announcements": "Announcements"
+          "announcements": "Announcements",
+          "sundayPaper": "The Sunday Paper"
         },
         "council": "The Council",
         "media": "Media",
@@ -3373,6 +3374,19 @@
         "notYet": "Not yet",
         "sentOn": "Sent on {date}.",
         "linkPlaceholder": "/qirtas/submit"
+      },
+      "sundayPaper": {
+        "title": "The Sunday Paper",
+        "lede": "Put each issue together and send it by hand: the editor’s letter here; the month’s pieces, “From the Society”, What’s on, the open roles and a call to write are added from the site. A test goes to the Editor-in-Chief before you send.",
+        "month": "Issue",
+        "letter": "The editor’s letter",
+        "letterHint": "Separate paragraphs with a blank line. Save, then send the test; any change asks for a new test.",
+        "test": "Send the test to the Editor-in-Chief",
+        "tested": "Test sent on {date}.",
+        "notTested": "No test sent for this letter yet.",
+        "send": "Send the Sunday Paper",
+        "sendConfirm": "The issue goes to every member who takes optional emails and to the public list, in each reader’s language. It can’t be called back.",
+        "sentOn": "Sent on {date}."
       }
     },
     "editor": {

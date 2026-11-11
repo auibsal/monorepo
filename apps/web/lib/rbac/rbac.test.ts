@@ -196,13 +196,13 @@ describe("mirror of the reference data in the migrations", () => {
     );
   });
 
-  test("only the Submissions Manager sees identities", () => {
+  test("only the Managing Editor sees identities (intake, decisions §5)", () => {
     const holders = roleKeys.filter((key) =>
       (roles[key].permissions as readonly string[]).includes(
         "journal.identity.view"
       )
     );
-    expect(holders).toEqual(["submissions_manager"]);
+    expect(holders).toEqual(["managing_editor"]);
   });
 });
 
@@ -236,6 +236,6 @@ describe("hasPermission mirror", () => {
 
 test("persona SQL quotes values", () => {
   expect(personasSql({ issue: "i" })).toContain(
-    "'submissions_manager', 'issue', 'i'"
+    "'managing_editor', 'issue', 'i'"
   );
 });

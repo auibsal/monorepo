@@ -424,9 +424,8 @@ update programmes.openings set role = null
 where role in ('venues_lead', 'production_lead', 'submissions_manager', 'section_editor', 'event_staff');
 delete from access.role_permissions
 where role in ('venues_lead', 'production_lead', 'submissions_manager', 'section_editor', 'event_staff');
-delete from access.roles r
-where r.key in ('venues_lead', 'production_lead', 'submissions_manager', 'section_editor', 'event_staff')
-  and not exists (select 1 from access.role_assignments a where a.role = r.key);
+delete from access.roles where key in ('venues_lead', 'production_lead', 'submissions_manager', 'section_editor', 'event_staff')
+  and not exists (select 1 from access.role_assignments a where a.role = access.roles.key);
 -- Event Coordinator keeps one past holder's record, so it stays on file but
 -- can no longer be posted or assigned.
 update access.roles set hiring_owner = null where key = 'events_lead';

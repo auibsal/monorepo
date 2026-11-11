@@ -591,6 +591,12 @@ export interface MonthEvent {
   url: string;
 }
 
+export interface SocietyItem {
+  title_ar: string;
+  title_en: string;
+  url: string;
+}
+
 export interface OpenPlace {
   title_ar: string;
   title_en: string;
@@ -606,7 +612,10 @@ const PAPER_TITLES = {
     lede: "ما نُشر في قرطاس هذا الشهر، وما يجري في الجمعية، والأماكن المفتوحة لمن يريد أن يشارك.",
     open: "افتح قرطاس",
     pieces: "جديد قرطاس",
-    places: "أماكن مفتوحة في «شارك»",
+    places: "أدوار مفتوحة في «شارك معنا»",
+    society: "من الجمعية",
+    write: "أرسل عملك إلى قرطاس",
+    writeTitle: "اكتب لقرطاس",
   },
   en: {
     events: "What's on this month",
@@ -615,13 +624,17 @@ const PAPER_TITLES = {
     open: "Open Qirtas",
     pieces: "New in Qirtas",
     places: "Open on Get involved",
+    society: "From the Society",
+    write: "Send your work to Qirtas",
+    writeTitle: "Write for Qirtas",
   },
 } as const;
 
 /**
- * The Sunday Paper (decisions.md): monthly, on the first Sunday, to
- * members and to the public list alike: the month's pieces, What's on and
- * the open places on Get involved, each a list of links. The stop link is
+ * The Sunday Paper (decisions §5, §18): sent by hand by the Managing
+ * Editor, to members and to the public list alike: the editor's letter,
+ * the month's pieces, "From the Society", What's on, the open roles and a
+ * call to write, each a list of links. The stop link is
  * in the footer and the List-Unsubscribe header.
  */
 export const sundayPaper = (
@@ -630,8 +643,14 @@ export const sundayPaper = (
     getInvolved: string;
     events: MonthEvent[];
     front: string;
+    /** The editor's letter, in this language (decisions §18). */
+    letter?: string;
     places: OpenPlace[];
     pieces: SundayItem[];
+    /** "From the Society": the notices sent this month (decisions §5). */
+    society?: SocietyItem[];
+    /** Write for Qirtas. */
+    write?: string;
   }
 ) =>
   build(lang, (l) => {
@@ -644,6 +663,13 @@ export const sundayPaper = (
           title: pick(l, i.title_ar, i.title_en),
         })),
         title: titles.pieces,
+      },
+      {
+        items: (paper.society ?? []).map((a) => ({
+          href: a.url,
+          title: pick(l, a.title_ar, a.title_en),
+        })),
+        title: titles.society,
       },
       {
         items: paper.events.map((e) => ({
@@ -660,12 +686,20 @@ export const sundayPaper = (
         })),
         title: titles.places,
       },
+      {
+        items: paper.write ? [{ href: paper.write, title: titles.write }] : [],
+        title: titles.writeTitle,
+      },
     ];
+    const letter = (paper.letter ?? "")
+      .split(PARAGRAPH_BREAK)
+      .map((p) => p.trim())
+      .filter(Boolean);
     return {
       action: { href: paper.front, label: titles.open },
       heading: titles.heading,
       lists: lists.filter((list) => list.items.length > 0),
-      paragraphs: [titles.lede],
+      paragraphs: letter.length > 0 ? letter : [titles.lede],
     };
   });
 

@@ -487,7 +487,8 @@ const stopLinks = (lang: Lang, userId: string) => {
 const paperContents = async (
   admin: AdminClient,
   lang: Lang,
-  sinceValue: unknown
+  sinceValue: unknown,
+  month?: string
 ) => {
   const now = new Date();
   const since =
@@ -495,40 +496,58 @@ const paperContents = async (
       ? sinceValue
       : new Date(now.getTime() - 31 * 86_400_000).toISOString();
   const base = `${webUrl()}${prefix(lang)}`;
-  const [{ data: pieces }, { data: events }, { data: places }] =
-    await Promise.all([
-      admin
-        .schema("journal")
-        .from("pieces")
-        .select("slug, desk, title_en, title_ar, published_at")
-        .eq("status", "published")
-        .gt("published_at", since)
-        .lte("published_at", now.toISOString())
-        .order("published_at", { ascending: false })
-        .limit(20),
-      admin
-        .schema("events")
-        .from("events")
-        .select("slug, title_en, title_ar, starts_at")
-        .eq("status", "published")
-        .eq("members_only", false)
-        .gt("starts_at", now.toISOString())
-        .lte(
-          "starts_at",
-          new Date(now.getTime() + 31 * 86_400_000).toISOString()
-        )
-        .order("starts_at")
-        .limit(10),
-      admin
-        .schema("programmes")
-        .from("openings")
-        .select("title_en, title_ar")
-        .eq("is_open", true)
-        .or(`closes_at.is.null,closes_at.gt.${now.toISOString()}`)
-        .order("created_at", { ascending: false })
-        .limit(10),
-    ]);
-  if ((pieces?.length ?? 0) + (events?.length ?? 0) === 0) {
+  const [
+    { data: pieces },
+    { data: events },
+    { data: places },
+    { data: society },
+    { data: draft },
+  ] = await Promise.all([
+    admin
+      .schema("journal")
+      .from("pieces")
+      .select("slug, desk, title_en, title_ar, published_at")
+      .eq("status", "published")
+      .gt("published_at", since)
+      .lte("published_at", now.toISOString())
+      .order("published_at", { ascending: false })
+      .limit(20),
+    admin
+      .schema("events")
+      .from("events")
+      .select("slug, title_en, title_ar, starts_at")
+      .eq("status", "published")
+      .eq("members_only", false)
+      .gt("starts_at", now.toISOString())
+      .lte("starts_at", new Date(now.getTime() + 31 * 86_400_000).toISOString())
+      .order("starts_at")
+      .limit(10),
+    admin
+      .schema("programmes")
+      .from("openings")
+      .select("title_en, title_ar")
+      .eq("is_open", true)
+      .or(`closes_at.is.null,closes_at.gt.${now.toISOString()}`)
+      .order("created_at", { ascending: false })
+      .limit(10),
+    // "From the Society" (decisions §5): the notices sent this month.
+    admin
+      .schema("core")
+      .from("announcements")
+      .select("title_en, title_ar, link_path")
+      .not("sent_at", "is", null)
+      .gt("sent_at", since)
+      .order("sent_at", { ascending: false })
+      .limit(10),
+    admin
+      .schema("content")
+      .from("sunday_paper_drafts")
+      .select("letter_en, letter_ar")
+      .eq("month", month ?? "")
+      .maybeSingle(),
+  ]);
+  const letter = (lang === "ar" ? draft?.letter_ar : draft?.letter_en) ?? "";
+  if ((pieces?.length ?? 0) + (events?.length ?? 0) === 0 && !letter) {
     return null;
   }
   return {
@@ -540,6 +559,7 @@ const paperContents = async (
     })),
     front: `${base}/qirtas`,
     getInvolved: `${base}/get-involved`,
+    letter,
     pieces: (pieces ?? []).map((p) => {
       const desk = deskNames[p.desk as keyof typeof deskNames];
       return {
@@ -554,6 +574,12 @@ const paperContents = async (
       title_ar: o.title_ar ?? "",
       title_en: o.title_en ?? "",
     })),
+    society: (society ?? []).map((a) => ({
+      title_ar: a.title_ar,
+      title_en: a.title_en,
+      url: `${base}${a.link_path ?? ""}`,
+    })),
+    write: `${base}/qirtas/submit`,
   };
 };
 
@@ -610,6 +636,11 @@ const APPLICATION_STEPS = new Set<string>([
 ]);
 const isApplicationStep = (status: unknown): status is ApplicationStep =>
   typeof status === "string" && APPLICATION_STEPS.has(status);
+
+const PAPER_TEST_LINE = {
+  ar: "هذه تجربة لجريدة الأحد، تصل إلى رئيس التحرير وحده قبل الإرسال.",
+  en: "A test of the Sunday Paper, sent only to the Editor-in-Chief before it goes out.",
+} as const;
 
 const handlers: Record<string, Handler> = {
   // From /api/two-step/recover: the hour's tries ran out.
@@ -1566,7 +1597,12 @@ const handlers: Record<string, Handler> = {
     const waiting: string[] = [];
     for (const lang of ["en", "ar"] as const) {
       // biome-ignore lint/performance/noAwaitInLoops: one language at a time
-      const paper = await paperContents(admin, lang, payload.since);
+      const paper = await paperContents(
+        admin,
+        lang,
+        payload.since,
+        String(payload.month ?? "")
+      );
       if (!paper) {
         // Nothing to carry in this language this month.
         continue;
@@ -1606,6 +1642,39 @@ const handlers: Record<string, Handler> = {
     }
     if (waiting.length > 0) {
       throw new BroadcastPending(waiting.join(" "));
+    }
+  },
+  // The test (decisions §18): the issue in both languages, to the
+  // Editor-in-Chief, before the Managing Editor sends it.
+  "sunday_paper.test": async (admin, payload) => {
+    const month = String(payload.month ?? "");
+    const editors = await holders(admin, "journal.frontpage");
+    for (const lang of ["en", "ar"] as const) {
+      // biome-ignore lint/performance/noAwaitInLoops: one language at a time
+      const paper = await paperContents(admin, lang, payload.since, month);
+      if (!paper) {
+        continue;
+      }
+      const built = sundayPaper(lang, paper);
+      await Promise.all(
+        editors.map((to) =>
+          sendEmail({
+            react: Notice({
+              blocks: built.blocks,
+              footer: [{ text: PAPER_TEST_LINE[lang] }],
+              preview: built.preview,
+            }),
+            replyTo: project.mailboxes.qirtas,
+            subject: `${lang === "ar" ? "تجربة" : "Test"}: ${built.subject}`,
+            tags: [{ name: "kind", value: "sunday_paper_test" }],
+            text: noticeText({
+              blocks: built.blocks,
+              footer: [{ text: PAPER_TEST_LINE[lang] }],
+            }),
+            to: to.email,
+          })
+        )
+      );
     }
   },
   // A role or class changed (decisions §11): a saved pass shows it.

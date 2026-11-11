@@ -349,6 +349,34 @@ export type Database = {
         };
         Relationships: [];
       };
+      sunday_paper_drafts: {
+        Row: {
+          letter_ar: string;
+          letter_en: string;
+          month: string;
+          tested_at: string | null;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          letter_ar?: string;
+          letter_en?: string;
+          month: string;
+          tested_at?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          letter_ar?: string;
+          letter_en?: string;
+          month?: string;
+          tested_at?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [];
+      };
       sunday_paper_issues: {
         Row: {
           created_at: string;
@@ -376,6 +404,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      save_sunday_paper: {
+        Args: { letter_ar: string; letter_en: string; month: string };
+        Returns: undefined;
+      };
       search: {
         Args: { max_results?: number; query: string };
         Returns: {
@@ -389,6 +421,8 @@ export type Database = {
           title_en: string;
         }[];
       };
+      send_sunday_paper: { Args: { month: string }; Returns: number };
+      test_sunday_paper: { Args: { month: string }; Returns: undefined };
     };
     Enums: {
       [_ in never]: never;

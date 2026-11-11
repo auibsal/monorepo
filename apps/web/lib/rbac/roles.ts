@@ -99,13 +99,6 @@ export const roles = {
     nameEn: "Elections Committee",
     permissions: ["elections.manage"],
   },
-  event_staff: {
-    defaultScope: "programme",
-    isCouncil: false,
-    nameAr: "فريق الفعالية",
-    nameEn: "Event Staff",
-    permissions: ["events.checkin"],
-  },
   events_director: {
     defaultScope: "global",
     isCouncil: true,
@@ -218,6 +211,9 @@ export const roles = {
       "journal.publish",
       "journal.approve",
       "journal.edit.voices",
+      // Intake: the Managing Editor holds writers' names while work is
+      // read blind (decisions §5).
+      "journal.identity.view",
       "library.read",
     ],
   },
@@ -354,13 +350,6 @@ export const roles = {
       "forms.handle",
     ],
   },
-  production_lead: {
-    defaultScope: "production",
-    isCouncil: false,
-    nameAr: "قائد العمل المسرحي",
-    nameEn: "Production Lead",
-    permissions: ["productions.manage", "events.checkin", "library.read"],
-  },
   programme_lead: {
     defaultScope: "programme",
     isCouncil: false,
@@ -407,26 +396,12 @@ export const roles = {
     nameEn: "Reporter",
     permissions: ["library.read"],
   },
-  section_editor: {
-    defaultScope: "issue",
-    isCouncil: false,
-    nameAr: "محرر القسم",
-    nameEn: "Section Editor",
-    permissions: ["journal.manage", "library.read"],
-  },
   stage_manager: {
     defaultScope: "global",
     isCouncil: false,
     nameAr: "مدير الخشبة",
     nameEn: "Stage Manager",
     permissions: ["productions.manage", "events.checkin", "library.read"],
-  },
-  submissions_manager: {
-    defaultScope: "issue",
-    isCouncil: false,
-    nameAr: "مسؤول المشاركات",
-    nameEn: "Submissions Manager",
-    permissions: ["journal.identity.view", "library.read"],
   },
   tech_admin: {
     defaultScope: "global",
@@ -447,13 +422,6 @@ export const roles = {
     nameAr: "مسؤول جولة الآلة الكاتبة",
     nameEn: "Tour Lead",
     permissions: ["tour.run", "events.checkin", "library.read"],
-  },
-  venues_lead: {
-    defaultScope: "global",
-    isCouncil: false,
-    nameAr: "مسؤول القاعات والتجهيزات",
-    nameEn: "Venues and Logistics Lead",
-    permissions: ["events.checkin", "library.read"],
   },
   vice_president: {
     defaultScope: "global",

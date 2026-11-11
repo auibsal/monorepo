@@ -95,7 +95,7 @@ $$;
 
 -- The public newsletter: double opt-in rows only apps/api writes.
 
-select plan(26);
+select plan(24);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b001', 'editor@auib.edu.iq', 'Content Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b002', 'reader@auib.edu.iq', 'Reader');
@@ -145,22 +145,39 @@ select is((select count(*) from content.newsletter_subscribers where status = 's
 select throws_ok($$select unsubscribe_token from content.newsletter_subscribers$$, '42501', null,
   'Nobody but apps/api reads the tokens');
 
--- The Sunday Paper, monthly on the first Sunday, goes to confirmed
--- subscribers (and members who receive email), when there is news.
+-- The Sunday Paper, sent by hand (decisions §18): the Managing Editor
+-- writes the letter, sends a test to the Editor-in-Chief, then sends it.
 select pg_temp.logout();
+select pg_temp.make_user('00000000-0000-0000-0000-00000000b0e1', 'me-paper@auib.edu.iq', 'Managing Editor');
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000b0e1', 'managing_editor');
 insert into content.newsletter_subscribers (email, confirm_token) values ('pending@example.com', repeat('c', 40));
 insert into journal.pieces (slug, category, language, title_en, title_ar, status, published_at, contributor_id)
 select 'paper-test', 'report', 'en', 'For the paper', 'للصحيفة', 'published', now() - interval '1 day', id
 from journal.contributors limit 1;
-select is(private.queue_sunday_paper(date '2026-11-08'), 0,
-  'Nothing goes out on the second Sunday');
-select is(private.queue_sunday_paper(date '2026-11-02'), 0,
-  'nor on a Monday');
-select is(
-  (select count(*)::integer from core.outbox where kind = 'sunday_paper.broadcast'), 0,
-  'so nothing is queued');
-select cmp_ok(private.queue_sunday_paper(date '2026-11-01'), '>=', 1,
-  'On the first Sunday the paper goes out');
+select ok(not exists (select 1 from cron.job where jobname = 'sal-sunday-paper'),
+  'Nothing sends the paper on its own');
+
+select pg_temp.login_as('00000000-0000-0000-0000-00000000b002');
+select throws_ok($$ select content.save_sunday_paper('2026-12', 'Dear readers', 'أعزاءنا القرّاء') $$,
+  '42501', null, 'Only Qirtas''s editors put the paper together');
+
+select pg_temp.login_as('00000000-0000-0000-0000-00000000b0e1');
+select lives_ok($$ select content.save_sunday_paper('2026-12', 'Dear readers', 'أعزاءنا القرّاء') $$,
+  'The Managing Editor writes the editor''s letter');
+select throws_ok($$ select content.send_sunday_paper('2026-12') $$,
+  'P0001', 'test_first', 'and cannot send before the test');
+select lives_ok($$ select content.test_sunday_paper('2026-12') $$,
+  'The test goes to the Editor-in-Chief');
+select pg_temp.logout();
+select is((select count(*)::integer from core.outbox where kind = 'sunday_paper.test'), 1,
+  'as one job');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000b0e1');
+select content.save_sunday_paper('2026-12', 'Dear readers, again', 'أعزاءنا القرّاء');
+select is((select tested_at from content.sunday_paper_drafts where month = '2026-12'), null,
+  'A change to the letter asks for a new test');
+select content.test_sunday_paper('2026-12');
+select cmp_ok(content.send_sunday_paper('2026-12'), '>=', 1, 'Then the paper goes out');
+select pg_temp.logout();
 select is(
   (select count(*)::integer from core.outbox where kind = 'sunday_paper.broadcast'), 1,
   'as one Broadcast job, not an email a person');
@@ -170,32 +187,12 @@ select is(
 select is(
   (select count(*)::integer from private.sunday_paper_recipients() r where r.email = 'pending@example.com'), 0,
   'not the pending one');
-
--- The archive lists the issues sent, and only those (decisions.md).
 select is(
-  (select count(*)::integer from content.sunday_paper_issues where month = '2026-11'), 1,
+  (select count(*)::integer from content.sunday_paper_issues where month = '2026-12'), 1,
   'The issue is recorded as sent');
-select is(
-  (select count(*)::integer from content.sunday_paper_issues where month <> '2026-11'), 0,
-  'and no month that was not sent');
-select is(private.queue_sunday_paper(date '2026-11-01'), 0,
-  'An issue goes out once a month');
-select pg_temp.login_anon();
-select is((select count(*)::integer from content.sunday_paper_issues), 1,
-  'Visitors read the issues sent');
-select throws_ok($$select recipients from content.sunday_paper_issues$$, '42501', null,
-  'but not how many it went to');
-select pg_temp.logout();
-
--- The archive lists the issues sent, and only those (decisions.md).
-select is(
-  (select count(*)::integer from content.sunday_paper_issues where month = '2026-11'), 1,
-  'The issue is recorded as sent');
-select is(
-  (select count(*)::integer from content.sunday_paper_issues where month <> '2026-11'), 0,
-  'and no month that was not sent');
-select is(private.queue_sunday_paper(date '2026-11-01'), 0,
-  'An issue goes out once a month');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000b0e1');
+select throws_ok($$ select content.send_sunday_paper('2026-12') $$,
+  'P0001', 'already_sent', 'An issue goes out once');
 select pg_temp.login_anon();
 select is((select count(*)::integer from content.sunday_paper_issues), 1,
   'Visitors read the issues sent');
