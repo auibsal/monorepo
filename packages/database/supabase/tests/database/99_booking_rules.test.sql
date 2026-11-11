@@ -97,7 +97,7 @@ $$;
 -- served; the waitlist moves by email until two hours before; unclaimed
 -- places are released 10 minutes before.
 
-select plan(10);
+select plan(11);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000b0a01', 'one-book@auib.edu.iq', 'One');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000b0a02', 'two-book@auib.edu.iq', 'Two');
@@ -124,6 +124,13 @@ select is((select answers from events.rsvps where user_id = '00000000-0000-0000-
 select is(events.rsvp('e00000b0-0000-0000-0000-000000000002', '{"diet": "Vegan"}'), 'confirmed', 'At an event without food');
 select is((select answers from events.rsvps where user_id = '00000000-0000-0000-0000-0000000b0a01' and event_id = 'e00000b0-0000-0000-0000-000000000002'),
   '{}'::jsonb, 'diet is not kept');
+
+-- The Notion sync writes events as service_role: the questions still follow.
+set local role service_role;
+select lives_ok(
+  $$ update events.events set serves_food = false where slug = 'book-later' $$,
+  'The sync (service_role) can write an event and its questions follow');
+reset role;
 
 -- Within two hours, a full event sends people to the door.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000b0a02');

@@ -33,6 +33,7 @@ $$;
 create function private.event_questions()
 returns trigger
 language plpgsql
+security definer
 set search_path = ''
 as $$
 begin
@@ -71,6 +72,7 @@ grant execute on function private.booking_answers(uuid, jsonb) to authenticated,
 create function private.keep_booking_answers()
 returns trigger
 language plpgsql
+security definer
 set search_path = ''
 as $$
 begin
