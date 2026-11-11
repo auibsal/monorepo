@@ -13,7 +13,7 @@ import { useAuth } from "@/lib/auth/provider";
 import { localized, programmes } from "@/lib/data";
 
 /**
- * Your applications (decisions §17): where each stands, an interview's
+ * Your applications (decisions.md, Get involved and roles): where each stands, an interview's
  * time, an offer to accept or decline within 7 days, and withdrawing,
  * which is kept as a status.
  */

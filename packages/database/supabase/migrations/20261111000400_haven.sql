@@ -1,4 +1,4 @@
--- Haven, Qirtas's pilot Edition (decisions §14, §18): «ملاذ», on dreams
+-- Haven, Qirtas's pilot Edition (decisions.md, Qirtas): «ملاذ», on dreams
 -- and memories. Write for Qirtas takes Letters and Gallery for now, for
 -- Haven's call. The Editor-in-Chief sets the dates, so the call names no
 -- deadline yet.

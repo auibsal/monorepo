@@ -1,5 +1,5 @@
 -- A list's addresses go 30 days after its send (decisions §12), and with
--- them the contacts Resend kept for the Broadcast (decisions §18). The
+-- them the contacts Resend kept for the Broadcast (decisions.md, The Typewriter Tour and invitations). The
 -- daily purge hands each such list to the outbox, whose job removes the
 -- contacts from Resend and then deletes the addresses here.
 

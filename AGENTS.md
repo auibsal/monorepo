@@ -4,13 +4,16 @@ Conventions for anyone, human or AI agent, changing this repository: the
 platform of the AUIB Society of Arts and Letters (SAL), live at
 auibsal.org.
 
-The owner's current decisions (`decisions.md`) and the Arabic glossary
-(`glossary_ar.md`) live only in the Claude project, not in this repository
-(decisions §19): they are the source of truth, and where this file or any
-older document disagrees, they win. Start every session from them, if the
-chat has them, and from `PROGRESS.md` (the working checklist, with what is
-blocked), and continue from the first unticked item. Code cites a decision
-as "decisions §N". Before changing a
+The owner's current decisions (`claude/decisions.md`) and the Arabic
+glossary (`claude/glossary_ar.md`) are the source of truth: where this file
+or any older document disagrees, they win. Both are a read-only mirror of
+the Claude project's copies, replaced whole whenever the owner sends a
+prompt and never edited in this repository; propose a change in your
+report instead (`bun run check:decisions` checks only the date line).
+Start every session from them and from `PROGRESS.md` (the working
+checklist, with what is blocked), and continue from the first unticked
+item. decisions.md is organized by subject: code cites a decision by its
+section's name ("decisions.md, Qirtas"). Before changing a
 domain (members, events, Qirtas, Notion…), read its section of
 `docs/platform/domain.md`. Where decisions.md is
 silent, do what American university student organizations and student
@@ -253,9 +256,10 @@ everywhere:
 - **Lasting addresses.** Pages people share or return to have their own
   path (an event, a piece, an issue); lists are filtered with query
   strings (`/events?month=`, `/qirtas/archive?month=&section=`,
-  `/search?q=`). Links point at the current
-  address; the only redirect is /qirtas/write → /qirtas/submit (for now), and an old address is simply not
-  found. The address alone decides the
+  `/search?q=`). Links point at the current address. An address that was
+  shared (in an email, a post, a poster or a QR code) and then changes
+  gets a permanent redirect (308, `MOVED` in `apps/web/next.config.ts`);
+  one never shared simply changes. The address alone decides the
   language (`localeDetection: false`).
 - **Big records get pages; small rows are edited in place.** A record
   with its own life (an event, a piece, a production, a partner, a
@@ -305,7 +309,7 @@ everywhere:
   Society chats: Hudhud's copy, social captions and stories, signs at the
   door. Never both in one message. Latin digits, the Iraqi month names
   (`ar-IQ`), ، ؛ ؟ and «», tanween on the letter before the alif
-  (شكرًا), one word per term (the glossary in the Claude project).
+  (شكرًا), one word per term (`claude/glossary_ar.md`).
   `scripts/check-language.ts` enforces it.
 - **One language per page.** The English pages carry no Arabic and the
   Arabic pages no English, except the language switcher, fields meant for

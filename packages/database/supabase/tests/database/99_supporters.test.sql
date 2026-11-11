@@ -1,4 +1,4 @@
--- "With the support of": AUIB's offices, kept by Partnerships (decisions §2, §19).
+-- "With the support of": AUIB's offices, kept by Partnerships (decisions.md, Partners).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files

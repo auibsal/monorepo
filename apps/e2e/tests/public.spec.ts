@@ -156,20 +156,21 @@ test("every page in the sitemap is found, in both languages", async ({
   expect(missing).toEqual([]);
 });
 
-test("old addresses are simply not found, in both languages", async ({
+test("a shared address that changed redirects to its new one, in both languages", async ({
   request,
 }) => {
   for (const prefix of ["", "/ar"]) {
-    for (const gone of [
-      "/membership",
-      "/library/privacy",
-      "/partners/join",
-      "/search/poems",
+    for (const [from, to] of [
+      ["/membership", "/account"],
+      ["/qirtas/write", "/qirtas/submit"],
+      ["/library/privacy", "/privacy"],
+      ["/partners/join", "/partners/apply"],
     ]) {
-      const response = await request.get(`${urls.web}${prefix}${gone}`, {
+      const response = await request.get(`${urls.web}${prefix}${from}`, {
         maxRedirects: 0,
       });
-      expect(response.status(), `${prefix}${gone}`).toBe(404);
+      expect(response.status(), `${prefix}${from}`).toBe(308);
+      expect(response.headers().location).toBe(`${prefix}${to}`);
     }
   }
 });

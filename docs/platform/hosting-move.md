@@ -1,7 +1,7 @@
 # Moving Vercel and Resend to the Society's own accounts
 
 Prepared Nov 11, 2026; nothing moves until the owner decides who owns the
-tool accounts (decisions §19). The steps are the same whichever Society
+tool accounts (decisions.md, Channels and email). The steps are the same whichever Society
 address owns them; it must be a Society mailbox, never a person's.
 
 ## Vercel

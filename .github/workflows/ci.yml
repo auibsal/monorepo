@@ -108,6 +108,9 @@ jobs:
       - run: bun run test:coverage
       - run: bun run check:placeholders
       - run: bun run check:rtl
+      # The decisions mirror is replaced whole from the Claude project;
+      # its first line dates it (a real day, its weekday right, not ahead).
+      - run: bun run check:decisions
       - run: bun run check:i18n
       - run: bun run check:unused
       - run: bun run --cwd packages/brand tokens --check

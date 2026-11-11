@@ -67,7 +67,7 @@ export const setPageVisibility = async (
 
 /**
  * On the Tour's wall a page shows the first name and last initial unless
- * the writer chooses the full name (decisions §19).
+ * the writer chooses the full name (decisions.md, The Typewriter Tour and invitations).
  */
 export const setPageFullName = async (
   client: Client,
@@ -147,7 +147,7 @@ export const timeLeft = (dueAt: string, now = currentDate()) => {
   };
 };
 
-// ── Get involved (decisions §17) ────────────────────────────────────────────
+// ── Get involved (decisions.md, Get involved and roles) ────────────────────────────────────────────
 
 /** The application's states, as the database names them. */
 const APPLICATION_STATUSES = [

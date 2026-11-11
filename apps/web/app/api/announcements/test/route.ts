@@ -20,7 +20,7 @@ const TEST_LINE = {
 } as const;
 
 /**
- * An announcement's test (decisions §18): the notice in English and in
+ * An announcement's test (decisions.md, Channels and email): the notice in English and in
  * Arabic, as its readers will get them, mailed to the President before
  * they say go. Recorded on the notice (`tested_at`); any later change
  * clears it, so it can't be sent before the President reads it again.

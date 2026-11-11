@@ -601,7 +601,7 @@ const eventNotice =
     }
   };
 
-/** One step of an application, to the applicant (decisions §17). */
+/** One step of an application, to the applicant (decisions.md, Get involved and roles). */
 const applicationStep = async (
   admin: AdminClient,
   payload: Record<string, unknown>,
@@ -727,7 +727,7 @@ const handlers: Record<string, Handler> = {
       await send({ email: payload.email, lang }, accountDeleted(lang));
     }
   },
-  // The President's notice (decisions §18): one Broadcast per language to
+  // The President's notice (decisions.md, Channels and email): one Broadcast per language to
   // the Sunday Paper's readers, each in their own language.
   "announcement.broadcast": async (admin, payload) => {
     await cleanUpSegments(admin);
@@ -991,7 +991,7 @@ const handlers: Record<string, Handler> = {
     await applicationStep(admin, payload, "received");
   },
   // One email a day to Membership, which runs every role's applications:
-  // counts by role, never names (decisions §19).
+  // counts by role, never names (decisions.md, Get involved and roles).
   "get_involved.replies_digest": async (admin) => {
     const since = new Date(Date.now() - 86_400_000).toISOString();
     const { data: replies } = await admin
@@ -1078,7 +1078,7 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  // Thirty days after a list's send (decisions §12, §19): its contacts
+  // Thirty days after a list's send (decisions.md, Channels and email): its contacts
   // leave Resend, then its addresses are deleted here.
   "invitation.forget": async (admin, payload) => {
     const source = String(payload.source ?? "");
@@ -1666,7 +1666,7 @@ const handlers: Record<string, Handler> = {
       throw new BroadcastPending(waiting.join(" "));
     }
   },
-  // The test (decisions §19): the issue in both languages, to the
+  // The test (decisions.md, Channels and email): the issue in both languages, to the
   // Editor-in-Chief, before the Managing Editor sends it.
   "sunday_paper.test": async (admin, payload) => {
     const month = String(payload.month ?? "");
