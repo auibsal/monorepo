@@ -140,9 +140,11 @@ One project from this repository:
 | --- | --- | --- |
 | auibsal | `apps/web` | auibsal.org, www.auibsal.org (redirect) |
 
-Every push to `main` builds it; only a commit whose subject carries the
-skip marker builds nothing (`scripts/vercel-ignore.mjs`, the Ignored Build
-Step). The daily retention cron (`/api/cron/retention`) is in `apps/web/vercel.json`.
+Production only, until further notice: previews (pull requests and
+branches) build nothing, and production is built from `main` by the deploy
+hook once the migrations are applied (`.github/workflows/migrate.yml`). A
+commit whose subject carries the skip marker builds nothing either
+(`scripts/vercel-ignore.mjs`, the Ignored Build Step). The daily retention cron (`/api/cron/retention`) is in `apps/web/vercel.json`.
 
 Environment variables are listed in `apps/web/.env.example`. The server-only
 ones (`SUPABASE_SECRET_KEY`, `RESEND_TOKEN`, `CRON_SECRET`,
