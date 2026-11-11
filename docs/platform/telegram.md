@@ -38,11 +38,14 @@ the bot has their notices turned off.
 
 | Command | Who | What it does |
 | --- | --- | --- |
-| `/setup <code>` | Group admins | Connects the group. The code comes from the Diwan. |
-| `/topic <purpose>` | Group admins | Sent inside a topic: what it is for. Purposes: `announcements`, `events`, `qirtas` (groups set up before Nov 4, 2026 keep their `waraq` topic), `word`, `brief` (the staff group's morning brief and event summaries). `/topic none` clears it. In General it sets General. |
-| `/lang en \| ar \| both` | Group admins | The language of the bot's posts (default `both`). |
-| `/audience staff \| members` | Group admins | Who the group is for (default `members`). `staff` makes it the Diwan group: see below. |
+| `/setup <code>` | Group admins | Connects the group, once. The code comes from the Diwan; the message is deleted at once. |
 | `/events` | Everyone | What's coming up, with buttons that open the bot. |
+
+Nothing else is typed in the chat (decisions §18). A group's settings are
+kept in the Diwan, Media → Channels (`settings.manage`): who it is for
+(members, or staff for the Diwan group: see below), the language Hudhud
+answers in, and the topic for each kind of post (`announcements`,
+`events`, `qirtas`, `word`, `brief`), by number or link.
 
 And without commands:
 
@@ -52,14 +55,21 @@ And without commands:
   an admin. Someone not linked gets a private note inviting them to link
   (the moment they do, a member is let in); a linked account that isn't a
   member's (a partner's guest or team) is told the group is for members.
-  Hudhud removes nobody: removing people stays with the group's admins.
-- **Posts, every ten minutes** (pg_cron → `/cron/telegram`): new public events
-  in the next 45 days (to `events`, else `announcements`), a "starting
-  soon" reply three hours before, new Qirtas pieces of the last three days
-  (`qirtas`, else `announcements`), and the daily word at 9:00 a.m. Baghdad
-  time (`word`, else `qirtas`; its Play button opens the Main App). A
-  purpose without a topic gets no posts. Each post goes out once
-  (`core.telegram_posts`).
+- **Removals** (decisions §6): someone in the members' group without a
+  linked member's account gets a private notice from Hudhud the first time
+  they post (in the topic only if Telegram won't let Hudhud write to them),
+  and is removed a week later. Exempt: the group's admins, anyone holding a
+  Society role, and the list Membership keeps in the Diwan, Media →
+  Channels (`core.telegram_exempt`: Student Life's staff, the Faculty
+  Advisor).
+- **Posts, every ten minutes** (pg_cron → `/cron/telegram`), each one post
+  in English with an «العربية» button to the Arabic page (decisions §6):
+  new public events no earlier than three weeks ahead (to `events`, else
+  `announcements`), a reminder replying to the event's post two days
+  before (none on the day), and new Qirtas pieces of the last three days
+  (`qirtas`, else `announcements`). The daily word goes only to members'
+  own chats, never to a group. A purpose without a topic gets no posts.
+  Each post goes out once (`core.telegram_posts`).
 - **Announcements** (decisions §17): a notice the President sends from the
   Diwan (The Council → Announcements) is posted once to the members' group
   (`announcements` only) and sent to each linked member who keeps notices
@@ -77,7 +87,7 @@ And without commands:
 | The daily word | The bot's Main App: the web game in Telegram | BotFather → Mini Apps |
 | Logging in | Telegram's login (OpenID Connect), to link accounts only | BotFather → Login Widget |
 
-**In the Diwan group** (`/audience staff`; owner, Oct 31, 2026):
+**In the Diwan group** (set to staff in the Diwan):
 
 - **Officers only.** A join request is approved at once only for a linked
   account that holds a Society role (`core.telegram_is_staff`); a linked
@@ -95,7 +105,7 @@ And without commands:
   starts when it has no end): who came, how many of them had booked, the
   walk-ins, the no-shows and the waitlist, with a link to the event in the
   Diwan (`core.telegram_event_summaries`).
-- Both go to the topic set with `/topic brief`, else `announcements`, else
+- Both go to the brief's topic, else `announcements`, else
   General. The Diwan group gets none of the public posts. The functions are
   callable with the secret key only. Names never appear, only titles and
   counts.
@@ -179,10 +189,10 @@ And without commands:
    *Connect Telegram* in members' profiles).
 6. **The group.** Make it a supergroup with topics. Add the bot as an
    admin with the rights above. In the Diwan, the Desk → Connected → Hudhud →
-   *Make a setup code*, and send the `/setup …` line in the group. Then
-   `/topic …` in each topic, and turn on *Approve new members* on the
-   invite link. For the officers' group, also send `/audience staff` and
-   `/topic brief` in the topic for the brief. In the group's settings: the Welcome Message, Aggressive
+   *Make a setup code*, and send the `/setup …` line in the group. Then,
+   in the Diwan (Media → Channels), set who the group is for and each
+   topic, and turn on *Approve new members* on the invite link. In the
+   group's settings: the Welcome Message, Aggressive
    Anti-Spam, and the members' permissions (the table above).
 
 ## Sticker set

@@ -937,7 +937,7 @@ type Draft = ReturnType<typeof useDraft>;
 /** A saved draft's fields, with the form's own defaults for what it lacks. */
 const fromDraft = (saved: DraftContent) => ({
   body: saved.body ?? "",
-  // Empty: the open call (Haven's, for now).
+  // Empty: the Edition's open call (Haven's, for now).
   callId: saved.callId ?? "",
   deck: saved.deck ?? "",
   language: saved.language ?? "en",
@@ -1025,8 +1025,8 @@ const useWriteCall = (
   const pathway = useSubmitPathway(open, callId, partnerId);
   const call =
     pathway.callable.find((c) => c.id === callId) ??
-    // An open call without an Edition first; Haven's while it is the only one.
-    pathway.callable.find((c) => !c.issue_id) ??
+    // An Edition's call first: Haven's, for now (decisions §17).
+    pathway.callable.find((c) => c.issue_id) ??
     pathway.callable[0];
   return {
     call,

@@ -49,6 +49,9 @@ const en = {
   briefWaiting: "<b>Waiting in the Diwan</b>",
   briefWaitlist: (n: string) => `${n} on the waitlist`,
   buttons: {
+    // The Arabic edition of a group post (decisions §6): the language's own
+    // name, as the language switcher shows it.
+    arabic: "العربية",
     back: "Back",
     calendar: "Add to calendar",
     cancel: "Cancel my place",
@@ -153,7 +156,7 @@ const en = {
 
   // Group posts
   postEventNew: "<b>New event</b>",
-  postEventSoon: (time: string) => `<b>Starting soon</b>, at ${time}`,
+  postEventSoon: (date: string) => `<b>In two days</b>: ${date}`,
   postPiece: "<b>New in Qirtas</b>",
   postWord: (n: string) => `<b>Word No. ${n}</b> is ready.`,
   purposeNames: {
@@ -238,6 +241,7 @@ const ar: Copy = {
   briefWaiting: "<b>شنو ينتظر بالديوان</b>",
   briefWaitlist: (n: string) => `${n} بقائمة الانتظار`,
   buttons: {
+    arabic: "العربية",
     back: "رجوع",
     calendar: "ضيفها للتقويم",
     cancel: "ألغي مقعدي",
@@ -338,7 +342,7 @@ const ar: Copy = {
   placesLeft: (n: string) => `باقي ${n} مقعد`,
 
   postEventNew: "<b>فعالية جديدة</b>",
-  postEventSoon: (time: string) => `<b>تبدي قريب</b>، الساعة ${time}`,
+  postEventSoon: (date: string) => `<b>بعد يومين</b>: ${date}`,
   postPiece: "<b>جديد بقرطاس</b>",
   postWord: (n: string) => `<b>الكلمة رقم ${n}</b> جاهزة.`,
   purposeNames: {

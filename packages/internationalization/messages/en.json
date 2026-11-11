@@ -3053,7 +3053,8 @@
           "council": "The Council",
           "invitations": "Invitations",
           "announcements": "Announcements",
-          "sundayPaper": "The Sunday Paper"
+          "sundayPaper": "The Sunday Paper",
+          "channels": "Channels"
         },
         "council": "The Council",
         "media": "Media",
@@ -3396,6 +3397,42 @@
         "send": "Send the Sunday Paper",
         "sendConfirm": "The issue goes to every member who takes optional emails and to the public list, in each reader’s language. It can’t be called back.",
         "sentOn": "Sent on {date}."
+      },
+      "channels": {
+        "title": "Channels",
+        "lede": "Hudhud’s groups and who stays in the members’ group without an account. Set here, never typed as commands in the chat.",
+        "groups": "Groups",
+        "groupsLede": "Group posts are in English with a button to the Arabic page. Connect a new group with the one-time code on the Desk.",
+        "noGroups": "No group is connected yet.",
+        "audience": "Who it’s for",
+        "audiences": {
+          "members": "Members (the members’ group)",
+          "staff": "Staff (the Diwan group)"
+        },
+        "lang": "Hudhud answers in",
+        "langHint": "The language of Hudhud’s replies in the group; posts are always in English with an Arabic button.",
+        "langs": {
+          "en": "English",
+          "ar": "Arabic"
+        },
+        "topics": "Topics",
+        "topicsHint": "For each kind of post, the topic’s number or a link to it (t.me/c/…/12). Empty: not posted. 0: General.",
+        "purposes": {
+          "announcements": "Announcements",
+          "events": "Events",
+          "qirtas": "Qirtas",
+          "word": "Daily word",
+          "brief": "Morning brief (Diwan group)"
+        },
+        "exempt": "Stays without an account",
+        "exemptLede": "Student Life’s staff and the Faculty Advisor stay in the members’ group without a member’s account. The group’s admins and anyone holding a Society role stay too.",
+        "add": "Add a person",
+        "remove": "Remove",
+        "removeConfirm": "They come off the list and are treated like anyone else without an account.",
+        "label": "Who they are",
+        "labelHint": "A name and office, for example “Student Life, events coordinator”.",
+        "telegramId": "Telegram ID",
+        "telegramIdHint": "Their numeric Telegram ID, not their username."
       }
     },
     "editor": {

@@ -12,13 +12,23 @@ const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const members = () => db().schema("core").from("telegram_members");
 
 /**
- * Whether this person stays without an account: a linked member, an admin
- * (Student Life's staff are admins without permissions) or anyone holding
- * a Society role (the Faculty Advisor).
+ * Whether this person stays without an account (decisions §6): a linked
+ * member, the group's admins, anyone holding a Society role, and the
+ * exempt list Membership keeps in the Diwan (Student Life's staff, the
+ * Faculty Advisor).
  */
 const exempt = async (api: Api, chatId: number, telegramId: number) => {
   const me = await whoami(telegramId);
   if (me?.member) {
+    return true;
+  }
+  const { data: listed } = await db()
+    .schema("core")
+    .from("telegram_exempt")
+    .select("telegram_id")
+    .eq("telegram_id", telegramId)
+    .maybeSingle();
+  if (listed) {
     return true;
   }
   const standing = await api
@@ -32,11 +42,13 @@ const exempt = async (api: Api, chatId: number, telegramId: number) => {
 };
 
 /**
- * Hudhud's removals (decisions.md). Telegram doesn't let a bot list a
+ * Hudhud's removals (decisions §6). Telegram doesn't let a bot list a
  * group's members, so the first time someone without a linked member's
- * account posts in the members' group, Hudhud warns them, in the same
- * topic, that they'll be removed in a week unless they join on auibsal.org
- * and link their account. `runRemovals` removes them a week later.
+ * account posts in the members' group, Hudhud tells them privately that
+ * they'll be removed in a week unless they join on auibsal.org and link
+ * their account. Only if Telegram won't let Hudhud write to them first
+ * does the notice go in the topic instead. `runRemovals` removes them a
+ * week later.
  */
 export const removals = new Composer<BotContext>();
 
@@ -73,9 +85,18 @@ removals.on("message", async (ctx, next) => {
   }
   const lang = groupLang(group, from.language_code === "ar" ? "ar" : "en");
   const t = copy[lang];
-  await replyHere(ctx, t.removalWarning(from.first_name), {
+  const markup = {
     reply_markup: new InlineKeyboard().url(t.buttons.link, connectPage(lang)),
-  }).catch(() => undefined);
+  };
+  const told = await ctx.api
+    .sendMessage(from.id, t.removalWarning(from.first_name), markup)
+    .then(() => true)
+    .catch(() => false);
+  if (!told) {
+    await replyHere(ctx, t.removalWarning(from.first_name), markup).catch(
+      () => undefined
+    );
+  }
 });
 
 /** Removes one warned person, unless they've since become exempt. */

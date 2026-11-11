@@ -1037,6 +1037,28 @@ export type Database = {
         };
         Relationships: [];
       };
+      telegram_exempt: {
+        Row: {
+          added_at: string;
+          added_by: string | null;
+          label: string;
+          telegram_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          added_at?: string;
+          added_by?: string | null;
+          label: string;
+          telegram_id: number;
+        };
+        Update: {
+          added_at?: string;
+          added_by?: string | null;
+          label?: string;
+          telegram_id?: number;
+        };
+        Relationships: [];
+      };
       telegram_groups: {
         Row: {
           audience: string;
