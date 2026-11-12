@@ -82,7 +82,7 @@ export const Section: Story = {
             All events
           </a>
         }
-        title="This term"
+        title="This semester"
       />
       <ul className="border-line grid border-b">
         {["Writing workshop", "Readings and conversation"].map((title, i) => (

@@ -128,7 +128,7 @@ export const Certificate = () => {
 
   if (!id) {
     return (
-      <EmptyLine action={{ href: "/account/record", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/documents", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );
@@ -141,7 +141,7 @@ export const Certificate = () => {
   }
   if (!certificate.data) {
     return (
-      <EmptyLine action={{ href: "/account/record", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/documents", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );
@@ -169,8 +169,8 @@ export const Certificate = () => {
             className="link self-center text-sm"
             href={
               edition
-                ? `/account/record/certificates/${encodeURIComponent(id)}`
-                : `/account/record/certificates/${encodeURIComponent(id)}?edition=${other}`
+                ? `/account/documents/certificates/${encodeURIComponent(id)}`
+                : `/account/documents/certificates/${encodeURIComponent(id)}?edition=${other}`
             }
           >
             {t(edition ? "ownEdition" : "otherEdition")}

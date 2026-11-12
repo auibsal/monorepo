@@ -28,7 +28,7 @@ A carousel reads as one piece, on one ground, in both languages: each English sl
 - **Cover:** a post, and the only slide with the logo (the English cover, then the Arabic).
 - **Inside slides:** a large Light number ("01") in accent, a short title with a full stop, one to three lines.
 - **The last slides:** the wordmark alone, English then Arabic. No symbol, no text, no handle.
-- The term calendar goes out once, as the "Events this spring" carousel; there is no standing weekly post, and each event gets its own post once its room is confirmed.
+- The semester calendar goes out once, as the "Events this spring" carousel; there is no standing weekly post, and each event gets its own post once its room is confirmed.
 - No slide counters and no "swipe" prompts: Instagram shows the dots. Six slides or fewer; ten at most.
 - **Stories, 1080 × 1920:** every word at least 250 px from the top and 340 px from the bottom, clear of the app's own bars; the space under the sentence is left for a link sticker.
 
@@ -61,7 +61,7 @@ Six highlights, each opened by a banner that says what is inside. Covers carry a
 - **Covers:** plain crimson with the highlight's icon alone, in white, centered inside the middle 760 px of a 1080 × 1080 square. No name (Instagram writes it under the circle), no Bookmark, no other text.
 - **Banners:** the first story in each highlight, 1080 × 1920 on white. The wordmark alone at the top (no Bookmark), a Light headline in ink, one short line, a list split by thin rules, and the link at the bottom.
 - Keep every word 250 px from the top and 340 px from the bottom. Put Instagram's link sticker over the written link.
-- Refresh Events each term and Qirtas each Edition.
+- Refresh Events each semester and Qirtas each Edition.
 
 | Highlight | Icon |
 | --- | --- |

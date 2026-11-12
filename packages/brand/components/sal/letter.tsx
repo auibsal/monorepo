@@ -54,7 +54,7 @@ const SIGN_OFF: Record<string, string> = {
 
 /**
  * The letter (SAL-MED-02; decided Nov 7): one template for every letter
- * the Society sends (appointment-letter, service-letter, thank-you-letter, application-outcome, welcome-letter, honorary-membership-invitation, author-letters). A4
+ * the Society sends (appointment-letter, service-letter, thank-you-letter, application-outcome, welcome-letter, honorary-membership-invitation). A4
  * portrait, in American business-letter form: the lockup at the top start,
  * the date (no weekday), the recipient, a subject line, the greeting (a
  * colon, or a comma in a personal letter to a member), the body, the

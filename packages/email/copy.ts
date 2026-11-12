@@ -1240,7 +1240,7 @@ export const certificateIssued = (
 ) =>
   build(lang, (l) => ({
     action: {
-      href: `${app}${localizedPath(l, `/account/record/certificates/${certificateId}`)}`,
+      href: `${app}${localizedPath(l, `/account/documents/certificates/${certificateId}`)}`,
       label: l === "ar" ? "افتح الشهادة" : "Open the certificate",
     },
     heading: l === "ar" ? "شهادتك جاهزة" : "Your certificate is ready",
@@ -1261,7 +1261,7 @@ export const serviceLetterWritten = (
 ) =>
   build(lang, (l) => ({
     action: {
-      href: `${app}${localizedPath(l, `/account/record/letters/${letterId}`)}`,
+      href: `${app}${localizedPath(l, `/account/documents/letters/${letterId}`)}`,
       label: l === "ar" ? "افتح الرسالة" : "Open the letter",
     },
     heading: l === "ar" ? "رسالة خدمتك جاهزة" : "Your service letter is ready",

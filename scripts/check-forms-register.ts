@@ -3,12 +3,15 @@
  * "One source: the site's list of agreements and consents matches the
  * handbook exactly, and CI checks it"). The register "Agreements and
  * consents" in SAL-EXB-01 (the Leadership Handbook, in Notion's Documents)
- * lists every kind by its name, one toggle each, headed
- * "<name> · <Title>" ("media-release · Media release"). This compares the
- * site with it:
+ * holds only what people sign, by name, one toggle each, headed
+ * "<name> · <Title>" ("media-release · Media release"). Templates and
+ * records (letters, notices, minutes, score sheets, reports, lists and
+ * checklists) are in the templates index, not compared here. This compares
+ * the site with the register:
  *
- * - every kind in `governance.form_types` has an entry with the same name
- *   and title, and every entry is a kind on the site;
+ * - every register kind in `governance.form_types` (`in_register`) has an
+ *   entry with the same name and title, and every entry is a register kind
+ *   on the site;
  * - each kind signed on the site keeps the field phrases (`registerFields`)
  *   its entry has.
  *
@@ -208,14 +211,20 @@ const main = async () => {
   }
   const [register, types] = await Promise.all([
     readRegister(),
-    rest<FormType[]>("governance", "form_types?select=key,title_en"),
+    rest<FormType[]>(
+      "governance",
+      "form_types?select=key,title_en&in_register=is.true"
+    ),
   ]);
   const names = new Set(types.map((t) => t.key));
   const problems = [
     ...types.flatMap((type) => typeProblems(type, register.get(type.key))),
     ...[...register.keys()]
       .filter((name) => !names.has(name))
-      .map((name) => `${name} is in the register but not on the site.`),
+      .map(
+        (name) =>
+          `${name} is in the register but is not a kind people sign on the site.`
+      ),
     ...fieldProblems(register),
   ];
   if (problems.length > 0) {
@@ -225,7 +234,7 @@ const main = async () => {
     process.exit(1);
   }
   console.log(
-    `Agreements and consents: ${types.length} kinds match the register by name (${formKeys.length} signed on the site).`
+    `Agreements and consents: ${types.length} kinds match the register by name (${formKeys.length} on the standard form page).`
   );
 };
 

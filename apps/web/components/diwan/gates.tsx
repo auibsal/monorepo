@@ -78,8 +78,8 @@ const Restored = () => {
 /**
  * The pages each kind of membership opens (decisions.md: one
  * Membership for everyone, of one kind). Members open everything; guests
- * their Today, calendar, record, settings and Qirtas (their work and the
- * calls open to them); a partner's people their Today, record and
+ * their Today, calendar, documents, settings and Qirtas (their work and the
+ * calls open to them); a partner's people their Today, documents and
  * settings (the dashboard is theirs too, behind its own gate). An account
  * with no membership yet (an invitation waiting on its partner, an
  * application waiting on the President) has Today and Settings. Row Level
@@ -91,7 +91,7 @@ const KIND_PATHS: Record<
 > = {
   guest: [
     "/account/calendar",
-    "/account/record",
+    "/account/documents",
     "/account/work",
     "/account/settings",
     "/account/work",
@@ -99,7 +99,7 @@ const KIND_PATHS: Record<
   ],
   member: [],
   none: ["/account/settings"],
-  partner: ["/account/record", "/account/settings"],
+  partner: ["/account/documents", "/account/settings"],
 };
 
 /** Whether a kind of membership opens a members' page. */

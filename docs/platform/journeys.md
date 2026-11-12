@@ -48,7 +48,7 @@ once a year in September. Each step names where it happens.
 2. Sets up two-step sign-in where the role needs it; Hudhud adds them to
    the Diwan group; the checklist (their manual, Brand essentials, their
    Diwan pages) sits in the account.
-3. The appointer confirms them at the end of the first term.
+3. The appointer confirms them at the end of the first semester.
 
 ## A leaving role holder
 1. Site access ends the same day; the handover is signed; Telegram

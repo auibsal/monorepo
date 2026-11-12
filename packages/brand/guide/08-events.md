@@ -1,6 +1,6 @@
 # Events
 
-Qirtas is the Society's paper, the Company its theater and Next Stop its video show; everything else is an event. The Society holds no standing programs and no recurring named kinds of event. Each term the Council sets a calendar of events, at least one a month, each titled plainly for what happens that day: "Writing workshop", "A reading with a guest", "A trip to al-Mutanabbi Street".
+Qirtas is the Society's paper, the Company its theater and Next Stop its video show; everything else is an event. The Society holds no standing programs and no recurring named kinds of event. Each semester the Council sets a calendar of events, at least one a month, each titled plainly for what happens that day: "Writing workshop", "A reading with a guest", "A trip to al-Mutanabbi Street".
 
 ## One standard event page
 

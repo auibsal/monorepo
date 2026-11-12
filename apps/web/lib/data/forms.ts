@@ -94,6 +94,35 @@ export const formKeys = [
 
 export type FormKey = (typeof formKeys)[number];
 
+/**
+ * The register "Agreements and consents" (SAL-EXB-01; decisions.md,
+ * Documents and forms): only what people sign, by name. The Code of
+ * Conduct, the role agreement, the readers' confidentiality agreement and
+ * the Publication Agreement are signed on their own pages; the handover in
+ * Notion; the rest on the standard form page (`formKeys`). Every other kind
+ * (letters, notices, minutes, score sheets, reports, lists, checklists) is a
+ * template or record, in the templates index, never in the register.
+ */
+export const registerKinds = [
+  "code-of-conduct",
+  "role-agreement",
+  "conflict-of-interest-declaration",
+  "confidentiality-agreement",
+  "handover",
+  "members-meeting-motion",
+  "event-pitch",
+  "concern",
+  "media-release",
+  "partnership-memorandum",
+  "company-agreement",
+  "publication-agreement",
+  "trip-consent",
+  "parent-consent",
+  "qalam-mentor-agreement",
+  "qalam-parent-consent",
+  "qalam-publishing-consent",
+] as const;
+
 export const forms: Record<FormKey, FormDefinition> = {
   "company-agreement": {
     fields: [

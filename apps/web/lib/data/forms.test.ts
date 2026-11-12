@@ -8,6 +8,7 @@ import {
   forms,
   legacyNumbers,
   nameFromLegacyNumber,
+  registerKinds,
 } from "./forms";
 
 const read = (name: string) =>
@@ -21,6 +22,8 @@ const read = (name: string) =>
   );
 // The names that replaced the F-numbers (decisions.md, Documents and forms).
 const names = read("20261113003700_agreement_names.sql");
+// The register: only what people sign (the seventh prompt, 1).
+const register = read("20261113003900_register_kinds.sql");
 describe("forms", () => {
   test("every kind here is named in the database, by the one mapping", () => {
     const named = new Map(
@@ -32,6 +35,20 @@ describe("forms", () => {
     expect(Object.fromEntries(named)).toEqual(legacyNumbers);
     for (const key of formKeys) {
       expect(Object.values(legacyNumbers)).toContain(key);
+    }
+  });
+
+  test("the register is the database's, and every site form is in it", () => {
+    const block = register.slice(
+      register.indexOf("update governance.form_types set in_register = true")
+    );
+    const listed = [
+      ...(block.slice(0, block.indexOf(");")).matchAll(/'([a-z0-9-]+)'/gu) ??
+        []),
+    ].map((m) => m[1]);
+    expect([...listed].sort()).toEqual([...registerKinds].sort());
+    for (const key of formKeys) {
+      expect(registerKinds).toContain(key);
     }
   });
 

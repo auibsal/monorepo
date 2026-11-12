@@ -33,9 +33,10 @@ media do.
     `/consent/<kind>` …; every old `/forms` address redirects),
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
     members, everything under `/account`, in six tabs (decisions.md, The site):
-    Today, Calendar (`/calendar`), Record (`/record`, certificates at
-    `/record/certificates/<ref>`, letters at `/record/letters/<ref>`, a year
-    at `/record/year/<yyyy>`), Work (`/work`: drafts, submissions at
+    Today, Calendar (`/calendar`), Documents (`/documents`: signed copies
+    at `/documents/signed/<id>`, certificates at
+    `/documents/certificates/<ref>`, letters at `/documents/letters/<ref>`, a
+    year at `/documents/year/<yyyy>`), Work (`/work`: drafts, submissions at
     `/work/submissions/<id>`, pieces at `/work/<id>`, and what was saved),
     Elections (`/elections`, standing for a position at
     `/elections/<position>`) and Settings (`/settings`, `/settings/profile`,
@@ -130,7 +131,7 @@ bun run test                # Vitest in every workspace
 bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
 bun run check:i18n          # UI text not in the messages files; the language standard
-bun run check:forms         # agreements and consents against SAL-EXB-01, by name (needs NOTION_TOKEN)
+bun run check:forms         # the register's kinds against SAL-EXB-01, by name (needs NOTION_TOKEN)
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
@@ -249,7 +250,7 @@ any schema change. Integration tests run against a local stack with
 ## The Society's domain
 
 `docs/platform/domain.md` describes the Society as the code models it:
-the Council and the first term, members and classes, names and titles,
+the Council and the first semester, members and classes, names and titles,
 the card, numbers and codes, forms and signatures, events and the
 calendar, the Typewriter Tour, partners, guests, governance, Qirtas
 (Write for Qirtas, the Newsroom, reading, Editions, Games, the Prize,

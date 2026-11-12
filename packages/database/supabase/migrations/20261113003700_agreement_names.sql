@@ -7,7 +7,10 @@
 -- on each kind only as `legacy_number`, the one-time mapping that keeps
 -- anything already signed resolvable (and, in the app, every shared /forms
 -- address redirecting). The four numbers already retired (F-08, F-22, F-31,
--- F-44) had no kind left to name, and their rows go.
+-- F-44) had no kind left to name, and their rows go. So does F-42, the
+-- "author letters": the letters to a Write for Qirtas author about a
+-- decision, which the site already sends as its decision emails
+-- (qirtas.decision; the seventh prompt, 2).
 --
 -- Nothing had been signed in production when this ran.
 
@@ -34,7 +37,7 @@ insert into form_names (old, name) values
   ('f20', 'charity-collection-count'),
   ('f21', 'concern'),
   ('f23', 'tour-tally'),
-  ('f24', 'audition-form'),
+  ('f24', 'audition-application'),
   ('f25', 'audition-score-sheet'),
   ('f26', 'company-agreement'),
   ('f27', 'stage-risk-checklist'),
@@ -51,7 +54,6 @@ insert into form_names (old, name) values
   ('f39', 'qalam-publishing-consent'),
   ('f40', 'confidentiality-agreement'),
   ('f41', 'reader-score-sheet'),
-  ('f42', 'author-letters'),
   ('f43', 'publication-agreement'),
   ('f45', 'trip-consent'),
   ('f46', 'parent-consent');
@@ -67,6 +69,9 @@ where not exists (select 1 from form_names n where n.old = t.key);
 update governance.form_submissions s set form_key = n.name from form_names n where s.form_key = n.old;
 update governance.form_links l set form_key = n.name from form_names n where l.form_key = n.old;
 update governance.form_types t set key = n.name from form_names n where t.key = n.old;
+-- Auditions are applications (the seventh prompt, 2).
+update governance.form_types set title_en = 'Audition application', title_ar = 'طلب تجربة الأداء'
+where key = 'audition-application';
 
 alter table governance.form_types add constraint form_types_key_check
   check (key ~ '^[a-z][a-z0-9]*(-[a-z0-9]+)*$');

@@ -21,7 +21,6 @@ const LETTER_FORMS = [
   "application-outcome",
   "welcome-letter",
   "honorary-membership-invitation",
-  "author-letters",
 ] as const;
 type LetterForm = (typeof LETTER_FORMS)[number];
 type Lang = "en" | "ar";
@@ -35,10 +34,10 @@ const SIGN_OFF: Record<Lang, string> = {
 
 /**
  * One letter template for every letter (decisions.md; appointment-letter, thank-you-letter,
- * application-outcome, welcome-letter, honorary-membership-invitation, author-letters): the officer picks the letter, writes it from the
+ * application-outcome, welcome-letter, honorary-membership-invitation): the officer picks the letter, writes it from the
  * register's template in the recipient's language, and prints it or saves
  * it as PDF from the browser. Nothing is stored here: the record stays in
- * Notion (or, for author-letters, with the submission).
+ * Notion.
  */
 const LetterWriter = () => {
   const t = useTranslations("diwan.admin.recognition.letterWriter");

@@ -84,7 +84,7 @@ export const PostsArabic: Story = {
 };
 
 /**
- * "Events this spring" (decisions §6, §7): the term calendar, posted
+ * "Events this spring" (decisions §6, §7): the semester calendar, posted
  * once as a carousel. One carousel, each English slide followed by the
  * same slide in Arabic; there is no standing weekly post, and each event
  * gets its own post once its room is confirmed.

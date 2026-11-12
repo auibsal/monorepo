@@ -174,7 +174,7 @@ export const exportsByName: Record<string, ExportDefinition> = {
     run: needsRows,
   },
   // For Student Life's GPA check (decisions §4): an election's candidates,
-  // and every Council seat each term. Name, AUIB address and seat only.
+  // and every Council seat each semester. Name, AUIB address and seat only.
   "student-life-candidates": {
     permissions: ["elections.manage"],
     run: async (session, params) =>

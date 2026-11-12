@@ -219,7 +219,7 @@ export const sundayText = (
 /**
  * Hudhud's Sunday note (decisions.md, Hudhud): each Sunday, one post
  * listing the week's events and open calls, in place of a post for each
- * new event. A week with nothing (out of term) has no note.
+ * new event. A week with nothing (outside the semester) has no note.
  */
 const sundayNote = (run: Run, events: PublicEvent[], calls: OpenCall[]) => {
   if (

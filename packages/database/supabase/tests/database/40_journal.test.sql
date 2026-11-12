@@ -98,7 +98,7 @@ $$;
 -- Start from an empty journal: migrations seed the real Issue 1 call.
 delete from journal.issues;
 
-select plan(42);
+select plan(43);
 
 -- People: founder, Submissions Manager, EIC, three readers, authors.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
@@ -338,6 +338,14 @@ select is(
     where s.category = 'fiction' and s.author_id = pg_temp.author(1)),
   'Author 1',
   'The agreement is signed in the author''s name on the platform, not a typed one'
+);
+select matches(
+  (select r.reference from journal.agreements a
+     join journal.submissions s on s.id = a.submission_id
+     join governance.form_submissions r on r.id = a.record_id
+    where s.category = 'fiction' and s.author_id = pg_temp.author(1)),
+  '^AGR-[0-9]{4}-[0-9]{4}$',
+  'and it is a signature record with its AGR number (the register''s publication-agreement)'
 );
 
 -- Writers hear at each step (decisions.md, Qirtas): every submission has

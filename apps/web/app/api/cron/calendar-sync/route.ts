@@ -14,7 +14,7 @@ export const maxDuration = 60;
 /**
  * Hourly (pg_cron, or Vercel Cron with CRON_SECRET): reads the AUIB public
  * calendar (`campusCalendar` in the project file) into core.external_events,
- * and the terms it opens and closes into core.semesters (role terms, voting
+ * and the semesters it opens and closes into core.semesters (role terms, voting
  * standing and declarations follow them). Events that left the feed are
  * removed from the window the feed covers. Events (/events) shows them.
  */
@@ -81,7 +81,7 @@ const sync = async (request: Request) => {
     .eq("source", "auib")
     .lt("synced_at", syncedAt)
     .gte("starts_at", earliest);
-  // A term the calendar names is kept by its code; one that would overlap a
+  // A semester the calendar names is kept by its code; one that would overlap a
   // term already kept is logged and left for the next run.
   const stored = await Promise.all(
     termsFromFeed(events).map(async (term) => {

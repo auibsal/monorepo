@@ -16,7 +16,29 @@ import { useMemberNames } from "../admin/member-picker";
 import { memberName } from "../admin/members/directory";
 import { EmptyLine, SectionSpinner } from "../states";
 import { FormValues, useFormLabels } from "./field";
-import { useFormTypes } from "./forms";
+import { kindTitle, useFormTypes } from "./forms";
+
+/** The form's own label, else the kind's title from the database. */
+const SheetTitle = ({
+  formKey,
+  label,
+}: {
+  readonly formKey: string;
+  readonly label: string;
+}) => {
+  const locale = useLocale();
+  const types = useFormTypes();
+  return (
+    <>
+      {label ||
+        kindTitle(
+          types.data?.find((k) => k.key === formKey),
+          locale
+        ) ||
+        formKey}
+    </>
+  );
+};
 
 export type Submission = Tables<{ schema: "governance" }, "form_submissions">;
 
@@ -64,7 +86,9 @@ export const SubmissionSheet = ({
   const t = useTranslations("diwan.forms");
   const locale = useLocale() as Locale;
   const key = submission.form_key as forms.FormKey;
-  const definition = forms.forms[key];
+  // Kinds signed on their own page (the Code of Conduct, a role agreement)
+  // have no fields here: their copy is the record line and the signature.
+  const definition = forms.forms[key] as forms.FormDefinition | undefined;
   const labels = useFormLabels(key);
   const types = useFormTypes();
   const names = useMemberNames([
@@ -84,7 +108,9 @@ export const SubmissionSheet = ({
       data-theme="light"
     >
       <header className="border-line grid gap-1 border-b-2 pb-3">
-        <h2 className="type-heading">{labels.title()}</h2>
+        <h2 className="type-heading">
+          <SheetTitle formKey={key} label={labels.title()} />
+        </h2>
         <p className="type-caption">{t("society")}</p>
         <p className="type-caption">
           {t(`statuses.${submission.status as forms.FormStatus}`)}
@@ -136,10 +162,10 @@ export const SubmissionSheet = ({
       )}
       <FormValues
         data={(submission.data ?? {}) as forms.FormData}
-        fields={definition.fields}
+        fields={definition?.fields ?? []}
         labels={labels}
       />
-      {definition.office && Object.keys(submission.office ?? {}).length > 0 ? (
+      {definition?.office && Object.keys(submission.office ?? {}).length > 0 ? (
         <section className="grid gap-2">
           <h3 className="type-subheading">{t("office")}</h3>
           <FormValues
@@ -156,8 +182,16 @@ export const SubmissionSheet = ({
 };
 
 /** One of your forms (or one about you), to read, print or keep updating. */
-export const ViewForm = () => {
+export const ViewForm = ({
+  signed = false,
+}: {
+  /** Opened from Documents (a signed copy) rather than from Requests. */
+  readonly signed?: boolean;
+}) => {
   const t = useTranslations("diwan.forms");
+  const back = signed
+    ? { href: "/account/documents", label: t("backToDocuments") }
+    : { href: "/account/requests", label: t("back") };
   const { supabase } = useAuth();
   const id = useQueryParam("id") ?? "";
   const submission = useQuery({
@@ -178,19 +212,15 @@ export const ViewForm = () => {
     return <SectionSpinner />;
   }
   if (!submission.data) {
-    return (
-      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
-        {t("notFound")}
-      </EmptyLine>
-    );
+    return <EmptyLine action={back}>{t("notFound")}</EmptyLine>;
   }
   const row = submission.data;
 
   return (
     <div className="grid max-w-3xl gap-4">
       <div className="flex flex-wrap items-center gap-3 print:hidden">
-        <Link className="type-body underline" href="/account/requests">
-          {t("back")}
+        <Link className="type-body underline" href={back.href}>
+          {back.label}
         </Link>
         <Button onClick={() => window.print()} size="sm" variant="outline">
           {t("print")}

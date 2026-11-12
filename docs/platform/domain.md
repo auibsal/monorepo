@@ -39,7 +39,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Council page (`access.record_access_review`). `role-holder-checklist`, the new role
   holder's checklist, is in Your account for 120 days from the day a role
   is given (`access.my_role_checklist`).
-- **The first term.** Anyone newly joining a team serves a first term on
+- **The first semester.** Anyone newly joining a team serves a first semester on
   probation; whoever appointed them confirms them; Council seats (elected
   or appointed directors) serve none
   (`confirmAssignment`). Elected seats have none. Candidates and
@@ -136,7 +136,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   language each, with a verification code (`/verify/<code>` takes a
   certificate or a card code). Service is a letter
   (`membership.service_letters`, `service-letter`) with a verification code. Every
-  letter (`appointment-letter`, `service-letter`, `thank-you-letter`, `application-outcome`, `welcome-letter`, `honorary-membership-invitation`, `author-letters`) is one American
+  letter (`appointment-letter`, `service-letter`, `thank-you-letter`, `application-outcome`, `welcome-letter`, `honorary-membership-invitation`) is one American
   business letter template.
 - **Numbers and codes** (decisions §6): one five-digit series for members
   and guests (the card); CERT-, LTR-, RES-, MOU- and
@@ -168,9 +168,17 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   through their own single-use link, the teacher copied
   (`governance.form_links`, `copy_to`). Every public form that sends
   email checks Turnstile (`lib/api/turnstile.ts`). The register
-  "Agreements and consents" in SAL-EXB-01 is the one source of every
-  kind's name, title and fields; `bun run check:forms` compares
-  `governance.form_types` and the registry with it, by name. Where the site already
+  "Agreements and consents" in SAL-EXB-01 holds only what people sign
+  (seventeen kinds, `in_register`, `registerKinds`), and is the one source
+  of each one's name, title and fields; `bun run check:forms` compares them
+  with it, by name. Letters, notices, minutes, score sheets, reports, lists
+  and checklists keep their names but are templates or records, in the
+  templates index (`docs/platform/agreements.md`). The Code of Conduct
+  (`code-of-conduct`, on joining), the role agreement (`role-agreement`),
+  the readers' pledge and the Publication Agreement are signed on their own
+  pages, and each is a signature record like the rest
+  (`private.record_signing`): its AGR number, its check at /verify, and
+  the signed copy in Your account → Documents. Where the site already
   does the job (joining, RSVPs, Write for Qirtas, Get involved,
   elections), the form is that page. Members never see the word "form" or
   a form code; the requests they can start are plain actions where they

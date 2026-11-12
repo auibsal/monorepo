@@ -66,8 +66,8 @@ And without commands:
   in English with an «العربية» button to the Arabic page (decisions §6):
   Hudhud's Sunday note, one post each Sunday from 10:00 a.m. listing the
   week's events and the open calls with their closing dates (to `events`,
-  else `announcements`; no note in a week with neither, so none out of
-  term), a reminder for each event two days before (none on the day), and
+  else `announcements`; no note in a week with neither, so none outside
+  the semester), a reminder for each event two days before (none on the day), and
   new Qirtas pieces of the last three days
   (`qirtas`, else `announcements`). The daily word goes only to members'
   own chats, never to a group. A purpose without a topic gets no posts.

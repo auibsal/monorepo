@@ -11,7 +11,7 @@
  * (no ٌ or ٍ), no tatweel, Latin digits, the Iraqi month names the ar-IQ
  * formatter uses, Arabic punctuation (، ؛ ؟) and «» quotes, taa marbuta and
  * alif maqsura only at a word's end, hamzat al-wasl on the derived nouns,
- * AUIB's name in its compounds, Latin addresses isolated (⁦…⁩, or <bdi>)
+ * AUIB's name always with «في بغداد» but in the Society's own names, Latin addresses isolated (⁦…⁩, or <bdi>)
  * so they read left to right, and Iraqi Arabic only in Hudhud.
  * English (decisions.md: the Chicago Manual of Style for prose,
  * sentence case for interface labels): American spelling, curly quotes and
@@ -84,12 +84,14 @@ const ARABIC: Rule[] = [
       /(^|[\s«(،])(إستمارة|إجتماع|إنتخاب|إستخدام|إشتراك|إنضمام|إختيار|إستلام|إنتهاء|إبتداء|إستقالة|إستثناء|إجتهاد|إقتراح|إنسحاب|إستعادة)/u,
     why: "hamzat al-wasl: a bare alif (استمارة, اجتماع), not إ",
   },
-  // decisions.md, Language: AUIB inside a compound is «الجامعة الأمريكية»;
-  // alone it is «الجامعة الأمريكية في بغداد», never «… في العراق».
+  // decisions.md, Language (the seventh prompt, 5): AUIB is always
+  // «الجامعة الأمريكية في بغداد», in compounds too (طلبة الجامعة الأمريكية في
+  // بغداد); only the names the Society made keep «الجامعة الأمريكية» alone:
+  // the Society's name and Qirtas's line. Never «… في العراق».
   {
     pattern:
-      /(جمعية الفنون والآداب|صحيفة) (في )?الجامعة الأمريكية في بغداد|الجامعة الأمريكية في العراق|(صحيفة|جريدة) الجامعة للأخبار/u,
-    why: "AUIB's Arabic name: «الجامعة الأمريكية» inside a compound (the glossary)",
+      /(?<!جمعية الفنون والآداب في |صحيفة )الجامعة الأمريكية(?! في بغداد)|(جمعية الفنون والآداب|صحيفة) (في )?الجامعة الأمريكية في بغداد|الجامعة الأمريكية في العراق|(صحيفة|جريدة) الجامعة للأخبار/u,
+    why: "AUIB's Arabic name: «الجامعة الأمريكية في بغداد», but «الجامعة الأمريكية» in the Society's name and Qirtas's line (the glossary)",
   },
 ];
 
@@ -110,6 +112,13 @@ const ENGLISH: Rule[] = [
   { pattern: /\.\.\./u, why: "the ellipsis character (…)" },
   { pattern: /\b(e\.g\.|i\.e\.)/u, why: '"for example" or "that is"' },
   { pattern: /!/u, why: "no exclamation marks" },
+  // decisions.md, Language (the seventh prompt, 4): AUIB says "semester"
+  // for fall and spring; "term" is only a term of office.
+  {
+    pattern:
+      /\b(in term|out of term|term calendar|first term|each term|every term|this term|once a term|a term as a member|at least a term)\b/iu,
+    why: '"semester" for AUIB’s fall and spring; "term" only for a term of office',
+  },
   {
     pattern:
       /\b(colour|centre|programmes?\b|cancelled|cancelling|organis|behaviour|catalogue|travelled|judgement|favourite|honour|theatre|licence|recognis|apologis|labelled|modelling|enrolment|analyse)/iu,

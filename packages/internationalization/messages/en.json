@@ -221,7 +221,6 @@
       "today": "Today",
       "calendar": "Calendar",
       "getInvolved": "Get involved",
-      "record": "Record",
       "settings": "Settings",
       "templates": "Templates and papers",
       "designSystem": "Design system",
@@ -510,7 +509,7 @@
         "failed": "That didn’t work. Try again in a moment."
       },
       "ideas": {
-        "lede": "Pitch an event to the President, who owns the term calendar. Role holders also plan events here."
+        "lede": "Pitch an event to the President, who owns the semester calendar. Role holders also plan events here."
       }
     },
     "society": {
@@ -1237,8 +1236,8 @@
           "description": "Remove {name}'s authenticator app and recovery codes? Do this only when they asked, after checking it’s really them.",
           "done": "Reset. {name} sets up a new authenticator at their next sign-in."
         },
-        "probation": "First term (on probation)",
-        "confirmRole": "Confirm after the first term",
+        "probation": "First semester (on probation)",
+        "confirmRole": "Confirm after the first semester",
         "studentLifeEligible": "Student Life says eligible",
         "studentLifeNotEligible": "Student Life says not eligible",
         "name": {
@@ -1308,7 +1307,7 @@
       },
       "events": {
         "title": "Events",
-        "lede": "Every event on the term calendar: what’s coming, drafts and what’s past. Events are made in Notion’s Events database; open one here to see who booked, run its check-in and keep its parts.",
+        "lede": "Every event on the semester calendar: what’s coming, drafts and what’s past. Events are made in Notion’s Events database; open one here to see who booked, run its check-in and keep its parts.",
         "tabs": {
           "upcoming": "Upcoming",
           "past": "Past",
@@ -1662,8 +1661,6 @@
           "partner": "Partner school",
           "choosePartner": "Choose the school",
           "places": "Places",
-          "termFrom": "Term starts",
-          "termTo": "Term ends",
           "give": "Give the place",
           "withdraw": "Withdraw",
           "placement": {
@@ -1686,7 +1683,7 @@
             "qalam_mentor": "A Qalam mentor"
           },
           "kindHints": {
-            "role": "A role the Society needs filled, chosen from its roles. New team members serve their first term on probation, then are confirmed.",
+            "role": "A role the Society needs filled, chosen from its roles. New team members serve their first semester on probation, then are confirmed.",
             "event_team": "The lead of one event: one place, appointed through Get involved. Everyone else on the night signs up for a volunteer shift on the event’s page.",
             "qalam_mentor": "A mentor’s place in Qalam. Students never get accounts: record nothing about them here."
           },
@@ -2591,8 +2588,7 @@
             "thank-you-letter": "Thank-you to a partner or sponsor",
             "application-outcome": "Application outcome",
             "welcome-letter": "Welcome to new members",
-            "honorary-membership-invitation": "Honorary Membership invitation",
-            "author-letters": "Author letter"
+            "honorary-membership-invitation": "Honorary Membership invitation"
           },
           "language": "Language",
           "languages": {
@@ -3769,8 +3765,8 @@
       "notReceived": "Not yet received"
     },
     "service": {
-      "title": "Record",
-      "lede": "Your recorded service and certificates. Hours count once someone else confirms them.",
+      "title": "Documents",
+      "lede": "What you have signed, your certificates and letters, and your service. Hours count once someone else confirms them.",
       "thisYear": "This academic year",
       "hours": "{hours} hours",
       "logTitle": "Log hours",
@@ -3819,7 +3815,8 @@
         "prize": "The Mutanabbi Prize"
       },
       "lettersTitle": "Service letters",
-      "letter": "Service letter, {date}"
+      "letter": "Service letter, {date}",
+      "signedTitle": "Agreements and consents"
     },
     "certificate": {
       "title": "Certificate",
@@ -3939,7 +3936,7 @@
         "conflict-of-interest-declaration": {
           "title": "Conflict-of-interest declaration",
           "action": "Declare a conflict of interest",
-          "purpose": "Each term, and whenever something new arises. Confidential.",
+          "purpose": "Each semester, and whenever something new arises. Confidential.",
           "preamble": "A conflict is any situation where a personal interest, relationship or loyalty could affect, or seem to affect, a Society decision. Declaring one is normal; hiding one is not. It applies if a close friend, partner or relative is applying, auditioning or submitting work; if you or your family own or work for a possible partner or sponsor; if you hold a role in a partner organization; or if you receive anything of value connected to the role.",
           "fields": {
             "nothing": "Nothing to declare",
@@ -3975,7 +3972,7 @@
         "event-pitch": {
           "title": "Event proposal",
           "action": "Propose an event",
-          "purpose": "Anyone, within or outside the Society, may pitch; one page is enough. If the Council agrees, it goes on the term calendar and the Director of Events picks a lead.",
+          "purpose": "Anyone, within or outside the Society, may pitch; one page is enough. If the Council agrees, it goes on the semester calendar and the Director of Events picks a lead.",
           "fields": {
             "title": "What the event is, titled plainly",
             "idea": "The idea in three sentences",
@@ -4203,7 +4200,12 @@
       "signAs": "Sign as {name}",
       "linkSubject": "The student: {name}",
       "recordNumber": "{reference} · {kind}, version {version}",
-      "checkAt": "Anyone can check it at"
+      "checkAt": "Anyone can check it at",
+      "backToDocuments": "Back to Documents",
+      "signedTitle": "Your signed copy",
+      "noSigned": "Nothing signed yet.",
+      "check": "Check",
+      "version": "version {version}"
     },
     "qirtas": {
       "pieceTitle": "Your piece",
@@ -4655,10 +4657,10 @@
       "bookLine": "Events that take bookings, on your calendar.",
       "write": "Write for Qirtas",
       "writeLine": "Calls opened to your partner.",
-      "record": "Your record",
+      "record": "Your documents",
       "societyGuest": "Guest of the Society",
       "societyGuestLine": "You may book places at events and write for calls open to you.",
-      "recordLine": "Service and certificates.",
+      "recordLine": "What you have signed, certificates and letters.",
       "involved": "Get involved",
       "involvedLine": "Every open place, with the Society and its partners.",
       "children": {
@@ -5246,7 +5248,7 @@
         },
         "events": {
           "title": "Events",
-          "body": "Events all year, at least one a month in term, on one calendar: among them the Typewriter Tour in the spring club fair week and Second Chapter, a book drive and sale for a charity, at the fall club fair."
+          "body": "Events all year, at least one a month each semester, on one calendar: among them the Typewriter Tour in the spring club fair week and Second Chapter, a book drive and sale for a charity, at the fall club fair."
         }
       },
       "runTitle": "How it is run",
@@ -5257,7 +5259,7 @@
         },
         "council": {
           "title": "A Council of nine",
-          "body": "Three officers, the President, Vice President and Secretary, and six directors, each with their own work. The Council meets monthly in term; every member is welcome at the general meetings, every two weeks."
+          "body": "Three officers, the President, Vice President and Secretary, and six directors, each with their own work. The Council meets monthly in the semester; every member is welcome at the general meetings, every two weeks."
         },
         "elections": {
           "title": "Elections",
@@ -5350,7 +5352,7 @@
         },
         "twoThings": {
           "title": "Come to two things",
-          "body": "Attend two events or general meetings in the 12 months before an election and you are a Voting Member: you vote, and after a term as a member you can stand for office."
+          "body": "Attend two events or general meetings in the 12 months before an election and you are a Voting Member: you vote, and after a semester as a member you can stand for office."
         }
       },
       "gives": {
@@ -5365,7 +5367,7 @@
         },
         "vote": {
           "title": "A vote",
-          "body": "Attend two events or general meetings in 12 months and you are a Voting Member: you vote in elections, and after a term as a member you can stand for office."
+          "body": "Attend two events or general meetings in 12 months and you are a Voting Member: you vote in elections, and after a semester as a member you can stand for office."
         }
       },
       "tiersTitle": "Kinds of membership",

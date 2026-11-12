@@ -61,7 +61,7 @@ const copy = {
     places: "24 places left",
     pledge: "I make the Member Pledge",
     send: "Send the link",
-    thisTerm: "This term",
+    thisTerm: "This semester",
     title: "Writing workshop",
   },
 } as const;

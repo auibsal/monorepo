@@ -98,10 +98,10 @@ $$;
 
 select plan(10);
 
-select is((select count(*)::integer from governance.form_types), 42,
-  'Agreements and consents: 42 kinds, by name');
-select is((select count(*)::integer from governance.form_types where legacy_number in ('F-08', 'F-22', 'F-31', 'F-44')), 0,
-  'The numbers retired before have no kind');
+select is((select count(*)::integer from governance.form_types), 43,
+  'Agreements and consents, templates and records: 43 kinds, by name');
+select is((select count(*)::integer from governance.form_types where legacy_number in ('F-08', 'F-22', 'F-31', 'F-42', 'F-44')), 0,
+  'The retired numbers have no kind');
 select is((select title_en from governance.form_types where key = 'role-holder-checklist'), 'New role holder’s checklist',
   'The role holder''s checklist goes by its name');
 

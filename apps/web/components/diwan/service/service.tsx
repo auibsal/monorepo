@@ -19,6 +19,7 @@ import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, recognition, unwrap } from "@/lib/data";
 import { AddInPlace, ErrorLine } from "../admin/kit";
+import { SignedList } from "../forms/forms";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
 import { YearLinks } from "./year";
@@ -88,6 +89,9 @@ export const Service = () => {
 
   return (
     <DiwanPage lede={t("lede")} narrow title={t("title")}>
+      <DiwanSection id="signed" title={t("signedTitle")}>
+        <SignedList />
+      </DiwanSection>
       <SalCard>
         <div className="grid gap-3">
           <p className="type-label">{t("thisYear")}</p>
@@ -158,7 +162,7 @@ export const Service = () => {
             <li key={c.id}>
               <Link
                 className="link"
-                href={`/account/record/certificates/${c.id}`}
+                href={`/account/documents/certificates/${c.id}`}
               >
                 {t(`kinds.${c.kind as recognition.CertificateKind}`)}
                 {c.serial ? ` · ${c.serial}` : ""}
@@ -175,7 +179,10 @@ export const Service = () => {
           <ul className="grid gap-2">
             {(letters.data ?? []).map((l) => (
               <li key={l.id}>
-                <Link className="link" href={`/account/record/letters/${l.id}`}>
+                <Link
+                  className="link"
+                  href={`/account/documents/letters/${l.id}`}
+                >
                   {t("letter", {
                     date: formatPlainDate(l.issued_at, locale),
                   })}
@@ -193,7 +200,7 @@ export const Service = () => {
   );
 };
 
-/** Hours given, logged in place on Record (decisions §26). */
+/** Hours given, logged in place on Documents (decisions §26). */
 const LogHours = ({ onDone }: { readonly onDone: () => void }) => {
   const t = useTranslations("diwan.service");
   const locale = useLocale();

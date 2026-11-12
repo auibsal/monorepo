@@ -16,4 +16,4 @@ The six Instagram highlights on @auibsal, always in this order: Events, Qirtas, 
 **Rules**
 - Keep every word 250 px clear of the top and 340 px clear of the bottom.
 - English only: the account is in English. Arabic stories are posted separately.
-- Update the Events banner every term, and the Qirtas banner each Edition.
+- Update the Events banner every semester, and the Qirtas banner each Edition.

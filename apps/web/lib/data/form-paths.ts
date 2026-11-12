@@ -22,7 +22,9 @@ export const formPaths = {
  * The retired F-numbers (decisions.md, Documents and forms: "Names, not
  * numbers"): the one-time mapping from each old number to its kind's name,
  * so anything signed or shared under a number still resolves. The numbers
- * F-08, F-22, F-31 and F-44 were retired before and have no kind.
+ * F-08, F-22, F-31 and F-44 were retired before and have no kind; F-42, the
+ * author letters, retired with them (the site's decision emails are those
+ * letters).
  */
 export const legacyNumbers: Readonly<Record<string, string>> = {
   "F-01": "role-application",
@@ -46,7 +48,7 @@ export const legacyNumbers: Readonly<Record<string, string>> = {
   "F-20": "charity-collection-count",
   "F-21": "concern",
   "F-23": "tour-tally",
-  "F-24": "audition-form",
+  "F-24": "audition-application",
   "F-25": "audition-score-sheet",
   "F-26": "company-agreement",
   "F-27": "stage-risk-checklist",
@@ -63,7 +65,6 @@ export const legacyNumbers: Readonly<Record<string, string>> = {
   "F-39": "qalam-publishing-consent",
   "F-40": "confidentiality-agreement",
   "F-41": "reader-score-sheet",
-  "F-42": "author-letters",
   "F-43": "publication-agreement",
   "F-45": "trip-consent",
   "F-46": "parent-consent",
@@ -86,7 +87,7 @@ export const nameFromLegacyNumber = (number: string) => {
  * copy is kept.
  */
 export const formRedirects = [
-  ["/forms", "/account/record"] as const,
+  ["/forms", "/account/documents"] as const,
   ...Object.entries(legacyNumbers).flatMap(([number, name]) => {
     const path = (formPaths as Record<string, string>)[name];
     if (!path) {
@@ -97,4 +98,7 @@ export const formRedirects = [
       (address) => [`/forms/${address}`, path] as const
     );
   }),
+  // Any other old form address (a template's, a retired number's) opens
+  // Documents too, so no shared /forms link ends at a missing page.
+  ["/forms/:path*", "/account/documents"] as const,
 ];

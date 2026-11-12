@@ -20,12 +20,12 @@ Every chat in this project follows this file. Where an older document, project d
   - **Numbers:** one through nine in words, 10 and up in numerals.
   - **Calendars** start the week on Sunday.
   - **Titles (Chicago 8.21):** capitalized are only the nine seats, the Managing Editor, the Copy Chief, the Faculty Advisor and the Partner Lead; team roles are lowercase in running text.
-  - **Usage:** "advisor", never "adviser". "Graduate" in the singular and "alumni" in the plural. The endorsement line is "a Society of Arts and Letters program".
+  - **Usage:** "semester" for AUIB's fall and spring (as AUIB says it; «الفصل الدراسي»), and "term" only for a term of office. "advisor", never "adviser". "Graduate" in the singular and "alumni" in the plural. The endorsement line is "a Society of Arts and Letters program".
 - **Arabic:** Modern Standard Arabic, following the Arab language academies, for documents, Qirtas and the site. Iraqi Arabic, written as Iraqis write it (گ، چ، پ), is used only where the Society chats: Hudhud, social captions and stories, the members' group, signs at the door.
   - **Writing:** Latin digits; «» quotes; the Iraqi month names; diacritics, spelling and punctuation as set out under AUIB's name below.
   - **One word per term:** the glossary (`claude/glossary_ar.md`).
-  - **AUIB** is «الجامعة الأمريكية في بغداد» when it is named on its own ("at AUIB", the postal address, "Filmed on location at…"); inside a compound name it is «الجامعة الأمريكية» alone: the Society is «جمعية الفنون والآداب في الجامعة الأمريكية» and Qirtas's line «صحيفة الجامعة الأمريكية للأخبار والآداب والفن»; English keeps "the American University of Iraq – Baghdad".
-  - **After the first mention** in a piece, AUIB is «الجامعة» and the Society «الجمعية». Phrases like "AUIB students" take the short form (طلبة الجامعة الأمريكية). Qirtas is «قرطاس», a proper name with no article and masculine (نشر قرطاس، في قرطاس).
+  - **AUIB** is always «الجامعة الأمريكية في بغداد», in compounds too (طلبة الجامعة الأمريكية في بغداد، حرم الجامعة الأمريكية في بغداد), except in names the Society made itself, which keep «الجامعة الأمريكية» alone: the Society's name «جمعية الفنون والآداب في الجامعة الأمريكية» and Qirtas's line «صحيفة الجامعة الأمريكية للأخبار والآداب والفن»; English keeps "the American University of Iraq – Baghdad".
+  - **After the first mention** in a piece, AUIB is «الجامعة» and the Society «الجمعية». Qirtas is «قرطاس», a proper name with no article and masculine (نشر قرطاس، في قرطاس).
   - **Diacritics (sparing, as edited Arabic prose uses them):** only where a word would be misread without them (a passive verb such as «صُوِّر», a shadda that changes the meaning). Tanween al-fath is always written, on the letter before the alif (شكرًا، أيضًا); the other tanween (ٌ ٍ) never. Full diacritics only for al-Mutanabbi's verse, the motto and any quoted poetry; poems in Qirtas keep the poet's own choice exactly as sent; people's names have none, except a shadda the person asks for. Headlines, buttons and emails follow the same rule.
   - **Spelling and punctuation:** hamza, taa marbuta and alif maqsura always correct (إ أ آ؛ ة not ه؛ ى and ي), checked in CI for the site's text; no tatweel (كـتـاب) anywhere, display type included; Arabic punctuation always (، ؛ ؟ and «»), never the Latin marks.
   - **Other scripts inside Arabic:** products and platforms in Latin script (Instagram, Telegram, Notion); the Society's own names in Arabic (قرطاس، الديوان، هدهد); web addresses, emails and handles in Latin, isolated so they don't flip the line's direction.
@@ -97,7 +97,7 @@ Every chat in this project follows this file. Where an older document, project d
     - **The end:** the credits roll on crimson beside the outtakes, then the 20-second end screen. Reels end on "Who's next? Nominate a guest: nextstop@auibsal.org", then the sound logo.
     - **Until a piece is approved,** an episode uses only what is approved. If the opening titles and cards aren't approved by Dec 9, the pilot opens with the approved sound logo and a plain title card; the release doesn't wait on the package.
     - **The music:** an original jazz-hop theme (Rhodes, upright bass, dusty drums and a vibraphone hook). Episodes follow the Society's video standard (§15).
-- **Events.** There are no standing programs and no series. Events are made as needed, by the Society or for any party within or outside it, titled plainly for what they are, and recurring events are made again for each date. The Council sets a calendar of at least one event a month each term. Ways to run an event are kept in the Events Manual as plain formats: a reading with a guest, a book discussion, a writing workshop, a listening session, a debate, a trip, a performance.
+- **Events.** There are no standing programs and no series. Events are made as needed, by the Society or for any party within or outside it, titled plainly for what they are, and recurring events are made again for each date. The Council sets a calendar of at least one event a month each semester. Ways to run an event are kept in the Events Manual as plain formats: a reading with a guest, a book discussion, a writing workshop, a listening session, a debate, a trip, a performance.
 - **Traditions:** an event gets a name only once it has run at least twice and the Council agrees. There are two:
   - **The Typewriter Tour** (membership): once a year in the spring club fair week, with the fair as one of its days (§11).
   - **Second Chapter** (partnerships): a book drive and sale for a charity at the fall club fair, from October 2027 (§6).
@@ -143,7 +143,7 @@ Every chat in this project follows this file. Where an older document, project d
 - **Membership is open to every AUIB student,** with no discrimination and no dues. One account per person, holding one class and any roles.
 - **Classes:**
   - **Members:** students enrolled at AUIB in a degree or in the English Language Academy on the way to one (undergraduate, and graduate students if AUIB has them), who have joined on auibsal.org; they vote, hold office, write and are eligible for the Prize.
-  - **Associate Members:** AUIB faculty and staff (Student Life's staff and the Faculty Advisor among them) and alumni, meaning anyone who studied at AUIB for at least a term, whether they graduated or not; no vote or office, but they write and come to events.
+  - **Associate Members:** AUIB faculty and staff (Student Life's staff and the Faculty Advisor among them) and alumni, meaning anyone who studied at AUIB for at least a semester, whether they graduated or not; no vote or office, but they write and come to events.
   - **Honorary Members:** voted by the Council for outstanding contribution; no vote.
   - **Guests:** everyone else, 18 or older, or younger only with a parent's consent (Qalam students): people from outside AUIB, partners' people, parents, and those in the Continuing Education programs who aren't AUIB degree students (as US student organizations limit membership to enrolled degree students). They RSVP, write for Qirtas in any section but Games (bylined with their name and a short line saying who they are), and aren't eligible for the Prize.
   - **The class follows the person's status** with the same account, number and history: a student who leaves or graduates becomes an Associate (graduates automatically); one who returns, including for a second or graduate degree, becomes a Member again. The site checks status at the September renewal and whenever the person updates it, and Student Life's eligibility list confirms it where a vote or seat depends on it.
@@ -185,7 +185,7 @@ Every chat in this project follows this file. Where an older document, project d
 
 - **Onboarding is automatic and paperless,** run on the site, by email and through Hudhud, in the person's language, with a staff step only where a decision is needed:
   - **A new member:** sign up, then confirm (with the welcome), then the profile (preferred names, Arabic form, language), the card in Wallet and the Telegram link (Hudhud approves the join request). Then a "Get involved" email on day 3, a "Your first event" email on day 10, and after their first check-in a thank-you with a one-question survey.
-  - **A new role holder:** the role email; the Code of Conduct and, for Qirtas, the confidentiality agreement signed electronically; two-step set up; Hudhud adds them to the Diwan group with their role tag; a checklist in their account (their manual, Brand essentials, their Diwan pages). Seat holders also get their mailbox handed over and a Notion invitation from the Secretary. The appointer is reminded to confirm them at the end of the first term.
+  - **A new role holder:** the role email; the Code of Conduct and, for Qirtas, the confidentiality agreement signed electronically; two-step set up; Hudhud adds them to the Diwan group with their role tag; a checklist in their account (their manual, Brand essentials, their Diwan pages). Seat holders also get their mailbox handed over and a Notion invitation from the Secretary. The appointer is reminded to confirm them at the end of the first semester.
   - **Leaving a role:** site access ends the same day; the handover is signed electronically; Telegram removal follows 7 days later; a seat's mailbox password is reset; and a service letter is offered automatically.
   - **Under-18 members, graduates, leavers, guests, partners and Associate requests** follow the steps in their own sections, each with reminders (parents' consent after 3 and 7 days).
 - **Paperless, measured:** the site counts the documents signed digitally, and the Society reports the count once a year in the annual report. There is no pledge: the Code of Conduct is the only thing members agree to.
@@ -198,7 +198,7 @@ Every chat in this project follows this file. Where an older document, project d
 - **Sign-in (as US universities do it: a password, plus a second step for those who need one):** the email and password is the main way in, as it is now. A passkey is offered as an optional other way in, never pushed. There is no sign-in link by email, since every link spends the email quota; email is used only to confirm the address and reset a forgotten password.
 - **Being part of it:**
   - **Hours:** every opening states the hours a week it needs, and the quarterly access review checks nobody carries far more than their role.
-  - **Check-ins:** once a term, each seat holder has a short check-in with each team member, recorded only as done.
+  - **Check-ins:** once a semester, each seat holder has a short check-in with each team member, recorded only as done.
   - **Training:** the new role holder's checklist includes short trainings where the role touches people: personal data and the Diwan (every role), safeguarding (anyone near minors), blind reading (readers), consent and filming (Media).
   - **Time away:** a role holder away more than two weeks tells their seat holder, and their second covers.
   - **Thanks:** at the Annual Meeting every role holder's name is read out, and each gets a service letter automatically.
@@ -237,7 +237,7 @@ Every chat in this project follows this file. Where an older document, project d
   - **Handover:** witnessed, to the charity, with a receipt, then an impact report.
   - **Who:** the event's lead owns it, the Secretary witnesses and keeps the record, and the cashiers are volunteers. Student Life advises on holding cash overnight.
   - **The line:** "Every dinar goes to the charity."
-- **One needs request a term:** each department's needs for the coming term are gathered two weeks before it starts and sent to Student Life as one request, with smaller ones as they come up.
+- **One needs request a semester:** each department's needs for the coming semester are gathered two weeks before it starts and sent to Student Life as one request, with smaller ones as they come up.
 - **The inventory:** everything the Society holds or borrows (typewriters, ribbons, drives, banners, the cart) in one Notion list with its custodian, place and condition, checked each September and at every handover.
 - **Standing needs** also include Supabase Pro (daily backups), Vercel Pro (previews), and Apple's developer account (the card in Apple Wallet).
 
@@ -261,21 +261,21 @@ Every chat in this project follows this file. Where an older document, project d
 
 ### Elections, appointments and terms
 - **Officers** are elected by members by secret ballot.
-- **The Editor-in-Chief** is elected by Qirtas's staff (editors and contributors with at least one term on Qirtas).
+- **The Editor-in-Chief** is elected by Qirtas's staff (editors and contributors with at least one semester on Qirtas).
 - **The other five directors** (Artistic Director, Events, Partnerships, Membership, Media) are appointed by the President after an open call on Get involved (§8).
   - **Approval:** the Executive Board approves each by resolution, after Student Life confirms eligibility, with no probation.
-  - **Eligible:** a Student Member in good standing, enrolled, with a GPA of at least 2.0; from fall 2028 also a member for at least one term.
+  - **Eligible:** a Student Member in good standing, enrolled, with a GPA of at least 2.0; from fall 2028 also a member for at least one semester.
 - **Terms:**
   - **Elected seats** serve one year, from the new Council's first meeting in May.
   - **Appointed directors** serve one-year terms ending with the Council's, renewable by reappointment.
   - **Handover:** outgoing holders hand over in writing.
   - **First elections:** October 2027. The first elected Council serves until May 2028; from 2028, elections are each April, with results at the Annual Meeting.
-- **Who may stand:** a member for at least one term, a voting member, in good standing, enrolled, with a cumulative GPA of at least 2.0. Elections Committee members don't run, and there are no term limits.
+- **Who may stand:** a member for at least one semester, a voting member, in good standing, enrolled, with a cumulative GPA of at least 2.0. Elections Committee members don't run, and there are no term limits.
 - **GPA checks:** always through Student Life, never by asking students for grades.
   - **Consent:** candidates consent on the nomination form, and applicants for director seats in their application.
-  - **Lists:** the Elections Committee sends its candidate list before the ballot opens, and the Secretary sends the full Council list at the start of each term.
+  - **Lists:** the Elections Committee sends its candidate list before the ballot opens, and the Secretary sends the full Council list at the start of each semester.
   - **Answers:** Student Life answers only "eligible" or "not eligible", and the Society never sees or stores grades.
-  - **Falling below 2.0:** the holder is told privately and has one term to recover before the seat is declared vacant.
+  - **Falling below 2.0:** the holder is told privately and has one semester to recover before the seat is declared vacant.
 - **The Elections Committee:** three members, appointed by Council resolution at least six weeks before voting opens. It makes no endorsements.
 - **Nominations** are open one week, and candidates' statements run up to 200 words.
 - **Voting:** online on auibsal.org by secret ballot over a set window, with a voting point in person at the meeting; the Bylaws authorize electronic voting. No proxies or write-ins.
@@ -285,10 +285,10 @@ Every chat in this project follows this file. Where an older document, project d
 - **Removal from a seat:** a two-thirds vote of the Council (or of a members' meeting, for an officer), after notice and a hearing. The Council may remove a member from membership the same way.
 
 ### Meetings
-- **Council meetings:** monthly in term, on a Wednesday at 2:15 p.m. in a week without a general meeting. They are open to members as observers, with a closed session only for people matters (appointments, complaints, removals); minutes are linked, and the Secretary leads them.
+- **Council meetings:** monthly in the semester, on a Wednesday at 2:15 p.m. in a week without a general meeting. They are open to members as observers, with a closed session only for people matters (appointments, complaints, removals); minutes are linked, and the Secretary leads them.
   - **Quorum:** a majority of the seats filled.
   - **Online Council votes** between meetings are open 24 hours, by roll call.
-- **General meetings:** all members, every other Wednesday in term, 2:15–3:00 p.m., access Members (news, plans, ideas, questions). They count toward the two-event voting rule, and the Secretary leads them.
+- **General meetings:** all members, every other Wednesday in the semester, 2:15–3:00 p.m., access Members (news, plans, ideas, questions). They count toward the two-event voting rule, and the Secretary leads them.
 - **The Annual Meeting:** each April from 2028 (election results, reports, the Mutanabbi Prize).
 - **Special meetings:** called by the Council, or on the petition of one-tenth of voting members, with two weeks' notice.
 - **Members' meetings:** quorum is 10% of voting members or 15, whichever is lower.
@@ -313,7 +313,7 @@ Every chat in this project follows this file. Where an older document, project d
 
 ### Advisors and Student Life
 - **The Faculty Advisor:** required, invited through Student Life.
-- **The Advisory Board:** five to seven faculty, alumni and people from partner organizations (as individuals), chaired by the Faculty Advisor. They are invited by the Council for two years, have no vote, and meet once a term.
+- **The Advisory Board:** five to seven faculty, alumni and people from partner organizations (as individuals), chaired by the Faculty Advisor. They are invited by the Council for two years, have no vote, and meet once a semester.
 - **Student Life:** Ali Najm, Campus Recreation Officer, is the Society's staff contact (registration, approvals, rooms, needs, the volunteer log), and Jelena Zivkovic is Director of Student Life. Both are Associate Members with the "Student Life" role, in the members' group only, marked with the "Student Life" member tag (not as admins), and exempt from Hudhud's removals.
 - **Requests to Student Life go by secure link (the American standard where there is no campus system).** At US universities, the student-activities office answers its clubs' requests in a campus system. With none at AUIB, each request goes to Student Life by email from the Secretary's address (secretary@), with a single-use link to answer it without an account. The answer is recorded on the site, the Secretary sees its status, and a reminder follows after 3 days. The requests:
   - **a need:** provided, provided in part, or not provided;
@@ -340,10 +340,10 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 ### How the Council works
 - **Agendas** go out two days before every meeting; **draft minutes** within seven days, approved at the next meeting; approved minutes are open to all members; decisions are recorded in the Diwan the same day.
 - **A one-page guide** to how meetings work (motions, voting, speaking), from "Robert's Rules in Brief", in both languages.
-- **The officers** have a 15-minute check-in each week in term (online is fine), recorded in the Diwan.
-- **A term plan:** what each department will deliver, with an owner and a date, reviewed briefly at every Council meeting.
+- **The officers** have a 15-minute check-in each week in the semester (online is fine), recorded in the Diwan.
+- **A semester plan:** what each department will deliver, with an owner and a date, reviewed briefly at every Council meeting.
 - **A second for every seat:** each seat holder names a team member who knows the work and stands in when the holder is away or leaves.
-- **The year's operations calendar** lives in the Leadership Handbook: registering each term, the GPA list, elections, handovers, the access and security reviews, the September document review, renewals and the annual report.
+- **The year's operations calendar** lives in the Leadership Handbook: registering each semester, the GPA list, elections, handovers, the access and security reviews, the September document review, renewals and the annual report.
 - **The annual report** each April at the Annual Meeting: members, events, Qirtas, Next Stop, the Company, needs met, supporters, the paperless count; one page, both languages.
 - **Elections:** the rules are published before nominations open, candidates may watch the count, ballots are kept one year, and the Faculty Advisor certifies the result.
 - **The Code of Conduct** forbids hazing (as the 2024 Stop Campus Hazing Act requires US campuses to publish), and reports of harassment or discrimination go to AUIB's own offices as well as the complaints panel.
@@ -386,14 +386,14 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **The Company:** each production's credits, like a playbill.
   - **An event's page:** its lead, and after the event, "With" its team.
   - **Names:** lists use preferred names and the person's Arabic form. Members under 18 appear only with a parent's consent. Team members may hide their name from public lists; seat holders and section editors may not.
-- **The first term:** everyone newly joining a team serves a first term on probation, and the person who appointed them then confirms them. Directors and elected seats have none.
+- **The first semester:** everyone newly joining a team serves a first semester on probation, and the person who appointed them then confirms them. Directors and elected seats have none.
 - **Get involved lists open roles only:** Council and team roles, event teams, Qalam mentors and auditions. It has no shifts (they exist only on events) and no skill matching, and it is rendered on the server.
 - **One application system (the American standard for student-organization hiring):**
   - **Openings:** each has its own page, posted in the Diwan by the seat that hires for the role, with up to eight questions, whether it asks for links to work, and who may apply. A director seat opens only after the Executive Board approves it by resolution.
   - **The application:** signed-in Members only. It has a draft that can be saved; availability; the language the applicant will be written to in; links to work when asked; an optional accommodation request; and, for a director seat, consent to Student Life's GPA check, signed with "Sign as …". A receipt is emailed.
   - **Statuses,** in Your account → Your applications: received, interview, shortlisted, offer, accepted, appointed, not chosen, declined, withdrawn. Withdrawing keeps the application, as withdrawn.
   - **Review:** by the hiring seat and a second reviewer, each scoring 1–5 with notes or recusing. Interviews are scheduled in the Diwan, use the same questions for every candidate, and are recorded in the review screen. Auditions are openings on Get involved: signing up is an application with a time slot and a few questions, scored in the review screen, and posted at least two weeks ahead; casting goes out as offers.
-  - **Offers:** accepted or declined from the account within 7 days; an unanswered offer lapses as declined. A team role is assigned on acceptance and starts its first term. A director is appointed only after the Executive Board's resolution and Student Life's "eligible".
+  - **Offers:** accepted or declined from the account within 7 days; an unanswered offer lapses as declined. A team role is assigned on acceptance and starts its first semester. A director is appointed only after the Executive Board's resolution and Student Life's "eligible".
   - **Afterward:** applicants not chosen are emailed within 14 days of the closing date. Staff alerts carry counts, never names. Applications are deleted 12 months after the decision; a hire's record becomes part of their service record.
 - **The director open call:** four openings, one per seat (Artistic Director, Events, Partnerships, Membership), to which one application can go with seats ranked by preference.
   - **Timing:** they open after the Executive Board approves them and close Thu Dec 10. Interviews come before finals or in the first week of January, and appointments are approved by Thu Jan 14, 2027.
@@ -428,13 +428,13 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Revise and resend:** the section editor may ask for one revision; it goes back to that editor, keeps its SUB number and isn't read blind again.
   - **Unpublished submissions** are deleted twelve months after the decision.
 - **Two layers, as American student publications run them:** Qirtas online is the paper, published as pieces are ready (the standing flow). **Editions** («الإصدار») are its journal: numbered, two a year (fall and spring), each printed and digital, like Harvard Review or a college literary magazine.
-  - **What an Edition holds:** the term's best Letters, Gallery, Voices essays and reviews, its best long-form News features and profiles, a crossword, and Video as stills with a QR code; never breaking news. Pieces come from the standing flow and from the Edition's own themed call, if it has one; an Edition's theme links to its topic.
-  - **Who chooses:** the editors select the contents, helped by the blind scores, and the Editor-in-Chief and the Managing Editor approve the table of contents together; nothing is chosen by an algorithm. Once it is approved, the site builds the Edition: the web edition, the print file, the contents, contributors' notes and the masthead as it stood that term.
+  - **What an Edition holds:** the semester's best Letters, Gallery, Voices essays and reviews, its best long-form News features and profiles, a crossword, and Video as stills with a QR code; never breaking news. Pieces come from the standing flow and from the Edition's own themed call, if it has one; an Edition's theme links to its topic.
+  - **Who chooses:** the editors select the contents, helped by the blind scores, and the Editor-in-Chief and the Managing Editor approve the table of contents together; nothing is chosen by an algorithm. Once it is approved, the site builds the Edition: the web edition, the print file, the contents, contributors' notes and the masthead as it stood that semester.
   - **The cover** is new each time, commissioned from a student artist through an open call (an opening on Get involved, eight weeks before the Edition), credited and thanked with copies; the nameplate, the Edition's number, title and season keep their places. The inside always uses Qirtas's journal design (Markazi Text for reading, Ubuntu for display), with the same parts: contents, an editor's note, the sections, contributors' notes and the masthead.
   - **Print:** one book with two front covers (dos-à-dos): English opens from the left and Arabic from the right, each half as long as its pieces need, with Gallery in the middle for both. A5, a multiple of 4 pages, saddle-stitched up to 64 pages and perfect bound above, 100 gsm text and 300 gsm covers, color for Gallery; the run is the confirmed need, with copies for each contributor, printing asked of Student Life.
   - **The digital Edition** is a reading experience, not a flipbook (which fails screen readers and phones): the cover opens to the contents; each piece has its own address with print-like layout; Gallery is full-bleed, Video plays in place, the crossword can be played, poets may add an audio reading, and translations sit side by side. The Arabic edition reads right to left. Every piece cites its Edition and page; the print file can be downloaded.
   - **Each Edition is launched at an event** (a reading), and leads the next Sunday Paper.
-  - **Numbering:** Edition 1 («الإصدار 1») is spring 2027, published before finals; Edition 2 is fall 2027; then one each term.
+  - **Numbering:** Edition 1 («الإصدار 1») is spring 2027, published before finals; Edition 2 is fall 2027; then one each semester.
 - **Haven** («ملاذ», Dreams and memories) is Qirtas's pilot («الإصدار التجريبي»), digital, fall 2026: the first themed call, beside the standing call. Its calls to action lead the front page, Editions and Write for Qirtas.
   - **The call:** a poem, a short story, a creative essay or an artwork about a memory, a dream or both. Up to 40 lines of poetry (up to three poems count as one entry), 2,500 words of prose, or three images (JPG, PNG or PDF, 10 MB each, each with a title and a one-line caption).
   - **Entries:** up to two per person, in Arabic or English, one language each (a translation is its own entry, with the rights to the original). Not published before except on the writer's own social media; simultaneous submissions are allowed and withdrawn if taken elsewhere.
@@ -492,7 +492,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Spring dates** stay in Planning until their room is confirmed.
   - **Properties:** Access (renamed from "Way in"), Lead (from "Owner") and Host change with the site, which reads both names.
 - **After an event,** its page links its photos and any recording within a week (each Edition's launch reading is recorded and posted to YouTube with the readers' releases).
-- **Calendars:** a public calendar feed of all public events ("Subscribe in Google or Apple Calendar") on the Events page, and "Add to calendar" on every event. The term's calendar is published three weeks before classes start, and later events at least two weeks ahead. Spring events keep the Tuesday slot.
+- **Calendars:** a public calendar feed of all public events ("Subscribe in Google or Apple Calendar") on the Events page, and "Add to calendar" on every event. The semester's calendar is published three weeks before classes start, and later events at least two weeks ahead. Spring events keep the Tuesday slot.
 - **Each event page states its access** plainly (step-free or not, seating, food and its main allergens). Check-in keeps working without a connection and syncs later. A released waitlist place is held for the next person for 12 hours (or until two hours before the start). Everyone who RSVP'd gets one reminder email the day before, with "Can't come? Cancel".
 - **Off-campus trips** ask an emergency contact with the trip consent, deleted a week after the trip, and the consent includes the standard acknowledgment of risk and the conduct expected (never a waiver of rights the law doesn't allow).
 
@@ -506,7 +506,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Faculty, staff and alumni** send "Request Associate membership" at the station; their page is held privately, attached on approval, and deleted if the request is declined.
   - **Writers under 18** keep their page private until a parent consents.
   - **Student IDs:** the Society never asks for a student ID number; the AUIB email is the account's identifier and is never shown publicly.
-- **The Tour lead** is a team role on the membership team, appointed by the Director of Membership (a first term applies). The lead runs the Tour and the typewriter at the fall club fair table.
+- **The Tour lead** is a team role on the membership team, appointed by the Director of Membership (a first semester applies). The lead runs the Tour and the typewriter at the fall club fair table.
 - **Needs:** 300 numbered A5 sheets, 265 stickers, 4 posters, a date stamp, a power bank, 10 pens for Arabic pages, a cart, 4 ribbons, a service, a borrowed spare and an Arabic machine, a table and two chairs per stop per day (4 sets), 4 laminated prompt cards (two per language), 4 QR signs, a scrap pad and 4 printed tally sheets.
 - **Page numbers:** TOUR-<year>-<three digits>, with the stop as its own field. 2026 pages keep their TT26- reference.
 - **The spring 2026 pages:** scanned, with consent from the import file. The slips are shredded, and the originals are offered back at the membership table; any not collected are shredded at the end of fall 2026. Pages with no email stay private: a writer claims one through Help Desk and an editor attaches it by hand. Pages still unclaimed after the spring 2027 Tour are deleted.
@@ -524,7 +524,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 | Code | Document | Kept by | What it holds |
 |---|---|---|---|
 | SAL-GOV-01 | Constitution | Secretary | Name, purpose, classes and non-discrimination, the Council, elections, meetings, advisors, removal, amendments, dissolution, Robert's Rules, no money |
-| SAL-GOV-02 | Bylaws | Secretary | Election and meeting procedure (incl. online voting), hiring and the first term, the needs procedure, records |
+| SAL-GOV-02 | Bylaws | Secretary | Election and meeting procedure (incl. online voting), hiring and the first semester, the needs procedure, records |
 | SAL-GOV-03 | Policy Manual | Secretary | Code of Conduct, safeguarding (incl. Qalam), complaints, photography and consent, charity collections, privacy in practice, sustainability, the retention schedule |
 | SAL-GOV-04 | Privacy Notice | Secretary | The site's privacy policy (public, /privacy) |
 | SAL-GOV-05 | Terms of Use | Director of Media | The site's terms, incl. submissions and copyright (/terms) |
@@ -532,8 +532,8 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 | SAL-GOV-07 | Vulnerability Disclosure Policy | Director of Media | How to report a security problem (public, /security), from CISA's template |
 | SAL-EXB-01 | Leadership Handbook | Secretary | The seats and officers, meetings in practice, needs, agreements and consents, where things live, handover; pointers to every other book |
 | SAL-EXB-02 | Annual Plan 2026–27 | President | The year's goals, the five measures (Notion's Measures database, five rows), the calendar; keeps its code each year |
-| SAL-EVT-01 | Events Manual | Director of Events | The term calendar, the standard event, access and parts, ways to run an event, leads, capacity, checklists, coverage |
-| SAL-MEM-01 | Membership Manual | Director of Membership | The Register, recruiting, joining by class, guests, the first term, Get involved, staff hours and letters, certificates, Hudhud removals |
+| SAL-EVT-01 | Events Manual | Director of Events | The semester calendar, the standard event, access and parts, ways to run an event, leads, capacity, checklists, coverage |
+| SAL-MEM-01 | Membership Manual | Director of Membership | The Register, recruiting, joining by class, guests, the first semester, Get involved, staff hours and letters, certificates, Hudhud removals |
 | SAL-MEM-02 | Member Handbook | Director of Membership | For members (public): joining, classes, taking part, voting, the Code of Conduct in brief |
 | SAL-MEM-03 | Typewriter Tour Playbook | Director of Membership | The Tour's run-of-show and procedures |
 | SAL-PTN-01 | Partnerships Manual | Director of Partnerships | Applying, the Council's vote and ending; the register; the partner's team and guests; the checklist; sponsors in kind; the Advisory Board's contacts |
@@ -570,7 +570,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Partners:** the partnership memorandum, inside the partner application.
   - **Qalam:** the mentor agreement; the parent's consents for taking part, photos and publishing, signed by each parent through their own single-use link (the school gives the parents' emails with its application, and the teacher gets a copy of each signed consent). Signing makes the parent's guest account with the "Parent" role and the student's guest account with the "Qalam student" role.
   - **Governance:** a concern, from Contact ("Raise a concern"); a motion or petition for a members' meeting, in Your account, collecting members' signatures; nominations and ballots in elections.
-- **Names, not numbers.** Each signed document type has a stable name and version (for example "media-release", version 1), which the signature record, /verify and the retention rules point to. Each signing also gets its own record number (AGR, §12's table) and a verification code, shown on the signer's copy, so every signed copy can be told apart. The F-numbers and auibsal.org/forms retire: a one-time table in the Leadership Handbook maps each old number to its new name so anything already signed still resolves, and every shared /forms address redirects to its new home. The handbook's register becomes "Agreements and consents", by name.
+- **Names, not numbers.** Each signed document type has a stable name and version (for example "media-release", version 1), which the signature record, /verify and the retention rules point to. Each signing also gets its own record number (AGR, §12's table) and a verification code, shown on the signer's copy, so every signed copy can be told apart. The F-numbers and auibsal.org/forms retire: a one-time table in the Leadership Handbook maps each old number to its new name so anything already signed still resolves, and every shared /forms address redirects to its new home. The handbook's register becomes "Agreements and consents", by name, and holds only what people sign: `code-of-conduct`, `role-agreement`, `conflict-of-interest-declaration`, `confidentiality-agreement`, `handover`, `members-meeting-motion`, `event-pitch`, `concern`, `media-release`, `partnership-memorandum`, `company-agreement`, `publication-agreement`, `trip-consent`, `parent-consent`, `qalam-mentor-agreement`, `qalam-parent-consent` and `qalam-publishing-consent`. Letters, notices, minutes, score sheets, reports, lists and checklists keep stable names too (`audition-application`, `semester-report` and so on) but are templates or records, listed in the templates index, never in the register. Signed copies live in Your account → Documents.
 - **Paper** is only a backup (photographed into the record the same day), plus the two-person cash count.
 - **One source:** the site's list of agreements and consents matches the handbook exactly, and CI checks it.
 - **Electronic signatures,** one standard everywhere (forms, memoranda, consents, nominations):
@@ -603,7 +603,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 | Tour pages | TOUR-<year>-<three digits> | TOUR-2027-001 |
 | Partnership memoranda | MOU-<year>-<three digits> | MOU-2026-001 |
 | Verification codes | random, separate from the record | auibsal.org/verify/<code> |
-| Terms | <term>-<year> | fall-2026 |
+| Semesters | <semester>-<year> | fall-2026 |
 | The Edition | Edition <n>, <year> | Edition 1, 2027 |
 | The Sunday Paper | by month | November 2026 |
 | Daily games | No. <n>, from launch day | No. 1 |
@@ -616,10 +616,10 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 |---|---|
 | Parent consents | until the member turns 18, plus three years |
 | RSVPs | two years |
-| Conflict-of-interest declarations | the term, plus one year |
+| Conflict-of-interest declarations | the role's term, plus one year |
 | Trip consents | one year |
 | Media releases | while the material is used, plus one year |
-| Audition and interview scores | one term after the decision (interview notes follow their application) |
+| Audition and interview scores | one semester after the decision (interview notes follow their application) |
 | Applications | 12 months after the decision |
 | Unpublished Write for Qirtas submissions | 12 months after the decision |
 | Removal notices | 30 days |
@@ -680,7 +680,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **Your account:** one notifications page (each kind of message by channel, with account and security emails always on); Today shows each person's next steps and clears them when done.
 - **How the interface behaves:** the main button sits at the end of its row (right in English, left in Arabic), with Cancel as a link before it, full width at the bottom on phones; buttons say what happens, in sentence case ("RSVP", "Send your work", "Apply", "Sign"), never "Submit", "OK" or "Click here"; forms have labels above fields in one column, optional fields marked, errors checked on leaving a field and listed at the top, and drafts saved as you go; the language switch keeps its corner (top right in English, top left in Arabic), named in its own language, never a flag, and keeps you on the same page; pages three levels deep show a breadcrumb; important confirmations stay on the page; lists show their outline while loading, and every empty list says what will appear and how to add the first; tap targets are at least 44 points.
 - **Accessibility:** the site won't publish an image without alt text or a video without captions in its language.
-- **The code:** semantic versions on GitHub Releases, with notes for staff only; Renovate weekly; Node's active long-term-support line, with major updates once a term; one retention scheduler (pg_cron); internal names renamed to the Society's language in one planned migration (no "programmes" or "journal"). Preview deployments stay off until Vercel Pro is provided, then return for every pull request.
+- **The code:** semantic versions on GitHub Releases, with notes for staff only; Renovate weekly; Node's active long-term-support line, with major updates once a semester; one retention scheduler (pg_cron); internal names renamed to the Society's language in one planned migration (no "programmes" or "journal"). Preview deployments stay off until Vercel Pro is provided, then return for every pull request.
 - **The frame every page shares:**
   - **The header:** the logo (home), the menu, search, the language switch, the theme toggle, then Join or the account menu.
   - **The public footer,** four short columns: The Society (About, the Council, Press, Partners, Contact); Take part (Join, Get involved, Events, Write for Qirtas); Read and watch (Qirtas, Editions, Next Stop, The Company, The Sunday Paper sign-up); Policies (Privacy, Terms, Accessibility, Code of Conduct, Security). Then the social links, "Raise a concern", the postal address, "Paperless by default. Books reused through Second Chapter." and "© 2026 AUIB Society of Arts and Letters. All rights reserved." (a range, 2026–<year>, from 2027). Qirtas's pages add that each piece belongs to its writer under the license shown on it.
@@ -712,7 +712,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Announcements** (openings, calls, elections and results, a new episode or production, policy changes): written once in the Diwan (The Council → Announcements), in English and Arabic. Media drafts; the President approves and sends after a test to the President in both languages (any change clears the test); the Vice President while the President is away.
     - **Sending one** publishes it in "From the Society" (§9) and, unless it is marked "post only", sends one Resend broadcast per language to the "Society news and events" topic, posts it in the members' group's Announcements topic and sends Hudhud's notice to each linked member who keeps notices on. Media makes the Instagram post or story from it.
     - **At most one announcement email a week;** anything else waits for the Sunday Paper.
-  - **Events** live on their own page. People hear of them through the Events page, Hudhud's post (three weeks ahead) and reminder (two days before), the Sunday Paper, and the term's events announcement; those who RSVP get emails about changes, cancellations and waitlist places. An event is never an announcement email of its own.
+  - **Events** live on their own page. People hear of them through the Events page, Hudhud's post (three weeks ahead) and reminder (two days before), the Sunday Paper, and the semester's events announcement; those who RSVP get emails about changes, cancellations and waitlist places. An event is never an announcement email of its own.
   - **The Sunday Paper,** monthly, to its own topic (§9).
   - **Personal and staff messages:** account, security, application, form and RSVP emails go to one person and have no topic; staff alerts go to the team's topic in the Diwan group and the Diwan's Desk, never by bulk email.
 - **The mailing list (CAN-SPAM; the Gmail and Yahoo sender rules):** one audience for every bulk email, with two topics a reader can leave separately: "The Sunday Paper" and "Society news and events". Every email has one-click unsubscribe from everything and a no-login preferences page.
@@ -802,17 +802,17 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **The launch film** (vertical, about 27 seconds; English and Arabic versions; on-screen text only, no voice), remade to feel made for students, impressive, literary and fun at once: the motto typed on paper; "Write for Qirtas." over the live submit page; "Ride with Next Stop." as the bus pulls in; "Take the stage." as the Company's curtain opens; a montage of Qirtas's sections; then "Join the Society at auibsal.org/join", the page pulled out onto crimson and the sound logo. It keeps the original score, with every scene on the beat. The owner approves it and Media posts it.
   - **No "free" anywhere public:** the Society's videos, posts, site and emails never sell membership as free; everyone knows it is.
   - **The kit:** a "Write for Qirtas" post is added, and the old Edition's-call post is retired.
-  - **Posts:** each event gets its own post, titled for what it is, once its room is confirmed. There is no standing weekly post. The term calendar goes out once as a "This spring's events" carousel, and "Get involved" goes with the open call. A story may go out on an event's day.
+  - **Posts:** each event gets its own post, titled for what it is, once its room is confirmed. There is no standing weekly post. The semester calendar goes out once as a "This spring's events" carousel, and "Get involved" goes with the open call. A story may go out on an event's day.
   - **Icons:** Instagram and the members' group use the Bookmark in white on crimson; the Diwan group uses it in white on ink; Hudhud keeps the hoopoe.
 - **YouTube (@auibsal):** Next Stop's episodes and specials and Qirtas's longer films, embedded on the site. Short clips go to Instagram Reels. Footage lives on three Society-owned drives (working, backup and archive).
 - **LinkedIn (@auibsal):** a Society page, posting about once a month, for partners, alumni and staff.
 - **The platforms, settled:** Instagram, YouTube and LinkedIn for publishing; Telegram (the members' group, the Diwan and Hudhud) for talk. **Not used:** TikTok, X, Threads, Facebook, WhatsApp, Snapchat, and no public Telegram channel (the members' group's Announcements topic does that job).
 - **One profile everywhere:** "AUIB Society of Arts and Letters", @auibsal, the Bookmark in white on crimson, the motto line as the bio, auibsal.org as the link (Instagram keeps its three links and no link-in-bio service); each platform's banner from one template in the kit.
-- **Posting:** at least two posts a week in term (an event, a piece from Qirtas or a call), planned a month ahead in Notion's Plans; templates for every kind of post in the kit, in both languages and both sizes; shared (collab) posts with @auibaghdad and partner clubs for big moments.
+- **Posting:** at least two posts a week in the semester (an event, a piece from Qirtas or a call), planned a month ahead in Notion's Plans; templates for every kind of post in the kit, in both languages and both sizes; shared (collab) posts with @auibaghdad and partner clubs for big moments.
 - **YouTube:** playlists by show and season, a channel trailer, the sound logo opening landscape videos, chapters, English and Arabic captions, the end screen, and comments off.
 - **LinkedIn:** the one sentence as the About; the Editions and the annual report as the main posts; role holders invited to list their roles; partners tagged with their consent.
 - **Old posts:** checked once: accurate ones stay as history; small errors are fixed in the caption with a note; anything with a retired name, "free", wrong facts or people without a release is archived (hidden, not deleted). The fall 2026 club fair footage stays unposted.
-- **Archives:** once a term, the Instagram, Telegram and YouTube downloads go into the Society's archive.
+- **Archives:** once a semester, the Instagram, Telegram and YouTube downloads go into the Society's archive.
 - **Practice on every channel:**
   - alt text on images and captions on videos (ADA, WCAG 2.2 AA);
   - staff never post as the Society from personal accounts;
@@ -822,7 +822,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - headlines in one color with no accent word.
 - **Email standards:** DMARC moves to quarantine and then reject after 30 days of clean reports; every email has a plain-text version; the mailing list sends from news.auibsal.org, with replies to hello@ and qirtas@; the list starts with recently active members before everyone, keeping complaints under 0.1%.
 - **The Sunday Paper** goes at 10:00 a.m. Baghdad time on the first Sunday, scheduled the evening before after the test; each issue has its own address and appears in search.
-- **Hudhud's Sunday note:** one post each Sunday in term (any week with an event or an open call; a week with neither gets no note) in the members' group listing the week's events and open calls, plus the two-day reminders, in place of a post for each new event.
+- **Hudhud's Sunday note:** one post each Sunday in the semester (any week with an event or an open call; a week with neither gets no note) in the members' group listing the week's events and open calls, plus the two-day reminders, in place of a post for each new event.
 - **Every email carries:** one clear subject; the action first, then the detail; one button; the record number where there is one; why the person is getting it; and, unless it's account or security, a link to preferences. Sender names: "AUIB Society of Arts and Letters" for the site and announcements, "Qirtas" for the Sunday Paper, a person's name and seat for letters. Bulk emails start with "View in your browser", and unsubscribing lands on a page that confirms it and offers topics. Every email can be previewed in both languages on the Diwan's design page, with a test to yourself.
 - **Staff alerts:** urgent ones at once; the rest in one daily digest.
 - **The name held everywhere:** @auibsal is registered, without posting, on TikTok, X, Threads, Facebook and Snapchat, each pointing to auibsal.org.
@@ -903,7 +903,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **AUIB's week:** classes run Sunday to Wednesday, 8:00 a.m. to 2:00 p.m. (some until 5:00 p.m.). On Thursdays only ELA students and some labs are on campus. Friday is off, and Saturday is only for invited or RSVP events. The Society schedules around it, and holds no events in finals week (fall 2026 finals end Thu Dec 17).
 - **Fall 2026:**
   - **Sun Nov 15:** Next Stop's filming request goes to Student Life (the Secretary).
-  - **Wed Nov 18, 2:15–3:45 p.m.: the first Council meeting** (agenda sent Mon Nov 16). It ratifies the founding team's actions and every decision in this file up to the meeting; sets the term calendar and the room; plans general meetings; records the President's absence; approves the open call; and covers the founding team's GPA check, the Faculty Advisor invitation and the Founding Proposal's timeline. The launch is reported, not decided.
+  - **Wed Nov 18, 2:15–3:45 p.m.: the first Council meeting** (agenda sent Mon Nov 16). It ratifies the founding team's actions and every decision in this file up to the meeting; sets the semester calendar and the room; plans general meetings; records the President's absence; approves the open call; and covers the founding team's GPA check, the Faculty Advisor invitation and the Founding Proposal's timeline. The launch is reported, not decided.
   - **Sun Nov 22:** the May applicants' deadline to apply on Get involved; two-step sign-in set up at the next sign-in by every role that sees personal data; Haven's call sent as the first announcement (by this date).
   - **Wed Nov 25:** the founding team's GPA list goes to Student Life, and the Faculty Advisor invitation goes out.
   - **Tue Dec 1, 2:30–4:00 p.m.: the pilot,** a reading with a guest (the station access is tested).
@@ -916,7 +916,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Sun Dec 20:** the President's notice to Student Life.
 - **Spring 2027** (assuming classes start Sun Feb 7):
   - **Executive Board approval** of the directors by Thu Jan 14. The President is abroad Jan 24 – May 15.
-  - **Tuesday events, 2:30–4:00 p.m., one room,** confirmed at the start of term: Feb 16, Feb 23, Mar 2, Mar 16, Mar 23, Apr 6, Apr 13, Apr 20, Apr 27, May 4, May 11 (none on Feb 9 or Mar 9).
+  - **Tuesday events, 2:30–4:00 p.m., one room,** confirmed at the start of the semester: Feb 16, Feb 23, Mar 2, Mar 16, Mar 23, Apr 6, Apr 13, Apr 20, Apr 27, May 4, May 11 (none on Feb 9 or Mar 9).
   - **General meetings:** Feb 17, Mar 3, Mar 17, Mar 31, Apr 14, Apr 28, May 12.
   - **Tue Mar 30, 2:30–4:00 p.m.:** the Founding Meeting.
   - **Fri Apr 23:** the trip to al-Mutanabbi Street, the Earth Day event (backup Apr 30), with written Student Life approval.

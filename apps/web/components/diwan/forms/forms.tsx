@@ -43,6 +43,17 @@ export const useFormTypes = () => {
   });
 };
 
+/** A kind's title from the database, in the page's language. */
+export const kindTitle = (
+  type: Pick<FormType, "title_ar" | "title_en"> | undefined,
+  locale: string
+) => {
+  if (!type) {
+    return;
+  }
+  return locale === "ar" ? type.title_ar : type.title_en;
+};
+
 const FormTitle = ({ formKey }: { formKey: string }) => {
   const t = useTranslations("diwan.forms.defs");
   return <>{t(`${formKey}.title` as Parameters<typeof t>[0])}</>;
@@ -167,6 +178,86 @@ const SentList = ({ limit }: { readonly limit?: number }) => {
             {s.subject_user_id === user?.id && s.submitted_by !== user?.id
               ? ` · ${t("aboutYou")}`
               : ""}
+          </span>
+        </li>
+      ))}
+    </RowList>
+  );
+};
+
+interface Signed {
+  form_key: string;
+  form_version: number;
+  id: string;
+  reference: string | null;
+  signed_at: string;
+  verification_code: string | null;
+}
+
+/**
+ * What this person has signed (decisions.md, Documents and forms: "Signed
+ * copies live in Your account → Documents"): each agreement or consent with
+ * its record number and its check link.
+ */
+export const SignedList = () => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale() as Locale;
+  const { supabase, user } = useAuth();
+  const types = useFormTypes();
+  const titleOf = (key: string) =>
+    kindTitle(
+      types.data?.find((k) => k.key === key),
+      locale
+    ) ?? key;
+  const signed = useQuery({
+    enabled: Boolean(user),
+    queryFn: async (): Promise<Signed[]> =>
+      (unwrap(
+        await supabase
+          .schema("governance")
+          .from("form_submissions")
+          .select(
+            "id, form_key, form_version, reference, verification_code, signed_at"
+          )
+          .eq("submitted_by", user?.id ?? "")
+          .not("signed_at", "is", null)
+          .order("signed_at", { ascending: false })
+      ) ?? []) as Signed[],
+    queryKey: ["forms", "signed", user?.id],
+  });
+  if (signed.isPending) {
+    return <SectionSpinner />;
+  }
+  const rows = signed.data ?? [];
+  if (rows.length === 0) {
+    return <p className="type-body text-text-secondary">{t("noSigned")}</p>;
+  }
+  return (
+    <RowList>
+      {rows.map((s) => (
+        <li
+          className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
+          key={s.id}
+        >
+          <Link className="link" href={`/account/documents/signed/${s.id}`}>
+            {titleOf(s.form_key)}
+          </Link>
+          <span className="type-caption">
+            {[
+              s.reference,
+              t("version", { version: String(s.form_version) }),
+              formatLongDate(s.signed_at, locale, true),
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+            {s.verification_code ? (
+              <>
+                {" · "}
+                <Link className="link" href={`/verify/${s.verification_code}`}>
+                  {t("check")}
+                </Link>
+              </>
+            ) : null}
           </span>
         </li>
       ))}

@@ -97,7 +97,7 @@ $$;
 -- role, before the conflict-of-interest declaration; people who already
 -- held a role are asked on Today until they sign (the fifth prompt, 2).
 
-select plan(14);
+select plan(22);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000ab001', 'holder@auib.edu.iq', 'Role Holder');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000ab002', 'other@auib.edu.iq', 'Someone Else');
@@ -131,6 +131,41 @@ select is((select signer_name from access.role_agreements where assignment_id = 
   private.register_name('00000000-0000-0000-0000-0000000ab001'), 'In the name the register holds');
 select is(private.role_agreement_missing('00000000-0000-0000-0000-0000000ab001'), false,
   'Nothing waits now');
+
+-- Each signing is a signature record of the kind "role-agreement" (the
+-- seventh prompt, 1): its AGR number, its check, Documents.
+select is((select s.form_key from access.role_agreements g
+  join governance.form_submissions s on s.id = g.submission_id
+  where g.assignment_id = '00000000-0000-0000-0000-0000000ab0a1'), 'role-agreement',
+  'The role agreement is a signature record');
+select matches((select s.reference from access.role_agreements g
+  join governance.form_submissions s on s.id = g.submission_id
+  where g.assignment_id = '00000000-0000-0000-0000-0000000ab0a1'), '^AGR-[0-9]{4}-[0-9]{4}$',
+  'with its AGR number');
+select is((select kind from governance.verify_agreement((select s.verification_code
+  from access.role_agreements g join governance.form_submissions s on s.id = g.submission_id
+  where g.assignment_id = '00000000-0000-0000-0000-0000000ab0a1'))), 'role-agreement',
+  'checkable at /verify');
+select is((select count(*)::int from core.outbox where kind = 'forms.signed_copy'
+  and payload ->> 'submission_id' = (select submission_id::text from access.role_agreements
+    where assignment_id = '00000000-0000-0000-0000-0000000ab0a1')), 1,
+  'and the signer is emailed a copy');
+
+-- The Code of Conduct, accepted on joining, is one too.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000ab002');
+select lives_ok($$ select membership.accept_pledge('member', membership.current_pledge_version('member')) $$,
+  'A member accepts the Code of Conduct');
+select pg_temp.logout();
+select is((select s.form_key from membership.pledges p
+  join governance.form_submissions s on s.id = p.submission_id
+  where p.user_id = '00000000-0000-0000-0000-0000000ab002' and p.pledge_type = 'member'), 'code-of-conduct',
+  'and it is a signature record of the kind "code-of-conduct"');
+select isnt((select s.verification_code from membership.pledges p
+  join governance.form_submissions s on s.id = p.submission_id
+  where p.user_id = '00000000-0000-0000-0000-0000000ab002' and p.pledge_type = 'member'), null,
+  'with its check');
+select is((select count(*)::int from governance.form_types where in_register), 17,
+  'The register holds the seventeen kinds people sign');
 
 -- Someone who has held a role for a year is asked too, on Today, and
 -- nothing is recorded for them until they sign.

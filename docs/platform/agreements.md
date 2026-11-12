@@ -1,72 +1,90 @@
 # Agreements and consents: names, not numbers
 
 decisions.md (Documents and forms: "Names, not numbers") retires the
-F-numbers and auibsal.org/forms. Each kind of agreement, consent, letter or
-record has a stable **name** and **version** (`media-release`, version 1),
-which the signature record, `/verify` and the retention rules point to:
+F-numbers and auibsal.org/forms. Each kind has a stable **name** and
+**version** (`media-release`, version 1), which the signature record,
+`/verify` and the retention rules point to:
 
-- **The kind:** `governance.form_types.key` is the name; `version` is its
-  version; `legacy_number` keeps the old F-number, the one-time mapping
+- **The kind:** `governance.form_types.key` is the name and `version` its
+  version. `legacy_number` keeps the old F-number, the one-time mapping
   below, so anything signed or shared under it still resolves.
+  `in_register` marks the kinds people sign.
 - **Each signing:** its own record number (`form_submissions.reference`,
   AGR-<year>-<four digits>, given on signing) and a verification code
-  (`verification_code`), both on the signer's copy and its email;
+  (`verification_code`), both on the signer's copy and its email.
   `/verify/<code>` shows the kind, version, record number, signer, date and
-  fingerprint (`governance.verify_agreement`), never the answers.
+  fingerprint (`governance.verify_agreement`), never the answers. Signed
+  copies are kept in Your account → Documents (`/account/documents`, each at
+  `/account/documents/signed/<id>`).
 - **Addresses:** every shared `/forms` address (`/forms/21`, `/forms/F-21`,
-  `/forms/f21`, `/forms/f-21`, and `/forms/<name>`) redirects (308) to the
-  kind's place in its flow (`formRedirects` in `lib/data/form-paths.ts`);
-  `/forms` itself goes to Your account → Record, where signed copies are kept.
-- **The register:** the Leadership Handbook's register is "Agreements and
-  consents" (SAL-EXB-01), by name, one toggle per kind headed
-  "<name> · <Title>"; `bun run check:forms` compares it with the site.
+  `/forms/f21`, `/forms/f-21` and `/forms/<name>`) redirects (308) to the
+  kind's place in its flow (`formRedirects` in `lib/data/form-paths.ts`).
+  `/forms` itself, and any other old form address, goes to Documents.
 
-## The one-time mapping
+## The register
 
-F-08, F-22, F-31 and F-44 were retired before this change and have no
-name.
+The Leadership Handbook's register, "Agreements and consents"
+(SAL-EXB-01), holds only what people sign: one toggle per kind, headed
+"<name> · <Title>". `bun run check:forms` compares it with the kinds marked
+`in_register` (`registerKinds` in `lib/data/forms.ts`).
 
-| Old number | Name | Title | Signed |
+| Name | Title | Old number | Signed |
 |---|---|---|---|
-| F-01 | `role-application` | Role application | In its page on the site |
-| F-02 | `interview-score-sheet` | Interview score sheet | In its page on the site |
-| F-03 | `appointment-letter` | Appointment letter | Notion template |
-| F-04 | `role-holder-checklist` | New role holder’s checklist | In its page on the site |
-| F-05 | `service-letter` | Service letter | Notion template |
-| F-06 | `conflict-of-interest-declaration` | Conflict-of-interest declaration | `/account/settings/disclosures/declare` |
-| F-07 | `handover` | Handover page | Notion template |
-| F-09 | `council-minutes` | Council meeting agenda and minutes | Notion template |
-| F-10 | `members-meeting-motion` | Motion for a members’ meeting | `/account/elections/motion` |
-| F-11 | `event-pitch` | Event pitch | `/get-involved/propose-an-event` |
-| F-12 | `event-plan` | Event plan and risk check | Notion template |
-| F-13 | `event-debrief` | Event debrief | Notion template |
-| F-14 | `semester-report` | Semester report | Notion template |
-| F-15 | `media-release` | Media release | `/consent/media-release` |
-| F-16 | `incident-report` | Incident report | Notion template |
-| F-17 | `partnership-memorandum` | Partnership memorandum | `/partners/dashboard/memorandum/sign` |
-| F-18 | `needs-list` | Needs list | Notion template |
-| F-19 | `student-life-request` | Request to Student Life | Notion template |
-| F-20 | `charity-collection-count` | Charity collection count and handover | On paper |
-| F-21 | `concern` | Concern | `/about/contact/concern` |
-| F-23 | `tour-tally` | Tour tally | Notion template |
-| F-24 | `audition-form` | Audition form | In its page on the site |
-| F-25 | `audition-score-sheet` | Audition score sheet | In its page on the site |
-| F-26 | `company-agreement` | Company agreement | `/company/agreement` |
-| F-27 | `stage-risk-checklist` | Stage manager’s risk checklist | Notion template |
-| F-28 | `rights-request-letter` | Rights request letter | Notion template |
-| F-29 | `faculty-advisor-invitation` | Faculty Advisor invitation | Notion template |
-| F-30 | `thank-you-letter` | Thank-you to a partner or sponsor | Notion template |
-| F-32 | `application-outcome` | Application outcome | Notion template |
-| F-33 | `welcome-letter` | Welcome to new members | Notion template |
-| F-34 | `honorary-membership-invitation` | Honorary Membership invitation | Notion template |
-| F-35 | `members-meeting-notice` | Notice of a members’ meeting | Notion template |
-| F-36 | `election-notice` | Notice of election | Notion template |
-| F-37 | `qalam-mentor-agreement` | Qalam mentor agreement | `/get-involved/qalam-mentor-agreement` |
-| F-38 | `qalam-parent-consent` | Qalam parental consent | `/consent/qalam` |
-| F-39 | `qalam-publishing-consent` | Qalam publishing consent | `/consent/qalam-publishing` |
-| F-40 | `confidentiality-agreement` | Confidentiality pledge | In its page on the site |
-| F-41 | `reader-score-sheet` | Reader score sheet | In its page on the site |
-| F-42 | `author-letters` | Author letters | In its page on the site |
-| F-43 | `publication-agreement` | Publication Agreement | In its page on the site |
-| F-45 | `trip-consent` | Trip consent | `/consent/trip` |
-| F-46 | `parent-consent` | Parent’s consent for a member under 18 | `/consent/parent` |
+| `code-of-conduct` | Code of Conduct | none | On joining (sign-up) |
+| `role-agreement` | Role agreement | none | On accepting a role, from Today |
+| `conflict-of-interest-declaration` | Conflict-of-interest declaration | F-06 | `/account/settings/disclosures/declare` |
+| `confidentiality-agreement` | Confidentiality pledge | F-40 | The reading page |
+| `handover` | Handover page | F-07 | Leaving a role (a Notion page for now) |
+| `members-meeting-motion` | Motion for a members’ meeting | F-10 | `/account/elections/motion` |
+| `event-pitch` | Event pitch | F-11 | `/get-involved/propose-an-event` |
+| `concern` | Concern | F-21 | `/about/contact/concern` |
+| `media-release` | Media release | F-15 | `/consent/media-release` |
+| `partnership-memorandum` | Partnership memorandum | F-17 | `/partners/dashboard/memorandum/sign` |
+| `company-agreement` | Company agreement | F-26 | `/company/agreement` |
+| `publication-agreement` | Publication Agreement | F-43 | Your account → Work, on acceptance |
+| `trip-consent` | Trip consent | F-45 | `/consent/trip` |
+| `parent-consent` | Parent’s consent for a member under 18 | F-46 | `/consent/parent` (a parent’s single-use link) |
+| `qalam-mentor-agreement` | Qalam mentor agreement | F-37 | `/get-involved/qalam-mentor-agreement` |
+| `qalam-parent-consent` | Qalam parental consent | F-38 | `/consent/qalam` (each parent’s single-use link) |
+| `qalam-publishing-consent` | Qalam publishing consent | F-39 | `/consent/qalam-publishing` (each parent’s single-use link) |
+
+## The templates index
+
+Letters, notices, minutes, score sheets, reports, lists and checklists
+keep stable names too but are templates or records, never in the register.
+
+| Name | Title | Old number | Kept |
+|---|---|---|---|
+| `role-application` | Role application | F-01 | In its page on the site |
+| `interview-score-sheet` | Interview score sheet | F-02 | In its page on the site |
+| `appointment-letter` | Appointment letter | F-03 | Notion template, sent on the one letter template |
+| `role-holder-checklist` | New role holder’s checklist | F-04 | In its page on the site |
+| `service-letter` | Service letter | F-05 | On the site, from the record |
+| `council-minutes` | Council meeting agenda and minutes | F-09 | Notion template |
+| `event-plan` | Event plan and risk check | F-12 | Notion template |
+| `event-debrief` | Event debrief | F-13 | Notion template |
+| `semester-report` | Semester report | F-14 | Notion template |
+| `incident-report` | Incident report | F-16 | Notion template |
+| `needs-list` | Needs list | F-18 | Notion template |
+| `student-life-request` | Request to Student Life | F-19 | Notion template |
+| `charity-collection-count` | Charity collection count and handover | F-20 | On paper |
+| `tour-tally` | Tour tally | F-23 | Notion template |
+| `audition-application` | Audition application | F-24 | In its page on the site |
+| `audition-score-sheet` | Audition score sheet | F-25 | In its page on the site |
+| `stage-risk-checklist` | Stage manager’s risk checklist | F-27 | Notion template |
+| `rights-request-letter` | Rights request letter | F-28 | Notion template |
+| `faculty-advisor-invitation` | Faculty Advisor invitation | F-29 | Notion template |
+| `thank-you-letter` | Thank-you to a partner or sponsor | F-30 | Notion template |
+| `application-outcome` | Application outcome | F-32 | Notion template |
+| `welcome-letter` | Welcome to new members | F-33 | Notion template |
+| `honorary-membership-invitation` | Honorary Membership invitation | F-34 | Notion template |
+| `members-meeting-notice` | Notice of a members’ meeting | F-35 | Notion template |
+| `election-notice` | Notice of election | F-36 | Notion template |
+| `reader-score-sheet` | Reader score sheet | F-41 | In its page on the site |
+
+## Retired numbers
+
+F-08, F-22, F-31 and F-44 were retired before the names. F-42, the
+"author letters" (the letters to a Write for Qirtas author about a
+decision), retired with the names: the site sends those as its decision
+emails (`qirtas.decision`). Their old `/forms` addresses go to Documents.

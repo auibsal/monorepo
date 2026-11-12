@@ -14,6 +14,35 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the seventh prompt (Nov 12)
+
+- [x] **Mirror:** `claude/decisions.md` and `claude/glossary_ar.md`
+  replaced.
+- [x] **1. The register holds only what people sign:** seventeen kinds
+  (`governance.form_types.in_register`, `registerKinds`); `code-of-conduct`
+  and `role-agreement` are kinds, and every signing of them, of the readers'
+  pledge and of the Publication Agreement is a signature record with its AGR
+  number and its check at /verify (`private.record_signing`,
+  `20261113003900_register_kinds.sql`; the 43 Code of Conduct acceptances
+  already in production get theirs at the time accepted, without email).
+  The rest are templates or records, in the templates index
+  (`docs/platform/agreements.md`); `check:forms` compares only the register.
+- [x] **2. Renames:** `audition-form` → `audition-application`;
+  `author-letters` retired (the site's decision emails are those letters).
+- [x] **3. Documents:** the tab is Documents (`/account/documents`), with
+  the signed copies first (`/account/documents/signed/<id>`); `/forms` and
+  `/account/record` redirect there.
+- [x] **4. "Semester," not "term":** in the copy, comments and docs; "term"
+  stays for a term of office; the language check refuses "in term", "term
+  calendar", "first term" and the like.
+- [x] **5. AUIB's Arabic name:** always «الجامعة الأمريكية في بغداد» but in
+  the Society's name and Qirtas's line; the language check enforces it (the
+  copy already did).
+- **Governance chat:** the register's seventeen kinds and the templates
+  index, in `docs/platform/agreements.md`.
+- **Still a Notion page:** `handover` is in the register but signed in
+  Notion, not yet on the site.
+
 ## Now: the sixth prompt (Nov 12)
 
 - [x] **Mirror:** `claude/decisions.md` replaced.
@@ -33,9 +62,6 @@ fourth prompts (Nov 12).
   checked at `/verify/<code>`; every shared `/forms` address redirects;
   `check:forms` compares the register "Agreements and consents" by name
   (`20261113003700_agreement_names.sql`, `docs/platform/agreements.md`).
-- **Governance chat:** match EXB-01 to the names in
-  `docs/platform/agreements.md` (the register "Agreements and consents",
-  one toggle per kind headed "<name> · <Title>", plus the one-time table).
 
 ## Now: the fifth prompt (Nov 12, morning)
 
@@ -161,7 +187,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   column.
 - [x] **7m. The Library's groups** from Notion's "For" field (Everyone,
   Members, Staff), not from the code.
-- [x] **7n. The Sunday note's "in term"** (a week with an event or an open
+- [x] **7n. The Sunday note's "in the semester"** (a week with an event or an open
   call), now in decisions.md.
 - [x] **7o. GOV-07's Arabic title** on the site: «سياسة الإبلاغ عن الثغرات
   الأمنية».
@@ -465,7 +491,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   Loader and minify off). The exact steps are in `docs/platform/settings.md`.
 
 ### 10. Hudhud and Telegram
-- [x] Hudhud's Sunday note each Sunday in term (the week's events and the
+- [x] Hudhud's Sunday note each Sunday in the semester (the week's events and the
   open calls), with the two-day reminders, in place of a post for each new
   event; a week with neither has no note. **Migrates:** the
   `sunday_note` post kind.

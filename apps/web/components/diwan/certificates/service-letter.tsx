@@ -48,7 +48,7 @@ export const ServiceLetter = () => {
   }
   if (!letter.data) {
     return (
-      <EmptyLine action={{ href: "/account/record", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/documents", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );

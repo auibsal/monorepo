@@ -279,7 +279,7 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
   const now = new Date();
   const state = (a: Assignment) => {
     if (access.isActiveAssignment(a, now)) {
-      // New team members and appointees serve their first term on
+      // New team members and appointees serve their first semester on
       // probation, then are confirmed (decisions.md).
       return a.confirmed_at ? t("active") : t("probation");
     }
@@ -320,7 +320,7 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
     { cell: state, header: "", key: "state" },
     {
       // Student Life's GPA answer for a Council seat; not eligible gives
-      // one term to recover (Bylaws 4.6).
+      // one semester to recover (Bylaws 4.6).
       cell: (a) => {
         if (a.student_life_answer === "not_eligible" && a.recovery_by) {
           return t("recoveryBy", {

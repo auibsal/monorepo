@@ -80,6 +80,7 @@ export type Database = {
           assignment_id: string;
           signed_at: string;
           signer_name: string;
+          submission_id: string | null;
           user_id: string;
           version: string;
         };
@@ -88,6 +89,7 @@ export type Database = {
           assignment_id: string;
           signed_at?: string;
           signer_name: string;
+          submission_id?: string | null;
           user_id: string;
           version: string;
         };
@@ -95,6 +97,7 @@ export type Database = {
           assignment_id?: string;
           signed_at?: string;
           signer_name?: string;
+          submission_id?: string | null;
           user_id?: string;
           version?: string;
         };
@@ -2816,8 +2819,9 @@ export type Database = {
           by_link: boolean;
           filled: string;
           handle_permission: string;
+          in_register: boolean;
           key: string;
-          legacy_number: string;
+          legacy_number: string | null;
           needs_account: boolean;
           ongoing: boolean;
           second_signer: string | null;
@@ -2837,8 +2841,9 @@ export type Database = {
           by_link?: boolean;
           filled?: string;
           handle_permission: string;
+          in_register?: boolean;
           key: string;
-          legacy_number: string;
+          legacy_number?: string | null;
           needs_account?: boolean;
           ongoing?: boolean;
           second_signer?: string | null;
@@ -2857,8 +2862,9 @@ export type Database = {
           by_link?: boolean;
           filled?: string;
           handle_permission?: string;
+          in_register?: boolean;
           key?: string;
-          legacy_number?: string;
+          legacy_number?: string | null;
           needs_account?: boolean;
           ongoing?: boolean;
           second_signer?: string | null;
@@ -6292,6 +6298,7 @@ export type Database = {
           accepted_at: string;
           id: string;
           pledge_type: Database["membership"]["Enums"]["pledge_type"];
+          submission_id: string | null;
           user_id: string;
           version: string;
         };
@@ -6300,6 +6307,7 @@ export type Database = {
           accepted_at?: string;
           id?: string;
           pledge_type: Database["membership"]["Enums"]["pledge_type"];
+          submission_id?: string | null;
           user_id?: string;
           version: string;
         };
@@ -6307,6 +6315,7 @@ export type Database = {
           accepted_at?: string;
           id?: string;
           pledge_type?: Database["membership"]["Enums"]["pledge_type"];
+          submission_id?: string | null;
           user_id?: string;
           version?: string;
         };

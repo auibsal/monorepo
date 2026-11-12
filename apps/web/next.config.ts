@@ -52,8 +52,12 @@ const MOVED: readonly [from: string, to: string][] = [
   ["/diwan/events/:ref/door", "/diwan/events/:ref/check-in"],
   [
     "/account/record/:ref([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
-    "/account/record/certificates/:ref",
+    "/account/documents/certificates/:ref",
   ],
+  // The tab is Documents (decisions.md, Documents and forms): certificate
+  // and letter emails linked to Record.
+  ["/account/record", "/account/documents"],
+  ["/account/record/:path*", "/account/documents/:path*"],
   // Filters are query strings (decisions §6).
   ["/events/:month(\\d{4}-\\d{2})", "/events?month=:month"],
   ["/events/:month(\\d{4}-\\d{2})/society", "/events?month=:month"],

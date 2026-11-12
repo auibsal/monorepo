@@ -5,7 +5,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | English | Arabic |
 |---|---|
 | AUIB Society of Arts and Letters | جمعية الفنون والآداب في الجامعة الأمريكية (then: الجمعية) |
-| AUIB | الجامعة الأمريكية في بغداد when AUIB is named on its own (never «الجامعة الأمريكية في العراق – بغداد»); in a compound name, «الجامعة الأمريكية» alone (صحيفة الجامعة الأمريكية للأخبار والآداب والفن) |
+| AUIB | الجامعة الأمريكية في بغداد, always, in compounds too (طلبة الجامعة الأمريكية في بغداد), never «الجامعة الأمريكية في العراق – بغداد»; only the names the Society made keep «الجامعة الأمريكية» alone (the Society's name, Qirtas's line); after the first mention, «الجامعة» |
 | Student Life | شؤون الطلبة |
 | officer (one of the three: President, Vice President, Secretary) / "For a second officer" (the Desk) | مسؤول / «لمسؤول ثان» |
 | Campus Recreation Officer | مسؤول الأنشطة الترفيهية في الحرم الجامعي |
@@ -85,7 +85,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | minutes | محضر الاجتماع |
 | Robert's Rules of Order | «قواعد روبرت للنظام» |
 | amendment | تعديل |
-| the first term (probation) | فترة التجربة |
+| semester (fall, spring) / the first semester (probation) / term (of office) | الفصل الدراسي / فترة التجربة / الولاية |
 | event / event lead | فعالية / قائد الفعالية |
 | Parent account / Qalam account / Student Life (outside role) | حساب وليّ الأمر / حساب «قلم» / شؤون الطلبة (دور خارجي) |
 | Sign as … (signing) | «وقّع باسم …» |

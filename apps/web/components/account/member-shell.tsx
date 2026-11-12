@@ -26,7 +26,6 @@ interface AccountLink {
     | "today"
     | "calendar"
     | "events"
-    | "record"
     | "documents"
     | "work"
     | "elections"
@@ -79,15 +78,15 @@ export const useIsStaff = () => useWays().diwan;
 
 /**
  * The account's own pages, in one row under the site's header (decisions
- * §6): Today · Calendar · Record · Work · Elections · Settings. Get
+ * §6): Today · Calendar · Documents · Work · Elections · Settings. Get
  * involved is the header's, and the Diwan sits under the header's menu, so
  * neither is repeated here. Profile and what you sent sit under Settings.
  */
 const useAccountLinks = (): AccountLink[] => {
   const kind = useMyMembership().data?.kind ?? null;
   const today: AccountLink = {
-    // A guest's or a partner's record opens from Today.
-    also: kind === "member" ? [] : ["/account/record"],
+    // A partner's documents open from Today.
+    also: kind === "member" ? [] : ["/account/documents"],
     href: "/account",
     key: "today",
   };
@@ -107,21 +106,20 @@ const useAccountLinks = (): AccountLink[] => {
     return [
       today,
       calendar,
-      { href: "/account/record", key: "record" },
+      { href: "/account/documents", key: "documents" },
       { href: "/account/work", key: "work" },
       { href: "/account/elections", key: "elections" },
       settings,
     ];
   }
   // Guests (decisions.md, Members): Today, Events, Work, Documents and
-  // Settings; their calendar is the events they book, their record the
-  // documents they hold.
+  // Settings; their calendar is the events they book.
   return kind === "guest"
     ? [
         { ...today, also: [] },
         { ...calendar, key: "events" },
         { href: "/account/work", key: "work" },
-        { href: "/account/record", key: "documents" },
+        { href: "/account/documents", key: "documents" },
         settings,
       ]
     : [today, settings];
