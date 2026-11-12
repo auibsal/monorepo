@@ -3566,7 +3566,10 @@
           "choose": "Upload {file}",
           "done": "Uploaded.",
           "failed": "The file could not be uploaded. It must be an MP4."
-        }
+        },
+        "sendTest": "Send me a test",
+        "testSent": "Sent to your address, in English and in Arabic.",
+        "testFailed": "The test didn’t go. Try again in a few minutes."
       },
       "announcements": {
         "title": "Announcements",

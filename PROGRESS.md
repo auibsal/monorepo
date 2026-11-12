@@ -228,8 +228,9 @@ production; **Owner** is a step only the owner can take.
   a page that confirms and offers the two topics; sent from
   news.auibsal.org once `RESEND_BULK_DOMAIN` is set, with replies to
   hello@ and qirtas@.
-- [ ] Every template previewable in both languages on the design page, with
-  a test to yourself.
+- [x] Every template previewable in both languages on the design page, with
+  "Send me a test" (`/api/email/test`, staff only, ten in ten minutes),
+  both languages from the same samples (`@repo/email/samples`).
 - [x] Staff alerts: urgent at once (a removal request and its deadline, a
   failed job), the rest in one daily digest per officer (`staff.digest`:
   Get involved replies, partner applications, second-officer requests,
