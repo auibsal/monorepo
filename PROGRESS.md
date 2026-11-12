@@ -51,7 +51,10 @@ First the second prompt's part 2 (7j), then the rest in place.
   the day it is published"; security.txt points to /security; three
   business days to acknowledge.
 - [x] **5. Council meetings show as Members events.**
-- [ ] **6. Student Life's staff answer from Associate accounts.**
+- [x] **6. Student Life's staff answer from Associate accounts:** assigning
+  Student Life or the Faculty Advisor moves the account to Associate (one
+  with no class, a guest's, or a Member's made at sign-up with an AUIB
+  address); an Honorary Member stays one.
 - [ ] **7. The permissions table** for EXB-01: report where it lives.
 - [x] **7a. The stack page:** Notion on the free Plus plan for student
   organizations.
