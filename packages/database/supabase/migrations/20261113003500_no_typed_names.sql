@@ -26,6 +26,10 @@ begin
   if not found or s.author_id <> auth.uid() then
     raise exception 'Submission not found' using errcode = 'P0002';
   end if;
+  -- The name typed by an older client is ignored: the register's stands.
+  if sign_agreement.signer_name is distinct from who then
+    signer_name := who;
+  end if;
   if s.status <> 'accepted' then
     raise exception 'Only accepted work has an agreement to sign' using errcode = '22023';
   end if;
