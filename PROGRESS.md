@@ -193,8 +193,12 @@ First the second prompt's part 2 (7j), then the rest in place.
   their rows point to accounts.
 
 ### 2. Records, receipts and agreements (decisions.md, Documents and forms)
-- [ ] Every action that creates a record shows a confirmation that stays on
+- [x] Every action that creates a record shows a confirmation that stays on
   the page and emails a receipt with its record number and link.
+  Receipts were already sent for a booking, a submission (with its SUB
+  number), a signed form, an application, a partner's application and a
+  removal request; standing for a seat and a request for Associate
+  membership now send theirs too (`20261113003300_receipts.sql`).
 - [x] Undo what is still the person's: cancel an RSVP before the start;
   withdraw a submission before its decision, or an application; withdraw a
   consent or release for the future. Irreversible steps take a second step

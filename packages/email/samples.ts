@@ -3,10 +3,12 @@ import {
   agreementReminder,
   applicationDecided,
   applicationReceived,
+  associateRequestReceived,
   auditionUpdate,
   type Built,
   callOpened,
   candidacyDecided,
+  candidacyReceived,
   certificateIssued,
   concernRaised,
   cronFailed,
@@ -112,6 +114,7 @@ export const samples = {
   ApplicationApproved: (l) => applicationDecided(l, PARTNER[l], true, APP),
   ApplicationDeclined: (l) => applicationDecided(l, PARTNER[l], false, APP),
   ApplicationReceived: (l) => applicationReceived(l, PARTNER[l], APP),
+  AssociateRequestReceived: (l) => associateRequestReceived(l),
   AuditionBooked: (l) => auditionUpdate(l, audition, "signed_up", APP),
   AuditionCast: (l) => auditionUpdate(l, audition, "cast", APP),
   CallOpened: (l) =>
@@ -131,6 +134,8 @@ export const samples = {
       true,
       APP
     ),
+  CandidacyReceived: (l) =>
+    candidacyReceived(l, { title_ar: "الرئيس", title_en: "President" }, APP),
   CertificateIssued: (l) =>
     certificateIssued(
       l,

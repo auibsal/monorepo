@@ -1176,6 +1176,42 @@ const CANDIDACY: Record<
   },
 };
 
+/** A nominee's receipt: the nomination is with the Elections Committee. */
+export const candidacyReceived = (
+  lang: Lang,
+  seat: { title_ar: string; title_en: string },
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: account(app, l, "/account/elections"),
+    heading:
+      l === "ar"
+        ? `وصل ترشّحك: ${pick(l, seat.title_ar, seat.title_en)}`
+        : `Your nomination is in: ${pick(l, seat.title_ar, seat.title_en)}`,
+    paragraphs: [
+      l === "ar"
+        ? "تراجعه لجنة الانتخابات وتردّ عليك بالبريد. تجد ترشّحك وحالته في صفحة الانتخابات في حسابك."
+        : "The Elections Committee reviews it and answers you by email. Your nomination and where it stands are on Elections in your account.",
+    ],
+  }));
+
+/**
+ * A request for Associate membership (decisions.md, Members), received:
+ * the Director of Membership answers by email.
+ */
+export const associateRequestReceived = (lang: Lang) =>
+  build(lang, (l) => ({
+    heading:
+      l === "ar"
+        ? "وصل طلب العضوية المنتسبة"
+        : "Your request for Associate membership is in",
+    paragraphs: [
+      l === "ar"
+        ? "يراجعه مدير العضوية، ويصلك الردّ بالبريد خلال يومي عمل. إن قُبل، تصلك دعوة لإنشاء حسابك."
+        : "The Director of Membership reviews it and answers by email within two working days. If it is approved, an invitation to create your account follows.",
+    ],
+  }));
+
 /** A nominee: the Elections Committee's answer. */
 export const candidacyDecided = (
   lang: Lang,

@@ -101,6 +101,8 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `qirtas.revision_resent` | The writer sends back the revision the section editor asked for | That section editor | Officer |
 | `membership.parent_account` | A parent signs the consent for a member under 18 (F-46); the link makes their guest account with the Parent role | The parent | Service |
 | `membership.removed` | The Council removes a member (two thirds), approved by a second officer | The person removed | Service |
+| `governance.candidacy_received` | A member stands for a seat | The nominee: a receipt; the Elections Committee answers later | Service |
+| `membership.associate_request_received` | A request for Associate membership from /join | The address that asked: a receipt | Service |
 | `events.incident_reported` | An incident report from an event's page in the Diwan (urgent, at once); it names the event, not what happened | The Director of Events and the President | Officer |
 | `removal.requested`, `removal.overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
 | `removal.done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |

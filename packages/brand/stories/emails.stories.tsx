@@ -106,3 +106,5 @@ export const TourInvitation = email(samples.TourInvitation);
 export const PlainInvitation = email(samples.PlainInvitation);
 export const AccountDeleted = email(samples.AccountDeleted);
 export const StaffDigest = email(samples.StaffDigest);
+export const AssociateRequestReceived = email(samples.AssociateRequestReceived);
+export const CandidacyReceived = email(samples.CandidacyReceived);

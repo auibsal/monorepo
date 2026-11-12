@@ -14,11 +14,13 @@ import {
   announcement,
   applicationDecided,
   applicationReceived,
+  associateRequestReceived,
   auditionUpdate,
   type Built,
   type Lang as CopyLang,
   callOpened,
   candidacyDecided,
+  candidacyReceived,
   certificateIssued,
   concernRaised,
   contactField,
@@ -1293,6 +1295,30 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
+  "governance.candidacy_received": async (admin, payload) => {
+    const [to, { data }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("governance")
+        .from("candidates")
+        .select("position:positions(title_en, title_ar)")
+        .eq("id", String(payload.candidate_id))
+        .maybeSingle(),
+    ]);
+    if (to && data?.position) {
+      await send(
+        to,
+        candidacyReceived(
+          to.lang,
+          {
+            title_ar: data.position.title_ar ?? "",
+            title_en: data.position.title_en,
+          },
+          appUrl()
+        )
+      );
+    }
+  },
   // Urgent staff alerts, at once (fourth prompt, 7p): a concern to the
   // complaints panel's chair, the Vice President (decisions.md,
   // Governance); an incident report to the Director of Events and the
@@ -1361,6 +1387,20 @@ const handlers: Record<string, Handler> = {
       .rpc("forget_invitation_list", { list_source: source });
     if (gone) {
       throw gone;
+    }
+  },
+  "membership.associate_request_received": async (admin, payload) => {
+    const { data } = await admin
+      .schema("membership")
+      .from("associate_requests")
+      .select("email")
+      .eq("id", String(payload.request_id))
+      .maybeSingle();
+    if (data?.email) {
+      await send(
+        { email: data.email, lang: "en" },
+        associateRequestReceived("en")
+      );
     }
   },
   "membership.certificate_issued": async (admin, payload) => {
