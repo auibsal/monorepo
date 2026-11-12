@@ -6,9 +6,10 @@
  *
  * Hudhud speaks Iraqi Arabic (decisions.md): he is the Society's
  * voice in the chat, so his Arabic is the Arabic members speak to each
- * other, with the Iraqi spelling (گ for the g sound). Only the bot's
- * Telegram profile (description, shortDescription) stays in standard
- * Arabic.
+ * other, with the Iraqi spelling (گ for the g sound): chat, reminders and
+ * the Sunday note. The bot's Telegram profile (description,
+ * shortDescription) and anything formal (a removal, a consent, an appeal)
+ * stay in standard Arabic (fourth prompt, 7g).
  */
 
 export type Lang = "en" | "ar";
@@ -337,8 +338,11 @@ const ar: Copy = {
   qirtasNone: "ماكو شي جديد بقرطاس هسه. النصوص الجاية بالطريق.",
 
   qirtasTitle: "<b>الجديد بقرطاس</b>",
+  // A removal is said in standard Arabic: Iraqi is for chat, reminders and
+  // the Sunday note; removals, consents and appeals are standard (fourth
+  // prompt, 7g).
   removalWarning: (name: string) =>
-    `${name}، هالمجموعة لأعضاء الجمعية، وما لگيت حسابك بالجمعية. سجّل على ⁦auibsal.org⁩ واربط حسابك هنا خلال أسبوع، وإلا راح أضطر أطلّعك من المجموعة. موظفي الحياة الطلابية والمشرف من الهيئة التدريسية ما يشملهم هذا.`,
+    `${name}، هذه المجموعة لأعضاء الجمعية، ولم أجد حسابك فيها. انضم على ⁦auibsal.org⁩ واربط حسابك هنا خلال أسبوع، وإلا فسأضطر إلى إخراجك من المجموعة. ولا يشمل ذلك موظفي شؤون الطلبة ولا المستشار من أعضاء هيئة التدريس.`,
   rsvpAlready: "عندك مقعد من قبل.",
   rsvpCancelled: "تم. مقعدك صار فارغ لغيرك.",
   rsvpClosed: "هالفعالية ما بيها حجز.",

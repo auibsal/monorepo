@@ -330,10 +330,12 @@ everywhere:
 - **Arabic:** Modern Standard Arabic for the site, your account, the
   Diwan, emails, documents, certificates and Qirtas, written by Claude
   with no native-review gate; Iraqi Arabic (with گ، چ، پ) only where the
-  Society chats: Hudhud's copy, social captions and stories, signs at the
-  door. Never both in one message. Latin digits, the Iraqi month names
-  (`ar-IQ`), ، ؛ ؟ and «», tanween on the letter before the alif
-  (شكرًا), one word per term (`claude/glossary_ar.md`).
+  Society chats: Hudhud's chat, reminders and Sunday note, social captions
+  and stories, signs at the door; Hudhud's removals, consents and appeals
+  are standard. Never both in one message. Latin digits, the Iraqi month
+  names (`ar-IQ`), ، ؛ ؟ and «», tanween al-fath on the letter before the
+  alif (شكرًا) and no other tanween, no tatweel, Latin addresses isolated
+  (⁦…⁩ or `<bdi>`), one word per term (`claude/glossary_ar.md`).
   `scripts/check-language.ts` enforces it.
 - **One language per page.** The English pages carry no Arabic and the
   Arabic pages no English, except the language switcher, fields meant for

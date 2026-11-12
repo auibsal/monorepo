@@ -68,7 +68,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   the letter before the alif; no tatweel; Arabic punctuation; hamza, taa
   marbuta and alif maqsura; Latin script for products and addresses,
   isolated (`<bdi>`).
-- [ ] **7g. Hudhud's register:** Iraqi for chat, reminders and the Sunday
+- [x] **7g. Hudhud's register:** Iraqi for chat, reminders and the Sunday
   note; Modern Standard for removal notices, consents and appeals.
 - [ ] **7h. Languages:** a first visit in the browser's language (or
   English); an account's language from its sign-up page, changeable in
