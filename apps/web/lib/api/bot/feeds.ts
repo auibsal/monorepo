@@ -1,6 +1,8 @@
+import { formatLongDate } from "@repo/internationalization/format";
 import { type Api, GrammyError, InlineKeyboard } from "grammy";
 import { publicEvents } from "@/lib/data/events";
 import { gameDay, gameNumber } from "@/lib/data/games";
+import { hasDeadline, openCalls } from "@/lib/data/journal";
 import { escapeHtml } from "@/lib/telegram";
 import { copy, type Lang } from "./copy";
 import { anon, db, type Group, groups } from "./db";
@@ -12,9 +14,9 @@ import { staffPosts } from "./staff";
 
 /**
  * What the bot posts to connected groups, every ten minutes (pg_cron calls
- * /cron/telegram): new public events no earlier than three weeks ahead (to
- * the events topic), a reminder replying to each event's post two days
- * before (none on the day), and new Qirtas pieces; each post in English
+ * /cron/telegram): the Sunday note (the week's events and open calls), a
+ * reminder for each event two days before (none on the day), and new
+ * Qirtas pieces; each post in English
  * with a button to the Arabic page (decisions §6). The daily word goes only
  * to members who asked for it in their chat with Hudhud (/me). Each post is claimed in
  * core.telegram_posts before it is sent, so overlapping runs never post
@@ -25,9 +27,10 @@ const HOUR = 60 * 60 * 1000;
 // A reminder two days before, never on the day (decisions §6).
 const SOON = 48 * HOUR;
 const NOT_ON_THE_DAY = 24 * HOUR;
-// Announced no earlier than three weeks ahead.
-const NEW_EVENT_WINDOW = 21 * 24 * HOUR;
 const NEW_PIECE_WINDOW = 72 * HOUR;
+// The Sunday note: from 10:00 a.m. Baghdad time, the coming seven days.
+const SUNDAY_HOUR = 10;
+const WEEK = 7 * 24 * HOUR;
 const MAX_PER_RUN = 3;
 const WORD_HOUR = 9;
 const DIRECT_WORDS_PER_RUN = 25;
@@ -39,7 +42,8 @@ export type Kind =
   | "word"
   | "brief"
   | "event_summary"
-  | "announcement";
+  | "announcement"
+  | "sunday_note";
 
 const posts = () => db().schema("core").from("telegram_posts");
 
@@ -109,44 +113,6 @@ type PublicEvent = NonNullable<
   Awaited<ReturnType<typeof publicEvents>>
 >[number];
 
-const eventPost = (
-  api: Api,
-  group: Group,
-  event: PublicEvent,
-  username: string
-) =>
-  postTo(
-    api,
-    group,
-    ["events", "announcements"],
-    copyFor(group, (lang) => {
-      const t = copy[lang];
-      const venue = pick(lang, event.venue_en, event.venue_ar);
-      const summary = pick(lang, event.summary_en, event.summary_ar);
-      return [
-        t.postEventNew,
-        `<b>${escapeHtml(pick(lang, event.title_en, event.title_ar))}</b>`,
-        when(lang, event.starts_at),
-        venue ? escapeHtml(venue) : null,
-        summary ? `\n${escapeHtml(summary)}` : null,
-      ]
-        .filter(Boolean)
-        .join("\n");
-    }),
-    {
-      reply_markup: new InlineKeyboard()
-        .url(
-          label(group.lang, (t) => t.buttons.rsvp),
-          botLink(username, `ev_${event.id}`)
-        )
-        .url(
-          label(group.lang, (t) => t.buttons.details),
-          eventPage(linkLang(group), event.slug)
-        )
-        .url(copy.ar.buttons.arabic, eventPage("ar", event.slug)),
-    }
-  );
-
 export interface FeedResult {
   groups: number;
   posted: number;
@@ -180,24 +146,7 @@ export const sequence = async (
   return sent;
 };
 
-/** New events, nearest first, a few per run (not those about to start). */
-const newEvents = (run: Run, events: PublicEvent[]) =>
-  sequence(
-    events
-      .filter((event) => {
-        const lead = startsIn(event, run.now);
-        return lead > SOON && lead <= NEW_EVENT_WINDOW;
-      })
-      .map(
-        (event) => () =>
-          once(run.group, "event", event.id, () =>
-            eventPost(run.api, run.group, event, run.username)
-          )
-      ),
-    MAX_PER_RUN
-  );
-
-/** Starting within three hours: a reply to the event's post. */
+/** Two days before an event: a reminder in the members' group. */
 const soonEvents = (run: Run, events: PublicEvent[]) =>
   sequence(
     events
@@ -238,6 +187,81 @@ const soonEvents = (run: Run, events: PublicEvent[]) =>
       }),
     MAX_PER_RUN
   );
+
+type OpenCall = NonNullable<Awaited<ReturnType<typeof openCalls>>>[number];
+
+export const sundayText = (
+  lang: Lang,
+  week: PublicEvent[],
+  calls: OpenCall[]
+) => {
+  const t = copy[lang];
+  const lines = [t.postWeek];
+  if (week.length > 0) {
+    lines.push("", `<b>${t.postWeekEvents}</b>`);
+    for (const event of week) {
+      lines.push(
+        `• ${escapeHtml(pick(lang, event.title_en, event.title_ar))}, ${when(lang, event.starts_at)}`
+      );
+    }
+  }
+  if (calls.length > 0) {
+    lines.push("", `<b>${t.postWeekCalls}</b>`);
+    for (const call of calls) {
+      lines.push(
+        `• ${escapeHtml(pick(lang, call.title_en, call.title_ar))}, ${t.postWeekCloses(formatLongDate(call.closes_at, lang))}`
+      );
+    }
+  }
+  return lines.join("\n");
+};
+
+/**
+ * Hudhud's Sunday note (decisions.md, Hudhud): each Sunday, one post
+ * listing the week's events and open calls, in place of a post for each
+ * new event. A week with nothing (out of term) has no note.
+ */
+const sundayNote = (run: Run, events: PublicEvent[], calls: OpenCall[]) => {
+  if (
+    run.now.toLocaleDateString("en-US", {
+      timeZone: "Asia/Baghdad",
+      weekday: "long",
+    }) !== "Sunday" ||
+    baghdadHour(run.now) < SUNDAY_HOUR
+  ) {
+    return Promise.resolve(0);
+  }
+  const week = events.filter((event) => {
+    const lead = startsIn(event, run.now);
+    return lead > 0 && lead <= WEEK;
+  });
+  const open = calls.filter((call) => hasDeadline(call));
+  if (week.length === 0 && open.length === 0) {
+    return Promise.resolve(0);
+  }
+  return sequence(
+    [
+      () =>
+        once(run.group, "sunday_note", baghdadDate(run.now), () =>
+          postTo(
+            run.api,
+            run.group,
+            ["events", "announcements"],
+            copyFor(run.group, (lang) => sundayText(lang, week, open)),
+            {
+              reply_markup: new InlineKeyboard()
+                .url(
+                  label(run.group.lang, (t) => t.buttons.details),
+                  web(linkLang(run.group), "/events")
+                )
+                .url(copy.ar.buttons.arabic, web("ar", "/events")),
+            }
+          )
+        ),
+    ],
+    1
+  );
+};
 
 type PublicPiece = Awaited<ReturnType<typeof publicPieces>>[number];
 
@@ -565,9 +589,10 @@ export const runFeeds = async (
   if (!connected.length) {
     return { groups: 0, posted: direct };
   }
-  const [upcoming, pieces] = await Promise.all([
+  const [upcoming, pieces, calls] = await Promise.all([
     publicEvents(anon(), { from: now, limit: 20 }),
     publicPieces(10),
+    openCalls(anon(), now),
   ]);
   const events = upcoming ?? [];
   // Groups in parallel; each group's posts in order.
@@ -590,9 +615,9 @@ export const runFeeds = async (
       }
       const announced = await groupNotices(run, notices);
       const soon = await soonEvents(run, events);
-      const fresh = await newEvents(run, events);
+      const week = await sundayNote(run, events, calls ?? []);
       const written = await newPieces(run, pieces);
-      return announced + soon + fresh + written;
+      return announced + soon + week + written;
     })
   );
   return {

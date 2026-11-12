@@ -145,9 +145,12 @@ const en = {
   placesLeft: (n: string) => `${n} places left`,
 
   // Group posts
-  postEventNew: "<b>New event</b>",
   postEventSoon: (date: string) => `<b>In two days</b>: ${date}`,
   postPiece: "<b>New in Qirtas</b>",
+  postWeek: "<b>This week at SAL</b>",
+  postWeekCalls: "Write for Qirtas",
+  postWeekCloses: (date: string) => `closes ${date}`,
+  postWeekEvents: "Events",
   postWord: (n: string) => `<b>Word No. ${n}</b> is ready.`,
   purposeNames: {
     announcements: "announcements",
@@ -317,9 +320,12 @@ const ar: Copy = {
   onePlaceLeft: "باقي مقعد واحد",
   placesLeft: (n: string) => `باقي ${n} مقعد`,
 
-  postEventNew: "<b>فعالية جديدة</b>",
   postEventSoon: (date: string) => `<b>بعد يومين</b>: ${date}`,
   postPiece: "<b>جديد بقرطاس</b>",
+  postWeek: "<b>شنو عدنا هالأسبوع</b>",
+  postWeekCalls: "اكتبوا لقرطاس",
+  postWeekCloses: (date: string) => `آخر موعد ${date}`,
+  postWeekEvents: "الفعاليات",
   postWord: (n: string) => `<b>الكلمة رقم ${n}</b> جاهزة.`,
   purposeNames: {
     announcements: "الإعلانات",

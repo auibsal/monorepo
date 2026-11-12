@@ -254,8 +254,10 @@ production; **Owner** is a step only the owner can take.
   Loader and minify off). The exact steps are in `docs/platform/settings.md`.
 
 ### 10. Hudhud and Telegram
-- [ ] Hudhud's Sunday note each Sunday in term (the week's events and open
-  calls) replaces a post per new event; the two-day reminders stay.
+- [x] Hudhud's Sunday note each Sunday in term (the week's events and the
+  open calls), with the two-day reminders, in place of a post for each new
+  event; a week with neither has no note. **Migrates:** the
+  `sunday_note` post kind.
 - [ ] **Owner:** "Add New Admins" stays off for Hudhud in both groups.
 
 ## Open from earlier prompts
