@@ -92,8 +92,9 @@ First the second prompt's part 2 (7j), then the rest in place.
 - [ ] **7q. The templates index** adds the playbill, an Edition's cover and
   inside, and Next Stop's package ("awaiting approval"); each row names its
   owner seat.
-- [ ] **7r. "Tech admin" is retired:** the web lead, everywhere, the Desk's
-  Database checks included.
+- [x] **7r. "Tech admin" is retired:** the role's key is now `web_lead`
+  (migration `20261113002000_web_lead_key.sql`), with the runbooks, tests
+  and the permissions table; the Desk's Database checks never named it.
 
 ### 11. Language (first: it touches every part)
 - [x] "Secretary" («أمين السر»; «أمينة السر» for a woman) replaces "General

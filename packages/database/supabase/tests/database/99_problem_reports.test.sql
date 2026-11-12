@@ -98,7 +98,7 @@ select plan(5);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000097a1', 'web-lead@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000097a2', 'member-pr@auib.edu.iq');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000097a1', 'tech_admin');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000097a1', 'web_lead');
 
 insert into core.problem_reports (page, message, user_id)
 values ('/events', 'The calendar shows the wrong month.', '00000000-0000-0000-0000-0000000097a2');

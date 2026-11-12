@@ -76,4 +76,4 @@ personal data). A passkey sign-in counts.
 | Vice President | `vice_president` | global | yes | yes | `concerns.about_president`, `concerns.handle`, `content.manage`, `events.checkin`, `governance.manage`, `library.council`, `library.read`, `members.register`, `partners.manage`, `partners.sign` |
 | Video Editor | `video_editor` | global |  |  | `journal.edit.video`, `library.read` |
 | Voices Editor | `voices_editor` | global |  |  | `journal.edit.voices`, `library.read` |
-| Web lead | `tech_admin` | global |  | yes | `audit.read`, `content.manage`, `members.verify`, `settings.manage` |
+| Web lead | `web_lead` | global |  | yes | `audit.read`, `content.manage`, `members.verify`, `settings.manage` |

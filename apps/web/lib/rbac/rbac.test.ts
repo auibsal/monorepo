@@ -72,6 +72,17 @@ const renamed = new Map(
   ].map((m) => [m[2], m[1]])
 );
 const current = (key: string) => renamed.get(key) ?? key;
+/** Old role key to new, from the migrations that renamed a role (the web
+ * lead, Nov 13, 2026): its grants move with `update access.role_permissions
+ * set role = 'new' where role = 'old'`. */
+const renamedRoles = new Map(
+  [
+    ...sql.matchAll(
+      /update access\.role_permissions set role = '([a-z_]+)' where role = '([a-z_]+)'/gu
+    ),
+  ].map((m) => [m[2], m[1]])
+);
+const currentRole = (key: string) => renamedRoles.get(key) ?? key;
 
 const revokedGrants = new Set(
   [
@@ -114,7 +125,7 @@ describe("mirror of the reference data in the migrations", () => {
     );
     const live = rows
       .filter(({ at, m }) => !retiredAfter(m[1] ?? "", at))
-      .map(({ m }) => m);
+      .map(({ m }) => [m[0], currentRole(m[1] ?? ""), m[2]] as const);
     expect(live.map((m) => m[1]).sort()).toEqual([...roleKeys].sort());
     for (const [, key, council] of live) {
       const role = roles[key as keyof typeof roles];
@@ -126,7 +137,8 @@ describe("mirror of the reference data in the migrations", () => {
 
   test("role bundles match", () => {
     const fromSql = new Map<string, Set<string>>();
-    const grant = (role: string, given: string, at: number) => {
+    const grant = (givenRole: string, given: string, at: number) => {
+      const role = currentRole(givenRole);
       const permission = current(given);
       if (
         !(

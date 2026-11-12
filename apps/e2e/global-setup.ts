@@ -11,7 +11,7 @@ import {
 
 /**
  * Seeds what the journeys need, idempotently: a member who has finished
- * setup, an editor holding the Technical Administrator role (no two-step
+ * setup, an editor holding the web lead role (no two-step
  * requirement), one upcoming event and one open Journal call.
  */
 const ensureUser = async (email: string, name: string) => {
@@ -97,12 +97,12 @@ export default async function globalSetup() {
     .from("role_assignments")
     .upsert(
       [
-        { role: "tech_admin", scope_type: "global", user_id: editorId },
+        { role: "web_lead", scope_type: "global", user_id: editorId },
         // Qirtas's News desk (journal.edit.news), for the newsroom journey.
         { role: "news_editor", scope_type: "global", user_id: editorId },
         // Events (events.manage), for the door: the Event Lead.
         { role: "programme_lead", scope_type: "global", user_id: editorId },
-        { role: "tech_admin", scope_type: "global", user_id: editor2Id },
+        { role: "web_lead", scope_type: "global", user_id: editor2Id },
       ],
       { ignoreDuplicates: true }
     );

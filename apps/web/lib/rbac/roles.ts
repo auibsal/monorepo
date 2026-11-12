@@ -544,18 +544,6 @@ export const roles = {
     nameEn: "Student Life",
     permissions: [],
   },
-  tech_admin: {
-    defaultScope: "global",
-    isCouncil: false,
-    nameAr: "مسؤول الموقع",
-    nameEn: "Web lead",
-    permissions: [
-      "members.verify",
-      "settings.manage",
-      "audit.read",
-      "content.manage",
-    ],
-  },
   // The Secretary's team (decisions.md).
   tour_lead: {
     defaultScope: "global",
@@ -617,6 +605,18 @@ export const roles = {
     nameAr: "محرّر آراء",
     nameEn: "Voices Editor",
     permissions: ["journal.edit.voices", "library.read"],
+  },
+  web_lead: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مسؤول الموقع",
+    nameEn: "Web lead",
+    permissions: [
+      "members.verify",
+      "settings.manage",
+      "audit.read",
+      "content.manage",
+    ],
   },
 } as const satisfies Record<string, RoleDefinition>;
 

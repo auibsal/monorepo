@@ -158,7 +158,7 @@ select ok(
 -- The mailing list.
 select ok(exists (select 1 from access.role_permissions where role = 'media_director' and permission = 'mailing.read'),
   'Media reads the mailing list');
-select ok(not exists (select 1 from access.role_permissions where role = 'tech_admin' and permission = 'mailing.read'),
+select ok(not exists (select 1 from access.role_permissions where role = 'web_lead' and permission = 'mailing.read'),
   'the web lead does not');
 
 -- The quarterly access review.
