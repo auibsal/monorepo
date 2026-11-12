@@ -5,6 +5,7 @@ import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
+import { NewsletterSignup } from "@/components/newsletter/signup";
 import { thisYear } from "@/lib/this-year";
 import { version as VERSION } from "../package.json";
 
@@ -99,6 +100,16 @@ export const Footer = async ({
                 </li>
               ))}
             </ul>
+            {/* The Sunday Paper's sign-up closes Read and watch (fourth
+                prompt, 7l). */}
+            {column.heading === t("columns.read") ? (
+              <div className="grid gap-2 pt-2">
+                <Link className={linkClass} href="/sunday-paper">
+                  {t("sundayPaper")}
+                </Link>
+                <NewsletterSignup compact />
+              </div>
+            ) : null}
           </div>
         ))}
         <div className="border-line text-text-secondary col-span-2 grid gap-3 border-t pt-5 text-[0.8125rem] lg:col-span-5">

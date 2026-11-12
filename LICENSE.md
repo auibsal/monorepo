@@ -1,6 +1,6 @@
 Copyright (c) 2026 AUIB Society of Arts and Letters. All rights reserved.
 
-This software and its source code are proprietary and confidential. No part of
+This software and its source code are proprietary. No part of
 it may be copied, modified, distributed, sublicensed or used, in whole or in
 part, except as expressly permitted in a written agreement with AUIB Society of Arts and Letters.
 

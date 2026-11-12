@@ -4783,7 +4783,8 @@
       "help": "Help",
       "report": "Report a problem",
       "version": "Version {version}, build {build}",
-      "local": "local"
+      "local": "local",
+      "sundayPaper": "The Sunday Paper"
     },
     "home": {
       "metaTitle": "The paper and the pen",

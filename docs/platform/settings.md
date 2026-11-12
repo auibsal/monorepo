@@ -25,6 +25,9 @@ Turn **off**:
   analytics are used).
 
 ## news.auibsal.org (bulk email)
+Done: the domain is verified in Resend and `RESEND_BULK_DOMAIN` is set in
+Vercel (Production). The steps, for a new domain or a move:
+
 1. Resend → Domains → Add `news.auibsal.org`.
 2. Add the DNS records Resend shows (SPF `send.news`, DKIM
    `resend._domainkey.news`, the MX for bounces) in Cloudflare, DNS only
@@ -33,7 +36,7 @@ Turn **off**:
    (Production). Announcements then come from "AUIB Society of Arts and
    Letters" <news@news.auibsal.org> with replies to hello@, and the Sunday
    Paper from "Qirtas" <qirtas@news.auibsal.org> with replies to
-   qirtas@auibsal.org. Until then both send from auibsal.org.
+   qirtas@auibsal.org. Without it both send from auibsal.org.
 
 ## Resend
 - **Settings → Tracking:** open and click tracking off.

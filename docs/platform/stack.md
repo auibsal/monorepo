@@ -20,7 +20,7 @@ they move to Society addresses during 2027. What each service holds is in
 | Cloudflare | DNS, Turnstile, R2 (second backup) | Free | No renewal | Move the DNS zone; Turnstile has drop-in alternatives |
 | Domain (auibsal.org) | The address | Registration | Auto-renews; reminders to president@ and the web lead | Transfer to another registrar with the auth code |
 | Zoho Mail | The Society's mailboxes and groups | Free | No renewal | Export each mailbox; point MX records elsewhere |
-| Notion | The officers' workspace | TODO(content): the plan in use | TODO(content) | Export the workspace (Markdown and CSV) |
+| Notion | The officers' workspace | Plus, free for student organizations | Under Notion's student-organization program, while the Society qualifies | Export the workspace (Markdown and CSV) |
 | GitHub | The code; the encrypted nightly backup | Free | No renewal | Clone the repository; the backup workflow writes to R2 as well |
 | Telegram | Hudhud and the groups | No account plan | No renewal | The bot's token moves with BotFather |
 | Google Wallet | The membership card as a pass | No cost | No renewal | Passes keep working until withdrawn; the card is also on the site |

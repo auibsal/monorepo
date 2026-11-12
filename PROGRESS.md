@@ -53,11 +53,11 @@ First the second prompt's part 2 (7j), then the rest in place.
 - [ ] **5. Council meetings show as Members events.**
 - [ ] **6. Student Life's staff answer from Associate accounts.**
 - [ ] **7. The permissions table** for EXB-01: report where it lives.
-- [ ] **7a. The stack page:** Notion on the free Plus plan for student
+- [x] **7a. The stack page:** Notion on the free Plus plan for student
   organizations.
-- [ ] **7b. news.auibsal.org** verified in Resend and `RESEND_BULK_DOMAIN`
+- [x] **7b. news.auibsal.org** verified in Resend and `RESEND_BULK_DOMAIN`
   set: marked done here and in `docs/platform/settings.md`.
-- [ ] **7c. LICENSE.md:** "proprietary", no longer "and confidential"; the
+- [x] **7c. LICENSE.md:** "proprietary", no longer "and confidential"; the
   repository stays public.
 - [ ] **7d. AUIB's Arabic name:** «الجامعة الأمريكية في بغداد» alone; «الجامعة
   الأمريكية» inside a compound (the Society, Qirtas's line) across the site,
@@ -78,7 +78,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   same SUB number, not read blind again.
 - [ ] **7k. Removal from membership** is the Council's (§7), still to build;
   parents withdraw their child's consents from the Parent view.
-- [ ] **7l. The Sunday Paper sign-up** in the public footer's Read and watch
+- [x] **7l. The Sunday Paper sign-up** in the public footer's Read and watch
   column.
 - [ ] **7m. The Library's groups** from Notion's "For" field (Everyone,
   Members, Staff), not from the code.
@@ -331,7 +331,7 @@ First the second prompt's part 2 (7j), then the rest in place.
 - [x] The monthly look at the advisors on the Desk (Connected → Database
   checks: the checks CI holds at zero, run live; Supabase's Advisors for
   the rest). **Migrates:** `core.advisor_findings()`.
-- [ ] **Owner:** news.auibsal.org in Resend (its DNS records); a free public
+- [ ] **Owner:** ~~news.auibsal.org in Resend~~ (done, Nov 12); a free public
   status page at status.auibsal.org fed by the uptime check; Supabase's
   email confirmation and leaked-password protection on, short token
   lifetimes, network restrictions where the plan allows; Cloudflare's

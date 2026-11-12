@@ -4783,7 +4783,8 @@
       "help": "المساعدة",
       "report": "أبلِغ عن مشكلة",
       "version": "النسخة {version}، البناء {build}",
-      "local": "محلي"
+      "local": "محلي",
+      "sundayPaper": "جريدة الأحد"
     },
     "home": {
       "metaTitle": "والقرطاسُ والقلمُ",
