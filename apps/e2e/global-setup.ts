@@ -77,6 +77,9 @@ export default async function globalSetup() {
       .schema("core")
       .from("profiles")
       .update({
+        // Asked once whether they sign electronically, and agreed.
+        esign_agreed_at: new Date().toISOString(),
+        esign_asked_at: new Date().toISOString(),
         // A legal name in each language, in its own letters.
         father_name_ar: "تجريبي",
         father_name_en: "Tester",

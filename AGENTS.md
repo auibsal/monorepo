@@ -32,15 +32,21 @@ media do.
     flow (`formPaths` in `lib/data/forms.ts`: `/about/contact/concern`,
     `/consent/<kind>` …; every old `/forms` address redirects),
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
-    members, everything under `/account`, in six tabs (decisions.md, The site):
-    Today, Calendar (`/calendar`), Documents (`/documents`: signed copies
-    at `/documents/signed/<id>`, certificates at
-    `/documents/certificates/<ref>`, letters at `/documents/letters/<ref>`, a
-    year at `/documents/year/<yyyy>`), Work (`/work`: drafts, submissions at
-    `/work/submissions/<id>`, pieces at `/work/<id>`, and what was saved),
-    Elections (`/elections`, standing for a position at
-    `/elections/<position>`) and Settings (`/settings`, `/settings/profile`,
-    `/settings/notifications`, officers' `/settings/disclosures`), with
+    members, everything under `/account`, in tabs shown by class and role
+    (decisions.md, The site; `useAccountLinks` in
+    `components/account/member-shell.tsx`): Today, Events (`/events`), Work
+    (`/work`: drafts, submissions at `/work/submissions/<id>`, pieces at
+    `/work/<id>`), Applications (`/applications`), Saved (`/saved`), Roles and
+    service (`/roles`, for those who hold or held a role: roles, handovers at
+    `/roles/handover` and `/roles/countersign/<id>`, hours, service letters,
+    a year at `/documents/year/<yyyy>`), Documents (`/documents`: signed
+    copies at `/documents/signed/<id>`, certificates at
+    `/documents/certificates/<ref>`, letters at `/documents/letters/<ref>`),
+    Elections (`/elections`, while one is open; standing for a position at
+    `/elections/<position>`), Card (`/card`) and Settings (`/settings`,
+    `/settings/profile`, `/settings/notifications`, officers'
+    `/settings/disclosures`); guests have Today, Events, Work, Documents and
+    Settings. With
     what you sent at `/requests` and `/requests/<id>`. Also `/company/auditions`,
     `/qirtas/submit` (public; the forms at `/qirtas/submit/<type>`, a draft at
     `/qirtas/submit/<type>/<draft>`) and `/qirtas/read/<slug>` (a

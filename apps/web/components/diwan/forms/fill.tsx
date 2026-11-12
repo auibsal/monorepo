@@ -14,6 +14,7 @@ import { type FormEvent, type ReactNode, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { forms, unwrap } from "@/lib/data";
 import { ApiError } from "@/lib/diwan/api";
+import { useEsign } from "@/lib/diwan/queries";
 import { ErrorLine, Field, SelectInput } from "../admin/kit";
 import { useHumanCheck } from "../auth/human-check";
 import { EmptyLine } from "../states";
@@ -182,6 +183,7 @@ const sendForm = (
 /** Who signs and how: anonymous, a contact, "I agree", the human check. */
 const SignerFields = ({
   agreed,
+  consented,
   allowAnonymous,
   anonymous,
   contact,
@@ -192,6 +194,8 @@ const SignerFields = ({
   signedIn,
 }: {
   agreed: boolean;
+  /** The account's consent to sign electronically, given once. */
+  consented: boolean;
   allowAnonymous: boolean;
   anonymous: boolean;
   contact: string;
@@ -219,7 +223,7 @@ const SignerFields = ({
           )}
         </Field>
       )}
-      <EsignAgreement onChange={onAgreed} value={agreed} />
+      {consented ? null : <EsignAgreement onChange={onAgreed} value={agreed} />}
       {human}
     </>
   );
@@ -308,11 +312,14 @@ export const FillForm = ({
   eventSlug = null,
   formKey,
   link = null,
+  roleId = null,
 }: {
   readonly eventSlug?: string | null;
   readonly formKey: string;
   /** A parent's single-use link (?link=), for a form signed only by link. */
   readonly link?: string | null;
+  /** The role a handover is for (?role=, the assignment). */
+  readonly roleId?: string | null;
 }) => {
   const t = useTranslations("diwan.forms");
   if (!forms.isFormKey(formKey)) {
@@ -338,7 +345,32 @@ export const FillForm = ({
       formKey={formKey}
       key={formKey}
       link={link}
+      roleId={roleId}
     />
+  );
+};
+
+/** The role a handover is for (?role=): one of the signer's own, ending or ended. */
+const RoleLine = ({ roleId }: { readonly roleId: string | null }) => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale();
+  const { supabase, user } = useAuth();
+  const due = useQuery({
+    enabled: Boolean(user && roleId),
+    queryFn: async () =>
+      unwrap(await supabase.schema("access").rpc("my_handovers_due")) ?? [],
+    queryKey: ["account", "roles", "handovers-due", user?.id],
+  });
+  const row = due.data?.find((d) => d.assignment_id === roleId);
+  if (!row) {
+    return null;
+  }
+  return (
+    <p className="type-body">
+      {t("forRole", {
+        role: (locale === "ar" ? row.role_ar : row.role_en) || row.role_en,
+      })}
+    </p>
   );
 };
 
@@ -401,10 +433,12 @@ const FormEditor = ({
   eventSlug,
   formKey,
   link,
+  roleId = null,
 }: {
   eventSlug: string | null;
   formKey: forms.FormKey;
   link: string | null;
+  roleId?: string | null;
 }) => {
   const t = useTranslations("diwan.forms");
   const locale = useLocale() as Locale;
@@ -427,7 +461,12 @@ const FormEditor = ({
   const [problems, setProblems] = useState<string[]>([]);
   const [signer, setSigner] = useState<string | null>(null);
   const [contact, setContact] = useState("");
-  const [agreed, setAgreed] = useState(false);
+  const [checked, setAgreed] = useState(false);
+  // Consent to sign electronically is asked once for the account (E-SIGN);
+  // the page asks only those who have not given it.
+  const esign = useEsign();
+  const consented = Boolean(esign.data?.agreed_at);
+  const agreed = consented || checked;
   const [sent, setSent] = useState(false);
   // Signed out: Turnstile, checked by /api/forms/sign.
   const human = useHumanCheck("form");
@@ -446,7 +485,7 @@ const FormEditor = ({
         link,
         routing,
         signature,
-        subjectId: event.data?.id ?? null,
+        subjectId: event.data?.id ?? roleId,
         throughApi,
         token: human.token,
       }),
@@ -530,6 +569,7 @@ const FormEditor = ({
         title={labels.title()}
       >
         <LinkSubject formKey={formKey} link={link} />
+        <RoleLine roleId={roleId} />
         {event.data ? (
           <p className="type-body">
             {t("forEvent", {
@@ -566,9 +606,10 @@ const FormEditor = ({
           />
         ))}
         <SignerFields
-          agreed={agreed}
+          agreed={checked}
           allowAnonymous={Boolean(definition.anonymous)}
           anonymous={anonymous}
+          consented={consented}
           contact={contact}
           human={throughApi ? human.element : null}
           onAgreed={setAgreed}

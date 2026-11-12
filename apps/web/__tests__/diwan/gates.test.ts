@@ -10,7 +10,7 @@ test("every kind of membership opens Today; members open everything", () => {
 });
 
 test("guests open their calendar, documents, settings, work and Qirtas", () => {
-  expect(kindOpens("guest", "/account/calendar")).toBe(true);
+  expect(kindOpens("guest", "/account/events")).toBe(true);
   expect(kindOpens("guest", "/account/work/abc")).toBe(true);
   expect(kindOpens("guest", "/qirtas/submit")).toBe(true);
   expect(kindOpens("guest", "/account/elections")).toBe(false);
@@ -20,7 +20,7 @@ test("guests open their calendar, documents, settings, work and Qirtas", () => {
 
 test("a partner's people open their documents and settings; nothing yet, settings", () => {
   expect(kindOpens("partner", "/account/documents")).toBe(true);
-  expect(kindOpens("partner", "/account/calendar")).toBe(false);
+  expect(kindOpens("partner", "/account/events")).toBe(false);
   expect(kindOpens("partner", "/qirtas/submit")).toBe(false);
   expect(kindOpens(null, "/account/settings/profile")).toBe(true);
   expect(kindOpens(null, "/account/documents")).toBe(false);

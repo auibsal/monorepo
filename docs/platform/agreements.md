@@ -15,7 +15,10 @@ F-numbers and auibsal.org/forms. Each kind has a stable **name** and
   `/verify/<code>` shows the kind, version, record number, signer, date and
   fingerprint (`governance.verify_agreement`), never the answers. Signed
   copies are kept in Your account → Documents (`/account/documents`, each at
-  `/account/documents/signed/<id>`).
+  `/account/documents/signed/<id>`), the countersigner's too. Consent to
+  sign electronically (E-SIGN) is asked once for the account, on its own
+  line at sign-up or at the next sign-in for older accounts, and can be
+  withdrawn in Settings (`core.profiles.esign_agreed_at`).
 - **Addresses:** every shared `/forms` address (`/forms/21`, `/forms/F-21`,
   `/forms/f21`, `/forms/f-21` and `/forms/<name>`) redirects (308) to the
   kind's place in its flow (`formRedirects` in `lib/data/form-paths.ts`).
@@ -24,24 +27,25 @@ F-numbers and auibsal.org/forms. Each kind has a stable **name** and
 ## The register
 
 The Leadership Handbook's register, "Agreements and consents"
-(SAL-EXB-01), holds only what people sign: one toggle per kind, headed
-"<name> · <Title>". `bun run check:forms` compares it with the kinds marked
+(SAL-EXB-01), holds only what people sign, every one signed on the site:
+one toggle per kind, headed "<name> · <Title>", titles in sentence case
+("Publication agreement"). `bun run check:forms` compares it with the kinds marked
 `in_register` (`registerKinds` in `lib/data/forms.ts`).
 
 | Name | Title | Old number | Signed |
 |---|---|---|---|
-| `code-of-conduct` | Code of Conduct | none | On joining (sign-up) |
+| `code-of-conduct` | Code of Conduct (a proper name, kept) | none | On joining (sign-up) |
 | `role-agreement` | Role agreement | none | On accepting a role, from Today |
 | `conflict-of-interest-declaration` | Conflict-of-interest declaration | F-06 | `/account/settings/disclosures/declare` |
 | `confidentiality-agreement` | Confidentiality pledge | F-40 | The reading page |
-| `handover` | Handover page | F-07 | Leaving a role (a Notion page for now) |
+| `handover` | Handover | F-07 | `/account/roles/handover`, on leaving a role; countersigned by the incoming holder or the seat’s officer |
 | `members-meeting-motion` | Motion for a members’ meeting | F-10 | `/account/elections/motion` |
 | `event-pitch` | Event pitch | F-11 | `/get-involved/propose-an-event` |
 | `concern` | Concern | F-21 | `/about/contact/concern` |
 | `media-release` | Media release | F-15 | `/consent/media-release` |
 | `partnership-memorandum` | Partnership memorandum | F-17 | `/partners/dashboard/memorandum/sign` |
 | `company-agreement` | Company agreement | F-26 | `/company/agreement` |
-| `publication-agreement` | Publication Agreement | F-43 | Your account → Work, on acceptance |
+| `publication-agreement` | Publication agreement | F-43 | Your account → Work, on acceptance |
 | `trip-consent` | Trip consent | F-45 | `/consent/trip` |
 | `parent-consent` | Parent’s consent for a member under 18 | F-46 | `/consent/parent` (a parent’s single-use link) |
 | `qalam-mentor-agreement` | Qalam mentor agreement | F-37 | `/get-involved/qalam-mentor-agreement` |

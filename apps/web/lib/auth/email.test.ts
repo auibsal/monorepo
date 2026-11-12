@@ -154,6 +154,7 @@ describe("signing up", () => {
     };
     expect(sent.options.data).toEqual({
       agreed_at: expect.any(String),
+      esign: "false",
       locale: "en",
       mailing: "false",
     });

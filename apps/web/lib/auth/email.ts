@@ -120,6 +120,8 @@ export interface SignUpDetails {
   /** From the Turnstile widget, when the human check is on. */
   captchaToken?: string;
   email: string;
+  /** Consent to sign electronically (E-SIGN), asked on its own line. */
+  esign?: boolean;
   locale: "ar" | "en";
   /**
    * The mailing list's two topics, the Sunday Paper and Society news and
@@ -240,6 +242,7 @@ export const signUpWithEmail = async (
         ...outsideMetadata(details.outside),
         agreed_at: new Date().toISOString(),
         ...minorMetadata(details.minor),
+        esign: details.esign ? "true" : "false",
         locale: details.locale,
         mailing: details.mailing ? "true" : "false",
       },

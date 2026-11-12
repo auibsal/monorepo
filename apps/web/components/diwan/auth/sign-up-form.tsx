@@ -138,6 +138,8 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   // The mailing list (decisions.md, Channels and email): members are on it
   // unless they untick the box; guests only if they tick it.
   const [mailing, setMailing] = useState(!external);
+  // Consent to sign electronically (E-SIGN), its own line, never assumed.
+  const [esign, setEsign] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
@@ -165,6 +167,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
       agreed,
       captchaToken: human.token,
       email,
+      esign,
       locale: locale === "ar" ? "ar" : "en",
       mailing,
       minor: minorDetails(adult, external, minor),
@@ -407,6 +410,16 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
                 </Link>
               ),
             })}
+          </Label>
+        </div>
+        <div className="flex items-start gap-3">
+          <Checkbox
+            checked={esign}
+            id={`${id}-esign`}
+            onCheckedChange={(v) => setEsign(v === true)}
+          />
+          <Label className="leading-normal" htmlFor={`${id}-esign`}>
+            {t("signUp.esign")}
           </Label>
         </div>
         <div className="flex items-start gap-3">

@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 import { DiwanPage } from "../page";
+import { Handovers } from "../service/roles";
 import { ChildConsents } from "./child-consents";
 import { JournalSection } from "./journal";
 import { MembershipCard } from "./membership-card";
@@ -59,7 +60,7 @@ const useGreeting = () => {
 };
 
 /**
- * Today, mobile-first (the overhaul, Oct 30, 2026): the card, then what
+ * Today, mobile-first (the overhaul, Oct 30, 2026): what
  * needs the member (notices, only when there are some), what's next, their
  * shifts and Get involved, Qirtas, what they have sent, and their six
  * words once the Tour has them. Sections in twos, so a full page reads in
@@ -89,11 +90,13 @@ export const MemberHome = () => {
           : t("greetingPlain")
       }
     >
-      <MembershipCard />
+      {/* Members keep the card on its own tab (decisions.md, Your account). */}
+      {mine.data?.kind === "member" ? null : <MembershipCard />}
       {mine.data?.kind === "member" ? (
         <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
           <Renewal />
           <UnsignedRoleAgreements />
+          <Handovers />
           <RoleChecklist />
           <Notices />
           <NextEvents />

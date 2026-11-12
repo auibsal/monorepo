@@ -9,12 +9,14 @@ import type { membership } from "@/lib/data";
 import { safeNextPath } from "@/lib/diwan/navigation";
 import {
   hasAllNames,
+  useEsign,
   useGrants,
   useMemberStatus,
   useMyMembership,
   useProfile,
 } from "@/lib/diwan/queries";
 import { TwoStepPanel, useTwoStep } from "./auth/two-step";
+import { EsignQuestion } from "./profile/esign";
 import { ErrorState, FullPageSpinner, PageSpinner } from "./states";
 
 interface GateProps {
@@ -78,7 +80,7 @@ const Restored = () => {
 /**
  * The pages each kind of membership opens (decisions.md: one
  * Membership for everyone, of one kind). Members open everything; guests
- * their Today, calendar, documents, settings and Qirtas (their work and the
+ * their Today, events, work, documents, settings and Qirtas (their work and the
  * calls open to them); a partner's people their Today, documents and
  * settings (the dashboard is theirs too, behind its own gate). An account
  * with no membership yet (an invitation waiting on its partner, an
@@ -90,11 +92,10 @@ const KIND_PATHS: Record<
   readonly string[]
 > = {
   guest: [
-    "/account/calendar",
+    "/account/events",
     "/account/documents",
     "/account/work",
     "/account/settings",
-    "/account/work",
     "/qirtas",
   ],
   member: [],
@@ -135,6 +136,7 @@ export const RequireMember = ({ children }: GateProps) => {
   // station access is not a role, so it is exempt.
   const twoStep = useTwoStep();
   const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
+  const esign = useEsign();
 
   const needsSetup =
     mine.isSuccess &&
@@ -177,7 +179,12 @@ export const RequireMember = ({ children }: GateProps) => {
   ) {
     return <PageSpinner />;
   }
-  return waiting ? <TwoStepPanel /> : children;
+  if (waiting) {
+    return <TwoStepPanel />;
+  }
+  // Consent to sign electronically, asked once at the next sign-in for an
+  // account made before sign-up asked it (decisions.md, Documents and forms).
+  return esign.data && !esign.data.asked_at ? <EsignQuestion /> : children;
 };
 
 /**
@@ -241,6 +248,7 @@ const PARTNER_PERMISSIONS = new Set(["partners.own", "partners.lead"]);
 export const RequireStaff = ({ children }: GateProps) => {
   const grants = useGrants();
   const twoStep = useTwoStep();
+  const esign = useEsign();
   const router = useRouter();
   // A role that needs two-step sign-in grants nothing until the code is in,
   // so its holder is staff waiting for the second step, not a member.
@@ -281,5 +289,10 @@ export const RequireStaff = ({ children }: GateProps) => {
   if (!(grants.isSuccess && twoStep.isSuccess && staff)) {
     return <PageSpinner />;
   }
-  return waiting ? <TwoStepPanel /> : children;
+  if (waiting) {
+    return <TwoStepPanel />;
+  }
+  // Consent to sign electronically, asked once at the next sign-in for an
+  // account made before sign-up asked it (decisions.md, Documents and forms).
+  return esign.data && !esign.data.asked_at ? <EsignQuestion /> : children;
 };

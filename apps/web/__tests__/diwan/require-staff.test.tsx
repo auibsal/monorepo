@@ -34,10 +34,17 @@ const officer = ({
   level: "aal1" | "aal2";
   needs: boolean;
 }) => {
-  const rpc = vi.fn(async (name: string) => ({
-    data: name === "needs_two_step" ? needs : grants,
-    error: null,
-  }));
+  // Asked already whether they sign electronically (core.my_esign).
+  const answered = [{ agreed_at: null, asked_at: "2026-11-12T00:00:00Z" }];
+  const rpc = vi.fn((name: string) => {
+    if (name === "my_esign") {
+      return Promise.resolve({ data: answered, error: null });
+    }
+    return Promise.resolve({
+      data: name === "needs_two_step" ? needs : grants,
+      error: null,
+    });
+  });
   const supabase = fakeSupabase({ schema: () => ({ rpc }) });
   Object.assign(supabase.auth, {
     mfa: {
@@ -97,6 +104,12 @@ describe("the Diwan's staff gate", () => {
     const rpc = vi.fn(async (name: string) => {
       if (name === "needs_two_step") {
         return { data: true, error: null };
+      }
+      if (name === "my_esign") {
+        return {
+          data: [{ agreed_at: null, asked_at: "2026-11-12T00:00:00Z" }],
+          error: null,
+        };
       }
       if (level === "aal1") {
         return { data: [], error: null };

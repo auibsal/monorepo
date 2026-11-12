@@ -14,6 +14,25 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the eighth prompt (Nov 12)
+
+- [x] **Mirror:** `claude/decisions.md` replaced.
+- [x] **1. The handover on the site:** the outgoing holder fills and signs
+  it from Roles and service or Today, the incoming holder (or an officer
+  who assigns roles, when there is none yet) countersigns, and it gets an
+  AGR number (`20261113004000_handover_and_esign.sql`). Notion keeps no
+  handover pages; the Governance chat changes EXB-01's toggle.
+- [x] **2. Consent to sign electronically:** its own line at sign-up; the
+  accounts made before are asked once at their next sign-in, and it is
+  marked given only when they agree; it can be withdrawn in Settings.
+- [x] **3. Your account's tabs:** Today, Events, Work, Applications, Saved,
+  Roles and service, Documents, Elections (while one is open), Card and
+  Settings, by class and role; guests have Today, Events, Work, Documents
+  and Settings. `/account/calendar` redirects to `/account/events`.
+- [x] **4. Titles in sentence case:** "Publication agreement" (the others
+  were already; proper names keep their capitals: the Code of Conduct,
+  the Faculty Advisor, Honorary Membership, Student Life).
+
 ## Now: the seventh prompt (Nov 12)
 
 - [x] **Mirror:** `claude/decisions.md` and `claude/glossary_ar.md`
@@ -40,8 +59,6 @@ fourth prompts (Nov 12).
   copy already did).
 - **Governance chat:** the register's seventeen kinds and the templates
   index, in `docs/platform/agreements.md`.
-- **Still a Notion page:** `handover` is in the register but signed in
-  Notion, not yet on the site.
 
 ## Now: the sixth prompt (Nov 12)
 

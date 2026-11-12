@@ -24,6 +24,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     // A partner's people give their names in four parts, like members; an
     // outside address signs up only to apply or when invited.
     user_metadata: {
+      esign: "true",
       father_name_ar: "تجريبي",
       father_name_en: "Test",
       first_name_ar: "ممثل",
@@ -270,7 +271,14 @@ test("a member who leads their club's partnership stays a member", async ({
     // Still a member: the whole row, the Member card, and the dashboard.
     await page.goto(`${urls.web}/account`);
     const row = page.getByRole("navigation", { name: "Your account" });
-    for (const name of ["Calendar", "Documents", "Work", "Elections"]) {
+    for (const name of [
+      "Events",
+      "Work",
+      "Applications",
+      "Saved",
+      "Documents",
+      "Card",
+    ]) {
       await expect(row.getByRole("link", { name })).toBeVisible();
     }
     await page.goto(`${urls.web}/account/elections`);

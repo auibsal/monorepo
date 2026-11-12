@@ -8,6 +8,7 @@ export const formPaths = {
   concern: "/about/contact/concern",
   "conflict-of-interest-declaration": "/account/settings/disclosures/declare",
   "event-pitch": "/get-involved/propose-an-event",
+  handover: "/account/roles/handover",
   "media-release": "/consent/media-release",
   "members-meeting-motion": "/account/elections/motion",
   "parent-consent": "/consent/parent",

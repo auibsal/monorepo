@@ -205,3 +205,66 @@ export const useCalendarToken = () => {
     membership.calendarToken(supabase)
   );
 };
+
+/**
+ * Whether the person holds or has held a role (decisions.md, Your account:
+ * the Roles and service tab is shown by role).
+ */
+export const useHasRoles = () => {
+  const { supabase, user } = useAuth();
+  const roles = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      (
+        unwrap(
+          await supabase
+            .schema("access")
+            .from("role_assignments")
+            .select("id")
+            .eq("user_id", user?.id ?? "")
+            .limit(1)
+        ) ?? []
+      ).length > 0,
+    queryKey: ["account", "has-roles", user?.id],
+    staleTime: 5 * 60 * 1000,
+  });
+  return roles.data ?? false;
+};
+
+/** Whether an election or a members' vote is open (notice to voting). */
+export const useElectionOpen = () => {
+  const { supabase, user } = useAuth();
+  const open = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      (
+        unwrap(
+          await supabase
+            .schema("governance")
+            .from("elections")
+            .select("id")
+            .in("status", ["notice", "nominations", "review", "voting"])
+            .limit(1)
+        ) ?? []
+      ).length > 0,
+    queryKey: ["account", "election-open"],
+    staleTime: 5 * 60 * 1000,
+  });
+  return open.data ?? false;
+};
+
+/**
+ * The person's consent to sign electronically (E-SIGN; decisions.md,
+ * Documents and forms): asked once, at sign-up or at the next sign-in.
+ */
+export const useEsign = () => {
+  const { supabase, user } = useAuth();
+  return useQuery({
+    enabled: Boolean(user),
+    queryFn: async () => {
+      const rows = unwrap(await supabase.schema("core").rpc("my_esign")) ?? [];
+      return rows[0] ?? { agreed_at: null, asked_at: null };
+    },
+    queryKey: ["account", "esign", user?.id],
+  });
+};

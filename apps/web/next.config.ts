@@ -29,7 +29,8 @@ const MOVED: readonly [from: string, to: string][] = [
   // Your account's tabs match their pages (decisions §6).
   ["/account/society", "/account/elections"],
   ["/account/society/stand/:position", "/account/elections/:position"],
-  ["/account/saved", "/account/work"],
+  // The tabs of decisions.md, Your account (the eighth prompt, 3).
+  ["/account/calendar", "/account/events"],
   ["/account/settings/notices", "/account/settings/notifications"],
   ["/account/settings/declarations", "/account/settings/disclosures"],
   // The Diwan by Council seat (decisions §6).

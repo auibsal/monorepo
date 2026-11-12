@@ -129,7 +129,7 @@ grant all on ids to public;
 
 select is(
   (select array_agg(key order by sort) from governance.form_types where filled = 'site'),
-  array['conflict-of-interest-declaration', 'members-meeting-motion', 'event-pitch', 'media-release',
+  array['conflict-of-interest-declaration', 'handover', 'members-meeting-motion', 'event-pitch', 'media-release',
     'partnership-memorandum', 'concern', 'company-agreement', 'qalam-mentor-agreement',
     'qalam-parent-consent', 'qalam-publishing-consent', 'trip-consent', 'parent-consent'],
   'The agreements and consents signed on the site, by name'

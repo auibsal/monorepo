@@ -77,8 +77,8 @@ const venue = (e: EventInfo, l: Lang) =>
 const eventLines = (e: EventInfo, l: Lang) =>
   [when(e.starts_at, l), venue(e, l)].filter((x): x is string => Boolean(x));
 
-/** Tickets and bookings live on My calendar. */
-const MY_CALENDAR = "/account/calendar";
+/** Tickets and bookings live on Your account → Events. */
+const MY_CALENDAR = "/account/events";
 
 export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
   build(lang, (l) => ({
@@ -90,8 +90,8 @@ export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
     paragraphs: [
       ...eventLines(e, l),
       l === "ar"
-        ? "تذكرتك في «تقويمي». وإن تغيّرت خططك فتنازل عن مكانك هناك ليأخذه غيرك."
-        : "Your ticket is on My calendar. If your plans change, give your place back there so someone else can have it.",
+        ? "تذكرتك في «الفعاليات» في حسابك. وإن تغيّرت خططك فتنازل عن مكانك هناك ليأخذه غيرك."
+        : "Your ticket is in your account, under Events. If your plans change, give your place back there so someone else can have it.",
     ],
   }));
 
@@ -135,8 +135,8 @@ export const waitlistPromoted = (lang: Lang, e: EventInfo, app: string) =>
     paragraphs: [
       ...eventLines(e, l),
       l === "ar"
-        ? "كنت على قائمة الانتظار، وقد حُجز لك مكان الآن. تذكرتك في «تقويمي»."
-        : "You were on the waiting list and you now have a place. Your ticket is on My calendar.",
+        ? "كنت على قائمة الانتظار، وقد حُجز لك مكان الآن. تذكرتك في «الفعاليات» في حسابك."
+        : "You were on the waiting list and you now have a place. Your ticket is in your account, under Events.",
     ],
   }));
 
@@ -319,7 +319,7 @@ export const decision = (
         ACCEPTED[outcome][l],
         l === "ar"
           ? "خلال سبعة أيام: وقّع اتفاقية النشر وأكمل بياناتك ككاتب في صفحة عملك. توافق أنت على كل تغيير، وترى النص النهائي قبل نشره."
-          : "Within 7 days, sign the Publication Agreement and complete your contributor details on your submission's page. You approve every change and see the final text before it is published.",
+          : "Within 7 days, sign the publication agreement and complete your contributor details on your submission's page. You approve every change and see the final text before it is published.",
       ],
     };
   });
@@ -375,7 +375,7 @@ export const agreementReminder = (lang: Lang, work: string, app: string) =>
     paragraphs: [
       l === "ar"
         ? "قُبل عملك في قرطاس، ولا يمكن نشره قبل أن توقّع اتفاقية النشر في صفحة عملك."
-        : "Your work is accepted for Qirtas, and it cannot be published until you sign the Publication Agreement on your submission's page.",
+        : "Your work is accepted for Qirtas, and it cannot be published until you sign the publication agreement on your submission's page.",
     ],
   }));
 
@@ -995,8 +995,8 @@ export const eventChanged = (
               ? `لن تُقام ${title(e, l)} في ${when(e.starts_at, l)}. ألغينا حجزك، ولا شيء عليك أن تفعله.`
               : `${title(e, l)} on ${when(e.starts_at, l)} won't take place. Your booking is canceled; there's nothing you need to do.`,
             l === "ar"
-              ? "نأسف لذلك. ما يجري بعدها في «تقويمي» وفي صفحة «الفعاليات»."
-              : "We're sorry. What's coming up next is on My calendar and Events.",
+              ? "نأسف لذلك. ما يجري بعدها في «الفعاليات» في حسابك وعلى الموقع."
+              : "We're sorry. What's coming up next is under Events, in your account and on the site.",
           ],
         }
       : {
@@ -1011,8 +1011,8 @@ export const eventChanged = (
               : "The day, time or place has changed. This is when and where it is now:",
             ...eventLines(e, l),
             l === "ar"
-              ? "مكانك محفوظ. إن لم يعد الموعد يناسبك، فتنازل عنه في «تقويمي» ليأخذه غيرك."
-              : "Your place is kept. If the new time doesn't suit you, give it back on My calendar so someone else can have it.",
+              ? "مكانك محفوظ. إن لم يعد الموعد يناسبك، فتنازل عنه في «الفعاليات» في حسابك ليأخذه غيرك."
+              : "Your place is kept. If the new time doesn't suit you, give it back under Events in your account so someone else can have it.",
           ],
         }
   );
@@ -1842,8 +1842,8 @@ export const shiftReminder = (lang: Lang, s: ShiftInfo, app: string) =>
         ? [pick(l, s.location_ar ?? "", s.location_en ?? "")]
         : []),
       l === "ar"
-        ? "إن لم تعد تستطيع، فاطلب تبديلًا في «تقويمي» ليغطيها غيرك."
-        : "If you can no longer make it, ask for a swap on My calendar so someone can cover it.",
+        ? "إن لم تعد تستطيع، فاطلب تبديلًا في «الفعاليات» في حسابك ليغطيها غيرك."
+        : "If you can no longer make it, ask for a swap under Events in your account so someone can cover it.",
     ],
   }));
 

@@ -135,7 +135,7 @@ const EventView = async ({
         </p>
         <ManageLinks
           diwan={`/events/${event.slug}`}
-          membership="/account/calendar"
+          membership="/account/events"
           membershipLabel="booking"
         />
         {host ? (

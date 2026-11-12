@@ -11,6 +11,7 @@ import { AccountLanguage } from "./account-language";
 import { DeleteAccount } from "./delete-account";
 import { DownloadData } from "./download-data";
 import { EmailNotices } from "./email-notices";
+import { EsignSettings } from "./esign";
 import { MailTopics } from "./mail-topics";
 import { Passkeys } from "./passkeys";
 import { ChangePassword } from "./password";
@@ -91,6 +92,7 @@ export const SettingsScreen = () => {
         </RowList>
       </DiwanSection>
       {member ? <PersonalEmailSection /> : null}
+      <EsignSettings />
       <ChangePassword />
       <TwoStepSettings />
       <Passkeys />

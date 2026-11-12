@@ -27,6 +27,7 @@ const TICKED = new Set<StepKey>(["pages", "handover", "mailbox", "notion"]);
 const WHERE: Partial<Record<StepKey, string>> = {
   declaration: "/account/settings/disclosures/declare",
   diwan_group: "/account/settings",
+  handover: "/account/roles",
   pages: "/library",
   two_step: "/account/settings",
 };

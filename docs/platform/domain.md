@@ -175,7 +175,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   and checklists keep their names but are templates or records, in the
   templates index (`docs/platform/agreements.md`). The Code of Conduct
   (`code-of-conduct`, on joining), the role agreement (`role-agreement`),
-  the readers' pledge and the Publication Agreement are signed on their own
+  the readers' pledge and the publication agreement are signed on their own
   pages, and each is a signature record like the rest
   (`private.record_signing`): its AGR number, its check at /verify, and
   the signed copy in Your account → Documents. Where the site already
@@ -183,6 +183,19 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   elections), the form is that page. Members never see the word "form" or
   a form code; the requests they can start are plain actions where they
   belong (`StartLinks`).
+- **Consent to sign electronically** (E-SIGN) is asked once for the
+  account, on its own line at sign-up (`esign` in the sign-up's metadata)
+  or, for accounts made before, at the next sign-in (`EsignQuestion` in the
+  gates), and can be withdrawn in Settings (`core.answer_esign`,
+  `core.profiles.esign_agreed_at`). With it given, no signing page asks
+  again; without it, each one does.
+- **The handover** (`handover`) is a step when someone leaves a role: the
+  outgoing holder fills and signs it (`/account/roles/handover?role=<the
+  assignment>`, offered from 14 days before the role ends to 60 after,
+  `access.my_handovers_due`); the incoming holder, or an officer who
+  assigns roles when the role has no holder yet, countersigns it
+  (`governance.handovers_to_countersign`, `second_sign_form`, the
+  `successor` second signer). Both keep the signed copy in Documents.
 - **Signatures** are `Signature`/`MySignature` (`components/signature.tsx`):
   the signer's name on the platform in the signature face, the card
   number, the date and a guilloche. Never typed.

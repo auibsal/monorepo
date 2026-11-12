@@ -358,6 +358,16 @@ export type Database = {
         Args: { permission: string };
         Returns: boolean;
       };
+      my_handovers_due: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          assignment_id: string;
+          ends_at: string;
+          role: string;
+          role_ar: string;
+          role_en: string;
+        }[];
+      };
       my_permissions: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -979,6 +989,8 @@ export type Database = {
           camera_shy: boolean;
           created_at: string;
           deletion_requested_at: string | null;
+          esign_agreed_at: string | null;
+          esign_asked_at: string | null;
           father_name_ar: string | null;
           father_name_en: string | null;
           first_name_ar: string | null;
@@ -1018,6 +1030,8 @@ export type Database = {
           camera_shy?: boolean;
           created_at?: string;
           deletion_requested_at?: string | null;
+          esign_agreed_at?: string | null;
+          esign_asked_at?: string | null;
           father_name_ar?: string | null;
           father_name_en?: string | null;
           first_name_ar?: string | null;
@@ -1056,6 +1070,8 @@ export type Database = {
           camera_shy?: boolean;
           created_at?: string;
           deletion_requested_at?: string | null;
+          esign_agreed_at?: string | null;
+          esign_asked_at?: string | null;
           father_name_ar?: string | null;
           father_name_en?: string | null;
           first_name_ar?: string | null;
@@ -1412,6 +1428,7 @@ export type Database = {
         }[];
       };
       announcement_instagram_done: { Args: { id: string }; Returns: undefined };
+      answer_esign: { Args: { agree: boolean }; Returns: string };
       apply_broadcast_unsubscribes: {
         Args: { emails: string[] };
         Returns: number;
@@ -1468,6 +1485,13 @@ export type Database = {
           lang: string;
           token: string;
           user_id: string;
+        }[];
+      };
+      my_esign: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          agreed_at: string;
+          asked_at: string;
         }[];
       };
       my_minor_status: {
@@ -3729,6 +3753,18 @@ export type Database = {
       handle_form: {
         Args: { office?: Json; status: string; submission_id: string };
         Returns: undefined;
+      };
+      handovers_to_countersign: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          data: Json;
+          id: string;
+          outgoing: string;
+          reference: string;
+          role_ar: string;
+          role_en: string;
+          signed_at: string;
+        }[];
       };
       issue_form_link: {
         Args: { form_key: string; note?: string; sent_to: string };

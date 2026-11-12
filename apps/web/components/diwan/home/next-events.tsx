@@ -63,7 +63,7 @@ export const NextEvents = () => {
     <Section
       action={
         upcoming.length > 0 ? (
-          <Link className="link type-caption" href="/account/calendar">
+          <Link className="link type-caption" href="/account/events">
             {t("browse")}
           </Link>
         ) : undefined
@@ -77,7 +77,7 @@ export const NextEvents = () => {
       upcoming.length === 0 &&
       (waitlist.data ?? []).length === 0 ? (
         <EmptyLine
-          action={{ href: "/account/calendar", label: ta("browseEvents") }}
+          action={{ href: "/account/events", label: ta("browseEvents") }}
         >
           {t("empty")}
         </EmptyLine>
@@ -208,7 +208,7 @@ const WaitlistItem = ({
           {te("state.held", {
             until: `${formatLongDate(heldUntil, locale)}, ${formatClock(heldUntil, locale)}`,
           })}{" "}
-          <Link className="link" href="/account/calendar">
+          <Link className="link" href="/account/events">
             {te("claim")}
           </Link>
         </p>

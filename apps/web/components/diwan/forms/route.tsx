@@ -2,7 +2,11 @@ import { FillForm } from "@/components/diwan/forms/fill";
 import type { forms } from "@/lib/data";
 
 export interface FormRouteProps {
-  readonly searchParams: Promise<{ event?: string; link?: string }>;
+  readonly searchParams: Promise<{
+    event?: string;
+    link?: string;
+    role?: string;
+  }>;
 }
 
 /**
@@ -15,8 +19,13 @@ export const FormRoute = async ({
   formKey,
   searchParams,
 }: FormRouteProps & { readonly formKey: forms.FormKey }) => {
-  const { event, link } = await searchParams;
+  const { event, link, role } = await searchParams;
   return (
-    <FillForm eventSlug={event ?? null} formKey={formKey} link={link ?? null} />
+    <FillForm
+      eventSlug={event ?? null}
+      formKey={formKey}
+      link={link ?? null}
+      roleId={role ?? null}
+    />
   );
 };

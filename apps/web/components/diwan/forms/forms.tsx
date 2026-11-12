@@ -219,7 +219,8 @@ export const SignedList = () => {
           .select(
             "id, form_key, form_version, reference, verification_code, signed_at"
           )
-          .eq("submitted_by", user?.id ?? "")
+          // Signed by them, or countersigned (a handover they received).
+          .or(`submitted_by.eq.${user?.id},second_signer_id.eq.${user?.id}`)
           .not("signed_at", "is", null)
           .order("signed_at", { ascending: false })
       ) ?? []) as Signed[],

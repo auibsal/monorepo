@@ -13,7 +13,7 @@ export {
  * the Leadership Handbook (SAL-EXB-01); labels live in the messages files
  * under `diwan.forms.defs.<key>`. Who may sign a form and who handles it is
  * `governance.form_types` (the database decides). Forms that are part of a
- * page (a role application, an audition, the Publication Agreement) stay
+ * page (a role application, an audition, the publication agreement) stay
  * there.
  */
 
@@ -79,6 +79,7 @@ export type Routing = (typeof routings)[number];
 
 export const formKeys = [
   "conflict-of-interest-declaration",
+  "handover",
   "members-meeting-motion",
   "event-pitch",
   "media-release",
@@ -98,7 +99,7 @@ export type FormKey = (typeof formKeys)[number];
  * The register "Agreements and consents" (SAL-EXB-01; decisions.md,
  * Documents and forms): only what people sign, by name. The Code of
  * Conduct, the role agreement, the readers' confidentiality agreement and
- * the Publication Agreement are signed on their own pages; the handover in
+ * the publication agreement are signed on their own pages; the handover in
  * Notion; the rest on the standard form page (`formKeys`). Every other kind
  * (letters, notices, minutes, score sheets, reports, lists, checklists) is a
  * template or record, in the templates index, never in the register.
@@ -193,6 +194,20 @@ export const forms: Record<FormKey, FormDefinition> = {
       { key: "risks", max: 2000, type: "textarea" },
     ],
     key: "event-pitch",
+  },
+  // The handover (decisions.md, Documents and forms): a step when someone
+  // leaves a role, signed by the outgoing holder and countersigned by the
+  // incoming one or the seat's officer. The role is the page's subject.
+  handover: {
+    fields: [
+      { key: "in_progress", max: 4000, required: true, type: "textarea" },
+      { key: "open_items", max: 4000, type: "textarea" },
+      { key: "where", max: 4000, required: true, type: "textarea" },
+      { key: "access", max: 2000, required: true, type: "textarea" },
+      { key: "contacts", max: 2000, type: "textarea" },
+      { key: "notes", max: 4000, type: "textarea" },
+    ],
+    key: "handover",
   },
   "media-release": {
     fields: [
@@ -356,6 +371,7 @@ export const registerFields: Record<FormKey, readonly string[]> = {
     "needs: items, quantities and dates",
     "what could go wrong, and what you would do",
   ],
+  handover: [],
   "media-release": [
     "event or shoot",
     "credit me by name",
