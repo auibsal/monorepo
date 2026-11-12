@@ -204,9 +204,14 @@ First the second prompt's part 2 (7j), then the rest in place.
   the record kept, marked withdrawn; a trip's place given back). Parents'
   consents signed by link have no account to withdraw from: the parent
   writes, as before. **Migrates:** `form_submissions.withdrawn_at`.
-- [ ] The role agreement (the Code of Conduct, and the license for work made
+- [x] The role agreement (the Code of Conduct, and the license for work made
   in the role), signed on accepting any role, before the
-  conflict-of-interest declaration.
+  conflict-of-interest declaration: the second step of the role holder's
+  checklist on Today ("Sign as …"), one per role given
+  (`access.role_agreements`); the database refuses the declaration until
+  it is signed. Asked of roles given from the migration on; roles given
+  before were accepted under the Code of Conduct alone, and no signature
+  is recorded for them (`20261113003200_role_agreement.sql`).
 - [x] Two officers approve: changing a legal name, granting a Council
   role, exporting a list for Student Life. The request waits in
   `governance.pending_actions`; another officer holding the permission

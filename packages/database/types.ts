@@ -75,6 +75,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      role_agreements: {
+        Row: {
+          assignment_id: string;
+          signed_at: string;
+          signer_name: string;
+          user_id: string;
+          version: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          assignment_id: string;
+          signed_at?: string;
+          signer_name: string;
+          user_id: string;
+          version: string;
+        };
+        Update: {
+          assignment_id?: string;
+          signed_at?: string;
+          signer_name?: string;
+          user_id?: string;
+          version?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "role_agreements_assignment_id_fkey";
+            columns: ["assignment_id"];
+            isOneToOne: true;
+            referencedRelation: "role_assignments";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       role_assignments: {
         Row: {
           assigned_by: string | null;
@@ -377,6 +410,7 @@ export type Database = {
         Args: { assignment_id: string; eligible: boolean };
         Returns: undefined;
       };
+      sign_role_agreement: { Args: { assignment_id: string }; Returns: string };
       tick_role_step: {
         Args: { assignment_id: string; step: string };
         Returns: boolean;

@@ -42,6 +42,59 @@ interface Step {
 }
 
 /**
+ * The role agreement (decisions.md, Documents and forms): the Code of
+ * Conduct and the license for work made in the role, signed in the name
+ * the register holds, before the declaration.
+ */
+const RoleAgreement = ({
+  assignmentId,
+  onSigned,
+}: {
+  assignmentId: string;
+  onSigned: () => void;
+}) => {
+  const t = useTranslations("diwan.home.roleChecklist.agreement");
+  const { supabase } = useAuth();
+  const name = useQuery({
+    queryFn: async () =>
+      unwrap(await supabase.schema("core").rpc("my_register_name")) ?? "",
+    queryKey: ["core", "register-name"],
+  });
+  const sign = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("access")
+          .rpc("sign_role_agreement", { assignment_id: assignmentId })
+      ),
+    onSuccess: onSigned,
+  });
+  return (
+    <div className="border-line grid basis-full gap-2 border-s ps-4">
+      <p className="type-body max-w-[60ch]">{t("conduct")}</p>
+      <Link className="link justify-self-start text-sm" href="/code-of-conduct">
+        {t("readConduct")}
+      </Link>
+      <p className="type-body max-w-[60ch]">{t("license")}</p>
+      <Button
+        className="justify-self-start"
+        disabled={sign.isPending || !name.data}
+        onClick={() => sign.mutate()}
+        size="sm"
+        variant="outline"
+      >
+        {t("sign", { name: name.data ?? "" })}
+      </Button>
+      {sign.error ? (
+        <p className="type-caption text-accent" role="alert">
+          {t("failed")}
+        </p>
+      ) : null}
+    </div>
+  );
+};
+
+/**
  * F-04, the new role holder's checklist (decisions.md, Forms): from the day a
  * role is given, its steps in order. The site marks what it can see (the
  * declaration, two-step sign-in, the Diwan group) and the holder ticks the
@@ -111,6 +164,14 @@ export const RoleChecklist = () => {
                       <Link className="link text-sm" href={where}>
                         {t("go")}
                       </Link>
+                    ) : null}
+                    {!s.done && s.step === "pledge" ? (
+                      <RoleAgreement
+                        assignmentId={s.assignment_id}
+                        onSigned={() =>
+                          queryClient.invalidateQueries({ queryKey: key })
+                        }
+                      />
                     ) : null}
                     {!s.done && TICKED.has(s.step) ? (
                       <Button

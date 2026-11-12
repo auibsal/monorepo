@@ -93,6 +93,7 @@ const REFUSALS = new Set([
   "human_check_failed",
   "link_not_valid",
   "rate_limited",
+  "role_agreement_first",
   "sign_in_required",
 ]);
 

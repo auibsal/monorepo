@@ -416,7 +416,7 @@
         "tick": "Mark as done",
         "steps": {
           "email": "The role email, with what the role does and who it works with",
-          "pledge": "The Code of Conduct and confidentiality, signed (for Qirtas, the readers’ pledge too)",
+          "pledge": "The role agreement signed: the Code of Conduct and the license for work made in the role (for Qirtas, the readers’ pledge too)",
           "declaration": "The conflict-of-interest declaration",
           "two_step": "Two-step sign-in or a passkey set up",
           "diwan_group": "In the Diwan group on Telegram, through Hudhud",
@@ -424,6 +424,13 @@
           "handover": "The previous holder’s handover page walked through",
           "mailbox": "The seat’s mailbox received, with its password and two-step backup reset",
           "notion": "Invited to Notion by the Secretary"
+        },
+        "agreement": {
+          "conduct": "The role agreement: you will keep the Code of Conduct in this role.",
+          "readConduct": "Read the Code of Conduct",
+          "license": "For work you make in the role (design, code, photos, video, writing for the Society), you keep your copyright and give the Society a lasting license to use it.",
+          "sign": "Sign as {name}",
+          "failed": "It wasn’t signed. Try again in a moment."
         }
       },
       "renewal": {
@@ -4167,7 +4174,8 @@
         "human_check_failed": "The check that you’re a person didn’t pass. Try again.",
         "link_not_valid": "This link has been used or has expired. Ask for a new one.",
         "rate_limited": "Too many tries from here. Wait a few minutes and try again.",
-        "sign_in_required": "Sign in to send this form."
+        "sign_in_required": "Sign in to send this form.",
+        "role_agreement_first": "Sign the role agreement for each of your roles first: it is on Today, in your role’s first steps."
       },
       "signInFirst": "Sign in to raise a concern",
       "signInFirstWhy": "Concerns are raised signed in, so the panel can answer you. You can still ask to keep your name from the panel.",
