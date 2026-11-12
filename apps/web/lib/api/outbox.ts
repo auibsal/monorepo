@@ -560,7 +560,7 @@ const sendStaffDigest = async (admin: AdminClient) => {
       entry.parts.push({
         items: (l) =>
           counted(mine.map((r) => PENDING_KINDS[r.kind]?.[l] ?? r.kind)),
-        title: { ar: "بانتظار مسؤول ثانٍ", en: "For a second officer" },
+        title: { ar: "بانتظار مسؤول ثان", en: "For a second officer" },
       });
       parts.set(to.email, entry);
     }

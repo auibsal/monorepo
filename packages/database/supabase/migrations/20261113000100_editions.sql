@@ -16,7 +16,7 @@ set title_en = 'Haven: write for Qirtas’s pilot Edition',
       'auibsal.org/qirtas/write', 'auibsal.org/qirtas/submit'),
     body_ar = replace(replace(replace(body_ar,
       'العدد الأول من «قرطاس»', '«ملاذ»، الإصدار التجريبي من قرطاس'),
-      'صحيفة الجامعة للأخبار والآداب والفنون', 'صحيفة الجامعة الأمريكية في بغداد للأخبار والآداب والفن'),
+      'صحيفة الجامعة للأخبار والآداب والفنون', 'صحيفة الجامعة الأمريكية للأخبار والآداب والفن'),
       'auibsal.org/ar/qirtas/write', 'auibsal.org/ar/qirtas/submit'),
     link_path = '/qirtas/submit'
 where sent_at is null and link_path = '/qirtas/write';

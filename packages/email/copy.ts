@@ -585,7 +585,7 @@ export const personalEmailConfirm = (lang: Lang, confirm: string) =>
     ],
   }));
 
-const SOCIETY_AR = "جمعية الفنون والآداب في الجامعة الأمريكية في بغداد";
+const SOCIETY_AR = "جمعية الفنون والآداب في الجامعة الأمريكية";
 
 /** A partner invitation's heading and first lines, by kind and language. */
 type InvitationKind = "team" | "guest" | "society" | "associate" | "honorary";
@@ -633,7 +633,7 @@ const invitationLines = (
   if (kind === "team") {
     return l === "ar"
       ? {
-          body: `${partner} شريك لـ${SOCIETY_AR}، ويدعوك إلى فريقه على منصة الجمعية: ملف الشريك وضيوفه.`,
+          body: `${partner} شريك ل${SOCIETY_AR}، ويدعوك إلى فريقه على منصة الجمعية: ملف الشريك وضيوفه.`,
           heading: `انضم إلى فريق ${partner}`,
         }
       : {
@@ -643,7 +643,7 @@ const invitationLines = (
   }
   return l === "ar"
     ? {
-        body: `${partner} شريك لـ${SOCIETY_AR}. بصفتك ضيفه تحجز مقاعد في الفعاليات وتكتب لقرطاس حين تُفتح دعوة لـ${partner}.`,
+        body: `${partner} شريك ل${SOCIETY_AR}. بصفتك ضيفه تحجز مقاعد في الفعاليات وتكتب لقرطاس حين تُفتح دعوة لضيوف ${partner}.`,
         heading: `يدعوك ${partner} ضيفًا`,
       }
     : {
@@ -1358,7 +1358,7 @@ const REPLY_LINES: Record<
   received: {
     ar: {
       body: () =>
-        "وصل طلبك. يقرؤه المقعد الذي يوظّف لهذا الدور مع مراجع ثانٍ، وترى حالته في «طلباتك» في حسابك. يمكنك سحبه من هناك متى شئت.",
+        "وصل طلبك. يقرؤه المقعد الذي يوظّف لهذا الدور مع مراجع ثان، وترى حالته في «طلباتك» في حسابك. يمكنك سحبه من هناك متى شئت.",
       heading: "وصل طلبك",
     },
     en: {
@@ -1441,7 +1441,7 @@ const AUDITION_LINES: Record<
   called_back: (l, play) =>
     l === "ar"
       ? [
-          `استدعاء ثانٍ: ${play}`,
+          `استدعاء ثان: ${play}`,
           "تودّ الفرقة رؤيتك مرة أخرى. ستتواصل معك لتحديد الموعد.",
         ]
       : [
@@ -1798,10 +1798,10 @@ const plainInvitation = (
   paragraphs: [
     hello,
     l === "ar"
-      ? "أودّ أن أدعوك إلى الانضمام إلى جمعية الفنون والآداب في الجامعة الأمريكية في بغداد. نُصدر «قرطاس»، جريدة الجامعة للأخبار والأدب والفن، ونُدير «الفرقة»، مسرحنا، ونصنع «المحطة التالية»، برنامجنا المصوّر، ونقيم الفعاليات طوال العام."
+      ? "أودّ أن أدعوك إلى الانضمام إلى جمعية الفنون والآداب في الجامعة الأمريكية. نُصدر «قرطاس»، صحيفة الجامعة الأمريكية للأخبار والآداب والفن، ونُدير «الفرقة»، مسرحنا، ونصنع «المحطة التالية»، برنامجنا المصوّر، ونقيم الفعاليات طوال العام."
       : "I’d like to invite you to join the AUIB Society of Arts and Letters. We publish Qirtas, AUIB’s paper of news, letters and art; run the Company, our theater; make Next Stop, our show; and hold events all year.",
     l === "ar"
-      ? "انضم عبر auibsal.org/join بهذا البريد. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نكتب إليك مرة أخرى."
+      ? "انضم عبر ⁦auibsal.org/join⁩ بهذا البريد. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نكتب إليك مرة أخرى."
       : "Join at auibsal.org/join with this email. If you’d rather not, simply ignore this email; we won’t write to you again.",
   ],
   signoff: presidentSignoff(l, signer),
@@ -1911,7 +1911,7 @@ export const invitation = (
         hello,
         typed,
         l === "ar"
-          ? "افتتحنا auibsal.org، البيت الجديد للجمعية، ويسعدني أن تكون من أوائل أعضائه. انضم عبر auibsal.org/join بهذا البريد، فتجد صفحتك بانتظارك في حسابك. تبقى خاصة حتى تقرر هل تظهر في ملفك أو في صفحة الجولة."
+          ? "افتتحنا ⁦auibsal.org⁩، البيت الجديد للجمعية، ويسعدني أن تكون من أوائل أعضائه. انضم عبر ⁦auibsal.org/join⁩ بهذا البريد، فتجد صفحتك بانتظارك في حسابك. تبقى خاصة حتى تقرر هل تظهر في ملفك أو في صفحة الجولة."
           : "We’ve just opened auibsal.org, the Society’s new home, and I’d love for you to be one of its first members. Join at auibsal.org/join with this email, and your page will be waiting in your account. It stays private until you decide whether to show it on your profile or on the Tour’s page.",
         l === "ar"
           ? "إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نعرض صفحتك في أي مكان ولن نكتب إليك مرة أخرى."

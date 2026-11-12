@@ -6,9 +6,13 @@
  *
  *   bun run check:i18n   (runs this after check-i18n.ts)
  *
- * Arabic: tanween on the letter before the alif (ـًا, not ـاً), Latin
- * digits, the Iraqi month names the ar-IQ formatter uses, Arabic
- * punctuation (، ؛ ؟) and «» quotes, and Iraqi Arabic only in Hudhud.
+ * Arabic (decisions.md, Language; the fourth prompt, 7f): tanween
+ * al-fath on the letter before the alif (ـًا, not ـاً) and no other tanween
+ * (no ٌ or ٍ), no tatweel, Latin digits, the Iraqi month names the ar-IQ
+ * formatter uses, Arabic punctuation (، ؛ ؟) and «» quotes, taa marbuta and
+ * alif maqsura only at a word's end, hamzat al-wasl on the derived nouns,
+ * AUIB's name in its compounds, Latin addresses isolated (⁦…⁩, or <bdi>)
+ * so they read left to right, and Iraqi Arabic only in Hudhud.
  * English (decisions.md: the Chicago Manual of Style for prose,
  * sentence case for interface labels): American spelling, curly quotes and
  * apostrophes, "for example" over "e.g.", the ellipsis character, no
@@ -65,7 +69,33 @@ const ARABIC: Rule[] = [
     pattern: /الأمين العام|الأمينة العامة|«ما يجري»|المحطة القادمة/u,
     why: "a retired name (the glossary)",
   },
+  // Tanween is written only as al-fath (ـًا); never ٌ or ٍ.
+  { pattern: /[\u064C\u064D]/u, why: "no tanween but al-fath (no ٌ or ٍ)" },
+  { pattern: /\u0640/u, why: "no tatweel (ـ): rephrase, as بالنطاق or ضمن" },
+  // Taa marbuta and alif maqsura end a word.
+  {
+    pattern: /[ةى][\u0621-\u063A\u0641-\u064A]/u,
+    why: "taa marbuta (ة) and alif maqsura (ى) only at a word's end",
+  },
+  // Hamzat al-wasl: the derived nouns of forms VII, VIII and X take a bare
+  // alif (استمارة, اجتماع), never إ.
+  {
+    pattern:
+      /(^|[\s«(،])(إستمارة|إجتماع|إنتخاب|إستخدام|إشتراك|إنضمام|إختيار|إستلام|إنتهاء|إبتداء|إستقالة|إستثناء|إجتهاد|إقتراح|إنسحاب|إستعادة)/u,
+    why: "hamzat al-wasl: a bare alif (استمارة, اجتماع), not إ",
+  },
+  // decisions.md, Language: AUIB inside a compound is «الجامعة الأمريكية»;
+  // alone it is «الجامعة الأمريكية في بغداد», never «… في العراق».
+  {
+    pattern:
+      /(جمعية الفنون والآداب|صحيفة) (في )?الجامعة الأمريكية في بغداد|الجامعة الأمريكية في العراق|(صحيفة|جريدة) الجامعة للأخبار/u,
+    why: "AUIB's Arabic name: «الجامعة الأمريكية» inside a compound (the glossary)",
+  },
 ];
+
+/** A web or email address in Arabic text, not already isolated. */
+const BARE_ADDRESS =
+  /(?<![\u2066\w@./="':>-])(https?:\/\/|[\w.+-]+@[\w-]+\.|[\w-]+\.(org|edu\.iq|com)\b)/u;
 
 // Iraqi spellings and words (گ, چ, پ and common colloquial words).
 const IRAQI =
@@ -120,8 +150,18 @@ const check = (where: string, text: string, rules: Rule[]) => {
   }
 };
 
+const isolated = (where: string, text: string) => {
+  if (HAS_ARABIC.test(text) && BARE_ADDRESS.test(text)) {
+    findings.push(
+      `${where}: a Latin address in Arabic text is isolated (⁦…⁩ or <bdi>)\n    ${text.slice(0, 120)}`
+    );
+  }
+};
+
+const HAS_ARABIC = /[ء-ي]/u;
 for (const [key, value] of await readMessages("ar")) {
   check(`ar.json ${key}`, value, ARABIC);
+  isolated(`ar.json ${key}`, value);
   if (IRAQI.test(value)) {
     findings.push(
       `ar.json ${key}: standard Arabic on the site (Iraqi only in Hudhud)\n    ${value.slice(0, 120)}`
@@ -132,7 +172,6 @@ for (const [key, value] of await readMessages("en")) {
   check(`en.json ${key}`, value, ENGLISH);
 }
 
-const HAS_ARABIC = /[ء-ي]/u;
 const copies = await Promise.all(
   COPY_FILES.map(async (file) => ({
     file,
@@ -145,6 +184,7 @@ for (const { file, lines } of copies) {
       continue;
     }
     check(`${file}:${index + 1}`, line, ARABIC);
+    isolated(`${file}:${index + 1}`, line);
     if (file !== IRAQI_HOME && IRAQI.test(line)) {
       findings.push(
         `${file}:${index + 1}: standard Arabic here (Iraqi only in Hudhud)\n    ${line.trim().slice(0, 120)}`

@@ -59,12 +59,12 @@ First the second prompt's part 2 (7j), then the rest in place.
   set: marked done here and in `docs/platform/settings.md`.
 - [x] **7c. LICENSE.md:** "proprietary", no longer "and confidential"; the
   repository stays public.
-- [ ] **7d. AUIB's Arabic name:** «الجامعة الأمريكية في بغداد» alone; «الجامعة
+- [x] **7d. AUIB's Arabic name:** «الجامعة الأمريكية في بغداد» alone; «الجامعة
   الأمريكية» inside a compound (the Society, Qirtas's line) across the site,
   emails, Hudhud, the brand kit and the language check.
 - [x] **7e. Submission numbers** SUB-<year>-<four digits> (now in
   decisions.md §12). Revise and resend waits on the owner.
-- [ ] **7f. Arabic writing rules in CI:** never ٌ or ٍ; tanween al-fath on
+- [x] **7f. Arabic writing rules in CI:** never ٌ or ٍ; tanween al-fath on
   the letter before the alif; no tatweel; Arabic punctuation; hamza, taa
   marbuta and alif maqsura; Latin script for products and addresses,
   isolated (`<bdi>`).
@@ -210,7 +210,7 @@ First the second prompt's part 2 (7j), then the rest in place.
 
 ### 4. Qirtas (decisions.md, Qirtas)
 - [x] The nameplate and the line "AUIB's paper of news, letters and art" /
-  «صحيفة الجامعة الأمريكية في بغداد للأخبار والآداب والفن».
+  «صحيفة الجامعة الأمريكية للأخبار والآداب والفن».
 - [x] Section fronts: title, one sentence, the call as the action, the
   section's editor from the masthead, then the list.
 - [x] Contributor pages listing each person's pieces (preferred or pen

@@ -47,8 +47,8 @@ export const certificateCopy: Record<
   ar: {
     body: ({ category, citation, kind }) =>
       kind === "qalam"
-        ? "أتمّ «قلم»، البرنامج الصيفي لقرطاس، صحيفة جمعية الفنون والآداب في الجامعة الأمريكية في بغداد."
-        : `${citation}، في فئة «${category}» من جائزة المتنبي التي تمنحها جمعية الفنون والآداب في الجامعة الأمريكية في بغداد.`,
+        ? "أتمّ «قلم»، البرنامج الصيفي لقرطاس، صحيفة جمعية الفنون والآداب في الجامعة الأمريكية."
+        : `${citation}، في فئة «${category}» من جائزة المتنبي التي تمنحها جمعية الفنون والآداب في الجامعة الأمريكية.`,
     categories: { qalam: "قلم", qirtas: "قرطاس" },
     codes: { prize: "SAL-EDT · جائزة المتنبي", qalam: "SAL-EDT · قلم" },
     given: (date) => `مُنحت في ${date}`,
@@ -112,7 +112,7 @@ export const serviceLetterCopy: Record<
 > = {
   ar: {
     body: ({ from, hours, name, role, to }) =>
-      `خدم ${name} جمعية الفنون والآداب في الجامعة الأمريكية في بغداد بصفة ${role}، ${to ? `من ${from} إلى ${to}` : `منذ ${from}`}${hours ? `، وقدّم ${hours} ساعة من الخدمة المؤكدة` : ""}.`,
+      `خدم ${name} جمعية الفنون والآداب في الجامعة الأمريكية بصفة ${role}، ${to ? `من ${from} إلى ${to}` : `منذ ${from}`}${hours ? `، وقدّم ${hours} ساعة من الخدمة المؤكدة` : ""}.`,
     code: "SAL-EXB-01 · F-05",
     foot: "hello@auibsal.org · auibsal.org",
     greeting: "إلى من يهمه الأمر،",
