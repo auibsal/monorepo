@@ -326,7 +326,7 @@ const publishEvent = async (
 /**
  * The event's host and debrief (decisions §13): Host names the partner the
  * event is held for (matched to the register by its English or Arabic
- * name; the Society otherwise), and Debrief links its F-13 page, kept for
+ * name; the Society otherwise), and Debrief links its event-debrief page, kept for
  * the event's staff only.
  */
 const saveHostAndDebrief = async (

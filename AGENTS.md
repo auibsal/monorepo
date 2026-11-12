@@ -30,7 +30,7 @@ media do.
     site: `/sign-in`, `/sign-up` (and `/sign-up/guest`), `/auth/*`,
     `/welcome`, `/get-involved` (public), each form at its place in its
     flow (`formPaths` in `lib/data/forms.ts`: `/about/contact/concern`,
-    `/consent/<kind>` …; the old `/forms/<number>` redirect),
+    `/consent/<kind>` …; every old `/forms` address redirects),
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
     members, everything under `/account`, in six tabs (decisions.md, The site):
     Today, Calendar (`/calendar`), Record (`/record`, certificates at
@@ -130,7 +130,7 @@ bun run test                # Vitest in every workspace
 bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
 bun run check:i18n          # UI text not in the messages files; the language standard
-bun run check:forms         # the forms registry against SAL-EXB-01 (needs NOTION_TOKEN)
+bun run check:forms         # agreements and consents against SAL-EXB-01, by name (needs NOTION_TOKEN)
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
@@ -225,14 +225,14 @@ any schema change. Integration tests run against a local stack with
   members-only directory (`in_directory`). The site keeps only what it
   needs: no optional profile details or demographic reports. A member
   under 18 gives the month and year of birth (deleted at 18) and a
-  parent's consent by link (F-46), and nothing shows or names them until
+  parent's consent by link (`parent-consent`), and nothing shows or names them until
   then. No phone numbers until they can be verified. Never ask for a
   student ID number: the AUIB address is the identifier, never shown
   publicly.
 - **Blind review.** Readers never receive an author's identity before a
   decision; verify against network responses, not the UI. Clients never
   read `contributors.user_id`, so a pen name can't be traced. Readers
-  read the work, never the file: after signing F-40 (the readers'
+  read the work, never the file: after signing `confidentiality-agreement` (the readers'
   pledge) on the reading page, the text on
   the page (`journal.entry_text`) and images marked with their card
   number (`/api/files/blind`); originals open by role through

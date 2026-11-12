@@ -125,7 +125,7 @@ insert into journal.blind_entries (blind_id, call_id, category, language, title,
 values ('W-E2AAAA', (select id from journal.calls limit 1), 'poetry', 'en', 'Orphan', now() - interval '13 months');
 -- An incident record from eight years ago
 insert into governance.form_submissions (form_key, submitted_by, status, created_at, submitted_at, signed_at, signer_name) values
-  ('f16', '00000000-0000-0000-0000-0000000e2a02', 'closed', now() - interval '8 years', now() - interval '8 years', now() - interval '8 years', 'New Account');
+  ('incident-report', '00000000-0000-0000-0000-0000000e2a02', 'closed', now() - interval '8 years', now() - interval '8 years', now() - interval '8 years', 'New Account');
 -- A reply decided over a year ago
 insert into programmes.openings (id, programme_id, role, title_en, title_ar)
 values ('0be00000-0000-0000-0000-0000000e2a0b', (select id from core.programmes where slug = 'company'),
@@ -170,7 +170,7 @@ select is((select count(*)::integer from journal.submission_drafts where user_id
   'a recent draft stays');
 select is((select count(*)::integer from journal.blind_entries where blind_id = 'W-E2AAAA'), 0,
   'A blind copy with no submission is deleted after 12 months');
-select is((select count(*)::integer from governance.form_submissions where form_key = 'f16'), 0,
+select is((select count(*)::integer from governance.form_submissions where form_key = 'incident-report'), 0,
   'Incident records go after seven years');
 select is((select array_agg(status) from programmes.opening_replies where opening_id = '0be00000-0000-0000-0000-0000000e2a0b'),
   array['new'], 'A decided reply goes after 12 months; an open one stays');

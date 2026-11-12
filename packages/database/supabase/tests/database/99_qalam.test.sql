@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(21);
+select plan(29);
 
 -- Qalam's students are accounts (decisions.md, Qirtas: Qalam's shape; the
 -- fifth prompt, 3 and 4): the parent's consent (F-38) makes the student's
@@ -114,9 +114,25 @@ values ('00000000-0000-0000-0000-0000000f1a03', 'sara@school.example', now(),
 update core.profiles set first_name_ar = 'سارة', last_name_ar = 'أحمد', full_name_ar = 'سارة أحمد'
 where id = '00000000-0000-0000-0000-0000000f1a03';
 
+-- The parent, made a guest's account from the address the link went to.
+select pg_temp.make_user('00000000-0000-0000-0000-0000000f1a04', 'parent@home.example', 'A Parent');
+
+-- Qalam's staff send the consent to the parent, the teacher copied.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
+select isnt(programmes.qalam_consent_link('parent@home.example', 'teacher@school.example', 'Baghdad High'), null,
+  'The consent goes to the parent, with the teacher''s copy');
+select pg_temp.logout();
+select is((select sent_to || ' / ' || copy_to from governance.form_links where form_key = 'qalam-parent-consent'),
+  'parent@home.example / teacher@school.example', 'to the parent''s own address');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a02');
+select throws_ok(
+  $$ select programmes.qalam_consent_link('p@home.example', 't@school.example') $$,
+  '42501', null, 'Only Qalam''s staff send it');
+select pg_temp.logout();
+
 -- The signed consent (by link; the parent signs).
 insert into governance.form_submissions (id, form_key, status, data, signer_name, signed_at, submitted_at)
-values ('00000000-0000-0000-0000-0000000f1c01', 'f38', 'submitted',
+values ('00000000-0000-0000-0000-0000000f1c01', 'qalam-parent-consent', 'submitted',
   '{"school": "Baghdad High", "grade": "11", "photos": "no_photos", "publishing": ["qirtas"]}',
   'A Parent', now(), now());
 
@@ -129,7 +145,7 @@ select throws_ok(
   'Staff never add a student by hand'
 );
 select throws_ok(
-  $$ select programmes.qalam_enroll('00000000-0000-0000-0000-0000000f1c01', '00000000-0000-0000-0000-0000000f1a03') $$,
+  $$ select programmes.qalam_enroll('00000000-0000-0000-0000-0000000f1c01', '00000000-0000-0000-0000-0000000f1a03', '00000000-0000-0000-0000-0000000f1a04') $$,
   '42501', null,
   'and can''t enroll one: only the consent does'
 );
@@ -137,7 +153,7 @@ select pg_temp.logout();
 
 -- The consent enrolls the student (as the API route does, with the secret key).
 set local role service_role;
-select isnt(programmes.qalam_enroll('00000000-0000-0000-0000-0000000f1c01', '00000000-0000-0000-0000-0000000f1a03'), null,
+select isnt(programmes.qalam_enroll('00000000-0000-0000-0000-0000000f1c01', '00000000-0000-0000-0000-0000000f1a03', '00000000-0000-0000-0000-0000000f1a04'), null,
   'The parent''s consent puts the student on the roster');
 reset role;
 
@@ -151,6 +167,16 @@ select is((select school || ' · ' || coalesce(grade, '') from programmes.qalam_
 select is((select photos_allowed::text || publishing_allowed::text from programmes.qalam_students
   where user_id = '00000000-0000-0000-0000-0000000f1a03'), 'falsetrue',
   'and its photo and publishing answers');
+select is(private.membership_kind('00000000-0000-0000-0000-0000000f1a04'), 'guest',
+  'The parent has a guest account');
+select is((select scope_id from access.role_assignments where user_id = '00000000-0000-0000-0000-0000000f1a04' and role = 'parent'),
+  '00000000-0000-0000-0000-0000000f1a03'::uuid, 'with the Parent role on their child');
+select ok((select reference ~ '^AGR-\d{4}-\d{4}$' and verification_code is not null
+  from governance.form_submissions where id = '00000000-0000-0000-0000-0000000f1c01'),
+  'The signed consent has its AGR number and verification code');
+select is((select kind from governance.verify_agreement(
+    (select verification_code from governance.form_submissions where id = '00000000-0000-0000-0000-0000000f1c01'))),
+  'qalam-parent-consent', '/verify names it by its name');
 select is((select subject_user_id from governance.form_submissions where id = '00000000-0000-0000-0000-0000000f1c01'),
   '00000000-0000-0000-0000-0000000f1a03'::uuid, 'The consent is about the student''s account');
 
@@ -194,10 +220,10 @@ select is((select school from membership.verify_card_qalam(
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
 select isnt(programmes.qalam_release_link(
     (select id from programmes.qalam_students where user_id = '00000000-0000-0000-0000-0000000f1a03'),
-    'teacher@school.example', 'Baghdad High'), null,
-  'A release link is sent for a student on the roster');
+    'parent@home.example', 'teacher@school.example', 'Baghdad High'), null,
+  'A release link is sent to a parent for a student on the roster');
 select pg_temp.logout();
-select is((select subject_user from governance.form_links where form_key = 'f39' and sent_to = 'teacher@school.example'),
+select is((select subject_user from governance.form_links where form_key = 'qalam-publishing-consent' and copy_to = 'teacher@school.example'),
   '00000000-0000-0000-0000-0000000f1a03'::uuid, 'and names the student''s account');
 
 -- The role ends with the program; the guest account stays.
@@ -207,6 +233,9 @@ where user_id = '00000000-0000-0000-0000-0000000f1a03';
 select pg_temp.logout();
 select ok(not private.is_qalam_student('00000000-0000-0000-0000-0000000f1a03'),
   'Finishing ends the Qalam student role');
+select ok(not exists (select 1 from access.role_assignments where user_id = '00000000-0000-0000-0000-0000000f1a04'
+    and role = 'parent' and (ends_at is null or ends_at > now())),
+  'and the parent''s Qalam role');
 select is(private.membership_kind('00000000-0000-0000-0000-0000000f1a03'), 'guest',
   'and the guest account stays');
 

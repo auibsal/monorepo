@@ -46,7 +46,6 @@ import {
   personalEmailConfirm,
   pieceNote,
   piecePublished,
-  qalamAccount,
   recoveryAttempts,
   removalDone,
   removalReceived,
@@ -1212,18 +1211,27 @@ const handlers: Record<string, Handler> = {
       .schema("governance")
       .from("form_submissions")
       .select(
-        "id, form_key, data, signer_name, signed_at, signer_contact, submitted_by, document_sha256, form_types(code, title_en, title_ar)"
+        "id, form_key, data, signer_name, signed_at, signer_contact, submitted_by, document_sha256, reference, verification_code, form_types(title_en, title_ar)"
       )
       .eq("id", String(payload.submission_id))
       .maybeSingle();
     if (!(row?.signer_name && row.signed_at && row.document_sha256)) {
       return;
     }
-    const member = await recipient(admin, row.submitted_by);
-    const contact = row.signer_contact?.trim() ?? "";
+    // A copy for someone named on the link (the teacher, for Qalam), or the
+    // signer's own: their account, or the address they signed from.
+    const copy = typeof payload.to === "string" && AN_EMAIL.test(payload.to);
+    const member = copy ? null : await recipient(admin, row.submitted_by);
     let to: Recipient | null = member;
-    if (!to && AN_EMAIL.test(contact)) {
-      to = { email: contact, lang: "en" };
+    if (copy) {
+      to = { email: String(payload.to), lang: "en" };
+    } else if (!to) {
+      const { data: link } = await admin
+        .schema("governance")
+        .rpc("consent_link", { submission_id: row.id })
+        .maybeSingle();
+      const contact = (link?.sent_to ?? row.signer_contact ?? "").trim();
+      to = AN_EMAIL.test(contact) ? { email: contact, lang: "en" } : null;
     }
     if (!to) {
       return;
@@ -1232,13 +1240,18 @@ const handlers: Record<string, Handler> = {
     await send(
       to,
       formSignedCopy(to.lang, {
-        answers: formAnswers(to.lang, row.form_key, row.data),
+        answers: copy ? [] : formAnswers(to.lang, row.form_key, row.data),
         fingerprint: row.document_sha256,
+        forSomeoneElse: copy,
+        reference: row.reference,
         signedAt: row.signed_at,
         signer: row.signer_name,
         title: (to.lang === "ar" ? type?.title_ar : type?.title_en) ?? "",
         url: member
           ? `${appUrl()}${localizedPath(to.lang, `/account/requests/${row.id}`)}`
+          : null,
+        verifyUrl: row.verification_code
+          ? `${appUrl()}${localizedPath(to.lang, `/verify/${row.verification_code}`)}`
           : null,
       })
     );
@@ -1515,16 +1528,12 @@ const handlers: Record<string, Handler> = {
     if (to) {
       await send(
         to,
-        parentAccount(to.lang, payload.existing === true, appUrl())
-      );
-    }
-  },
-  "membership.qalam_account": async (admin, payload) => {
-    const to = await recipient(admin, payload.user_id);
-    if (to) {
-      await send(
-        to,
-        qalamAccount(to.lang, payload.existing === true, appUrl())
+        parentAccount(
+          to.lang,
+          payload.existing === true,
+          appUrl(),
+          payload.qalam === true
+        )
       );
     }
   },

@@ -86,7 +86,7 @@ export const certificateCopy: Record<
 };
 
 /**
- * A service letter's words (SAL-EXB-01 · F-05; decisions.md), in the
+ * A service letter's words (SAL-EXB-01; decisions.md), in the
  * letter's own language: an American business letter, "To whom it may
  * concern:", signed by the Director of Membership.
  */
@@ -113,7 +113,7 @@ export const serviceLetterCopy: Record<
   ar: {
     body: ({ from, hours, name, role, to }) =>
       `خدم ${name} جمعية الفنون والآداب في الجامعة الأمريكية بصفة ${role}، ${to ? `من ${from} إلى ${to}` : `منذ ${from}`}${hours ? `، وقدّم ${hours} ساعة من الخدمة المؤكدة` : ""}.`,
-    code: "SAL-EXB-01 · F-05",
+    code: "SAL-EXB-01",
     foot: "hello@auibsal.org · auibsal.org",
     greeting: "إلى من يهمه الأمر،",
     qr: "امسح الرمز للتحقق من هذه الرسالة",
@@ -124,7 +124,7 @@ export const serviceLetterCopy: Record<
   en: {
     body: ({ from, hours, name, role, to }) =>
       `${name} served the AUIB Society of Arts and Letters as ${role}, ${to ? `from ${from} to ${to}` : `since ${from}`}${hours ? `, giving ${hours} confirmed hours of service` : ""}.`,
-    code: "SAL-EXB-01 · F-05",
+    code: "SAL-EXB-01",
     foot: "hello@auibsal.org · auibsal.org",
     greeting: "To whom it may concern:",
     qr: "Scan to check this letter",
@@ -156,7 +156,7 @@ const optionalDate = z
   .nullable()
   .optional();
 
-/** One line of the Volunteer Hours Log (F-16). */
+/** One line of the Volunteer Hours Log (incident-report). */
 export const serviceEntrySchema = z.object({
   activity: z.string().trim().min(1).max(200),
   hours: z
@@ -358,13 +358,19 @@ export const verifyCertificate = async (client: Client, code: string) =>
     await client.schema("membership").rpc("verify_certificate", { code })
   )?.[0] ?? null;
 
-/** A service letter's check (F-05): who, for what, when, and whether it stands. */
+/** A service letter's check (service-letter): who, for what, when, and whether it stands. */
+/** A signed agreement or consent, by the code on the signer's copy. */
+export const verifyAgreement = async (client: Client, code: string) =>
+  unwrap(
+    await client.schema("governance").rpc("verify_agreement", { code })
+  )?.[0] ?? null;
+
 export const verifyServiceLetter = async (client: Client, code: string) =>
   unwrap(
     await client.schema("membership").rpc("verify_service_letter", { code })
   )?.[0] ?? null;
 
-// ── Service letters (F-05) ──────────────────────────────────────────────────
+// ── Service letters (service-letter) ──────────────────────────────────────────────────
 
 /** A service letter, written by the Director of Membership on request. */
 const serviceLetterSchema = z.object({

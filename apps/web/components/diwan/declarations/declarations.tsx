@@ -36,7 +36,7 @@ const blankItem = (): Item => ({
 });
 
 /**
- * Form F-18, Conflict of Interest Declaration (Policy Manual P8): every role
+ * Form needs-list, Conflict of Interest Declaration (Policy Manual P8): every role
  * holder, every semester, and whenever something new arises. Received by
  * the Secretary in Administration.
  */

@@ -130,7 +130,7 @@ export interface SignUpDetails {
   /**
    * A student under 18 (decisions §10, Minors): the month and year of
    * birth, kept only to lift the minors' rules at 18, and the parent's
-   * address, where the consent link (F-46) goes once the account is
+   * address, where the consent link (parent-consent) goes once the account is
    * confirmed.
    */
   minor?: { birthMonth: number; birthYear: number; parentEmail: string };

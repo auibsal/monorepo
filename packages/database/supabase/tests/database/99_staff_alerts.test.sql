@@ -137,7 +137,7 @@ select ok(exists (select 1 from core.outbox where kind = 'events.incident_report
   'An alert is queued at once');
 
 insert into governance.form_submissions (id, form_key, submitted_by, status)
-values ('f2100000-0000-0000-0000-0000000fa021', 'f21', '00000000-0000-0000-0000-0000000fa003', 'draft');
+values ('f2100000-0000-0000-0000-0000000fa021', 'concern', '00000000-0000-0000-0000-0000000fa003', 'draft');
 select ok(not exists (select 1 from core.outbox where kind = 'governance.concern_raised'),
   'A draft concern alerts no one');
 update governance.form_submissions

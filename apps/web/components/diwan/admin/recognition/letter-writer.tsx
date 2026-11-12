@@ -15,7 +15,14 @@ import { Field, RecordPage, SelectInput } from "../kit";
  * which have their own records: the wording lives in the Leadership
  * Handbook's templates, and every one is sent on the one letter template.
  */
-const LETTER_FORMS = ["f03", "f30", "f32", "f33", "f34", "f42"] as const;
+const LETTER_FORMS = [
+  "appointment-letter",
+  "thank-you-letter",
+  "application-outcome",
+  "welcome-letter",
+  "honorary-membership-invitation",
+  "author-letters",
+] as const;
 type LetterForm = (typeof LETTER_FORMS)[number];
 type Lang = "en" | "ar";
 
@@ -27,16 +34,16 @@ const SIGN_OFF: Record<Lang, string> = {
 };
 
 /**
- * One letter template for every letter (decisions.md; F-03, F-30,
- * F-32, F-33, F-34, F-42): the officer picks the letter, writes it from the
+ * One letter template for every letter (decisions.md; appointment-letter, thank-you-letter,
+ * application-outcome, welcome-letter, honorary-membership-invitation, author-letters): the officer picks the letter, writes it from the
  * register's template in the recipient's language, and prints it or saves
  * it as PDF from the browser. Nothing is stored here: the record stays in
- * Notion (or, for F-42, with the submission).
+ * Notion (or, for author-letters, with the submission).
  */
 const LetterWriter = () => {
   const t = useTranslations("diwan.admin.recognition.letterWriter");
   const profile = useProfile();
-  const [form, setForm] = useState<LetterForm>("f03");
+  const [form, setForm] = useState<LetterForm>("appointment-letter");
   const [lang, setLang] = useState<Lang>("en");
   const [recipient, setRecipient] = useState("");
   const [greeting, setGreeting] = useState("");

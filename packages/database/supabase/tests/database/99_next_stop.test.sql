@@ -147,8 +147,8 @@ select throws_ok(
 -- Both sign: the links are used.
 select pg_temp.logout();
 insert into governance.form_submissions (id, form_key, data, status, submitted_at, form_version, signer_name, signed_at)
-values ('00000000-0000-0000-0000-00000000e5f1', 'f15', '{}', 'submitted', now(), 1, 'Show Host', now()),
-       ('00000000-0000-0000-0000-00000000e5f2', 'f15', '{}', 'submitted', now(), 1, 'Guest Speaker', now());
+values ('00000000-0000-0000-0000-00000000e5f1', 'media-release', '{}', 'submitted', now(), 1, 'Show Host', now()),
+       ('00000000-0000-0000-0000-00000000e5f2', 'media-release', '{}', 'submitted', now(), 1, 'Guest Speaker', now());
 update governance.form_links set submission_id = '00000000-0000-0000-0000-00000000e5f1', used_at = now()
 where id = (select form_link_id from programmes.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c1');
 select is(

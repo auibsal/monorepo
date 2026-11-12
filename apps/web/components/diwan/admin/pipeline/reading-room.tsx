@@ -35,7 +35,7 @@ const usePledge = () => {
 };
 
 /**
- * The readers' pledge is F-40, the Confidentiality pledge, signed here in
+ * The readers' pledge is confidentiality-agreement, the Confidentiality pledge, signed here in
  * the reader's name on the platform (once, and again for a new version).
  */
 const Pledge = () => {

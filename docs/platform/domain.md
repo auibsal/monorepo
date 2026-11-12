@@ -36,7 +36,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Covering an open seat or section is a dated delegation
   (`role_assignments.covering`) that ends when the role is given for good.
   The Secretary records the quarterly access review on the
-  Council page (`access.record_access_review`). F-04, the new role
+  Council page (`access.record_access_review`). `role-holder-checklist`, the new role
   holder's checklist, is in Your account for 120 days from the day a role
   is given (`access.my_role_checklist`).
 - **The first term.** Anyone newly joining a team serves a first term on
@@ -61,7 +61,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   and hold office. Staff is a member holding a role (`private.is_staff`).
   Students join themselves with an AUIB address and confirm they are
   students; Associate and Honorary Members (Honorary only after the
-  Council's resolution, F-34) join by the Director of Membership's
+  Council's resolution, `honorary-membership-invitation`) join by the Director of Membership's
   invitation. One invitation system (`governance.partner_invitations`,
   decisions §10): every invitation is single-use, to a named address,
   valid 14 days and revocable, sent by the Director of Membership
@@ -135,8 +135,8 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **Certificates** are two: finishing Qalam and the Mutanabbi Prize, one
   language each, with a verification code (`/verify/<code>` takes a
   certificate or a card code). Service is a letter
-  (`membership.service_letters`, F-05) with a verification code. Every
-  letter (F-03, F-05, F-30, F-32, F-33, F-34, F-42) is one American
+  (`membership.service_letters`, `service-letter`) with a verification code. Every
+  letter (`appointment-letter`, `service-letter`, `thank-you-letter`, `application-outcome`, `welcome-letter`, `honorary-membership-invitation`, `author-letters`) is one American
   business letter template.
 - **Numbers and codes** (decisions §6): one five-digit series for members
   and guests (the card); CERT-, LTR-, RES-, MOU- and
@@ -148,23 +148,29 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **Forms** are each a step in their own flow, on one standard page with
   no form number shown (`formPaths`: a concern at `/about/contact/concern`,
   consents at `/consent/<kind>`, a declaration under Settings; the old
-  `/forms/<number>` addresses redirect, 308), signed in the
+  `/forms` addresses redirect, 308), signed in the
   signer's platform name and kept as the signed copy; staff forms are
   Notion templates. The signer agrees to sign electronically; the copy
   keeps the time, IP address, version and SHA-256 fingerprint, and the
-  signer is emailed theirs (`forms.signed_copy`). Signing without an
+  signer is emailed theirs (`forms.signed_copy`). Each kind has a stable
+  name and version (`governance.form_types.key`, "media-release",
+  version 1; see `agreements.md`); each signing its record number
+  (`reference`, AGR-<year>-<four digits>) and a verification code that
+  `/verify/<code>` checks (`governance.verify_agreement`). Signing without an
   account goes through `/api/forms/sign` (Turnstile,
-  `TURNSTILE_SECRET_KEY`, and a limit per address). A concern (F-21) is
+  `TURNSTILE_SECRET_KEY`, and a limit per address). A concern (`concern`) is
   raised signed in; its writer may keep their name from the panel: the
   submission then holds no name, the signer is kept in
   `governance.sealed_signers` (read only by them), and whoever handles it
   opens the name only for a safety risk or with the writer's agreement
   (`governance.open_sealed`, the opening kept); parents
-  sign Qalam's F-38 and F-39 by a single-use link the Qalam lead sends
-  to the teacher (`governance.form_links`). Every public form that sends
-  email checks Turnstile (`lib/api/turnstile.ts`). The forms register in SAL-EXB-01 is the one source of
-  every form's number, title and fields; `bun run check:forms` compares
-  `governance.form_types` and the registry with it. Where the site already
+  sign Qalam's `qalam-parent-consent` and `qalam-publishing-consent`
+  through their own single-use link, the teacher copied
+  (`governance.form_links`, `copy_to`). Every public form that sends
+  email checks Turnstile (`lib/api/turnstile.ts`). The register
+  "Agreements and consents" in SAL-EXB-01 is the one source of every
+  kind's name, title and fields; `bun run check:forms` compares
+  `governance.form_types` and the registry with it, by name. Where the site already
   does the job (joining, RSVPs, Write for Qirtas, Get involved,
   elections), the form is that page. Members never see the word "form" or
   a form code; the requests they can start are plain actions where they
@@ -197,7 +203,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (`events.session_links`, https only). Off campus is a standard field:
   such an event publishes only once the Secretary records Student
   Life's written approval (`events.record_approval`), and participants
-  sign the trip consent, F-45. Nothing is built for one event or one kind
+  sign the trip consent, `trip-consent`. Nothing is built for one event or one kind
   of event. An event that recurs is made again for each date; there are
   no series and no programs (the code keeps its identifiers: the
   `programmes` schema, `programme_id`, `programs.manage`; copy says
@@ -355,16 +361,22 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   chooses whether to be named (`prize_entries.winner_named`), and anyone
   connected to a work steps aside from it (`journal.prize_recusals`).
 - **Qalam**, Qirtas's summer program for high school students. The
-  parent's consent (F-38, by link through the teacher) makes each
+  school gives the parents' addresses with its application; Qalam's staff
+  send the consent (`qalam-parent-consent`) to each parent through their
+  own single-use link (`programmes.qalam_consent_link`), and the teacher
+  gets a copy of each signed consent (`form_links.copy_to`). Signing makes
+  the parent's guest account with the Parent role on their child and the
   student's guest account with the "Qalam student" role
-  (`programmes.qalam_enroll`, from `/api/forms/sign`): the name and
-  address on it become the account's own. The roster is the list of those
+  (`programmes.qalam_enroll`, from `/api/forms/sign`): the names and
+  addresses on it become the accounts' own. The site writes to the parent
+  and the teacher, never to the student. The roster is the list of those
   accounts (`programmes.qalam_roster`), staff only (`/diwan/qirtas/qalam`,
-  `qalam.manage`), never in Notion, deleted three years on; the role ends
-  when the student finishes, withdraws or is declined, and the guest
-  account stays. The release (F-39) is sent for a student on the roster,
-  and the link names them. The card shows the first name and last initial,
-  "Guest · Qalam student", and the school and summer.
+  `qalam.manage`), never in Notion, deleted three years on; the student's
+  role and the parent's Qalam role end when the student finishes,
+  withdraws or is declined, and the guest accounts stay. The publishing
+  release (`qalam-publishing-consent`) goes to a parent the same way, for a
+  student on the roster, whom the link names. The card shows the first name
+  and last initial, "Guest · Qalam student", and the school and summer.
 - **Next Stop** is the Director of Media's video show at `/next-stop`
   (its promise at `/next-stop/care`), not part of Qirtas. Episodes are
   `programmes.episodes`, edited in the Diwan (Media → Next Stop): number,
@@ -374,7 +386,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `/next-stop/episodes/<slug>` with a click-to-load player on
   youtube-nocookie.com, TVEpisode JSON-LD, and a place in the sitemap.
   Everyone on camera is listed (`programmes.episode_on_camera`, Media only)
-  and signs F-15 by a single-use link to their address
+  and signs `media-release` by a single-use link to their address
   (`programmes.episode_release_link`); an episode can't be published until
   all have signed (`private.episode_releases_signed`). Credits come from
   Next Stop crew roles scoped to the episode, each with its `credit`

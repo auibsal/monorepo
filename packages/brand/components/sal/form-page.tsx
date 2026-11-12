@@ -28,7 +28,7 @@ interface FormPageProps {
   /** The fields, in one column (`FormField`); choices as a vertical list. */
   readonly children: ReactNode;
   readonly className?: string;
-  /** The form's code in the register, "SAL-EXB-01 · F-15". */
+  /** The form's code in the register, "SAL-EXB-01 · media-release". */
   readonly code: string;
   /** Today's date, already formatted ("Saturday, November 7"). */
   readonly date: string;

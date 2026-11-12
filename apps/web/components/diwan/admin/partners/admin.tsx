@@ -437,7 +437,7 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
   );
 };
 
-// ── Memoranda (Form F-26) ───────────────────────────────────────────────────
+// ── Memoranda (Form company-agreement) ───────────────────────────────────────────────────
 
 type AgreementRow = {
   code: string | null;
@@ -852,7 +852,7 @@ const Affiliations = ({ partnerId }: { partnerId: string }) => {
   );
 };
 
-// ── Declarations received (Form F-18) ───────────────────────────────────────
+// ── Declarations received (Form needs-list) ───────────────────────────────────────
 
 interface DeclarationRow {
   conflict_items: {

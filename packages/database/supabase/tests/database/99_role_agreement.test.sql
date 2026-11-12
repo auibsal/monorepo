@@ -111,7 +111,7 @@ select is(private.role_agreement_missing('00000000-0000-0000-0000-0000000ab001')
 
 select throws_ok(
   $$ insert into governance.form_submissions (form_key, submitted_by, data, status, submitted_at)
-     values ('f06', '00000000-0000-0000-0000-0000000ab001', '{}', 'submitted', now()) $$,
+     values ('conflict-of-interest-declaration', '00000000-0000-0000-0000-0000000ab001', '{}', 'submitted', now()) $$,
   'P0001', 'role_agreement_first', 'The declaration waits for the agreement'
 );
 

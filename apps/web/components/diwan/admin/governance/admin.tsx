@@ -509,7 +509,10 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
       {view === "meetings" ? (
         <>
           <MeetingsList />
-          <RequestQueue base="/council/motions" keys={["f10"]} />
+          <RequestQueue
+            base="/council/motions"
+            keys={["members-meeting-motion"]}
+          />
           <AccessReview />
         </>
       ) : null}
@@ -521,7 +524,7 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
       ) : null}
       {view === "elections" ? <Elections /> : null}
       {view === "concerns" ? (
-        <RequestQueue base="/council/concerns" keys={["f21"]} />
+        <RequestQueue base="/council/concerns" keys={["concern"]} />
       ) : null}
       {view === "declarations" ? <Declarations /> : null}
       {view === "library" ? <LibraryAdmin /> : null}

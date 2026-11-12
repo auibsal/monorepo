@@ -12,7 +12,7 @@ Ubuntu speaks for the Society in English and in Arabic: one family for both lang
 | Lede | 21 px | 17 pt | 38 px | Regular | One sentence under a title |
 | Body | 17 px | 10.5 pt | — | Regular | 1.6 leading, 60–70 characters a line |
 | Label | 12 px | 7.8 pt | 28 px | Medium | Field names, columns, metadata. Never above a headline |
-| Code | 12 px | 9 pt | — | Mono | SAL-GOV-01 · F-14; six-word typewriter lines |
+| Code | 12 px | 9 pt | — | Mono | SAL-GOV-01 · `semester-report`; six-word typewriter lines |
 
 - **Arabic.** Ubuntu Regular: its Arabic has no Light and no italic, so display is Regular. 1.3 leading for display, 1.6–2.0 for text. Never tracked. `dir="rtl"`, `lang="ar"`, Western digits.
 - **Inside Qirtas.** The body of Qirtas's pieces is set in Markazi Text for reading, in English and in Arabic: one family drawn for both scripts. It runs small, so it is set about a fifth larger than Ubuntu text. Qirtas's nameplate, headlines and interface stay Ubuntu.

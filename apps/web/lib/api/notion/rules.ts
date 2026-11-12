@@ -153,7 +153,7 @@ const THE_SOCIETY = /^the society$/iu;
 /**
  * What an event row says beyond the event itself (decisions §13): its
  * host (the Society, or the partner the event is held for, by name) and
- * the link to its debrief (F-13).
+ * the link to its debrief (event-debrief).
  */
 export const eventExtras = (page: NotionPage) => {
   const host = read.select(page, "Host") ?? read.text(page, "Host");

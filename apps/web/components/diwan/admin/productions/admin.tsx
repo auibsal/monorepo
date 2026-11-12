@@ -174,7 +174,7 @@ const NewProduction = ({ onDone }: { onDone: (id: string) => void }) => {
 
 /**
  * Productions (Diwan admin): staged readings and productions from
- * proposal to the Program Report (Form F-25, section B). The President and
+ * proposal to the Program Report (Form audition-score-sheet, section B). The President and
  * Vice President propose them; a Production Lead runs one.
  */
 export const ProductionsAdmin = () => {

@@ -216,7 +216,7 @@ export const Society = () => {
         id="take-part"
         title={t("takePart.title")}
       >
-        <StartLinks keys={["f21", "f10"]} />
+        <StartLinks keys={["concern", "members-meeting-motion"]} />
       </DiwanSection>
       <Minutes />
       <Resolutions />

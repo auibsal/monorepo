@@ -95,7 +95,7 @@ const RoleAgreement = ({
 };
 
 /**
- * F-04, the new role holder's checklist (decisions.md, Forms): from the day a
+ * role-holder-checklist, the new role holder's checklist (decisions.md, Forms): from the day a
  * role is given, its steps in order. The site marks what it can see (the
  * declaration, two-step sign-in, the Diwan group) and the holder ticks the
  * rest. It shows until every step is done.

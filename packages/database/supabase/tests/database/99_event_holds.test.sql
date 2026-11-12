@@ -145,11 +145,11 @@ select throws_ok(
 -- A trip's emergency contact goes a week after it; the consent stays.
 update events.events set starts_at = now() - interval '9 days' where slug = 'hold-soon';
 insert into governance.form_submissions (form_key, submitted_by, subject_id, data, status, submitted_at, signed_at, signer_name)
-values ('f45', '00000000-0000-0000-0000-0000000c0a01', 'e00000c0-0000-0000-0000-000000000001',
+values ('trip-consent', '00000000-0000-0000-0000-0000000c0a01', 'e00000c0-0000-0000-0000-000000000001',
   '{"emergency_contact": "Someone, 0000", "health": "None", "agree": true}', 'submitted', now(), now(), 'One');
 select is(private.purge_trip_contacts(), 1, 'A week after the trip, the emergency contact is deleted');
 select is(
-  (select data from governance.form_submissions where form_key = 'f45'
+  (select data from governance.form_submissions where form_key = 'trip-consent'
      and subject_id = 'e00000c0-0000-0000-0000-000000000001'),
   '{"agree": true}'::jsonb, 'and the acknowledgment stays');
 

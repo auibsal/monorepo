@@ -14,6 +14,29 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the sixth prompt (Nov 12)
+
+- [x] **Mirror:** `claude/decisions.md` replaced.
+- [x] **1. Qalam's parents get accounts:** the consent goes to each parent
+  through their own single-use link (`programmes.qalam_consent_link`; the
+  school's application gives the addresses), the teacher gets a copy of
+  each signed consent (`form_links.copy_to`), and signing makes the
+  parent's guest account with the Parent role on their child and the
+  student's guest account with the Qalam student role
+  (`programmes.qalam_enroll`). The publishing release goes the same way.
+  The site writes to the parent and the teacher, never to the student
+  (`20261113003800_qalam_parents.sql`).
+- [x] **2. Names, not numbers:** every kind of agreement and consent goes by
+  a stable name and version; the F-numbers are kept only as the one-time
+  mapping (`governance.form_types.legacy_number`, `legacyNumbers`); each
+  signing has an AGR number and a verification code on the signer's copy,
+  checked at `/verify/<code>`; every shared `/forms` address redirects;
+  `check:forms` compares the register "Agreements and consents" by name
+  (`20261113003700_agreement_names.sql`, `docs/platform/agreements.md`).
+- **Governance chat:** match EXB-01 to the names in
+  `docs/platform/agreements.md` (the register "Agreements and consents",
+  one toggle per kind headed "<name> · <Title>", plus the one-time table).
+
 ## Now: the fifth prompt (Nov 12, morning)
 
 - [x] **Mirror:** `claude/decisions.md` and `claude/glossary_ar.md`

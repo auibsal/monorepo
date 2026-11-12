@@ -2587,12 +2587,12 @@
           "lede": "Every Society letter is sent on one template. Write it from the register’s template in the Leadership Handbook, in the recipient’s language, then print it or save it as PDF. Nothing is kept here: the record stays in Notion.",
           "form": "Letter",
           "forms": {
-            "f03": "Appointment letter",
-            "f30": "Thank-you to a partner or sponsor",
-            "f32": "Application outcome",
-            "f33": "Welcome to new members",
-            "f34": "Honorary Membership invitation",
-            "f42": "Author letter"
+            "appointment-letter": "Appointment letter",
+            "thank-you-letter": "Thank-you to a partner or sponsor",
+            "application-outcome": "Application outcome",
+            "welcome-letter": "Welcome to new members",
+            "honorary-membership-invitation": "Honorary Membership invitation",
+            "author-letters": "Author letter"
           },
           "language": "Language",
           "languages": {
@@ -3508,12 +3508,12 @@
         "empty": "No students for this summer yet.",
         "links": {
           "title": "Parents’ links",
-          "lede": "A parent signs the consent or the publishing release through a single-use link, valid for 14 days. The link goes to the teacher, who passes it on: the Society reaches parents only through the teacher.",
+          "lede": "Each parent signs the consent, or a publishing release, through their own single-use link, valid for 14 days. The school gives the parents’ addresses with its application; the teacher gets a copy of each signed consent. Contact with students goes only through the teacher.",
           "form": "Form",
-          "f38": "Parent’s consent",
-          "f39": "Publishing release",
+          "qalam-parent-consent": "Parent’s consent",
+          "qalam-publishing-consent": "Publishing release",
           "teacher": "The teacher’s email",
-          "teacherHint": "The link is sent here, to pass on to the parent.",
+          "teacherHint": "The teacher gets a copy of each signed consent.",
           "note": "For",
           "noteHint": "To tell the links apart, such as the school; never the student’s name.",
           "sentTo": "Sent to",
@@ -3524,9 +3524,11 @@
           "empty": "No links sent yet.",
           "send": "Send a link",
           "student": "Student",
-          "pickStudent": "Pick a student"
+          "pickStudent": "Pick a student",
+          "parents": "The parents’ email addresses",
+          "parentsHint": "One link goes to each address, from the school’s application."
         },
-        "joinByConsent": "Students join the roster when a parent signs the consent: send the consent link below to the teacher. The name the parent gives becomes the student’s account name, so no one types it here."
+        "joinByConsent": "Students join the roster when a parent signs the consent: send the consent link below to each parent. The name the parent gives becomes the student’s account name, so no one types it here."
       },
       "games": {
         "title": "Check the coming games",
@@ -3934,7 +3936,7 @@
       "print": "Print",
       "update": "Update",
       "defs": {
-        "f06": {
+        "conflict-of-interest-declaration": {
           "title": "Conflict-of-interest declaration",
           "action": "Declare a conflict of interest",
           "purpose": "Each term, and whenever something new arises. Confidential.",
@@ -3951,7 +3953,7 @@
             }
           }
         },
-        "f10": {
+        "members-meeting-motion": {
           "title": "Motion for a members’ meeting",
           "action": "Propose a motion to a members’ meeting",
           "purpose": "Sent to the Secretary. The proposer and the seconder, both voting members, each sign by typing their name.",
@@ -3970,7 +3972,7 @@
             }
           }
         },
-        "f11": {
+        "event-pitch": {
           "title": "Event proposal",
           "action": "Propose an event",
           "purpose": "Anyone, within or outside the Society, may pitch; one page is enough. If the Council agrees, it goes on the term calendar and the Director of Events picks a lead.",
@@ -3993,7 +3995,7 @@
             }
           }
         },
-        "f15": {
+        "media-release": {
           "title": "Media release",
           "action": "Sign a media release",
           "purpose": "For anyone clearly featured in Society photos, video or interviews. Under 18: a parent or guardian signs.",
@@ -4013,7 +4015,7 @@
             }
           }
         },
-        "f17": {
+        "partnership-memorandum": {
           "title": "Partnership memorandum",
           "action": "Sign a partnership memorandum",
           "purpose": "For any partnership with shared branding or shared responsibility, approved by the Council. Signed by the President and the partner, each by typing their name.",
@@ -4029,7 +4031,7 @@
             "contacts": "Contacts"
           }
         },
-        "f21": {
+        "concern": {
           "title": "Concern",
           "action": "Raise a concern",
           "purpose": "Confidential. Harassment, safety and anything involving someone under 18 go straight to Student Life. Your name is optional, but without it we cannot reply.",
@@ -4051,7 +4053,7 @@
             }
           }
         },
-        "f26": {
+        "company-agreement": {
           "title": "Company agreement",
           "action": "Sign the Company agreement",
           "purpose": "Every cast and crew member, at the read-through.",
@@ -4063,7 +4065,7 @@
             "under_18": "I am under 18; my parent’s or guardian’s consent is attached"
           }
         },
-        "f37": {
+        "qalam-mentor-agreement": {
           "title": "Qalam mentor agreement",
           "action": "Sign the Qalam mentor agreement",
           "purpose": "Every Qalam mentor, after training. Countersigned by the Qalam lead.",
@@ -4081,11 +4083,11 @@
             }
           }
         },
-        "f38": {
+        "qalam-parent-consent": {
           "title": "Qalam parental consent",
           "action": "Give consent for Qalam",
-          "purpose": "One form per student, signed by a parent or guardian from the link the school’s teacher sends. No student attends any session until it is signed. No box ticked means no.",
-          "preamble": "I agree that my child may take part in Qalam, the summer program of Qirtas, the paper of the AUIB Society of Arts and Letters. Qalam is never filmed for Next Stop or any public video. On public channels, photos show no faces and name students by first name only. If published, the byline is the student’s first name, last initial and school; the full name appears only on the certificate. My child may stop at any time, and I may withdraw this consent at any time by telling the teacher. All contact with Qalam is through the teacher.",
+          "purpose": "One consent per student, signed by each parent or guardian through their own link from the Society; the teacher gets a copy. Signing makes your guest account and your child’s. No student attends any session until it is signed. No box ticked means no.",
+          "preamble": "I agree that my child may take part in Qalam, the summer program of Qirtas, the paper of the AUIB Society of Arts and Letters. Qalam is never filmed for Next Stop or any public video. On public channels, photos show no faces and name students by first name only. If published, the byline is the student’s first name, last initial and school; the full name appears only on the certificate. My child may stop at any time, and I may withdraw this consent at any time from your account or by telling the teacher. All contact with Qalam is through the teacher.",
           "fields": {
             "student_first_name": "The student’s first name",
             "student_last_name": "The student’s family name",
@@ -4113,10 +4115,10 @@
             }
           }
         },
-        "f39": {
+        "qalam-publishing-consent": {
           "title": "Qalam publishing consent",
           "action": "Give consent to publish a Qalam piece",
-          "purpose": "For one piece only, and only where the student’s consent form allows publishing. Signed by a parent or guardian from the link the school’s teacher sends.",
+          "purpose": "For one piece only, and only where the student’s consent allows publishing. Signed by a parent or guardian through their own link; the teacher gets a copy.",
           "preamble": "I agree that the piece named below may be published in Qirtas, on the terms in the Terms of Use. The student keeps the copyright. The byline is the student’s first name, last initial and school; the full name appears only on the certificate. The editors decide whether the piece is published, as for any piece; no contact details, age, photo or school details appear with it beyond the byline; the family and the school are told, through the teacher, before it goes live; and it comes down whenever the family or the student asks, through the teacher.",
           "fields": {
             "piece_title": "Title of the piece",
@@ -4125,7 +4127,7 @@
             "student_agrees": "The student: I agree"
           }
         },
-        "f45": {
+        "trip-consent": {
           "title": "Trip consent",
           "action": "Sign the trip consent form",
           "purpose": "For an event off campus, signed before you book. Student Life has approved the trip in writing.",
@@ -4136,7 +4138,7 @@
             "agree": "I agree"
           }
         },
-        "f46": {
+        "parent-consent": {
           "title": "Parent’s consent for a member under 18",
           "action": "Give consent for a member under 18",
           "purpose": "Signed once by a parent or guardian, from the link the site sends when a student under 18 joins. Until it is signed, the student’s account is limited.",
@@ -4199,7 +4201,9 @@
       "signAsLabel": "Your signature",
       "signAsHint": "You sign in your name as the register holds it. The signed copy keeps it, the time and the form’s version.",
       "signAs": "Sign as {name}",
-      "linkSubject": "The student: {name}"
+      "linkSubject": "The student: {name}",
+      "recordNumber": "{reference} · {kind}, version {version}",
+      "checkAt": "Anyone can check it at"
     },
     "qirtas": {
       "pieceTitle": "Your piece",
@@ -5591,11 +5595,11 @@
       }
     },
     "verify": {
-      "title": "Check a certificate, letter or card",
-      "lede": "Certificates and service letters from the AUIB Society of Arts and Letters carry a code and a QR at the foot; membership cards carry a QR that changes every 30 seconds. Scan one, or type a code, to see whether it stands.",
-      "code": "Certificate, letter or card code",
+      "title": "Check a certificate, agreement, letter or card",
+      "lede": "Certificates, signed agreements and consents, and service letters from the AUIB Society of Arts and Letters carry a code; membership cards carry a QR that changes every 30 seconds. Scan one, or type a code, to see whether it stands.",
+      "code": "Certificate, agreement, letter or card code",
       "check": "Check",
-      "invalid": "That doesn’t look like a certificate, letter or card code.",
+      "invalid": "That doesn’t look like a certificate, agreement, letter or card code.",
       "notFound": "Nothing has this code. Check it and try again.",
       "again": "Check another code",
       "valid": "This certificate was issued by the Society and stands.",
@@ -5629,7 +5633,17 @@
         "qalam": "Signed on this website by the Qalam lead and the Editor-in-Chief.",
         "prize": "Signed on this website by the Editor-in-Chief and the President."
       },
-      "tooMany": "Too many checks from here in a short time. Try again in ten minutes."
+      "tooMany": "Too many checks from here in a short time. Try again in ten minutes.",
+      "agreement": "Signed",
+      "agreementName": "Kind and version",
+      "version": "version {version}",
+      "reference": "Record number",
+      "signer": "Signed by",
+      "signed": "Signed on",
+      "fingerprint": "Fingerprint (SHA-256)",
+      "agreementValid": "This was signed on the Society’s website and stands.",
+      "agreementWithdrawn": "This was signed on the Society’s website and withdrawn on {date}.",
+      "agreementSignedOn": "Signed electronically on this website; the Society keeps the signed copy."
     },
     "verifyCard": {
       "title": "Membership card",

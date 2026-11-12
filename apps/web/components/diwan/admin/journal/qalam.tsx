@@ -2,6 +2,7 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
+import { Textarea } from "@repo/brand/components/ui/textarea";
 import { formatNumber } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -36,7 +37,7 @@ const thisYear = () => Math.max(FIRST_YEAR, new Date().getFullYear());
 
 const roster = (supabase: ReturnType<typeof useAuth>["supabase"]) => ({
   // The roster is the students' accounts, made by the parent's consent
-  // (F-38); each name comes from the account.
+  // (qalam-parent-consent); each name comes from the account.
   list: async (year: number) =>
     unwrap(await supabase.schema("programmes").rpc("qalam_roster", { year })) ??
     [],
@@ -48,7 +49,7 @@ type Student = Awaited<ReturnType<ReturnType<typeof roster>["list"]>>[number];
  * Qalam's roster (decisions.md, Qirtas: Qalam's shape): Qirtas's summer
  * program for high school students. Staff only (`qalam.manage`), never in
  * Notion. Each student is a guest account with the Qalam student role,
- * made when the parent signs the consent (F-38); nobody types a student's
+ * made when the parent signs the consent (qalam-parent-consent); nobody types a student's
  * name here. Kept three years after the program, then deleted with the
  * consent forms.
  */
@@ -134,7 +135,7 @@ export const QalamRoster = () => {
 };
 
 /**
- * A parent's consent (F-38) or a publishing release (F-39), signed by
+ * A parent's consent (qalam-parent-consent) or a publishing release (qalam-publishing-consent), signed by
  * single-use link (decisions §11). The link goes to the teacher, who
  * passes it on: the Society reaches parents only through the teacher.
  */
@@ -151,7 +152,7 @@ const ParentLinks = ({ students }: { students: Student[] }) => {
           .select(
             "id, form_key, sent_to, note, created_at, expires_at, used_at"
           )
-          .in("form_key", ["f38", "f39"])
+          .in("form_key", ["qalam-parent-consent", "qalam-publishing-consent"])
           .order("created_at", { ascending: false })
           .limit(50)
       ) ?? [],
@@ -172,7 +173,10 @@ const ParentLinks = ({ students }: { students: Student[] }) => {
         <DataTable
           columns={[
             {
-              cell: (l) => (l.form_key === "f38" ? t("f38") : t("f39")),
+              cell: (l) =>
+                l.form_key === "qalam-parent-consent"
+                  ? t("qalam-parent-consent")
+                  : t("qalam-publishing-consent"),
               header: t("form"),
               key: "form",
             },
@@ -202,6 +206,17 @@ const ParentLinks = ({ students }: { students: Student[] }) => {
   );
 };
 
+type LinkKind = "qalam-parent-consent" | "qalam-publishing-consent";
+
+const EMAILS = /[\s,;]+/u;
+
+/**
+ * Sends Qalam's consent to each parent directly (decisions.md, Documents
+ * and forms: Qalam): the school gives the parents' addresses with its
+ * application, each parent gets their own single-use link, and the teacher
+ * gets a copy of each signed consent. The publishing release goes to a
+ * parent too, for a student on the roster.
+ */
 const SendLink = ({
   onDone,
   students,
@@ -212,29 +227,34 @@ const SendLink = ({
   const t = useTranslations("diwan.admin.qalam.links");
   const locale = useLocale();
   const { supabase } = useAuth();
-  const [form, setForm] = useState<"f38" | "f39">("f38");
+  const [form, setForm] = useState<LinkKind>("qalam-parent-consent");
   const [student, setStudent] = useState("");
+  const [parents, setParents] = useState("");
   const [teacher, setTeacher] = useState("");
   const [note, setNote] = useState("");
   const send = useMutation({
-    // The consent goes out for a student who has no account yet; the
-    // release, for a student on the roster, whom the link names.
-    mutationFn: async () =>
-      form === "f39"
-        ? unwrap(
-            await supabase.schema("programmes").rpc("qalam_release_link", {
-              note,
-              sent_to: teacher.trim(),
-              student_row: student,
-            })
-          )
-        : unwrap(
-            await supabase.schema("governance").rpc("issue_form_link", {
-              form_key: form,
-              note,
-              sent_to: teacher.trim(),
-            })
-          ),
+    mutationFn: async () => {
+      const addresses = parents.split(EMAILS).filter(Boolean);
+      const sent = await Promise.all(
+        addresses.map((parent) =>
+          form === "qalam-publishing-consent"
+            ? supabase.schema("programmes").rpc("qalam_release_link", {
+                note,
+                parent_email: parent,
+                student_row: student,
+                teacher_email: teacher.trim(),
+              })
+            : supabase.schema("programmes").rpc("qalam_consent_link", {
+                note,
+                parent_email: parent,
+                teacher_email: teacher.trim(),
+              })
+        )
+      );
+      for (const result of sent) {
+        unwrap(result);
+      }
+    },
     onSuccess: onDone,
   });
   const submit = (event: FormEvent) => {
@@ -247,15 +267,19 @@ const SendLink = ({
         {(id) => (
           <SelectInput
             id={id}
-            onChange={(e) => setForm(e.target.value as "f38" | "f39")}
+            onChange={(e) => setForm(e.target.value as LinkKind)}
             value={form}
           >
-            <option value="f38">{t("f38")}</option>
-            <option value="f39">{t("f39")}</option>
+            <option value="qalam-parent-consent">
+              {t("qalam-parent-consent")}
+            </option>
+            <option value="qalam-publishing-consent">
+              {t("qalam-publishing-consent")}
+            </option>
           </SelectInput>
         )}
       </Field>
-      {form === "f39" ? (
+      {form === "qalam-publishing-consent" ? (
         <Field label={t("student")}>
           {(id) => (
             <SelectInput
@@ -274,6 +298,18 @@ const SendLink = ({
           )}
         </Field>
       ) : null}
+      <Field hint={t("parentsHint")} label={t("parents")}>
+        {(id) => (
+          <Textarea
+            dir="ltr"
+            id={id}
+            onChange={(e) => setParents(e.target.value)}
+            required
+            rows={3}
+            value={parents}
+          />
+        )}
+      </Field>
       <Field hint={t("teacherHint")} label={t("teacher")}>
         {(id) => (
           <Input

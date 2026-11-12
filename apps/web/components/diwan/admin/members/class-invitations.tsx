@@ -20,7 +20,7 @@ type ClassKind = "associate" | "honorary";
 /**
  * Joining by class (decisions §2, §10): the Director of Membership invites
  * an Associate Member (faculty, staff, a friend of the Society) or, after
- * the Council's adopted resolution (F-34), an Honorary Member, each by a
+ * the Council's adopted resolution (honorary-membership-invitation), an Honorary Member, each by a
  * single-use email invitation valid fourteen days. No invitation grants a
  * role or a seat.
  */

@@ -79,7 +79,7 @@ export const uploadSubmissionFile = (
 export const uploadLibraryFile = (
   supabase: Client,
   /**
-   * The audience folder, `partners` for signed memoranda (F-26) or
+   * The audience folder, `partners` for signed memoranda (company-agreement) or
    * `productions` for script licenses and consents.
    */
   folder: "role" | "council" | "partners" | "productions",

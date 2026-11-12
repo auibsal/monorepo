@@ -55,7 +55,7 @@ const PublicPage = ({
  * invitations, bookings and
  * check-in, and the standard parts.
  */
-/** The event's debrief (F-13) in Notion, for its staff (decisions §13). */
+/** The event's debrief (event-debrief) in Notion, for its staff (decisions §13). */
 const DebriefLink = ({ eventId }: { eventId: string }) => {
   const t = useTranslations("diwan.admin.event");
   const { supabase } = useAuth();

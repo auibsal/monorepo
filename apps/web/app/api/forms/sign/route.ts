@@ -10,11 +10,14 @@ import { log } from "@/lib/observability/log";
 
 export const OPTIONS = preflight;
 
+const KIND_NAME = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/u;
+
 const body = z.object({
   anonymous: z.boolean().default(false),
   data: z.record(z.string().max(64), z.unknown()),
   esign_agreed: z.boolean().default(false),
-  form: z.string().regex(/^f\d{2}$/u),
+  // The kind's name ("media-release"; decisions.md, Names, not numbers).
+  form: z.string().regex(KIND_NAME),
   link: z.string().max(100).nullish(),
   routing: z.enum(forms.routings).default("none"),
   signer_contact: z.string().max(200).nullish(),
@@ -78,14 +81,15 @@ export const POST = async (request: Request) => {
     log.error(`Form not signed: ${parseError(error)}`);
     return json({ error: "failed" }, 500);
   }
-  if (input.form === "f46" && typeof data === "string") {
+  if (input.form === "parent-consent" && typeof data === "string") {
     await makeParent(data, input.signer_name).catch((cause: unknown) =>
       log.error(`Parent account not made: ${parseError(cause)}`)
     );
   }
-  if (input.form === "f38" && typeof data === "string") {
-    await makeQalamStudent(data, input.data).catch((cause: unknown) =>
-      log.error(`Qalam student's account not made: ${parseError(cause)}`)
+  if (input.form === "qalam-parent-consent" && typeof data === "string") {
+    await makeQalamAccounts(data, input.data, input.signer_name).catch(
+      (cause: unknown) =>
+        log.error(`Qalam's accounts not made: ${parseError(cause)}`)
     );
   }
   return json({ id: data });
@@ -96,43 +100,73 @@ const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/u;
 const text = (value: unknown, max: number) =>
   typeof value === "string" ? value.trim().slice(0, max) : "";
 
+type Admin = ReturnType<typeof createAdminClient>;
+
 /**
- * Qalam's application, the parent's consent (F-38), makes the student's
- * guest account with the "Qalam student" role (decisions.md, Qirtas:
- * Qalam's accounts): found or created by the student's address on it,
- * named by the name typed there, the one place it is typed. The student is
- * emailed how to sign in. The consent stands even if this step fails.
+ * The account at an address, or a new guest's account there, named by the
+ * name given where it is made (decisions.md, Members: no name fields).
  */
-const makeQalamStudent = async (
-  submissionId: string,
-  answers: Record<string, unknown>
+const guestAccount = async (
+  admin: Admin,
+  email: string,
+  metadata: Record<string, string>
 ) => {
-  const email = text(answers.student_email, 320).toLowerCase();
-  const first = text(answers.student_first_name, 80);
-  const last = text(answers.student_last_name, 80);
-  if (!(EMAIL.test(email) && first && last)) {
-    return;
-  }
-  const admin = createAdminClient();
   const found = await admin
     .schema("governance")
     .rpc("user_by_email", { email });
-  let student = found.data ?? null;
-  const existing = Boolean(student);
-  if (!student) {
-    const created = await admin.auth.admin.createUser({
-      email,
-      email_confirm: true,
-      user_metadata: { first_name_en: first, guest: true, last_name_en: last },
-    });
-    if (created.error) {
-      throw created.error;
-    }
-    student = created.data.user.id;
+  if (found.data) {
+    return { existing: true, id: found.data };
   }
-  const enrolled = await admin
-    .schema("programmes")
-    .rpc("qalam_enroll", { student, submission_id: submissionId });
+  const created = await admin.auth.admin.createUser({
+    email,
+    email_confirm: true,
+    // A guest's account: an address outside AUIB is allowed for it.
+    user_metadata: { ...metadata, guest: true },
+  });
+  if (created.error) {
+    throw created.error;
+  }
+  return { existing: false, id: created.data.user.id };
+};
+
+/**
+ * Qalam's consent, signed by a parent through their own link (decisions.md,
+ * Documents and forms: Qalam), makes the parent's guest account (by the
+ * address the link went to) with the Parent role on their child, and the
+ * student's guest account (by the address the parent gave) with the Qalam
+ * student role. The parent is emailed how to sign in; the teacher already
+ * has a copy of the consent. The site never writes to the student: contact
+ * goes through the teacher. The consent stands even if this step fails.
+ */
+const makeQalamAccounts = async (
+  submissionId: string,
+  answers: Record<string, unknown>,
+  signerName: string
+) => {
+  const admin = createAdminClient();
+  const link = await admin
+    .schema("governance")
+    .rpc("consent_link", { submission_id: submissionId })
+    .maybeSingle();
+  const parentEmail = link.data?.sent_to ?? "";
+  const email = text(answers.student_email, 320).toLowerCase();
+  const first = text(answers.student_first_name, 80);
+  const last = text(answers.student_last_name, 80);
+  if (!(EMAIL.test(parentEmail) && EMAIL.test(email) && first && last)) {
+    return;
+  }
+  const parent = await guestAccount(admin, parentEmail, {
+    full_name_en: signerName.trim(),
+  });
+  const student = await guestAccount(admin, email, {
+    first_name_en: first,
+    last_name_en: last,
+  });
+  const enrolled = await admin.schema("programmes").rpc("qalam_enroll", {
+    parent: parent.id,
+    student: student.id,
+    submission_id: submissionId,
+  });
   if (enrolled.error) {
     throw enrolled.error;
   }
@@ -140,16 +174,16 @@ const makeQalamStudent = async (
     .schema("core")
     .from("outbox")
     .insert({
-      kind: "membership.qalam_account",
-      payload: { existing, user_id: student },
+      kind: "membership.parent_account",
+      payload: { existing: parent.existing, qalam: true, user_id: parent.id },
     });
 };
 
 /**
- * A parent's consent (F-46) makes the parent a guest account with the
- * "Parent" role on the child (decisions.md, Members: Parents), found or
- * created by the address the link was sent to; the parent is emailed how
- * to sign in. The consent stands even if this step fails.
+ * A parent's consent for a member under 18 makes the parent a guest account
+ * with the "Parent" role on the child (decisions.md, Members: Parents),
+ * found or created by the address the link was sent to; the parent is
+ * emailed how to sign in. The consent stands even if this step fails.
  */
 const makeParent = async (submissionId: string, signerName: string) => {
   const admin = createAdminClient();
@@ -161,26 +195,12 @@ const makeParent = async (submissionId: string, signerName: string) => {
   if (!email) {
     return;
   }
-  const found = await admin
-    .schema("governance")
-    .rpc("user_by_email", { email });
-  let parent = found.data ?? null;
-  const existing = Boolean(parent);
-  if (!parent) {
-    const created = await admin.auth.admin.createUser({
-      email,
-      email_confirm: true,
-      // A guest's account: an address outside AUIB is allowed for it.
-      user_metadata: { full_name_en: signerName.trim(), guest: true },
-    });
-    if (created.error) {
-      throw created.error;
-    }
-    parent = created.data.user.id;
-  }
+  const parent = await guestAccount(admin, email, {
+    full_name_en: signerName.trim(),
+  });
   const made = await admin
     .schema("governance")
-    .rpc("make_parent", { parent, submission_id: submissionId });
+    .rpc("make_parent", { parent: parent.id, submission_id: submissionId });
   if (made.error) {
     throw made.error;
   }
@@ -189,6 +209,6 @@ const makeParent = async (submissionId: string, signerName: string) => {
     .from("outbox")
     .insert({
       kind: "membership.parent_account",
-      payload: { existing, user_id: parent },
+      payload: { existing: parent.existing, user_id: parent.id },
     });
 };

@@ -2,8 +2,8 @@ import { z } from "zod";
 import { type Client, currentDate, DataError, unwrap } from "./client";
 
 /**
- * Partnerships (Policy Manual P11, P8). The register, memoranda (Form F-26),
- * conflict declarations (Form F-18) and affiliations. Row
+ * Partnerships (Policy Manual P11, P8). The register, memoranda (Form company-agreement),
+ * conflict declarations (Form needs-list) and affiliations. Row
  * Level Security and the signing RPC decide who may do what.
  */
 
@@ -42,7 +42,7 @@ export const agreementGrants = [
 
 export type AgreementGrant = (typeof agreementGrants)[number];
 
-/** The five questions on Form F-18. */
+/** The five questions on Form needs-list. */
 export const conflictKinds = [
   "close_person_applying",
   "supplier",
@@ -179,7 +179,7 @@ export const renewalsDue = <
 
 // ── Members ─────────────────────────────────────────────────────────────────
 
-/** Partner names for a role holder's declaration (F-18). */
+/** Partner names for a role holder's declaration (needs-list). */
 export const declarablePartners = async (client: Client) =>
   unwrap(await client.schema("governance").rpc("declarable_partners")) ?? [];
 
@@ -204,7 +204,7 @@ export const closeConflictItem = async (client: Client, itemId: string) =>
       .eq("id", itemId)
   );
 
-/** Saves a Form F-18 declaration and its items. */
+/** Saves a Form needs-list declaration and its items. */
 export const declareConflicts = async (
   client: Client,
   input: DeclarationInput

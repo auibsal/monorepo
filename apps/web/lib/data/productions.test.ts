@@ -59,7 +59,7 @@ describe("productions", () => {
     ).toBe(false);
   });
 
-  test("the report (F-25 B) needs what happened, lessons and a verdict", () => {
+  test("the production report needs what happened, lessons and a verdict", () => {
     const report = {
       report_lessons: "Book the hall early.",
       report_people_reached: 80,

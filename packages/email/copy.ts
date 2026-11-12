@@ -1252,7 +1252,7 @@ export const certificateIssued = (
     ],
   }));
 
-/** A service letter (F-05), written and signed for its holder. */
+/** A service letter (service-letter), written and signed for its holder. */
 export const serviceLetterWritten = (
   lang: Lang,
   role: string,
@@ -1277,17 +1277,71 @@ export const serviceLetterWritten = (
  * The signer's copy of a form signed on the site (decisions §11, E-SIGN and
  * UETA): what was signed, by whom, when, and its fingerprint.
  */
-export const formSignedCopy = (
-  lang: Lang,
-  form: {
-    answers: { label: string; value: string }[];
-    fingerprint: string;
-    signedAt: string;
-    signer: string;
-    title: string;
-    url: string | null;
+interface SignedCopy {
+  answers: { label: string; value: string }[];
+  fingerprint: string;
+  /** A copy for someone the link names (the teacher, for Qalam). */
+  forSomeoneElse?: boolean;
+  /** The signing's record number, AGR-<year>-<four digits>. */
+  reference?: string | null;
+  signedAt: string;
+  signer: string;
+  title: string;
+  url: string | null;
+  /** Where anyone can check it (/verify/<code>). */
+  verifyUrl?: string | null;
+}
+
+const signedLine = (form: SignedCopy, l: Lang) => {
+  const at = when(form.signedAt, l);
+  if (form.forSomeoneElse) {
+    return l === "ar"
+      ? `وقّع ${form.signer} ${form.title} في ${at}. هذه نسختك منه.`
+      : `${form.signer} signed ${form.title} on ${at}. This is your copy.`;
   }
-) =>
+  return l === "ar"
+    ? `وقّعتَ ${form.title} باسم ${form.signer} في ${at}. يحتفظ الموقع بالنسخة الموقّعة، وهذه نسختك.`
+    : `You signed ${form.title} as ${form.signer} on ${at}. The site keeps the signed copy; this one is yours.`;
+};
+
+const signedHeading = (form: SignedCopy, l: Lang) => {
+  if (form.forSomeoneElse) {
+    return l === "ar"
+      ? `نسخة موقّعة: ${form.title}`
+      : `A signed copy: ${form.title}`;
+  }
+  return l === "ar"
+    ? `نسختك الموقّعة: ${form.title}`
+    : `Your signed copy: ${form.title}`;
+};
+
+/** The record number, the check link and the fingerprint. */
+const signedProof = (form: SignedCopy, l: Lang) => [
+  ...(form.reference
+    ? [
+        l === "ar"
+          ? `رقم السجل: ${form.reference}`
+          : `Record number: ${form.reference}`,
+      ]
+    : []),
+  ...(form.verifyUrl
+    ? [
+        l === "ar"
+          ? `يتحقق منه أي شخص عبر ⁦${form.verifyUrl}⁩`
+          : `Anyone can check it at ${form.verifyUrl}`,
+      ]
+    : []),
+  l === "ar"
+    ? `البصمة (SHA-256): ${form.fingerprint}`
+    : `Fingerprint (SHA-256): ${form.fingerprint}`,
+];
+
+/**
+ * The copy of a signed agreement or consent: to the signer, or to someone
+ * the link names (the teacher, for Qalam), with its record number and the
+ * link where anyone can check it.
+ */
+export const formSignedCopy = (lang: Lang, form: SignedCopy) =>
   build(lang, (l) => ({
     ...(form.url
       ? {
@@ -1297,10 +1351,7 @@ export const formSignedCopy = (
           },
         }
       : {}),
-    heading:
-      l === "ar"
-        ? `نسختك الموقّعة: ${form.title}`
-        : `Your signed copy: ${form.title}`,
+    heading: signedHeading(form, l),
     lists: form.answers.length
       ? [
           {
@@ -1309,26 +1360,18 @@ export const formSignedCopy = (
           },
         ]
       : [],
-    paragraphs: [
-      l === "ar"
-        ? `وقّعتَ ${form.title} باسم ${form.signer} في ${when(form.signedAt, l)}. يحتفظ الموقع بالنسخة الموقّعة، وهذه نسختك.`
-        : `You signed ${form.title} as ${form.signer} on ${when(form.signedAt, l)}. The site keeps the signed copy; this one is yours.`,
-      l === "ar"
-        ? `البصمة (SHA-256): ${form.fingerprint}`
-        : `Fingerprint (SHA-256): ${form.fingerprint}`,
-    ],
+    paragraphs: [signedLine(form, l), ...signedProof(form, l)],
   }));
 
 /**
- * A single-use link to sign a form without an account (a parent's consent
- * for Qalam), sent to the teacher, who passes it on: the Society reaches
- * parents only through the teacher.
+ * A single-use link to sign an agreement or consent without an account,
+ * sent to the person who signs it (a parent's consent, a media release).
  */
 export const formLink = (lang: Lang, link: { title: string; url: string }) =>
   build(lang, (l) => ({
     action: {
       href: link.url,
-      label: l === "ar" ? "افتح النموذج" : "Open the form",
+      label: l === "ar" ? "افتح لتوقّع" : "Open to sign",
     },
     heading:
       l === "ar"
@@ -1336,19 +1379,19 @@ export const formLink = (lang: Lang, link: { title: string; url: string }) =>
         : `A link to sign: ${link.title}`,
     paragraphs: [
       l === "ar"
-        ? `أرسِل هذا الرابط إلى ولي الأمر ليوقّع ${link.title}. يعمل الرابط مرة واحدة خلال 14 يومًا، ولا يحتاج إلى حساب.`
-        : `Please pass this link to the parent or guardian to sign ${link.title}. It works once, within 14 days, and needs no account.`,
+        ? `هذا الرابط لك لتوقّع ${link.title}. يعمل مرة واحدة خلال 14 يومًا، ولا يحتاج إلى حساب.`
+        : `This link is for you to sign ${link.title}. It works once, within 14 days, and needs no account.`,
     ],
   }));
 
-/** The register's numbers (SAL-EXB-01; decisions.md). */
+/** What each kind of request is called in its updates, by its name. */
 const REQUEST_NAMES: Record<string, Record<Lang, string>> = {
-  f10: {
+  concern: { ar: "ما رفعته من قلق", en: "your concern" },
+  "event-pitch": { ar: "مقترح الفعالية", en: "your event pitch" },
+  "members-meeting-motion": {
     ar: "مقترحك لاجتماع الأعضاء",
     en: "your motion for a members’ meeting",
   },
-  f11: { ar: "مقترح الفعالية", en: "your event pitch" },
-  f21: { ar: "ما رفعته من قلق", en: "your concern" },
 };
 
 /** A concern, a motion or a pitch: taken up, then closed. */
@@ -1672,7 +1715,12 @@ const SIGN_IN: Record<"existing" | "new", Record<Lang, string>> = {
   },
 };
 
-export const parentAccount = (lang: Lang, existing: boolean, app: string) =>
+export const parentAccount = (
+  lang: Lang,
+  existing: boolean,
+  app: string,
+  qalam = false
+) =>
   build(lang, (l) => ({
     action: existing
       ? account(app, l)
@@ -1688,29 +1736,13 @@ export const parentAccount = (lang: Lang, existing: boolean, app: string) =>
       l === "ar"
         ? "صار لك حساب ضيف في جمعية الفنون والآداب، يعرض الموافقات التي وقّعتها لابنك أو ابنتك، ويتيح لك سحب أي منها متى شئت."
         : "You now have a guest account with the AUIB Society of Arts and Letters. It shows the consents you signed for your child and lets you withdraw any of them at any time.",
-      SIGN_IN[existing ? "existing" : "new"][l],
-    ],
-  }));
-
-/**
- * To a Qalam student whose parent signed the consent (F-38): the guest
- * account it made, with the Qalam student role (decisions.md, Qirtas:
- * Qalam's accounts). It shows their sessions, assignments, card and
- * certificate, and nothing else.
- */
-export const qalamAccount = (lang: Lang, existing: boolean, app: string) =>
-  build(lang, (l) => ({
-    action: existing
-      ? account(app, l)
-      : {
-          href: `${app}${localizedPath(l, "/forgot-password")}`,
-          label: l === "ar" ? "اختر كلمة مرور" : "Choose a password",
-        },
-    heading: l === "ar" ? "أهلًا بك في «قلم»" : "Welcome to Qalam",
-    paragraphs: [
-      l === "ar"
-        ? "وقّع وليّ أمرك موافقته على مشاركتك في «قلم»، برنامج قرطاس الصيفي، فصار لك حساب ضيف في جمعية الفنون والآداب. يعرض حسابك جلساتك ومهامك وبطاقتك وشهادتك حين تنهي البرنامج."
-        : "Your parent or guardian signed the consent for you to take part in Qalam, the summer program of Qirtas, so you now have a guest account with the AUIB Society of Arts and Letters. It shows your sessions, your assignments, your card and, when you finish, your certificate.",
+      ...(qalam
+        ? [
+            l === "ar"
+              ? "وصار لابنك أو ابنتك حساب ضيف في «قلم» بالعنوان الذي كتبته، يدخل إليه باختيار كلمة مرور. نتواصل مع الطلبة عبر المعلم وحده، وقد وصلته نسخة من موافقتك."
+              : "Your child now has a guest account for Qalam at the address you gave; they sign in by choosing a password. We reach students only through their teacher, who has a copy of your consent.",
+          ]
+        : []),
       SIGN_IN[existing ? "existing" : "new"][l],
     ],
   }));

@@ -2647,6 +2647,7 @@ export type Database = {
       };
       form_links: {
         Row: {
+          copy_to: string | null;
           created_at: string;
           created_by: string | null;
           expires_at: string;
@@ -2661,6 +2662,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          copy_to?: string | null;
           created_at?: string;
           created_by?: string | null;
           expires_at?: string;
@@ -2674,6 +2676,7 @@ export type Database = {
           used_at?: string | null;
         };
         Update: {
+          copy_to?: string | null;
           created_at?: string;
           created_by?: string | null;
           expires_at?: string;
@@ -2716,6 +2719,7 @@ export type Database = {
           handled_by: string | null;
           id: string;
           office: NonNullable<Json>;
+          reference: string | null;
           routing: string;
           second_signed_at: string | null;
           second_signer_id: string | null;
@@ -2730,6 +2734,7 @@ export type Database = {
           submitted_at: string | null;
           submitted_by: string | null;
           updated_at: string;
+          verification_code: string | null;
           withdrawn_at: string | null;
         };
         ComputedFields: never;
@@ -2745,6 +2750,7 @@ export type Database = {
           handled_by?: string | null;
           id?: string;
           office?: NonNullable<Json>;
+          reference?: string | null;
           routing?: string;
           second_signed_at?: string | null;
           second_signer_id?: string | null;
@@ -2759,6 +2765,7 @@ export type Database = {
           submitted_at?: string | null;
           submitted_by?: string | null;
           updated_at?: string;
+          verification_code?: string | null;
           withdrawn_at?: string | null;
         };
         Update: {
@@ -2773,6 +2780,7 @@ export type Database = {
           handled_by?: string | null;
           id?: string;
           office?: NonNullable<Json>;
+          reference?: string | null;
           routing?: string;
           second_signed_at?: string | null;
           second_signer_id?: string | null;
@@ -2787,6 +2795,7 @@ export type Database = {
           submitted_at?: string | null;
           submitted_by?: string | null;
           updated_at?: string;
+          verification_code?: string | null;
           withdrawn_at?: string | null;
         };
         Relationships: [
@@ -2805,10 +2814,10 @@ export type Database = {
           anonymous_ok: boolean;
           answer_days: number | null;
           by_link: boolean;
-          code: string;
           filled: string;
           handle_permission: string;
           key: string;
+          legacy_number: string;
           needs_account: boolean;
           ongoing: boolean;
           second_signer: string | null;
@@ -2826,10 +2835,10 @@ export type Database = {
           anonymous_ok?: boolean;
           answer_days?: number | null;
           by_link?: boolean;
-          code: string;
           filled?: string;
           handle_permission: string;
           key: string;
+          legacy_number: string;
           needs_account?: boolean;
           ongoing?: boolean;
           second_signer?: string | null;
@@ -2846,10 +2855,10 @@ export type Database = {
           anonymous_ok?: boolean;
           answer_days?: number | null;
           by_link?: boolean;
-          code?: string;
           filled?: string;
           handle_permission?: string;
           key?: string;
+          legacy_number?: string;
           needs_account?: boolean;
           ongoing?: boolean;
           second_signer?: string | null;
@@ -3640,6 +3649,13 @@ export type Database = {
         Args: { choices: Json; election_id: string };
         Returns: undefined;
       };
+      consent_link: {
+        Args: { submission_id: string };
+        Returns: {
+          copy_to: string;
+          sent_to: string;
+        }[];
+      };
       council_members: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -3948,6 +3964,20 @@ export type Database = {
         }[];
       };
       user_by_email: { Args: { email: string }; Returns: string };
+      verify_agreement: {
+        Args: { code: string };
+        Returns: {
+          document_sha256: string;
+          kind: string;
+          reference: string;
+          signed_at: string;
+          signer_name: string;
+          title_ar: string;
+          title_en: string;
+          version: number;
+          withdrawn_at: string;
+        }[];
+      };
       vote_tally: {
         Args: { election_id: string };
         Returns: {
@@ -8085,12 +8115,21 @@ export type Database = {
           title_en: string;
         }[];
       };
+      qalam_consent_link: {
+        Args: { note?: string; parent_email: string; teacher_email: string };
+        Returns: string;
+      };
       qalam_enroll: {
-        Args: { student: string; submission_id: string };
+        Args: { parent: string; student: string; submission_id: string };
         Returns: string;
       };
       qalam_release_link: {
-        Args: { note?: string; sent_to: string; student_row: string };
+        Args: {
+          note?: string;
+          parent_email: string;
+          student_row: string;
+          teacher_email: string;
+        };
         Returns: string;
       };
       qalam_roster: {

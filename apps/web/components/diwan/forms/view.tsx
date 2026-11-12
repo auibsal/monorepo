@@ -2,7 +2,7 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import type { Tables } from "@repo/database/types";
-import type { Locale } from "@repo/internationalization";
+import { type Locale, siteUrl } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,6 +22,33 @@ export type Submission = Tables<{ schema: "governance" }, "form_submissions">;
 
 const addDays = (iso: string, days: number) =>
   new Date(new Date(iso).getTime() + days * 864e5).toISOString();
+
+/** The signing's record number and where anyone can check it. */
+const RecordLine = ({ submission }: { submission: Submission }) => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale() as Locale;
+  if (!submission.reference) {
+    return null;
+  }
+  return (
+    <p className="type-caption">
+      {t("recordNumber", {
+        kind: submission.form_key,
+        reference: submission.reference,
+        version: String(submission.form_version),
+      })}
+      {submission.verification_code ? (
+        <>
+          {" · "}
+          {t("checkAt")}{" "}
+          <bdi dir="ltr">
+            {siteUrl(locale, `/verify/${submission.verification_code}`)}
+          </bdi>
+        </>
+      ) : null}
+    </p>
+  );
+};
 
 /**
  * A submitted form laid out for reading and printing (light paper, like
@@ -75,6 +102,7 @@ export const SubmissionSheet = ({
             ? ""
             : ` · ${t(`routings.${submission.routing as forms.Routing}`)}`}
         </p>
+        <RecordLine submission={submission} />
         {submission.withdrawn_at ? (
           <p className="type-caption font-medium">
             {t("withdrawnOn", {
@@ -244,7 +272,7 @@ const SealedName = ({
 };
 
 /** The consents and releases a signer may withdraw for the future. */
-const WITHDRAWABLE = new Set(["f15", "f45"]);
+const WITHDRAWABLE = new Set(["media-release", "trip-consent"]);
 
 /**
  * Undo what is still yours (decisions.md, Documents and forms): a media
@@ -279,7 +307,7 @@ const WithdrawConsent = ({ submission }: { submission: Submission }) => {
         label={t("withdraw")}
         onConfirm={() => withdraw.mutate()}
         question={
-          submission.form_key === "f45"
+          submission.form_key === "trip-consent"
             ? t("withdrawTripAsk")
             : t("withdrawAsk")
         }

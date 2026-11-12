@@ -85,7 +85,7 @@ export interface Reply {
  * One application and the next steps open to whoever is looking
  * (decisions.md, Get involved and roles): the answers; each reviewer's reading (the hiring seat
  * and the second reviewer, either of whom may recuse); interviews,
- * scheduled and recorded on F-02; the shortlist and the offer; and for a
+ * scheduled and recorded on interview-score-sheet; the shortlist and the offer; and for a
  * director seat, Student Life's answer and the appointment.
  */
 export const Application = ({
@@ -488,7 +488,7 @@ const Reviews = ({ reply }: { readonly reply: Reply }) => {
   );
 };
 
-/** F-02, the interview score sheet: kept in the Diwan (decisions §10). */
+/** interview-score-sheet, the interview score sheet: kept in the Diwan (decisions §10). */
 const Interviews = ({ reply }: { readonly reply: Reply }) => {
   const t = useTranslations("diwan.admin.hiring");
   const locale = useLocale() as Locale;

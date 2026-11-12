@@ -274,11 +274,11 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
   );
 };
 
-/** The criteria F-25 scores, 1 to 5 each, out of 25 (SAL-EXB-01). */
+/** The criteria audition-score-sheet scores, 1 to 5 each, out of 25 (SAL-EXB-01). */
 const CRITERIA = ["presence", "voice", "note", "fit", "commitment"] as const;
 
 /**
- * F-25, the audition score sheet (decisions.md, Get involved and roles): each scorer marks the
+ * audition-score-sheet, the audition score sheet (decisions.md, Get involved and roles): each scorer marks the
  * criteria from 1 to 5 with a note, kept as a Diwan record; the others'
  * sheets are shown beside one's own.
  */

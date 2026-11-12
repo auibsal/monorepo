@@ -163,12 +163,12 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
       { blind_entry_id: entryId, read_number: 1, reader_id: readerId },
       { onConflict: "blind_entry_id,reader_id" }
     );
-  // A reader who hasn't signed F-40, the readers' pledge.
+  // A reader who hasn't signed confidentiality-agreement, the readers' pledge.
   await db
     .schema("governance")
     .from("form_submissions")
     .delete()
-    .eq("form_key", "f40")
+    .eq("form_key", "confidentiality-agreement")
     .eq("submitted_by", readerId);
 
   // No address of a stored file reaches the reader's browser.

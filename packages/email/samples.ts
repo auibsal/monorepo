@@ -28,7 +28,6 @@ import {
   parentAccount,
   pieceNote,
   piecePublished,
-  qalamAccount,
   type RemovalInfo,
   type RoleInfo,
   recoveryAttempts,
@@ -186,10 +185,12 @@ export const samples = {
       ],
       fingerprint:
         "9f2c4e0b7a1d3c5e8f6a2b4d6c8e0f1a3b5c7d9e1f2a4b6c8d0e2f4a6b8c0d2e",
+      reference: "AGR-2026-0001",
       signedAt: "2026-11-09T15:00:00Z",
       signer: l === "ar" ? "سارة أحمد" : "Sara Ahmed",
       title: l === "ar" ? "مقترح فعالية" : "Event pitch",
       url: `${APP}/account/requests/${PIECE}`,
+      verifyUrl: `${APP}/verify/a1b2c3d4e5`,
     }),
   IncidentReported: (l) =>
     incidentReported(
@@ -204,6 +205,7 @@ export const samples = {
   NewsletterConfirm: (l) =>
     newsletterConfirm(l, "https://auibsal.org/newsletter/confirm?token=sample"),
   ParentAccount: (l) => parentAccount(l, false, APP),
+  ParentAccountQalam: (l) => parentAccount(l, false, APP, true),
   PieceNote: (l) => pieceNote(l, WORK, PIECE, APP),
   PiecePublished: (l) =>
     piecePublished(l, WORK, "https://auibsal.org/qirtas/pieces/sample"),
@@ -213,7 +215,6 @@ export const samples = {
       { first_name: null, kind: "plain", pages: 0, station: null, words: null },
       `${APP}/join`
     ),
-  QalamAccount: (l) => qalamAccount(l, false, APP),
   RecoveryAttempts: (l) => recoveryAttempts(l, APP),
   RemovalDone: (l) => removalDone(l, "removed", null),
   RemovalOverdue: (l) => removalRequested(l, removal, APP, true),
@@ -230,8 +231,9 @@ export const samples = {
       APP
     ),
   RequestAcknowledged: (l) =>
-    requestUpdated(l, "f20", "acknowledged", PIECE, APP),
-  RequestClosed: (l) => requestUpdated(l, "f10", "closed", PIECE, APP),
+    requestUpdated(l, "charity-collection-count", "acknowledged", PIECE, APP),
+  RequestClosed: (l) =>
+    requestUpdated(l, "members-meeting-motion", "closed", PIECE, APP),
   ReturnedForFormatting: (l) =>
     returnedForFormatting(l, WORK, "Please send it as one document.", APP),
   RevisionResent: (l) => revisionResent(l, WORK, APP),

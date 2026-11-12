@@ -175,7 +175,7 @@ describe("mirror of the reference data in the migrations", () => {
 
   test("the President has every permission but the checks on the President", () => {
     // Owner, Oct 15, 2026: concerns about the President go elsewhere
-    // (F-21); Qirtas reads blind; the Elections Committee runs elections;
+    // (concern); Qirtas reads blind; the Elections Committee runs elections;
     // the Faculty Advisor countersigns certificates; a partner's own page is
     // its representatives' (they hold partners.manage anyway).
     const withheld = new Set([

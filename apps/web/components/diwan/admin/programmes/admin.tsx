@@ -595,7 +595,7 @@ const CaptionsField = ({
 };
 
 /**
- * Everyone on camera, and their media release (F-15). Each gets a
+ * Everyone on camera, and their media release (media-release). Each gets a
  * single-use link to sign; the episode can't be published until all have
  * signed (decisions.md, Next Stop: releases).
  */
@@ -1839,7 +1839,7 @@ const Removals = () => {
   );
 };
 
-/** Event pitches (F-10) waiting for the President, who owns events. */
+/** Event pitches (members-meeting-motion) waiting for the President, who owns events. */
 export const ProgramPitches = () => {
   const t = useTranslations("diwan.admin.programmes");
   const grants = useGrants();
@@ -1853,7 +1853,7 @@ export const ProgramPitches = () => {
       id="pitches"
       title={t("pitches.title")}
     >
-      <RequestQueue base="/events/proposals" keys={["f11"]} />
+      <RequestQueue base="/events/proposals" keys={["event-pitch"]} />
     </DiwanSection>
   );
 };

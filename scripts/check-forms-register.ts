@@ -1,36 +1,28 @@
 /**
- * The forms register check (decisions.md; decisions §6, "One source
- * for every form, letter, card and certificate"): the register in
- * SAL-EXB-01 (the Leadership Handbook, in Notion's Documents) is the one
- * source of every form's number, title, fields and wording. This compares
- * the site with it:
+ * The agreements and consents check (decisions.md, Documents and forms:
+ * "One source: the site's list of agreements and consents matches the
+ * handbook exactly, and CI checks it"). The register "Agreements and
+ * consents" in SAL-EXB-01 (the Leadership Handbook, in Notion's Documents)
+ * lists every kind by its name, one toggle each, headed
+ * "<name> · <Title>" ("media-release · Media release"). This compares the
+ * site with it:
  *
- * - the active count: F-01 to F-46 less the retired numbers (`retiredForms`),
- *   as the database has them and as the register states ("42 active forms");
- * - every register entry (F-01 to F-46, the retired ones marked) is a row of
- *   `governance.form_types` with the same code and title, and no row is
- *   missing from the register;
- * - a form the register says is filled at auibsal.org/forms/F-xx is a site
- *   form (`@/lib/data/forms`), and no other is;
- * - each site form's field phrases (`registerFields`) appear in its entry.
+ * - every kind in `governance.form_types` has an entry with the same name
+ *   and title, and every entry is a kind on the site;
+ * - each kind signed on the site keeps the field phrases (`registerFields`)
+ *   its entry has.
  *
  * Reads Notion with NOTION_TOKEN and the database's Data API with
  * SUPABASE_URL and SUPABASE_SECRET_KEY (CI: the local stack after the
  * migrations). Without NOTION_TOKEN it says so and skips; with
  * REQUIRE_FORMS_REGISTER=1 a missing token fails.
  */
-import {
-  activeFormCount,
-  formKeys,
-  registerFields,
-  retiredForms,
-} from "../apps/web/lib/data/forms";
+import { formKeys, registerFields } from "../apps/web/lib/data/forms";
 
 const NOTION = "https://api.notion.com/v1";
 const VERSION = "2026-03-11";
 const CODE = "SAL-EXB-01";
-const ENTRY = /^SAL-EXB-01 · (F-\d{2})\s*(.*?)\s*(?:·|$)/u;
-const ACTIVE = /(\d+) active forms/u;
+const ENTRY = /^([a-z][a-z0-9]*(?:-[a-z0-9]+)*)\s*·\s*(.*?)\s*(?:·|$)/u;
 const SINGLE_QUOTES = /[‘’]/gu;
 const DOUBLE_QUOTES = /[“”]/gu;
 const SPACES = /\s+/gu;
@@ -51,8 +43,6 @@ interface Entry {
   title: string;
 }
 interface FormType {
-  code: string;
-  filled: string;
   key: string;
   title_en: string;
 }
@@ -139,7 +129,7 @@ const toggles = async (id: string): Promise<Block[]> => {
   return [...blocks.filter((b) => b.type === "toggle"), ...nested.flat()];
 };
 
-/** The register: each entry's title and all its text, by code. */
+/** The register: each entry's title and all its text, by name. */
 const readRegister = async () => {
   const [setting] = await rest<{ value: { documents?: string } }[]>(
     "core",
@@ -178,56 +168,34 @@ const readRegister = async () => {
         : null;
     })
   );
-  // The page's own lines (not the entries): where it states the count.
-  const text = (await children(handbook.id)).map(textOf).join("\n");
-  return { entries: new Map(entries.filter((e) => e !== null)), text };
+  return new Map(entries.filter((e) => e !== null));
 };
 
-/** What differs between one form type and its register entry. */
+/** What differs between one kind and its register entry. */
 const typeProblems = (type: FormType, entry: Entry | undefined) => {
-  // A retired number is a line in the register, not an entry.
-  if (type.filled === "removed") {
-    return [];
-  }
   if (!entry) {
-    return [`${type.code} is on the site but not in the register.`];
+    return [`${type.key} is on the site but not in the register.`];
   }
-  const problems: string[] = [];
-  if (entry.title !== type.title_en) {
-    problems.push(
-      `${type.code}: the register says "${entry.title}", the site "${type.title_en}".`
-    );
-  }
-  const onSite = entry.text.includes(
-    normalize(`auibsal.org/forms/${type.code}`)
-  );
-  if (onSite !== (type.filled === "site")) {
-    problems.push(
-      `${type.code}: the register ${onSite ? "fills it" : "doesn't fill it"} at /forms/${type.code}; the site has it as "${type.filled}".`
-    );
-  }
-  if (onSite !== (formKeys as readonly string[]).includes(type.key)) {
-    problems.push(
-      `${type.code}: ${onSite ? "missing from" : "should not be in"} apps/web/lib/data/forms.`
-    );
-  }
-  return problems;
+  return entry.title === type.title_en
+    ? []
+    : [
+        `${type.key}: the register says "${entry.title}", the site "${type.title_en}".`,
+      ];
 };
 
 /** Field phrases a site form keeps that its register entry no longer has. */
 const fieldProblems = (register: Map<string, Entry>) =>
   formKeys.flatMap((key) => {
-    const code = `F-${key.slice(1)}`;
-    const entry = register.get(code);
+    const entry = register.get(key);
     return registerFields[key]
       .filter((phrase) => entry && !entry.text.includes(normalize(phrase)))
-      .map((phrase) => `${code}: the register no longer asks for "${phrase}".`);
+      .map((phrase) => `${key}: the register no longer asks for "${phrase}".`);
   });
 
 const main = async () => {
   if (!token) {
     const message =
-      "Forms register: NOTION_TOKEN is not set, so the register was not compared.";
+      "Agreements and consents: NOTION_TOKEN is not set, so the register was not compared.";
     if (process.env.REQUIRE_FORMS_REGISTER === "1") {
       console.error(message);
       process.exit(1);
@@ -238,51 +206,26 @@ const main = async () => {
   if (!(supabaseUrl && secret)) {
     throw new Error("Set SUPABASE_URL and SUPABASE_SECRET_KEY.");
   }
-  const [{ entries: register, text: handbookText }, types] = await Promise.all([
+  const [register, types] = await Promise.all([
     readRegister(),
-    rest<FormType[]>(
-      "governance",
-      "form_types?select=key,code,title_en,filled"
-    ),
+    rest<FormType[]>("governance", "form_types?select=key,title_en"),
   ]);
-  const codes = new Set(types.map((t) => t.code));
-  const retired = types
-    .filter((t) => t.filled === "removed")
-    .map((t) => t.code)
-    .sort();
-  const active = types.length - retired.length;
-  const stated = ACTIVE.exec(handbookText)?.[1];
+  const names = new Set(types.map((t) => t.key));
   const problems = [
-    ...(retired.join(",") === [...retiredForms].sort().join(",")
-      ? []
-      : [
-          `The retired forms differ: the site has ${retired.join(", ")}, the registry ${retiredForms.join(", ")}.`,
-        ]),
-    ...(active === activeFormCount
-      ? []
-      : [
-          `The site has ${active} active forms; the registry ${activeFormCount}.`,
-        ]),
-    // The count the register states, when its page has the line at the top.
-    ...(stated === undefined || stated === String(activeFormCount)
-      ? []
-      : [
-          `The register states ${stated} active forms; the registry ${activeFormCount}.`,
-        ]),
-    ...types.flatMap((type) => typeProblems(type, register.get(type.code))),
+    ...types.flatMap((type) => typeProblems(type, register.get(type.key))),
     ...[...register.keys()]
-      .filter((code) => !codes.has(code))
-      .map((code) => `${code} is in the register but not on the site.`),
+      .filter((name) => !names.has(name))
+      .map((name) => `${name} is in the register but not on the site.`),
     ...fieldProblems(register),
   ];
   if (problems.length > 0) {
     console.error(
-      `The site's forms differ from the register (${CODE}):\n${problems.map((p) => `- ${p}`).join("\n")}`
+      `The site's agreements and consents differ from the register (${CODE}):\n${problems.map((p) => `- ${p}`).join("\n")}`
     );
     process.exit(1);
   }
   console.log(
-    `Forms register: ${activeFormCount} active forms, ${retiredForms.length} retired (${retiredForms.join(", ")}); ${register.size} entries match the site (${formKeys.length} filled on the site).`
+    `Agreements and consents: ${types.length} kinds match the register by name (${formKeys.length} signed on the site).`
   );
 };
 

@@ -104,7 +104,7 @@ export const Section: Story = {
 /** The top of a form, on the site and on the printed backup alike. */
 export const Form: Story = {
   render: () => (
-    <FormHeader code="SAL-EXB-01 · F-15" title="Photo release">
+    <FormHeader code="SAL-EXB-01 · media-release" title="Photo release">
       Labels are nouns, in sentence case; a field that counts says what it
       counts.
     </FormHeader>
@@ -126,7 +126,7 @@ export const FormPageStory: Story = {
   name: "Form page",
   render: () => (
     <FormPage
-      code="SAL-EXB-01 · F-15"
+      code="SAL-EXB-01 · media-release"
       date="Saturday, November 7"
       dateLabel="Date"
       kept="The Director of Media's team reads it. The signed copy is kept in your account, under Forms."
@@ -179,7 +179,7 @@ export const PrintedForm: Story = {
       className="text-text grid max-w-2xl gap-6 bg-white p-8"
       data-theme="light"
     >
-      <FormHeader code="SAL-EXB-01 · F-15" title="Photo release" />
+      <FormHeader code="SAL-EXB-01 · media-release" title="Photo release" />
       <div className="grid grid-cols-2 gap-6">
         {["Full name", "Event", "Signature", "Date"].map((field) => (
           <div className="grid gap-2" key={field}>
@@ -300,7 +300,7 @@ export const ShelfArabic: Story = {
 };
 
 /**
- * The letter: one template for every letter. A service letter (F-05), a
+ * The letter: one template for every letter. A service letter (service-letter), a
  * business letter: the greeting takes a colon, the foot its verification
  * code.
  */
@@ -308,7 +308,7 @@ export const LetterStory: Story = {
   name: "Letter",
   render: () => (
     <Letter
-      code="SAL-EXB-01 · F-05"
+      code="SAL-EXB-01"
       date="November 7, 2026"
       foot="hello@auibsal.org · auibsal.org"
       greeting="Dear Ms. Hassan:"
@@ -343,7 +343,7 @@ export const LetterArabic: Story = {
   render: () => (
     <div dir="rtl" lang="ar">
       <Letter
-        code="SAL-EXB-01 · F-05"
+        code="SAL-EXB-01"
         date="7 تشرين الثاني 2026"
         foot="hello@auibsal.org · auibsal.org"
         greeting="السيدة لينا حسن المحترمة،"

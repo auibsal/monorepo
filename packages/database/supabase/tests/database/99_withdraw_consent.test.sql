@@ -108,7 +108,7 @@ insert into events.events (id, slug, title_en, title_ar, starts_at, capacity, st
    current_date, '00000000-0000-0000-0000-0000000e0a02');
 reset sal.recording_approval;
 insert into governance.form_submissions (id, form_key, submitted_by, subject_id, data, status, submitted_at, signed_at, signer_name, esign_agreed)
-values ('f45f0000-0000-0000-0000-000000000001', 'f45', '00000000-0000-0000-0000-0000000e0a01', 'e00000e0-0000-0000-0000-000000000001',
+values ('f45f0000-0000-0000-0000-000000000001', 'trip-consent', '00000000-0000-0000-0000-0000000e0a01', 'e00000e0-0000-0000-0000-000000000001',
   '{"emergency_contact": "Someone", "agree": true}', 'submitted', now(), now(), 'One', true);
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e0a01');

@@ -109,7 +109,7 @@ where id = '00000000-0000-0000-0000-0000000ca001';
 -- The link goes out and the parent signs it.
 select private.request_parent_consent('00000000-0000-0000-0000-0000000ca001', 'Parent@Example.org');
 insert into governance.form_submissions (id, form_key, data, status, submitted_at, signer_name, signed_at)
-values ('00000000-0000-0000-0000-0000000cf046', 'f46', '{}', 'submitted', now(), 'A Parent', now());
+values ('00000000-0000-0000-0000-0000000cf046', 'parent-consent', '{}', 'submitted', now(), 'A Parent', now());
 update governance.form_links set used_at = now(), submission_id = '00000000-0000-0000-0000-0000000cf046'
 where subject_user = '00000000-0000-0000-0000-0000000ca001';
 

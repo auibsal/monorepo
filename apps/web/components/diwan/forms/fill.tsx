@@ -361,8 +361,8 @@ const useNamedEvent = (slug: string | null) => {
 };
 
 /**
- * The student a consent or release link was sent for (F-38's release,
- * F-39, F-46): the form asks no name, so the page names them, by first
+ * The student a consent or release link was sent for (qalam-parent-consent's release,
+ * qalam-publishing-consent, parent-consent): the form asks no name, so the page names them, by first
  * name and last initial, to whoever holds the open link.
  */
 const useLinkSubject = (formKey: string, link: string | null) => {
