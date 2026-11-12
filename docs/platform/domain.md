@@ -89,16 +89,17 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   where there is one; English parts in Latin letters and Arabic parts in
   Arabic letters (`private.latin_name`, `private.arabic_name`,
   `names.inScript`). It is used only on certificates, letters, signed forms,
-  minutes and lists for Student Life. The member checks it and locks it in
-  Your account → Settings → Profile (`core.lock_legal_name`); after that
-  only `members.manage` corrects it, with a reason
-  (`membership.correct_name`), and a locked name refuses the member's own
-  edits. The **preferred name** is one whole field per language
+  minutes and lists for Student Life. The official name is locked: the member fills only
+  its empty parts, and once a language's name is complete no part of it
+  changes from the account (`private.legal_name_locked()`); only
+  `members.manage` corrects it, in the Diwan's Membership, with a reason
+  (`membership.correct_name`). The **preferred name** is one whole field per language
   (`preferred_name_en`/`_ar`); empty means the default.
   **One function decides the name shown**, `private.display_name()`: the
-  preferred name, else the given and father's names, else (for a guest,
-  until the legal name is complete, or until the member has seen how it
-  appears) the name given at sign-up (`signup_name_*`). Each member is
+  preferred name, else the first and second names (the given and the
+  father's) for everyone, guests included, else, until the official name
+  is complete, the name given at sign-up (`signup_name_*`). People change
+  it in Settings. Each member is
   shown "This is how your name appears on the site" once, at sign-in
   (`/welcome`), and keeps it (`core.confirm_shown_name`) or chooses their
   own; that sets `name_confirmed_at`, in place of a 14-day notice. `full_name_en`/`_ar` keep its result, and every

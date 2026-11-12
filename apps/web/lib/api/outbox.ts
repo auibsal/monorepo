@@ -41,6 +41,7 @@ import {
   membershipRemoved,
   newDevice,
   newsletterConfirm,
+  notionInvite,
   parentAccount,
   partnerInvitation,
   personalEmailConfirm,
@@ -851,6 +852,19 @@ const PAPER_TEST_LINE = {
   en: "A test of the Sunday Paper, sent only to the Editor-in-Chief before it goes out.",
 } as const;
 
+/** The Notion workspace's invite link (core.settings), if one is set. */
+const notionInviteLink = async (admin: AdminClient) => {
+  const { data } = await admin
+    .schema("core")
+    .from("settings")
+    .select("value")
+    .eq("key", "notion.invite_link")
+    .maybeSingle();
+  return typeof data?.value === "string" && data.value.startsWith("https://")
+    ? data.value
+    : null;
+};
+
 const handlers: Record<string, Handler> = {
   // From /api/two-step/recover: the hour's tries ran out.
   "access.recovery_attempts": async (admin, payload) => {
@@ -867,12 +881,14 @@ const handlers: Record<string, Handler> = {
         .schema("access")
         .from("role_assignments")
         .select(
-          "ends_at, title_en, title_ar, role:roles(name_en, name_ar, requires_mfa)"
+          "ends_at, title_en, title_ar, role:roles(name_en, name_ar, requires_mfa, in_notion)"
         )
         .eq("id", String(payload.assignment_id))
         .maybeSingle(),
     ]);
     if (to && data?.role) {
+      // The team's Notion is entered only by this invitation.
+      const notion = data.role.in_notion ? await notionInviteLink(admin) : null;
       await send(
         to,
         roleAssigned(
@@ -883,7 +899,8 @@ const handlers: Record<string, Handler> = {
             name_en: data.title_en ?? data.role.name_en,
           },
           data.role.requires_mfa,
-          appUrl()
+          appUrl(),
+          notion
         ),
         { category: "officer" }
       );
@@ -1606,6 +1623,16 @@ const handlers: Record<string, Handler> = {
         `${webUrl()}${prefix(lang)}/sunday-paper/confirm?token=${row.confirm_token}`
       )
     );
+  },
+  // From the Diwan's one-time Notion catch-up (/api/notion/invite).
+  "notion.invite": async (admin, payload) => {
+    const [to, link] = await Promise.all([
+      recipient(admin, payload.user_id),
+      notionInviteLink(admin),
+    ]);
+    if (to && link) {
+      await send(to, notionInvite(to.lang, link), { category: "officer" });
+    }
   },
   "partners.application_decided": async (admin, payload) => {
     const [to, { data: partner }] = await Promise.all([

@@ -1,7 +1,13 @@
 import { env } from "@/env";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { createNotion } from "@/lib/api/notion/client";
-import { accessLists, homeUrl, readSyncState } from "@/lib/api/notion/run";
+import {
+  accessLists,
+  catchUpSentAt,
+  homeUrl,
+  inviteLink,
+  readSyncState,
+} from "@/lib/api/notion/run";
 import { hasPermission } from "@/lib/api/permissions";
 import { respond } from "@/lib/api/problem";
 import { authenticateRequest } from "@/lib/auth/verify";
@@ -30,19 +36,29 @@ export const POST = async (request: Request) => {
     return json({ error: "forbidden" }, 403);
   }
 
-  const [state, home] = await Promise.all([readSyncState(), homeUrl()]);
+  const [state, home, invite, sentAt] = await Promise.all([
+    readSyncState(),
+    homeUrl(),
+    inviteLink(),
+    catchUpSentAt(),
+  ]);
+  const base = { catchUpSentAt: sentAt, home, inviteLink: invite, state };
   if (!env.NOTION_TOKEN) {
-    return json({ configured: false, home, state });
+    return json({ ...base, configured: false });
+  }
+  // Once the catch-up has gone out, the lists are no longer shown: the
+  // invitation comes with each role from then on.
+  if (sentAt) {
+    return json({ ...base, configured: true });
   }
   try {
     const lists = await accessLists(createNotion(env.NOTION_TOKEN));
-    return json({ configured: true, home, state, ...lists });
+    return json({ ...base, configured: true, ...lists });
   } catch (error) {
     return json({
+      ...base,
       configured: true,
-      home,
       listsError: parseError(error).slice(0, 200),
-      state,
     });
   }
 };

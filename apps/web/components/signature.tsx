@@ -15,6 +15,12 @@ export interface SignatureProps {
   readonly className?: string;
   /** When it was signed (ISO); today while it is being signed. */
   readonly date?: string;
+  /**
+   * The line above the signature, as on the memorandum of partnership
+   * ("For the Society", "Signed by", "Sign as"): one design for every
+   * signature block on the site.
+   */
+  readonly label?: string;
   /** The signer's name on the platform, in English (a signature is Latin). */
   readonly name: string;
   /** The signer's membership card number, when they have a card. */
@@ -31,6 +37,7 @@ export interface SignatureProps {
 export const Signature = ({
   className,
   date,
+  label,
   name,
   number = null,
 }: SignatureProps) => {
@@ -38,7 +45,7 @@ export const Signature = ({
   const locale = useLocale() as Locale;
   const when = date ?? new Date().toISOString();
   const seed = number ?? seedFromText(name);
-  return (
+  const figure = (
     <figure
       className={cn(
         "border-line relative flex max-w-md items-center gap-4 overflow-hidden border-y py-3",
@@ -70,18 +77,30 @@ export const Signature = ({
       </div>
     </figure>
   );
+  if (!label) {
+    return figure;
+  }
+  return (
+    <div className="grid gap-1">
+      <span className="type-caption">{label}</span>
+      {figure}
+    </div>
+  );
 };
 
 /**
- * The signed-in person's own signature: their name on the platform and
- * their card number, dated today (or `date`).
+ * The signed-in person's own signature: the name the register holds (the
+ * one the database signs in, "Sign as …") and their card number, dated
+ * today (or `date`).
  */
 export const MySignature = ({
   className,
   date,
+  label,
 }: {
   readonly className?: string;
   readonly date?: string;
+  readonly label?: string;
 }) => {
   const { supabase, user } = useAuth();
   const profile = useProfile();
@@ -90,7 +109,13 @@ export const MySignature = ({
     queryFn: () => membership.myCard(supabase),
     queryKey: ["membership", "card", user?.id],
   });
-  const name = profile.data?.full_name_en ?? "";
+  const registered = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      (await supabase.schema("core").rpc("my_register_name")).data ?? null,
+    queryKey: ["forms", "me", user?.id],
+  });
+  const name = registered.data || profile.data?.full_name_en || "";
   if (!name) {
     return null;
   }
@@ -98,6 +123,7 @@ export const MySignature = ({
     <Signature
       className={className}
       date={date}
+      label={label}
       name={name}
       number={card.data?.number ?? null}
     />

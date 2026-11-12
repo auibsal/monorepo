@@ -156,6 +156,13 @@ export const ProfileScreen = () => {
                       preferred: { ...f.preferred, [lang]: e.target.value },
                     }))
                   }
+                  // The default: the first and second names.
+                  placeholder={[
+                    form.names[lang].first.trim(),
+                    form.names[lang].father.trim(),
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                   value={form.preferred[lang]}
                 />
                 {form.preferred[lang] ? (

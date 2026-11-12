@@ -1658,6 +1658,8 @@ export const auditionUpdate = (
 const ROLE_LINES = {
   ar: {
     heading: "دورك الجديد",
+    join: "انضم إلى مساحة الفريق",
+    notion: "مساحة الفريق على Notion",
     starts: "يبدأ الآن. ما يحتاجه منك في الديوان.",
     team: "دليل الضباط وقوالب العمل في مساحة الفريق على Notion، ويصلك جديد الفريق في مجموعة الديوان على Telegram.",
     twoStep:
@@ -1667,6 +1669,8 @@ const ROLE_LINES = {
   },
   en: {
     heading: "Your new role",
+    join: "Join the workspace",
+    notion: "The team's Notion",
     starts: "It starts now. What it needs from you is in the Diwan.",
     team: "The officer handbook and templates are in the team's Notion, and the team's news comes through the Diwan group on Telegram.",
     twoStep:
@@ -1676,18 +1680,31 @@ const ROLE_LINES = {
   },
 } as const;
 
-/** A new role: what it opens, and two-step sign-in first if it needs it. */
+/**
+ * A new role: what it opens, and two-step sign-in first if it needs it.
+ * A role that opens the team's Notion carries the workspace's invitation
+ * (`notion`, its invite link): the only way in.
+ */
 export const roleAssigned = (
   lang: Lang,
   role: { ends_at: string | null; name_ar: string; name_en: string },
   twoStep: boolean,
-  app: string
+  app: string,
+  notion: string | null = null
 ) =>
   build(lang, (l) => {
     const lines = ROLE_LINES[l];
     return {
       action: diwan(app, l),
       heading: `${lines.heading}: ${pick(l, role.name_ar, role.name_en)}`,
+      lists: notion
+        ? [
+            {
+              items: [{ href: notion, title: lines.join }],
+              title: lines.notion,
+            },
+          ]
+        : undefined,
       paragraphs: [
         role.ends_at
           ? lines.until(formatLongDate(role.ends_at, l))
@@ -1697,6 +1714,31 @@ export const roleAssigned = (
       ],
     };
   });
+
+/**
+ * The team's Notion, for a role holder not yet in the workspace (the
+ * Diwan's one-time catch-up): the invitation the role email now carries.
+ */
+export const notionInvite = (lang: Lang, link: string) =>
+  build(lang, (l) => ({
+    action: {
+      fallback: true,
+      href: link,
+      label: ROLE_LINES[l].join,
+    },
+    heading:
+      l === "ar"
+        ? "دعوتك إلى مساحة الفريق على Notion"
+        : "Your invitation to the team's Notion",
+    paragraphs: [
+      l === "ar"
+        ? "دليل الضباط وقوالب العمل وما يعمل عليه الفريق في مساحته على Notion. ادخلها بعنوانك الذي يصلك عليه هذا البريد."
+        : "The officer handbook, the templates and the team's work are in its Notion workspace. Join it with the address this email came to.",
+      l === "ar"
+        ? "من الآن تصل هذه الدعوة مع كل دور جديد، ولا طريق إلى المساحة غيرها."
+        : "From now on this invitation comes with every new role, and it is the only way in.",
+    ],
+  }));
 
 /** The end of the welcome: the member's first pledge is made. */
 /**

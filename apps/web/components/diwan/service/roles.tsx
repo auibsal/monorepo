@@ -6,6 +6,7 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { MySignature, Signature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { forms, unwrap } from "@/lib/data";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
@@ -200,6 +201,14 @@ export const Countersign = () => {
         fields={forms.forms.handover.fields}
         labels={labels}
       />
+      <div className="flex flex-wrap gap-x-10 gap-y-4">
+        <Signature
+          date={row.signed_at}
+          label={t("signedBy")}
+          name={row.outgoing}
+        />
+        <MySignature label={t("countersignLabel")} />
+      </div>
       <div className="flex flex-wrap items-center gap-3">
         <Button
           disabled={!me.data || sign.isPending}

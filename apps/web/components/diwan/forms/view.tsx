@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { InlineConfirm } from "@/components/frame/inline-confirm";
+import { Signature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { forms, unwrap } from "@/lib/data";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
@@ -17,6 +18,34 @@ import { memberName } from "../admin/members/directory";
 import { EmptyLine, SectionSpinner } from "../states";
 import { FormValues, useFormLabels } from "./field";
 import { kindTitle, useFormTypes } from "./forms";
+
+/**
+ * The signatures, drawn as on the memorandum of partnership: the signer's,
+ * and the countersignature where there is one (a handover). A sealed
+ * concern shows none.
+ */
+const Signatures = ({ submission }: { submission: Submission }) => {
+  const t = useTranslations("diwan.forms");
+  if (!(submission.signer_name && submission.signed_at)) {
+    return null;
+  }
+  return (
+    <div className="flex flex-wrap gap-x-10 gap-y-4">
+      <Signature
+        date={submission.signed_at}
+        label={t("signedBy")}
+        name={submission.signer_name}
+      />
+      {submission.second_signer_name && submission.second_signed_at ? (
+        <Signature
+          date={submission.second_signed_at}
+          label={t("countersignedBy")}
+          name={submission.second_signer_name}
+        />
+      ) : null}
+    </div>
+  );
+};
 
 /** The form's own label, else the kind's title from the database. */
 const SheetTitle = ({
@@ -165,6 +194,7 @@ export const SubmissionSheet = ({
         fields={definition?.fields ?? []}
         labels={labels}
       />
+      <Signatures submission={submission} />
       {definition?.office && Object.keys(submission.office ?? {}).length > 0 ? (
         <section className="grid gap-2">
           <h3 className="type-subheading">{t("office")}</h3>

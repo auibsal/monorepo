@@ -4,6 +4,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
+import { MySignature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
 import { RowList } from "../page";
@@ -77,6 +78,7 @@ const RoleAgreement = ({
         {t("readConduct")}
       </Link>
       <p className="type-body max-w-[60ch]">{t("license")}</p>
+      <MySignature label={t("signAsLabel")} />
       <Button
         className="justify-self-start"
         disabled={sign.isPending || !name.data}
