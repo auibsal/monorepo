@@ -4005,6 +4005,7 @@ export type Database = {
       agreements: {
         Row: {
           id: string;
+          record_id: string | null;
           signed_at: string;
           signed_by: string;
           signer_name: string;
@@ -4014,6 +4015,7 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           id?: string;
+          record_id?: string | null;
           signed_at?: string;
           signed_by?: string;
           signer_name: string;
@@ -4022,6 +4024,7 @@ export type Database = {
         };
         Update: {
           id?: string;
+          record_id?: string | null;
           signed_at?: string;
           signed_by?: string;
           signer_name?: string;
