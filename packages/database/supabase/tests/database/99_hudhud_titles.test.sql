@@ -112,8 +112,8 @@ insert into core.telegram_groups (chat_id, title, audience, invite_link) values
 insert into core.telegram_titles (chat_id, telegram_id, title) values (-100900001, 900001, 'President');
 
 select results_eq(
-  $$ select telegram_id, title_en, council from core.telegram_role_titles() order by 1 $$,
-  $$ values (900001::bigint, 'President'::text, true) $$,
+  $$ select telegram_id, title_en from core.telegram_role_titles() order by 1 $$,
+  $$ values (900001::bigint, 'President'::text) $$,
   'Only linked role holders carry a title, with their seat'
 );
 

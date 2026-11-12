@@ -5,13 +5,14 @@
 --    (createChatInviteLink, "Approve new members"): members (or, for the
 --    Diwan group, role holders) with a linked Telegram are let in at once,
 --    as before; everyone else waits for the admins.
--- 2. Titles: everyone holding a role that opens the team's work
---    (access.roles.in_notion) and in a group with Telegram linked is made
---    an admin there by Hudhud with their seat as the admin title; the
---    Council can delete, restrict, pin and manage topics, the rest hold the
---    title only. When the role ends Hudhud takes the title back, and takes
---    the person out of the Diwan group. core.telegram_titles keeps whom
---    Hudhud promoted, so it never touches the group's own admins.
+-- 2. Member tags (decisions.md, Channels and email): everyone holding a
+--    role that opens the team's work (access.roles.in_notion), with
+--    Telegram linked, carries their seat as their member tag in each group
+--    they are in, and the exempt list its label ("Student Life") in the
+--    members' group. Hudhud never makes admins (Add New Admins stays off);
+--    officers add admins by hand. When the last role ends the tag comes
+--    off, and 7 days later the person leaves the Diwan group.
+--    core.telegram_titles keeps whom Hudhud tagged.
 
 alter table core.telegram_groups
   add column invite_link text check (invite_link is null or invite_link ~ '^https://t\.me/\+');
@@ -23,13 +24,15 @@ create table core.telegram_titles (
   chat_id bigint not null references core.telegram_groups (chat_id) on delete cascade,
   telegram_id bigint not null check (telegram_id > 0),
   title text not null check (char_length(title) between 1 and 16),
-  council boolean not null default false,
   set_at timestamptz not null default now(),
+  -- When the last role ended: the tag is off; the Diwan group lets the
+  -- person go 7 days later.
+  ended_at timestamptz,
   primary key (chat_id, telegram_id)
 );
 
 comment on table core.telegram_titles is
-  'Who Hudhud made an admin in a group, with which title: role holders only, taken back when the role ends.';
+  'Whom Hudhud gave a member tag in a group (their seat), and when their last role ended.';
 
 alter table core.telegram_titles enable row level security;
 
@@ -44,11 +47,11 @@ create policy "Settings managers read the titles" on core.telegram_titles
 grant select on core.telegram_titles to authenticated;
 grant all on core.telegram_titles to service_role;
 
--- The linked role holders and the title each should carry (the bot, with
+-- The linked role holders and the tag each should carry (the bot, with
 -- the secret key): the Council seat first, else the earliest role; the
 -- assignment's own title (a director's seat), else the role's name.
 create function core.telegram_role_titles()
-returns table (telegram_id bigint, title_en text, title_ar text, council boolean)
+returns table (telegram_id bigint, title_en text, title_ar text)
 language sql
 stable
 security definer
@@ -57,8 +60,7 @@ as $$
   select distinct on (t.telegram_id)
     t.telegram_id,
     coalesce(nullif(btrim(a.title_en), ''), r.name_en),
-    coalesce(nullif(btrim(a.title_ar), ''), r.name_ar),
-    bool_or(r.is_council) over (partition by t.telegram_id)
+    coalesce(nullif(btrim(a.title_ar), ''), r.name_ar)
   from core.telegram_accounts t
   join access.role_assignments a on a.user_id = t.user_id
   join access.roles r on r.key = a.role

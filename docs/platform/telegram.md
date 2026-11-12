@@ -81,17 +81,15 @@ And without commands:
   three days after the go. The President's words go as written, with the
   site button; nothing of the bot's Iraqi copy is added.
 
-- **Seats in the groups.** Every ten minutes Hudhud gives each linked role
-  holder (a role that opens the team's work, `access.roles.in_notion`) their
-  seat in each group they are in: the Council as admins with the seat as
-  their admin title, able to delete, restrict, pin, manage topics and
-  members' tags, invite, and run the group's live streams and stories
-  (never the group's info or new admins); everyone else as their member
-  tag (Telegram's tags for ordinary members, no admin rights). Titles are
-  16 characters at most, cut at a word. When the role ends Hudhud takes the
-  title or tag back, and takes the person out of the Diwan group. Only
-  those Hudhud set are ever changed (`core.telegram_titles`); the group's
-  own admins are the owner's.
+- **Member tags** (decisions.md, Channels and email). Every ten minutes
+  Hudhud gives each linked role holder (a role that opens the team's work,
+  `access.roles.in_notion`) their seat as their member tag in each group
+  they are in, 16 characters at most, cut at a word; the exempt list is
+  tagged "Student Life" in the members' group. Hudhud never makes admins
+  (Add New Admins stays off): officers add admins by hand at each
+  handover, and admins keep the titles officers give them. When someone's
+  last role ends the tag comes off, and 7 days later they leave the Diwan
+  group. Only those Hudhud tagged are changed (`core.telegram_titles`).
 - **Joining.** Hudhud makes each group one join-request link
   (`core.telegram_groups.invite_link`). Members see *Join the members'
   group* (and role holders *Join the Diwan group*) in their profile's
@@ -115,7 +113,7 @@ And without commands:
   member without one, and anyone not linked, waits in Telegram's request
   list for the group's admins, with a note saying the group is for
   officers. Linking later lets in only those who hold a role. Someone
-  whose role ends is taken out by Hudhud (see Seats above).
+  whose last role ended leaves 7 days later (see Member tags above).
 - **The morning brief,** once a day from 8:00 a.m. Baghdad time: today's
   events (members-only and invitation events too) with their bookings and
   waitlists, and what waits in the Diwan as counts (partner applications,
@@ -187,7 +185,7 @@ And without commands:
    | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/account/settings/profile` and `https://auibsal.org/ar/account/profile` (and `http://localhost:3000/account/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
    | Allow Groups | On | |
    | Group Privacy | On | As an admin the bot sees the group anyway. |
-   | Group Admin Rights | Everything but Remain Anonymous: change group info, delete messages, ban users, invite users via link, pin messages, edit member tags, manage stories, send welcome messages, manage live streams, add new admins, manage topics, process join requests | Answering join requests, giving seats (admin titles and member tags), and passing the Council their rights; a bot can give an admin only rights it holds itself. |
+   | Group Admin Rights | Every right except Remain Anonymous and Add New Admins (decisions.md) | Join requests, member tags, removals, posts in topics. A bot that can make admins could hand over both groups if its token leaked, so officers add admins by hand. |
    | Channel Admin Rights | None | No channel. |
    | Privacy Policy | `https://auibsal.org/privacy` | Telegram shows it in the bot's profile. |
    | Bot Management Mode | Off | For bots that create bots. |

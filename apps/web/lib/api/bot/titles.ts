@@ -8,7 +8,6 @@ import { db, type Group, groups } from "./db";
 const TITLE_MAX = 16;
 
 interface Holder {
-  council: boolean;
   telegram_id: number;
   title_ar: string;
   title_en: string;
@@ -16,10 +15,13 @@ interface Holder {
 
 interface Given {
   chat_id: number;
-  council: boolean;
+  ended_at: string | null;
   telegram_id: number;
   title: string;
 }
+
+/** The Diwan group lets a former role holder go 7 days after (decisions.md). */
+const GRACE_MS = 7 * 24 * 60 * 60 * 1000;
 
 /** Words a cut title doesn't end on ("Director of" → "Director"). */
 const DANGLING = /\s+(?:of|the|and|for|to|in|at|on)$/iu;
@@ -44,33 +46,6 @@ export const shortTitle = (title: string) => {
   return short;
 };
 
-/**
- * What a Council seat may do as an admin: moderate (delete, restrict, pin,
- * topics, members' tags), invite, and run the group's live streams and
- * stories. Never the group's info or new admins: those stay with the
- * group's owner.
- */
-const councilRights = {
-  can_change_info: false,
-  can_delete_messages: true,
-  can_delete_stories: true,
-  can_edit_stories: true,
-  can_invite_users: true,
-  can_manage_chat: true,
-  can_manage_tags: true,
-  can_manage_topics: true,
-  can_manage_video_chats: true,
-  can_pin_messages: true,
-  can_post_stories: true,
-  can_promote_members: false,
-  can_restrict_members: true,
-};
-
-/** No rights at all: Telegram makes the admin a member again. */
-const noRights = Object.fromEntries(
-  Object.keys(councilRights).map((k) => [k, false])
-) as Record<keyof typeof councilRights, false>;
-
 const titles = () => db().schema("core").from("telegram_titles");
 
 /** Ignores Telegram's "not there" and "nothing changed" answers. */
@@ -86,35 +61,32 @@ const quietly = async (call: Promise<unknown>) => {
   }
 };
 
+/** Linked role holders, and (members' group only) the exempt list, tagged
+ * "Student Life" (decisions.md); its labels may hold names, so they are
+ * never shown. The Faculty Advisor holds a role and carries that tag. */
 const holders = async () => {
-  const { data, error } = await db().schema("core").rpc("telegram_role_titles");
-  if (error) {
-    throw error;
+  const [roles, exempt] = await Promise.all([
+    db().schema("core").rpc("telegram_role_titles"),
+    db().schema("core").from("telegram_exempt").select("telegram_id"),
+  ]);
+  if (roles.error ?? exempt.error) {
+    throw roles.error ?? exempt.error;
   }
-  return (data ?? []) as Holder[];
+  return {
+    exempt: (exempt.data ?? []).map((e) => ({
+      telegram_id: Number(e.telegram_id),
+      title_ar: "شؤون الطلبة",
+      title_en: "Student Life",
+    })),
+    roles: (roles.data ?? []) as Holder[],
+  };
 };
 
-/** A Council seat: an admin with the seat as the admin title. */
-const makeAdmin = async (api: Api, chatId: number, id: number, title: string) =>
-  (await quietly(api.promoteChatMember(chatId, id, councilRights))) &&
-  (await quietly(api.setChatAdministratorCustomTitle(chatId, id, title)));
-
-/** Any other role: the seat as the member's tag, no admin rights. */
-const makeTagged = async (
-  api: Api,
-  chatId: number,
-  id: number,
-  title: string,
-  wasAdmin: boolean
-) => {
-  if (wasAdmin) {
-    await quietly(api.promoteChatMember(chatId, id, noRights));
-  }
-  return quietly(api.setChatMemberTag(chatId, id, title));
-};
-
-/** Gives one role holder their seat in a group they are in. The group's
- * own admins (and its creator) are the owner's and are left alone. */
+/**
+ * Gives one person their tag in a group they are in. Only ordinary members
+ * carry tags: the group's admins (added by hand, decisions.md) keep the
+ * titles the officers give them.
+ */
 const give = async (
   api: Api,
   group: Group,
@@ -124,34 +96,25 @@ const give = async (
   const title = shortTitle(
     group.lang === "ar" ? holder.title_ar : holder.title_en
   );
-  if (before && before.title === title && before.council === holder.council) {
+  if (before && before.title === title && !before.ended_at) {
     return false;
   }
   const standing = await api
     .getChatMember(group.chat_id, holder.telegram_id)
     .catch(() => null);
-  if (
-    !standing ||
-    ["left", "kicked", "creator"].includes(standing.status) ||
-    (standing.status === "administrator" && !standing.can_be_edited)
-  ) {
+  if (standing?.status !== "member") {
     return false;
   }
-  const done = holder.council
-    ? await makeAdmin(api, group.chat_id, holder.telegram_id, title)
-    : await makeTagged(
-        api,
-        group.chat_id,
-        holder.telegram_id,
-        title,
-        standing.status === "administrator"
-      );
-  if (!done) {
+  if (
+    !(await quietly(
+      api.setChatMemberTag(group.chat_id, holder.telegram_id, title)
+    ))
+  ) {
     return false;
   }
   await titles().upsert({
     chat_id: group.chat_id,
-    council: holder.council,
+    ended_at: null,
     set_at: new Date().toISOString(),
     telegram_id: holder.telegram_id,
     title,
@@ -159,13 +122,24 @@ const give = async (
   return true;
 };
 
-/** Takes the seat back when the role has ended; out of the Diwan group too. */
+/**
+ * The last role has ended: the tag comes off at once; in the Diwan group
+ * the person is let go 7 days later (a ban lifted at once, so they can come
+ * back with a new role).
+ */
 const takeBack = async (api: Api, group: Group, given: Given) => {
-  await (given.council
-    ? quietly(api.promoteChatMember(group.chat_id, given.telegram_id, noRights))
-    : quietly(api.setChatMemberTag(group.chat_id, given.telegram_id, "")));
-  if (group.audience === "staff") {
-    // A ban lifted at once: out of the group, free to come back later.
+  if (!given.ended_at) {
+    await quietly(api.setChatMemberTag(group.chat_id, given.telegram_id, ""));
+    if (group.audience === "staff") {
+      await titles()
+        .update({ ended_at: new Date().toISOString() })
+        .eq("chat_id", group.chat_id)
+        .eq("telegram_id", given.telegram_id);
+      return true;
+    }
+  } else if (Date.now() - Date.parse(given.ended_at) < GRACE_MS) {
+    return false;
+  } else {
     await quietly(api.banChatMember(group.chat_id, given.telegram_id));
     await quietly(
       api.unbanChatMember(group.chat_id, given.telegram_id, {
@@ -177,34 +151,39 @@ const takeBack = async (api: Api, group: Group, given: Given) => {
     .delete()
     .eq("chat_id", group.chat_id)
     .eq("telegram_id", given.telegram_id);
+  return true;
 };
 
 /**
- * Every run of the Telegram cron: role holders carry their seat in each
- * connected group they are in (the Council as admins with the seat as
- * their title, everyone else as their member tag), and lose it (and their
- * place in the Diwan group) when the role ends. Only those Hudhud set are
- * ever changed.
+ * Every run of the Telegram cron: each linked role holder carries their
+ * seat as their member tag in each connected group they are in (the
+ * exempt list its label, in the members' group), and loses it when their
+ * last role ends; the Diwan group lets them go 7 days later. Only those
+ * Hudhud tagged are ever changed.
  */
 export const runTitles = async (api: Api) => {
   const [all, people, { data: given, error }] = await Promise.all([
     groups(),
     holders(),
-    titles().select("chat_id, telegram_id, title, council"),
+    titles().select("chat_id, telegram_id, title, ended_at"),
   ]);
   if (error) {
     throw error;
   }
-  const byId = new Map(people.map((p) => [Number(p.telegram_id), p]));
   // Each group in turn, each person in a group at once (a few dozen at most).
   const perGroup = all.map(async (group) => {
+    const tagged =
+      group.audience === "staff"
+        ? people.roles
+        : [...people.roles, ...people.exempt];
+    const ids = new Set(tagged.map((h) => Number(h.telegram_id)));
     const here = (given ?? []).filter(
       (g) => Number(g.chat_id) === group.chat_id
     ) as Given[];
-    const ended = here.filter((g) => !byId.has(Number(g.telegram_id)));
-    await Promise.all(ended.map((g) => takeBack(api, group, g)));
+    const ended = here.filter((g) => !ids.has(Number(g.telegram_id)));
+    const out = await Promise.all(ended.map((g) => takeBack(api, group, g)));
     const done = await Promise.all(
-      people.map((holder) =>
+      tagged.map((holder) =>
         give(
           api,
           group,
@@ -213,7 +192,7 @@ export const runTitles = async (api: Api) => {
         )
       )
     );
-    return ended.length + done.filter(Boolean).length;
+    return out.filter(Boolean).length + done.filter(Boolean).length;
   });
   const counts = await Promise.all(perGroup);
   return counts.reduce((sum, n) => sum + n, 0);

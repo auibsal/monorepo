@@ -19,14 +19,14 @@ fourth prompts (Nov 12).
 - [x] **One place to set Hudhud up:** the bot's panel moved from the Desk's
   Connected panel to Media → Channels, beside its groups; the Desk points
   there.
-- [x] **Seats in the groups:** Council seats as admins with their title and
-  the moderation, live-stream and story rights; every other role as a
-  member tag; taken back when the role ends, and out of the Diwan group
+- [x] **Member tags:** each linked role holder's seat as their member tag in
+  both groups, "Student Life" for the exempt list; off when the last role
+  ends, and out of the Diwan group 7 days later; Hudhud never makes admins
   (`20261113004600_hudhud_titles_and_joining.sql`, `lib/api/bot/titles.ts`).
 - [x] **Joining from the site and the bot:** each group's join-request
   link, offered in the profile's Telegram section and in Hudhud's /me.
-- [ ] **Owner:** give Hudhud every admin right but Remain Anonymous in both
-  groups (as in the screenshot), so it can pass the Council theirs.
+- [ ] **Owner:** in both groups, turn off Hudhud's Add New Admins (decisions.md);
+  every other right but Remain Anonymous stays on.
 
 ## Now: temporary (Nov 12)
 

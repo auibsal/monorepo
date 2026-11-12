@@ -1423,7 +1423,7 @@ export type Database = {
       telegram_titles: {
         Row: {
           chat_id: number;
-          council: boolean;
+          ended_at: string | null;
           set_at: string;
           telegram_id: number;
           title: string;
@@ -1431,14 +1431,14 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           chat_id: number;
-          council?: boolean;
+          ended_at?: string | null;
           set_at?: string;
           telegram_id: number;
           title: string;
         };
         Update: {
           chat_id?: number;
-          council?: boolean;
+          ended_at?: string | null;
           set_at?: string;
           telegram_id?: number;
           title?: string;
@@ -1760,7 +1760,6 @@ export type Database = {
       telegram_role_titles: {
         Args: Record<PropertyKey, never>;
         Returns: {
-          council: boolean;
           telegram_id: number;
           title_ar: string;
           title_en: string;
