@@ -99,6 +99,51 @@ removals.on("message", async (ctx, next) => {
   }
 });
 
+/**
+ * On joining (decisions.md: the private notice goes "on joining or first
+ * posting"): someone let in by an admin without a linked member's account
+ * hears it privately at once. Recorded only when the notice reached them,
+ * so their first post still warns them if it didn't.
+ */
+export const warnOnJoin = async (
+  api: Api,
+  chatId: number,
+  person: { first_name: string; id: number; language_code?: string }
+) => {
+  const group = await loadGroup(chatId);
+  if (!group || group.audience === "staff") {
+    return false;
+  }
+  const { data: seen } = await members()
+    .select("warned_at")
+    .eq("chat_id", chatId)
+    .eq("telegram_id", person.id)
+    .maybeSingle();
+  if (seen?.warned_at || (await exempt(api, chatId, person.id))) {
+    return false;
+  }
+  const lang = groupLang(group, person.language_code === "ar" ? "ar" : "en");
+  const t = copy[lang];
+  const told = await api
+    .sendMessage(person.id, t.removalWarning(person.first_name), {
+      reply_markup: new InlineKeyboard().url(t.buttons.link, connectPage(lang)),
+    })
+    .then(() => true)
+    .catch(() => false);
+  if (told) {
+    await members().upsert(
+      {
+        chat_id: chatId,
+        removed_at: null,
+        telegram_id: person.id,
+        warned_at: new Date().toISOString(),
+      },
+      { onConflict: "chat_id,telegram_id" }
+    );
+  }
+  return told;
+};
+
 /** Removes one warned person, unless they've since become exempt. */
 const removeOne = async (api: Api, chatId: number, telegramId: number) => {
   if (await exempt(api, chatId, telegramId)) {

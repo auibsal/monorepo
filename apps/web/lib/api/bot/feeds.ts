@@ -43,7 +43,10 @@ export type Kind =
   | "brief"
   | "event_summary"
   | "announcement"
-  | "sunday_note";
+  | "sunday_note"
+  | "paper"
+  | "description"
+  | "stream";
 
 const posts = () => db().schema("core").from("telegram_posts");
 
@@ -433,24 +436,48 @@ const noticeButton = (notice: Notice, lang: Lang) =>
   );
 
 /** The members' group: the Announcements topic, once per notice. */
+/**
+ * Pins an announcement in its topic (decisions.md: Pin Messages, the pinned
+ * notices), quietly; the post stands whether or not the pin takes.
+ */
+const pinned = async (
+  api: Api,
+  chatId: number,
+  post: Promise<{ message_id: number } | null>
+) => {
+  const message = await post;
+  if (message) {
+    await api
+      .pinChatMessage(chatId, message.message_id, {
+        disable_notification: true,
+      })
+      .catch(() => undefined);
+  }
+  return message;
+};
+
 const groupNotices = (run: Run, notices: Notice[]) =>
   sequence(
     notices.map(
       (notice) => () =>
         once(run.group, "announcement", notice.id, () =>
-          postTo(
+          pinned(
             run.api,
-            run.group,
-            ["announcements"],
-            copyFor(run.group, (lang) =>
-              noticeText(notice, lang, GROUP_BODY_MAX)
-            ),
-            {
-              reply_markup: noticeButton(notice, linkLang(run.group)).url(
-                copy.ar.buttons.arabic,
-                web("ar", notice.link_path ?? "/")
+            run.group.chat_id,
+            postTo(
+              run.api,
+              run.group,
+              ["announcements"],
+              copyFor(run.group, (lang) =>
+                noticeText(notice, lang, GROUP_BODY_MAX)
               ),
-            }
+              {
+                reply_markup: noticeButton(notice, linkLang(run.group)).url(
+                  copy.ar.buttons.arabic,
+                  web("ar", notice.link_path ?? "/")
+                ),
+              }
+            )
           )
         )
     ),
@@ -504,7 +531,8 @@ const sendNotice = async (
 };
 
 /**
- * Each linked member who keeps notices on, in their own language
+ * Each linked member who keeps Society news and events on (one notices
+ * model), in their own language
  * (core.announcement_deliveries keeps who has had which).
  */
 const directNotices = async (api: Api, notices: Notice[]) => {
@@ -513,7 +541,7 @@ const directNotices = async (api: Api, notices: Notice[]) => {
   }
   const { data: linked } = await telegramAccounts()
     .select("telegram_id, user_id")
-    .eq("notify", true);
+    .eq("news", true);
   if (!linked?.length) {
     return 0;
   }

@@ -17,7 +17,7 @@ Diwan account):
 | `/events` | What's coming up. Each event has a card with RSVP or Cancel, Details and Add to calendar. |
 | `/qirtas` | The latest public Qirtas pieces. |
 | `/word` | Opens today's word: auibsal.org/qirtas/games/word itself, as a Mini App inside Telegram. |
-| `/me` | The linked account, its places, Telegram notices on or off, the daily word here on or off, Unlink. |
+| `/me` | The linked account, its places, the notices switches (the same as Settings → Notices: your notices, reminders, Society news and events, the Sunday Paper, the daily word), join buttons for the groups, Unlink. |
 | `/help` | The list. |
 
 Typing `@<bot> words` in any chat (inline mode) shares a public event or
@@ -25,14 +25,31 @@ Qirtas piece as a card. In a chat the bot isn't in, mentioning it in a
 message (Guest Mode: "@<bot> open mic") answers there with the event or
 piece that matches, or with what's coming up.
 
-Members who link Telegram also get the Diwan notices there (the outbox
-sends them with the email and the push: reminders, RSVPs, waitlist
-places, Qirtas decisions). Reminders of booked events and shifts are
-optional emails: with optional email off, they still come here while
-notices are on (the Sunday Paper stays email only). A member who turns on
-"Daily word here" in /me gets the day's word in their chat at 9:00 a.m.
-Baghdad time, while notices are on (off by default). A member who blocks
-the bot has their notices turned off.
+### One notices model
+
+Every notice the Society sends is one of five topics, and each person
+turns each topic on or off for each channel, in Settings → Notices (a
+grid, `NoticeGrid`) or in Hudhud's /me; both write the same columns
+through `core.set_my_notice(topic, channel, on)` and read them with
+`core.my_notices()`, so they never disagree.
+
+| Topic | Email | Hudhud |
+| --- | --- | --- |
+| The Sunday Paper | `profiles.mail_paper` | `telegram_accounts.paper` |
+| Society news and events | `profiles.mail_news` | `telegram_accounts.news` |
+| Reminders (booked events, shifts, what to sign) | `profiles.notify_email` | `telegram_accounts.reminders` |
+| Your notices (RSVPs, applications, decisions, account) | always | `telegram_accounts.notify` |
+| The daily word | — | `telegram_accounts.daily_word` |
+
+Nothing reaches anyone twice where one copy is enough: with reminders on
+in Hudhud, a reminder goes there **in place of** the email (`reminder`
+in the outbox's `send`). Your notices always come by email, with a copy
+in Hudhud while that switch is on. The Sunday Paper and Society news go
+to both channels each person keeps on: the Paper reaches linked members
+in their chat within three days of the Broadcast (`runPaper`, one
+delivery each, `core.paper_deliveries`), and the members' group gets one
+post in Qirtas's topic. A member who blocks the bot has its switches
+turned off.
 
 **In the Society's group** (a supergroup with topics):
 
@@ -128,6 +145,40 @@ And without commands:
   General. The Diwan group gets none of the public posts. The functions are
   callable with the secret key only. Names never appear, only titles and
   counts.
+- **Staff alerts by team** (decisions.md, Channels and email: urgent ones
+  at once, the rest in the morning). Each Council team can have its own
+  topic in the Diwan group (Media → Channels: `council`, `qirtas`,
+  `media`, `events`, `membership`, `partnerships`; else the brief's, else
+  `announcements`). An alert is one line in each language and a link,
+  with no names (`core.staff_alerts`, written by the server only,
+  `staffAlert` in `lib/api/bot/upkeep.ts`); urgent ones go out on the next
+  run, the rest as one message per team at 8:00 a.m. (`runAlerts`). The
+  Desk lists the last two weeks' under Alerts. The sources today:
+
+  | Source | Team | Urgent |
+  | --- | --- | --- |
+  | A production deploy that failed or was canceled (Vercel webhook, `/api/hooks/vercel`, `VERCEL_WEBHOOK_SECRET`) | Council | yes |
+  | A scheduled job that failed (`platform.cron_failed`) | Council | yes |
+  | The domain or the site's certificate within 30 days of running out (RDAP and TLS, daily at 7:00 a.m., `lib/api/watch.ts`) | Council | at 7 days |
+  | The database advisors' findings (daily) | Council | no |
+  | A Society email marked as spam (Resend webhook) | Media | yes |
+  | A Society email that bounced for good (Resend webhook) | Media | no |
+
+**More in the members' group:**
+
+- **Pinned.** The President's announcements are pinned in their topic,
+  quietly (no second notification).
+- **The description** stays as decisions.md has it ("The paper and the
+  pen at @AUIB_BAG …"), checked each morning at 7:00 (`syncDescriptions`).
+  The photo stays Telegram's own setting.
+- **Welcome.** Someone joining with a linked member's account gets a
+  private welcome with the Code of Conduct; someone joining without one
+  gets the removal notice at once (they have a week to link), not only at
+  their first post.
+- **Live.** When an admin schedules or starts a live stream (a video
+  chat) in the members' group, Hudhud posts it to `announcements`
+  (`features/group/streams.ts`). Bots cannot start streams or post
+  stories: those stay with the admins in Telegram.
 
 ## How it works
 

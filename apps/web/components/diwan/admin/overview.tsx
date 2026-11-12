@@ -24,6 +24,7 @@ import { AdminHeading } from "./kit";
 import { SecondOfficer } from "./second-officer";
 import { RecentActivity } from "./system/activity";
 import { AdvisorFindings } from "./system/advisors";
+import { StaffAlerts } from "./system/alerts";
 import { EmailDelivery } from "./system/email";
 import { NotionWorkspace } from "./system/notion";
 
@@ -401,6 +402,9 @@ export const AdminOverview = () => {
           )}
         </DiwanSection>
       ) : null}
+      <DiwanSection id="alerts" title={t("alerts.title")}>
+        <StaffAlerts />
+      </DiwanSection>
       {can("audit.read") ? (
         <DiwanSection id="activity" title={t("activity")}>
           <RecentActivity />

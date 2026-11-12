@@ -9,6 +9,7 @@ import { events } from "./features/events";
 import { joins } from "./features/group/joins";
 import { removals } from "./features/group/removals";
 import { setup } from "./features/group/setup";
+import { streams } from "./features/group/streams";
 import { inline } from "./features/inline";
 import { qirtas } from "./features/qirtas";
 import { start } from "./features/start";
@@ -72,7 +73,7 @@ export const createBot = (
 
   bot.use(flavor);
   bot.use(start, account, events, qirtas, inline);
-  bot.use(setup, joins, removals);
+  bot.use(setup, joins, streams, removals);
 
   bot.catch(async ({ ctx, error }) => {
     if (error instanceof GrammyError) {

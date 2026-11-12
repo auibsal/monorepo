@@ -1115,7 +1115,21 @@
           "decline": "Decline"
         },
         "hudhudMoved": "Hudhud, the Telegram bot, is set up with its groups in Media → Channels.",
-        "hudhudOpen": "Open Channels"
+        "hudhudOpen": "Open Channels",
+        "alerts": {
+          "title": "Alerts",
+          "none": "Nothing in the last two weeks.",
+          "urgent": "Urgent",
+          "open": "Open",
+          "teams": {
+            "council": "Council",
+            "qirtas": "Qirtas",
+            "media": "Media",
+            "events": "Events",
+            "membership": "Membership",
+            "partnerships": "Partnerships"
+          }
+        }
       },
       "members": {
         "title": "Members",
@@ -3696,7 +3710,11 @@
           "events": "Events",
           "qirtas": "Qirtas",
           "word": "Daily word",
-          "brief": "Morning brief (Diwan group)"
+          "brief": "Morning brief (Diwan group)",
+          "council": "Council alerts (Diwan group)",
+          "media": "Media alerts (Diwan group)",
+          "membership": "Membership alerts (Diwan group)",
+          "partnerships": "Partnerships alerts (Diwan group)"
         },
         "exempt": "Stays without an account",
         "exemptLede": "Student Life’s staff and the Faculty Advisor stay in the members’ group without a member’s account. The group’s admins and anyone holding a Society role stay too.",
@@ -4479,6 +4497,32 @@
       "language": {
         "label": "Language for emails and messages",
         "hint": "Set from the page you signed up on. Emails, Hudhud’s messages and your certificates come in this language; the site follows its address."
+      },
+      "grid": {
+        "caption": "Each topic by email and by Hudhud on Telegram",
+        "topic": "Topic",
+        "channels": {
+          "email": "Email",
+          "telegram": "Hudhud (Telegram)"
+        },
+        "topics": {
+          "paper": "The Sunday Paper",
+          "news": "Society news and events",
+          "reminders": "Reminders",
+          "notices": "Your notices",
+          "word": "The daily word"
+        },
+        "hints": {
+          "paper": "Once a month, on the first Sunday.",
+          "news": "Announcements: openings, calls, elections, new episodes and productions.",
+          "reminders": "The events you booked, your shifts, what you have to sign.",
+          "notices": "Your RSVPs, applications, decisions on your work, your account.",
+          "word": "Each day’s word at 9:00 a.m."
+        },
+        "always": "Always",
+        "none": "—",
+        "linkFirst": "Link Telegram below",
+        "reminderRule": "When reminders are on in Hudhud, they come there instead of by email, so nothing reaches you twice. Your notices always come by email; Hudhud sends a copy if you keep them on."
       }
     },
     "recoveryCodes": {

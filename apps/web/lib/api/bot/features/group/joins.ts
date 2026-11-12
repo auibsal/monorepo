@@ -10,7 +10,8 @@ import {
   group as loadGroup,
   whoami,
 } from "../../db";
-import { connectPage } from "../../links";
+import { connectPage, rulesPage } from "../../links";
+import { warnOnJoin } from "./removals";
 
 /**
  * Join requests to a connected group ("Approve new members" on the invite
@@ -124,10 +125,50 @@ export const admitPending = async (api: Api, telegramId: number) => {
 // so nothing about them stays once they are gone.
 joins.on("chat_member", async (ctx) => {
   const update = ctx.chatMember;
+  const person = update.new_chat_member.user;
   if (["left", "kicked"].includes(update.new_chat_member.status)) {
-    await forget(update.chat.id, update.new_chat_member.user.id);
+    await forget(update.chat.id, person.id);
+    return;
+  }
+  const joined =
+    ["left", "kicked"].includes(update.old_chat_member.status) &&
+    update.new_chat_member.status === "member" &&
+    !person.is_bot;
+  if (joined) {
+    await greetNewMember(ctx.api, update.chat.id, person);
   }
 });
+
+/**
+ * Someone new in the members' group (decisions.md: Send Welcome Messages, a
+ * welcome to each new member in their own language): a linked member gets
+ * Hudhud's welcome in their chat, with the Code of Conduct; anyone else
+ * gets the private notice about linking (removals.ts).
+ */
+const greetNewMember = async (
+  api: Api,
+  chatId: number,
+  person: { first_name: string; id: number; language_code?: string }
+) => {
+  const group = await loadGroup(chatId);
+  if (group?.audience !== "members") {
+    return;
+  }
+  const me = await whoami(person.id);
+  if (!me?.member) {
+    await warnOnJoin(api, chatId, person);
+    return;
+  }
+  const t = copy[me.locale];
+  await api
+    .sendMessage(person.id, t.welcome(person.first_name), {
+      reply_markup: new InlineKeyboard().url(
+        t.buttons.rules,
+        rulesPage(me.locale)
+      ),
+    })
+    .catch(() => undefined);
+};
 
 joins.on("my_chat_member", async (ctx) => {
   const update = ctx.myChatMember;

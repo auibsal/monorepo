@@ -2,6 +2,7 @@ import { createAdminClient } from "@repo/database/admin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { env } from "@/env";
+import { staffAlert } from "@/lib/api/bot/upkeep";
 import { problem } from "@/lib/api/problem";
 import { verifySvix } from "@/lib/api/svix";
 import { log } from "@/lib/observability/log";
@@ -10,6 +11,7 @@ const event = z.object({
   data: z
     .object({
       bounce: z.object({ type: z.string().optional() }).partial().optional(),
+      email_id: z.string().optional(),
       to: z.union([z.string(), z.array(z.string())]).optional(),
     })
     .partial(),
@@ -57,6 +59,22 @@ export const POST = async (request: Request) => {
       event_id: request.headers.get("svix-id"),
       reason,
     }));
+  // Media hears of it in its topic of the Diwan group (decisions.md: staff
+  // alerts): a complaint at once, a bounce in the morning's digest. No
+  // address, only what happened.
+  await staffAlert({
+    key: `resend:${request.headers.get("svix-id") ?? data.email_id ?? ""}`,
+    team: "media",
+    text_ar:
+      reason === "complained"
+        ? "أبلغ أحد القرّاء عن رسالة من الجمعية بأنها مزعجة، فأُوقف عنوانه. إن تكررت البلاغات فراجع عدد الرسائل ومحتواها."
+        : "ارتدّت رسالة من الجمعية عن عنوان غير صالح، فأُوقف العنوان.",
+    text_en:
+      reason === "complained"
+        ? "A reader marked a Society email as spam, and their address is now stopped. If more follow, look at how often and what we send."
+        : "A Society email bounced from an address that doesn't work, and the address is now stopped.",
+    urgent: reason === "complained",
+  }).catch(() => undefined);
   if (rows.length) {
     const { error } = await createAdminClient()
       .schema("core")

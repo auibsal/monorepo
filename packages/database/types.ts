@@ -511,6 +511,7 @@ export type Database = {
           letter_ar: string;
           letter_en: string;
           month: string;
+          sent_at: string | null;
           tested_at: string | null;
           updated_at: string;
           updated_by: string | null;
@@ -520,6 +521,7 @@ export type Database = {
           letter_ar?: string;
           letter_en?: string;
           month: string;
+          sent_at?: string | null;
           tested_at?: string | null;
           updated_at?: string;
           updated_by?: string | null;
@@ -528,6 +530,7 @@ export type Database = {
           letter_ar?: string;
           letter_en?: string;
           month?: string;
+          sent_at?: string | null;
           tested_at?: string | null;
           updated_at?: string;
           updated_by?: string | null;
@@ -920,6 +923,25 @@ export type Database = {
         };
         Relationships: [];
       };
+      paper_deliveries: {
+        Row: {
+          month: string;
+          sent_at: string;
+          telegram_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          month: string;
+          sent_at?: string;
+          telegram_id: number;
+        };
+        Update: {
+          month?: string;
+          sent_at?: string;
+          telegram_id?: number;
+        };
+        Relationships: [];
+      };
       personal_email_requests: {
         Row: {
           email: string;
@@ -1245,11 +1267,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      staff_alerts: {
+        Row: {
+          created_at: string;
+          dedupe_key: string | null;
+          id: string;
+          link: string | null;
+          posted_at: string | null;
+          team: string;
+          text_ar: string;
+          text_en: string;
+          urgent: boolean;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          dedupe_key?: string | null;
+          id?: string;
+          link?: string | null;
+          posted_at?: string | null;
+          team: string;
+          text_ar: string;
+          text_en: string;
+          urgent?: boolean;
+        };
+        Update: {
+          created_at?: string;
+          dedupe_key?: string | null;
+          id?: string;
+          link?: string | null;
+          posted_at?: string | null;
+          team?: string;
+          text_ar?: string;
+          text_en?: string;
+          urgent?: boolean;
+        };
+        Relationships: [];
+      };
       telegram_accounts: {
         Row: {
           daily_word: boolean;
           linked_at: string;
+          news: boolean;
           notify: boolean;
+          paper: boolean;
+          reminders: boolean;
           telegram_id: number;
           user_id: string;
           username: string | null;
@@ -1259,7 +1321,10 @@ export type Database = {
         Insert: {
           daily_word?: boolean;
           linked_at?: string;
+          news?: boolean;
           notify?: boolean;
+          paper?: boolean;
+          reminders?: boolean;
           telegram_id: number;
           user_id: string;
           username?: string | null;
@@ -1268,7 +1333,10 @@ export type Database = {
         Update: {
           daily_word?: boolean;
           linked_at?: string;
+          news?: boolean;
           notify?: boolean;
+          paper?: boolean;
+          reminders?: boolean;
           telegram_id?: number;
           user_id?: string;
           username?: string | null;
@@ -1554,6 +1622,20 @@ export type Database = {
           legal_name_locked_at: string;
         }[];
       };
+      my_notices: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          linked: boolean;
+          news_email: boolean;
+          news_tg: boolean;
+          notices_tg: boolean;
+          paper_email: boolean;
+          paper_tg: boolean;
+          reminders_email: boolean;
+          reminders_tg: boolean;
+          word_tg: boolean;
+        }[];
+      };
       my_personal_email: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1679,6 +1761,10 @@ export type Database = {
         Returns: string;
       };
       send_announcement: { Args: { id: string }; Returns: boolean };
+      set_my_notice: {
+        Args: { channel: string; topic: string; turn_on: boolean };
+        Returns: undefined;
+      };
       set_my_topics: {
         Args: { news: boolean; paper: boolean };
         Returns: undefined;

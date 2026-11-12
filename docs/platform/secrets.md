@@ -17,6 +17,7 @@ fails a build whose client bundle names one.
 | `CRON_SECRET`, `DATABASE_WEBHOOK_SECRET`, `REVALIDATE_SECRET` | one value each (`openssl rand -hex 32`) | different values | any |
 | `RESEND_TOKEN` | full-access key for auibsal.org | empty, or a test key | empty (emails are logged) |
 | `RESEND_WEBHOOK_SECRET` | the webhook’s `whsec_…` | empty | empty |
+| `VERCEL_WEBHOOK_SECRET` | the Vercel webhook’s secret (failed deploys to the Council’s topic) | empty | empty |
 | `NOTION_TOKEN` | the “SAL Platform” connection | empty | empty, or a test workspace |
 | `NOTION_WEBHOOK_SECRET` | the webhook subscription’s verification token | empty | empty (the webhook is off) |
 | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | one pair | another pair | another pair |

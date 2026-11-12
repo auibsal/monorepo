@@ -17,12 +17,21 @@ export type Lang = "en" | "ar";
 export const langOf = (code: string | undefined): Lang =>
   code?.toLowerCase().startsWith("ar") ? "ar" : "en";
 
+/**
+ * Each topic's purpose. In the Diwan group the team topics take staff
+ * alerts (decisions.md: a topic for each team; Qirtas and Events share the
+ * members' group's names).
+ */
 const purposes = [
   "announcements",
   "events",
   "qirtas",
   "word",
   "brief",
+  "council",
+  "media",
+  "membership",
+  "partnerships",
 ] as const;
 export type Purpose = (typeof purposes)[number];
 
@@ -59,12 +68,20 @@ const en = {
     link: "Link my account",
     me: "My membership",
     membership: "Open Membership",
-    notifyOff: "Notices here: off",
-    notifyOn: "Notices here: on",
+    newsOff: "Society news here: off",
+    newsOn: "Society news here: on",
+    notifyOff: "My notices here: off",
+    notifyOn: "My notices here: on",
+    paperOff: "The Sunday Paper here: off",
+    paperOn: "The Sunday Paper here: on",
     play: "Play",
     qirtas: "Qirtas",
     read: "Read",
+    readPaper: "Read it",
+    remindersOff: "Reminders here: off",
+    remindersOn: "Reminders here: on",
     rsvp: "RSVP",
+    rules: "Code of Conduct",
     site: "auibsal.org",
     unlink: "Unlink Telegram",
     word: "Daily word",
@@ -140,11 +157,13 @@ const en = {
   notAdmin: "Only the group's admins can do that.",
   notConnected:
     "This group isn't connected to the Society yet. An officer can connect it from the Diwan (Media, Channels).",
-  notifyOff: "Notices will go by email only.",
-  notifyOn: "Notices will come here again.",
+  notifyOff: "Your notices will go by email only.",
+  notifyOn: "Your notices will come here again.",
   notLinked:
     "Your Telegram isn't linked to a SAL account yet, so I only know your Telegram name.",
   onePlaceLeft: "1 place left",
+  paperOut:
+    "<b>The Sunday Paper</b> is out. This month's issue is waiting for you.",
   placesLeft: (n: string) => `${n} places left`,
 
   // Group posts
@@ -155,10 +174,15 @@ const en = {
   postWeekCloses: (date: string) => `closes ${date}`,
   postWeekEvents: "Events",
   postWord: (n: string) => `<b>Word No. ${n}</b> is ready.`,
+  prefSaved: "Saved. It's the same setting as Notices in Your account.",
   purposeNames: {
     announcements: "announcements",
     brief: "the morning brief and event summaries",
+    council: "the Council's alerts",
     events: "events",
+    media: "Media's alerts",
+    membership: "Membership's alerts",
+    partnerships: "Partnerships' alerts",
     qirtas: "Qirtas",
     word: "the daily word",
   } satisfies Record<Purpose, string>,
@@ -187,6 +211,8 @@ const en = {
   setupUsage: "Send /setup with the code from the Diwan (Media, Channels).",
   shortDescription:
     "The messenger of the AUIB Society of Arts and Letters: events, Qirtas and a daily word.",
+  streamLive: "<b>Live now</b> in the members' group.",
+  streamSoon: (when: string) => `<b>Live in the members' group</b>: ${when}`,
   summaryCame: (came: string, booked: string, walkIns: string) =>
     `${came} came: ${booked} who booked, ${walkIns} without a booking`,
   summaryNoShows: (n: string) => `${n} booked and didn't come`,
@@ -194,6 +220,8 @@ const en = {
   unlinked:
     "Unlinked. Your SAL account no longer gets notices here. You can link it again from Settings in Your account.",
   waitlisted: "You're on the waitlist.",
+  welcome: (name: string) =>
+    `Welcome to the members' group, ${name}. Have a look at the Code of Conduct before you write; questions go to Help Desk.`,
 
   when: (date: string, time: string) => `${date} · ${time}`,
   wordOff: "No more daily word here.",
@@ -240,12 +268,20 @@ const ar: Copy = {
     link: "اربط حسابي",
     me: "عضويتي",
     membership: "افتح «العضوية»",
-    notifyOff: "الإشعارات هنا: مطفية",
-    notifyOn: "الإشعارات هنا: شغّالة",
+    newsOff: "أخبار الجمعية هنا: مطفية",
+    newsOn: "أخبار الجمعية هنا: شغّالة",
+    notifyOff: "إشعاراتي هنا: مطفية",
+    notifyOn: "إشعاراتي هنا: شغّالة",
+    paperOff: "«جريدة الأحد» هنا: مطفية",
+    paperOn: "«جريدة الأحد» هنا: شغّالة",
     play: "إلعب",
     qirtas: "قرطاس",
     read: "إقرا",
+    readPaper: "اقراها",
+    remindersOff: "التذكيرات هنا: مطفية",
+    remindersOn: "التذكيرات هنا: شغّالة",
     rsvp: "احجزلي مقعد",
+    rules: "مدونة السلوك",
     site: "auibsal.org",
     unlink: "افصل تيليغرام",
     word: "كلمة اليوم",
@@ -318,11 +354,12 @@ const ar: Copy = {
   notAdmin: "هاي بس لمشرفين المجموعة.",
   notConnected:
     "هالمجموعة بعدها مو مربوطة بالجمعية. واحد من المسؤولين يگدر يربطها من الديوان («الإعلام»، «القنوات»).",
-  notifyOff: "الإشعارات راح توصلك بالإيميل بس.",
-  notifyOn: "الإشعارات رجعت توصلك هنا.",
+  notifyOff: "إشعاراتك راح توصلك بالإيميل بس.",
+  notifyOn: "إشعاراتك رجعت توصلك هنا.",
   notLinked:
     "تيليغرامك بعده مو مربوط بحساب بالجمعية، فما أعرف عنك غير اسمك بتيليغرام.",
   onePlaceLeft: "باقي مقعد واحد",
+  paperOut: "طلعت <b>«جريدة الأحد»</b>. عدد هالشهر ينتظرك.",
   placesLeft: (n: string) => `باقي ${n} مقعد`,
 
   postEventSoon: (date: string) => `<b>بعد يومين</b>: ${date}`,
@@ -332,10 +369,15 @@ const ar: Copy = {
   postWeekCloses: (date: string) => `آخر موعد ${date}`,
   postWeekEvents: "الفعاليات",
   postWord: (n: string) => `<b>الكلمة رقم ${n}</b> جاهزة.`,
+  prefSaved: "انحفظ. هذا نفس الإعداد اللي في «الإشعارات» بحسابك.",
   purposeNames: {
     announcements: "الإعلانات",
     brief: "موجز الصبح وملخصات الفعاليات",
+    council: "تنبيهات المجلس",
     events: "الفعاليات",
+    media: "تنبيهات الإعلام",
+    membership: "تنبيهات العضوية",
+    partnerships: "تنبيهات الشراكات",
     qirtas: "قرطاس",
     word: "كلمة اليوم",
   },
@@ -362,6 +404,8 @@ const ar: Copy = {
   setupUsage: "دز /setup ويّا الرمز من الديوان («الإعلام»، «القنوات»).",
   shortDescription:
     "حامل رسائل جمعية الفنون والآداب: الفعاليات وقرطاس وكلمة كل يوم.",
+  streamLive: "<b>بث مباشر هسه</b> بمجموعة الأعضاء.",
+  streamSoon: (when: string) => `<b>بث مباشر بمجموعة الأعضاء</b>: ${when}`,
   summaryCame: (came: string, booked: string, walkIns: string) =>
     `إجو ${came}: ${booked} من اللي حجزوا و${walkIns} بلا حجز`,
   summaryNoShows: (n: string) => `${n} حجزوا وما إجو`,
@@ -369,6 +413,8 @@ const ar: Copy = {
   unlinked:
     "انفصل. حسابك بالجمعية ما راح توصله إشعارات هنا بعد. تگدر تربطه مرة لخ من الإعدادات في «حسابك».",
   waitlisted: "انت بقائمة الانتظار.",
+  welcome: (name: string) =>
+    `هلا ${name}، أهلًا بيك بمجموعة الأعضاء. شوف مدونة السلوك قبل لا تكتب، وأي سؤال اسأله في «مكتب المساعدة».`,
 
   when: (date: string, time: string) => `${date} · ${time}`,
   wordOff: "ما راح توصلك كلمة اليوم هنا بعد.",

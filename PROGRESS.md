@@ -14,6 +14,35 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: one notices model and staff alerts (Nov 12, night)
+
+- [x] **Notices, one model:** five topics (the Sunday Paper, Society news
+  and events, reminders, your notices, the daily word) on email and on
+  Hudhud, one grid in Settings → Notices and the same switches in /me
+  (`20261113004700_one_notices_model.sql`, `core.my_notices`,
+  `core.set_my_notice`). Reminders go by Hudhud in place of the email when
+  that switch is on.
+- [x] **Hudhud brings the Sunday Paper** to linked members' chats and the
+  members' group's Qirtas topic after each Broadcast.
+- [x] **Members' group:** announcements pinned, the description kept as
+  decisions.md has it, a private welcome on joining, the removal notice
+  at the door, live streams announced.
+- [x] **Staff alerts** to each team's topic in the Diwan group (urgent at
+  once, the rest at 8:00 a.m.) and on the Desk: failed deploys, failed
+  jobs, the domain and certificate, the database advisors, spam reports
+  and bounces.
+- [ ] **Owner:** in Vercel (Project → Settings → Webhooks), add a webhook
+  to `https://auibsal.org/api/hooks/vercel` for `deployment.error` and
+  `deployment.canceled`, and put its secret in Vercel as
+  `VERCEL_WEBHOOK_SECRET` (Production).
+- [ ] **Owner:** in Media → Channels, set the Diwan group's topics for the
+  teams (Council, Qirtas, Media, Events, Membership, Partnerships); a team
+  without one posts to the brief's topic.
+- [ ] **Owner, decisions.md (proposed):** "one notices model" in Channels
+  and email (each topic on each channel; reminders by Hudhud replace the
+  email; the Paper and news go to both); and that bots cannot post
+  stories or run streams, so those stay with the admins.
+
 ## Now: Hudhud (Nov 12, night)
 
 - [x] **One place to set Hudhud up:** the bot's panel moved from the Desk's

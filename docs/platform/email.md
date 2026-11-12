@@ -72,7 +72,9 @@ route sends it. Every email (audited end to end on 2026-11-04):
 - **Tagged** in Resend by kind (`kind`), so each journey's delivery can be
   read on its own.
 - Members who turned them on also get the notice on their phone and in
-  Telegram.
+  Telegram. Reminders (booked events, shifts, what to sign) are the one
+  exception: with reminders on in Hudhud they go there **in place of** the
+  email (one notices model, `docs/platform/telegram.md`).
 
 ### Every email
 
@@ -123,9 +125,9 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `platform.cron_failed` | A database job failed in the last day | Administrators | Officer |
 | `account.deleted` | An account deleted | The address it had (the last email) | Direct |
 
-The two mailing topics (Your account → Settings → Notices) and "Email me
-reminders for the events I book" (`notify_email`) are the optional
-emails. The preferences link changes the topics or stops everything
+The two mailing topics and reminders (`notify_email`) are the optional
+emails, switched in Your account → Settings → Notices, one grid of topics
+by channel (email and Hudhud) shared with Hudhud's /me. The preferences link changes the topics or stops everything
 without signing in; the link is signed (`lib/api/email-stop.ts`), and the
 one-click unsubscribe (List-Unsubscribe) stops everything.
 

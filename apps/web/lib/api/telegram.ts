@@ -22,7 +22,12 @@ export const telegramToUser = async (
   userId: string,
   notice: PushNotice,
   /** Hudhud after the notice, never instead of it (bot/stickers.ts). */
-  sticker?: Sticker
+  sticker?: Sticker,
+  /**
+   * Which of the member's Hudhud topics it belongs to: their own notices
+   * (copies of emails), or reminders (sent here in place of the email).
+   */
+  topic: "notify" | "reminders" = "notify"
 ) => {
   const token = env.TELEGRAM_BOT_TOKEN;
   if (!token) {
@@ -31,10 +36,10 @@ export const telegramToUser = async (
   const { data: account } = await admin
     .schema("core")
     .from("telegram_accounts")
-    .select("telegram_id, notify")
+    .select("telegram_id, notify, reminders")
     .eq("user_id", userId)
     .maybeSingle();
-  if (!account?.notify) {
+  if (!account?.[topic]) {
     return false;
   }
   // The platform's fetch (as the rest of the API routes use), not grammY's
