@@ -128,6 +128,13 @@ export const RequireMember = ({ children }: GateProps) => {
   const kind = mine.data?.kind ?? null;
   const elsewhere = mine.isSuccess && !kindOpens(kind, pathname);
   const pledges = kind === "member" || kind === "guest";
+  // A role that needs two-step sign-in sets it up at sign-in, before
+  // anything else (fourth prompt, 3): a passkey first, then an
+  // authenticator app, then the recovery codes. A partner's people come
+  // here too, since their grants wait for the second step. Shift-scoped
+  // station access is not a role, so it is exempt.
+  const twoStep = useTwoStep();
+  const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
 
   const needsSetup =
     mine.isSuccess &&
@@ -170,7 +177,7 @@ export const RequireMember = ({ children }: GateProps) => {
   ) {
     return <PageSpinner />;
   }
-  return children;
+  return waiting ? <TwoStepPanel /> : children;
 };
 
 /**

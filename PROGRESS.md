@@ -38,12 +38,14 @@ First the second prompt's part 2 (7j), then the rest in place.
   adds school and year).
 - [x] **2. "Sign as …" everywhere:** no typed legal name anywhere, the GPA
   consent on a director application included.
-- [~] **3. Two-step from Nov 22:** no reminder (the "From {date}" line is
+- [x] **3. Two-step from Nov 22:** no reminder (the "From {date}" line is
   gone); the set-up panel offers a passkey first, then an authenticator
   app, with recovery codes on the Desk once done; shift-scoped station
-  access is not a role, so it is exempt. Open: taking the person to set-up
-  straight from sign-in (the Diwan already stops them until it is done; a
-  partner's people need their own step on the dashboard first).
+  access is not a role, so it is exempt. Set-up is forced at sign-in: your
+  account (where sign-in lands) shows the set-up panel to anyone whose
+  role needs two-step and who has not done it, as the Diwan does; a
+  partner's people reach it the same way, since their grants wait for the
+  second step (`RequireMember`, `gates.tsx`).
 - [x] **3a. Names:** no "keep or change" prompt; the default preferred name
   set for everyone alike (the President's and the host's stay); the legal
   name locked for every account, changed only in the Diwan with a second
