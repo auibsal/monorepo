@@ -89,7 +89,7 @@ First the second prompt's part 2 (7j), then the rest in place.
 - [x] **7p. Immediate staff alerts** also for a new concern (the complaints
   panel's chair) and an incident report from an event's page (the Director
   of Events and the President).
-- [ ] **7q. The templates index** adds the playbill, an Edition's cover and
+- [x] **7q. The templates index** adds the playbill, an Edition's cover and
   inside, and Next Stop's package ("awaiting approval"); each row names its
   owner seat.
 - [x] **7r. "Tech admin" is retired:** the role's key is now `web_lead`
