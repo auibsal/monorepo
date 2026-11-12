@@ -105,6 +105,15 @@ const editionRow = async (
   return rows.find((row) => read.select(row, "Status") !== "Retired") ?? null;
 };
 
+/** Notion's For field (Everyone, Members, Staff): the Library's group. */
+const FOR: Record<string, "everyone" | "members" | "staff"> = {
+  Everyone: "everyone",
+  Members: "members",
+  Staff: "staff",
+};
+const readersOf = (page: NotionPage) =>
+  FOR[read.select(page, "For") ?? ""] ?? "everyone";
+
 /** An Arabic row's Audience is its English row's. */
 const audienceOf = async (ctx: SyncContext, page: NotionPage) => {
   const own = read.select(page, "Audience");
@@ -203,6 +212,7 @@ const publishDocument = async (
     code: v.code,
     notion_url: pageUrl(page.id),
     on_site: true,
+    readers: readersOf(page),
     slug: v.slug,
     title_en: v.title,
     ...(v.summary ? { summary_en: v.summary } : {}),

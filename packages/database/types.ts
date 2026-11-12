@@ -3394,6 +3394,7 @@ export type Database = {
           on_site: boolean;
           owner: string | null;
           ratification: string | null;
+          readers: string;
           slug: string;
           sort: number;
           status: string;
@@ -3420,6 +3421,7 @@ export type Database = {
           on_site?: boolean;
           owner?: string | null;
           ratification?: string | null;
+          readers?: string;
           slug: string;
           sort?: number;
           status?: string;
@@ -3445,6 +3447,7 @@ export type Database = {
           on_site?: boolean;
           owner?: string | null;
           ratification?: string | null;
+          readers?: string;
           slug?: string;
           sort?: number;
           status?: string;

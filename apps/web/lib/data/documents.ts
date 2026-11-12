@@ -25,6 +25,7 @@ export interface SalDocument {
   /** The seat that keeps it (Notion's Owner), for its header. */
   owner?: string | null;
   ratification: string | null;
+  readers?: string | null;
   slug: string;
   sort: number;
   status: string;
@@ -38,7 +39,7 @@ export interface SalDocument {
 }
 
 const LISTING =
-  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, status, version, dated, ratification, adopted_on, vote, sort, updated_at, notion_url, owner";
+  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, readers, status, version, dated, ratification, adopted_on, vote, sort, updated_at, notion_url, owner";
 
 /** The public documents, without their text (for listings and the sitemap). */
 export const publicDocuments = async (client: Client) =>
@@ -85,21 +86,15 @@ export const isWebsitePolicy = (doc: Pick<SalDocument, "code">) =>
 
 /**
  * Who a document is for (decisions.md, the Library: everyone, members,
- * staff), from its code: the Member Handbook family (SAL-MEM) is for
- * members, the role manuals (SAL-MAN) for staff, the rest for everyone.
- * Staff manuals stay in the Diwan, so the public Library rarely shows them.
+ * staff), from Notion's For field (fourth prompt, 7m); Audience stays the
+ * publish switch.
  */
 export const readers = ["everyone", "members", "staff"] as const;
 export type Reader = (typeof readers)[number];
-export const readerOf = (doc: Pick<SalDocument, "code">): Reader => {
-  if (doc.code.startsWith("SAL-MEM-")) {
-    return "members";
-  }
-  if (doc.code.startsWith("SAL-MAN-")) {
-    return "staff";
-  }
-  return "everyone";
-};
+export const readerOf = (doc: { readers?: string | null }): Reader =>
+  (readers as readonly string[]).includes(doc.readers ?? "")
+    ? (doc.readers as Reader)
+    : "everyone";
 
 /** The title in the page's language (English when there is no Arabic). */
 /**

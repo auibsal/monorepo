@@ -55,7 +55,9 @@ First the second prompt's part 2 (7j), then the rest in place.
   Student Life or the Faculty Advisor moves the account to Associate (one
   with no class, a guest's, or a Member's made at sign-up with an AUIB
   address); an Honorary Member stays one.
-- [ ] **7. The permissions table** for EXB-01: report where it lives.
+- [x] **7. The permissions table** for EXB-01: `docs/platform/permissions.md`,
+  generated from `lib/rbac` by `bun run permissions` (`scripts/permissions-table.ts`)
+  and checked in CI (`--check`), so it never drifts from the code.
 - [x] **7a. The stack page:** Notion on the free Plus plan for student
   organizations.
 - [x] **7b. news.auibsal.org** verified in Resend and `RESEND_BULK_DOMAIN`
@@ -83,7 +85,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   parents withdraw their child's consents from the Parent view.
 - [x] **7l. The Sunday Paper sign-up** in the public footer's Read and watch
   column.
-- [ ] **7m. The Library's groups** from Notion's "For" field (Everyone,
+- [x] **7m. The Library's groups** from Notion's "For" field (Everyone,
   Members, Staff), not from the code.
 - [x] **7n. The Sunday note's "in term"** (a week with an event or an open
   call), now in decisions.md.

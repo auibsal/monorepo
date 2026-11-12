@@ -77,7 +77,9 @@ Notion to verify, and set it as `NOTION_WEBHOOK_SECRET` in Vercel
    Editing (`journal.edit.<desk>` or `journal.approve`).
 5. **Documents** (`documents.ts`): **Ready to publish** renders the page
    (headings, lists, tables, quotes, links) to auibsal.org/library/<slug>
-   for public documents; internal ones stay in Notion. Needs
+   for public documents; internal ones stay in Notion (**Audience** is the
+   publish switch). **For** (Everyone, Members or Staff) sets the group it
+   sits in on the Library page; with no For it is for everyone. Needs
    `governance.manage` (the President, the Vice President, the General
    Secretary). The site keeps only the adoption record, kept in the Diwan's
    Library, and writes **Adopted on** and **Vote** back to the row whenever
