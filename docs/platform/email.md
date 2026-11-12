@@ -19,10 +19,21 @@ rejected, so every sender must go through Resend.
 
 ## Auth emails (Supabase)
 
-One language per email (Arabic when the member signed up in Arabic,
-`user_metadata.locale`); the subjects are in both, since Supabase subjects
-can't choose. Paste each file into **Authentication → Emails** with the
-subject from `templates/subjects.txt`.
+**Through the Send Email hook (preferred).** Supabase hands every sign-in
+email to `/api/hooks/auth-email`, which sends it through Resend from
+hello@ in the Society's template (`authEmail` in `@repo/email/copy`), in
+the person's language only (`user_metadata.locale`), with a subject in
+that language. To turn it on: Supabase → Authentication → Hooks → Send
+Email → HTTPS, URL `https://auibsal.org/api/hooks/auth-email`; copy the
+secret it shows (`v1,whsec_…`) into Vercel as `SEND_EMAIL_HOOK_SECRET`
+(Production). With the hook on, the SMTP settings and the pasted templates
+below are no longer used; they stay as the fallback until the hook is on.
+
+**The fallback (SMTP and pasted templates).** One language per email
+(Arabic when the member signed up in Arabic, `user_metadata.locale`); the
+subjects are in both, since Supabase subjects can't choose. Paste each
+file into **Authentication → Emails** with the subject from
+`templates/subjects.txt`.
 
 | Template | When | Notes |
 | --- | --- | --- |

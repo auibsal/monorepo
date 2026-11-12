@@ -359,8 +359,12 @@ First the second prompt's part 2 (7j), then the rest in place.
   failed job), the rest in one daily digest per officer (`staff.digest`:
   Get involved replies, partner applications, second-officer requests,
   problem reports). **Migrates:** `private.daily_notices`.
-- [ ] Supabase's sign-in emails go through Resend from hello@ in the
-  Society's template and the person's language (the Send Email hook).
+- [x] Supabase's sign-in emails go through Resend from hello@ in the
+  Society's template and the person's language (the Send Email hook):
+  `/api/hooks/auth-email`, signed with `SEND_EMAIL_HOOK_SECRET` (Standard
+  Webhooks); sign-up, reset, address change, codes and security notices.
+  **Owner:** turn the hook on in Supabase and set the secret in Vercel
+  (`docs/platform/email.md`, Auth emails).
 - [ ] **Owner:** Resend open and click tracking off; bounce and complaint
   webhooks (in place); one sending-only key per use; Supabase's SMTP set to
   Resend, or the hook's secret (steps in `docs/platform/email.md`).
@@ -469,9 +473,10 @@ officers as admins and two-step on (decisions.md, Where things live).
   fix the old comments on `TELEGRAM_WEBHOOK_SECRET`,
   `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `NEXT_PUBLIC_SITE_URL`,
   `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN` and `REVALIDATE_SECRET`.
-- [ ] **Supabase → Authentication → Emails:** paste the eight templates
-  and subjects from `packages/database/supabase/templates` (until the Send
-  Email hook of part 8 replaces them).
+- [ ] **Supabase → Authentication → Hooks → Send Email:** HTTPS,
+  `https://auibsal.org/api/hooks/auth-email`; its secret (`v1,whsec_…`)
+  into Vercel as `SEND_EMAIL_HOOK_SECRET`. Until then, paste the eight
+  templates and subjects from `packages/database/supabase/templates`.
 - [ ] **Supabase → API → Exposed schemas:** remove `charity` if it is still
   listed.
 - [ ] **Zoho and DNS:** Cloudflare → Email → Email Routing → Disable

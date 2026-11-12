@@ -2128,3 +2128,131 @@ export const announcement = (
       .map((p) => p.trim())
       .filter(Boolean),
   }));
+
+/**
+ * The sign-in emails (Supabase's Send Email hook, the third prompt, §8):
+ * the Society's template, in the person's language, from hello@. A link
+ * goes to /auth/confirm, which signs in only when the person presses its
+ * button; a code works where the link cannot be opened.
+ */
+export type AuthEmailKind =
+  | "email_change"
+  | "email_changed"
+  | "mfa_added"
+  | "mfa_removed"
+  | "password_changed"
+  | "reauthentication"
+  | "recovery"
+  | "signup";
+
+const AUTH: Record<
+  AuthEmailKind,
+  Record<Lang, { button?: string; heading: string; line: string }>
+> = {
+  email_change: {
+    ar: {
+      button: "أكّد بريدك الجديد",
+      heading: "أكّد بريدك الجديد",
+      line: "طلبت تغيير بريد الدخول إلى هذا العنوان. اضغط الزر لتأكيده.",
+    },
+    en: {
+      button: "Confirm your new email",
+      heading: "Confirm your new email",
+      line: "You asked to sign in with this address from now on. Press the button to confirm it.",
+    },
+  },
+  email_changed: {
+    ar: {
+      heading: "تغيّر بريد الدخول",
+      line: "تغيّر البريد الذي تدخل به إلى حسابك. إن لم تكن أنت، فاكتب إلينا فورًا بالرد على هذه الرسالة.",
+    },
+    en: {
+      heading: "Your sign-in email was changed",
+      line: "The email you sign in with was changed. If it wasn’t you, reply to this email at once.",
+    },
+  },
+  mfa_added: {
+    ar: {
+      heading: "أُضيفت خطوة ثانية لتسجيل الدخول",
+      line: "صار حسابك يطلب خطوة ثانية عند الدخول. إن لم تكن أنت، فاكتب إلينا فورًا بالرد على هذه الرسالة.",
+    },
+    en: {
+      heading: "Two-step sign-in was added",
+      line: "Your account now asks for a second step when you sign in. If it wasn’t you, reply to this email at once.",
+    },
+  },
+  mfa_removed: {
+    ar: {
+      heading: "أُزيلت خطوة من خطوات الدخول",
+      line: "أُزيلت خطوة الدخول الثانية من حسابك. إن لم تكن أنت، فاكتب إلينا فورًا بالرد على هذه الرسالة.",
+    },
+    en: {
+      heading: "Two-step sign-in was removed",
+      line: "A second sign-in step was removed from your account. If it wasn’t you, reply to this email at once.",
+    },
+  },
+  password_changed: {
+    ar: {
+      heading: "تغيّرت كلمة مرورك",
+      line: "تغيّرت كلمة مرور حسابك. إن لم تكن أنت، فاختر كلمة مرور جديدة من «نسيت كلمة المرور؟» واكتب إلينا بالرد على هذه الرسالة.",
+    },
+    en: {
+      heading: "Your password was changed",
+      line: "Your account’s password was changed. If it wasn’t you, choose a new one with “Forgot your password?” and reply to this email.",
+    },
+  },
+  reauthentication: {
+    ar: {
+      heading: "رمز تأكيدك",
+      line: "أدخل هذا الرمز في الصفحة التي طلبته لتغيير كلمة مرورك.",
+    },
+    en: {
+      heading: "Your confirmation code",
+      line: "Enter this code on the page that asked for it to change your password.",
+    },
+  },
+  recovery: {
+    ar: {
+      button: "اختر كلمة مرور جديدة",
+      heading: "تعيين كلمة مرور جديدة",
+      line: "طلبت تعيين كلمة مرور جديدة لحسابك. اضغط الزر لاختيارها. إن لم تطلب ذلك، فتجاهل هذه الرسالة.",
+    },
+    en: {
+      button: "Choose a new password",
+      heading: "Set a new password",
+      line: "You asked to set a new password for your account. Press the button to choose it. If you didn’t ask, ignore this email.",
+    },
+  },
+  signup: {
+    ar: {
+      button: "أكّد بريدك",
+      heading: "أكّد بريدك الإلكتروني",
+      line: "أهلًا بك في جمعية الفنون والآداب. اضغط الزر لتأكيد بريدك وإكمال حسابك.",
+    },
+    en: {
+      button: "Confirm your email",
+      heading: "Confirm your email",
+      line: "Welcome to the AUIB Society of Arts and Letters. Press the button to confirm your email and finish your account.",
+    },
+  },
+};
+
+export const authEmail = (
+  lang: Lang,
+  kind: AuthEmailKind,
+  { code, link }: { code?: string; link?: string }
+) =>
+  build(lang, (l) => {
+    const words = AUTH[kind][l];
+    const codeLine = code
+      ? [l === "ar" ? `الرمز: ${code}` : `The code: ${code}`]
+      : [];
+    return {
+      action:
+        link && words.button
+          ? { fallback: true, href: link, label: words.button }
+          : undefined,
+      heading: words.heading,
+      paragraphs: [words.line, ...codeLine],
+    };
+  });
