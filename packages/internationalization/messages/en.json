@@ -840,7 +840,12 @@
           "all": "All your work",
           "line": "{type} · {date}"
         }
-      }
+      },
+      "revising": "Revise and resend",
+      "revisionTitle": "The editor asks for a revision",
+      "revisionHint": "Revise it below and save, then send the revision. It keeps its number and goes back to the same editor, without a second reading. Whether to revise is your choice.",
+      "sendRevision": "Send the revision",
+      "sendRevisionConfirm": "It goes back to the editor as it is saved now, and can’t be changed after."
     },
     "profile": {
       "title": "Profile",
@@ -2152,7 +2157,8 @@
         "decisions": {
           "accept": "Accept",
           "accept_with_edits": "Accept with edits",
-          "decline": "Decline"
+          "decline": "Decline",
+          "revise": "Revise and resend"
         },
         "fileKinds": {
           "manuscript": "Manuscript",
@@ -2238,7 +2244,10 @@
           "decideConfirm": "Record this decision? It cannot be changed here, and the author is told.",
           "record": "Record the decision",
           "author": "Author",
-          "reasonNeeded": "A decision needs its reason."
+          "reasonNeeded": "A decision needs its reason.",
+          "reviseNote": "Asked for once. The work goes back to the writer with your reason, keeps its number, and comes back to you, not to the readers. The writer’s name stays hidden.",
+          "withWriter": "With the writer for the revision you asked for.",
+          "revised": "This is the revision; it was not read again. Decide on it now."
         },
         "rubric": {
           "craft": "Craft ({weight})",
@@ -2989,7 +2998,8 @@
           "decline": "Decline",
           "openFile": "Open file {number}",
           "title": "Taken up before the one door",
-          "reasonNeeded": "A decision needs its reason."
+          "reasonNeeded": "A decision needs its reason.",
+          "revise": "Revise and resend"
         },
         "games": {
           "lede": "Crosswords, word searches and anagrams, on auibsal.org/qirtas/games. Games come from the editors only. The site makes a word, a word search, a crossword and anagrams every day by itself.",

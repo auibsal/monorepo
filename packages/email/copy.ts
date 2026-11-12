@@ -324,6 +324,47 @@ export const decision = (
     };
   });
 
+/**
+ * Revise and resend (decisions.md, Qirtas): the section editor asks once
+ * for a revision, with a note. The work keeps its number and goes back to
+ * that editor, not to the readers.
+ */
+export const revisionRequested = (
+  lang: Lang,
+  work: string,
+  note: string,
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: account(app, l, "/qirtas/submit"),
+    heading:
+      l === "ar"
+        ? `يطلب المحرر مراجعة ${work}`
+        : `The editor asks you to revise ${work}`,
+    paragraphs: [
+      l === "ar"
+        ? "يرى محرر القسم في هذا العمل ما يستحق، ويطلب مراجعة واحدة قبل القرار:"
+        : "The section editor sees something in this work and asks for one revision before deciding:",
+      note,
+      l === "ar"
+        ? "عدّل العمل في صفحته ثم أرسل المراجعة. يحتفظ برقمه، ويعود إلى المحرر نفسه دون قراءة ثانية. المراجعة اختيارك."
+        : "Revise it on its page, then send the revision. It keeps its number and goes back to the same editor, without a second reading. Whether to revise is your choice.",
+    ],
+  }));
+
+/** To the section editor who asked: the revision is back, in selection. */
+export const revisionResent = (lang: Lang, work: string, app: string) =>
+  build(lang, (l) => ({
+    action: diwan(app, l, "/qirtas"),
+    heading:
+      l === "ar" ? `عادت مراجعة ${work}` : `The revision of ${work} is back`,
+    paragraphs: [
+      l === "ar"
+        ? "أرسل الكاتب المراجعة التي طلبتها. هي الآن في الاختيار بانتظار قرارك."
+        : "The writer sent the revision you asked for. It is in selection, waiting for your decision.",
+    ],
+  }));
+
 export const agreementReminder = (lang: Lang, work: string, app: string) =>
   build(lang, (l) => ({
     action: account(app, l, "/qirtas/submit"),

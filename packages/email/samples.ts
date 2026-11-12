@@ -33,6 +33,8 @@ import {
   replyUpdate,
   requestUpdated,
   returnedForFormatting,
+  revisionRequested,
+  revisionResent,
   roleAssigned,
   roleEnding,
   rsvpConfirmed,
@@ -144,6 +146,15 @@ export const samples = {
   DecisionAccept: (l) => decision(l, WORK, "accept", APP),
   DecisionAcceptWithEdits: (l) => decision(l, WORK, "accept_with_edits", APP),
   DecisionDecline: (l) => decision(l, WORK, "decline", APP),
+  DecisionRevise: (l) =>
+    revisionRequested(
+      l,
+      WORK,
+      l === "ar"
+        ? "المقطع الأخير يكرر الأول؛ جرّب أن تنهي بصورة جديدة."
+        : "The last stanza repeats the first; try ending on a new image.",
+      APP
+    ),
   ElectionNotice: (l) => electionStage(l, election, "notice", APP),
   ElectionResults: (l) => electionStage(l, election, "published", APP),
   ElectionVoting: (l) => electionStage(l, election, "voting", APP),
@@ -212,6 +223,7 @@ export const samples = {
   RequestClosed: (l) => requestUpdated(l, "f10", "closed", PIECE, APP),
   ReturnedForFormatting: (l) =>
     returnedForFormatting(l, WORK, "Please send it as one document.", APP),
+  RevisionResent: (l) => revisionResent(l, WORK, APP),
   RoleAssigned: (l) => roleAssigned(l, role, true, APP),
   RoleEnding: (l) => roleEnding(l, role, APP),
   RsvpConfirmed: (l) => rsvpConfirmed(l, event, APP),

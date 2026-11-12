@@ -126,6 +126,16 @@ export const useMyDrafts = () => {
 
 export const YourWork = () => {
   const t = useTranslations("diwan.journal");
+  const sentStatus = (s: {
+    intake_returned_at: string | null;
+    revision_requested_at: string | null;
+    status: journal.SubmissionStatus;
+  }) => {
+    if (s.status === "intake_check" && s.intake_returned_at) {
+      return t(s.revision_requested_at ? "revising" : "returned");
+    }
+    return t(`status.${s.status}`);
+  };
   const tw = useTranslations("diwan.journal.write");
   const tn = useTranslations("diwan.qirtas");
   const tp = useTranslations("diwan.admin.qirtas");
@@ -152,10 +162,7 @@ export const YourWork = () => {
         date: s.created_at,
         href: `/account/work/submissions/${s.id}`,
         id: `s-${s.id}`,
-        status:
-          s.status === "intake_check" && s.intake_returned_at
-            ? t("returned")
-            : t(`status.${s.status}`),
+        status: sentStatus(s),
         title: s.title,
         type: tj(`categories.${s.category}`),
       })
@@ -488,6 +495,16 @@ export const MySubmission = () => {
     mutationFn: () => journal.transition(supabase, id ?? "", "withdrawn"),
     onSuccess: refresh,
   });
+  // Revise and resend: the writer sends the revision back to its editor.
+  const resend = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .rpc("resend_revision", { submission_id: id ?? "" })
+      ),
+    onSuccess: refresh,
+  });
 
   const back = (
     <Link
@@ -522,9 +539,27 @@ export const MySubmission = () => {
 
       {row.status === "intake_check" && row.intake_returned_at ? (
         <section className="border-line grid gap-2 border-t p-4" role="status">
-          <h2 className="font-medium">{t("returnedTitle")}</h2>
+          <h2 className="font-medium">
+            {t(row.revision_requested_at ? "revisionTitle" : "returnedTitle")}
+          </h2>
           <p className="whitespace-pre-wrap">{row.intake_note}</p>
-          <p className="type-caption">{t("returnedHint")}</p>
+          <p className="type-caption">
+            {t(row.revision_requested_at ? "revisionHint" : "returnedHint")}
+          </p>
+          {row.revision_requested_at ? (
+            <div>
+              <ConfirmAction
+                confirmLabel={t("sendRevision")}
+                description={t("sendRevisionConfirm")}
+                disabled={resend.isPending}
+                onConfirm={() => resend.mutate()}
+                variant="default"
+              >
+                {t("sendRevision")}
+              </ConfirmAction>
+            </div>
+          ) : null}
+          <ErrorLine error={resend.error} />
         </section>
       ) : null}
 

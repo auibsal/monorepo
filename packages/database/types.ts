@@ -3961,6 +3961,7 @@ export type Database = {
           id: string;
           issue_id: string | null;
           language: Database["journal"]["Enums"]["language"];
+          revision_requested_at: string | null;
           source_text: string | null;
           status: Database["journal"]["Enums"]["submission_status"];
           title: string;
@@ -3980,6 +3981,7 @@ export type Database = {
           id?: string;
           issue_id?: string | null;
           language: Database["journal"]["Enums"]["language"];
+          revision_requested_at?: string | null;
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
           title: string;
@@ -3998,6 +4000,7 @@ export type Database = {
           id?: string;
           issue_id?: string | null;
           language?: Database["journal"]["Enums"]["language"];
+          revision_requested_at?: string | null;
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
           title?: string;
@@ -5278,6 +5281,9 @@ export type Database = {
           partner_id: string | null;
           pen_name: string | null;
           reference: string | null;
+          revised_at: string | null;
+          revision_editor: string | null;
+          revision_requested_at: string | null;
           rights_note: string | null;
           source_author: string | null;
           source_text: string | null;
@@ -5308,6 +5314,9 @@ export type Database = {
           partner_id?: string | null;
           pen_name?: string | null;
           reference?: string | null;
+          revised_at?: string | null;
+          revision_editor?: string | null;
+          revision_requested_at?: string | null;
           rights_note?: string | null;
           source_author?: string | null;
           source_text?: string | null;
@@ -5337,6 +5346,9 @@ export type Database = {
           partner_id?: string | null;
           pen_name?: string | null;
           reference?: string | null;
+          revised_at?: string | null;
+          revision_editor?: string | null;
+          revision_requested_at?: string | null;
           rights_note?: string | null;
           source_author?: string | null;
           source_text?: string | null;
@@ -5489,6 +5501,7 @@ export type Database = {
           language: Database["journal"]["Enums"]["language"];
           pen_name: string;
           piece_id: string;
+          revision_requested_at: string;
           status: Database["journal"]["Enums"]["submission_status"];
           submission_id: string;
           title: string;
@@ -5662,6 +5675,7 @@ export type Database = {
         Args: { piece_id: string };
         Returns: undefined;
       };
+      resend_revision: { Args: { submission_id: string }; Returns: undefined };
       return_for_formatting: {
         Args: { note: string; submission_id: string };
         Returns: undefined;

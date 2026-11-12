@@ -70,7 +70,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   الأمريكية» inside a compound (the Society, Qirtas's line) across the site,
   emails, Hudhud, the brand kit and the language check.
 - [x] **7e. Submission numbers** SUB-<year>-<four digits> (now in
-  decisions.md §12). Revise and resend waits on the owner.
+  decisions.md §12). Revise and resend: see 7i.
 - [x] **7f. Arabic writing rules in CI:** never ٌ or ٍ; tanween al-fath on
   the letter before the alif; no tatweel; Arabic punctuation; hamza, taa
   marbuta and alif maqsura; Latin script for products and addresses,
@@ -81,8 +81,11 @@ First the second prompt's part 2 (7j), then the rest in place.
   English); an account's language from its sign-up page, changeable in
   Settings; certificates in the recipient's language with the other
   edition; Arabic about 10% larger in the brand kit.
-- [ ] **7i. Revise and resend:** one revision, back to the section editor,
-  same SUB number, not read blind again.
+- [x] **7i. Revise and resend:** one revision, asked for by the section
+  editor with a reason; the writer revises on the work's page and sends it
+  back; same SUB number, back to that editor in selection, not read blind
+  again (`private.request_revision`, `journal.resend_revision`); emails to
+  the writer and, when it is back, to the editor.
 - [~] **7k. Removal from membership** is the Council's (§7), still to build;
   parents withdraw their child's consents from the Parent view.
   Done: leavers become Associates (`record_departure`). Open: member removal

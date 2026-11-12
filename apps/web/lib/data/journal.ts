@@ -351,7 +351,7 @@ export const mySubmissions = async (client: Client) =>
     await journal(client)
       .from("submissions")
       .select(
-        "id, title, category, status, created_at, call_id, intake_note, intake_returned_at"
+        "id, title, category, status, created_at, call_id, intake_note, intake_returned_at, revision_requested_at"
       )
       .order("created_at", { ascending: false })
   );

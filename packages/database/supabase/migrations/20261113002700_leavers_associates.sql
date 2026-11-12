@@ -16,6 +16,11 @@ begin
   if not private.has_permission('members.manage') then
     raise exception 'The Director of Membership records who left' using errcode = '42501';
   end if;
+  -- Either way the class is Associate; the Director still says which it
+  -- was, for the record the call leaves.
+  if graduated is null then
+    raise exception 'Say whether they graduated' using errcode = '22023';
+  end if;
   select * into m from membership.memberships where user_id = member for update;
   if not found or m.tier <> 'member' then
     raise exception 'not_a_student_member' using errcode = 'P0002';

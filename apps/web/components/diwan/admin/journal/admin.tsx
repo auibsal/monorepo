@@ -323,7 +323,9 @@ const QueueActions = ({ item }: { item: QueueRow }) => {
   const id = item.submission_id;
   const move = (to: journal.SubmissionStatus) =>
     act.mutate(() => j.rpc("transition_submission", { id, to_status: to }));
-  const decide = (decision: "accept" | "accept_with_edits" | "decline") =>
+  const decide = (
+    decision: "accept" | "accept_with_edits" | "decline" | "revise"
+  ) =>
     act.mutate(() =>
       j.rpc("decide_named", {
         decision,
@@ -364,7 +366,7 @@ const QueueActions = ({ item }: { item: QueueRow }) => {
             {t("startIntake")}
           </Button>
         ) : null}
-        {item.status === "intake_check" ? (
+        {item.status === "intake_check" && !item.revision_requested_at ? (
           <Button
             disabled={busy}
             onClick={() => move("in_review")}
@@ -412,6 +414,16 @@ const QueueActions = ({ item }: { item: QueueRow }) => {
             >
               {t("decline")}
             </Button>
+            {item.revision_requested_at ? null : (
+              <Button
+                disabled={busy || noReason}
+                onClick={() => decide("revise")}
+                size="sm"
+                variant="ghost"
+              >
+                {t("revise")}
+              </Button>
+            )}
           </>
         ) : null}
       </div>
@@ -433,9 +445,12 @@ const QueueItem = ({ item }: { item: QueueRow }) => {
   const tn = useTranslations("diwan.journal");
   const locale = useLocale() as Locale;
   const [open, setOpen] = useState(false);
+  const returnedStage = item.revision_requested_at
+    ? tn("revising")
+    : tn("returned");
   const stage =
     item.status === "intake_check" && item.intake_returned_at
-      ? tn("returned")
+      ? returnedStage
       : tn(`status.${item.status}`);
   const author = localized(
     {

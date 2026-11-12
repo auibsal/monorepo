@@ -80,7 +80,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `access.role_ending` | Seven days before a role ends | The holder | Officer |
 | `access.two_step_reset` | An authenticator removed (by an officer or a recovery code) | The person | Service |
 | `access.recovery_attempts` | Five wrong recovery codes within an hour (`/api/two-step/recover`; once an hour) | The person | Service |
-| `qirtas.submission_received` (with the record number, SUB-<year>-<n>), `qirtas.in_reading`, `qirtas.returned_for_formatting`, `qirtas.decision`, `qirtas.agreement_reminder` (weekly, four weeks at most), `qirtas.final_check`, `qirtas.piece_note`, `qirtas.piece_published` | Work sent to Qirtas, through to publication | The author | Service |
+| `qirtas.submission_received` (with the record number, SUB-<year>-<n>), `qirtas.in_reading`, `qirtas.returned_for_formatting`, `qirtas.decision` (revise and resend among them, with the editor's note), `qirtas.agreement_reminder` (weekly, four weeks at most), `qirtas.final_check`, `qirtas.piece_note`, `qirtas.piece_published` | Work sent to Qirtas, through to publication | The author | Service |
 | `qirtas.call_opened` | A Qirtas call opens | Whoever asked "Tell me when" | Service (they stop it on the page) |
 | `membership.certificate_issued` | A certificate signed by both and issued | The holder | Service |
 | `membership.service_letter` | A service letter (F-05) written | The holder | Service |
@@ -98,6 +98,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `newsletter.confirm` | A public sign-up | The address (double opt-in) | Direct |
 | `personal_email.confirm` | A personal email added | The new address only | Direct |
 | `governance.concern_raised` | A concern is sent (urgent, at once); it names no one and carries none of the concern | The complaints panel's chair, the Vice President; one about the Vice President or the President to whoever holds `concerns.about_vp` or `concerns.about_president` | Officer |
+| `qirtas.revision_resent` | The writer sends back the revision the section editor asked for | That section editor | Officer |
 | `events.incident_reported` | An incident report from an event's page in the Diwan (urgent, at once); it names the event, not what happened | The Director of Events and the President | Officer |
 | `removal.requested`, `removal.overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
 | `removal.done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |

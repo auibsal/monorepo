@@ -49,6 +49,8 @@ import {
   replyUpdate,
   requestUpdated,
   returnedForFormatting,
+  revisionRequested,
+  revisionResent,
   roleAssigned,
   roleEnding,
   rsvpConfirmed,
@@ -1700,6 +1702,20 @@ const handlers: Record<string, Handler> = {
       recipient(admin, payload.user_id),
       submissionTitle(admin, payload.submission_id),
     ]);
+    if (to && work && payload.decision === "revise") {
+      // The editor's note is the one the writer reads on the work's page.
+      const { data } = await admin
+        .schema("journal")
+        .from("submissions")
+        .select("intake_note")
+        .eq("id", String(payload.submission_id))
+        .maybeSingle();
+      await send(
+        to,
+        revisionRequested(to.lang, work, data?.intake_note ?? "", appUrl())
+      );
+      return;
+    }
     const outcome = payload.decision as Decision;
     if (
       to &&
@@ -1775,6 +1791,15 @@ const handlers: Record<string, Handler> = {
           appUrl()
         )
       );
+    }
+  },
+  "qirtas.revision_resent": async (admin, payload) => {
+    const [to, work] = await Promise.all([
+      recipient(admin, payload.user_id),
+      submissionTitle(admin, payload.submission_id),
+    ]);
+    if (to && work) {
+      await send(to, revisionResent(to.lang, work, appUrl()));
     }
   },
   "qirtas.submission_received": async (admin, payload) => {
