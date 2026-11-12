@@ -41,8 +41,10 @@ the bot has their notices turned off.
 | `/setup <code>` | Group admins | Connects the group, once. The code comes from the Diwan; the message is deleted at once. |
 | `/events` | Everyone | What's coming up, with buttons that open the bot. |
 
-Nothing else is typed in the chat (decisions.md, Channels and email). A group's settings are
-kept in the Diwan, Media → Channels (`settings.manage`): who it is for
+Nothing else is typed in the chat (decisions.md, Channels and email).
+Hudhud is set up in one place, the Diwan's Media → Channels
+(`settings.manage`): the bot itself (its username, *Connect the bot to
+Telegram*, the group setup code), then each group's settings: who it is for
 (members, or staff for the Diwan group: see below), the language Hudhud
 answers in, and the topic for each kind of post (`announcements`,
 `events`, `qirtas`, `word`, `brief`), by number or link.
@@ -79,12 +81,29 @@ And without commands:
   three days after the go. The President's words go as written, with the
   site button; nothing of the bot's Iraqi copy is added.
 
+- **Seats in the groups.** Every ten minutes Hudhud gives each linked role
+  holder (a role that opens the team's work, `access.roles.in_notion`) their
+  seat in each group they are in: the Council as admins with the seat as
+  their admin title, able to delete, restrict, pin, manage topics and
+  members' tags, invite, and run the group's live streams and stories
+  (never the group's info or new admins); everyone else as their member
+  tag (Telegram's tags for ordinary members, no admin rights). Titles are
+  16 characters at most, cut at a word. When the role ends Hudhud takes the
+  title or tag back, and takes the person out of the Diwan group. Only
+  those Hudhud set are ever changed (`core.telegram_titles`); the group's
+  own admins are the owner's.
+- **Joining.** Hudhud makes each group one join-request link
+  (`core.telegram_groups.invite_link`). Members see *Join the members'
+  group* (and role holders *Join the Diwan group*) in their profile's
+  Telegram section once Telegram is linked, and in Hudhud's /me and the
+  message after linking; Hudhud lets them in at once.
+
 **What Telegram does itself** (so the bot doesn't):
 
 | Need | Telegram's own feature | Where |
 | --- | --- | --- |
 | Welcoming people, the rules | Welcome Message (only new members see it): a greeting, the rules, a link to the Acceptable Use Policy (say it is a draft until the Council adopts it) and to linking in the Diwan | Group → Edit → Welcome Message |
-| Spam | Aggressive Anti-Spam (groups of 200 or more members); Slow Mode; what members may send | Group → Edit → Administrators / Permissions |
+| Spam | Aggressive Anti-Spam, offered only to groups of 200 or more members (so not the Diwan group, whose doors only role holders pass); Slow Mode; what members may send | Group → Edit → Administrators / Permissions |
 | Moderating | Restrict (with a duration), Ban, Delete, Report; every action in Recent Actions | Long-press a message; Group → Edit → Recent Actions |
 | The daily word | The bot's Main App: the web game in Telegram | BotFather → Mini Apps |
 | Logging in | Telegram's login (OpenID Connect), to link accounts only | BotFather → Login Widget |
@@ -96,7 +115,7 @@ And without commands:
   member without one, and anyone not linked, waits in Telegram's request
   list for the group's admins, with a note saying the group is for
   officers. Linking later lets in only those who hold a role. Someone
-  whose role ends is not removed automatically: the admins remove them.
+  whose role ends is taken out by Hudhud (see Seats above).
 - **The morning brief,** once a day from 8:00 a.m. Baghdad time: today's
   events (members-only and invitation events too) with their bookings and
   waitlists, and what waits in the Diwan as counts (partner applications,
@@ -168,7 +187,7 @@ And without commands:
    | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/account/settings/profile` and `https://auibsal.org/ar/account/profile` (and `http://localhost:3000/account/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
    | Allow Groups | On | |
    | Group Privacy | On | As an admin the bot sees the group anyway. |
-   | Group Admin Rights | Invite users via link | Answering join requests is all the bot does as an admin. |
+   | Group Admin Rights | Everything but Remain Anonymous: change group info, delete messages, ban users, invite users via link, pin messages, edit member tags, manage stories, send welcome messages, manage live streams, add new admins, manage topics, process join requests | Answering join requests, giving seats (admin titles and member tags), and passing the Council their rights; a bot can give an admin only rights it holds itself. |
    | Channel Admin Rights | None | No channel. |
    | Privacy Policy | `https://auibsal.org/privacy` | Telegram shows it in the bot's profile. |
    | Bot Management Mode | Off | For bots that create bots. |
@@ -179,7 +198,7 @@ And without commands:
    | Mini Apps → Menu Button | Open the Main App, title "Daily word" (or leave it on Commands) | BotFather decides it; the bot no longer overrides it. |
    | Payments, Affiliate Program, Games, Serverless | Not used | No online payments of any kind (platform rule); the daily word is the Main App, not a Telegram game; the bot runs in the API routes. |
 
-4. **Connect it.** In the Diwan, the Desk → Connected → Hudhud → *Connect
+4. **Connect it.** In the Diwan, Media → Channels → Hudhud → *Connect
    the bot to Telegram* (settings managers). It sets the webhook (with the updates
    the bot uses, Guest Mode's among them), the commands in English and
    Arabic, and the descriptions; do it again whenever the commands, the
@@ -187,10 +206,10 @@ And without commands:
    `curl -X POST https://auibsal.org/api/telegram/setup -H "Authorization: Bearer $CRON_SECRET" -d '{"connect":true}'`.)
    The scheduled posts need nothing more: the database already calls
    the API routes.
-5. **The Diwan.** The Desk → Connected → Hudhud: the bot's username (this shows
+5. **The Diwan.** Media → Channels → Hudhud: the bot's username (this shows
    *Connect Telegram* in members' profiles).
 6. **The group.** Make it a supergroup with topics. Add the bot as an
-   admin with the rights above. In the Diwan, the Desk → Connected → Hudhud →
+   admin with the rights above. In the Diwan, Media → Channels → Hudhud →
    *Make a setup code*, and send the `/setup …` line in the group. Then,
    in the Diwan (Media → Channels), set who the group is for and each
    topic, and turn on *Approve new members* on the invite link. In the

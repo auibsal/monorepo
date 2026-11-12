@@ -1324,6 +1324,7 @@ export type Database = {
         Row: {
           audience: string;
           chat_id: number;
+          invite_link: string | null;
           lang: string;
           registered_at: string;
           registered_by: string | null;
@@ -1334,6 +1335,7 @@ export type Database = {
         Insert: {
           audience?: string;
           chat_id: number;
+          invite_link?: string | null;
           lang?: string;
           registered_at?: string;
           registered_by?: string | null;
@@ -1343,6 +1345,7 @@ export type Database = {
         Update: {
           audience?: string;
           chat_id?: number;
+          invite_link?: string | null;
           lang?: string;
           registered_at?: string;
           registered_by?: string | null;
@@ -1410,6 +1413,39 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "telegram_posts_chat_id_fkey";
+            columns: ["chat_id"];
+            isOneToOne: false;
+            referencedRelation: "telegram_groups";
+            referencedColumns: ["chat_id"];
+          },
+        ];
+      };
+      telegram_titles: {
+        Row: {
+          chat_id: number;
+          council: boolean;
+          set_at: string;
+          telegram_id: number;
+          title: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          chat_id: number;
+          council?: boolean;
+          set_at?: string;
+          telegram_id: number;
+          title: string;
+        };
+        Update: {
+          chat_id?: number;
+          council?: boolean;
+          set_at?: string;
+          telegram_id?: number;
+          title?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "telegram_titles_chat_id_fkey";
             columns: ["chat_id"];
             isOneToOne: false;
             referencedRelation: "telegram_groups";
@@ -1690,6 +1726,24 @@ export type Database = {
         Returns: string;
       };
       telegram_is_staff: { Args: { telegram_id: number }; Returns: boolean };
+      telegram_join_links: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          audience: string;
+          invite_link: string;
+          linked: boolean;
+          title: string;
+        }[];
+      };
+      telegram_join_links_for: {
+        Args: { member: string };
+        Returns: {
+          audience: string;
+          invite_link: string;
+          linked: boolean;
+          title: string;
+        }[];
+      };
       telegram_link_account: {
         Args: { telegram_id: number; user_id: string; username?: string };
         Returns: undefined;
@@ -1702,6 +1756,15 @@ export type Database = {
       telegram_register_group: {
         Args: { chat_id: number; code: string; title?: string };
         Returns: boolean;
+      };
+      telegram_role_titles: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          council: boolean;
+          telegram_id: number;
+          title_ar: string;
+          title_en: string;
+        }[];
       };
       telegram_rsvp: {
         Args: { event_id: string; telegram_id: number };

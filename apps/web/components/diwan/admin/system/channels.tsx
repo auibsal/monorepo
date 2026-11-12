@@ -21,6 +21,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { TelegramBot } from "./telegram";
 
 /** Where Hudhud posts, by purpose; the Diwan group's brief only there. */
 const PURPOSES = [
@@ -58,6 +59,7 @@ export const Channels = () => {
     <div className="grid gap-10">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
       {mailing ? <MailingCounts /> : null}
+      {settings ? <TelegramBot /> : null}
       {settings ? <Groups /> : null}
       {members ? <Exempt /> : null}
     </div>

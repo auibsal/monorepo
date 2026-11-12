@@ -54,6 +54,8 @@ const en = {
     details: "Details",
     diwan: "Open the Diwan",
     events: "Events",
+    joinMembers: "Join the members' group",
+    joinStaff: "Join the Diwan group",
     link: "Link my account",
     me: "My membership",
     membership: "Open Membership",
@@ -137,7 +139,7 @@ const en = {
   noPlaces: "No places yet. /events shows what's on.",
   notAdmin: "Only the group's admins can do that.",
   notConnected:
-    "This group isn't connected to the Society yet. An officer can connect it from the Diwan (Settings, Telegram).",
+    "This group isn't connected to the Society yet. An officer can connect it from the Diwan (Media, Channels).",
   notifyOff: "Notices will go by email only.",
   notifyOn: "Notices will come here again.",
   notLinked:
@@ -177,12 +179,12 @@ const en = {
   rsvpWaitlisted:
     "It's full, so you're on the waitlist. I'll tell you if a place opens.",
   setupBad:
-    "That code didn't work. An officer can make a new one in the Diwan: Settings, Telegram.",
+    "That code didn't work. An officer can make a new one in the Diwan: Media, Channels.",
 
   // Group: connecting
   setupOk:
     "Connected. I'm the Society's messenger here now.\n\nNext:\n1. Make me an admin who can invite users.\n2. Choose each topic's purpose, the language and who the group is for in the Diwan, under Media → Channels.\n3. Turn on <b>Approve new members</b> for the invite link: I let linked members in at once and leave everyone else to you.",
-  setupUsage: "Send /setup with the code from the Diwan (Settings, Telegram).",
+  setupUsage: "Send /setup with the code from the Diwan (Media, Channels).",
   shortDescription:
     "The messenger of the AUIB Society of Arts and Letters: events, Qirtas and a daily word.",
   summaryCame: (came: string, booked: string, walkIns: string) =>
@@ -233,6 +235,8 @@ const ar: Copy = {
     details: "التفاصيل",
     diwan: "افتح الديوان",
     events: "الفعاليات",
+    joinMembers: "ادخل مجموعة الأعضاء",
+    joinStaff: "ادخل مجموعة الديوان",
     link: "اربط حسابي",
     me: "عضويتي",
     membership: "افتح «العضوية»",
@@ -313,7 +317,7 @@ const ar: Copy = {
   noPlaces: "بعد ما عندك مقاعد. /events يراويك شنو اكو.",
   notAdmin: "هاي بس لمشرفين المجموعة.",
   notConnected:
-    "هالمجموعة بعدها مو مربوطة بالجمعية. واحد من المسؤولين يگدر يربطها من الديوان (الإعدادات، تيليغرام).",
+    "هالمجموعة بعدها مو مربوطة بالجمعية. واحد من المسؤولين يگدر يربطها من الديوان («الإعلام»، «القنوات»).",
   notifyOff: "الإشعارات راح توصلك بالإيميل بس.",
   notifyOn: "الإشعارات رجعت توصلك هنا.",
   notLinked:
@@ -351,11 +355,11 @@ const ar: Copy = {
   rsvpNotMember: "الحجز للأعضاء الموثّقين. كمّل انضمامك على ⁦auibsal.org⁩ أول.",
   rsvpWaitlisted: "العدد اكتمل، فحطيتك بقائمة الانتظار. أخبرك إذا فرغ مقعد.",
   setupBad:
-    "هالرمز ما اشتغل. واحد من المسؤولين يگدر يسوي رمز جديد من الديوان: الإعدادات، تيليغرام.",
+    "هالرمز ما اشتغل. واحد من المسؤولين يگدر يسوي رمز جديد من الديوان: «الإعلام»، «القنوات».",
 
   setupOk:
     "انربطت. من هسه آني حامل رسائل الجمعية هنا.\n\nبعدين:\n1. سوّوني مشرف يگدر يدعي مستخدمين.\n2. اختاروا غرض كل موضوع، واللغة، ولمنو المجموعة من الديوان، من «الإعلام ← القنوات».\n3. فعّلوا <b>الموافقة على الأعضاء الجدد</b> لرابط الدعوة: أدخّل الأعضاء المربوطين هسه وأخلّي الباقين عليكم.",
-  setupUsage: "دز /setup ويّا الرمز من الديوان (الإعدادات، تيليغرام).",
+  setupUsage: "دز /setup ويّا الرمز من الديوان («الإعلام»، «القنوات»).",
   shortDescription:
     "حامل رسائل جمعية الفنون والآداب: الفعاليات وقرطاس وكلمة كل يوم.",
   summaryCame: (came: string, booked: string, walkIns: string) =>

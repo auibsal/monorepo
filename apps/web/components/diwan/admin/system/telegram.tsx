@@ -25,7 +25,8 @@ const asText = (value: Json | undefined) =>
   typeof value === "string" ? value : "";
 
 /**
- * The Desk's Connected panel: Hudhud, the Society's Telegram bot. Its username (members see
+ * Media → Channels: Hudhud, the Society's Telegram bot, set up in one
+ * place with its groups. Its username (members see
  * "Connect Telegram" once it is set) and a one-time /setup code for
  * connecting a group. The group's rules and welcome live in Telegram itself
  * (its welcome message and description).

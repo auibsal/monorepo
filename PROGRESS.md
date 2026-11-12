@@ -14,6 +14,20 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: Hudhud (Nov 12, night)
+
+- [x] **One place to set Hudhud up:** the bot's panel moved from the Desk's
+  Connected panel to Media → Channels, beside its groups; the Desk points
+  there.
+- [x] **Seats in the groups:** Council seats as admins with their title and
+  the moderation, live-stream and story rights; every other role as a
+  member tag; taken back when the role ends, and out of the Diwan group
+  (`20261113004600_hudhud_titles_and_joining.sql`, `lib/api/bot/titles.ts`).
+- [x] **Joining from the site and the bot:** each group's join-request
+  link, offered in the profile's Telegram section and in Hudhud's /me.
+- [ ] **Owner:** give Hudhud every admin right but Remain Anonymous in both
+  groups (as in the screenshot), so it can pass the Council theirs.
+
 ## Now: temporary (Nov 12)
 
 - [x] **The President holds every permission**, to see, test, edit and

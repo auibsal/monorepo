@@ -5,6 +5,7 @@ import { type Copy, copy, type Lang } from "../copy";
 import { db, visibleEvents, whoami } from "../db";
 import { pick, when } from "../format";
 import { accountPage, connectPage, wordPage } from "../links";
+import { joinLinks } from "../titles";
 import { admitPending } from "./group/joins";
 
 /**
@@ -46,7 +47,7 @@ export const redeemLink = async (ctx: BotContext, payload: string) => {
   await ctx.reply(
     ctx.t.linked(accountName(ctx, me?.name_en ?? "", me?.name_ar ?? null)),
     {
-      reply_markup: menu(ctx),
+      reply_markup: await addJoinButtons(menu(ctx), ctx.t, ctx.from.id),
     }
   );
   // Waiting at a group's door because they weren't linked? Let them in.
@@ -67,6 +68,28 @@ const menuFor = (t: Copy, lang: Lang) =>
 export const menu = (ctx: BotContext) => menuFor(ctx.t, ctx.lang);
 
 /**
+ * The groups this linked account may join (the members' group for a
+ * member, the Diwan group for a role holder), as buttons to their
+ * join-request links: Hudhud lets them in at once.
+ */
+export const addJoinButtons = async (
+  keyboard: InlineKeyboard,
+  t: Copy,
+  telegramId: number
+) => {
+  const links = await joinLinks(telegramId).catch(() => []);
+  for (const link of links) {
+    keyboard
+      .row()
+      .url(
+        link.audience === "staff" ? t.buttons.joinStaff : t.buttons.joinMembers,
+        link.invite_link
+      );
+  }
+  return keyboard;
+};
+
+/**
  * After a member links Telegram from the Diwan (Telegram's login): the same
  * greeting as a redeemed code, and anyone waiting at a group's door is let
  * in. The login's bot_access scope lets the bot write first.
@@ -80,7 +103,7 @@ export const greetLinked = async (api: Api, telegramId: number) => {
   const name = escapeHtml(pick(me.locale, me.name_en, me.name_ar));
   await api
     .sendMessage(telegramId, t.linked(name), {
-      reply_markup: menuFor(t, me.locale),
+      reply_markup: await addJoinButtons(menuFor(t, me.locale), t, telegramId),
     })
     .catch(() => undefined);
   await admitPending(api, telegramId);
@@ -122,6 +145,7 @@ const meView = async (ctx: BotContext) => {
     .row()
     .url(ctx.t.buttons.membership, accountPage(ctx.lang))
     .text(ctx.t.buttons.unlink, "unlink");
+  await addJoinButtons(keyboard, ctx.t, ctx.from.id);
   return { keyboard, text: lines.join("\n") };
 };
 

@@ -940,7 +940,10 @@
         "unlink": "Unlink Telegram",
         "failed": "We couldn’t change Telegram. Please try again.",
         "linking": "Linking Telegram…",
-        "loginHint": "Connect sends you to Telegram to confirm, then back here. It only links Telegram; you still sign in with your email."
+        "loginHint": "Connect sends you to Telegram to confirm, then back here. It only links Telegram; you still sign in with your email.",
+        "joinHint": "The Society’s groups on Telegram. Hudhud lets you in at once, since your Telegram is linked.",
+        "joinMembers": "Join the members’ group",
+        "joinStaff": "Join the Diwan group"
       },
       "lede": "Your details, how the Society reaches you, and what you have shared.",
       "aboutYou": "About you",
@@ -1110,7 +1113,9 @@
           "yours": "Waiting for another officer.",
           "approve": "Approve",
           "decline": "Decline"
-        }
+        },
+        "hudhudMoved": "Hudhud, the Telegram bot, is set up with its groups in Media → Channels.",
+        "hudhudOpen": "Open Channels"
       },
       "members": {
         "title": "Members",
