@@ -1,3 +1,4 @@
+import { Button } from "@repo/brand/components/ui/button";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Support } from "@/components/institutions";
@@ -147,12 +148,10 @@ const PartnersPage = async ({ params }: LocaleParams) => {
       <Section id="work-with-us" title={t("workTitle")}>
         <p className="type-body">{t("work")}</p>
         <p className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          <Link
-            className="text-accent font-medium hover:underline"
-            href="/partners/apply"
-          >
-            {t("apply")}
-          </Link>
+          {/* The page's one action (the third prompt, §7). */}
+          <Button asChild>
+            <Link href="/partners/apply">{t("apply")}</Link>
+          </Button>
           <Link
             className="link"
             href={{

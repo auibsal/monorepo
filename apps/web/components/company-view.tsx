@@ -1,3 +1,4 @@
+import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { notFound } from "next/navigation";
@@ -111,13 +112,14 @@ export const CompanyView = async ({ locale }: { locale: Locale }) => {
       <Section id="auditions" title={t("auditions")}>
         <p className="type-body max-w-prose">{t("auditionsLede")}</p>
       </Section>
+      {/* The page's one action (the third prompt, §7): auditions and
+          performances are the Company's dates on Events. */}
       <p>
-        <Link
-          className="link"
-          href={whatsOnPath(monthFrom(undefined, now), "company")}
-        >
-          {t("dates")}
-        </Link>
+        <Button asChild>
+          <Link href={whatsOnPath(monthFrom(undefined, now), "company")}>
+            {t("dates")}
+          </Link>
+        </Button>
       </p>
     </div>
   );

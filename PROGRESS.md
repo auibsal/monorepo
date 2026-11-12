@@ -307,10 +307,14 @@ First the second prompt's part 2 (7j), then the rest in place.
   the top on a phone.
 
 ### 7. Pages (decisions.md, The site)
-- [ ] One main action per page (Home: Join; Qirtas: Submit; Events: RSVP;
+- [x] One main action per page (Home: Join; Qirtas: Submit; Events: RSVP;
   an Edition: Read; Next Stop: Watch the latest; the Company: Audition when
   open, else See the season; Get involved: Apply; Partners: Become a
   partner).
+  Each is the page's one solid button: Home's Join and the event page's
+  RSVP were already; Qirtas's Submit (the call), Partners' Become a
+  partner and the Company's dates (auditions are RSVP events) now are too;
+  an Edition opens on Read and Next Stop on its latest episode.
 - [x] Home, when each has something: motto and Join; the next three events;
   the newest Edition or current call; latest from Qirtas; Next Stop's
   latest; open roles; From the Society. Join is its one action; the Sunday
@@ -342,9 +346,13 @@ First the second prompt's part 2 (7j), then the rest in place.
   name and initial). **Migrates:** the codes' default.
 
 ### 8. Email (decisions.md, Channels and email)
-- [ ] Every email: one subject, the action first, one button, the record
+- [x] Every email: one subject, the action first, one button, the record
   number, why the person gets it, a preferences link unless account or
-  security.
+  security. The one template holds it (`templates/notice.tsx`, `build` in
+  `copy.ts`): the subject is the heading, one button, the footer's reason
+  and the Notices link on service and optional mail, none on account and
+  security mail; the record number where a record has one (SUB numbers,
+  certificate serials, form references).
 - [x] Senders: "AUIB Society of Arts and Letters" (site, announcements),
   "Qirtas" (the Sunday Paper), a person's name and seat (letters).
 - [x] Bulk email: "View in your browser" at the top (the Sunday Paper's

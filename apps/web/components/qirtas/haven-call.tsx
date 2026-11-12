@@ -1,3 +1,4 @@
+import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations } from "next-intl/server";
@@ -19,15 +20,17 @@ export const HavenCall = async ({ locale }: { readonly locale: Locale }) => {
       </h2>
       <p className="type-body text-text-secondary">{t("dek")}</p>
       <p className="reading max-w-[60ch]">{t("call")}</p>
-      <Link
-        className="link justify-self-start font-medium"
-        href="/qirtas/submit"
-        // Write for Qirtas carries the editor: fetch it on the click, not
-        // with the front page (the performance budget).
-        prefetch={false}
-      >
-        {t("submit")}
-      </Link>
+      {/* Qirtas's one action (the third prompt, §7): Submit. */}
+      <Button asChild className="justify-self-start">
+        <Link
+          href="/qirtas/submit"
+          // Write for Qirtas carries the editor: fetch it on the click, not
+          // with the front page (the performance budget).
+          prefetch={false}
+        >
+          {t("submit")}
+        </Link>
+      </Button>
     </section>
   );
 };
