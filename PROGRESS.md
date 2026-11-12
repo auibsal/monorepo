@@ -30,7 +30,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   the declaration under Settings → Disclosures, a motion under Elections,
   the memorandum on the partner dashboard; every old `/forms/<number>`
   address (21, F-21, f21) redirects (308).
-- [ ] **1. Classes** follow status both ways on the same account and number
+- [x] **1. Classes** follow status both ways on the same account and number
   (Members: degree and ELA students; Associates: faculty, staff, alumni;
   Guests: everyone else); Parent and Qalam student are roles on guest
   accounts; one card for everyone, class and role on its second line
@@ -83,8 +83,10 @@ First the second prompt's part 2 (7j), then the rest in place.
   edition; Arabic about 10% larger in the brand kit.
 - [ ] **7i. Revise and resend:** one revision, back to the section editor,
   same SUB number, not read blind again.
-- [ ] **7k. Removal from membership** is the Council's (§7), still to build;
+- [~] **7k. Removal from membership** is the Council's (§7), still to build;
   parents withdraw their child's consents from the Parent view.
+  Done: leavers become Associates (`record_departure`). Open: member removal
+  by the Council, and a Parent withdrawing a consent from the Parent view.
 - [x] **7l. The Sunday Paper sign-up** in the public footer's Read and watch
   column.
 - [x] **7m. The Library's groups** from Notion's "For" field (Everyone,

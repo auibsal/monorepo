@@ -176,6 +176,12 @@ export const MembershipCard = () => {
     queryFn: () => membership.myCardFace(supabase),
     queryKey: [...cardKey, "face", user?.id],
   });
+  // The card's own name (an under-18's first name and last initial).
+  const cardName = useQuery({
+    enabled: Boolean(user && kind),
+    queryFn: () => membership.myCardName(supabase),
+    queryKey: [...cardKey, "name", user?.id],
+  });
   const reissue = useMutation({
     mutationFn: () => membership.reissueCard(supabase),
     onSuccess: (fresh) =>
@@ -188,7 +194,9 @@ export const MembershipCard = () => {
   }
 
   const name =
-    (locale === "ar" && profile.data.full_name_ar) || profile.data.full_name_en;
+    (locale === "ar" ? cardName.data?.name_ar : cardName.data?.name_en) ??
+    ((locale === "ar" && profile.data.full_name_ar) ||
+      profile.data.full_name_en);
   const link = live.digits
     ? siteUrl(locale, membership.livePath(card.data.code, live.digits))
     : null;
@@ -218,7 +226,6 @@ export const MembershipCard = () => {
         {t("card.title")}
       </h2>
       <CardFace
-        classLabel={tier}
         labels={{
           class: t("card.tier"),
           number: t("card.numberLabel"),
@@ -227,7 +234,14 @@ export const MembershipCard = () => {
         locale={locale}
         name={name}
         number={card.data.number}
-        office={locale === "ar" ? face.data?.role_ar : face.data?.role_en}
+        // One card for everyone (decisions.md, the card): the class and
+        // the role held now on the second line, "Guest · Parent".
+        office={[
+          tier,
+          locale === "ar" ? face.data?.role_ar : face.data?.role_en,
+        ]
+          .filter(Boolean)
+          .join(" · ")}
         qr={{ left: live.secondsLeft / TOTP_PERIOD_SECONDS, value: link }}
         since={
           face.data?.since

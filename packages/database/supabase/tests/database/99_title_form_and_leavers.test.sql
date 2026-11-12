@@ -134,15 +134,16 @@ create temp table before_number on commit drop as
   select number from membership.cards where user_id = '00000000-0000-0000-0000-0000000071f3';
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000071f2');
-select is(membership.record_departure('00000000-0000-0000-0000-0000000071f3', false), 'guest',
-  'A student who leaves without graduating becomes a guest');
+select is(membership.record_departure('00000000-0000-0000-0000-0000000071f3', false), 'associate',
+  'A student who leaves without graduating becomes an Associate Member too (fourth prompt, 7k)');
 select is(membership.record_departure('00000000-0000-0000-0000-0000000071f4', true), 'associate',
   'A graduate becomes an Associate Member');
 select throws_ok($$ select membership.record_departure('00000000-0000-0000-0000-0000000071f4', true) $$,
   'P0002', 'not_a_student_member', 'Only a student Member is recorded leaving');
 select pg_temp.logout();
 
-select is(private.membership_kind('00000000-0000-0000-0000-0000000071f3'), 'guest', 'The leaver''s account is a guest account');
+select is((select tier::text from membership.memberships where user_id = '00000000-0000-0000-0000-0000000071f3'), 'associate',
+  'The leaver''s account is an Associate account');
 select is((select number from membership.cards where user_id = '00000000-0000-0000-0000-0000000071f3'),
   (select number from before_number), 'with the same number');
 select is((select count(*)::integer from access.role_assignments

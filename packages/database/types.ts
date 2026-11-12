@@ -6435,6 +6435,13 @@ export type Database = {
           since: number;
         }[];
       };
+      my_card_name: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          name_ar: string;
+          name_en: string;
+        }[];
+      };
       my_membership: {
         Args: Record<PropertyKey, never>;
         Returns: {

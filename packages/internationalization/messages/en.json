@@ -1240,13 +1240,13 @@
         },
         "departure": {
           "title": "Left AUIB",
-          "body": "For a student Member who has left AUIB. A graduate becomes an Associate Member: same account and number, no vote and no office. Someone who left without graduating becomes a guest: same number and a Guest card, no vote, no role, and Hudhud takes them out of the members’ group after a week.",
+          "body": "For a student Member who has left AUIB, graduated or not. They become an Associate Member: the same account, number and history, the members’ group kept, no vote and no office; any role they hold ends.",
           "graduated": "Graduated",
           "graduatedConfirm": "Make them an Associate Member",
           "graduatedDescription": "{name} graduated: their class becomes Associate Member and any role they hold ends.",
           "left": "Left without graduating",
           "leftConfirm": "Make them a guest",
-          "leftDescription": "{name} left AUIB without graduating: their account becomes a guest account with the same number, and any role they hold ends.",
+          "leftDescription": "{name} left AUIB without graduating: they become an Associate Member with the same number, and any role they hold ends.",
           "nowGuest": "{name} is now a guest.",
           "nowAssociate": "{name} is now an Associate Member."
         },

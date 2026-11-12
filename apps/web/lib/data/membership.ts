@@ -100,6 +100,10 @@ export const myMembership = async (client: Client) => {
 export const myCardFace = async (client: Client) =>
   unwrap(await membership(client).rpc("my_card_face"))?.[0] ?? null;
 
+/** The name on one's own card: an under-18's first name and last initial. */
+export const myCardName = async (client: Client) =>
+  unwrap(await membership(client).rpc("my_card_name"))?.[0] ?? null;
+
 /** A new code for a lost or shared card; the old link stops working. */
 export const reissueCard = async (client: Client) =>
   unwrap(await membership(client).rpc("reissue_card"))?.[0] ?? null;
