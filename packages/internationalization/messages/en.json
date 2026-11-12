@@ -4818,7 +4818,8 @@
         "other": {
           "ar": "العربية",
           "en": "English"
-        }
+        },
+        "onPublication": "Effective the day it is published · Version {version}, proposed"
       },
       "find": "Find a document",
       "noMatch": "No document matches.",
@@ -5878,36 +5879,7 @@
     },
     "policies": {
       "conduct": "Code of Conduct",
-      "conductLede": "How everyone in the Society treats one another: Article II of the Policy Manual.",
-      "security": "Security",
-      "securityLede": "How to tell the Society about a security problem with auibsal.org, and what it does next.",
-      "securityEffective": "Effective November 12, 2026",
-      "securitySections": {
-        "scope": {
-          "title": "What this covers",
-          "body": "auibsal.org and everything under it: the public pages, your account, the Diwan, the partner dashboard and the API, and the emails the site sends."
-        },
-        "report": {
-          "title": "How to report",
-          "body": "Write to {address} with what you found, the address where it happens and the steps to see it again. Write in English or Arabic. Please don’t include anyone’s personal data beyond what shows the problem."
-        },
-        "ask": {
-          "title": "What we ask",
-          "body": "Test only with your own account. Don’t read, change or delete other people’s data, don’t disrupt the site for others, and don’t use automated scanning that floods it. Give us a reasonable time to fix a problem before you tell anyone else."
-        },
-        "promise": {
-          "title": "What we do",
-          "body": "We reply within three working days, keep you told as we fix it, and thank you by name when it’s fixed if you’d like. The Society is a student organization with no money, so there is no bounty."
-        },
-        "safe": {
-          "title": "Good faith",
-          "body": "If you follow this page, the Society won’t take action against you for your research and will say so to anyone who asks."
-        },
-        "out": {
-          "title": "Not covered",
-          "body": "Reports that only list missing headers or software versions with no way to use them, social engineering of members or officers, and the services the site uses (report those to their makers)."
-        }
-      }
+      "conductLede": "How everyone in the Society treats one another: Article II of the Policy Manual."
     },
     "help": {
       "title": "Help",

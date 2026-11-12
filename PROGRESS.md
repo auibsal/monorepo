@@ -46,7 +46,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   set for everyone alike (the President's and the host's stay); the legal
   name locked for every account, changed only in the Diwan with a second
   officer.
-- [ ] **4. Policies:** /code-of-conduct renders GOV-03, Art. II; /security
+- [x] **4. Policies:** /code-of-conduct renders GOV-03, Art. II; /security
   renders GOV-07 («سياسة الإبلاغ عن الثغرات الأمنية») once published, "Effective
   the day it is published"; security.txt points to /security; three
   business days to acknowledge.
@@ -84,7 +84,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   Members, Staff), not from the code.
 - [x] **7n. The Sunday note's "in term"** (a week with an event or an open
   call), now in decisions.md.
-- [ ] **7o. GOV-07's Arabic title** on the site: «سياسة الإبلاغ عن الثغرات
+- [x] **7o. GOV-07's Arabic title** on the site: «سياسة الإبلاغ عن الثغرات
   الأمنية».
 - [ ] **7p. Immediate staff alerts** also for a new concern (the complaints
   panel's chair) and an incident report from an event's page (the Director

@@ -21,6 +21,7 @@ const MOVED: readonly [from: string, to: string][] = [
   ["/library/privacy", "/privacy"],
   ["/library/terms-of-use", "/terms"],
   ["/library/accessibility", "/accessibility"],
+  ["/library/security", "/security"],
   ["/partners/join", "/partners/apply"],
   // Your account's tabs match their pages (decisions §6).
   ["/account/society", "/account/elections"],

@@ -102,10 +102,21 @@ export const readerOf = (doc: Pick<SalDocument, "code">): Reader => {
 };
 
 /** The title in the page's language (English when there is no Arabic). */
+/**
+ * Arabic titles the glossary fixes, by slug, over what Notion holds (GOV-07
+ * is «سياسة الإبلاغ عن الثغرات الأمنية»; fourth prompt, 7o).
+ */
+const GLOSSARY_TITLES_AR: Readonly<Record<string, string>> = {
+  security: "سياسة الإبلاغ عن الثغرات الأمنية",
+};
+
 export const documentTitle = (
-  doc: Pick<SalDocument, "title_ar" | "title_en">,
+  doc: Pick<SalDocument, "title_ar" | "title_en"> & { slug?: string },
   locale: string
-) => (locale === "ar" && doc.title_ar ? doc.title_ar : doc.title_en);
+) =>
+  locale === "ar"
+    ? (GLOSSARY_TITLES_AR[doc.slug ?? ""] ?? doc.title_ar ?? doc.title_en)
+    : doc.title_en;
 
 /** The summary in the page's language only (never the other language's). */
 export const documentSummary = (
@@ -311,6 +322,7 @@ export const documentSection = (html: string, heading: RegExp) => {
 export const OWN_ADDRESSES: Readonly<Record<string, string>> = {
   accessibility: "/accessibility",
   privacy: "/privacy",
+  security: "/security",
   "terms-of-use": "/terms",
 };
 

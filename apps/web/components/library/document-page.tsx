@@ -90,6 +90,9 @@ const DocumentLine = async ({ doc, locale }: { doc: Doc; locale: Locale }) => {
       date: formatPlainDate(SITE_LAUNCH, locale),
       version,
     });
+  } else if (doc.code === "SAL-GOV-07") {
+    // decisions.md, Documents: GOV-07 takes effect the day it is published.
+    status = t("onPublication", { version });
   } else if (FOUNDING.has(doc.code)) {
     status = t("proposedFounding", { version });
   } else {
