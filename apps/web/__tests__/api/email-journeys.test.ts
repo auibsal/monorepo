@@ -4,7 +4,6 @@ import {
   accountDeleted,
   applicationDecided,
   applicationReceived,
-  applicationWaiting,
   type Built,
   callOpened,
   candidacyDecided,
@@ -14,10 +13,10 @@ import {
   type Lang,
   newsletterConfirm,
   removalDone,
-  repliesDigest,
   replyUpdate,
   requestUpdated,
   roleAssigned,
+  staffDigest,
   welcome,
 } from "@repo/email/copy";
 import { Notice, noticeText } from "@repo/email/templates/notice";
@@ -37,7 +36,6 @@ const every = (l: Lang): Built[] => [
   eventChanged(l, event, "canceled", APP),
   eventChanged(l, event, "moved", APP),
   applicationReceived(l, "The Book Club", APP),
-  applicationWaiting(l, "The Book Club", APP),
   applicationDecided(l, "The Book Club", true, APP),
   applicationDecided(l, "The Book Club", false, APP),
   candidacyDecided(l, { title_ar: "الرئيس", title_en: "President" }, true, APP),
@@ -74,7 +72,11 @@ const every = (l: Lang): Built[] => [
   ),
   welcome(l, APP),
   accountDeleted(l),
-  repliesDigest(l, [{ count: 2, role: "Photographer" }], APP),
+  staffDigest(
+    l,
+    [{ items: [{ meta: "2", title: "Photographer" }], title: "Applications" }],
+    APP
+  ),
 ];
 
 describe("the email journeys", () => {

@@ -953,21 +953,6 @@ export const applicationReceived = (lang: Lang, partner: string, app: string) =>
     ],
   }));
 
-/** Partnerships and the Council: an application waits for the vote. */
-export const applicationWaiting = (lang: Lang, partner: string, app: string) =>
-  build(lang, (l) => ({
-    action: diwan(app, l, "/partnerships/applications"),
-    heading:
-      l === "ar"
-        ? `طلب شراكة: ${partner}`
-        : `A partner application: ${partner}`,
-    paragraphs: [
-      l === "ar"
-        ? `تقدّم ${partner} بطلب الشراكة مع الجمعية، ووقّع ممثله مذكرة التفاهم. الطلب في الديوان بانتظار القرار.`
-        : `${partner} has applied to partner with the Society, and its signatory has signed the memorandum. It waits in the Diwan for a decision.`,
-    ],
-  }));
-
 /** The applicant: the Council approved the partnership, or it is not taken forward. */
 export const applicationDecided = (
   lang: Lang,
@@ -1704,33 +1689,36 @@ export const accountDeleted = (lang: Lang) =>
     ],
   }));
 
-export interface ReplyLine {
-  count: number;
-  role: string;
+export interface DigestSection {
+  readonly items: readonly { meta?: string; title: string }[];
+  readonly title: string;
 }
 
 /**
- * The hiring seats: the day's new applications, counted by role. Staff
- * alerts carry no names (decisions.md, Get involved and roles); the applications are read in the
- * Diwan.
+ * The staff digest (decisions.md, Channels and email): once a day, what
+ * waits for the officer in the Diwan, counted and named by record, never
+ * by person; urgent alerts still go at once.
  */
-export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
+export const staffDigest = (
+  lang: Lang,
+  sections: readonly DigestSection[],
+  app: string
+) =>
   build(lang, (l) => ({
-    action: diwan(app, l, "/membership/openings"),
+    action: diwan(app, l, "/"),
     heading:
-      l === "ar"
-        ? `طلبات جديدة في «شارك معنا» (${replies.reduce((n, r) => n + r.count, 0)})`
-        : `New applications on Get involved (${replies.reduce((n, r) => n + r.count, 0)})`,
-    lists: [
-      {
-        items: replies.map((r) => ({ meta: String(r.count), title: r.role })),
-        title: l === "ar" ? "منذ الأمس" : "Since yesterday",
-      },
-    ],
+      l === "ar" ? "ما ينتظرك في الديوان" : "Waiting for you in the Diwan",
+    lists: sections.map((section) => ({
+      items: section.items.map((item) => ({
+        meta: item.meta,
+        title: item.title,
+      })),
+      title: section.title,
+    })),
     paragraphs: [
       l === "ar"
-        ? "اقرأ الطلبات وقيّمها في الديوان."
-        : "Read and review the applications in the Diwan.",
+        ? "هذه رسالة يومية واحدة بما وصل منذ الأمس. أما العاجل فيصلك فور حدوثه."
+        : "One email a day with what came in since yesterday. Anything urgent still reaches you at once.",
     ],
   }));
 

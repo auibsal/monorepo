@@ -4,7 +4,6 @@ import {
   agreementReminder,
   applicationDecided,
   applicationReceived,
-  applicationWaiting,
   auditionUpdate,
   type Built,
   callOpened,
@@ -30,7 +29,6 @@ import {
   removalDone,
   removalReceived,
   removalRequested,
-  repliesDigest,
   replyUpdate,
   requestUpdated,
   returnedForFormatting,
@@ -39,6 +37,7 @@ import {
   rsvpConfirmed,
   serviceLetterWritten,
   shiftReminder,
+  staffDigest,
   submissionInReading,
   submissionReceived,
   sundayPaper,
@@ -234,9 +233,6 @@ export const EventMoved = email((l) => eventChanged(l, event, "moved", APP));
 export const ApplicationReceived = email((l) =>
   applicationReceived(l, PARTNER[l], APP)
 );
-export const ApplicationWaiting = email((l) =>
-  applicationWaiting(l, PARTNER[l], APP)
-);
 export const ApplicationApproved = email((l) =>
   applicationDecided(l, PARTNER[l], true, APP)
 );
@@ -357,13 +353,19 @@ export const PlainInvitation = email((l) =>
   )
 );
 export const AccountDeleted = email((l) => accountDeleted(l));
-export const RepliesDigest = email((l) =>
-  repliesDigest(
+export const StaffDigest = email((l) =>
+  staffDigest(
     l,
     [
       {
-        count: 2,
-        role: l === "ar" ? "محرر الأخبار" : "News Editor",
+        items: [
+          { meta: "2", title: l === "ar" ? "محرر الأخبار" : "News Editor" },
+        ],
+        title: l === "ar" ? "طلبات «شارك معنا»" : "Get involved applications",
+      },
+      {
+        items: [{ title: PARTNER[l] }],
+        title: l === "ar" ? "طلبات الشراكة" : "Partner applications",
       },
     ],
     APP

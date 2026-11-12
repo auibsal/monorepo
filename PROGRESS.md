@@ -230,7 +230,10 @@ production; **Owner** is a step only the owner can take.
   hello@ and qirtas@.
 - [ ] Every template previewable in both languages on the design page, with
   a test to yourself.
-- [ ] Staff alerts: urgent at once, the rest in one daily digest.
+- [x] Staff alerts: urgent at once (a removal request and its deadline, a
+  failed job), the rest in one daily digest per officer (`staff.digest`:
+  Get involved replies, partner applications, second-officer requests,
+  problem reports). **Migrates:** `private.daily_notices`.
 - [ ] Supabase's sign-in emails go through Resend from hello@ in the
   Society's template and the person's language (the Send Email hook).
 - [ ] **Owner:** Resend open and click tracking off; bounce and complaint

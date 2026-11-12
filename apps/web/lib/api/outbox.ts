@@ -14,7 +14,6 @@ import {
   announcement,
   applicationDecided,
   applicationReceived,
-  applicationWaiting,
   auditionUpdate,
   type Built,
   type Lang as CopyLang,
@@ -45,7 +44,6 @@ import {
   removalDone,
   removalReceived,
   removalRequested,
-  repliesDigest,
   replyUpdate,
   requestUpdated,
   returnedForFormatting,
@@ -54,6 +52,7 @@ import {
   rsvpConfirmed,
   serviceLetterWritten,
   shiftReminder,
+  staffDigest,
   submissionInReading,
   submissionReceived,
   sundayPaper,
@@ -418,6 +417,177 @@ const holders = async (
     (data ?? []).map((h) => recipient(admin, h.user_id))
   );
   return found.filter((r): r is Recipient => r !== null);
+};
+
+type DigestLang = "ar" | "en";
+interface DigestPart {
+  readonly items: (lang: DigestLang) => { meta?: string; title: string }[];
+  readonly title: Record<DigestLang, string>;
+}
+
+/** Counts lines by their text, in the order first seen. */
+const counted = (titles: string[]) => {
+  const counts = new Map<string, number>();
+  for (const title of titles) {
+    counts.set(title, (counts.get(title) ?? 0) + 1);
+  }
+  return [...counts].map(([title, n]) => ({ meta: String(n), title }));
+};
+
+const PENDING_KINDS: Record<string, Record<DigestLang, string>> = {
+  council_role: { ar: "دور في المجلس", en: "A Council role" },
+  legal_name: { ar: "تصحيح اسم قانوني", en: "A legal name corrected" },
+  student_life_export: {
+    ar: "قائمة لشؤون الطلبة",
+    en: "A list for Student Life",
+  },
+};
+
+/**
+ * The staff digest (decisions.md, Channels and email): once a day, each
+ * officer gets one email with what came in since yesterday that they can
+ * act on: Get involved replies (members.manage), partner applications
+ * (partners.manage or partners.sign), actions waiting for a second officer
+ * (whoever holds the permission, not the one who asked) and problem
+ * reports (settings.manage). Urgent alerts (a removal request, a failed
+ * job) still go at once.
+ */
+const sendStaffDigest = async (admin: AdminClient) => {
+  const since = new Date(Date.now() - 86_400_000).toISOString();
+  const [replies, applied, pending, problems] = await Promise.all([
+    admin
+      .schema("programmes")
+      .from("opening_replies")
+      .select("opening:openings(title_en, title_ar)")
+      .gt("submitted_at", since)
+      .neq("status", "draft"),
+    admin
+      .schema("core")
+      .from("outbox")
+      .select("payload")
+      .eq("kind", "partners.application_received")
+      .gt("created_at", since),
+    admin
+      .schema("governance")
+      .from("pending_actions")
+      .select("kind, permission, requested_by")
+      .eq("status", "pending"),
+    admin
+      .schema("core")
+      .from("problem_reports")
+      .select("page")
+      .eq("status", "open")
+      .gt("created_at", since),
+  ]);
+  const agreementIds = (applied.data ?? [])
+    .map((row) => (row.payload as { agreement_id?: string }).agreement_id)
+    .filter((id): id is string => Boolean(id));
+  const partners = agreementIds.length
+    ? ((
+        await admin
+          .schema("governance")
+          .from("partner_agreements")
+          .select("partner:partners(name_en, name_ar)")
+          .in("id", agreementIds)
+      ).data ?? [])
+    : [];
+
+  // Who gets which part: by permission, each officer once.
+  const parts = new Map<string, { to: Recipient; parts: DigestPart[] }>();
+  const give = async (permissions: string[], part: DigestPart) => {
+    const lists = await Promise.all(permissions.map((p) => holders(admin, p)));
+    for (const to of lists.flat()) {
+      const entry = parts.get(to.email) ?? { parts: [], to };
+      if (!entry.parts.includes(part)) {
+        entry.parts.push(part);
+      }
+      parts.set(to.email, entry);
+    }
+  };
+  const replyRows = replies.data ?? [];
+  if (replyRows.length > 0) {
+    await give(["members.manage"], {
+      items: (l) =>
+        counted(
+          replyRows.map(
+            (r) =>
+              (l === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
+              r.opening?.title_en ??
+              ""
+          )
+        ),
+      title: { ar: "طلبات «شارك معنا»", en: "Get involved applications" },
+    });
+  }
+  if (partners.length > 0) {
+    await give(["partners.manage", "partners.sign"], {
+      items: (l) =>
+        partners.map((a) => ({
+          title:
+            (l === "ar" ? a.partner?.name_ar : a.partner?.name_en) ??
+            a.partner?.name_en ??
+            "",
+        })),
+      title: { ar: "طلبات الشراكة", en: "Partner applications" },
+    });
+  }
+  const byPermission = new Map<
+    string,
+    { kind: string; requested_by: string }[]
+  >();
+  for (const row of pending.data ?? []) {
+    byPermission.set(row.permission, [
+      ...(byPermission.get(row.permission) ?? []),
+      row,
+    ]);
+  }
+  const officersFor = await Promise.all(
+    [...byPermission.keys()].map(
+      async (permission) =>
+        [permission, await holders(admin, permission)] as const
+    )
+  );
+  for (const [permission, officers] of officersFor) {
+    const rows = byPermission.get(permission) ?? [];
+    for (const to of officers) {
+      // The one who asked can't approve, so their own requests aren't theirs.
+      const mine = rows.filter((r) => r.requested_by !== to.userId);
+      if (mine.length === 0) {
+        continue;
+      }
+      const entry = parts.get(to.email) ?? { parts: [], to };
+      entry.parts.push({
+        items: (l) =>
+          counted(mine.map((r) => PENDING_KINDS[r.kind]?.[l] ?? r.kind)),
+        title: { ar: "بانتظار مسؤول ثانٍ", en: "For a second officer" },
+      });
+      parts.set(to.email, entry);
+    }
+  }
+  const problemRows = problems.data ?? [];
+  if (problemRows.length > 0) {
+    await give(["settings.manage"], {
+      items: () => counted(problemRows.map((p) => p.page)),
+      title: { ar: "مشكلات مُبلَّغ عنها", en: "Problems reported" },
+    });
+  }
+
+  await Promise.all(
+    [...parts.values()].map(({ to, parts: mine }) =>
+      send(
+        to,
+        staffDigest(
+          to.lang,
+          mine.map((part) => ({
+            items: part.items(to.lang),
+            title: part.title[to.lang],
+          })),
+          appUrl()
+        ),
+        { category: "officer" }
+      )
+    )
+  );
 };
 
 const programmeManagers = (admin: AdminClient, programmeId: unknown) =>
@@ -1033,36 +1203,9 @@ const handlers: Record<string, Handler> = {
   "get_involved.received": async (admin, payload) => {
     await applicationStep(admin, payload, "received");
   },
-  // One email a day to Membership, which runs every role's applications:
-  // counts by role, never names (decisions.md, Get involved and roles).
+  // Queued before the staff digest replaced it: the digest covers it.
   "get_involved.replies_digest": async (admin) => {
-    const since = new Date(Date.now() - 86_400_000).toISOString();
-    const { data: replies } = await admin
-      .schema("programmes")
-      .from("opening_replies")
-      .select("opening_id, opening:openings(title_en, title_ar)")
-      .gt("submitted_at", since)
-      .neq("status", "draft");
-    if (!replies?.length) {
-      return;
-    }
-    const managers = await holders(admin, "members.manage");
-    await Promise.all(
-      managers.map((m) => {
-        const counts = new Map<string, number>();
-        for (const r of replies) {
-          const role =
-            (m.lang === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
-            r.opening?.title_en ??
-            "";
-          counts.set(role, (counts.get(role) ?? 0) + 1);
-        }
-        const lines = [...counts].map(([role, count]) => ({ count, role }));
-        return send(m, repliesDigest(m.lang, lines, appUrl()), {
-          category: "officer",
-        });
-      })
-    );
+    await sendStaffDigest(admin);
   },
   "get_involved.reply_update": async (admin, payload) => {
     await applicationStep(admin, payload);
@@ -1348,24 +1491,11 @@ const handlers: Record<string, Handler> = {
     const { partner } = agreement;
     const nameIn = (lang: Lang) =>
       lang === "ar" ? (partner.name_ar ?? partner.name_en) : partner.name_en;
-    const [to, managers, signers] = await Promise.all([
-      recipient(admin, payload.user_id),
-      holders(admin, "partners.manage"),
-      holders(admin, "partners.sign"),
-    ]);
-    const officers = [...managers, ...signers].filter(
-      (o, i, all) => all.findIndex((x) => x.email === o.email) === i
-    );
-    await Promise.all([
-      ...(to
-        ? [send(to, applicationReceived(to.lang, nameIn(to.lang), appUrl()))]
-        : []),
-      ...officers.map((o) =>
-        send(o, applicationWaiting(o.lang, nameIn(o.lang), appUrl()), {
-          category: "officer",
-        })
-      ),
-    ]);
+    // The officers hear of it in the next morning's staff digest.
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(to, applicationReceived(to.lang, nameIn(to.lang), appUrl()));
+    }
   },
   // An email invitation, from a partner or from the Society (Membership),
   // in the inviter's language: the link is the invitation (/invite/<code>).
@@ -1649,6 +1779,9 @@ const handlers: Record<string, Handler> = {
   // person's own stop link as a contact property.
   // Files the database let go of (a declined Associate request's Tour
   // pages, decisions §12): removed from their private bucket.
+  "staff.digest": async (admin) => {
+    await sendStaffDigest(admin);
+  },
   "storage.remove": async (admin, payload) => {
     const paths = Array.isArray(payload.paths)
       ? payload.paths.filter((p): p is string => typeof p === "string")

@@ -89,7 +89,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `forms.updated` | A concern, motion or pitch taken up, then closed | Its sender | Service |
 | `governance.election` | The notice; voting open; the results | Every member; then everyone on the register | Service |
 | `governance.candidacy_decided` | The Elections Committee's answer | The nominee | Service |
-| `partners.application_received` | An application to partner | The applicant; Partnerships and the President (that it waits) | Direct; officer |
+| `partners.application_received` | An application to partner | The applicant (Partnerships and the President read it in the next staff digest) | Direct |
 | `partners.application_decided` | Signed (active) or not taken forward | The applicant | Direct |
 | `partners.invitation` | A partner's or the Society's email invitation | The invited address | Direct |
 | `sunday_paper.broadcast` (a Resend Broadcast, from qirtas@auibsal.org, replies to it) | The Managing Editor's send, from the Diwan, after a preview and a test to the Editor-in-Chief (decisions.md, Qirtas) | "The Sunday Paper" topic (`core.mailing_recipients('paper')`), one Broadcast per language | Optional (each person's own preferences page) |
@@ -99,7 +99,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `personal_email.confirm` | A personal email added | The new address only | Direct |
 | `removal.requested`, `removal.overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
 | `removal.done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |
-| `get_involved.replies_digest` | Daily, when applications arrived on Get involved: counts by role, no names (decisions.md, Get involved and roles) | Membership (`members.manage`) | Officer |
+| `staff.digest` | Daily: what came in since yesterday that the officer can act on: Get involved replies counted by role (no names), partner applications, actions waiting for a second officer, problem reports. Urgent alerts (a removal request, a failed job) still go at once (decisions.md, Channels and email) | Each officer holding `members.manage`, `partners.manage` or `partners.sign`, a pending action's permission, or `settings.manage` | Officer |
 | `membership.verification_decided` | An account from outside AUIB decided (requests from before partners verified their own) | The account | Service |
 | `platform.cron_failed` | A database job failed in the last day | Administrators | Officer |
 | `account.deleted` | An account deleted | The address it had (the last email) | Direct |
