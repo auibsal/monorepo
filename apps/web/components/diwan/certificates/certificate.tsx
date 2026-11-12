@@ -8,6 +8,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { project } from "@repo/config";
 import { localizedPath } from "@repo/internationalization";
 import { formatPlainDate } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
@@ -32,9 +33,9 @@ const useCertificate = (id: string) => {
       if (!row) {
         return null;
       }
-      // A Qalam student has no account: the full name comes from the
-      // roster (staff only), the one place it appears.
-      const [member, student, signers] = await Promise.all([
+      // A Qalam student's certificate names their account (decisions.md,
+      // Qirtas: Qalam's accounts): the full name appears only here.
+      const [member, signers] = await Promise.all([
         row.user_id
           ? supabase
               .schema("core")
@@ -43,17 +44,9 @@ const useCertificate = (id: string) => {
               .eq("id", row.user_id)
               .maybeSingle()
           : Promise.resolve({ data: null }),
-        row.qalam_student_id
-          ? supabase
-              .schema("programmes")
-              .from("qalam_students")
-              .select("first_name, last_name")
-              .eq("id", row.qalam_student_id)
-              .maybeSingle()
-          : Promise.resolve({ data: null }),
         recognition.certificateSignerNames(supabase, row.id),
       ]);
-      return { member: member.data, row, signers, student: student.data };
+      return { member: member.data, row, signers };
     },
     queryKey: ["certificate", id],
   });
@@ -63,16 +56,15 @@ type Loaded = NonNullable<ReturnType<typeof useCertificate>["data"]>;
 
 /** The certificate's words and seal, in its own language. */
 const sheetProps = (
-  { member, row, signers, student }: Loaded,
-  qrLabel: string
+  { member, row, signers }: Loaded,
+  qrLabel: string,
+  edition: "ar" | "en" | null = null
 ) => {
   const kind = row.kind as recognition.CertificateKind;
-  const lang = row.lang === "ar" ? "ar" : "en";
+  const lang = edition ?? (row.lang === "ar" ? "ar" : "en");
   const ar = lang === "ar";
   const copy = recognition.certificateCopy[lang];
-  const name = student
-    ? `${student.first_name} ${student.last_name}`
-    : ((ar ? member?.full_name_ar : null) ?? member?.full_name_en ?? "");
+  const name = (ar ? member?.full_name_ar : null) ?? member?.full_name_en ?? "";
   const verifyUrl = recognition.verificationUrl(
     project.url,
     localizedPath(lang, "/verify"),
@@ -130,11 +122,13 @@ const sheetProps = (
 export const Certificate = () => {
   const t = useTranslations("diwan.certificate");
   const id = useQueryParam("id") ?? "";
+  // The other edition (7h): ?edition=ar or ?edition=en.
+  const asked = useQueryParam("edition");
   const certificate = useCertificate(id);
 
   if (!id) {
     return (
-      <EmptyLine action={{ href: "/account/record", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/documents", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );
@@ -147,13 +141,20 @@ export const Certificate = () => {
   }
   if (!certificate.data) {
     return (
-      <EmptyLine action={{ href: "/account/record", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/documents", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );
   }
 
-  const { row, sheet, verifyUrl } = sheetProps(certificate.data, t("qr"));
+  const own = certificate.data.row.lang === "ar" ? "ar" : "en";
+  const other = own === "ar" ? "en" : "ar";
+  const edition = asked === other ? other : null;
+  const { row, sheet, verifyUrl } = sheetProps(
+    certificate.data,
+    t("qr"),
+    edition
+  );
   const kind = row.kind as recognition.CertificateKind;
   const issued = row.status !== "draft" && row.issued_at;
 
@@ -164,6 +165,16 @@ export const Certificate = () => {
           {row.status === "draft" ? t(`draftNote.${kind}`) : t("printNote")}
         </p>
         <div className="flex flex-wrap gap-2">
+          <Link
+            className="link self-center text-sm"
+            href={
+              edition
+                ? `/account/documents/certificates/${encodeURIComponent(id)}`
+                : `/account/documents/certificates/${encodeURIComponent(id)}?edition=${other}`
+            }
+          >
+            {t(edition ? "ownEdition" : "otherEdition")}
+          </Link>
           <Button onClick={() => window.print()}>{t("download")}</Button>
           {issued && row.serial ? (
             <Button asChild variant="outline">

@@ -121,6 +121,8 @@ interface ResolutionForm {
   code: string | null;
   id: string | null;
   status: "draft" | "adopted" | "failed" | "withdrawn";
+  /** A partner or a document (public once adopted), or other (members). */
+  subject: "partner" | "document" | "other";
   text: { ar: string; en: string };
   title: { ar: string; en: string };
   votes: { abstain: string; against: string; for: string };
@@ -131,6 +133,7 @@ const blankResolution = (): ResolutionForm => ({
   code: null,
   id: null,
   status: "draft",
+  subject: "other",
   text: { ar: "", en: "" },
   title: { ar: "", en: "" },
   votes: { abstain: "", against: "", for: "" },
@@ -175,6 +178,7 @@ const formOf = (r: ResolutionRow): ResolutionForm => ({
   code: r.code,
   id: r.id,
   status: r.status as ResolutionForm["status"],
+  subject: r.subject as ResolutionForm["subject"],
   text: { ar: r.text_ar ?? "", en: r.text_en },
   title: { ar: r.title_ar ?? "", en: r.title_en },
   votes: {
@@ -331,6 +335,7 @@ const ResolutionEditor = ({
         body: meeting.body,
         minutes_id: meeting.id,
         status: form.status,
+        subject: form.subject,
         text_ar: form.text.ar || null,
         text_en: form.text.en,
         title_ar: form.title.ar || null,
@@ -378,6 +383,29 @@ const ResolutionEditor = ({
         rows={5}
         value={form.text}
       />
+      <Field
+        hint={t("resolutions.subjectHint")}
+        label={t("resolutions.subject")}
+      >
+        {(id) => (
+          <SelectInput
+            id={id}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                subject: e.target.value as ResolutionForm["subject"],
+              }))
+            }
+            value={form.subject}
+          >
+            {(["other", "partner", "document"] as const).map((s) => (
+              <option key={s} value={s}>
+                {t(`resolutions.subjects.${s}`)}
+              </option>
+            ))}
+          </SelectInput>
+        )}
+      </Field>
       <fieldset className="grid gap-3 sm:grid-cols-3">
         <legend className="mb-2 text-sm font-medium">
           {t("resolutions.votes")}
@@ -481,7 +509,10 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
       {view === "meetings" ? (
         <>
           <MeetingsList />
-          <RequestQueue base="/council/motions" keys={["f10"]} />
+          <RequestQueue
+            base="/council/motions"
+            keys={["members-meeting-motion"]}
+          />
           <AccessReview />
         </>
       ) : null}
@@ -493,7 +524,7 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
       ) : null}
       {view === "elections" ? <Elections /> : null}
       {view === "concerns" ? (
-        <RequestQueue base="/council/concerns" keys={["f21"]} />
+        <RequestQueue base="/council/concerns" keys={["concern"]} />
       ) : null}
       {view === "declarations" ? <Declarations /> : null}
       {view === "library" ? <LibraryAdmin /> : null}

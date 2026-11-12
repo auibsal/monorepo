@@ -1,27 +1,27 @@
 "use client";
 
-import { Checkbox } from "@repo/brand/components/ui/checkbox";
-import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import {
   formatClock,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useId, useState } from "react";
+
 import { useAuth } from "@/lib/auth/provider";
 import { type events, localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
-import { AdminHeading, ErrorLine, SaveButton } from "../kit";
+import { AdminHeading } from "../kit";
 import { NotionManaged } from "../notion-managed";
 import { RecordHistory } from "../record-history";
+import { AccessForm } from "./access-form";
 import { Attendance } from "./attendance";
 import { GuestInvitations } from "./guest-invitations";
+import { Incidents } from "./incidents";
 import { Invitations } from "./invitations";
 import { EventPartsAdmin } from "./parts";
 
@@ -55,7 +55,7 @@ const PublicPage = ({
  * invitations, bookings and
  * check-in, and the standard parts.
  */
-/** The event's debrief (F-13) in Notion, for its staff (decisions §13). */
+/** The event's debrief (event-debrief) in Notion, for its staff (decisions §13). */
 const DebriefLink = ({ eventId }: { eventId: string }) => {
   const t = useTranslations("diwan.admin.event");
   const { supabase } = useAuth();
@@ -87,11 +87,8 @@ export const EventEditor = () => {
   const t = useTranslations("diwan.admin.event");
   const tk = useTranslations("diwan.admin.kit");
   const locale = useLocale() as Locale;
-  const id = useId();
   const eventId = useQueryParam("id");
   const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [servesFood, setServesFood] = useState(false);
 
   const existing = useQuery({
     enabled: Boolean(eventId),
@@ -107,27 +104,6 @@ export const EventEditor = () => {
     queryKey: ["admin", "event", eventId],
   });
 
-  useEffect(() => {
-    if (existing.data) {
-      setServesFood(existing.data.serves_food);
-    }
-  }, [existing.data]);
-
-  const save = useMutation({
-    mutationFn: async () => {
-      // The questions follow from it (decisions.md, Events: accessibility
-      // always, diet when food is served); the database writes them.
-      unwrap(
-        await supabase
-          .schema("events")
-          .from("events")
-          .update({ serves_food: servesFood })
-          .eq("id", eventId ?? "")
-      );
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin"] }),
-  });
-
   if (existing.isPending) {
     return <SectionSpinner />;
   }
@@ -139,10 +115,6 @@ export const EventEditor = () => {
     return <p className="type-body text-text-secondary">{t("notFound")}</p>;
   }
 
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    save.mutate();
-  };
   const entry = event.entry as events.Entry;
   const when = [
     `${formatLongDate(event.starts_at, locale, true)}, ${formatClock(event.starts_at, locale)}`,
@@ -186,24 +158,12 @@ export const EventEditor = () => {
         ))}
       </dl>
 
-      {entry === "open" ? null : (
-        <form className="grid max-w-4xl gap-4" onSubmit={submit}>
-          <h2 className="type-subheading">{t("questions")}</h2>
-          <p className="type-caption">{t("questionsHint")}</p>
-          <div className="flex items-center gap-2">
-            <Checkbox
-              checked={servesFood}
-              id={`${id}-food`}
-              onCheckedChange={(v) => setServesFood(v === true)}
-            />
-            <Label htmlFor={`${id}-food`}>{t("servesFood")}</Label>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <SaveButton pending={save.isPending} success={save.isSuccess} />
-          </div>
-          {save.error ? <ErrorLine error={save.error} /> : null}
-        </form>
-      )}
+      <AccessForm
+        event={event}
+        eventId={eventId}
+        key={event.updated_at}
+        rsvp={entry !== "open"}
+      />
 
       {entry === "invite" ? <Invitations eventId={eventId} /> : null}
       {entry === "rsvp" ? <GuestInvitations eventId={eventId} /> : null}
@@ -214,6 +174,7 @@ export const EventEditor = () => {
         slug={event.slug}
       />
       <EventPartsAdmin event={event} />
+      <Incidents eventId={eventId} />
       <RecordHistory id={eventId} table="events.events" />
     </div>
   );

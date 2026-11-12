@@ -1,18 +1,22 @@
 "use client";
 
 import { usePathname, useRouter } from "@repo/internationalization/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import type { membership } from "@/lib/data";
 import { safeNextPath } from "@/lib/diwan/navigation";
 import {
   hasAllNames,
+  useEsign,
   useGrants,
   useMemberStatus,
   useMyMembership,
   useProfile,
 } from "@/lib/diwan/queries";
 import { TwoStepPanel, useTwoStep } from "./auth/two-step";
+import { EsignQuestion } from "./profile/esign";
 import { ErrorState, FullPageSpinner, PageSpinner } from "./states";
 
 interface GateProps {
@@ -40,14 +44,44 @@ export const RequireAuth = ({ children }: GateProps) => {
     }
   }, [loading, pathname, router, user]);
 
-  return loading || !user ? <PageSpinner /> : children;
+  return loading || !user ? (
+    <PageSpinner />
+  ) : (
+    <>
+      <Restored />
+      {children}
+    </>
+  );
+};
+
+/**
+ * Signing in keeps an account its owner had asked to delete (decisions.md,
+ * Members: 30 days to change one's mind), and says so once.
+ */
+const Restored = () => {
+  const t = useTranslations("diwan.profile.delete");
+  const { supabase, user } = useAuth();
+  const restored = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () => {
+      const { data } = await supabase.schema("core").rpc("restore_account");
+      return data === true;
+    },
+    queryKey: ["restore-account", user?.id ?? ""],
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+  return restored.data ? (
+    <p className="border-line border-b px-4 py-3 text-center" role="status">
+      {t("restored")}
+    </p>
+  ) : null;
 };
 
 /**
  * The pages each kind of membership opens (decisions.md: one
  * Membership for everyone, of one kind). Members open everything; guests
- * their Today, calendar, record, settings and Qirtas (their work and the
- * calls open to them); a partner's people their Today, record and
+ * their Today, events, work, documents, settings and Qirtas (their work and the
+ * calls open to them); a partner's people their Today, documents and
  * settings (the dashboard is theirs too, behind its own gate). An account
  * with no membership yet (an invitation waiting on its partner, an
  * application waiting on the President) has Today and Settings. Row Level
@@ -58,16 +92,15 @@ const KIND_PATHS: Record<
   readonly string[]
 > = {
   guest: [
-    "/account/calendar",
-    "/account/record",
+    "/account/events",
+    "/account/documents",
     "/account/work",
     "/account/settings",
-    "/account/work",
     "/qirtas",
   ],
   member: [],
   none: ["/account/settings"],
-  partner: ["/account/record", "/account/settings"],
+  partner: ["/account/documents", "/account/settings"],
 };
 
 /** Whether a kind of membership opens a members' page. */
@@ -96,6 +129,14 @@ export const RequireMember = ({ children }: GateProps) => {
   const kind = mine.data?.kind ?? null;
   const elsewhere = mine.isSuccess && !kindOpens(kind, pathname);
   const pledges = kind === "member" || kind === "guest";
+  // A role that needs two-step sign-in sets it up at sign-in, before
+  // anything else (fourth prompt, 3): a passkey first, then an
+  // authenticator app, then the recovery codes. A partner's people come
+  // here too, since their grants wait for the second step. Shift-scoped
+  // station access is not a role, so it is exempt.
+  const twoStep = useTwoStep();
+  const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
+  const esign = useEsign();
 
   const needsSetup =
     mine.isSuccess &&
@@ -138,7 +179,12 @@ export const RequireMember = ({ children }: GateProps) => {
   ) {
     return <PageSpinner />;
   }
-  return children;
+  if (waiting) {
+    return <TwoStepPanel />;
+  }
+  // Consent to sign electronically, asked once at the next sign-in for an
+  // account made before sign-up asked it (decisions.md, Documents and forms).
+  return esign.data && !esign.data.asked_at ? <EsignQuestion /> : children;
 };
 
 /**
@@ -202,6 +248,7 @@ const PARTNER_PERMISSIONS = new Set(["partners.own", "partners.lead"]);
 export const RequireStaff = ({ children }: GateProps) => {
   const grants = useGrants();
   const twoStep = useTwoStep();
+  const esign = useEsign();
   const router = useRouter();
   // A role that needs two-step sign-in grants nothing until the code is in,
   // so its holder is staff waiting for the second step, not a member.
@@ -242,5 +289,10 @@ export const RequireStaff = ({ children }: GateProps) => {
   if (!(grants.isSuccess && twoStep.isSuccess && staff)) {
     return <PageSpinner />;
   }
-  return waiting ? <TwoStepPanel /> : children;
+  if (waiting) {
+    return <TwoStepPanel />;
+  }
+  // Consent to sign electronically, asked once at the next sign-in for an
+  // account made before sign-up asked it (decisions.md, Documents and forms).
+  return esign.data && !esign.data.asked_at ? <EsignQuestion /> : children;
 };

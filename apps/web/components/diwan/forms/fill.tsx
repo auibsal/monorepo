@@ -14,6 +14,7 @@ import { type FormEvent, type ReactNode, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { forms, unwrap } from "@/lib/data";
 import { ApiError } from "@/lib/diwan/api";
+import { useEsign } from "@/lib/diwan/queries";
 import { ErrorLine, Field, SelectInput } from "../admin/kit";
 import { useHumanCheck } from "../auth/human-check";
 import { EmptyLine } from "../states";
@@ -93,6 +94,7 @@ const REFUSALS = new Set([
   "human_check_failed",
   "link_not_valid",
   "rate_limited",
+  "role_agreement_first",
   "sign_in_required",
 ]);
 
@@ -155,6 +157,7 @@ const sendForm = (
 ) => {
   if (!input.throughApi) {
     return forms.signForm(supabase, {
+      anonymous: input.anonymous,
       data: input.data,
       esignAgreed: input.agreed,
       form: input.formKey,
@@ -180,6 +183,7 @@ const sendForm = (
 /** Who signs and how: anonymous, a contact, "I agree", the human check. */
 const SignerFields = ({
   agreed,
+  consented,
   allowAnonymous,
   anonymous,
   contact,
@@ -190,6 +194,8 @@ const SignerFields = ({
   signedIn,
 }: {
   agreed: boolean;
+  /** The account's consent to sign electronically, given once. */
+  consented: boolean;
   allowAnonymous: boolean;
   anonymous: boolean;
   contact: string;
@@ -205,7 +211,7 @@ const SignerFields = ({
       {allowAnonymous ? (
         <AnonymousOption onChange={onAnonymous} value={anonymous} />
       ) : null}
-      {anonymous || signedIn ? null : (
+      {signedIn ? null : (
         <Field label={t("contact")}>
           {(fieldId) => (
             <Input
@@ -217,7 +223,7 @@ const SignerFields = ({
           )}
         </Field>
       )}
-      {anonymous ? null : <EsignAgreement onChange={onAgreed} value={agreed} />}
+      {consented ? null : <EsignAgreement onChange={onAgreed} value={agreed} />}
       {human}
     </>
   );
@@ -230,10 +236,11 @@ const signingProblems = (
   sign: { agreed: boolean; anonymous: boolean; signature: string }
 ) => {
   const found = forms.formProblems(definition, data);
-  if (!(sign.anonymous || sign.signature.trim().length >= 2)) {
+  // A sealed concern is signed too; the name is kept apart from the panel.
+  if (sign.signature.trim().length < 2) {
     found.push("signature");
   }
-  if (!(sign.anonymous || sign.agreed)) {
+  if (!sign.agreed) {
     found.push("esign");
   }
   return found;
@@ -305,11 +312,14 @@ export const FillForm = ({
   eventSlug = null,
   formKey,
   link = null,
+  roleId = null,
 }: {
   readonly eventSlug?: string | null;
   readonly formKey: string;
   /** A parent's single-use link (?link=), for a form signed only by link. */
   readonly link?: string | null;
+  /** The role a handover is for (?role=, the assignment). */
+  readonly roleId?: string | null;
 }) => {
   const t = useTranslations("diwan.forms");
   if (!forms.isFormKey(formKey)) {
@@ -318,6 +328,9 @@ export const FillForm = ({
         {t("notFound")}
       </EmptyLine>
     );
+  }
+  if (forms.forms[formKey].signIn) {
+    return <SignInFirst eventSlug={eventSlug} formKey={formKey} link={link} />;
   }
   if (forms.forms[formKey].byLink && !link) {
     return (
@@ -332,7 +345,32 @@ export const FillForm = ({
       formKey={formKey}
       key={formKey}
       link={link}
+      roleId={roleId}
     />
+  );
+};
+
+/** The role a handover is for (?role=): one of the signer's own, ending or ended. */
+const RoleLine = ({ roleId }: { readonly roleId: string | null }) => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale();
+  const { supabase, user } = useAuth();
+  const due = useQuery({
+    enabled: Boolean(user && roleId),
+    queryFn: async () =>
+      unwrap(await supabase.schema("access").rpc("my_handovers_due")) ?? [],
+    queryKey: ["account", "roles", "handovers-due", user?.id],
+  });
+  const row = due.data?.find((d) => d.assignment_id === roleId);
+  if (!row) {
+    return null;
+  }
+  return (
+    <p className="type-body">
+      {t("forRole", {
+        role: (locale === "ar" ? row.role_ar : row.role_en) || row.role_en,
+      })}
+    </p>
   );
 };
 
@@ -354,14 +392,53 @@ const useNamedEvent = (slug: string | null) => {
   });
 };
 
+/**
+ * The student a consent or release link was sent for (qalam-parent-consent's release,
+ * qalam-publishing-consent, parent-consent): the form asks no name, so the page names them, by first
+ * name and last initial, to whoever holds the open link.
+ */
+const useLinkSubject = (formKey: string, link: string | null) => {
+  const { supabase } = useAuth();
+  return useQuery({
+    enabled: Boolean(link),
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("form_link_subject", { form_key: formKey, token: link ?? "" })
+          .maybeSingle()
+      ),
+    queryKey: ["forms", "link-subject", formKey, link],
+  });
+};
+
+const LinkSubject = ({
+  formKey,
+  link,
+}: {
+  formKey: string;
+  link: string | null;
+}) => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale();
+  const subject = useLinkSubject(formKey, link);
+  const name =
+    (locale === "ar" && subject.data?.name_ar) || subject.data?.name_en;
+  return name ? (
+    <p className="type-body">{t("linkSubject", { name })}</p>
+  ) : null;
+};
+
 const FormEditor = ({
   eventSlug,
   formKey,
   link,
+  roleId = null,
 }: {
   eventSlug: string | null;
   formKey: forms.FormKey;
   link: string | null;
+  roleId?: string | null;
 }) => {
   const t = useTranslations("diwan.forms");
   const locale = useLocale() as Locale;
@@ -371,17 +448,11 @@ const FormEditor = ({
   const router = useRouter();
   const queryClient = useQueryClient();
   const event = useNamedEvent(eventSlug);
+  // "Sign as …": the name the register holds (the database signs in it).
   const me = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("core")
-          .from("profiles")
-          .select("full_name_en, full_name_ar")
-          .eq("id", user?.id ?? "")
-          .maybeSingle()
-      ),
+      unwrap(await supabase.schema("core").rpc("my_register_name")),
     queryKey: ["forms", "me", user?.id],
   });
   const [data, setData] = useState<Data>({});
@@ -390,16 +461,18 @@ const FormEditor = ({
   const [problems, setProblems] = useState<string[]>([]);
   const [signer, setSigner] = useState<string | null>(null);
   const [contact, setContact] = useState("");
-  const [agreed, setAgreed] = useState(false);
+  const [checked, setAgreed] = useState(false);
+  // Consent to sign electronically is asked once for the account (E-SIGN);
+  // the page asks only those who have not given it.
+  const esign = useEsign();
+  const consented = Boolean(esign.data?.agreed_at);
+  const agreed = consented || checked;
   const [sent, setSent] = useState(false);
-  // Signed out or anonymous: Turnstile, checked by /api/forms/sign.
+  // Signed out: Turnstile, checked by /api/forms/sign.
   const human = useHumanCheck("form");
-  const throughApi = !user || anonymous;
-  // A member signs in the name on their account, unless they change it.
-  const myName = me.data
-    ? (locale === "ar" && me.data.full_name_ar) || me.data.full_name_en
-    : "";
-  const signature = signer ?? myName;
+  const throughApi = !user;
+  const myName = me.data ?? "";
+  const signature = user ? myName : (signer ?? "");
 
   const sign = useMutation({
     mutationFn: () =>
@@ -412,7 +485,7 @@ const FormEditor = ({
         link,
         routing,
         signature,
-        subjectId: event.data?.id ?? null,
+        subjectId: event.data?.id ?? roleId,
         throughApi,
         token: human.token,
       }),
@@ -423,7 +496,7 @@ const FormEditor = ({
         router.push(`/events/${eventSlug}`);
         return;
       }
-      if (user && !anonymous) {
+      if (user) {
         router.push(`/account/requests/${savedId}`);
         return;
       }
@@ -462,7 +535,7 @@ const FormEditor = ({
   return (
     <div className="mx-auto grid w-full max-w-2xl gap-6 px-4 py-10">
       <FormPage
-        code={`SAL-EXB-01 · ${definition.code}`}
+        code="SAL-EXB-01"
         date={formatLongDate(new Date(), locale, true)}
         dateLabel={t("date")}
         kept={t("kept")}
@@ -474,17 +547,29 @@ const FormEditor = ({
         onSubmit={onSubmit}
         pending={sign.isPending || (throughApi && !human.ready)}
         purpose={labels.purpose()}
-        signature={{
-          hint: t("signatureHint"),
-          invalid: problems.includes("signature"),
-          label: t("signature"),
-          omit: anonymous,
-          onChange: setSigner,
-          value: signature,
-        }}
-        submit={anonymous ? t("send") : t("signAndSend")}
+        signature={
+          user
+            ? {
+                hint: t("signAsHint"),
+                label: t("signAsLabel"),
+                signAs: myName,
+              }
+            : {
+                hint: t("signatureHint"),
+                invalid: problems.includes("signature"),
+                label: t("signature"),
+                omit: false,
+                onChange: setSigner,
+                value: signature,
+              }
+        }
+        submit={
+          user && myName ? t("signAs", { name: myName }) : t("signAndSend")
+        }
         title={labels.title()}
       >
+        <LinkSubject formKey={formKey} link={link} />
+        <RoleLine roleId={roleId} />
         {event.data ? (
           <p className="type-body">
             {t("forEvent", {
@@ -521,9 +606,10 @@ const FormEditor = ({
           />
         ))}
         <SignerFields
-          agreed={agreed}
+          agreed={checked}
           allowAnonymous={Boolean(definition.anonymous)}
           anonymous={anonymous}
+          consented={consented}
           contact={contact}
           human={throughApi ? human.element : null}
           onAgreed={setAgreed}
@@ -534,5 +620,45 @@ const FormEditor = ({
         <SignProblems error={sign.error} labels={labels} problems={problems} />
       </FormPage>
     </div>
+  );
+};
+
+/**
+ * A concern is raised signed in (decisions.md, Governance): signed out, the
+ * page offers sign-in and comes back here.
+ */
+const SignInFirst = ({
+  eventSlug,
+  formKey,
+  link,
+}: {
+  eventSlug: string | null;
+  formKey: forms.FormKey;
+  link: string | null;
+}) => {
+  const t = useTranslations("diwan.forms");
+  const { user, loading } = useAuth();
+  if (loading) {
+    return null;
+  }
+  if (!user) {
+    return (
+      <EmptyLine
+        action={{
+          href: `/sign-in?next=${encodeURIComponent(forms.formPaths[formKey])}`,
+          label: t("signInFirst"),
+        }}
+      >
+        {t("signInFirstWhy")}
+      </EmptyLine>
+    );
+  }
+  return (
+    <FormEditor
+      eventSlug={eventSlug}
+      formKey={formKey}
+      key={formKey}
+      link={link}
+    />
   );
 };

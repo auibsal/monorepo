@@ -8,7 +8,7 @@ import { cn } from "../../lib/utils";
  *   of Student Life, AUIB Press, the Library, the colleges), on the partners
  *   page only, from the site's code. They are not partners.
  * - "Supported by" («بدعم من»): a sponsor in kind, on the event page, the
- *   partner's listing, printed programs and the thank-you (F-30).
+ *   partner's listing, printed programs and the thank-you (thank-you-letter).
  *
  * Only the names (or logos) follow the line: no qualitative or comparative
  * words, prices or calls to buy (the IRS line between an acknowledgment and

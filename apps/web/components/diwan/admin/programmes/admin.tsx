@@ -49,6 +49,7 @@ import {
 } from "../kit";
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { ProblemReports } from "../problem-reports";
 import { slugify } from "../slug";
 
 const invalidateKey = ["admin", "programmes-module"];
@@ -594,7 +595,7 @@ const CaptionsField = ({
 };
 
 /**
- * Everyone on camera, and their media release (F-15). Each gets a
+ * Everyone on camera, and their media release (media-release). Each gets a
  * single-use link to sign; the episode can't be published until all have
  * signed (decisions.md, Next Stop: releases).
  */
@@ -810,25 +811,30 @@ const AddOnCamera = ({
   const t = useTranslations("diwan.admin.programmes.episodes.onCamera");
   const { supabase } = useAuth();
   const [person, setPerson] = useState<{ id: string } | null>(null);
-  const [guest, setGuest] = useState({ ar: "", en: "" });
+  const [email, setEmail] = useState("");
   const [isGuest, setIsGuest] = useState(false);
+  // A member is picked from the people; a guest from outside is invited
+  // by email, and their name is the one they sign the release with (the
+  // third prompt, §1: no name fields).
   const add = useMutation({
     mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("episode_on_camera")
-          .insert(
-            person
-              ? { episode_id: episodeId, is_guest: isGuest, user_id: person.id }
-              : {
-                  episode_id: episodeId,
-                  guest_name_ar: guest.ar.trim() || null,
-                  guest_name_en: guest.en.trim(),
-                  is_guest: true,
-                }
+      person
+        ? unwrap(
+            await supabase
+              .schema("programmes")
+              .from("episode_on_camera")
+              .insert({
+                episode_id: episodeId,
+                is_guest: isGuest,
+                user_id: person.id,
+              })
           )
-      ),
+        : unwrap(
+            await supabase.schema("programmes").rpc("invite_on_camera", {
+              email: email.trim(),
+              episode: episodeId,
+            })
+          ),
     onSuccess: onDone,
   });
   return (
@@ -853,16 +859,23 @@ const AddOnCamera = ({
           <span className="type-body">{t("asGuest")}</span>
         </label>
       ) : (
-        <BilingualField
-          label={t("guestName")}
-          maxLength={120}
-          onChange={setGuest}
-          value={guest}
-        />
+        <Field hint={t("inviteHint")} label={t("guestEmail")}>
+          {(id) => (
+            <Input
+              autoComplete="off"
+              dir="ltr"
+              id={id}
+              inputMode="email"
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              value={email}
+            />
+          )}
+        </Field>
       )}
       <div className="flex flex-wrap gap-3">
         <Button
-          disabled={add.isPending || !(person || guest.en.trim().length >= 2)}
+          disabled={add.isPending || !(person || email.includes("@"))}
           type="submit"
         >
           {t("add")}
@@ -1826,7 +1839,7 @@ const Removals = () => {
   );
 };
 
-/** Event pitches (F-10) waiting for the President, who owns events. */
+/** Event pitches (members-meeting-motion) waiting for the President, who owns events. */
 export const ProgramPitches = () => {
   const t = useTranslations("diwan.admin.programmes");
   const grants = useGrants();
@@ -1840,7 +1853,7 @@ export const ProgramPitches = () => {
       id="pitches"
       title={t("pitches.title")}
     >
-      <RequestQueue base="/events/proposals" keys={["f11"]} />
+      <RequestQueue base="/events/proposals" keys={["event-pitch"]} />
     </DiwanSection>
   );
 };
@@ -1874,6 +1887,7 @@ export const MediaAdmin = () => {
       <DiwanSection id="removals" title={t("removalsTitle")}>
         <Removals />
       </DiwanSection>
+      <ProblemReports />
     </div>
   );
 };

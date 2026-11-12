@@ -65,7 +65,7 @@ const usePartnerNames = () => {
 };
 
 /**
- * The General Secretary records the request and what was given: by
+ * The Secretary records the request and what was given: by
  * Student Life, or in kind by a partner, who is then thanked on the event's
  * page ("Supported by", decisions §2).
  */
@@ -353,7 +353,7 @@ const NewNeed = ({
 /**
  * A needs list (decisions.md): what an event or Qirtas needs from
  * Student Life (item, quantity, date needed, purpose), never a cost. With
- * neither, every list: the General Secretary's log of requests to Student
+ * neither, every list: the Secretary's log of requests to Student
  * Life.
  */
 export const Needs = ({

@@ -12,7 +12,7 @@ export const thisYear = async () => {
 
 /**
  * Now, to within a few minutes, for pages that sort the past from the
- * coming (What's on, the home page): kept a few minutes at a time, so
+ * coming (Events, the home page): kept a few minutes at a time, so
  * those pages stay prerendered and refresh on their own.
  */
 export const roughlyNow = async () => {

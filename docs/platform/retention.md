@@ -21,8 +21,8 @@ others still run. `99_retention.test.sql` tests each rule.
 | Invitation lists (the Tour's, the club fair's) | 30 days after the list is sent (the Tour list on December 7, 2026) | `purge_tour_lists` |
 | Unclaimed spring 2026 Tour pages, with their photographs | Until the spring 2027 Tour (`tour.unclaimed_until`, seeded June 30, 2027) | the route, then `purge_unclaimed_tour_pages` |
 | Associate membership requests | 1 year after the decision (a declined request’s Tour page at once) | `purge_associate_requests` |
-| Qalam consent forms (F-38, F-39), the roster and its attendance | 3 years after the program year | `purge_qalam_records` |
-| Incident records (F-16) | 7 years | `purge_incident_records` |
+| Qalam consent forms (`qalam-parent-consent`, `qalam-publishing-consent`), the roster and its attendance | 3 years after the program year | `purge_qalam_records` |
+| Incident records (`incident-report`) | 7 years | `purge_incident_records` |
 | Ballots, ballot receipts and voter lists | 1 year after the vote closes | `purge_expired_ballots` |
 | Who voted for the Mutanabbi Prize (the votes stay, unlinked) | 1 year after the vote closes | `purge_prize_vote_receipts` |
 | Get involved replies | 12 months after the last change, once decided | `purge_opening_replies` |

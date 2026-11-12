@@ -65,7 +65,7 @@ const Downloads = ({
 );
 
 const HIGHLIGHTS: Item[] = [
-  { file: "1-whats-on", name: "What's on" },
+  { file: "1-whats-on", name: "Events" },
   { file: "2-qirtas", name: "Qirtas" },
   { file: "3-the-company", name: "The Company" },
   { file: "4-next-stop", name: "Next Stop" },

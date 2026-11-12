@@ -75,7 +75,7 @@ export const productionSchema = z.object({
 
 export type ProductionInput = z.input<typeof productionSchema>;
 
-/** Program Report (Form F-25, section B). No money: the Society has none. */
+/** Program Report (Form audition-score-sheet, section B). No money: the Society has none. */
 export const reportSchema = z.object({
   report_lessons: z.string().trim().min(1).max(2000),
   report_people_reached: z.number().int().min(0),

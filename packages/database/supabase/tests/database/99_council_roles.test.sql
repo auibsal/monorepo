@@ -96,6 +96,10 @@ $$;
 -- </preamble>
 select plan(9);
 
+-- These test the action itself; the second officer's approval is given
+-- (99_two_officers tests asking and approving).
+select set_config('sal.second_officer', 'on', true);
+
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'pres-cr@auib.edu.iq', 'The President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'ad-cr@auib.edu.iq', 'The Artistic Director');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000f1', 'president');

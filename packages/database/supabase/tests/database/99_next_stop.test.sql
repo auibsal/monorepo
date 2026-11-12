@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(12);
+select plan(14);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000d5a1', 'ns-media@auib.edu.iq', 'Media Director');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000d5a2', 'ns-host@auib.edu.iq', 'Show Host');
@@ -117,11 +117,19 @@ select lives_ok(
      values ('00000000-0000-0000-0000-00000000e5c1', '00000000-0000-0000-0000-00000000e501',
        '00000000-0000-0000-0000-00000000d5a2') $$,
   'Media lists the host on camera');
+-- No typed names (the third prompt, §1): a guest from outside is invited
+-- by email, and their name is the one they sign the release with.
+select throws_ok(
+  $$ insert into programmes.episode_on_camera (episode_id, guest_name_en, is_guest)
+     values ('00000000-0000-0000-0000-00000000e501', 'Typed Name', true) $$,
+  '22023', 'invite_by_email_first', 'A guest''s name is not typed');
 select lives_ok(
-  $$ insert into programmes.episode_on_camera (id, episode_id, guest_name_en, guest_name_ar, is_guest)
-     values ('00000000-0000-0000-0000-00000000e5c2', '00000000-0000-0000-0000-00000000e501',
-       'Guest Speaker', 'ضيف المتحدث', true) $$,
-  'and a guest');
+  $$ select programmes.invite_on_camera('00000000-0000-0000-0000-00000000e501', 'guest@example.org') $$,
+  'and a guest is invited by email');
+select pg_temp.logout();
+update programmes.episode_on_camera set id = '00000000-0000-0000-0000-00000000e5c2'
+where episode_id = '00000000-0000-0000-0000-00000000e501' and user_id is null;
+select pg_temp.login_as('00000000-0000-0000-0000-00000000d5a1');
 select isnt(
   (select programmes.episode_release_link('00000000-0000-0000-0000-00000000e5c1')), null,
   'A release link goes to the member''s own address');
@@ -138,17 +146,19 @@ select throws_ok(
 
 -- Both sign: the links are used.
 select pg_temp.logout();
-update programmes.episode_on_camera set form_link_id = null where id = '00000000-0000-0000-0000-00000000e5c2';
 insert into governance.form_submissions (id, form_key, data, status, submitted_at, form_version, signer_name, signed_at)
-values ('00000000-0000-0000-0000-00000000e5f1', 'f15', '{}', 'submitted', now(), 1, 'Show Host', now()),
-       ('00000000-0000-0000-0000-00000000e5f2', 'f15', '{}', 'submitted', now(), 1, 'Guest Speaker', now());
+values ('00000000-0000-0000-0000-00000000e5f1', 'media-release', '{}', 'submitted', now(), 1, 'Show Host', now()),
+       ('00000000-0000-0000-0000-00000000e5f2', 'media-release', '{}', 'submitted', now(), 1, 'Guest Speaker', now());
 update governance.form_links set submission_id = '00000000-0000-0000-0000-00000000e5f1', used_at = now()
 where id = (select form_link_id from programmes.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c1');
 select is(
   (select release_id from programmes.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c1'),
   '00000000-0000-0000-0000-00000000e5f1'::uuid, 'A used link records the release');
-update programmes.episode_on_camera set release_id = '00000000-0000-0000-0000-00000000e5f2'
-where id = '00000000-0000-0000-0000-00000000e5c2';
+update governance.form_links set submission_id = '00000000-0000-0000-0000-00000000e5f2', used_at = now()
+where id = (select form_link_id from programmes.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c2');
+select is(
+  (select guest_name_en from programmes.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c2'),
+  'Guest Speaker', 'The guest''s name is the one they signed with');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d5a1');
 select lives_ok(

@@ -162,7 +162,7 @@ export const PerformancesTab = ({
   );
 };
 
-// ── Program Report (Form F-25, section B) ───────────────────────────────────
+// ── Program Report (Form audition-score-sheet, section B) ───────────────────────────────────
 
 export const ReportTab = ({ production }: { production: ProductionRow }) => {
   const t = useTranslations("diwan.admin.productions.reportTab");

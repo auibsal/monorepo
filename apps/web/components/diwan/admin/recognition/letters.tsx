@@ -30,7 +30,7 @@ const key = ["admin", "recognition", "letters"];
 type Lang = (typeof recognition.certificateLanguages)[number];
 
 /**
- * Service letters (SAL-EXB-01 · F-05; decisions.md): service is a
+ * Service letters (SAL-EXB-01; decisions.md): service is a
  * letter, never a certificate. The Director of Membership writes one on
  * request, from the one letter template, in the language the member asks
  * for; each carries a verification code checked on auibsal.org/verify.
@@ -79,7 +79,7 @@ export const ServiceLetters = () => {
             cell: (r) => (
               <SiteLink
                 className="link"
-                href={`/account/record/letters/${r.id}`}
+                href={`/account/documents/letters/${r.id}`}
               >
                 {t("open")}
               </SiteLink>

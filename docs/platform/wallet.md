@@ -15,7 +15,7 @@ page accept either.
   account key that carries the pass class (`<issuer>.sal-membership`) and
   the member's object (`<issuer>.card-<code>`). `lib/api/wallet.ts` builds it.
 - The pass also carries two links: "Membership" (`/account`) and
-  "What's on" (`/events`), in the member's language.
+  "Events" (`/events`), in the member's language.
 - The route records the pass in `membership.wallet_passes` (by card code).
   If the member already holds it, the route brings it up to date through
   the Wallet API (name, tier, active again after a renewal) before

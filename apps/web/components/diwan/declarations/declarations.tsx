@@ -36,9 +36,9 @@ const blankItem = (): Item => ({
 });
 
 /**
- * Form F-18, Conflict of Interest Declaration (Policy Manual P8): every role
+ * Form needs-list, Conflict of Interest Declaration (Policy Manual P8): every role
  * holder, every semester, and whenever something new arises. Received by
- * the General Secretary in Administration.
+ * the Secretary in Administration.
  */
 export const Declarations = () => {
   const t = useTranslations("diwan.declarations");

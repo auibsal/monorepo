@@ -1,3 +1,4 @@
+import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { notFound } from "next/navigation";
@@ -15,7 +16,7 @@ import { monthFrom } from "@/lib/whats-on";
  * The Company, the Society's theater company (decisions.md, What the
  * Society does: the Company): what it is, the first season's plan, how
  * auditions are announced (never open here: they are RSVP events on
- * What's on, scored on F-25), the Artistic Director opening while it is
+ * Events, scored on audition-score-sheet), the Artistic Director opening while it is
  * open, and each public production with its playbill from the roles
  * scoped to it. Performances are ordinary events. No rights, no show: a
  * production is listed only once its rights are cleared.
@@ -111,13 +112,14 @@ export const CompanyView = async ({ locale }: { locale: Locale }) => {
       <Section id="auditions" title={t("auditions")}>
         <p className="type-body max-w-prose">{t("auditionsLede")}</p>
       </Section>
+      {/* The page's one action (the third prompt, §7): auditions and
+          performances are the Company's dates on Events. */}
       <p>
-        <Link
-          className="link"
-          href={whatsOnPath(monthFrom(undefined, now), "company")}
-        >
-          {t("dates")}
-        </Link>
+        <Button asChild>
+          <Link href={whatsOnPath(monthFrom(undefined, now), "company")}>
+            {t("dates")}
+          </Link>
+        </Button>
       </p>
     </div>
   );

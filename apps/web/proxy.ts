@@ -1,5 +1,6 @@
 import { internationalizationMiddleware } from "@repo/internationalization/proxy";
 import { NextRequest, NextResponse } from "next/server";
+import { FIRST_VISIT_COOKIE, firstVisitToArabic } from "@/lib/i18n/first-visit";
 import {
   contentSecurityPolicy,
   createNonce,
@@ -54,6 +55,31 @@ export default async function proxy(request: NextRequest) {
       securityOptions
     );
   }
+  // A first visit goes to the browser's language (7h); the cookie marks
+  // every later one, which follows its address.
+  if (firstVisitToArabic(request)) {
+    const url = request.nextUrl.clone();
+    url.pathname = path === "/" ? "/ar" : `/ar${path}`;
+    const response = NextResponse.redirect(url, 307);
+    response.cookies.set(FIRST_VISIT_COOKIE, "1", {
+      maxAge: 60 * 60 * 24 * 365,
+      path: "/",
+      sameSite: "lax",
+    });
+    return withSecurityHeaders(response, securityOptions);
+  }
+  const response = await serve(request, path);
+  if (!request.cookies.has(FIRST_VISIT_COOKIE)) {
+    response.cookies.set(FIRST_VISIT_COOKIE, "1", {
+      maxAge: 60 * 60 * 24 * 365,
+      path: "/",
+      sameSite: "lax",
+    });
+  }
+  return response;
+}
+
+const serve = async (request: NextRequest, path: string) => {
   if (PER_REQUEST.test(path)) {
     const options = withNonce(securityOptions, createNonce(), [
       await themeHash,
@@ -71,4 +97,4 @@ export default async function proxy(request: NextRequest) {
     internationalizationMiddleware(request),
     WORD_GAME.test(path) ? miniAppOptions : securityOptions
   );
-}
+};

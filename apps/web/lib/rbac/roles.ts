@@ -210,8 +210,8 @@ export const roles = {
   general_secretary: {
     defaultScope: "global",
     isCouncil: true,
-    nameAr: "الأمين العام",
-    nameEn: "General Secretary",
+    nameAr: "أمين السر",
+    nameEn: "Secretary",
     permissions: [
       "members.verify",
       "members.manage",
@@ -358,6 +358,13 @@ export const roles = {
   },
   // A partner's team (decisions.md), scoped to the partner: the
   // Lead invites and removes; Team keeps the page.
+  parent: {
+    defaultScope: "member",
+    isCouncil: false,
+    nameAr: "وليّ الأمر",
+    nameEn: "Parent",
+    permissions: [],
+  },
   partner_lead: {
     defaultScope: "partner",
     isCouncil: false,
@@ -488,6 +495,13 @@ export const roles = {
     nameEn: "Qalam mentor",
     permissions: [],
   },
+  qalam_student: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "طالب «قلم»",
+    nameEn: "Qalam student",
+    permissions: [],
+  },
   reader: {
     defaultScope: "issue",
     isCouncil: false,
@@ -523,19 +537,14 @@ export const roles = {
     nameEn: "Stage manager",
     permissions: ["productions.manage", "events.checkin", "library.read"],
   },
-  tech_admin: {
+  student_life: {
     defaultScope: "global",
     isCouncil: false,
-    nameAr: "مسؤول الموقع",
-    nameEn: "Web lead",
-    permissions: [
-      "members.verify",
-      "settings.manage",
-      "audit.read",
-      "content.manage",
-    ],
+    nameAr: "شؤون الطلبة",
+    nameEn: "Student Life",
+    permissions: [],
   },
-  // The General Secretary's team (decisions.md).
+  // The Secretary's team (decisions.md).
   tour_lead: {
     defaultScope: "global",
     isCouncil: false,
@@ -596,6 +605,18 @@ export const roles = {
     nameAr: "محرّر آراء",
     nameEn: "Voices Editor",
     permissions: ["journal.edit.voices", "library.read"],
+  },
+  web_lead: {
+    defaultScope: "global",
+    isCouncil: false,
+    nameAr: "مسؤول الموقع",
+    nameEn: "Web lead",
+    permissions: [
+      "members.verify",
+      "settings.manage",
+      "audit.read",
+      "content.manage",
+    ],
   },
 } as const satisfies Record<string, RoleDefinition>;
 

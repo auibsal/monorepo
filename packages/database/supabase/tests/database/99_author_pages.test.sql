@@ -98,7 +98,7 @@ select plan(7);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000009a1', 'au1@auib.edu.iq', 'Layla Haddad');
 insert into membership.memberships (user_id) values ('00000000-0000-0000-0000-0000000009a1') on conflict do nothing;
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000009a1', 'tech_admin');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000009a1', 'web_lead');
 
 -- Their own byline, as the newsroom makes it when they first publish.
 select pg_temp.logout();

@@ -5,6 +5,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 /** How old a delivery may be (Svix's own tolerance). */
 const TOLERANCE_S = 5 * 60;
 const SECRET_PREFIX = /^whsec_/u;
+const V1_PREFIX = /^v1,/u;
 
 /**
  * Verifies a webhook signed the Svix way, as Resend signs its webhooks:
@@ -42,4 +43,25 @@ export const verifySvix = (
     const given = Buffer.from(value, "base64");
     return given.length === expected.length && timingSafeEqual(given, expected);
   });
+};
+
+/**
+ * Verifies a Standard Webhooks delivery (Supabase's Auth hooks): the same
+ * signature as Svix's, under `webhook-*` headers, with a secret given as
+ * `v1,whsec_<base64>`.
+ */
+export const verifyStandardWebhook = (
+  secret: string,
+  headers: Headers,
+  body: string,
+  now = Date.now()
+): boolean => {
+  const renamed = new Headers();
+  for (const name of ["id", "timestamp", "signature"]) {
+    const value = headers.get(`webhook-${name}`);
+    if (value) {
+      renamed.set(`svix-${name}`, value);
+    }
+  }
+  return verifySvix(secret.replace(V1_PREFIX, ""), renamed, body, now);
 };

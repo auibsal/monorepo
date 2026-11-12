@@ -19,7 +19,7 @@ for (const locale of ["en", "ar"] as const) {
     page,
   }) => {
     await page.goto(home);
-    // Tab until a link to What's on has focus, then follow it.
+    // Tab until a link to Events has focus, then follow it.
     for (let step = 0; step < 25; step += 1) {
       await page.keyboard.press("Tab");
       const href = await page.evaluate(

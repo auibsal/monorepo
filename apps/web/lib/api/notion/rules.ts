@@ -38,8 +38,9 @@ const slugFor = (page: NotionPage, title: string) => {
 
 /**
  * The event's access (decisions §10): Open (just come), RSVP (book a
- * place), Members (members book a place) or Private (invited only, such as
- * a Council meeting). It alone decides who sees the event.
+ * place), Members (members book a place, such as a Council meeting, which
+ * members may observe) or Private (invited only, such as a partner's
+ * private event). It alone decides who sees the event.
  */
 const WAYS_IN = {
   Members: "members",
@@ -152,7 +153,7 @@ const THE_SOCIETY = /^the society$/iu;
 /**
  * What an event row says beyond the event itself (decisions §13): its
  * host (the Society, or the partner the event is held for, by name) and
- * the link to its debrief (F-13).
+ * the link to its debrief (event-debrief).
  */
 export const eventExtras = (page: NotionPage) => {
   const host = read.select(page, "Host") ?? read.text(page, "Host");

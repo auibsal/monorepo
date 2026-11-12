@@ -252,9 +252,15 @@ select throws_ok(
 insert into programmes.production_credits (id, production_id, user_id, department, role_en)
 values ('00000000-0000-0000-0000-00000000c001', '00000000-0000-0000-0000-00000000f001',
   '00000000-0000-0000-0000-0000000000a1', 'cast', 'Ophelia');
+-- A credit typed before the rule (the third prompt, §1) stays; new ones
+-- name an account.
+select pg_temp.logout();
+alter table programmes.production_credits disable trigger credit_names_an_account;
 insert into programmes.production_credits (production_id, person_name, partner_id, department, role_en, show_publicly)
 values ('00000000-0000-0000-0000-00000000f001', 'Guest Actor', '00000000-0000-0000-0000-00000000d001',
   'cast', 'Hamlet', true);
+alter table programmes.production_credits enable trigger credit_names_an_account;
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
 insert into programmes.rehearsals (production_id, starts_at, ends_at, called)
 values ('00000000-0000-0000-0000-00000000f001', now() + interval '5 days', now() + interval '5 days 3 hours', 'Full company');
 update programmes.productions set stage = 'rehearsals', is_public = true

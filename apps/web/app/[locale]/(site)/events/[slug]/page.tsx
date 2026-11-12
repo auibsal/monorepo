@@ -8,6 +8,7 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { EventAccess } from "@/components/event-access";
 import { EventBooking } from "@/components/event-booking";
 import { EventParts } from "@/components/event-parts";
 import { ManageLinks } from "@/components/manage-links";
@@ -32,7 +33,7 @@ interface EventProps {
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 
-// /events/<slug> is an event (a month of What's on is /events?month=;
+// /events/<slug> is an event (a month of Events is /events?month=;
 // old month addresses redirect, next.config.ts). The Supabase reads stay
 // cached by tag until an event is published.
 
@@ -134,7 +135,7 @@ const EventView = async ({
         </p>
         <ManageLinks
           diwan={`/events/${event.slug}`}
-          membership="/account/calendar"
+          membership="/account/events"
           membershipLabel="booking"
         />
         {host ? (
@@ -191,6 +192,7 @@ const EventView = async ({
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
       ) : null}
+      {cancelled ? null : <EventAccess event={event} locale={locale} />}
       <EventParts event={event} locale={locale} />
       <SupportedBy
         className="border-line pt-space-4 border-t"

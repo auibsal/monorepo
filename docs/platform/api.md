@@ -31,7 +31,7 @@ the secret is unset.
 | `/api/email/stop` | POST | The stop page; mail apps’ one-click unsubscribe (RFC 8058) | The email’s signed token | — |
 | `/api/exports/<name>` | POST | The Diwan | Member + permission per export | — |
 | `/api/files/agreement` | POST | A writer | Member | — |
-| `/api/files/blind` | POST | A reader (a Gallery entry’s images, each marked with the reader’s card number and the day, sent inline; never a file or its address) | Member who may read the entry and has signed F-40, the readers’ pledge (`journal.entry_text`) | — |
+| `/api/files/blind` | POST | A reader (a Gallery entry’s images, each marked with the reader’s card number and the day, sent inline; never a file or its address) | Member who may read the entry and has signed `confidentiality-agreement`, the readers’ pledge (`journal.entry_text`) | — |
 | `/api/files/rights` | POST | The Company | Member + permission | — |
 | `/api/files/submission` | POST | A writer, the Submissions Manager in intake, the section’s editor or the Editor-in-Chief once accepted (an original; each opening by anyone but the writer is kept, `journal.original_openings`) | Member (`journal.open_original`) | — |
 | `/api/qirtas/images` | POST | A Qirtas editor (a piece accepted from a submission takes the writer’s images, metadata stripped) | Member (the piece’s editor, under RLS) | — |

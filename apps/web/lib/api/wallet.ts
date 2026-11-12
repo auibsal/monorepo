@@ -28,20 +28,22 @@ export interface WalletCard {
   tier: string;
 }
 
+// A partner's people hold guest accounts (decisions.md, Members: one
+// account model), so their class reads Guest.
 const CLASSES = {
   ar: {
     associate: "عضو منتسب",
     guest: "ضيف",
     honorary: "عضو فخري",
     member: "عضو",
-    partner: "فريق الشريك",
+    partner: "ضيف",
   },
   en: {
     associate: "Associate Member",
     guest: "Guest",
     honorary: "Honorary Member",
     member: "Member",
-    partner: "Partner team",
+    partner: "Guest",
   },
 } as const;
 
@@ -139,7 +141,7 @@ const passFor = (card: WalletCard) => {
           uri: site(card.locale, "/account"),
         },
         {
-          description: ar ? "ما يجري" : "What's on",
+          description: ar ? "الفعاليات" : "Events",
           id: "events",
           uri: site(card.locale, "/events"),
         },

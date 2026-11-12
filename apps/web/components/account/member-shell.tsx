@@ -15,7 +15,12 @@ import { useTwoStep } from "@/components/diwan/auth/two-step";
 import { useAuth } from "@/lib/auth/provider";
 import { useMyPartners } from "@/lib/diwan/partners";
 import { disablePush } from "@/lib/diwan/push";
-import { useMemberStatus, useMyMembership } from "@/lib/diwan/queries";
+import {
+  useElectionOpen,
+  useHasRoles,
+  useMemberStatus,
+  useMyMembership,
+} from "@/lib/diwan/queries";
 import { rememberWays, type Ways } from "@/lib/staff";
 
 interface AccountLink {
@@ -24,10 +29,14 @@ interface AccountLink {
   readonly href: string;
   readonly key:
     | "today"
-    | "calendar"
-    | "record"
+    | "events"
     | "work"
+    | "applications"
+    | "saved"
+    | "roles"
+    | "documents"
     | "elections"
+    | "card"
     | "settings";
 }
 
@@ -76,16 +85,22 @@ export const useWays = (): Ways => {
 export const useIsStaff = () => useWays().diwan;
 
 /**
- * The account's own pages, in one row under the site's header (decisions
- * §6): Today · Calendar · Record · Work · Elections · Settings. Get
- * involved is the header's, and the Diwan sits under the header's menu, so
- * neither is repeated here. Profile and what you sent sit under Settings.
+ * The account's own pages, in one row under the site's header (decisions.md,
+ * The site: "Your account"), shown by class and role: Today · Events · Work
+ * · Applications · Saved · Roles and service · Documents · Elections (while
+ * one is open) · Card · Settings. Guests have Today, Events, Work,
+ * Documents and Settings; a partner's people and anyone with no membership
+ * yet, Today and Settings. Get involved is the header's, and the Diwan sits
+ * under the header's menu, so neither is repeated here. Profile and what
+ * you sent sit under Settings.
  */
 const useAccountLinks = (): AccountLink[] => {
   const kind = useMyMembership().data?.kind ?? null;
+  const roles = useHasRoles();
+  const election = useElectionOpen();
   const today: AccountLink = {
-    // A guest's or a partner's record opens from Today.
-    also: kind === "member" ? [] : ["/account/record"],
+    // A partner's documents open from Today.
+    also: kind === "partner" ? ["/account/documents"] : [],
     href: "/account",
     key: "today",
   };
@@ -94,25 +109,37 @@ const useAccountLinks = (): AccountLink[] => {
     href: "/account/settings",
     key: "settings",
   };
-  const calendar: AccountLink = {
-    href: "/account/calendar",
-    key: "calendar",
+  const events: AccountLink = { href: "/account/events", key: "events" };
+  const work: AccountLink = { href: "/account/work", key: "work" };
+  const documents: AccountLink = {
+    href: "/account/documents",
+    key: "documents",
   };
-  // The row by kind: members have all six; guests book and write for
-  // Qirtas (decisions §2), so keep their calendar and work; a partner's
-  // people and anyone with no membership yet have Today and Settings.
   if (kind === "member") {
     return [
       today,
-      calendar,
-      { href: "/account/record", key: "record" },
-      { href: "/account/work", key: "work" },
-      { href: "/account/elections", key: "elections" },
+      events,
+      work,
+      { href: "/account/applications", key: "applications" },
+      { href: "/account/saved", key: "saved" },
+      ...(roles
+        ? [{ href: "/account/roles", key: "roles" } satisfies AccountLink]
+        : []),
+      documents,
+      ...(election
+        ? [
+            {
+              href: "/account/elections",
+              key: "elections",
+            } satisfies AccountLink,
+          ]
+        : []),
+      { href: "/account/card", key: "card" },
       settings,
     ];
   }
   return kind === "guest"
-    ? [today, calendar, { href: "/account/work", key: "work" }, settings]
+    ? [today, events, work, documents, settings]
     : [today, settings];
 };
 

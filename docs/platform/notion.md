@@ -24,13 +24,14 @@ planning: **Officers** and **Qirtas pipeline** (counts only; review is
 blind). Edit them on the site; each row links there.
 
 **Events** (decisions §10). Each English row sets **Way in** (Open, RSVP,
-Members or Private; Private for a Council meeting), which alone decides who
+Members or Private; Members for a Council meeting, which members may
+observe, with the closed session held apart), which alone decides who
 sees and books it, and, for an event away from campus, **Off campus**.
 Events are made here only: the Diwan shows them and keeps the site's own
 parts (bookings, check-in, registration questions, shifts, the partner
 checklist, approvals). Until the **Members only** checkbox is removed from
 the database, a ticked row with Way in Open or RSVP counts as Members. An off-campus event is kept
-as a draft in the Diwan until the General Secretary records Student Life's
+as a draft in the Diwan until the Secretary records Student Life's
 written approval on its page there; the row then goes back to Planning with
 a note, and Ready to publish again publishes it. Notion never brings an
 event back on campus. There is no Program link: no event belongs to a
@@ -76,7 +77,9 @@ Notion to verify, and set it as `NOTION_WEBHOOK_SECRET` in Vercel
    Editing (`journal.edit.<desk>` or `journal.approve`).
 5. **Documents** (`documents.ts`): **Ready to publish** renders the page
    (headings, lists, tables, quotes, links) to auibsal.org/library/<slug>
-   for public documents; internal ones stay in Notion. Needs
+   for public documents; internal ones stay in Notion (**Audience** is the
+   publish switch). **For** (Everyone, Members or Staff) sets the group it
+   sits in on the Library page; with no For it is for everyone. Needs
    `governance.manage` (the President, the Vice President, the General
    Secretary). The site keeps only the adoption record, kept in the Diwan's
    Library, and writes **Adopted on** and **Vote** back to the row whenever

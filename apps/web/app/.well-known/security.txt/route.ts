@@ -17,7 +17,7 @@ export const GET = async () =>
     [
       `Contact: mailto:${project.mailboxes.security}`,
       `Expires: ${await expires()}`,
-      `Policy: ${project.url}/terms`,
+      `Policy: ${project.url}/security`,
       "Preferred-Languages: en, ar",
       `Canonical: ${project.url}/.well-known/security.txt`,
       "",

@@ -14,7 +14,7 @@ export const member = { email: "e2e-member@auib.edu.iq", name: "E2E Member" };
 export const editor = { email: "e2e-editor@auib.edu.iq", name: "E2E Editor" };
 /**
  * The co-editing journey's two officers: minutes are written only by the
- * President and the General Secretary, whose roles need two-step sign-in.
+ * President and the Secretary, whose roles need two-step sign-in.
  */
 export const president = {
   email: "e2e-president@auib.edu.iq",

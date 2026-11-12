@@ -1,3 +1,4 @@
+import { deviceName } from "@/lib/device";
 import { buckets } from "@/lib/storage";
 import "server-only";
 
@@ -8,17 +9,20 @@ import { EmailQuotaError, sendEmail } from "@repo/email";
 import {
   type ApplicationStep,
   accountDeleted,
+  accountDeletionScheduled,
   agreementReminder,
   announcement,
   applicationDecided,
   applicationReceived,
-  applicationWaiting,
+  associateRequestReceived,
   auditionUpdate,
   type Built,
   type Lang as CopyLang,
   callOpened,
   candidacyDecided,
+  candidacyReceived,
   certificateIssued,
+  concernRaised,
   contactField,
   cronFailed,
   type Decision,
@@ -31,9 +35,13 @@ import {
   finalCheck,
   formLink,
   formSignedCopy,
+  incidentReported,
   invitationBroadcast,
   invitationContact,
+  membershipRemoved,
+  newDevice,
   newsletterConfirm,
+  parentAccount,
   partnerInvitation,
   personalEmailConfirm,
   pieceNote,
@@ -42,19 +50,23 @@ import {
   removalDone,
   removalReceived,
   removalRequested,
-  repliesDigest,
   replyUpdate,
   requestUpdated,
   returnedForFormatting,
+  revisionRequested,
+  revisionResent,
   roleAssigned,
   roleEnding,
   rsvpConfirmed,
   serviceLetterWritten,
   shiftReminder,
+  staffDigest,
+  submissionInReading,
   submissionReceived,
   sundayPaper,
   twoStepReset,
   verificationDecided,
+  waitlistOffered,
   waitlistPromoted,
   welcome,
 } from "@repo/email/copy";
@@ -80,6 +92,7 @@ import {
 } from "@/lib/api/invitation-letter";
 import { api, origin, site } from "@/lib/api/urls";
 import { journal } from "@/lib/data";
+import { formPaths, isFormKey } from "@/lib/data/forms";
 import { log } from "@/lib/observability/log";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
@@ -342,7 +355,7 @@ const eventInfo = async (admin: AdminClient, eventId: unknown) => {
   const { data } = await admin
     .schema("events")
     .from("events")
-    .select("title_en, title_ar, starts_at, venue_en, venue_ar")
+    .select("slug, title_en, title_ar, starts_at, venue_en, venue_ar")
     .eq("id", String(eventId))
     .maybeSingle();
   return data;
@@ -383,14 +396,18 @@ const pieceTitle = (
 
 const webUrl = origin;
 
-const submissionTitle = async (admin: AdminClient, submissionId: unknown) => {
+const submissionTitle = async (admin: AdminClient, submissionId: unknown) =>
+  (await submissionRecord(admin, submissionId))?.title ?? null;
+
+/** A submission's title and record number (SUB-<year>-<n>). */
+const submissionRecord = async (admin: AdminClient, submissionId: unknown) => {
   const { data } = await admin
     .schema("journal")
     .from("submissions")
-    .select("title")
+    .select("title, reference")
     .eq("id", String(submissionId))
     .maybeSingle();
-  return data?.title ?? null;
+  return data;
 };
 
 /** Holders of programs.manage for the program (or globally). */
@@ -409,6 +426,195 @@ const holders = async (
     (data ?? []).map((h) => recipient(admin, h.user_id))
   );
   return found.filter((r): r is Recipient => r !== null);
+};
+
+/** Everyone holding one of these roles now (a seat, not a permission). */
+const roleHolders = async (
+  admin: AdminClient,
+  roles: string[]
+): Promise<Recipient[]> => {
+  const now = new Date().toISOString();
+  const { data } = await admin
+    .schema("access")
+    .from("role_assignments")
+    .select("user_id")
+    .in("role", roles)
+    .lte("starts_at", now)
+    .or(`ends_at.is.null,ends_at.gt.${now}`);
+  const ids = [...new Set((data ?? []).map((a) => a.user_id))];
+  const found = await Promise.all(ids.map((id) => recipient(admin, id)));
+  return found.filter((r): r is Recipient => r !== null);
+};
+
+type DigestLang = "ar" | "en";
+interface DigestPart {
+  readonly items: (lang: DigestLang) => { meta?: string; title: string }[];
+  readonly title: Record<DigestLang, string>;
+}
+
+/** Counts lines by their text, in the order first seen. */
+const counted = (titles: string[]) => {
+  const counts = new Map<string, number>();
+  for (const title of titles) {
+    counts.set(title, (counts.get(title) ?? 0) + 1);
+  }
+  return [...counts].map(([title, n]) => ({ meta: String(n), title }));
+};
+
+const PENDING_KINDS: Record<string, Record<DigestLang, string>> = {
+  council_role: { ar: "دور في المجلس", en: "A Council role" },
+  legal_name: { ar: "تصحيح اسم قانوني", en: "A legal name corrected" },
+  student_life_export: {
+    ar: "قائمة لشؤون الطلبة",
+    en: "A list for Student Life",
+  },
+};
+
+/**
+ * The staff digest (decisions.md, Channels and email): once a day, each
+ * officer gets one email with what came in since yesterday that they can
+ * act on: Get involved replies (members.manage), partner applications
+ * (partners.manage or partners.sign), actions waiting for a second officer
+ * (whoever holds the permission, not the one who asked) and problem
+ * reports (settings.manage). Urgent alerts (a removal request, a failed
+ * job) still go at once.
+ */
+const sendStaffDigest = async (admin: AdminClient) => {
+  const since = new Date(Date.now() - 86_400_000).toISOString();
+  const [replies, applied, pending, problems] = await Promise.all([
+    admin
+      .schema("programmes")
+      .from("opening_replies")
+      .select("opening:openings(title_en, title_ar)")
+      .gt("submitted_at", since)
+      .neq("status", "draft"),
+    admin
+      .schema("core")
+      .from("outbox")
+      .select("payload")
+      .eq("kind", "partners.application_received")
+      .gt("created_at", since),
+    admin
+      .schema("governance")
+      .from("pending_actions")
+      .select("kind, permission, requested_by")
+      .eq("status", "pending"),
+    admin
+      .schema("core")
+      .from("problem_reports")
+      .select("page")
+      .eq("status", "open")
+      .gt("created_at", since),
+  ]);
+  const agreementIds = (applied.data ?? [])
+    .map((row) => (row.payload as { agreement_id?: string }).agreement_id)
+    .filter((id): id is string => Boolean(id));
+  const partners = agreementIds.length
+    ? ((
+        await admin
+          .schema("governance")
+          .from("partner_agreements")
+          .select("partner:partners(name_en, name_ar)")
+          .in("id", agreementIds)
+      ).data ?? [])
+    : [];
+
+  // Who gets which part: by permission, each officer once.
+  const parts = new Map<string, { to: Recipient; parts: DigestPart[] }>();
+  const give = async (permissions: string[], part: DigestPart) => {
+    const lists = await Promise.all(permissions.map((p) => holders(admin, p)));
+    for (const to of lists.flat()) {
+      const entry = parts.get(to.email) ?? { parts: [], to };
+      if (!entry.parts.includes(part)) {
+        entry.parts.push(part);
+      }
+      parts.set(to.email, entry);
+    }
+  };
+  const replyRows = replies.data ?? [];
+  if (replyRows.length > 0) {
+    await give(["members.manage"], {
+      items: (l) =>
+        counted(
+          replyRows.map(
+            (r) =>
+              (l === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
+              r.opening?.title_en ??
+              ""
+          )
+        ),
+      title: { ar: "طلبات «شارك معنا»", en: "Get involved applications" },
+    });
+  }
+  if (partners.length > 0) {
+    await give(["partners.manage", "partners.sign"], {
+      items: (l) =>
+        partners.map((a) => ({
+          title:
+            (l === "ar" ? a.partner?.name_ar : a.partner?.name_en) ??
+            a.partner?.name_en ??
+            "",
+        })),
+      title: { ar: "طلبات الشراكة", en: "Partner applications" },
+    });
+  }
+  const byPermission = new Map<
+    string,
+    { kind: string; requested_by: string }[]
+  >();
+  for (const row of pending.data ?? []) {
+    byPermission.set(row.permission, [
+      ...(byPermission.get(row.permission) ?? []),
+      row,
+    ]);
+  }
+  const officersFor = await Promise.all(
+    [...byPermission.keys()].map(
+      async (permission) =>
+        [permission, await holders(admin, permission)] as const
+    )
+  );
+  for (const [permission, officers] of officersFor) {
+    const rows = byPermission.get(permission) ?? [];
+    for (const to of officers) {
+      // The one who asked can't approve, so their own requests aren't theirs.
+      const mine = rows.filter((r) => r.requested_by !== to.userId);
+      if (mine.length === 0) {
+        continue;
+      }
+      const entry = parts.get(to.email) ?? { parts: [], to };
+      entry.parts.push({
+        items: (l) =>
+          counted(mine.map((r) => PENDING_KINDS[r.kind]?.[l] ?? r.kind)),
+        title: { ar: "بانتظار مسؤول ثان", en: "For a second officer" },
+      });
+      parts.set(to.email, entry);
+    }
+  }
+  const problemRows = problems.data ?? [];
+  if (problemRows.length > 0) {
+    await give(["settings.manage"], {
+      items: () => counted(problemRows.map((p) => p.page)),
+      title: { ar: "مشكلات مُبلَّغ عنها", en: "Problems reported" },
+    });
+  }
+
+  await Promise.all(
+    [...parts.values()].map(({ to, parts: mine }) =>
+      send(
+        to,
+        staffDigest(
+          to.lang,
+          mine.map((part) => ({
+            items: part.items(to.lang),
+            title: part.title[to.lang],
+          })),
+          appUrl()
+        ),
+        { category: "officer" }
+      )
+    )
+  );
 };
 
 const programmeManagers = (admin: AdminClient, programmeId: unknown) =>
@@ -482,7 +688,7 @@ const stopLinks = (lang: Lang, userId: string) => {
 
 /**
  * What the Sunday Paper carries (decisions.md): the month's pieces,
- * What's on for the month ahead, and Get involved's open places. Null
+ * Events for the month ahead, and Get involved's open places. Null
  * when there is nothing to send.
  */
 const paperContents = async (
@@ -729,6 +935,26 @@ const handlers: Record<string, Handler> = {
       await send({ email: payload.email, lang }, accountDeleted(lang));
     }
   },
+  // Deleting an account starts 30 days in which signing in keeps it.
+  "account.deletion_scheduled": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to && typeof payload.deletes_on === "string") {
+      await send(
+        to,
+        accountDeletionScheduled(to.lang, payload.deletes_on, appUrl())
+      );
+    }
+  },
+  // A sign-in from a kind of device the account hasn't used.
+  "account.new_device": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to && typeof payload.at === "string") {
+      await send(
+        to,
+        newDevice(to.lang, payload.at, deviceName(payload.user_agent), appUrl())
+      );
+    }
+  },
   // The President's notice (decisions.md, Channels and email): one Broadcast per language to
   // the Sunday Paper's readers, each in their own language.
   "announcement.broadcast": async (admin, payload) => {
@@ -770,6 +996,7 @@ const handlers: Record<string, Handler> = {
       try {
         // biome-ignore lint/performance/noAwaitInLoops: one language at a time
         await runBroadcast(admin, {
+          browser: site(lang, "/qirtas/from-the-society"),
           built: announcement(lang, notice, origin()),
           contacts,
           footer: [
@@ -847,9 +1074,42 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  // The day before: to everyone booked, and to everyone who asked "Remind
-  // me". A booked reminder is optional (notify_email; without it, Telegram
-  // only); "Remind me" was asked for, so it always goes.
+  "events.incident_reported": async (admin, payload) => {
+    const [{ data: event }, people] = await Promise.all([
+      admin
+        .schema("events")
+        .from("events")
+        .select("slug, title_en, title_ar")
+        .eq("id", String(payload.event_id))
+        .maybeSingle(),
+      roleHolders(admin, ["events_director", "president"]),
+    ]);
+    if (!event?.slug) {
+      return;
+    }
+    await Promise.all(
+      people.map((m) =>
+        send(
+          m,
+          incidentReported(
+            m.lang,
+            {
+              slug: event.slug ?? "",
+              title:
+                (m.lang === "ar" ? event.title_ar : event.title_en) ??
+                event.title_en ??
+                "",
+            },
+            appUrl()
+          ),
+          { category: "officer" }
+        )
+      )
+    );
+  },
+  // The day before (decisions.md, Events): one reminder to everyone booked,
+  // with "Can't come? Cancel", and to everyone who asked "Remind me". Both
+  // were asked for (a booking, a reminder), so both always go.
   "events.reminder": async (admin, payload) => {
     const [to, event, { data: booking }] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -863,13 +1123,11 @@ const handlers: Record<string, Handler> = {
         .eq("status", "confirmed")
         .maybeSingle(),
     ]);
-    const booked = Boolean(booking);
     if (!(to && event)) {
       return;
     }
-    // Reminders of what they booked are optional; "Remind me" was asked for.
-    await send(to, eventReminder(to.lang, event, appUrl(), booked), {
-      category: booked ? "optional" : "service",
+    await send(to, eventReminder(to.lang, event, appUrl(), Boolean(booking)), {
+      category: "service",
     });
   },
   "events.rsvp_confirmed": eventNotice(rsvpConfirmed),
@@ -896,6 +1154,15 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
+  "events.waitlist_offered": async (admin, payload) => {
+    const [to, event] = await Promise.all([
+      recipient(admin, payload.user_id),
+      eventInfo(admin, payload.event_id),
+    ]);
+    if (to && event && typeof payload.until === "string") {
+      await send(to, waitlistOffered(to.lang, event, appUrl(), payload.until));
+    }
+  },
   "events.waitlist_promoted": eventNotice(waitlistPromoted),
   // A parent's single-use link, to the teacher who passes it on.
   "forms.link": async (admin, payload) => {
@@ -909,17 +1176,18 @@ const handlers: Record<string, Handler> = {
       admin
         .schema("governance")
         .from("form_types")
-        .select("code, title_en")
+        .select("key, title_en")
         .eq("key", String(payload.form_key))
         .maybeSingle(),
     ]);
     if (!(link && type) || link.used_at || typeof payload.token !== "string") {
       return;
     }
-    const url = `${appUrl()}/forms/${type.code}?link=${encodeURIComponent(payload.token)}`;
+    const path = isFormKey(type.key) ? formPaths[type.key] : "/";
+    const url = `${appUrl()}${path}?link=${encodeURIComponent(payload.token)}`;
     await send(
       { email: link.sent_to, lang: "en" },
-      formLink("en", { code: type.code, title: type.title_en, url })
+      formLink("en", { title: type.title_en, url })
     );
     // The token is kept only as a hash: drop it from the outbox row.
     const row = current.getStore()?.row;
@@ -943,18 +1211,27 @@ const handlers: Record<string, Handler> = {
       .schema("governance")
       .from("form_submissions")
       .select(
-        "id, form_key, data, signer_name, signed_at, signer_contact, submitted_by, document_sha256, form_types(code, title_en, title_ar)"
+        "id, form_key, data, signer_name, signed_at, signer_contact, submitted_by, document_sha256, reference, verification_code, form_types(title_en, title_ar)"
       )
       .eq("id", String(payload.submission_id))
       .maybeSingle();
     if (!(row?.signer_name && row.signed_at && row.document_sha256)) {
       return;
     }
-    const member = await recipient(admin, row.submitted_by);
-    const contact = row.signer_contact?.trim() ?? "";
+    // A copy for someone named on the link (the teacher, for Qalam), or the
+    // signer's own: their account, or the address they signed from.
+    const copy = typeof payload.to === "string" && AN_EMAIL.test(payload.to);
+    const member = copy ? null : await recipient(admin, row.submitted_by);
     let to: Recipient | null = member;
-    if (!to && AN_EMAIL.test(contact)) {
-      to = { email: contact, lang: "en" };
+    if (copy) {
+      to = { email: String(payload.to), lang: "en" };
+    } else if (!to) {
+      const { data: link } = await admin
+        .schema("governance")
+        .rpc("consent_link", { submission_id: row.id })
+        .maybeSingle();
+      const contact = (link?.sent_to ?? row.signer_contact ?? "").trim();
+      to = AN_EMAIL.test(contact) ? { email: contact, lang: "en" } : null;
     }
     if (!to) {
       return;
@@ -963,14 +1240,18 @@ const handlers: Record<string, Handler> = {
     await send(
       to,
       formSignedCopy(to.lang, {
-        answers: formAnswers(to.lang, row.form_key, row.data),
-        code: type?.code ?? "",
+        answers: copy ? [] : formAnswers(to.lang, row.form_key, row.data),
         fingerprint: row.document_sha256,
+        forSomeoneElse: copy,
+        reference: row.reference,
         signedAt: row.signed_at,
         signer: row.signer_name,
         title: (to.lang === "ar" ? type?.title_ar : type?.title_en) ?? "",
         url: member
           ? `${appUrl()}${localizedPath(to.lang, `/account/requests/${row.id}`)}`
+          : null,
+        verifyUrl: row.verification_code
+          ? `${appUrl()}${localizedPath(to.lang, `/verify/${row.verification_code}`)}`
           : null,
       })
     );
@@ -996,36 +1277,9 @@ const handlers: Record<string, Handler> = {
   "get_involved.received": async (admin, payload) => {
     await applicationStep(admin, payload, "received");
   },
-  // One email a day to Membership, which runs every role's applications:
-  // counts by role, never names (decisions.md, Get involved and roles).
+  // Queued before the staff digest replaced it: the digest covers it.
   "get_involved.replies_digest": async (admin) => {
-    const since = new Date(Date.now() - 86_400_000).toISOString();
-    const { data: replies } = await admin
-      .schema("programmes")
-      .from("opening_replies")
-      .select("opening_id, opening:openings(title_en, title_ar)")
-      .gt("submitted_at", since)
-      .neq("status", "draft");
-    if (!replies?.length) {
-      return;
-    }
-    const managers = await holders(admin, "members.manage");
-    await Promise.all(
-      managers.map((m) => {
-        const counts = new Map<string, number>();
-        for (const r of replies) {
-          const role =
-            (m.lang === "ar" ? r.opening?.title_ar : r.opening?.title_en) ??
-            r.opening?.title_en ??
-            "";
-          counts.set(role, (counts.get(role) ?? 0) + 1);
-        }
-        const lines = [...counts].map(([role, count]) => ({ count, role }));
-        return send(m, repliesDigest(m.lang, lines, appUrl()), {
-          category: "officer",
-        });
-      })
-    );
+    await sendStaffDigest(admin);
   },
   "get_involved.reply_update": async (admin, payload) => {
     await applicationStep(admin, payload);
@@ -1054,6 +1308,50 @@ const handlers: Record<string, Handler> = {
         )
       );
     }
+  },
+  "governance.candidacy_received": async (admin, payload) => {
+    const [to, { data }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("governance")
+        .from("candidates")
+        .select("position:positions(title_en, title_ar)")
+        .eq("id", String(payload.candidate_id))
+        .maybeSingle(),
+    ]);
+    if (to && data?.position) {
+      await send(
+        to,
+        candidacyReceived(
+          to.lang,
+          {
+            title_ar: data.position.title_ar ?? "",
+            title_en: data.position.title_en,
+          },
+          appUrl()
+        )
+      );
+    }
+  },
+  // Urgent staff alerts, at once (fourth prompt, 7p): a concern to the
+  // complaints panel's chair, the Vice President (decisions.md,
+  // Governance); an incident report to the Director of Events and the
+  // President.
+  "governance.concern_raised": async (admin, payload) => {
+    // About the Vice President or the President: whoever receives those.
+    const about: Record<string, string> = {
+      president: "concerns.about_president",
+      vice_president: "concerns.about_vp",
+    };
+    const permission = about[String(payload.routing)];
+    const chairs = permission
+      ? await holders(admin, permission)
+      : await roleHolders(admin, ["vice_president"]);
+    await Promise.all(
+      chairs.map((m) =>
+        send(m, concernRaised(m.lang, appUrl()), { category: "officer" })
+      )
+    );
   },
   "governance.election": async (admin, payload) => {
     const [to, { data: election }] = await Promise.all([
@@ -1103,6 +1401,20 @@ const handlers: Record<string, Handler> = {
       .rpc("forget_invitation_list", { list_source: source });
     if (gone) {
       throw gone;
+    }
+  },
+  "membership.associate_request_received": async (admin, payload) => {
+    const { data } = await admin
+      .schema("membership")
+      .from("associate_requests")
+      .select("email")
+      .eq("id", String(payload.request_id))
+      .maybeSingle();
+    if (data?.email) {
+      await send(
+        { email: data.email, lang: "en" },
+        associateRequestReceived("en")
+      );
     }
   },
   "membership.certificate_issued": async (admin, payload) => {
@@ -1211,6 +1523,26 @@ const handlers: Record<string, Handler> = {
       throw new BroadcastPending(waiting.join(" "));
     }
   },
+  "membership.parent_account": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(
+        to,
+        parentAccount(
+          to.lang,
+          payload.existing === true,
+          appUrl(),
+          payload.qalam === true
+        )
+      );
+    }
+  },
+  "membership.removed": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(to, membershipRemoved(to.lang, appUrl()));
+    }
+  },
   "membership.service_letter": async (admin, payload) => {
     const [to, { data: letter }] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -1311,24 +1643,11 @@ const handlers: Record<string, Handler> = {
     const { partner } = agreement;
     const nameIn = (lang: Lang) =>
       lang === "ar" ? (partner.name_ar ?? partner.name_en) : partner.name_en;
-    const [to, managers, signers] = await Promise.all([
-      recipient(admin, payload.user_id),
-      holders(admin, "partners.manage"),
-      holders(admin, "partners.sign"),
-    ]);
-    const officers = [...managers, ...signers].filter(
-      (o, i, all) => all.findIndex((x) => x.email === o.email) === i
-    );
-    await Promise.all([
-      ...(to
-        ? [send(to, applicationReceived(to.lang, nameIn(to.lang), appUrl()))]
-        : []),
-      ...officers.map((o) =>
-        send(o, applicationWaiting(o.lang, nameIn(o.lang), appUrl()), {
-          category: "officer",
-        })
-      ),
-    ]);
+    // The officers hear of it in the next morning's staff digest.
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(to, applicationReceived(to.lang, nameIn(to.lang), appUrl()));
+    }
   },
   // An email invitation, from a partner or from the Society (Membership),
   // in the inviter's language: the link is the invitation (/invite/<code>).
@@ -1459,6 +1778,20 @@ const handlers: Record<string, Handler> = {
       recipient(admin, payload.user_id),
       submissionTitle(admin, payload.submission_id),
     ]);
+    if (to && work && payload.decision === "revise") {
+      // The editor's note is the one the writer reads on the work's page.
+      const { data } = await admin
+        .schema("journal")
+        .from("submissions")
+        .select("intake_note")
+        .eq("id", String(payload.submission_id))
+        .maybeSingle();
+      await send(
+        to,
+        revisionRequested(to.lang, work, data?.intake_note ?? "", appUrl())
+      );
+      return;
+    }
     const outcome = payload.decision as Decision;
     if (
       to &&
@@ -1477,6 +1810,18 @@ const handlers: Record<string, Handler> = {
       await send(
         to,
         finalCheck(to.lang, pieceTitle(piece, to.lang), piece.id, appUrl())
+      );
+    }
+  },
+  "qirtas.in_reading": async (admin, payload) => {
+    const [to, work] = await Promise.all([
+      recipient(admin, payload.user_id),
+      submissionRecord(admin, payload.submission_id),
+    ]);
+    if (to && work) {
+      await send(
+        to,
+        submissionInReading(to.lang, work.title, appUrl(), work.reference)
       );
     }
   },
@@ -1524,16 +1869,27 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
+  "qirtas.revision_resent": async (admin, payload) => {
+    const [to, work] = await Promise.all([
+      recipient(admin, payload.user_id),
+      submissionTitle(admin, payload.submission_id),
+    ]);
+    if (to && work) {
+      await send(to, revisionResent(to.lang, work, appUrl()));
+    }
+  },
   "qirtas.submission_received": async (admin, payload) => {
     const [to, work, desk] = await Promise.all([
       recipient(admin, payload.user_id),
-      submissionTitle(admin, payload.submission_id),
+      submissionRecord(admin, payload.submission_id),
       submissionDesk(admin, payload.submission_id),
     ]);
     if (to && work) {
-      await send(to, submissionReceived(to.lang, work, appUrl(), desk), {
-        sticker: "sent",
-      });
+      await send(
+        to,
+        submissionReceived(to.lang, work.title, appUrl(), desk, work.reference),
+        { sticker: "sent" }
+      );
     }
   },
   "removal.done": async (admin, payload) => {
@@ -1598,6 +1954,9 @@ const handlers: Record<string, Handler> = {
   // person's own stop link as a contact property.
   // Files the database let go of (a declined Associate request's Tour
   // pages, decisions §12): removed from their private bucket.
+  "staff.digest": async (admin) => {
+    await sendStaffDigest(admin);
+  },
   "storage.remove": async (admin, payload) => {
     const paths = Array.isArray(payload.paths)
       ? payload.paths.filter((p): p is string => typeof p === "string")
@@ -1650,6 +2009,7 @@ const handlers: Record<string, Handler> = {
       const line = FOOTER_LINES.optional[lang];
       try {
         await runBroadcast(admin, {
+          browser: site(lang, `/sunday-paper/${month}`),
           built: sundayPaper(lang, paper),
           contacts,
           footer: [

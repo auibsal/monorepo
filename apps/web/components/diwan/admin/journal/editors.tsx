@@ -92,7 +92,7 @@ const PublishControls = ({
 
 // ── Issue ───────────────────────────────────────────────────────────────────
 
-/** A number field's value, or null when it is empty (the pilot issue). */
+/** A number field's value, or null when it is empty (the pilot). */
 const optionalNumber = (value: string) => (value ? Number(value) : null);
 
 export const IssueEditor = () => {
@@ -218,7 +218,7 @@ export const IssueEditor = () => {
     onSuccess: async (savedId) => {
       await queryClient.invalidateQueries({ queryKey: ["admin", "journal"] });
       if (!issueId) {
-        router.replace(`/qirtas/issues/${savedId}`);
+        router.replace(`/qirtas/editions/${savedId}`);
       }
     },
   });
@@ -247,7 +247,7 @@ export const IssueEditor = () => {
           <>
             {back(tk("back"))}
             {existing.data?.slug && status === "published" ? (
-              <OnTheSite href={`/qirtas/issues/${existing.data.slug}`} />
+              <OnTheSite href={`/qirtas/editions/${existing.data.slug}`} />
             ) : null}
           </>
         }

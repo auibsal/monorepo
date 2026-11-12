@@ -2,7 +2,7 @@
 
 The one app, the database, and the rules that keep members' data safe.
 
-The platform is one repository, [auibsal/monorepo](https://github.com/auibsal/monorepo), deployed to Vercel and backed by one Supabase project. Members never need to know any of this; the technical administrator and their successor do.
+The platform is one repository, [auibsal/monorepo](https://github.com/auibsal/monorepo), deployed to Vercel and backed by one Supabase project. Members never need to know any of this; the web lead and their successor do.
 
 | App | Address | What it does |
 | --- | --- | --- |
@@ -11,7 +11,7 @@ The platform is one repository, [auibsal/monorepo](https://github.com/auibsal/mo
 | API | auibsal.org/api (`app/api`, `lib/api`) | Email, scheduled jobs, calendar feeds, file links, exports, account deletion, Hudhud and the Notion sync; the only code holding the secret key |
 | The design system | [auibsal.org/diwan/media/design](https://auibsal.org/diwan/media/design) (`packages/brand`, built into the site) | SAL-MED-02 in full: the guide, foundations, logos, every component, screen and email in both languages, social and print files; in the Diwan, read-only, not indexed |
 | Officer handbook | The team's Notion workspace (linked from the Desk) | How to run the Society; officers only |
-| These runbooks | `docs/platform` in the repository | How the platform runs, for the technical administrator |
+| These runbooks | `docs/platform` in the repository | How the platform runs, for the web lead |
 
 ## How a request flows
 
@@ -28,7 +28,7 @@ The platform is one repository, [auibsal/monorepo](https://github.com/auibsal/mo
 - **Secrets live only in the API and CI.** The Diwan bundle is public by design; CI fails if a secret's name or value appears in it.
 - **Multi-step rules are database functions.** Ballots, the election count, waitlist promotion and Qirtas decisions are single atomic functions.
 - **Blind review.** Readers never receive an author's identity before a decision; the database withholds it.
-- **Readers read the work, never the file.** A reader signs F-40, the Confidentiality pledge, on the reading page itself (in their platform name, kept and emailed like every signed form; `journal.sign_reader_pledge`), then reads a blind entry's text on the page (`journal.entry_text`; the columns aren't selectable by themselves) and a Gallery entry's images as copies marked with their card number and the day (`/api/files/blind`). Selecting, copying, the context menu and printing are off on that page, a speed bump that keeps the keyboard and screen readers working. Originals open only for the writer, the Submissions Manager in intake, and the section's editor or the Editor-in-Chief once accepted (`journal.open_original`); every opening shows in the submission's History.
+- **Readers read the work, never the file.** A reader signs `confidentiality-agreement`, the Confidentiality pledge, on the reading page itself (in their platform name, kept and emailed like every signed form; `journal.sign_reader_pledge`), then reads a blind entry's text on the page (`journal.entry_text`; the columns aren't selectable by themselves) and a Gallery entry's images as copies marked with their card number and the day (`/api/files/blind`). Selecting, copying, the context menu and printing are off on that page, a speed bump that keeps the keyboard and screen readers working. Originals open only for the writer, the Submissions Manager in intake, and the section's editor or the Editor-in-Chief once accepted (`journal.open_original`); every opening shows in the submission's History.
 
 ## Scheduled jobs
 

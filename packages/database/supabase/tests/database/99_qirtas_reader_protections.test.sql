@@ -170,7 +170,7 @@ select throws_ok($$ select journal.sign_reader_pledge(false) $$,
   '23514', null, 'F-40 is signed only with the agreement to sign electronically');
 select isnt(journal.sign_reader_pledge(true), null, 'The reader signs F-40');
 select is(
-  (select signer_name || ' · ' || status from governance.form_submissions where form_key = 'f40'),
+  (select signer_name || ' · ' || status from governance.form_submissions where form_key = 'confidentiality-agreement'),
   'Reader One · closed',
   'The signed copy is F-40, in the reader''s platform name, with nothing left to handle'
 );
@@ -180,7 +180,7 @@ select is((select current from journal.my_reader_pledge()), true, 'The pledge is
 select is((select count(*)::integer from journal.original_openings), 0, 'Readers see no openings');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000005b2');
-select is((select count(*)::integer from governance.form_submissions where form_key = 'f40'), 0,
+select is((select count(*)::integer from governance.form_submissions where form_key = 'confidentiality-agreement'), 0,
   'A reader sees only their own signed F-40');
 
 -- ── After acceptance ────────────────────────────────────────────────────────

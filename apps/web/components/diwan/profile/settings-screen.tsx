@@ -5,15 +5,19 @@ import { useTranslations } from "next-intl";
 import { useIsStaff } from "@/components/account/member-shell";
 import { useMyMembership } from "@/lib/diwan/queries";
 import { RecoveryCodes } from "../auth/recovery-codes";
+import { TwoStepSettings } from "../auth/two-step";
 import { DiwanPage, DiwanSection, RowList } from "../page";
+import { AccountLanguage } from "./account-language";
 import { DeleteAccount } from "./delete-account";
 import { DownloadData } from "./download-data";
 import { EmailNotices } from "./email-notices";
+import { EsignSettings } from "./esign";
 import { MailTopics } from "./mail-topics";
 import { Passkeys } from "./passkeys";
 import { ChangePassword } from "./password";
 import { PersonalEmail } from "./personal-email";
 import { PhoneNotifications } from "./phone-notifications";
+import { Sessions } from "./sessions";
 import { TelegramLink } from "./telegram-link";
 
 /**
@@ -25,6 +29,7 @@ export const NoticesScreen = () => {
   return (
     <DiwanPage lede={t("noticesLede")} narrow title={t("notices")}>
       <DiwanSection id="email" title={t("noticesEmail")}>
+        <AccountLanguage />
         <MailTopics />
         <EmailNotices />
       </DiwanSection>
@@ -87,8 +92,11 @@ export const SettingsScreen = () => {
         </RowList>
       </DiwanSection>
       {member ? <PersonalEmailSection /> : null}
+      <EsignSettings />
       <ChangePassword />
+      <TwoStepSettings />
       <Passkeys />
+      <Sessions />
       <RecoveryCodes />
       <DownloadData />
       <DeleteAccount />

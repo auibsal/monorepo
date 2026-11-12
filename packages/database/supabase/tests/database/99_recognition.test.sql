@@ -103,12 +103,14 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-rc@a
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'eic-rc@auib.edu.iq', 'The Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a6', 'qalam-rc@auib.edu.iq', 'The Qalam Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'lead-rc@auib.edu.iq', 'Programme Lead');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000000a5', 'gs-rc@auib.edu.iq', 'General Secretary');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000a5', 'gs-rc@auib.edu.iq', 'Secretary');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'eic');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a6', 'qalam_lead');
-insert into programmes.qalam_students (id, year, first_name, last_name, school)
-values ('00000000-0000-0000-0000-00000000c001', 2028, 'Sara', 'Ahmed', 'Baghdad High');
+-- A Qalam student is an account on the roster (made by the parent's consent).
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000a7', 'sara@school.example', 'Sara Ahmed');
+insert into programmes.qalam_students (id, user_id, year, school)
+values ('00000000-0000-0000-0000-00000000c001', '00000000-0000-0000-0000-0000000000a7', 2028, 'Baghdad High');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'programme_lead', 'programme',
   (select id from core.programmes where slug = 'company'));
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a5', 'general_secretary');
@@ -151,7 +153,7 @@ select is(membership.service_hours('00000000-0000-0000-0000-0000000000a2'), null
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');
 select is((select hours from membership.service_totals() where user_id = '00000000-0000-0000-0000-0000000000a1'),
-  3.00::numeric, 'The General Secretary sees everyone''s totals');
+  3.00::numeric, 'The Secretary sees everyone''s totals');
 
 -- Certificates only for finishing Qalam and for the Mutanabbi Prize (decisions.md),
 -- one language each; signers by kind.
@@ -159,7 +161,7 @@ select lives_ok(
   $$ insert into membership.certificates (id, user_id, kind, prize_category, citation_en, lang)
      values ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-0000000000a1', 'prize',
        'qirtas', 'For "Small Hours," a short story', 'en') $$,
-  'The General Secretary prepares a Prize certificate'
+  'The Secretary prepares a Prize certificate'
 );
 select throws_ok(
   $$ insert into membership.certificates (user_id, kind, period_from)
@@ -175,7 +177,7 @@ select lives_ok(
 select throws_ok(
   $$ select membership.sign_certificate('00000000-0000-0000-0000-00000000f001') $$,
   '42501', 'not_allowed',
-  'The General Secretary cannot sign'
+  'The Secretary cannot sign'
 );
 
 select pg_temp.logout();
@@ -246,7 +248,7 @@ select lives_ok(
   $$ insert into membership.service_letters (id, user_id, role_en, period_from, period_to)
      values ('00000000-0000-0000-0000-00000000d001', '00000000-0000-0000-0000-0000000000a1',
        'Section editor, Qirtas', '2026-09-01', '2027-05-31') $$,
-  'The General Secretary writes a service letter'
+  'The Secretary writes a service letter'
 );
 select pg_temp.logout();
 create temp table letter_code as

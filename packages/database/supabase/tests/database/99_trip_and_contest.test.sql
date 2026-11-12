@@ -135,7 +135,7 @@ select throws_ok(
   '22023', 'approval_in_future', 'an approval is not dated ahead');
 select lives_ok(
   $$ select events.record_approval('00000000-0000-0000-0000-0000000e7101', current_date, 'Student Life') $$,
-  'the General Secretary records it');
+  'the Secretary records it');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e7001');
 select lives_ok(

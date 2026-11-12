@@ -6,9 +6,10 @@
  *
  * Hudhud speaks Iraqi Arabic (decisions.md): he is the Society's
  * voice in the chat, so his Arabic is the Arabic members speak to each
- * other, with the Iraqi spelling (گ for the g sound). Only the bot's
- * Telegram profile (description, shortDescription) stays in standard
- * Arabic.
+ * other, with the Iraqi spelling (گ for the g sound): chat, reminders and
+ * the Sunday note. The bot's Telegram profile (description,
+ * shortDescription) and anything formal (a removal, a consent, an appeal)
+ * stay in standard Arabic (fourth prompt, 7g).
  */
 
 export type Lang = "en" | "ar";
@@ -145,9 +146,12 @@ const en = {
   placesLeft: (n: string) => `${n} places left`,
 
   // Group posts
-  postEventNew: "<b>New event</b>",
   postEventSoon: (date: string) => `<b>In two days</b>: ${date}`,
   postPiece: "<b>New in Qirtas</b>",
+  postWeek: "<b>This week at SAL</b>",
+  postWeekCalls: "Write for Qirtas",
+  postWeekCloses: (date: string) => `closes ${date}`,
+  postWeekEvents: "Events",
   postWord: (n: string) => `<b>Word No. ${n}</b> is ready.`,
   purposeNames: {
     announcements: "announcements",
@@ -257,7 +261,7 @@ const ar: Copy = {
   // The bot's profile in Telegram is read by people who don't know the
   // Society yet, so it stays in standard Arabic.
   description:
-    "هدهد، حامل رسائل جمعية الفنون والآداب في الجامعة الأمريكية في بغداد. الفعاليات والحجز، وقرطاس، وكلمة كل يوم، وإشعاراتك من الجمعية، كلها في تيليغرام.",
+    "هدهد، حامل رسائل جمعية الفنون والآداب في الجامعة الأمريكية. الفعاليات والحجز، وقرطاس، وكلمة كل يوم، وإشعاراتك من الجمعية، كلها في تيليغرام.",
   eventMissing: "ما لگيت هالفعالية. يمكن انتقلت أو انلغت.",
   eventsNone:
     "بعد ماكو شي بالتقويم. أول ما تنعلن فعالية جديدة أنزّلها بالمجموعة.",
@@ -290,15 +294,15 @@ const ar: Copy = {
   joinStaffWaiting: (group: string) =>
     `${group} لمسؤولي الجمعية. إذا عندك دور بالجمعية اربط حسابك وأدخّلك هسه، وإلا واحد من المشرفين راح يشوف طلبك.`,
   joinWaiting: (group: string) =>
-    `شكرًا لأنك طلبت تنضم لـ${group}. واحد من المشرفين راح يشوف طلبك قريب. وإذا عندك حساب بالجمعية اربطه وأدخّلك هسه.`,
+    `شكرًا لأنك طلبت تنضم إلى ${group}. واحد من المشرفين راح يشوف طلبك قريب. وإذا عندك حساب بالجمعية اربطه وأدخّلك هسه.`,
   linked: (name: string) =>
     `انربط. تشرفنا صدگ يا ${name}. إشعاراتك هم راح توصلك هنا، وتگدر تطفيها من /me.`,
   linkFailed:
-    "هالرابط خلص وقته أو انستخدم قبل. سوّي رابط جديد من «حسابك» على auibsal.org، وبعدين الإعدادات.",
+    "هالرابط خلص وقته أو انستخدم قبل. سوّي رابط جديد من «حسابك» على ⁦auibsal.org⁩، وبعدين الإعدادات.",
 
   linkHow:
-    "حتى تربط حسابك، افتح «حسابك» على auibsal.org، وبعدين الإعدادات، واختار <b>اربط تيليغرام</b>. بس كبسة وحدة.",
-  memberNo: "حسابك بعده ما توثّق: كمّل انضمامك على auibsal.org حتى تحجز.",
+    "حتى تربط حسابك، افتح «حسابك» على ⁦auibsal.org⁩، وبعدين الإعدادات، واختار <b>اربط تيليغرام</b>. بس كبسة وحدة.",
+  memberNo: "حسابك بعده ما توثّق: كمّل انضمامك على ⁦auibsal.org⁩ حتى تحجز.",
   membersOnly: "للأعضاء بس",
   memberYes: "عضو موثّق",
 
@@ -317,9 +321,12 @@ const ar: Copy = {
   onePlaceLeft: "باقي مقعد واحد",
   placesLeft: (n: string) => `باقي ${n} مقعد`,
 
-  postEventNew: "<b>فعالية جديدة</b>",
   postEventSoon: (date: string) => `<b>بعد يومين</b>: ${date}`,
   postPiece: "<b>جديد بقرطاس</b>",
+  postWeek: "<b>شنو عدنا هالأسبوع</b>",
+  postWeekCalls: "اكتبوا لقرطاس",
+  postWeekCloses: (date: string) => `آخر موعد ${date}`,
+  postWeekEvents: "الفعاليات",
   postWord: (n: string) => `<b>الكلمة رقم ${n}</b> جاهزة.`,
   purposeNames: {
     announcements: "الإعلانات",
@@ -331,20 +338,23 @@ const ar: Copy = {
   qirtasNone: "ماكو شي جديد بقرطاس هسه. النصوص الجاية بالطريق.",
 
   qirtasTitle: "<b>الجديد بقرطاس</b>",
+  // A removal is said in standard Arabic: Iraqi is for chat, reminders and
+  // the Sunday note; removals, consents and appeals are standard (fourth
+  // prompt, 7g).
   removalWarning: (name: string) =>
-    `${name}، هالمجموعة لأعضاء الجمعية، وما لگيت حسابك بالجمعية. سجّل على auibsal.org واربط حسابك هنا خلال أسبوع، وإلا راح أضطر أطلّعك من المجموعة. موظفي الحياة الطلابية والمشرف من الهيئة التدريسية ما يشملهم هذا.`,
+    `${name}، هذه المجموعة لأعضاء الجمعية، ولم أجد حسابك فيها. انضم على ⁦auibsal.org⁩ واربط حسابك هنا خلال أسبوع، وإلا فسأضطر إلى إخراجك من المجموعة. ولا يشمل ذلك موظفي شؤون الطلبة ولا المستشار من أعضاء هيئة التدريس.`,
   rsvpAlready: "عندك مقعد من قبل.",
   rsvpCancelled: "تم. مقعدك صار فارغ لغيرك.",
   rsvpClosed: "هالفعالية ما بيها حجز.",
   rsvpConfirmed: "انحجزلك مقعد. أذكّرك قبل ما تبدي.",
   rsvpEnded: "هالفعالية خلصت.",
-  rsvpNotMember: "الحجز للأعضاء الموثّقين. كمّل انضمامك على auibsal.org أول.",
+  rsvpNotMember: "الحجز للأعضاء الموثّقين. كمّل انضمامك على ⁦auibsal.org⁩ أول.",
   rsvpWaitlisted: "العدد اكتمل، فحطيتك بقائمة الانتظار. أخبرك إذا فرغ مقعد.",
   setupBad:
     "هالرمز ما اشتغل. واحد من المسؤولين يگدر يسوي رمز جديد من الديوان: الإعدادات، تيليغرام.",
 
   setupOk:
-    "انربطت. من هسه آني حامل رسائل الجمعية هنا.\n\nبعدين:\n1. سوّوني مشرف يگدر يدعي مستخدمين.\n2. اختاروا غرض كل موضوع، واللغة، ولمنو المجموعة من الديوان، بـ«الإعلام ← القنوات».\n3. فعّلوا <b>الموافقة على الأعضاء الجدد</b> لرابط الدعوة: أدخّل الأعضاء المربوطين هسه وأخلّي الباقين عليكم.",
+    "انربطت. من هسه آني حامل رسائل الجمعية هنا.\n\nبعدين:\n1. سوّوني مشرف يگدر يدعي مستخدمين.\n2. اختاروا غرض كل موضوع، واللغة، ولمنو المجموعة من الديوان، من «الإعلام ← القنوات».\n3. فعّلوا <b>الموافقة على الأعضاء الجدد</b> لرابط الدعوة: أدخّل الأعضاء المربوطين هسه وأخلّي الباقين عليكم.",
   setupUsage: "دز /setup ويّا الرمز من الديوان (الإعدادات، تيليغرام).",
   shortDescription:
     "حامل رسائل جمعية الفنون والآداب: الفعاليات وقرطاس وكلمة كل يوم.",
@@ -353,7 +363,7 @@ const ar: Copy = {
   summaryNoShows: (n: string) => `${n} حجزوا وما إجو`,
   summaryTitle: "<b>بعد الفعالية</b>",
   unlinked:
-    "انفصل. حسابك بالجمعية ما راح توصله إشعارات هنا بعد. تگدر تربطه مرة لخ من الإعدادات بـ«حسابك».",
+    "انفصل. حسابك بالجمعية ما راح توصله إشعارات هنا بعد. تگدر تربطه مرة لخ من الإعدادات في «حسابك».",
   waitlisted: "انت بقائمة الانتظار.",
 
   when: (date: string, time: string) => `${date} · ${time}`,

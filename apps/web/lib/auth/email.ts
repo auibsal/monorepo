@@ -120,6 +120,8 @@ export interface SignUpDetails {
   /** From the Turnstile widget, when the human check is on. */
   captchaToken?: string;
   email: string;
+  /** Consent to sign electronically (E-SIGN), asked on its own line. */
+  esign?: boolean;
   locale: "ar" | "en";
   /**
    * The mailing list's two topics, the Sunday Paper and Society news and
@@ -130,7 +132,7 @@ export interface SignUpDetails {
   /**
    * A student under 18 (decisions §10, Minors): the month and year of
    * birth, kept only to lift the minors' rules at 18, and the parent's
-   * address, where the consent link (F-46) goes once the account is
+   * address, where the consent link (parent-consent) goes once the account is
    * confirmed.
    */
   minor?: { birthMonth: number; birthYear: number; parentEmail: string };
@@ -240,6 +242,7 @@ export const signUpWithEmail = async (
         ...outsideMetadata(details.outside),
         agreed_at: new Date().toISOString(),
         ...minorMetadata(details.minor),
+        esign: details.esign ? "true" : "false",
         locale: details.locale,
         mailing: details.mailing ? "true" : "false",
       },
@@ -276,34 +279,6 @@ export const signInWithPassword = async (
   return error
     ? { code: toEmailAuthError(error), ok: false }
     : { ok: true, value: undefined };
-};
-
-/** Magic link for existing accounts (it never creates one). */
-export const sendMagicLink = async (
-  supabase: Client,
-  email: string,
-  redirectTo: string,
-  captchaToken?: string
-): Promise<AuthResult> => {
-  if (!isValidEmail(email)) {
-    return { code: "invalid_email", ok: false };
-  }
-
-  const { error } = await supabase.auth.signInWithOtp({
-    email: normalizeEmail(email),
-    options: {
-      ...captcha(captchaToken),
-      emailRedirectTo: redirectTo,
-      shouldCreateUser: false,
-    },
-  });
-
-  // Don't reveal whether an account exists.
-  const code = error ? toEmailAuthError(error) : null;
-  if (code && SHOWN.includes(code)) {
-    return { code, ok: false };
-  }
-  return { ok: true, value: undefined };
 };
 
 const CODE = /^\d{6,10}$/u;

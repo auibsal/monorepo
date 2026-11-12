@@ -24,6 +24,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     // A partner's people give their names in four parts, like members; an
     // outside address signs up only to apply or when invited.
     user_metadata: {
+      esign: "true",
       father_name_ar: "تجريبي",
       father_name_en: "Test",
       first_name_ar: "ممثل",
@@ -49,7 +50,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   // Signed in the applicant's name on the platform, never typed: a
   // signature in the signature face, with their card number and the date.
   await expect(
-    applicant.getByRole("figure").filter({ hasText: "Tess Partner" })
+    applicant.getByRole("figure").filter({ hasText: "Tess Test" })
   ).toBeVisible();
   await applicant
     .getByRole("checkbox", { name: /I sign this memorandum/u })
@@ -127,8 +128,15 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await expect(
     applicant.getByRole("heading", { level: 1, name: organization })
   ).toBeVisible();
+  // Five tabs (decisions.md, The site): Events, Checklist, Guests, Team,
+  // Memorandum.
+  const tabs = applicant.getByRole("navigation", { name: "Partner" });
+  for (const name of ["Events", "Checklist", "Guests", "Team", "Memorandum"]) {
+    await expect(tabs.getByRole("link", { name })).toBeVisible();
+  }
   // A partner turns on what it runs with the Society by asking; the
   // Society approves.
+  await tabs.getByRole("link", { name: "Memorandum" }).click();
   await applicant
     .getByRole("checkbox", { name: "Their members may volunteer at events" })
     .click();
@@ -140,7 +148,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await expect(applicant.getByRole("link", { name: "Perks" })).toHaveCount(0);
 
   // The lead invites a guest by email; the invitation's link signs them up.
-  await applicant.getByRole("link", { name: "People" }).click();
+  await tabs.getByRole("link", { name: "Guests" }).click();
   const guestEmail = `e2e-guest-${stamp}@example.org`;
   await applicant
     .getByRole("region", { name: "Guests" })
@@ -158,7 +166,10 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
 
   const guest = await (await browser.newContext()).newPage();
   await guest.goto(`${urls.web}/invite/${invitation?.code}`);
-  await expect(guest.getByLabel("Email")).toHaveValue(guestEmail);
+  // "Email" exactly: the e-sign line below it mentions email too.
+  await expect(guest.getByLabel("Email", { exact: true })).toHaveValue(
+    guestEmail
+  );
   await guest.getByLabel("Password").fill(PASSWORD);
   for (const [name, parts] of [
     ["Your name in English", ["Guest", "Ali", "Omar", "Writer"]],
@@ -183,13 +194,12 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await guest.goto((link ?? "").replaceAll("&amp;", "&"));
   await guest.getByRole("button", { name: /continue/iu }).click();
   await guest.getByRole("button", { name: "Accept the invitation" }).click();
-  // A guest acknowledges the Code of Conduct and answers the photo question, like a
-  // member, then meets their card.
+  // A guest acknowledges the Code of Conduct, like a member, then meets
+  // their card.
   await expect(guest).toHaveURL(/\/welcome/u);
   await guest
     .getByRole("button", { name: "I acknowledge the Code of Conduct" })
     .click();
-  await guest.getByRole("button", { name: "Yes, that’s fine" }).click();
   await expect(guest.getByRole("heading", { level: 1 })).toContainText(
     "Welcome"
   );
@@ -264,7 +274,14 @@ test("a member who leads their club's partnership stays a member", async ({
     // Still a member: the whole row, the Member card, and the dashboard.
     await page.goto(`${urls.web}/account`);
     const row = page.getByRole("navigation", { name: "Your account" });
-    for (const name of ["Calendar", "Record", "Work", "Elections"]) {
+    for (const name of [
+      "Events",
+      "Work",
+      "Applications",
+      "Saved",
+      "Documents",
+      "Card",
+    ]) {
       await expect(row.getByRole("link", { name })).toBeVisible();
     }
     await page.goto(`${urls.web}/account/elections`);

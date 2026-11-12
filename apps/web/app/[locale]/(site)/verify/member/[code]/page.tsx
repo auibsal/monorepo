@@ -4,6 +4,7 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/section";
+import { pageWithinRateLimit, VERIFY_LIMIT } from "@/lib/api/rate-limit";
 import { localized, membership } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readLive } from "@/lib/supabase";
@@ -50,6 +51,13 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   const tt = await getTranslations({ locale, namespace: "diwan.home.tiers" });
   const tk = await getTranslations({ locale, namespace: "diwan.home.kinds" });
   const valid = membership.CARD_CODE.test(code);
+  if (valid && !(await pageWithinRateLimit("verify", VERIFY_LIMIT))) {
+    return (
+      <div className="mx-auto grid w-full max-w-xl gap-6 px-4 py-16">
+        <PageHeader lede={t("tooMany")} title={t("title")} />
+      </div>
+    );
+  }
   const card = valid
     ? await readLive((c) => membership.verifyCard(c, code, live), null)
     : null;
@@ -85,13 +93,23 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   if (card.kind === "member" && card.tier) {
     rows.push([t("tier"), tt(card.tier), undefined]);
   } else if (card.kind === "guest" || card.kind === "partner") {
-    rows.push([t("tier"), tk(card.kind), undefined]);
+    // A partner's people hold guest accounts (decisions.md, Members).
+    rows.push([t("tier"), tk("guest"), undefined]);
   }
   const role = locale === "ar" ? card.role_ar : card.role_en;
   if (role) {
     rows.push([t("role"), role, "auto"]);
   }
-  if (card.since) {
+  // A Qalam student: the school and the summer in place of the year since
+  // (decisions.md, the card).
+  const qalam = await readLive(
+    (c) => membership.verifyCardQalam(c, code, live),
+    null
+  );
+  if (qalam?.school) {
+    rows.push([t("school"), qalam.school, "auto"]);
+    rows.push([t("summer"), String(qalam.year), "ltr"]);
+  } else if (card.since) {
     rows.push([t("since"), String(card.since), "ltr"]);
   }
   rows.push([

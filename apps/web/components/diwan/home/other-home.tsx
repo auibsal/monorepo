@@ -145,7 +145,7 @@ export const OtherHome = () => {
           {kind === "guest" ? (
             <>
               <li className="grid gap-1">
-                <Link className="link font-medium" href="/account/calendar">
+                <Link className="link font-medium" href="/account/events">
                   {t("book")}
                 </Link>
                 <p className="type-caption">{t("bookLine")}</p>
@@ -160,7 +160,7 @@ export const OtherHome = () => {
           ) : null}
           {kind ? (
             <li className="grid gap-1">
-              <Link className="link font-medium" href="/account/record">
+              <Link className="link font-medium" href="/account/documents">
                 {t("record")}
               </Link>
               <p className="type-caption">{t("recordLine")}</p>

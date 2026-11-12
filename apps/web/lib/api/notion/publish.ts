@@ -291,7 +291,7 @@ const publishEvent = async (
       "Diwan ID": prop.text(id),
       "Off campus": prop.checkbox(true),
       "Platform note": prop.text(
-        `Saved in the Diwan as a draft (${stamp()}): an event off campus is published once the General Secretary records Student Life's written approval on its page in the Diwan. Then set Ready to publish again.`
+        `Saved in the Diwan as a draft (${stamp()}): an event off campus is published once the Secretary records Student Life's written approval on its page in the Diwan. Then set Ready to publish again.`
       ),
       Slug: prop.text(v.slug),
       Status: prop.select("Planning"),
@@ -326,7 +326,7 @@ const publishEvent = async (
 /**
  * The event's host and debrief (decisions §13): Host names the partner the
  * event is held for (matched to the register by its English or Arabic
- * name; the Society otherwise), and Debrief links its F-13 page, kept for
+ * name; the Society otherwise), and Debrief links its event-debrief page, kept for
  * the event's staff only.
  */
 const saveHostAndDebrief = async (

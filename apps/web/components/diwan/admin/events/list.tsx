@@ -65,7 +65,7 @@ const useEventRows = (tab: Kind) => {
 type Row = NonNullable<ReturnType<typeof useEventRows>["data"]>[number];
 
 /**
- * What's on in the Diwan: what's coming, then drafts, then what's past,
+ * Events in the Diwan: what's coming, then drafts, then what's past,
  * one page (no tabs held in the page's state).
  */
 export const EventsList = () => {

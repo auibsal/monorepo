@@ -9,7 +9,7 @@ interface LetterProps {
   /** The paragraphs of the letter. */
   readonly children: ReactNode;
   readonly className?: string;
-  /** The form it comes from, "SAL-EXB-01 · F-05". */
+  /** The form it comes from, "SAL-EXB-01". */
   readonly code: string;
   /**
    * The date, already formatted, with no weekday: "November 7, 2026",
@@ -38,7 +38,7 @@ interface LetterProps {
   /**
    * The verification code and its check page (`auibsal.org/verify/<code>`),
    * printed at the foot beside the form code with a QR. Service letters
-   * (F-05) carry one.
+   * (service-letter) carry one.
    */
   readonly verify?: {
     readonly code: string;
@@ -54,7 +54,7 @@ const SIGN_OFF: Record<string, string> = {
 
 /**
  * The letter (SAL-MED-02; decided Nov 7): one template for every letter
- * the Society sends (F-03, F-05, F-30, F-32, F-33, F-34, F-42). A4
+ * the Society sends (appointment-letter, service-letter, thank-you-letter, application-outcome, welcome-letter, honorary-membership-invitation). A4
  * portrait, in American business-letter form: the lockup at the top start,
  * the date (no weekday), the recipient, a subject line, the greeting (a
  * colon, or a comma in a personal letter to a member), the body, the

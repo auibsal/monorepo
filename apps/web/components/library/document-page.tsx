@@ -48,10 +48,18 @@ const SEATS_AR: Record<string, string> = {
   "Director of Membership": "مدير العضوية",
   "Director of Partnerships": "مدير الشراكات",
   "Editor-in-Chief": "رئيس التحرير",
-  "General Secretary": "الأمين العام",
+  // Notion's older owner value reads as the seat's current name.
+  "General Secretary": "أمين السر",
   President: "الرئيس",
+  Secretary: "أمين السر",
   "Vice President": "نائب الرئيس",
 };
+
+/** The seat that keeps a document, in the page's language. */
+export const seatName = (owner: string, locale: string) =>
+  locale === "ar"
+    ? (SEATS_AR[owner] ?? owner)
+    : owner.replace("General Secretary", "Secretary");
 
 /** GOV-04 to GOV-06 took effect with the site (decisions §13). */
 const SITE_POLICIES = new Set(["SAL-GOV-04", "SAL-GOV-05", "SAL-GOV-06"]);
@@ -82,6 +90,9 @@ const DocumentLine = async ({ doc, locale }: { doc: Doc; locale: Locale }) => {
       date: formatPlainDate(SITE_LAUNCH, locale),
       version,
     });
+  } else if (doc.code === "SAL-GOV-07") {
+    // decisions.md, Documents: GOV-07 takes effect the day it is published.
+    status = t("onPublication", { version });
   } else if (FOUNDING.has(doc.code)) {
     status = t("proposedFounding", { version });
   } else {
@@ -90,9 +101,7 @@ const DocumentLine = async ({ doc, locale }: { doc: Doc; locale: Locale }) => {
   const other = locale === "ar" ? "en" : "ar";
   const hasOther = other === "ar" ? Boolean(doc.body_ar) : Boolean(doc.body_en);
   const keeper = doc.owner
-    ? t("keptBy", {
-        seat: locale === "ar" ? (SEATS_AR[doc.owner] ?? doc.owner) : doc.owner,
-      })
+    ? t("keptBy", { seat: seatName(doc.owner, locale) })
     : null;
   return (
     <p className="type-caption">
@@ -120,9 +129,12 @@ const DocumentLine = async ({ doc, locale }: { doc: Doc; locale: Locale }) => {
  */
 export const DocumentArticle = async ({
   locale,
+  section,
   slug,
 }: {
   locale: Locale;
+  /** Only one section, under its own title (the Code of Conduct). */
+  section?: { heading: RegExp; title: string };
   slug: string;
 }) => {
   const doc = await load(slug);
@@ -152,7 +164,11 @@ export const DocumentArticle = async ({
       return id && ref ? [[id, ref] as const] : [];
     })
   );
-  const { contents, html } = documents.documentSections(body.html, refs, pages);
+  const sections = documents.documentSections(body.html, refs, pages);
+  const html = section
+    ? documents.documentSection(sections.html, section.heading)
+    : sections.html;
+  const contents = section ? [] : sections.contents;
 
   return (
     <article className="mx-auto grid w-full max-w-4xl gap-10 px-4 py-16">
@@ -162,8 +178,10 @@ export const DocumentArticle = async ({
       >
         {t("all")}
       </Link>
-      <DocumentHeader title={documents.documentTitle(doc, locale)}>
-        {documents.documentSummary(doc, locale) ? (
+      <DocumentHeader
+        title={section?.title ?? documents.documentTitle(doc, locale)}
+      >
+        {!section && documents.documentSummary(doc, locale) ? (
           <p className="type-lede max-w-3xl">
             {documents.documentSummary(doc, locale)}
           </p>

@@ -19,8 +19,10 @@ import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, recognition, unwrap } from "@/lib/data";
 import { AddInPlace, ErrorLine } from "../admin/kit";
+import { SignedList } from "../forms/forms";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, SectionSpinner } from "../states";
+import { Handovers, MyRoles } from "./roles";
 import { YearLinks } from "./year";
 
 const KEY = ["service"];
@@ -30,9 +32,9 @@ type RecordStatus = "pending" | "confirmed" | "rejected";
 const today = () => new Date().toISOString().slice(0, 10);
 
 /**
- * My service, for staff (decisions.md: staff hours and service
- * letters only for staff): the hours log and certificates. Hours count once
- * someone else confirms them.
+ * Roles and service (decisions.md, Your account): the roles held, the
+ * handovers to sign or countersign, the hours log and the service letters.
+ * Hours count once someone else confirms them.
  */
 export const Service = () => {
   const t = useTranslations("diwan.service");
@@ -59,10 +61,6 @@ export const Service = () => {
     queryKey: [...KEY, "programmes"],
   });
 
-  const certificates = useQuery({
-    queryFn: () => recognition.myCertificates(supabase),
-    queryKey: [...KEY, "certificates"],
-  });
   const letters = useQuery({
     enabled: Boolean(user),
     queryFn: () => recognition.serviceLetters(supabase, user?.id),
@@ -87,7 +85,9 @@ export const Service = () => {
   };
 
   return (
-    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+    <DiwanPage lede={t("rolesLede")} narrow title={t("rolesTitle")}>
+      <MyRoles />
+      <Handovers />
       <SalCard>
         <div className="grid gap-3">
           <p className="type-label">{t("thisYear")}</p>
@@ -149,33 +149,15 @@ export const Service = () => {
         </AddInPlace>
       </DiwanSection>
 
-      <DiwanSection id="certificatestitle" title={t("certificatesTitle")}>
-        {certificates.data?.length === 0 ? (
-          <p className="type-body text-text-secondary">{t("noCertificates")}</p>
-        ) : null}
-        <ul className="grid gap-2">
-          {(certificates.data ?? []).map((c) => (
-            <li key={c.id}>
-              <Link
-                className="link"
-                href={`/account/record/certificates/${c.id}`}
-              >
-                {t(`kinds.${c.kind as recognition.CertificateKind}`)}
-                {c.serial ? ` · ${c.serial}` : ""}
-              </Link>
-              {c.status === "revoked" ? (
-                <span className="type-caption"> · {t("revoked")}</span>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      </DiwanSection>
       {(letters.data ?? []).length > 0 ? (
         <DiwanSection id="letters" title={t("lettersTitle")}>
           <ul className="grid gap-2">
             {(letters.data ?? []).map((l) => (
               <li key={l.id}>
-                <Link className="link" href={`/account/record/letters/${l.id}`}>
+                <Link
+                  className="link"
+                  href={`/account/documents/letters/${l.id}`}
+                >
                   {t("letter", {
                     date: formatPlainDate(l.issued_at, locale),
                   })}
@@ -193,7 +175,7 @@ export const Service = () => {
   );
 };
 
-/** Hours given, logged in place on Record (decisions §26). */
+/** Hours given, logged in place on Documents (decisions §26). */
 const LogHours = ({ onDone }: { readonly onDone: () => void }) => {
   const t = useTranslations("diwan.service");
   const locale = useLocale();
@@ -320,5 +302,46 @@ const LogHours = ({ onDone }: { readonly onDone: () => void }) => {
       </Button>
       <ErrorLine error={log.error} />
     </form>
+  );
+};
+
+/**
+ * Documents (decisions.md, Your account): everything signed, each with its
+ * check link, then the certificates.
+ */
+export const DocumentsPage = () => {
+  const t = useTranslations("diwan.service");
+  const { supabase } = useAuth();
+  const certificates = useQuery({
+    queryFn: () => recognition.myCertificates(supabase),
+    queryKey: [...KEY, "certificates"],
+  });
+  return (
+    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+      <DiwanSection id="signed" title={t("signedTitle")}>
+        <SignedList />
+      </DiwanSection>
+      <DiwanSection id="certificatestitle" title={t("certificatesTitle")}>
+        {certificates.data?.length === 0 ? (
+          <p className="type-body text-text-secondary">{t("noCertificates")}</p>
+        ) : null}
+        <ul className="grid gap-2">
+          {(certificates.data ?? []).map((c) => (
+            <li key={c.id}>
+              <Link
+                className="link"
+                href={`/account/documents/certificates/${c.id}`}
+              >
+                {t(`kinds.${c.kind as recognition.CertificateKind}`)}
+                {c.serial ? ` · ${c.serial}` : ""}
+              </Link>
+              {c.status === "revoked" ? (
+                <span className="type-caption"> · {t("revoked")}</span>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      </DiwanSection>
+    </DiwanPage>
   );
 };

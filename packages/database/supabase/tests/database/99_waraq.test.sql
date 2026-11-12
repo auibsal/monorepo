@@ -101,7 +101,7 @@ delete from journal.issues;
 -- these checks count pieces from a clean desk.
 delete from journal.pieces;
 
-select plan(55);
+select plan(57);
 
 -- The standing call takes only Letters and Gallery for now (decisions.md,
 -- Qirtas); these checks exercise every section, so they reopen it.
@@ -272,6 +272,14 @@ select throws_ok(
 select is(journal.approve_piece(pg_temp.news(), 'desk'), 'author_approved',
   'The News Editor approves for the desk; the piece waits for the second approval and the copy edit');
 select pg_temp.login_as('00000000-0000-0000-0000-00000000e1c0');
+select throws_ok(
+  $$ select journal.approve_piece(pg_temp.news(), 'chief') $$,
+  '22023', 'fact_check_required',
+  'News waits for the second-source check before the second approval');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000ae11');
+select lives_ok($$ select journal.record_fact_check(pg_temp.news()) $$,
+  'The News Editor records the check');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000e1c0');
 select is(journal.approve_piece(pg_temp.news(), 'chief'), 'author_approved',
   'The Editor-in-Chief gives the second approval');
 select pg_temp.login_as('00000000-0000-0000-0000-00000000c0b1');
@@ -346,6 +354,8 @@ select is(journal.approve_piece((select id from staff), 'desk'), 'editing',
   'A staff piece needs no author approval, but one editor''s word is not enough');
 select throws_ok($$ select journal.approve_piece((select id from staff), 'chief') $$, '22023', null,
   'The second approval comes from another person');
+select pg_temp.login_as('00000000-0000-0000-0000-00000000ae11');
+select journal.record_fact_check((select id from staff));
 select pg_temp.login_as('00000000-0000-0000-0000-00000000e1c0');
 select is(journal.approve_piece((select id from staff), 'chief'), 'published',
   'With the Editor-in-Chief''s approval it publishes');

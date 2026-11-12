@@ -120,7 +120,7 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
   qirtas: [
     { href: "/qirtas", key: "newsroom", module: "journal" },
     {
-      href: "/qirtas/issues",
+      href: "/qirtas/editions",
       key: "editions",
       module: "journal",
       permission: ["journal.manage", "journal.publish"],

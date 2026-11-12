@@ -14,7 +14,7 @@ One idea per post, in one language. The headline does the work; nothing sits abo
 
 **Print**
 
-Paperless by default: print only to the confirmed need (the RSVP count plus 10%, or the number actually asked for), and booklets in page counts of multiples of 4. Every printed piece is requested from Student Life through the General Secretary's needs list.
+Paperless by default: print only to the confirmed need (the RSVP count plus 10%, or the number actually asked for), and booklets in page counts of multiples of 4. Every printed piece is requested from Student Life through the Secretary's needs list.
 
 - Posters: the lockup at the top on the side the language reads from (top left in English, top right in Arabic), the headline, a QR code at the bottom end. Three are kept, A2, each in an English and an Arabic edition (`assets/print/posters`): the Typewriter Tour, two sides (the front a six-word story with the Hemingway photograph; the back the paperless Tour's rules, the typewriter tips and the QR to auibsal.org/join), the Society, for club fairs and notice boards (the motto alone, and "Join at auibsal.org/join" with the QR); and Haven, the call for Qirtas's pilot issue (on paper, "Haven" in Ubuntu, the call in Markazi Text, "Submit your work now." and the QR to auibsal.org/qirtas/submit). Haven's carousel is eight crimson slides, each English slide followed by its Arabic one (`assets/social/posts/6-haven-*`).
 - One version of every design, with no code line on it: the code is in the file name ("SAL-MED-02-Haven-poster-EN.pdf"). Print files are CMYK PDFs for coated paper (FOGRA39); screen files are RGB PNGs. `bun run --cwd packages/brand print` makes them all into `dist/` (`dist/print`, `dist/social`); they are sent, never kept in the repository.
@@ -28,7 +28,7 @@ A carousel reads as one piece, on one ground, in both languages: each English sl
 - **Cover:** a post, and the only slide with the logo (the English cover, then the Arabic).
 - **Inside slides:** a large Light number ("01") in accent, a short title with a full stop, one to three lines.
 - **The last slides:** the wordmark alone, English then Arabic. No symbol, no text, no handle.
-- The term calendar goes out once, as the "What's on this spring" carousel; there is no standing weekly post, and each event gets its own post once its room is confirmed.
+- The semester calendar goes out once, as the "Events this spring" carousel; there is no standing weekly post, and each event gets its own post once its room is confirmed.
 - No slide counters and no "swipe" prompts: Instagram shows the dots. Six slides or fewer; ten at most.
 - **Stories, 1080 × 1920:** every word at least 250 px from the top and 340 px from the bottom, clear of the app's own bars; the space under the sentence is left for a link sticker.
 
@@ -51,7 +51,7 @@ One picture per place, so members always know where they are. The Bookmark for t
 - **Name:** AUIB Society of Arts and Letters.
 - **Bio:** "The paper and the pen at @auibaghdad."
 - **Links, in this order:** auibsal.org, auibsal.org/events, auibsal.org/join.
-- **Highlights, in this order:** What's on, Qirtas, The Company, Next Stop, Join (with the Typewriter Tour), Partners (with Second Chapter).
+- **Highlights, in this order:** Events, Qirtas, The Company, Next Stop, Join (with the Typewriter Tour), Partners (with Second Chapter).
 - Instagram is for publicity only: sign-ups, RSVPs and questions go to the site, Help Desk or hello@auibsal.org.
 
 ## Highlights
@@ -61,11 +61,11 @@ Six highlights, each opened by a banner that says what is inside. Covers carry a
 - **Covers:** plain crimson with the highlight's icon alone, in white, centered inside the middle 760 px of a 1080 × 1080 square. No name (Instagram writes it under the circle), no Bookmark, no other text.
 - **Banners:** the first story in each highlight, 1080 × 1920 on white. The wordmark alone at the top (no Bookmark), a Light headline in ink, one short line, a list split by thin rules, and the link at the bottom.
 - Keep every word 250 px from the top and 340 px from the bottom. Put Instagram's link sticker over the written link.
-- Refresh What's on each term and Qirtas each Edition.
+- Refresh Events each semester and Qirtas each Edition.
 
 | Highlight | Icon |
 | --- | --- |
-| What's on | `calendar` |
+| Events | `calendar` |
 | Qirtas | `newspaper` |
 | The Company | `drama` |
 | Next Stop | `bus` |

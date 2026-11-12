@@ -26,6 +26,7 @@ import {
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { CandidatesForum } from "./forum";
 
 const key = ["admin", "governance", "elections"];
 const EXECUTIVE_ROLES = [
@@ -103,6 +104,7 @@ const ElectionCard = ({
     title_ar: string;
     title_en: string;
     eligible_count: number | null;
+    forum_event_id: string | null;
     notice_given_at: string | null;
     runoff_of: string | null;
     voting_point_ar: string | null;
@@ -410,7 +412,10 @@ const ElectionCard = ({
       </section>
 
       {status === "closed" || status === "published" ? null : (
-        <VotingPoint election={election} onSaved={invalidate} />
+        <>
+          <VotingPoint election={election} onSaved={invalidate} />
+          <CandidatesForum election={election} onSaved={invalidate} />
+        </>
       )}
 
       <div className="flex flex-wrap gap-3">

@@ -37,6 +37,7 @@ export const env = withPresets(
       NOTION_WEBHOOK_SECRET: process.env.NOTION_WEBHOOK_SECRET,
       RESEND_WEBHOOK_SECRET: process.env.RESEND_WEBHOOK_SECRET,
       REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
+      SEND_EMAIL_HOOK_SECRET: process.env.SEND_EMAIL_HOOK_SECRET,
       TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
       VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
     },
@@ -67,6 +68,9 @@ export const env = withPresets(
       // complaints at /api/hooks/resend.
       RESEND_WEBHOOK_SECRET: z.string().startsWith("whsec_").optional(),
       REVALIDATE_SECRET: z.string().min(32).optional(),
+      // Supabase's Send Email hook secret (v1,whsec_…): sign-in emails go
+      // through Resend in the Society's template, at /api/hooks/auth-email.
+      SEND_EMAIL_HOOK_SECRET: z.string().startsWith("v1,whsec_").optional(),
       // Cloudflare Turnstile's secret half, for the human check on public
       // forms the API routes take (forms, removal requests, the Sunday
       // Paper, Associate requests). Unset locally: no check.

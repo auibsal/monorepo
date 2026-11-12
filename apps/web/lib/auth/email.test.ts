@@ -4,7 +4,7 @@ import {
   isAuibEmail,
   isValidEmail,
   normalizeEmail,
-  sendMagicLink,
+  sendPasswordReset,
   signUpWithEmail,
   toEmailAuthError,
 } from "./email";
@@ -59,37 +59,35 @@ describe("email helpers", () => {
 
 describe("the human check (Turnstile)", () => {
   const client = (error: object | null) => {
-    const signInWithOtp = vi.fn(() => Promise.resolve({ data: {}, error }));
+    const resetPasswordForEmail = vi.fn(() =>
+      Promise.resolve({ data: {}, error })
+    );
     return {
-      signInWithOtp,
-      supabase: { auth: { signInWithOtp } } as never,
+      resetPasswordForEmail,
+      supabase: { auth: { resetPasswordForEmail } } as never,
     };
   };
 
   test("sends the widget's token with the request", async () => {
-    const { signInWithOtp, supabase } = client(null);
-    await sendMagicLink(supabase, "a@auib.edu.iq", "https://x/cb", "tok-1");
-    expect(signInWithOtp).toHaveBeenCalledWith({
-      email: "a@auib.edu.iq",
-      options: {
-        captchaToken: "tok-1",
-        emailRedirectTo: "https://x/cb",
-        shouldCreateUser: false,
-      },
+    const { resetPasswordForEmail, supabase } = client(null);
+    await sendPasswordReset(supabase, "a@auib.edu.iq", "https://x/cb", "tok-1");
+    expect(resetPasswordForEmail).toHaveBeenCalledWith("a@auib.edu.iq", {
+      captchaToken: "tok-1",
+      redirectTo: "https://x/cb",
     });
   });
 
-  test("says when the check failed instead of pretending a link was sent", async () => {
+  test("says when the check failed instead of pretending an email was sent", async () => {
     const { supabase } = client({ code: "captcha_failed", status: 400 });
     expect(
-      await sendMagicLink(supabase, "a@auib.edu.iq", "https://x/cb")
+      await sendPasswordReset(supabase, "a@auib.edu.iq", "https://x/cb")
     ).toEqual({ code: "captcha_failed", ok: false });
   });
 
   test("still hides whether an account exists", async () => {
     const { supabase } = client({ code: "otp_disabled", status: 422 });
     expect(
-      await sendMagicLink(supabase, "nobody@auib.edu.iq", "https://x/cb")
+      await sendPasswordReset(supabase, "nobody@auib.edu.iq", "https://x/cb")
     ).toEqual({ ok: true, value: undefined });
   });
 });
@@ -156,6 +154,7 @@ describe("signing up", () => {
     };
     expect(sent.options.data).toEqual({
       agreed_at: expect.any(String),
+      esign: "false",
       locale: "en",
       mailing: "false",
     });

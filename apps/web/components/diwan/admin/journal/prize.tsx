@@ -38,7 +38,7 @@ type Category = journal.PrizeCategory;
  * The Mutanabbi Prize in the Diwan (decisions.md): each year's
  * round, its two shortlists (Qirtas and Qalam), the outside judge's score
  * for each work, the members' vote dates, the count (70% judge, 30%
- * members), checked by the Editor-in-Chief and the General Secretary, and
+ * members), checked by the Editor-in-Chief and the Secretary, and
  * publishing the results for the award day.
  */
 export const PrizeAdmin = () => {
@@ -558,7 +558,7 @@ const AddQalamWork = ({
 
 /**
  * The count, once the vote closes: each work's judge score, votes, member
- * score and final score. The Editor-in-Chief and the General Secretary
+ * score and final score. The Editor-in-Chief and the Secretary
  * each check it; then the results can be published for the award day.
  */
 const Count = ({ round }: { round: Round }) => {

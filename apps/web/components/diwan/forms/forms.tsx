@@ -43,6 +43,17 @@ export const useFormTypes = () => {
   });
 };
 
+/** A kind's title from the database, in the page's language. */
+export const kindTitle = (
+  type: Pick<FormType, "title_ar" | "title_en"> | undefined,
+  locale: string
+) => {
+  if (!type) {
+    return;
+  }
+  return locale === "ar" ? type.title_ar : type.title_en;
+};
+
 const FormTitle = ({ formKey }: { formKey: string }) => {
   const t = useTranslations("diwan.forms.defs");
   return <>{t(`${formKey}.title` as Parameters<typeof t>[0])}</>;
@@ -73,7 +84,10 @@ export const StartLinks = ({ keys }: { readonly keys?: readonly string[] }) => {
     <RowList>
       {available.map((type) => (
         <li key={type.key}>
-          <Link className="group grid gap-1" href={`/forms/${type.code}`}>
+          <Link
+            className="group grid gap-1"
+            href={forms.formPaths[type.key as forms.FormKey]}
+          >
             <span className="group-hover:text-accent group-focus-visible:text-accent font-medium underline-offset-4 group-hover:underline">
               {td(`${type.key}.action` as Parameters<typeof td>[0])}
             </span>
@@ -102,17 +116,35 @@ const useMySent = () => {
   const { supabase, user } = useAuth();
   return useQuery({
     enabled: Boolean(user),
-    queryFn: async (): Promise<Sent[]> =>
-      unwrap(
-        await supabase
-          .schema("governance")
-          .from("form_submissions")
-          .select(
-            "id, form_key, status, submitted_at, created_at, submitted_by, subject_user_id"
-          )
-          .or(`submitted_by.eq.${user?.id},subject_user_id.eq.${user?.id}`)
-          .order("created_at", { ascending: false })
-      ) ?? [],
+    queryFn: async (): Promise<Sent[]> => {
+      // Concerns sent with the name sealed carry no name on the form itself
+      // (decisions.md, Governance); the signer finds them through the seal.
+      const sealed = (
+        unwrap(
+          await supabase
+            .schema("governance")
+            .from("sealed_signers")
+            .select("submission_id")
+        ) ?? []
+      ).map((row) => row.submission_id);
+      const mine = [
+        `submitted_by.eq.${user?.id}`,
+        `subject_user_id.eq.${user?.id}`,
+        ...(sealed.length > 0 ? [`id.in.(${sealed.join(",")})`] : []),
+      ].join(",");
+      return (
+        unwrap(
+          await supabase
+            .schema("governance")
+            .from("form_submissions")
+            .select(
+              "id, form_key, status, submitted_at, created_at, submitted_by, subject_user_id"
+            )
+            .or(mine)
+            .order("created_at", { ascending: false })
+        ) ?? []
+      );
+    },
     queryKey: ["forms", "mine", user?.id],
   });
 };
@@ -153,6 +185,87 @@ const SentList = ({ limit }: { readonly limit?: number }) => {
   );
 };
 
+interface Signed {
+  form_key: string;
+  form_version: number;
+  id: string;
+  reference: string | null;
+  signed_at: string;
+  verification_code: string | null;
+}
+
+/**
+ * What this person has signed (decisions.md, Documents and forms: "Signed
+ * copies live in Your account → Documents"): each agreement or consent with
+ * its record number and its check link.
+ */
+export const SignedList = () => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale() as Locale;
+  const { supabase, user } = useAuth();
+  const types = useFormTypes();
+  const titleOf = (key: string) =>
+    kindTitle(
+      types.data?.find((k) => k.key === key),
+      locale
+    ) ?? key;
+  const signed = useQuery({
+    enabled: Boolean(user),
+    queryFn: async (): Promise<Signed[]> =>
+      (unwrap(
+        await supabase
+          .schema("governance")
+          .from("form_submissions")
+          .select(
+            "id, form_key, form_version, reference, verification_code, signed_at"
+          )
+          // Signed by them, or countersigned (a handover they received).
+          .or(`submitted_by.eq.${user?.id},second_signer_id.eq.${user?.id}`)
+          .not("signed_at", "is", null)
+          .order("signed_at", { ascending: false })
+      ) ?? []) as Signed[],
+    queryKey: ["forms", "signed", user?.id],
+  });
+  if (signed.isPending) {
+    return <SectionSpinner />;
+  }
+  const rows = signed.data ?? [];
+  if (rows.length === 0) {
+    return <p className="type-body text-text-secondary">{t("noSigned")}</p>;
+  }
+  return (
+    <RowList>
+      {rows.map((s) => (
+        <li
+          className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
+          key={s.id}
+        >
+          <Link className="link" href={`/account/documents/signed/${s.id}`}>
+            {titleOf(s.form_key)}
+          </Link>
+          <span className="type-caption">
+            {[
+              s.reference,
+              t("version", { version: String(s.form_version) }),
+              formatLongDate(s.signed_at, locale, true),
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+            {s.verification_code ? (
+              <>
+                {" · "}
+                <Link className="link" href={`/verify/${s.verification_code}`}>
+                  {t("check")}
+                </Link>
+              </>
+            ) : null}
+          </span>
+        </li>
+      ))}
+    </RowList>
+  );
+};
+
 /**
  * Requests and reports: what you have sent and where each stands, and
  * everything you may start. The same actions also sit in the sections
@@ -171,7 +284,7 @@ export const Forms = () => {
         id="concern"
         title={t("concern.title")}
       >
-        <StartLinks keys={["f21"]} />
+        <StartLinks keys={["concern"]} />
       </DiwanSection>
       <DiwanSection id="sent" title={t("mine")}>
         <SentList />

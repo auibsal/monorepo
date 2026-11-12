@@ -24,7 +24,7 @@ import { AuthorName } from "./board";
 import { type Category, pipelineKey, usePipelineIssues } from "./data";
 import { ReadingRoom } from "./reading-room";
 
-type Decision = "accept" | "accept_with_edits" | "decline";
+type Decision = "accept" | "accept_with_edits" | "decline" | "revise";
 const DECISIONS: Decision[] = ["accept", "accept_with_edits", "decline"];
 const POINTS = [1, 2, 3, 4, 5];
 
@@ -38,7 +38,7 @@ const useEntry = (id: string | null) => {
           .schema("journal")
           .from("blind_entries")
           .select(
-            "id, blind_id, call_id, issue_id, category, language, title, status, editor_notes, flagged, flag_note, created_at, updated_at, desk, assignments(id, read_number, reader_id, score:scores(total, craft, voice, depth, archive_factor, comment))"
+            "id, blind_id, call_id, issue_id, category, language, title, status, editor_notes, flagged, flag_note, created_at, updated_at, desk, revision_requested_at, assignments(id, read_number, reader_id, score:scores(total, craft, voice, depth, archive_factor, comment))"
           )
           .eq("id", id ?? "")
           .maybeSingle(),
@@ -288,7 +288,13 @@ const EditorPanel = ({ entry }: { entry: EntryData }) => {
   );
 };
 
-const DecisionPanel = ({ entryId }: { entryId: string }) => {
+const DecisionPanel = ({
+  canRevise,
+  entryId,
+}: {
+  canRevise: boolean;
+  entryId: string;
+}) => {
   const t = useTranslations("diwan.admin.pipeline");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -308,7 +314,9 @@ const DecisionPanel = ({ entryId }: { entryId: string }) => {
   return (
     <section className="grid max-w-3xl gap-4">
       <h2 className="type-subheading">{t("entry.decide")}</h2>
-      <p className="type-caption">{t("entry.decideNote")}</p>
+      <p className="type-caption">
+        {t(decision === "revise" ? "entry.reviseNote" : "entry.decideNote")}
+      </p>
       <Field label={t("columns.decision")}>
         {(id) => (
           <SelectInput
@@ -317,11 +325,13 @@ const DecisionPanel = ({ entryId }: { entryId: string }) => {
             onChange={(e) => setDecision(e.target.value as Decision)}
             value={decision}
           >
-            {DECISIONS.map((d) => (
-              <option key={d} value={d}>
-                {t(`decisions.${d}`)}
-              </option>
-            ))}
+            {(canRevise ? [...DECISIONS, "revise" as const] : DECISIONS).map(
+              (d) => (
+                <option key={d} value={d}>
+                  {t(`decisions.${d}`)}
+                </option>
+              )
+            )}
           </SelectInput>
         )}
       </Field>
@@ -411,6 +421,16 @@ export const EntryView = () => {
         </section>
       ) : null}
 
+      {entry.revision_requested_at ? (
+        <p className="type-caption" role="status">
+          {t(
+            entry.status === "intake_check"
+              ? "entry.withWriter"
+              : "entry.revised"
+          )}
+        </p>
+      ) : null}
+
       {entry.flagged && entry.flag_note ? (
         <section className="grid gap-1">
           <h2 className="type-subheading">{t("columns.flagNote")}</h2>
@@ -423,7 +443,10 @@ export const EntryView = () => {
       {mine ? <ScoreForm assignment={mine} open={scoring} /> : null}
       {isEditor ? <EditorPanel entry={entry} /> : null}
       {issue?.can_decide && entry.status === "selection" && !decision ? (
-        <DecisionPanel entryId={entry.id} />
+        <DecisionPanel
+          canRevise={!entry.revision_requested_at}
+          entryId={entry.id}
+        />
       ) : null}
     </div>
   );

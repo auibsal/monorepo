@@ -105,8 +105,8 @@ select throws_ok($$ select * from core.outbox_health() $$, '42501', null,
   'Only whoever keeps the connections reads email health');
 select pg_temp.logout();
 
-select pg_temp.make_user('00000000-0000-0000-0000-0000000088a2', 'tech@auib.edu.iq', 'Tech Admin');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000088a2', 'tech_admin');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000088a2', 'tech@auib.edu.iq', 'Web Lead');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000088a2', 'web_lead');
 insert into core.outbox (kind, payload) values ('personal_email.confirm', '{}');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000088a2');
 select ok((select waiting >= 1 and api_url_set from core.outbox_health()),

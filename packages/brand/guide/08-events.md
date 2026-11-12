@@ -1,10 +1,10 @@
 # Events
 
-Qirtas is the Society's paper, the Company its theater and Next Stop its video show; everything else is an event. The Society holds no standing programs and no recurring named kinds of event. Each term the Council sets a calendar of events, at least one a month, each titled plainly for what happens that day: "Writing workshop", "A reading with a guest", "A trip to al-Mutanabbi Street".
+Qirtas is the Society's paper, the Company its theater and Next Stop its video show; everything else is an event. The Society holds no standing programs and no recurring named kinds of event. Each semester the Council sets a calendar of events, at least one a month, each titled plainly for what happens that day: "Writing workshop", "A reading with a guest", "A trip to al-Mutanabbi Street".
 
 ## One standard event page
 
-Every event, Council meetings, general meetings and the Edition's launch among them, uses the same page on What's on (auibsal.org/events). Only the details change: the title, the date and time, the place, the description, one image, the lead and the links. No event has its own look, its own components or its own name treatment.
+Every event, Council meetings, general meetings and the Edition's launch among them, uses the same page on Events (auibsal.org/events). Only the details change: the title, the date and time, the place, the description, one image, the lead and the links. No event has its own look, its own components or its own name treatment.
 
 | Access | Who comes |
 | --- | --- |

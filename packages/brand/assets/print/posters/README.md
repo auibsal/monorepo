@@ -1,6 +1,6 @@
 # Posters
 
-The Society's three posters, A2 (420 × 594 mm), each in an English and an Arabic edition. Each is an HTML page printed from the browser; `bun run --cwd packages/brand print` makes the CMYK PDFs (FOGRA39 coated) into `dist/print`, named by code, poster and language ("SAL-MED-02-Haven-poster-EN.pdf"), which are sent to Student Life and never kept in the repository. Print only to the confirmed need, requested through the General Secretary's needs list.
+The Society's three posters, A2 (420 × 594 mm), each in an English and an Arabic edition. Each is an HTML page printed from the browser; `bun run --cwd packages/brand print` makes the CMYK PDFs (FOGRA39 coated) into `dist/print`, named by code, poster and language ("SAL-MED-02-Haven-poster-EN.pdf"), which are sent to Student Life and never kept in the repository. Print only to the confirmed need, requested through the Secretary's needs list.
 
 | File | Poster | Sides |
 |---|---|---|

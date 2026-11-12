@@ -28,7 +28,7 @@ interface FormPageProps {
   /** The fields, in one column (`FormField`); choices as a vertical list. */
   readonly children: ReactNode;
   readonly className?: string;
-  /** The form's code in the register, "SAL-EXB-01 · F-15". */
+  /** The form's code in the register, "SAL-EXB-01 · media-release". */
   readonly code: string;
   /** Today's date, already formatted ("Saturday, November 7"). */
   readonly date: string;
@@ -55,6 +55,12 @@ interface FormPageProps {
     readonly label: string;
     readonly omit?: boolean;
     readonly onChange?: (value: string) => void;
+    /**
+     * "Sign as …" (decisions.md, Documents and forms): the name the
+     * register holds, shown in the signature's hand and not typed. Only
+     * someone with no account (a parent by link) types a name.
+     */
+    readonly signAs?: string;
     readonly value?: string;
   };
   /** The button: "Sign and send". */
@@ -101,28 +107,38 @@ export const FormPage = ({
     {signature.omit ? null : (
       <fieldset className="gap-space-3 border-line pt-space-5 grid border-t">
         <legend className="sr-only">{signature.label}</legend>
-        <FormField
-          hint={signature.hint}
-          id="form-signature"
-          label={signature.label}
-        >
-          <input
-            aria-invalid={signature.invalid}
-            autoComplete="name"
-            className="border-text font-signature text-text focus-visible:border-accent h-11 w-full border-b bg-transparent text-2xl outline-none"
+        {signature.signAs ? (
+          <div className="gap-space-2 grid">
+            <p className="type-label">{signature.label}</p>
+            <p className="font-signature text-text border-text border-b pb-1 text-2xl">
+              {signature.signAs}
+            </p>
+            <p className="text-text-secondary text-sm">{signature.hint}</p>
+          </div>
+        ) : (
+          <FormField
+            hint={signature.hint}
             id="form-signature"
-            maxLength={200}
-            name="signature"
-            onChange={
-              signature.onChange
-                ? (event) => signature.onChange?.(event.target.value)
-                : undefined
-            }
-            required
-            type="text"
-            value={signature.value}
-          />
-        </FormField>
+            label={signature.label}
+          >
+            <input
+              aria-invalid={signature.invalid}
+              autoComplete="name"
+              className="border-text font-signature text-text focus-visible:border-accent h-11 w-full border-b bg-transparent text-2xl outline-none"
+              id="form-signature"
+              maxLength={200}
+              name="signature"
+              onChange={
+                signature.onChange
+                  ? (event) => signature.onChange?.(event.target.value)
+                  : undefined
+              }
+              required
+              type="text"
+              value={signature.value}
+            />
+          </FormField>
+        )}
         <p className="text-text-secondary text-sm">
           {dateLabel} <span className="text-text">{date}</span>
         </p>

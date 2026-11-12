@@ -5,19 +5,15 @@ import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
-import {
-  formatLongDate,
-  formatNumber,
-} from "@repo/internationalization/format";
+import { formatNumber } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { membership, names } from "@/lib/data";
 import { queryKeys, useProfile } from "@/lib/diwan/queries";
 import { DiwanPage, DiwanSection } from "../page";
-import { NamePartsFields } from "../setup-form";
 import { ErrorState, SectionSpinner } from "../states";
 
 export const ProfileScreen = () => {
@@ -58,10 +54,6 @@ export const ProfileScreen = () => {
   }, [profile.data]);
 
   const words = membership.wordCount(form.bio);
-  const locale = useLocale();
-  const lockedAt = profile.data?.legal_name_locked_at ?? null;
-  // The member checks their legal name before it locks (decisions.md, Members).
-  const [checking, setChecking] = useState(false);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -69,13 +61,6 @@ export const ProfileScreen = () => {
         .schema("core")
         .from("profiles")
         .update({
-          // A locked legal name is not the member's to change.
-          ...(lockedAt
-            ? {}
-            : {
-                ...names.partsUpdate(form.names.en, "en"),
-                ...names.partsUpdate(form.names.ar, "ar"),
-              }),
           bio: form.bio.trim() || null,
           camera_shy: form.camera_shy,
           preferred_name_ar: form.preferred.ar.trim() || null,
@@ -91,18 +76,6 @@ export const ProfileScreen = () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.profile(user?.id ?? ""),
       }),
-  });
-
-  const lock = useMutation({
-    mutationFn: async () => {
-      // Saved first, so what is locked is what the member checked.
-      await save.mutateAsync();
-      const { error } = await supabase.schema("core").rpc("lock_legal_name");
-      if (error) {
-        throw error;
-      }
-    },
-    onSuccess: () => setChecking(false),
   });
 
   if (profile.isPending) {
@@ -122,17 +95,10 @@ export const ProfileScreen = () => {
   const preferredOk =
     names.inScript(form.preferred.en, "en") &&
     names.inScript(form.preferred.ar, "ar");
-  const legalComplete =
-    names.partsReady(form.names.en, "en") &&
-    names.partsReady(form.names.ar, "ar");
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const named =
-      lockedAt !== null ||
-      (names.partsInScript(form.names.en, "en") &&
-        names.partsInScript(form.names.ar, "ar"));
-    if (words <= membership.BIO_MAX_WORDS && named && preferredOk) {
+    if (words <= membership.BIO_MAX_WORDS && preferredOk) {
       save.mutate();
     }
   };
@@ -151,98 +117,20 @@ export const ProfileScreen = () => {
       <DiwanSection id="about-you" title={t("profile.aboutYou")}>
         <form className="grid gap-4" onSubmit={submit}>
           <h3 className="type-subheading">{t("profile.legal.title")}</h3>
-          {lockedAt ? (
-            <div className="grid gap-2">
-              {(["en", "ar"] as const).map((lang) => (
-                <p dir={lang === "ar" ? "rtl" : "ltr"} key={lang} lang={lang}>
-                  {names.nameParts
-                    .map((part) => form.names[lang][part].trim())
-                    .filter(Boolean)
-                    .join(" ")}
-                </p>
-              ))}
-              <p className="type-caption">
-                {t("profile.legal.locked", {
-                  date: formatLongDate(lockedAt, locale),
-                })}
+          {/* The legal name is locked for everyone (decisions.md,
+              Members): the Director of Membership corrects it, with a
+              second officer, on the member's request. */}
+          <div className="grid gap-2">
+            {(["en", "ar"] as const).map((lang) => (
+              <p dir={lang === "ar" ? "rtl" : "ltr"} key={lang} lang={lang}>
+                {names.nameParts
+                  .map((part) => form.names[lang][part].trim())
+                  .filter(Boolean)
+                  .join(" ")}
               </p>
-            </div>
-          ) : (
-            <>
-              {(["en", "ar"] as const).map((lang) => (
-                <fieldset className="grid gap-3" key={lang}>
-                  <legend className="mb-2 text-sm font-medium">
-                    {t(`setup.name.${lang}`)}
-                  </legend>
-                  <NamePartsFields
-                    language={lang}
-                    onChange={(parts) => {
-                      setChecking(false);
-                      setForm((f) => ({
-                        ...f,
-                        names: { ...f.names, [lang]: parts },
-                      }));
-                    }}
-                    parts={form.names[lang]}
-                  />
-                </fieldset>
-              ))}
-              <p className="type-caption">{t("setup.name.hint")}</p>
-              {checking ? (
-                <div className="border-line grid gap-3 border-y py-4">
-                  <p className="type-body font-medium">
-                    {t("profile.legal.checkTitle")}
-                  </p>
-                  {(["en", "ar"] as const).map((lang) => (
-                    <p
-                      dir={lang === "ar" ? "rtl" : "ltr"}
-                      key={lang}
-                      lang={lang}
-                    >
-                      {names.nameParts
-                        .map((part) => form.names[lang][part].trim())
-                        .filter(Boolean)
-                        .join(" ")}
-                    </p>
-                  ))}
-                  <p className="type-body text-text-secondary">
-                    {t("profile.legal.checkBody")}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-                    <Button
-                      disabled={lock.isPending}
-                      onClick={() => lock.mutate()}
-                      type="button"
-                      variant="outline"
-                    >
-                      {t("profile.legal.confirm")}
-                    </Button>
-                    <button
-                      className="link"
-                      onClick={() => setChecking(false)}
-                      type="button"
-                    >
-                      {t("profile.legal.edit")}
-                    </button>
-                  </div>
-                  {lock.isError ? (
-                    <p className="text-text" role="alert">
-                      {t("profile.legal.lockFailed")}
-                    </p>
-                  ) : null}
-                </div>
-              ) : (
-                <button
-                  className="link justify-self-start"
-                  disabled={!legalComplete}
-                  onClick={() => setChecking(true)}
-                  type="button"
-                >
-                  {t("profile.legal.check")}
-                </button>
-              )}
-            </>
-          )}
+            ))}
+            <p className="type-caption">{t("profile.legal.locked")}</p>
+          </div>
           {/* The preferred name (decisions.md, Members): one whole name per
               language, shown everywhere but certificates, letters and
               signed forms. Empty means the default. */}

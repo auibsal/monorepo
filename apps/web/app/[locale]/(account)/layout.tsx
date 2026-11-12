@@ -8,7 +8,8 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { AccountFrame } from "@/components/account/frame";
 import { AppProviders } from "@/components/diwan/providers";
-import { Footer } from "@/components/footer";
+import { Footer, SlimFooter } from "@/components/footer";
+import { FooterSwitch } from "@/components/footer-switch";
 
 // Rendered for each request, so Next can put the request's CSP nonce on
 // its scripts (apps/web/proxy.ts): the layout waits for the request, and
@@ -63,7 +64,7 @@ const AccountLayout = async ({ children, params }: AccountLayoutProperties) => {
       <AppProviders>
         <div className="flex min-h-svh flex-col">
           <AccountFrame>{children}</AccountFrame>
-          <Footer />
+          <FooterSwitch full={<Footer />} slim={<SlimFooter />} />
         </div>
       </AppProviders>
     </NextIntlClientProvider>

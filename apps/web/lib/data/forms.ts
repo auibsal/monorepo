@@ -1,13 +1,19 @@
 import { type Client, unwrap } from "./client";
 
+export {
+  formPaths,
+  legacyNumbers,
+  nameFromLegacyNumber,
+} from "./form-paths";
+
 /**
  * The forms signed on the site (decisions.md): one standard page,
- * `/forms/<number>` (F-06, F-10 …), with a typed-name signature; the signed
+ * at its own place in its flow (`formPaths`), with no number shown; the signed
  * copy keeps the signer, the time and the form's version. The fields follow
  * the Leadership Handbook (SAL-EXB-01); labels live in the messages files
  * under `diwan.forms.defs.<key>`. Who may sign a form and who handles it is
  * `governance.form_types` (the database decides). Forms that are part of a
- * page (a role application, an audition, the Publication Agreement) stay
+ * page (a role application, an audition, the publication agreement) stay
  * there.
  */
 
@@ -39,24 +45,25 @@ export interface FormField {
 }
 
 export interface FormDefinition {
-  /** May be sent without a name (F-20). */
+  /** May keep the signer's name sealed from the panel (a concern). */
   readonly anonymous?: boolean;
   /** Signed only through a single-use link (a parent's consent). */
   readonly byLink?: boolean;
-  readonly code: string;
   readonly fields: readonly FormField[];
   readonly key: FormKey;
   /** "Office use" boxes, kept by the handlers. */
   readonly office?: readonly FormField[];
   /** Shows the printed text (a release, a declaration) above the fields. */
   readonly preamble?: boolean;
-  /** Asks who the concern is about, for routing (F-20). */
+  /** Asks who the concern is about, for routing. */
   readonly routing?: boolean;
+  /** Raised signed in only (a concern, decisions.md, Governance). */
+  readonly signIn?: boolean;
   /** Names the person the form is about (a member). */
   readonly subject?: boolean;
 }
 
-/** The forms started from a page of their own, by number. */
+/** Where a signed agreement or consent stands. */
 const formStatuses = [
   "draft",
   "submitted",
@@ -71,112 +78,65 @@ export const routings = ["none", "vice_president", "president"] as const;
 export type Routing = (typeof routings)[number];
 
 export const formKeys = [
-  "f06",
-  "f10",
-  "f11",
-  "f15",
-  "f17",
-  "f21",
-  "f26",
-  "f37",
-  "f38",
-  "f39",
-  "f45",
-  "f46",
+  "conflict-of-interest-declaration",
+  "handover",
+  "members-meeting-motion",
+  "event-pitch",
+  "media-release",
+  "partnership-memorandum",
+  "concern",
+  "company-agreement",
+  "qalam-mentor-agreement",
+  "qalam-parent-consent",
+  "qalam-publishing-consent",
+  "trip-consent",
+  "parent-consent",
 ] as const;
 
 export type FormKey = (typeof formKeys)[number];
 
+/**
+ * The register "Agreements and consents" (SAL-EXB-01; decisions.md,
+ * Documents and forms): only what people sign, by name. The Code of
+ * Conduct, the role agreement, the readers' confidentiality agreement and
+ * the publication agreement are signed on their own pages; the handover in
+ * Notion; the rest on the standard form page (`formKeys`). Every other kind
+ * (letters, notices, minutes, score sheets, reports, lists, checklists) is a
+ * template or record, in the templates index, never in the register.
+ */
+export const registerKinds = [
+  "code-of-conduct",
+  "role-agreement",
+  "conflict-of-interest-declaration",
+  "confidentiality-agreement",
+  "handover",
+  "members-meeting-motion",
+  "event-pitch",
+  "concern",
+  "media-release",
+  "partnership-memorandum",
+  "company-agreement",
+  "publication-agreement",
+  "trip-consent",
+  "parent-consent",
+  "qalam-mentor-agreement",
+  "qalam-parent-consent",
+  "qalam-publishing-consent",
+] as const;
+
 export const forms: Record<FormKey, FormDefinition> = {
-  f06: {
-    code: "F-06",
+  "company-agreement": {
     fields: [
-      { key: "nothing", type: "check" },
-      {
-        columns: [
-          { key: "what", max: 300, required: true, type: "text" },
-          { key: "decisions", max: 300, required: true, type: "text" },
-          { key: "handling", max: 300, required: true, type: "text" },
-        ],
-        key: "declarations",
-        type: "table",
-      },
-    ],
-    key: "f06",
-    preamble: true,
-  },
-  f10: {
-    code: "F-10",
-    fields: [
-      { key: "seconder", max: 200, required: true, type: "text" },
-      { key: "title", max: 200, required: true, type: "text" },
-      { key: "notes", max: 2000, required: true, type: "textarea" },
-      { key: "believes", max: 2000, required: true, type: "textarea" },
-      { key: "resolves", max: 2000, required: true, type: "textarea" },
-      {
-        key: "motion_type",
-        options: ["ordinary", "amendment"],
-        required: true,
-        type: "choice",
-      },
-    ],
-    key: "f10",
-  },
-  f11: {
-    code: "F-11",
-    fields: [
-      { key: "title", max: 200, required: true, type: "text" },
-      { key: "idea", max: 1000, required: true, type: "textarea" },
-      { key: "audience", max: 300, required: true, type: "text" },
-      { key: "helpers", max: 300, type: "text" },
-      { key: "when", max: 200, required: true, type: "text" },
-      { key: "where", max: 200, required: true, type: "text" },
-      {
-        key: "access",
-        options: ["open", "rsvp", "private"],
-        required: true,
-        type: "choice",
-      },
-      { key: "needs", max: 2000, type: "textarea" },
-      { key: "risks", max: 2000, type: "textarea" },
-    ],
-    key: "f11",
-  },
-  f15: {
-    code: "F-15",
-    fields: [
-      { key: "occasion", max: 300, required: true, type: "text" },
-      { key: "on_date", required: true, type: "date" },
-      {
-        key: "credit",
-        options: ["name", "no_name", "photos_only"],
-        required: true,
-        type: "choice",
-      },
-      { key: "contact", max: 200, required: true, type: "text" },
+      { key: "production", max: 200, required: true, type: "text" },
+      { key: "role", max: 200, required: true, type: "text" },
+      { key: "no_photos", type: "check" },
       { key: "under_18", type: "check" },
     ],
-    key: "f15",
+    key: "company-agreement",
     preamble: true,
   },
-  f17: {
-    code: "F-17",
-    fields: [
-      { key: "partner", max: 200, required: true, type: "text" },
-      { key: "purpose", max: 1000, required: true, type: "textarea" },
-      { key: "dates", max: 200, required: true, type: "text" },
-      { key: "society_will", max: 2000, required: true, type: "textarea" },
-      { key: "partner_will", max: 2000, required: true, type: "textarea" },
-      { key: "branding", max: 1000, type: "textarea" },
-      { key: "people_safety", max: 1000, required: true, type: "textarea" },
-      { key: "contacts", max: 1000, required: true, type: "textarea" },
-    ],
-    key: "f17",
-    preamble: true,
-  },
-  f21: {
+  concern: {
     anonymous: true,
-    code: "F-21",
     fields: [
       { key: "contact", max: 200, type: "text" },
       {
@@ -196,22 +156,125 @@ export const forms: Record<FormKey, FormDefinition> = {
       { key: "when", max: 200, type: "text" },
       { key: "wish", max: 2000, type: "textarea" },
     ],
-    key: "f21",
+    key: "concern",
     routing: true,
+    signIn: true,
   },
-  f26: {
-    code: "F-26",
+  "conflict-of-interest-declaration": {
     fields: [
-      { key: "production", max: 200, required: true, type: "text" },
-      { key: "role", max: 200, required: true, type: "text" },
-      { key: "no_photos", type: "check" },
-      { key: "under_18", type: "check" },
+      { key: "nothing", type: "check" },
+      {
+        columns: [
+          { key: "what", max: 300, required: true, type: "text" },
+          { key: "decisions", max: 300, required: true, type: "text" },
+          { key: "handling", max: 300, required: true, type: "text" },
+        ],
+        key: "declarations",
+        type: "table",
+      },
     ],
-    key: "f26",
+    key: "conflict-of-interest-declaration",
     preamble: true,
   },
-  f37: {
-    code: "F-37",
+  "event-pitch": {
+    fields: [
+      { key: "title", max: 200, required: true, type: "text" },
+      { key: "idea", max: 1000, required: true, type: "textarea" },
+      { key: "audience", max: 300, required: true, type: "text" },
+      { key: "helpers", max: 300, type: "text" },
+      { key: "when", max: 200, required: true, type: "text" },
+      { key: "where", max: 200, required: true, type: "text" },
+      {
+        key: "access",
+        options: ["open", "rsvp", "private"],
+        required: true,
+        type: "choice",
+      },
+      { key: "needs", max: 2000, type: "textarea" },
+      { key: "risks", max: 2000, type: "textarea" },
+    ],
+    key: "event-pitch",
+  },
+  // The handover (decisions.md, Documents and forms): a step when someone
+  // leaves a role, signed by the outgoing holder and countersigned by the
+  // incoming one or the seat's officer. The role is the page's subject.
+  handover: {
+    fields: [
+      { key: "in_progress", max: 4000, required: true, type: "textarea" },
+      { key: "open_items", max: 4000, type: "textarea" },
+      { key: "where", max: 4000, required: true, type: "textarea" },
+      { key: "access", max: 2000, required: true, type: "textarea" },
+      { key: "contacts", max: 2000, type: "textarea" },
+      { key: "notes", max: 4000, type: "textarea" },
+    ],
+    key: "handover",
+  },
+  "media-release": {
+    fields: [
+      { key: "occasion", max: 300, required: true, type: "text" },
+      { key: "on_date", required: true, type: "date" },
+      {
+        key: "credit",
+        options: ["name", "no_name", "photos_only"],
+        required: true,
+        type: "choice",
+      },
+      { key: "contact", max: 200, required: true, type: "text" },
+      { key: "under_18", type: "check" },
+    ],
+    key: "media-release",
+    preamble: true,
+  },
+  "members-meeting-motion": {
+    fields: [
+      { key: "seconder", max: 200, required: true, type: "text" },
+      { key: "title", max: 200, required: true, type: "text" },
+      { key: "notes", max: 2000, required: true, type: "textarea" },
+      { key: "believes", max: 2000, required: true, type: "textarea" },
+      { key: "resolves", max: 2000, required: true, type: "textarea" },
+      {
+        key: "motion_type",
+        options: ["ordinary", "amendment"],
+        required: true,
+        type: "choice",
+      },
+    ],
+    key: "members-meeting-motion",
+  },
+  // A parent's consent for a member under 18 (decisions §10, Minors),
+  // signed only through the single-use link sent when the student's
+  // account is confirmed.
+  "parent-consent": {
+    byLink: true,
+    // The student is the account the link was sent for.
+    fields: [
+      { key: "relationship", max: 80, required: true, type: "text" },
+      {
+        key: "photos",
+        options: ["photos", "no_photos"],
+        required: true,
+        type: "choice",
+      },
+      { key: "consent", required: true, type: "check" },
+    ],
+    key: "parent-consent",
+    preamble: true,
+  },
+  "partnership-memorandum": {
+    fields: [
+      { key: "partner", max: 200, required: true, type: "text" },
+      { key: "purpose", max: 1000, required: true, type: "textarea" },
+      { key: "dates", max: 200, required: true, type: "text" },
+      { key: "society_will", max: 2000, required: true, type: "textarea" },
+      { key: "partner_will", max: 2000, required: true, type: "textarea" },
+      { key: "branding", max: 1000, type: "textarea" },
+      { key: "people_safety", max: 1000, required: true, type: "textarea" },
+      { key: "contacts", max: 1000, required: true, type: "textarea" },
+    ],
+    key: "partnership-memorandum",
+    preamble: true,
+  },
+  "qalam-mentor-agreement": {
     fields: [
       { key: "year", max: 20, required: true, type: "text" },
       {
@@ -222,14 +285,17 @@ export const forms: Record<FormKey, FormDefinition> = {
       },
       { key: "trained_on", required: true, type: "date" },
     ],
-    key: "f37",
+    key: "qalam-mentor-agreement",
     preamble: true,
   },
-  f38: {
+  "qalam-parent-consent": {
     byLink: true,
-    code: "F-38",
+    // The student's name and address make their guest account, the one
+    // place a name is typed (decisions.md, Members: no name fields).
     fields: [
-      { key: "student_name", max: 200, required: true, type: "text" },
+      { key: "student_first_name", max: 80, required: true, type: "text" },
+      { key: "student_last_name", max: 80, required: true, type: "text" },
+      { key: "student_email", max: 320, required: true, type: "text" },
       { key: "grade", max: 40, required: true, type: "text" },
       { key: "school", max: 200, required: true, type: "text" },
       { key: "relationship", max: 80, required: true, type: "text" },
@@ -247,51 +313,28 @@ export const forms: Record<FormKey, FormDefinition> = {
       { key: "publishing", options: ["qirtas", "prize"], type: "multi" },
       { key: "student_agrees", required: true, type: "check" },
     ],
-    key: "f38",
+    key: "qalam-parent-consent",
     preamble: true,
   },
-  f39: {
+  "qalam-publishing-consent": {
     byLink: true,
-    code: "F-39",
     fields: [
       { key: "piece_title", max: 200, required: true, type: "text" },
       { key: "section", max: 80, required: true, type: "text" },
       { key: "language", max: 40, required: true, type: "text" },
-      { key: "student_name", max: 200, required: true, type: "text" },
-      { key: "school", max: 200, required: true, type: "text" },
+      // The student is the one the link was sent for, from the roster.
       { key: "student_agrees", required: true, type: "check" },
     ],
-    key: "f39",
+    key: "qalam-publishing-consent",
     preamble: true,
   },
-  f45: {
-    code: "F-45",
+  "trip-consent": {
     fields: [
       { key: "emergency_contact", max: 200, required: true, type: "text" },
       { key: "health", max: 1000, type: "textarea" },
       { key: "agree", required: true, type: "check" },
     ],
-    key: "f45",
-    preamble: true,
-  },
-  // A parent's consent for a member under 18 (decisions §10, Minors),
-  // signed only through the single-use link sent when the student's
-  // account is confirmed.
-  f46: {
-    byLink: true,
-    code: "F-46",
-    fields: [
-      { key: "student_name", max: 200, required: true, type: "text" },
-      { key: "relationship", max: 80, required: true, type: "text" },
-      {
-        key: "photos",
-        options: ["photos", "no_photos"],
-        required: true,
-        type: "choice",
-      },
-      { key: "consent", required: true, type: "check" },
-    ],
-    key: "f46",
+    key: "trip-consent",
     preamble: true,
   },
 };
@@ -304,21 +347,22 @@ export const forms: Record<FormKey, FormDefinition> = {
  * Change a form's fields and these phrases together.
  */
 export const registerFields: Record<FormKey, readonly string[]> = {
-  f06: [
+  "company-agreement": [
+    "i do not want to appear in photographs or video",
+    "i am under 18; my parent's or guardian's consent is attached",
+  ],
+  concern: [
+    "name (optional, but without it we cannot reply) · contact",
+    "about: a person, an event, a charity collection, content, a decision, other",
+    "what happened, and when · what you would like to happen",
+  ],
+  "conflict-of-interest-declaration": [
     "what it is",
     "which decisions it could affect",
     "how it will be handled",
     "nothing to declare",
   ],
-  f10: [
-    "proposer and seconder",
-    "title",
-    "this meeting notes",
-    "believes",
-    "resolves",
-    "type: ordinary, or an amendment",
-  ],
-  f11: [
+  "event-pitch": [
     "what the event is, titled plainly",
     "the idea in three sentences",
     "who it is for, and how many",
@@ -327,30 +371,39 @@ export const registerFields: Record<FormKey, readonly string[]> = {
     "needs: items, quantities and dates",
     "what could go wrong, and what you would do",
   ],
-  f15: [
+  handover: [],
+  "media-release": [
     "event or shoot",
     "credit me by name",
     "contact",
     "under 18: a parent or guardian signs",
   ],
-  f17: [
+  "members-meeting-motion": [
+    "proposer and seconder",
+    "title",
+    "this meeting notes",
+    "believes",
+    "resolves",
+    "type: ordinary, or an amendment",
+  ],
+  "parent-consent": [
+    "the student's name",
+    "relationship to the student",
+    "photos",
+    "i consent",
+  ],
+  "partnership-memorandum": [
     "purpose · dates",
     "the society will · the partner will",
     "branding",
     "people and safety: the lead on the day, safeguarding, photo consent",
     "contacts",
   ],
-  f21: [
-    "name (optional, but without it we cannot reply) · contact",
-    "about: a person, an event, a charity collection, content, a decision, other",
-    "what happened, and when · what you would like to happen",
+  "qalam-mentor-agreement": [
+    "role (qalam lead, deputy or mentor)",
+    "date of training",
   ],
-  f26: [
-    "i do not want to appear in photographs or video",
-    "i am under 18; my parent's or guardian's consent is attached",
-  ],
-  f37: ["role (qalam lead, deputy or mentor)", "date of training"],
-  f38: [
+  "qalam-parent-consent": [
     "name · grade · school",
     "relationship to the student",
     "how to reach you",
@@ -362,28 +415,16 @@ export const registerFields: Record<FormKey, readonly string[]> = {
     "publishing",
     "i want to take part",
   ],
-  f39: [
+  "qalam-publishing-consent": [
     "title · section of qirtas · language · the student's name · school",
     "i agree",
   ],
-  f45: [
+  "trip-consent": [
     "the trip",
     "an emergency contact (name and how to reach them)",
     "health, optional and confidential",
   ],
-  f46: [
-    "the student's name",
-    "relationship to the student",
-    "photos",
-    "i consent",
-  ],
 };
-
-const FORM_PREFIX = /^f-?/iu;
-
-/** "F-06" → "f06": the address of a form is its number. */
-export const keyFromNumber = (number: string) =>
-  `f${number.replace(FORM_PREFIX, "").padStart(2, "0")}`.toLowerCase();
 
 export const isFormKey = (value: string | null): value is FormKey =>
   (formKeys as readonly string[]).includes(value ?? "");
@@ -524,15 +565,6 @@ export const handleForm = async (
       submission_id: id,
     })
   );
-
-/**
- * The register's numbers (decisions.md, Forms): F-01 to F-46, with retired
- * numbers never reused or shifted, so a signed record always points to its
- * form. The register shows the active forms with their count.
- */
-export const retiredForms = ["F-08", "F-22", "F-31", "F-44"] as const;
-const LAST_FORM = 46;
-export const activeFormCount = LAST_FORM - retiredForms.length;
 
 export const formTypes = async (client: Client) =>
   unwrap(

@@ -4,7 +4,6 @@ import {
   accountDeleted,
   applicationDecided,
   applicationReceived,
-  applicationWaiting,
   type Built,
   callOpened,
   candidacyDecided,
@@ -14,10 +13,10 @@ import {
   type Lang,
   newsletterConfirm,
   removalDone,
-  repliesDigest,
   replyUpdate,
   requestUpdated,
   roleAssigned,
+  staffDigest,
   welcome,
 } from "@repo/email/copy";
 import { Notice, noticeText } from "@repo/email/templates/notice";
@@ -37,13 +36,12 @@ const every = (l: Lang): Built[] => [
   eventChanged(l, event, "canceled", APP),
   eventChanged(l, event, "moved", APP),
   applicationReceived(l, "The Book Club", APP),
-  applicationWaiting(l, "The Book Club", APP),
   applicationDecided(l, "The Book Club", true, APP),
   applicationDecided(l, "The Book Club", false, APP),
   candidacyDecided(l, { title_ar: "الرئيس", title_en: "President" }, true, APP),
   certificateIssued(l, "Director of Media", "abc", APP),
-  requestUpdated(l, "f21", "acknowledged", "abc", APP),
-  requestUpdated(l, "f10", "closed", "abc", APP),
+  requestUpdated(l, "concern", "acknowledged", "abc", APP),
+  requestUpdated(l, "members-meeting-motion", "closed", "abc", APP),
   removalDone(l, "removed", null),
   replyUpdate(l, "Photographer", "talking", "2026-11-10T13:00:00Z", APP),
   replyUpdate(l, "Photographer", "not_picked", null, APP),
@@ -74,7 +72,11 @@ const every = (l: Lang): Built[] => [
   ),
   welcome(l, APP),
   accountDeleted(l),
-  repliesDigest(l, [{ count: 2, role: "Photographer" }], APP),
+  staffDigest(
+    l,
+    [{ items: [{ meta: "2", title: "Photographer" }], title: "Applications" }],
+    APP
+  ),
 ];
 
 describe("the email journeys", () => {
@@ -127,7 +129,7 @@ describe("the email journeys", () => {
   });
 
   test("a request closed links to its own page", () => {
-    const built = requestUpdated("en", "f21", "closed", "abc", APP);
+    const built = requestUpdated("en", "concern", "closed", "abc", APP);
     expect(built.subject).toBe("We've closed your concern");
     expect(built.blocks[0]?.action?.href).toBe(
       "https://auibsal.org/account/requests/abc"

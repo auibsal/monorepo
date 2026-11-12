@@ -26,7 +26,7 @@ const staticPaths = [
   "/qirtas/gallery",
   "/qirtas/video",
   "/next-stop",
-  "/qirtas/issues",
+  "/qirtas/editions",
   "/qirtas/prize",
   "/qirtas/games",
   "/qirtas/games/word",
@@ -51,6 +51,9 @@ const staticPaths = [
   "/library",
   "/about/council",
   "/partners",
+  "/help",
+  "/help/words",
+  "/about/credits",
 ];
 
 const localized = (
@@ -111,6 +114,10 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
   return [
     ...staticPaths,
     ...docs.map((doc) => documents.documentPath(doc.slug)),
+    // The Code of Conduct is Article II of the Policy Manual.
+    ...(docs.some((doc) => doc.slug === "policy-manual")
+      ? ["/code-of-conduct"]
+      : []),
   ]
     .flatMap((path) => localized(path))
     .concat(
@@ -123,7 +130,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       ),
       editions.flatMap((edition) =>
         localized(
-          `/qirtas/issues/${edition.slug}`,
+          `/qirtas/editions/${edition.slug}`,
           new Date(edition.updated_at)
         )
       ),

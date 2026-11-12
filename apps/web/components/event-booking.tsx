@@ -2,11 +2,12 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { type Locale, localizedPath } from "@repo/internationalization";
+import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { hasSessionCookie } from "@/lib/auth/session-cookie";
 
-type Status = "booked" | "waiting" | "reminded" | "none";
+type Status = "booked" | "held" | "waiting" | "reminded" | "none";
 
 // The Supabase client and the booking calls load only for someone signed
 // in, so the page stays within its budget for everyone else (it is cached
@@ -36,12 +37,14 @@ export const EventBooking = ({
 }) => {
   const t = useTranslations("web.events");
   const locale = useLocale() as Locale;
-  const calendar = `${localizedPath(locale, "/account/calendar")}#${slug}`;
+  const calendar = `${localizedPath(locale, "/account/events")}#${slug}`;
   const [signedIn, setSignedIn] = useState(false);
   const [status, setStatus] = useState<Status | null>(null);
   const [asks, setAsks] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<Notice | null>(null);
+  // A released place held for them (decisions.md, Events): until when.
+  const [heldUntil, setHeldUntil] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const supabase = (await loadClient()).schema("events");
@@ -54,9 +57,9 @@ export const EventBooking = ({
         .maybeSingle(),
       supabase
         .from("waitlist")
-        .select("id")
+        .select("status, offered_until")
         .eq("event_id", eventId)
-        .eq("status", "waiting")
+        .in("status", ["waiting", "offered"])
         .maybeSingle(),
       supabase
         .from("reminders")
@@ -77,8 +80,13 @@ export const EventBooking = ({
           (q) => (q as { required?: boolean } | null)?.required === true
         )
     );
+    const held =
+      waiting.data?.status === "offered" ? waiting.data.offered_until : null;
+    setHeldUntil(held);
     if (rsvp.data) {
       setStatus("booked");
+    } else if (held) {
+      setStatus("held");
     } else if (waiting.data) {
       setStatus("waiting");
     } else if (reminder.data) {
@@ -139,40 +147,98 @@ export const EventBooking = ({
     );
   }
 
-  let action: React.ReactNode;
-  if (open) {
-    action =
-      status === "reminded" ? (
-        <Button disabled={busy} onClick={() => remind(false)} variant="outline">
-          {t("forget")}
-        </Button>
-      ) : (
-        <Button disabled={busy} onClick={() => remind(true)}>
-          {t("remind")}
-        </Button>
-      );
-  } else if (status === "booked" || status === "waiting") {
-    action = (
-      <Button disabled={busy} onClick={cancel} variant="outline">
-        {status === "booked" ? t("cancelBooking") : t("leaveWaitlist")}
-      </Button>
-    );
-  } else {
-    action = (
-      <Button disabled={busy} onClick={book}>
-        {t("rsvp")}
-      </Button>
-    );
-  }
-
   return (
     <>
-      {action}
+      <BookingAction
+        busy={busy}
+        onBook={book}
+        onCancel={cancel}
+        onRemind={remind}
+        open={open}
+        status={status}
+      />
       <span aria-live="polite" className="type-caption">
         {notice ? t(`notices.${notice}`) : null}
-        {!notice && status === "booked" ? t("youreBooked") : null}
-        {!notice && status === "waiting" ? t("youreWaiting") : null}
+        {notice ? null : <StatusLine heldUntil={heldUntil} status={status} />}
       </span>
     </>
   );
+};
+
+/** The one action for where the person stands. */
+const BookingAction = ({
+  busy,
+  onBook,
+  onCancel,
+  onRemind,
+  open,
+  status,
+}: {
+  readonly busy: boolean;
+  readonly onBook: () => void;
+  readonly onCancel: () => void;
+  readonly onRemind: (on: boolean) => void;
+  readonly open: boolean;
+  readonly status: Status;
+}) => {
+  const t = useTranslations("web.events");
+  if (open) {
+    return status === "reminded" ? (
+      <Button disabled={busy} onClick={() => onRemind(false)} variant="outline">
+        {t("forget")}
+      </Button>
+    ) : (
+      <Button disabled={busy} onClick={() => onRemind(true)}>
+        {t("remind")}
+      </Button>
+    );
+  }
+  if (status === "held") {
+    return (
+      <>
+        <Button disabled={busy} onClick={onBook}>
+          {t("claim")}
+        </Button>
+        <Button disabled={busy} onClick={onCancel} variant="outline">
+          {t("decline")}
+        </Button>
+      </>
+    );
+  }
+  if (status === "booked" || status === "waiting") {
+    return (
+      <Button disabled={busy} onClick={onCancel} variant="outline">
+        {status === "booked" ? t("cancelBooking") : t("leaveWaitlist")}
+      </Button>
+    );
+  }
+  return (
+    <Button disabled={busy} onClick={onBook}>
+      {t("rsvp")}
+    </Button>
+  );
+};
+
+/** Where the person stands, in a line: booked, waiting or a place held. */
+const StatusLine = ({
+  heldUntil,
+  status,
+}: {
+  readonly heldUntil: string | null;
+  readonly status: Status;
+}) => {
+  const t = useTranslations("web.events");
+  const locale = useLocale() as Locale;
+  if (status === "booked") {
+    return t("youreBooked");
+  }
+  if (status === "waiting") {
+    return t("youreWaiting");
+  }
+  if (status === "held" && heldUntil) {
+    return t("held", {
+      until: `${formatLongDate(heldUntil, locale)}, ${formatClock(heldUntil, locale)}`,
+    });
+  }
+  return null;
 };

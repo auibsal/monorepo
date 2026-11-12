@@ -3,6 +3,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { BlockList, isIP } from "node:net";
 import { createAdminClient } from "@repo/database/admin";
+import { headers } from "next/headers";
 import { log } from "@/lib/observability/log";
 
 /**
@@ -119,3 +120,20 @@ export const withinRateLimit = async (
   }
   return data !== false;
 };
+
+/**
+ * The same limit for a page rendered per request (the checks for codes):
+ * the visitor read from the request's headers.
+ */
+export const pageWithinRateLimit = async (
+  form: string,
+  options: { max?: number; windowSeconds?: number } = {}
+) => {
+  const request = new Request("https://auibsal.org", {
+    headers: await headers(),
+  });
+  return withinRateLimit(request, form, options);
+};
+
+/** The checks for codes: at most 30 in ten minutes from one visitor. */
+export const VERIFY_LIMIT = { max: 30, windowSeconds: 600 };

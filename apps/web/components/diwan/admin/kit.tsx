@@ -32,7 +32,7 @@ import {
 import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
 import { DataError } from "@/lib/data";
-import { callApiText } from "@/lib/diwan/api";
+import { ApiError, callApiText } from "@/lib/diwan/api";
 import { useAppLink } from "@/lib/link-context";
 import { ChoiceInput } from "./choice-input";
 
@@ -455,7 +455,17 @@ export const ExportButton = ({
 }: ExportButtonProps) => {
   const t = useTranslations("diwan.admin.kit");
   const { supabase } = useAuth();
-  const [state, setState] = useState<"idle" | "busy" | "failed">("idle");
+  const [state, setState] = useState<"idle" | "busy" | "failed" | "asked">(
+    "idle"
+  );
+
+  // A list for Student Life needs a second officer: the first press asks.
+  const ask = async () => {
+    const { error } = await supabase
+      .schema("governance")
+      .rpc("request_export", { name, params });
+    setState(error ? "failed" : "asked");
+  };
 
   const run = async () => {
     setState("busy");
@@ -470,7 +480,14 @@ export const ExportButton = ({
       link.click();
       URL.revokeObjectURL(url);
       setState("idle");
-    } catch {
+    } catch (error) {
+      if (
+        error instanceof ApiError &&
+        error.code === "second_officer_required"
+      ) {
+        await ask();
+        return;
+      }
       setState("failed");
     }
   };
@@ -485,6 +502,11 @@ export const ExportButton = ({
       >
         {state === "busy" ? t("exporting") : (label ?? t("export"))}
       </Button>
+      {state === "asked" ? (
+        <p className="text-text text-xs" role="status">
+          {t("exportAsked")}
+        </p>
+      ) : null}
       {state === "failed" ? (
         <p className="text-text text-xs" role="alert">
           {t("exportFailed")}

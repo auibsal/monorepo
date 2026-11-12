@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { env } from "@/env";
+import { formRedirects } from "@/lib/data/form-paths";
 import { config, withAnalyzer } from "@/lib/next-config";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
@@ -15,16 +16,21 @@ const MOVED: readonly [from: string, to: string][] = [
   // Write for Qirtas's door (Qirtas).
   ["/qirtas/write", "/qirtas/submit"],
   ["/qirtas/write/:path*", "/qirtas/submit/:path*"],
+  // The partner dashboard's five tabs (decisions.md, The site).
+  ["/partners/dashboard/people", "/partners/dashboard/guests"],
+  ["/partners/dashboard/events", "/partners/dashboard"],
   ["/membership", "/account"],
   ["/membership/:path*", "/account/:path*"],
   ["/library/privacy", "/privacy"],
   ["/library/terms-of-use", "/terms"],
   ["/library/accessibility", "/accessibility"],
+  ["/library/security", "/security"],
   ["/partners/join", "/partners/apply"],
   // Your account's tabs match their pages (decisions §6).
   ["/account/society", "/account/elections"],
   ["/account/society/stand/:position", "/account/elections/:position"],
-  ["/account/saved", "/account/work"],
+  // The tabs of decisions.md, Your account (the eighth prompt, 3).
+  ["/account/calendar", "/account/events"],
   ["/account/settings/notices", "/account/settings/notifications"],
   ["/account/settings/declarations", "/account/settings/disclosures"],
   // The Diwan by Council seat (decisions §6).
@@ -47,8 +53,12 @@ const MOVED: readonly [from: string, to: string][] = [
   ["/diwan/events/:ref/door", "/diwan/events/:ref/check-in"],
   [
     "/account/record/:ref([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
-    "/account/record/certificates/:ref",
+    "/account/documents/certificates/:ref",
   ],
+  // The tab is Documents (decisions.md, Documents and forms): certificate
+  // and letter emails linked to Record.
+  ["/account/record", "/account/documents"],
+  ["/account/record/:path*", "/account/documents/:path*"],
   // Filters are query strings (decisions §6).
   ["/events/:month(\\d{4}-\\d{2})", "/events?month=:month"],
   ["/events/:month(\\d{4}-\\d{2})/society", "/events?month=:month"],
@@ -59,18 +69,18 @@ const MOVED: readonly [from: string, to: string][] = [
     "/qirtas/archive?month=:month&section=:section",
   ],
   ["/search/:q", "/search?q=:q"],
-  ["/qirtas/editions/list", "/qirtas/issues?view=list"],
-  // Themed online collections are issues; "the Edition" is only the
-  // printed year-in-review (decisions.md, Qirtas).
-  ["/qirtas/editions", "/qirtas/issues"],
+  ["/qirtas/editions/list", "/qirtas/editions?view=list"],
+  // Qirtas's themed collections are Editions (decisions.md, Qirtas); the
+  // issues address of Nov 11 moves back.
+  ["/qirtas/issues", "/qirtas/editions"],
   // The writing workshop moved to Tue Dec 8 (decisions.md, Events).
   [
     "/events/writing-workshop-2026-11-17",
     "/events/writing-workshop-2026-12-08",
   ],
-  ["/qirtas/editions/:slug", "/qirtas/issues/:slug"],
-  ["/diwan/qirtas/editions", "/diwan/qirtas/issues"],
-  ["/diwan/qirtas/editions/:ref", "/diwan/qirtas/issues/:ref"],
+  ["/qirtas/issues/:slug", "/qirtas/editions/:slug"],
+  ["/diwan/qirtas/issues", "/diwan/qirtas/editions"],
+  ["/diwan/qirtas/issues/:ref", "/diwan/qirtas/editions/:ref"],
 ];
 //
 // The design system (packages/brand, `bun run build:site`) is built into
@@ -110,6 +120,13 @@ let nextConfig: NextConfig = {
       ],
       source: `${prefix}/diwan/media/design/kit/:path*`,
     })),
+    // The checks for codes are never indexed (decisions.md, The site).
+    ...LANGUAGE_PREFIXES.flatMap((prefix) =>
+      [`${prefix}/verify`, `${prefix}/verify/:path*`].map((source) => ({
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+        source,
+      }))
+    ),
   ],
   outputFileTracingIncludes: {
     "/api/design/[...path]": ["./design/**/*"],
@@ -120,7 +137,7 @@ let nextConfig: NextConfig = {
   partialPrefetching: false,
   redirects: async () =>
     LANGUAGE_PREFIXES.flatMap((prefix) =>
-      MOVED.map(([from, to]) => ({
+      [...MOVED, ...formRedirects].map(([from, to]) => ({
         destination: `${prefix}${to}`,
         permanent: true,
         source: `${prefix}${from}`,

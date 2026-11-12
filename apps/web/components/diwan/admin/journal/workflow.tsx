@@ -477,6 +477,56 @@ export const FrontRank = ({
  * check, the approvals, the publish time, unpublishing and the front
  * page. Every move is a database function that checks again.
  */
+/**
+ * The newsroom's standards (decisions.md, Qirtas): every News fact checked
+ * against a second source or document before the second approval, with
+ * the checker noted; and the writer's ties to what they cover, for the
+ * editors to reassign or note.
+ */
+const NewsChecks = ({
+  editor,
+  move,
+  out,
+  piece,
+}: {
+  editor: boolean;
+  move: ReturnType<typeof useMove>;
+  out: boolean;
+  piece: Piece;
+}) => {
+  const t = useTranslations("diwan.admin.qirtas.workflow");
+  const locale = useLocale() as Locale;
+  return (
+    <div className="grid gap-2">
+      {piece.checked_at ? (
+        <p className="type-caption">
+          {t("factChecked", {
+            date: formatLongDate(piece.checked_at, locale, true),
+          })}
+        </p>
+      ) : (
+        <p className="type-caption">{t("factCheckNeeded")}</p>
+      )}
+      {!(piece.checked_at || out) && editor ? (
+        <Button
+          className="justify-self-start"
+          disabled={move.pending}
+          onClick={() => move.run("record_fact_check", { piece_id: piece.id })}
+          size="sm"
+          variant="outline"
+        >
+          {t("recordFactCheck")}
+        </Button>
+      ) : null}
+      {piece.conflict_disclosure ? (
+        <p className="type-body">
+          {t("disclosure", { text: piece.conflict_disclosure })}
+        </p>
+      ) : null}
+    </div>
+  );
+};
+
 export const Workflow = ({ record }: { record: PieceRecord }) => {
   const t = useTranslations("diwan.admin.qirtas.workflow");
   const piece = record.piece as Piece;
@@ -502,6 +552,9 @@ export const Workflow = ({ record }: { record: PieceRecord }) => {
       )}
       {piece.submission_id && !out ? (
         <AuthorCheck move={move} piece={piece} />
+      ) : null}
+      {piece.desk === "news" ? (
+        <NewsChecks editor={editor} move={move} out={out} piece={piece} />
       ) : null}
       {out ? null : <Approvals move={move} record={record} />}
       {!out && editor ? <Schedule move={move} piece={piece} /> : null}

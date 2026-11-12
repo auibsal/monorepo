@@ -99,7 +99,7 @@ select plan(6);
 select pg_temp.make_user('00000000-0000-0000-0000-00000000f6a1', 'tech-h@auib.edu.iq', 'Tech');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000f6a2', 'gs-h2@auib.edu.iq', 'Secretary');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000f6a3', 'member-h@auib.edu.iq', 'Member');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000f6a1', 'tech_admin');
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000f6a1', 'web_lead');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000f6a2', 'general_secretary');
 insert into core.telegram_groups (chat_id, title) values (-100123, 'Members');
 

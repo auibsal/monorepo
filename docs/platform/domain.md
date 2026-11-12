@@ -9,7 +9,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 ## People, roles and records
 
 - **The Council of nine.** The Executive Board (President, Vice President,
-  General Secretary) and six directors (Editor-in-Chief, Director of
+  Secretary) and six directors (Editor-in-Chief, Director of
   Media, Artistic Director, Director of Events, Director of Partnerships,
   Director of Membership); `isCouncil` in `lib/rbac/roles.ts`, mirrored
   from the database. Each role is hired by its hiring seat
@@ -22,17 +22,24 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Council role needs an adopted Council resolution
   (`private.role_conflict`); there is no other cap, but a section takes at
   most two assistant editors.
+- **Two officers.** Granting a Council role (`governance.manage`),
+  correcting a legal name (`members.manage`) and a list exported for
+  Student Life each wait in `governance.pending_actions` until another
+  officer holding that permission approves it on the Desk
+  (`governance.decide_action`); the one who asked can’t approve it. An
+  approved export is used once (`governance.spend_export`, called by the
+  API route).
 - **The roles standard.** Every role has a kind (`access.roles.kind`): a
   seat, a team role under a seat, a scoped role (one event, production,
-  issue, election, episode or shift, ending with it) or an outside role.
+  Edition, election, episode or shift, ending with it) or an outside role.
   A retired role (`retired`) stays on record and is never shown or given.
   Covering an open seat or section is a dated delegation
   (`role_assignments.covering`) that ends when the role is given for good.
-  The General Secretary records the quarterly access review on the
-  Council page (`access.record_access_review`). F-04, the new role
+  The Secretary records the quarterly access review on the
+  Council page (`access.record_access_review`). `role-holder-checklist`, the new role
   holder's checklist, is in Your account for 120 days from the day a role
   is given (`access.my_role_checklist`).
-- **The first term.** Anyone newly joining a team serves a first term on
+- **The first semester.** Anyone newly joining a team serves a first semester on
   probation; whoever appointed them confirms them; Council seats (elected
   or appointed directors) serve none
   (`confirmAssignment`). Elected seats have none. Candidates and
@@ -54,7 +61,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   and hold office. Staff is a member holding a role (`private.is_staff`).
   Students join themselves with an AUIB address and confirm they are
   students; Associate and Honorary Members (Honorary only after the
-  Council's resolution, F-34) join by the Director of Membership's
+  Council's resolution, `honorary-membership-invitation`) join by the Director of Membership's
   invitation. One invitation system (`governance.partner_invitations`,
   decisions §10): every invitation is single-use, to a named address,
   valid 14 days and revocable, sent by the Director of Membership
@@ -128,8 +135,8 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **Certificates** are two: finishing Qalam and the Mutanabbi Prize, one
   language each, with a verification code (`/verify/<code>` takes a
   certificate or a card code). Service is a letter
-  (`membership.service_letters`, F-05) with a verification code. Every
-  letter (F-03, F-05, F-30, F-32, F-33, F-34, F-42) is one American
+  (`membership.service_letters`, `service-letter`) with a verification code. Every
+  letter (`appointment-letter`, `service-letter`, `thank-you-letter`, `application-outcome`, `welcome-letter`, `honorary-membership-invitation`) is one American
   business letter template.
 - **Numbers and codes** (decisions §6): one five-digit series for members
   and guests (the card); CERT-, LTR-, RES-, MOU- and
@@ -138,22 +145,57 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   issued: a certificate when both sign, a letter when written, a
   resolution when adopted, a memorandum when the President countersigns.
   Verification codes are random and separate. Nobody types a number.
-- **Forms** are at `/forms/<number>` on one standard page, signed in the
+- **Forms** are each a step in their own flow, on one standard page with
+  no form number shown (`formPaths`: a concern at `/about/contact/concern`,
+  consents at `/consent/<kind>`, a declaration under Settings; the old
+  `/forms` addresses redirect, 308), signed in the
   signer's platform name and kept as the signed copy; staff forms are
   Notion templates. The signer agrees to sign electronically; the copy
   keeps the time, IP address, version and SHA-256 fingerprint, and the
-  signer is emailed theirs (`forms.signed_copy`). Signing without an
-  account, and anonymous concerns, go through `/api/forms/sign`
-  (Turnstile, `TURNSTILE_SECRET_KEY`, and a limit per address); parents
-  sign Qalam's F-38 and F-39 by a single-use link the Qalam lead sends
-  to the teacher (`governance.form_links`). Every public form that sends
-  email checks Turnstile (`lib/api/turnstile.ts`). The forms register in SAL-EXB-01 is the one source of
-  every form's number, title and fields; `bun run check:forms` compares
-  `governance.form_types` and the registry with it. Where the site already
+  signer is emailed theirs (`forms.signed_copy`). Each kind has a stable
+  name and version (`governance.form_types.key`, "media-release",
+  version 1; see `agreements.md`); each signing its record number
+  (`reference`, AGR-<year>-<four digits>) and a verification code that
+  `/verify/<code>` checks (`governance.verify_agreement`). Signing without an
+  account goes through `/api/forms/sign` (Turnstile,
+  `TURNSTILE_SECRET_KEY`, and a limit per address). A concern (`concern`) is
+  raised signed in; its writer may keep their name from the panel: the
+  submission then holds no name, the signer is kept in
+  `governance.sealed_signers` (read only by them), and whoever handles it
+  opens the name only for a safety risk or with the writer's agreement
+  (`governance.open_sealed`, the opening kept); parents
+  sign Qalam's `qalam-parent-consent` and `qalam-publishing-consent`
+  through their own single-use link, the teacher copied
+  (`governance.form_links`, `copy_to`). Every public form that sends
+  email checks Turnstile (`lib/api/turnstile.ts`). The register
+  "Agreements and consents" in SAL-EXB-01 holds only what people sign
+  (seventeen kinds, `in_register`, `registerKinds`), and is the one source
+  of each one's name, title and fields; `bun run check:forms` compares them
+  with it, by name. Letters, notices, minutes, score sheets, reports, lists
+  and checklists keep their names but are templates or records, in the
+  templates index (`docs/platform/agreements.md`). The Code of Conduct
+  (`code-of-conduct`, on joining), the role agreement (`role-agreement`),
+  the readers' pledge and the publication agreement are signed on their own
+  pages, and each is a signature record like the rest
+  (`private.record_signing`): its AGR number, its check at /verify, and
+  the signed copy in Your account → Documents. Where the site already
   does the job (joining, RSVPs, Write for Qirtas, Get involved,
   elections), the form is that page. Members never see the word "form" or
   a form code; the requests they can start are plain actions where they
   belong (`StartLinks`).
+- **Consent to sign electronically** (E-SIGN) is asked once for the
+  account, on its own line at sign-up (`esign` in the sign-up's metadata)
+  or, for accounts made before, at the next sign-in (`EsignQuestion` in the
+  gates), and can be withdrawn in Settings (`core.answer_esign`,
+  `core.profiles.esign_agreed_at`). With it given, no signing page asks
+  again; without it, each one does.
+- **The handover** (`handover`) is a step when someone leaves a role: the
+  outgoing holder fills and signs it (`/account/roles/handover?role=<the
+  assignment>`, offered from 14 days before the role ends to 60 after,
+  `access.my_handovers_due`); the incoming holder, or an officer who
+  assigns roles when the role has no holder yet, countersigns it
+  (`governance.handovers_to_countersign`, `second_sign_form`, the
+  `successor` second signer). Both keep the signed copy in Documents.
 - **Signatures** are `Signature`/`MySignature` (`components/signature.tsx`):
   the signer's name on the platform in the signature face, the card
   number, the date and a guilloche. Never typed.
@@ -166,21 +208,29 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   parts: its access (`events.events.entry`: `open`, `rsvp`, `members` or
   `invite` (Private); `members_only` is derived from it), RSVP and
   check-in (the booking asks only about accessibility needs, and diet
-  when `serves_food`; the waitlist moves by email until two hours before,
-  then the door fills places; places not claimed 10 minutes before are
-  released), a needs list,
+  when `serves_food`; a released place is held for the next on the
+  waitlist for 12 hours or until two hours before the start, whichever is
+  sooner, and passes on if unclaimed or declined (`events.waitlist.status`
+  `offered`, `offered_until`; `private.expire_offers` every five minutes);
+  from two hours before, the door fills places; places not claimed 10
+  minutes before are released; check-in keeps working without a
+  connection, `lib/diwan/door-queue.ts`), the access statement on the
+  page (`step_free`, `seating`, and the food's `allergens`, set on the
+  event's Diwan page), one reminder the day before with "Can't come?
+  Cancel", a trip's emergency contact deleted a week after it
+  (`private.purge_trip_contacts`), a needs list,
   volunteer shifts (on the event only, logging no hours), a partner
   checklist (`events.joint_tasks`) and links from the night
   (`events.session_links`, https only). Off campus is a standard field:
-  such an event publishes only once the General Secretary records Student
+  such an event publishes only once the Secretary records Student
   Life's written approval (`events.record_approval`), and participants
-  sign the trip consent, F-45. Nothing is built for one event or one kind
+  sign the trip consent, `trip-consent`. Nothing is built for one event or one kind
   of event. An event that recurs is made again for each date; there are
   no series and no programs (the code keeps its identifiers: the
   `programmes` schema, `programme_id`, `programs.manage`; copy says
   "event" or "event lead"). Minutes and resolutions are governance records
   pointing at their meeting's event (`governance.minutes.event_id`).
-- **What's on is one calendar**: `/events`, a month at
+- **Events is one calendar page**: `/events`, a month at
   `/events?month=<yyyy-mm>`, the Company's dates at `/events?host=company`,
   each event at `/events/<slug>`. The public calendar shows members-only
   events as teasers; SECURITY DEFINER code checks visibility with
@@ -250,7 +300,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   claims, reimbursements, payments or ads anywhere; sponsors give in kind
   only. Every event, Qirtas and the Tour keep a needs list
   (`programmes.needs`: item, quantity, date needed, purpose), and the
-  General Secretary sends each request to Student Life and logs what was
+  Secretary sends each request to Student Life and logs what was
   provided (Council → Requests), and by whom: Student Life, or a partner
   in kind (`needs.given_by`, picked from the register), whom the event's
   page then thanks under "Supported by" (`events.event_sponsors`: listed,
@@ -281,7 +331,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (`/diwan/qirtas/submissions/<id>`).
 - **Intake and blind review.** The Managing Editor handles intake and
   holds writers' names (`journal.identity.view`), and never reads a
-  blind entry: whoever holds the names is never an issue editor
+  blind entry: whoever holds the names is never an Edition's editor
   (`private.is_issue_editor`) and never gets the text
   (`private.can_read_entry`). Section editors decide.
 - **Approvals.** Every piece needs two people
@@ -312,11 +362,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   selections shared by address (`/qirtas/selection/...`, nothing stored).
   RSS at `/qirtas/feed.xml` and per section; the archive at
   `/qirtas/archive`. Pieces print on white without the site's frame.
-- **Issues** are themed online collections (`journal.issues`,
-  `/qirtas/issues`, a Shelf, with the plain list as a view, `?view=list`):
-  Haven is the pilot issue (`pilot`, no number), Issue 1 comes in spring
-  2027. **The Edition** is only the printed year-in-review; an issue's
-  record keeps the print run, printer and date for it.
+- **Editions** are Qirtas's themed collections (`journal.issues`,
+  `/qirtas/editions`, a Shelf, with the plain list as a view,
+  `?view=list`): Haven is the pilot (`pilot`, no number), Edition 1 comes
+  in spring 2027. An Edition's record keeps the print run, printer and
+  date when it is printed. Only the Sunday Paper has issues.
 - **Games**, daily, made in the reader's browser and the same for everyone
   on a Baghdad day (`lib/data/games`): the word, the word search,
   the crossword and the anagrams at `/qirtas/games/...`, checked ahead by
@@ -328,12 +378,26 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `/diwan/qirtas/prize`): Qirtas and Qalam categories, the outside judge's
   score 70% and the members' vote 30% (`journal.prize_results`), voting on
   Society while a round is open (`journal.open_prize_round`), the count
-  checked by the Editor-in-Chief and the General Secretary; a winner
+  checked by the Editor-in-Chief and the Secretary; a winner
   chooses whether to be named (`prize_entries.winner_named`), and anyone
   connected to a work steps aside from it (`journal.prize_recusals`).
-- **Qalam**, Qirtas's summer program for high school students. Its roster
-  is staff only (`/diwan/qirtas/qalam`, `qalam.manage`), never in Notion,
-  deleted three years on. High school students never get accounts.
+- **Qalam**, Qirtas's summer program for high school students. The
+  school gives the parents' addresses with its application; Qalam's staff
+  send the consent (`qalam-parent-consent`) to each parent through their
+  own single-use link (`programmes.qalam_consent_link`), and the teacher
+  gets a copy of each signed consent (`form_links.copy_to`). Signing makes
+  the parent's guest account with the Parent role on their child and the
+  student's guest account with the "Qalam student" role
+  (`programmes.qalam_enroll`, from `/api/forms/sign`): the names and
+  addresses on it become the accounts' own. The site writes to the parent
+  and the teacher, never to the student. The roster is the list of those
+  accounts (`programmes.qalam_roster`), staff only (`/diwan/qirtas/qalam`,
+  `qalam.manage`), never in Notion, deleted three years on; the student's
+  role and the parent's Qalam role end when the student finishes,
+  withdraws or is declined, and the guest accounts stay. The publishing
+  release (`qalam-publishing-consent`) goes to a parent the same way, for a
+  student on the roster, whom the link names. The card shows the first name
+  and last initial, "Guest · Qalam student", and the school and summer.
 - **Next Stop** is the Director of Media's video show at `/next-stop`
   (its promise at `/next-stop/care`), not part of Qirtas. Episodes are
   `programmes.episodes`, edited in the Diwan (Media → Next Stop): number,
@@ -343,7 +407,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `/next-stop/episodes/<slug>` with a click-to-load player on
   youtube-nocookie.com, TVEpisode JSON-LD, and a place in the sitemap.
   Everyone on camera is listed (`programmes.episode_on_camera`, Media only)
-  and signs F-15 by a single-use link to their address
+  and signs `media-release` by a single-use link to their address
   (`programmes.episode_release_link`); an episode can't be published until
   all have signed (`private.episode_releases_signed`). Credits come from
   Next Stop crew roles scoped to the episode, each with its `credit`
@@ -374,7 +438,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `/qirtas/from-the-society`.
 - **The Sunday Paper** («جريدة الأحد»), monthly, to its topic, sent as one
   Resend Broadcast per language (outbox kind `sunday_paper.broadcast`): the
-  letter, the month's pieces, From the Society, What's on, open roles and
+  letter, the month's pieces, From the Society, Events, open roles and
   a call to write. Past issues are at `/sunday-paper/<yyyy-mm>`,
   only those sent (`content.sunday_paper_issues`), rebuilt from the
   records (`lib/sunday-paper.ts`). The sign-up (`NewsletterSignup`) never

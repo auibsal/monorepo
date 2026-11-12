@@ -105,14 +105,10 @@
       "description": "Your account with the AUIB Society of Arts and Letters.",
       "submit": "Sign in",
       "submitting": "Signing in…",
-      "magicLink": "Email me a sign-in link instead",
-      "usePassword": "Use my password instead",
-      "sendLink": "Send the link",
-      "linkSent": "A sign-in email is on its way to {email}. Open its link, or type its code below.",
       "forgot": "Forgot your password?",
       "noAccount": "New to the Society?",
       "createAccount": "Create an account",
-      "deleted": "Your account has been deleted.",
+      "deleted": "Your account will be deleted on {date}. Changed your mind? Sign in before then and it stays.",
       "passkey": "Sign in with a passkey",
       "idle": "You were signed out of the Diwan after an hour without use. Sign in to pick up where you left off."
     },
@@ -147,7 +143,8 @@
       "birthYear": "Year of birth",
       "parentEmail": "Your parent’s or guardian’s email",
       "parentHint": "Used only to send the consent link.",
-      "mailing": "Send me the Sunday Paper and Society news and events. You can stop either at any time."
+      "mailing": "Send me the Sunday Paper and Society news and events. You can stop either at any time.",
+      "esign": "I agree to sign electronically: the agreements and consents I sign on the site are signed in the name on my account, and I get a copy of each by email. I can withdraw this in Settings."
     },
     "forgot": {
       "title": "Reset your password",
@@ -225,12 +222,16 @@
       "today": "Today",
       "calendar": "Calendar",
       "getInvolved": "Get involved",
-      "record": "Record",
       "settings": "Settings",
       "templates": "Templates and papers",
       "designSystem": "Design system",
       "work": "Work",
-      "elections": "Elections"
+      "elections": "Elections",
+      "documents": "Documents",
+      "applications": "Applications",
+      "saved": "Saved",
+      "roles": "Roles and service",
+      "card": "Card"
     },
     "errors": {
       "loadFailed": "We couldn’t load this. Check your connection and try again.",
@@ -308,19 +309,8 @@
         "open": "Open your account",
         "more": "Tell us more about yourself (two minutes, optional)"
       },
-      "shownName": {
-        "title": "This is how your name appears on the site",
-        "why": "Your card, your profile, bylines and every list show this name. Keep it, or choose the name you go by in each language.",
-        "en": "In English",
-        "ar": "In Arabic",
-        "preferred": {
-          "en": "Your name in English",
-          "ar": "Your name in Arabic"
-        },
-        "hint": "Leave one empty to keep the name above. Write each in its language’s letters. You can change it any time in Settings.",
-        "keep": "Keep it",
-        "change": "Change it",
-        "save": "Save my name"
+      "names": {
+        "title": "Your name"
       }
     },
     "home": {
@@ -380,7 +370,7 @@
         "openCallNoDate": "{call} is open; its closing date is still to be set",
         "daysLeft": "{days, plural, one {{daysText} day left} other {{daysText} days left}}",
         "submit": "Write for Qirtas",
-        "none": "No issue’s call is open. Qirtas takes work all year."
+        "none": "No Edition’s call is open. Qirtas takes work all year."
       },
       "programmes": {
         "title": "My events",
@@ -389,7 +379,7 @@
         "swap": "Ask to swap"
       },
       "calendar": {
-        "title": "My calendar feed",
+        "title": "Your calendar feed",
         "description": "A private link with your bookings, every SAL event and the AUIB campus calendar. Subscribe in Apple Calendar, Google Calendar or Outlook.",
         "copy": "Copy link",
         "reset": "Reset link",
@@ -403,8 +393,7 @@
         "offer": "You have an offer for a role"
       },
       "kinds": {
-        "guest": "Guest",
-        "partner": "Partner"
+        "guest": "Guest"
       },
       "sixWords": {
         "title": "Your Typewriter Tour pages",
@@ -426,26 +415,43 @@
       },
       "roleChecklist": {
         "title": "Your first steps as {role}",
-        "lede": "The new role holder’s checklist (F-04). The site marks what it can see; tick the rest when it’s done.",
+        "lede": "The new role holder’s checklist. The site marks what it can see; tick the rest when it’s done.",
         "done": "Done:",
         "todo": "To do:",
         "go": "Go there",
         "tick": "Mark as done",
         "steps": {
           "email": "The role email, with what the role does and who it works with",
-          "pledge": "The Code of Conduct and confidentiality, signed (for Qirtas, F-40 too)",
-          "declaration": "The conflict-of-interest declaration (F-06)",
+          "pledge": "The role agreement signed: the Code of Conduct and the license for work made in the role (for Qirtas, the readers’ pledge too)",
+          "declaration": "The conflict-of-interest declaration",
           "two_step": "Two-step sign-in or a passkey set up",
           "diwan_group": "In the Diwan group on Telegram, through Hudhud",
           "pages": "The role’s manual, Brand essentials and the role’s Diwan pages opened",
-          "handover": "The previous holder’s handover page walked through (F-07)",
+          "handover": "The previous holder’s handover read and countersigned (Roles and service)",
           "mailbox": "The seat’s mailbox received, with its password and two-step backup reset",
-          "notion": "Invited to Notion by the General Secretary"
-        }
+          "notion": "Invited to Notion by the Secretary"
+        },
+        "agreement": {
+          "conduct": "The role agreement: you will keep the Code of Conduct in this role.",
+          "readConduct": "Read the Code of Conduct",
+          "license": "For work you make in the role (design, code, photos, video, writing for the Society), you keep your copyright and give the Society a lasting license to use it.",
+          "sign": "Sign as {name}",
+          "failed": "It wasn’t signed. Try again in a moment."
+        },
+        "signAgreement": "Sign the role agreement: {role}"
+      },
+      "renewal": {
+        "title": "I’m still here",
+        "lede": "A new year at the Society has begun. Tell us you’re still a member, and you stay on the active list: you vote, hold roles and appear on Student Life’s lists.",
+        "conduct": "Renewing means you agree again to follow the Code of Conduct.",
+        "readConduct": "Read the Code of Conduct",
+        "action": "I’m still here",
+        "done": "Thank you: you’re on this year’s active list.",
+        "failed": "That didn’t go through. Try again."
       }
     },
     "events": {
-      "title": "My calendar",
+      "title": "Events",
       "lede": "What you booked, wait for or asked to be reminded of, then everything else coming up. Your calendar feed is at the end.",
       "empty": "No events are announced yet. They appear here as soon as they’re published.",
       "membersOnly": "Members only",
@@ -454,10 +460,14 @@
       "ticket": "Show my ticket",
       "cancel": "Give my place back",
       "leaveWaitlist": "Leave the waitlist",
+      "claim": "Claim your place",
+      "decline": "Let it go",
+      "declineAsk": "Let the place go to the next person?",
       "questions": "The organizers ask a few questions before booking.",
       "state": {
         "booked": "You have a place.",
         "waiting": "You’re on the waitlist. We’ll email you if a place opens.",
+        "held": "A place is held for you until {until}.",
         "noBooking": "No booking needed: just come.",
         "open": "Places available.",
         "full": "Full. Join the waitlist and we’ll email you if a place opens.",
@@ -479,7 +489,7 @@
       "byInvitation": "By invitation",
       "remind": "Remind me",
       "forget": "Don’t remind me",
-      "whatsOn": "What’s on",
+      "whatsOn": "Events",
       "cancelAsk": "Give your place to someone else?",
       "leaveWaitlistAsk": "Leave the waiting list?",
       "bookingAs": "Booking as {name}. A few questions first.",
@@ -497,14 +507,14 @@
       "yours": "You’re on this shift. It’s also in your account.",
       "left": "{count, plural, =0 {No places left} one {{places} place left} other {{places} places left}}",
       "notice": {
-        "signedUp": "You’re signed up. Confirm the shift on My calendar closer to the day.",
+        "signedUp": "You’re signed up. Confirm the shift under Events, in your account, closer to the day.",
         "gaveBack": "Done. The place is open for someone else.",
         "full": "Someone took the last place first.",
         "notVerified": "Shifts open once your membership is verified.",
         "failed": "That didn’t work. Try again in a moment."
       },
       "ideas": {
-        "lede": "Pitch an event to the President, who owns the term calendar. Role holders also plan events here."
+        "lede": "Pitch an event to the President, who owns the semester calendar. Role holders also plan events here."
       }
     },
     "society": {
@@ -575,7 +585,8 @@
         "tied": "Tied: decided by lot at a public meeting",
         "byLot": "{name} (decided by lot)",
         "votingPoint": "In person: {place}.",
-        "votingPointAt": "In person: {place}, {when}."
+        "votingPointAt": "In person: {place}, {when}.",
+        "forum": "Candidates’ forum on {when}:"
       },
       "takePart": {
         "title": "Take part",
@@ -598,11 +609,16 @@
         },
         "vote": "Vote for this",
         "voted": "You’ve voted in this category."
+      },
+      "resolutions": {
+        "title": "Resolutions",
+        "lede": "What the Council and members’ meetings adopted, by number and date. Those about partners and documents are also on the Council’s public page.",
+        "empty": "No resolutions adopted yet."
       }
     },
     "twoStep": {
       "setupTitle": "Set up two-step sign-in",
-      "setupBody": "Your role reaches the Society’s records, votes or the charity collection, so it needs a second step at sign-in: a six-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or similar). It takes a minute and you do it once.",
+      "setupBody": "Your role reaches members’ personal data, the Society’s records or votes, so it needs a second step at sign-in: a six-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or similar), or a sign-in with a passkey. It takes a minute and you do it once.",
       "verifyTitle": "Enter your sign-in code",
       "verifyBody": "Open your authenticator app and enter the six-digit code for SAL. Your administration tools open once it’s accepted.",
       "start": "Set up my authenticator",
@@ -615,7 +631,14 @@
       "recoveryBody": "Enter one of the recovery codes you saved. It removes the lost authenticator app, and you set up a new one straight away. Each code works once.",
       "recoveryLabel": "Recovery code",
       "recoveryUse": "Use this code",
-      "recoveryFailed": "That code didn’t work. Check it, or try another one. If none are left, ask whoever assigns roles to reset your two-step sign-in."
+      "recoveryFailed": "That code didn’t work. Check it, or try another one. If none are left, ask whoever assigns roles to reset your two-step sign-in.",
+      "settingsTitle": "Two-step sign-in",
+      "settingsOffer": "Optional for you: after your password, a six-digit code from an authenticator app on your phone. Signing in with a passkey counts as two steps on its own.",
+      "settingsOn": "On. You enter a code from your authenticator app after your password.",
+      "settingsOnNextTime": "On. You’ll enter a code from your authenticator app where a page needs it.",
+      "passkeyFirst": "A passkey on this device",
+      "passkeyBody": "Quickest: add a passkey, then sign out and sign in with it. A passkey counts as two steps on its own.",
+      "orAuthenticator": "Or an authenticator app"
     },
     "journal": {
       "status": {
@@ -669,11 +692,11 @@
         },
         "selection": {
           "title": "Selection",
-          "body": "The editors choose the issue from the highest-scored work."
+          "body": "The editors choose the Edition from the highest-scored work."
         },
         "decision": {
           "title": "Decision",
-          "body": "You’re told by email either way. Accepted work needs your signed Publication Agreement."
+          "body": "You’re told by email either way. Accepted work needs your signed publication agreement."
         }
       },
       "blindNote": "Readers’ scores and notes stay with the editors. You hear the decision when it’s made.",
@@ -719,7 +742,7 @@
         "none": "No files attached."
       },
       "agreement": {
-        "title": "Publication Agreement",
+        "title": "Publication agreement",
         "body": "By signing, you agree to the Society’s terms for publishing your work, from the Policy Manual:\n\n9.1 Creators own their work. By presenting or submitting it, they give the Society permission to show, perform, publish and archive it for the purpose agreed, and nothing more.\n\n9.2 Everyone who works on a Society project is credited by name in its program, masthead or end credits, unless they ask not to be.\n\n9.5 Plagiarism in any Society program leads to withdrawal of the work and may lead to action under P1.\n\n10.1 Creative work submitted to Qirtas, the Mutanabbi Prize, the Company and the Society’s events must be the member’s own. Work drafted, written, translated or generated by AI is not eligible. Spellcheck and basic grammar tools are fine.\n\nThe purpose agreed is publication in Qirtas, online and in print, and the Society’s archive.",
         "sign": "Sign the agreement",
         "signed": "Signed by {name} on {date}.",
@@ -768,7 +791,7 @@
         "blind": "Read without your name first, then edited with you by the {section} editor.",
         "closed": "Qirtas is not taking this type of work right now.",
         "where": "Where",
-        "whereHint": "An issue, while its call is open, or Qirtas online.",
+        "whereHint": "An Edition, while its call is open, or Qirtas online.",
         "send": "Send to Qirtas",
         "manuscript": {
           "reading": "Reading your file…",
@@ -813,7 +836,7 @@
         },
         "haven": {
           "title": "Haven",
-          "dek": "Dreams and memories · the pilot issue of Qirtas",
+          "dek": "Dreams and memories · the pilot Edition of Qirtas",
           "memories": "Our memories and dreams are the most intimate parts of ourselves. Each of us holds a memory from childhood, or a dream close to the heart, that refuses to die.",
           "call": "A poem, a short story, a creative essay or an artwork about a memory, a dream or both.",
           "rulesTitle": "What to send",
@@ -825,14 +848,19 @@
             "own": "Your own work: no text or images generated with AI."
           },
           "closes": "Closes {date}, at {time} Baghdad time. You hear back within the week.",
-          "published": "The pilot issue is published {date}."
+          "published": "The pilot is published {date}."
         },
         "drafts": {
           "title": "Your drafts",
           "all": "All your work",
           "line": "{type} · {date}"
         }
-      }
+      },
+      "revising": "Revise and resend",
+      "revisionTitle": "The editor asks for a revision",
+      "revisionHint": "Revise it below and save, then send the revision. It keeps its number and goes back to the same editor, without a second reading. Whether to revise is your choice.",
+      "sendRevision": "Send the revision",
+      "sendRevisionConfirm": "It goes back to the editor as it is saved now, and can’t be changed after."
     },
     "profile": {
       "title": "Profile",
@@ -843,18 +871,23 @@
         "description": "Everything the site keeps about you, as one file (JSON): your profile, membership, card number, bookings, check-ins, roles, letters, certificates, Qirtas submissions and drafts, and your settings.",
         "submit": "Download my data",
         "preparing": "Preparing your file…",
-        "failed": "We couldn’t prepare your file. Please try again."
+        "failed": "We couldn’t prepare your file. Please try again.",
+        "show": "See it as a page",
+        "account": "Your account",
+        "profile": "Your profile"
       },
       "delete": {
         "title": "Delete account",
-        "description": "Deletes your account, your bookings and your profile. Published Qirtas pieces stay under the agreement you signed.",
+        "description": "Deletes your account, your bookings and your profile 30 days from now; signing in before then keeps it. Published Qirtas pieces stay under the agreement you signed.",
         "phrase": "delete my account",
         "prompt": "Type “{phrase}” to confirm.",
         "submit": "Delete my account",
         "deleting": "Deleting…",
         "failed": "We couldn’t delete your account. Please try again.",
         "reauthenticate": "To delete your account, sign in again first; it keeps someone else at your screen from doing it.",
-        "signInAgain": "Sign in again"
+        "signInAgain": "Sign in again",
+        "cancel": "Keep my account",
+        "restored": "Welcome back. Your account was set to be deleted; signing in has kept it."
       },
       "push": {
         "title": "Phone notifications",
@@ -927,18 +960,12 @@
       },
       "legal": {
         "title": "Legal name",
-        "check": "Check it",
-        "checkTitle": "Check your legal name",
-        "checkBody": "Make sure it matches your ID exactly. Once you confirm, you can’t change it; the Director of Membership corrects it if needed.",
-        "confirm": "Confirm and lock",
-        "edit": "Edit it",
-        "locked": "Locked on {date}. To correct it, write to membership@auibsal.org.",
-        "lockFailed": "Your legal name could not be locked. Save it complete first."
+        "locked": "Your legal name, as on your papers, is used only on certificates, letters, signed forms and lists for Student Life. To correct it, write to the Director of Membership."
       }
     },
     "admin": {
       "title": "Administration",
-      "noAccess": "This page belongs to a role you don’t hold. Ask the President or the General Secretary if you need it.",
+      "noAccess": "This page belongs to a role you don’t hold. Ask the President or the Secretary if you need it.",
       "kit": {
         "search": "Search",
         "searchPlaceholder": "Name or email",
@@ -998,7 +1025,7 @@
           "find": "Type to find",
           "none": "Nothing matches."
         },
-        "tripNeedsApproval": "An event off campus is published only once the General Secretary records Student Life’s written approval, under Occasion.",
+        "tripNeedsApproval": "An event off campus is published only once the Secretary records Student Life’s written approval, under Occasion.",
         "selection": {
           "choose": "Choose",
           "all": "Choose every row",
@@ -1011,7 +1038,8 @@
           "hint": "The invitation is written in this language only.",
           "en": "English",
           "ar": "Arabic"
-        }
+        },
+        "exportAsked": "Asked. Download the list once a second officer approves it on the Desk."
       },
       "overview": {
         "title": "Desk",
@@ -1065,6 +1093,20 @@
             "hiring_new": "New replies to openings: {n}",
             "requests_open": "Requests open: {n}"
           }
+        },
+        "secondOfficer": {
+          "title": "For a second officer",
+          "lede": "These take two officers. Whoever asked can’t approve their own request.",
+          "kinds": {
+            "council_role": "{subject} as {detail}",
+            "legal_name": "{subject}’s legal name corrected to {detail}",
+            "student_life_export": "A list for Student Life: {detail}",
+            "member_removal": "{subject} removed from membership by the Council’s vote: {detail}"
+          },
+          "asked": "Asked by {name} on {date}",
+          "yours": "Waiting for another officer.",
+          "approve": "Approve",
+          "decline": "Decline"
         }
       },
       "members": {
@@ -1111,7 +1153,7 @@
             "heard_from": "How they heard of us",
             "gender": "Gender"
           },
-          "membersManageOnly": "Only the General Secretary’s team sees these counts."
+          "membersManageOnly": "Only the Secretary’s team sees these counts."
         },
         "guests": {
           "link": "Guests",
@@ -1131,7 +1173,7 @@
           "associate": "Associate Member",
           "honorary": "Honorary Member",
           "resolution": "The Council’s resolution",
-          "resolutionHint": "An Honorary Member is invited only after the Council adopts its resolution (F-34).",
+          "resolutionHint": "An Honorary Member is invited only after the Council adopts its resolution.",
           "email": "Their email",
           "invite": "Send the invitation",
           "sent": "Invitation sent."
@@ -1161,11 +1203,12 @@
           "global": "Society-wide",
           "programme": "The Company or Qirtas",
           "event": "One event",
-          "issue": "Qirtas issue",
+          "issue": "Qirtas Edition",
           "campaign": "Campaign",
           "production": "Production",
           "partner": "Partner",
-          "episode": "Next Stop episode"
+          "episode": "Next Stop episode",
+          "member": "One member (a parent’s child)"
         },
         "endRole": "End now",
         "endRoleConfirm": "End this assignment now? The permissions it grants stop at once.",
@@ -1198,8 +1241,8 @@
           "description": "Remove {name}'s authenticator app and recovery codes? Do this only when they asked, after checking it’s really them.",
           "done": "Reset. {name} sets up a new authenticator at their next sign-in."
         },
-        "probation": "First term (on probation)",
-        "confirmRole": "Confirm after the first term",
+        "probation": "First semester (on probation)",
+        "confirmRole": "Confirm after the first semester",
         "studentLifeEligible": "Student Life says eligible",
         "studentLifeNotEligible": "Student Life says not eligible",
         "name": {
@@ -1208,7 +1251,7 @@
           "en": "In English",
           "ar": "In Arabic",
           "save": "Save the name",
-          "saved": "Saved. The site now shows {name}.",
+          "saved": "Asked. The site shows {name} once a second officer approves the change on the Desk.",
           "reason": "Reason for the correction",
           "preferredTitle": "Preferred name",
           "preferredBody": "Reset a preferred name that misleads or offends. The site then shows the default; the activity log keeps the reason.",
@@ -1218,19 +1261,29 @@
         },
         "departure": {
           "title": "Left AUIB",
-          "body": "For a student Member who has left AUIB. A graduate becomes an Associate Member: same account and number, no vote and no office. Someone who left without graduating becomes a guest: same number and a Guest card, no vote, no role, and Hudhud takes them out of the members’ group after a week.",
+          "body": "For a student Member who has left AUIB, graduated or not. They become an Associate Member: the same account, number and history, the members’ group kept, no vote and no office; any role they hold ends.",
           "graduated": "Graduated",
           "graduatedConfirm": "Make them an Associate Member",
           "graduatedDescription": "{name} graduated: their class becomes Associate Member and any role they hold ends.",
           "left": "Left without graduating",
-          "leftConfirm": "Make them a guest",
-          "leftDescription": "{name} left AUIB without graduating: their account becomes a guest account with the same number, and any role they hold ends.",
+          "leftConfirm": "Make them an Associate Member",
+          "leftDescription": "{name} left AUIB without graduating: they become an Associate Member with the same number, and any role they hold ends.",
           "nowGuest": "{name} is now a guest.",
           "nowAssociate": "{name} is now an Associate Member."
         },
         "studentLife": "Student Life",
         "studentLifeIsEligible": "Eligible",
-        "recoveryBy": "Not eligible; must recover by {date}"
+        "recoveryBy": "Not eligible; must recover by {date}",
+        "waitingSecondOfficer": "Asked. A Council role is assigned once a second officer approves it on the Desk.",
+        "removal": {
+          "title": "Remove from membership",
+          "body": "Only by the Council’s vote: two thirds of those voting, after notice and a hearing (decisions.md, Governance). Cite the adopted resolution; another officer approves on the Desk before it takes effect. The account, its number and history stay; membership and any role end, and the person is told by email.",
+          "resolution": "The Council’s resolution",
+          "none": "No adopted resolution yet. The Council votes first.",
+          "reason": "Reason, as the resolution states it",
+          "submit": "Ask a second officer to approve",
+          "sent": "Sent to the Desk for a second officer."
+        }
       },
       "verification": {
         "title": "Partner applications",
@@ -1259,7 +1312,7 @@
       },
       "events": {
         "title": "Events",
-        "lede": "Every event on the term calendar: what’s coming, drafts and what’s past. Events are made in Notion’s Events database; open one here to see who booked, run its check-in and keep its parts.",
+        "lede": "Every event on the semester calendar: what’s coming, drafts and what’s past. Events are made in Notion’s Events database; open one here to see who booked, run its check-in and keep its parts.",
         "tabs": {
           "upcoming": "Upcoming",
           "past": "Past",
@@ -1342,7 +1395,7 @@
           "label": "This event is off campus",
           "approved": "Student Life approved this event in writing on {date}.",
           "waiting": "Waiting for Student Life’s written approval. The event is not published until it is recorded.",
-          "bySecretary": "The General Secretary records the approval.",
+          "bySecretary": "The Secretary records the approval.",
           "date": "Approved by Student Life on",
           "dateHint": "The date on Student Life’s written approval. Clear it to withdraw the approval of an event not yet published.",
           "by": "Approved by",
@@ -1384,8 +1437,25 @@
           "withdraw": "Withdraw",
           "sent": "Invitation sent."
         },
-        "debrief": "The debrief (F-13) in Notion",
-        "servesFood": "Food is served (the booking also asks about diet)"
+        "debrief": "The debrief in Notion",
+        "servesFood": "Food is served (the booking also asks about diet)",
+        "access": "Access and food",
+        "accessHint": "The event’s page states these plainly, so people know before they come.",
+        "stepFree": "Step-free (no steps on the way in or in the room)",
+        "notSaid": "Not said yet",
+        "yes": "Yes",
+        "no": "No",
+        "seating": "Seating",
+        "allergens": "The main allergens in the food",
+        "incidents": {
+          "title": "Incident reports",
+          "lede": "Something happened that the Society should know about: an injury, a safety problem, a complaint at the door. Write it the same day. The Director of Events and the President are told at once, and the report is kept seven years.",
+          "add": "Report an incident",
+          "when": "When it happened",
+          "what": "What happened",
+          "whatHint": "Who was involved and what you saw, as plainly as you can.",
+          "action": "What was done"
+        }
       },
       "checkIn": {
         "title": "Check-in",
@@ -1405,7 +1475,9 @@
         "count": "{count} checked in",
         "noResults": "No member found.",
         "cardNotLive": "This card’s code isn’t live (a screenshot?). Ask to see the card on the member’s own phone.",
-        "otherDoors": "Other events’ check-in"
+        "otherDoors": "Other events’ check-in",
+        "saved": "No connection: this check-in is saved on this device and will be sent when the connection is back.",
+        "waiting": "{count, plural, one {{number} check-in is} other {{number} check-ins are}} waiting for the connection. Keep this page open."
       },
       "content": {
         "title": "Content",
@@ -1480,7 +1552,7 @@
           "chapterRemove": "Remove the chapter",
           "chapterAdd": "Add a chapter",
           "chapterTimeError": "Write each chapter’s start as minutes and seconds, such as 4:30.",
-          "releasesMissing": "Everyone on camera signs the media release (F-15) before the episode is published.",
+          "releasesMissing": "Everyone on camera signs the media release before the episode is published.",
           "captions": {
             "en": "English captions (WebVTT)",
             "ar": "Arabic captions (WebVTT)",
@@ -1488,7 +1560,7 @@
           },
           "onCamera": {
             "title": "On camera",
-            "body": "Everyone who appears signs the media release (F-15) on the site, by a single-use link to their address. The episode can’t be published until all have signed.",
+            "body": "Everyone who appears signs the media release on the site, by a single-use link to their address. The episode can’t be published until all have signed.",
             "unsent": "Release not sent",
             "sent": "Link sent, not signed yet",
             "signed": "Release signed",
@@ -1499,8 +1571,8 @@
             "add": "Add someone on camera",
             "member": "A member",
             "asGuest": "Credit them as a guest",
-            "guestName": "Or a guest’s name",
-            "guestEmail": "The guest’s email address"
+            "guestEmail": "The guest’s email address",
+            "inviteHint": "A guest from outside: their address. The release link goes to it at once, and their name is the one they sign with."
           },
           "credits": {
             "title": "Credits",
@@ -1594,8 +1666,6 @@
           "partner": "Partner school",
           "choosePartner": "Choose the school",
           "places": "Places",
-          "termFrom": "Term starts",
-          "termTo": "Term ends",
           "give": "Give the place",
           "withdraw": "Withdraw",
           "placement": {
@@ -1618,7 +1688,7 @@
             "qalam_mentor": "A Qalam mentor"
           },
           "kindHints": {
-            "role": "A role the Society needs filled, chosen from its roles. New team members serve their first term on probation, then are confirmed.",
+            "role": "A role the Society needs filled, chosen from its roles. New team members serve their first semester on probation, then are confirmed.",
             "event_team": "The lead of one event: one place, appointed through Get involved. Everyone else on the night signs up for a volunteer shift on the event’s page.",
             "qalam_mentor": "A mentor’s place in Qalam. Students never get accounts: record nothing about them here."
           },
@@ -1644,7 +1714,7 @@
           "title": "Event proposals",
           "lede": "Ideas for new events that members sent. The President answers each one."
         },
-        "whatsOn": "What’s on",
+        "whatsOn": "Events",
         "backToTab": "{program}: {tab}",
         "openingsLink": "Openings",
         "prompts": {
@@ -1777,7 +1847,14 @@
           "title": "Resolutions of this meeting",
           "none": "No resolutions recorded for this meeting.",
           "numbered": "Resolution {code}.",
-          "numberOnAdoption": "The site numbers the resolution (RES-year-number) once it is adopted; failed motions are recorded only in the minutes."
+          "numberOnAdoption": "The site numbers the resolution (RES-year-number) once it is adopted; failed motions are recorded only in the minutes.",
+          "subject": "About",
+          "subjectHint": "Resolutions about a partner or a document are public once adopted; the rest are open to members.",
+          "subjects": {
+            "other": "Something else (members only)",
+            "partner": "A partner (public)",
+            "document": "A document (public)"
+          }
         },
         "elections": {
           "flagOff": "Online elections are off (Settings → Feature flags).",
@@ -1845,7 +1922,13 @@
           "studentLifeList": "Candidates for Student Life (CSV)",
           "councilList": "The Council for Student Life (CSV)",
           "votingPoint": "The voting point in person",
-          "votingPointAt": "When the voting point is open"
+          "votingPointAt": "When the voting point is open",
+          "forum": {
+            "title": "Candidates’ forum",
+            "hint": "Make the forum in Notion’s Events like any event, in the seven days before voting opens, then choose it here. Afterward, add its recording to the event’s links, for those who couldn’t come.",
+            "none": "No event falls in the week before voting yet. Make the forum in Notion, and it appears here after the next sync.",
+            "notYet": "Not chosen yet"
+          }
         },
         "bodies": {
           "council": "The Council",
@@ -1909,16 +1992,28 @@
           "stuck": "{count} emails are waiting to be sent.",
           "flowing": "Emails are going out.",
           "lastSent": "Last sent {when}."
+        },
+        "advisors": {
+          "title": "Database checks",
+          "lede": "Each month, look here and at Supabase’s Advisors. These are the checks CI holds at zero, run on the live database.",
+          "clean": "Clean: every table has row level security, functions keep their rights and paths, no policy repeats, every foreign key has an index.",
+          "checks": {
+            "rls_disabled": "No row level security",
+            "definer_exposed": "Owner’s rights open to clients",
+            "search_path": "No fixed search path",
+            "multiple_policies": "Two policies for one action",
+            "unindexed_foreign_key": "Foreign key without an index"
+          }
         }
       },
       "journal": {
-        "title": "Qirtas: Issues",
-        "lede": "Issues, pieces and contributors. Accepted work becomes a draft piece here; nothing from a submission is published before its author signs the Publication Agreement.",
-        "newIssue": "New issue",
+        "title": "Qirtas: Editions",
+        "lede": "Editions, pieces and contributors. Accepted work becomes a draft piece here; nothing from a submission is published before its author signs the publication agreement.",
+        "newIssue": "New Edition",
         "newPiece": "New piece",
         "volumeNumber": "Vol. {volume}, No. {number}",
         "columns": {
-          "issue": "Issue",
+          "issue": "Edition",
           "category": "Category",
           "status": "Status",
           "decided": "Decided"
@@ -1978,8 +2073,8 @@
         "notSigned": "Not yet signed",
         "place": "Make a draft piece",
         "noneAccepted": "No accepted work is waiting.",
-        "allIssues": "All issues",
-        "noIssue": "No issue yet",
+        "allIssues": "All Editions",
+        "noIssue": "No Edition yet",
         "issue": {
           "volume": "Volume",
           "number": "Number",
@@ -1987,16 +2082,16 @@
           "theme": "Theme",
           "editorsNote": "Editor’s note",
           "cover": "Cover",
-          "pdf": "Issue PDF (two-cover print edition)",
-          "notFound": "No issue with this link, or your roles don’t cover it.",
-          "publishConfirm": "Publish this issue? It appears on auibsal.org at once; its published pieces go with it.",
+          "pdf": "Edition PDF (two-cover print edition)",
+          "notFound": "No Edition with this link, or your roles don’t cover it.",
+          "publishConfirm": "Publish this Edition? It appears on auibsal.org at once; its published pieces go with it.",
           "printed": "Printed edition",
-          "printedHint": "How many copies, who printed it and when (for a printed Edition). The issue page shows it as one line once all three are filled in.",
+          "printedHint": "How many copies, who printed it and when (for a printed Edition). The Edition’s page shows it as one line once all three are filled in.",
           "printRun": "Print run (copies)",
           "printedOn": "Printed on",
           "printer": "Printer",
           "launchNight": "The launch event",
-          "launchNightHint": "The event that launches this issue. The Issues page shows it beside the call.",
+          "launchNightHint": "The event that launches this Edition. The Editions page shows it beside the call.",
           "noLaunchNight": "Not chosen yet"
         },
         "piece": {
@@ -2007,12 +2102,12 @@
           "language": "Language",
           "contributor": "Contributor",
           "membersOnly": "For members (listed publicly; only signed-in members read the text)",
-          "sort": "Order in the issue",
+          "sort": "Order in the Edition",
           "image": "Artwork or photograph",
-          "issue": "Issue",
+          "issue": "Edition",
           "notFound": "No piece with this link, or your roles don’t cover it.",
-          "agreementNeeded": "The author hasn’t signed the Publication Agreement yet; publishing will wait for it.",
-          "publishConfirm": "Publish this piece? It appears on its issue’s page at once."
+          "agreementNeeded": "The author hasn’t signed the publication agreement yet; publishing will wait for it.",
+          "publishConfirm": "Publish this piece? It appears on its Edition’s page at once."
         },
         "contributor": {
           "bio": "Bio",
@@ -2030,7 +2125,7 @@
           "games": "Games"
         },
         "tabs": {
-          "issues": "Issues",
+          "issues": "Editions",
           "accepted": "Accepted, to place ({count})",
           "pieces": "Pieces",
           "contributors": "Contributors"
@@ -2046,7 +2141,7 @@
       "pipeline": {
         "title": "Qirtas: blind reading",
         "lede": "The blind review of submissions, from intake to decision. Each person sees only their part: the Managing Editor holds the key and never reads or scores; readers and editors work from blind ids; author names appear only after a decision.",
-        "noIssues": "No issue has you in its review team yet.",
+        "noIssues": "No Edition has you in its review team yet.",
         "tabs": {
           "reading": "My reading",
           "intake": "Intake",
@@ -2085,7 +2180,8 @@
         "decisions": {
           "accept": "Accept",
           "accept_with_edits": "Accept with edits",
-          "decline": "Decline"
+          "decline": "Decline",
+          "revise": "Revise and resend"
         },
         "fileKinds": {
           "manuscript": "Manuscript",
@@ -2094,7 +2190,7 @@
         },
         "reading": {
           "note": "Score each piece on its own, before discussing it with anyone. You see only your own scores.",
-          "empty": "Nothing assigned to you for this issue."
+          "empty": "Nothing assigned to you for this Edition."
         },
         "flagged": {
           "empty": "No pieces have been flagged for the Advisory Board."
@@ -2109,7 +2205,7 @@
         },
         "readers": {
           "note": "Two blind reads per piece; a third when the first two differ by more than 20 points. No one reads their own work.",
-          "noTeam": "No readers hold a role for this issue yet. Assign the Reader role in Members.",
+          "noTeam": "No readers hold a role for this Edition yet. Assign the Reader role in Members.",
           "empty": "No pieces are waiting for readers.",
           "choose": "Choose a reader",
           "assign": "Assign",
@@ -2171,7 +2267,10 @@
           "decideConfirm": "Record this decision? It cannot be changed here, and the author is told.",
           "record": "Record the decision",
           "author": "Author",
-          "reasonNeeded": "A decision needs its reason."
+          "reasonNeeded": "A decision needs its reason.",
+          "reviseNote": "Asked for once. The work goes back to the writer with your reason, keeps its number, and comes back to you, not to the readers. The writer’s name stays hidden.",
+          "withWriter": "With the writer for the revision you asked for.",
+          "revised": "This is the revision; it was not read again. Decide on it now."
         },
         "rubric": {
           "craft": "Craft ({weight})",
@@ -2195,11 +2294,11 @@
           "publish": "Published (members can see it and submit while it is open)",
           "published": "Published",
           "hidden": "Not published",
-          "empty": "No calls for this issue yet.",
+          "empty": "No calls for this Edition yet.",
           "new": "New call",
           "partners": "Also open to partners’ members",
           "partnersHint": "Members of these partners may answer the call once the Society has verified them, under the same rules and blind review. Only partners whose signed memorandum allows Journal submissions are listed.",
-          "back": "The issue",
+          "back": "The Edition",
           "missing": "This call is not here",
           "title": "A call"
         },
@@ -2227,7 +2326,7 @@
       },
       "partners": {
         "title": "Partners",
-        "lede": "The partners register, memoranda (Form F-26), affiliations and member offers. Every partnership with shared branding or shared responsibility has a signed memorandum (P11.2).",
+        "lede": "The partners register, memoranda, affiliations and member offers. Every partnership with shared branding or shared responsibility has a signed memorandum (P11.2).",
         "tabs": {
           "register": "Register",
           "agreements": "Memoranda",
@@ -2324,7 +2423,7 @@
           },
           "grants": {
             "journal_submissions": "Their members may send work to Qirtas",
-            "guest_editing": "A guest editor for an issue",
+            "guest_editing": "A guest editor for an Edition",
             "event_cohosting": "Co-hosted events",
             "shared_branding": "Shared branding",
             "productions": "Plays together",
@@ -2360,7 +2459,7 @@
           }
         },
         "declarations": {
-          "lede": "Conflict of Interest Declarations (Form F-18) from role holders. The General Secretary records receipt.",
+          "lede": "Conflict of Interest Declarations from role holders. The Secretary records receipt.",
           "empty": "No declarations yet.",
           "person": "Person",
           "declared": "Declared",
@@ -2396,7 +2495,7 @@
       },
       "recognition": {
         "title": "Service",
-        "lede": "Staff hours, service letters and certificates (owner, Nov 7, 2026): confirm staff hours, write service letters (F-05), and prepare certificates for finishing Qalam and for the Mutanabbi Prize. Qalam’s are signed by the Qalam lead and the Editor-in-Chief, the Prize’s by the Editor-in-Chief and the President.",
+        "lede": "Staff hours, service letters and certificates (owner, Nov 7, 2026): confirm staff hours, write service letters, and prepare certificates for finishing Qalam and for the Mutanabbi Prize. Qalam’s are signed by the Qalam lead and the Editor-in-Chief, the Prize’s by the Editor-in-Chief and the President.",
         "tabs": {
           "pending": "Hours to confirm",
           "totals": "Service this year",
@@ -2404,7 +2503,7 @@
           "letters": "Service letters"
         },
         "pending": {
-          "lede": "Hours members logged (Form F-16). You see entries for the events you run. Nobody confirms their own.",
+          "lede": "Hours members logged. You see entries for the events you run. Nobody confirms their own.",
           "empty": "No hours waiting.",
           "person": "Person",
           "date": "Date",
@@ -2463,7 +2562,7 @@
           "signedBy": "{role} signed"
         },
         "letters": {
-          "lede": "Service is a letter (F-05), written on request by the Director of Membership in the language the member asks for. Each carries a code anyone can check on the site.",
+          "lede": "Service is a letter, written on request by the Director of Membership in the language the member asks for. Each carries a code anyone can check on the site.",
           "write": "Write a service letter",
           "holder": "Member",
           "role": "Served as",
@@ -2490,12 +2589,11 @@
           "lede": "Every Society letter is sent on one template. Write it from the register’s template in the Leadership Handbook, in the recipient’s language, then print it or save it as PDF. Nothing is kept here: the record stays in Notion.",
           "form": "Letter",
           "forms": {
-            "f03": "F-03 Appointment letter",
-            "f30": "F-30 Thank-you to a partner or sponsor",
-            "f32": "F-32 Application outcome",
-            "f33": "F-33 Welcome to new members",
-            "f34": "F-34 Honorary Membership invitation",
-            "f42": "F-42 Author letter"
+            "appointment-letter": "Appointment letter",
+            "thank-you-letter": "Thank-you to a partner or sponsor",
+            "application-outcome": "Application outcome",
+            "welcome-letter": "Welcome to new members",
+            "honorary-membership-invitation": "Honorary membership invitation"
           },
           "language": "Language",
           "languages": {
@@ -2518,7 +2616,7 @@
         "lede": "Staged readings and productions, from proposal to the production report. The script’s rights are cleared before any performance.",
         "new": "New production",
         "newTitle": "Propose a production",
-        "empty": "No productions yet. The President or Vice President proposes one; a Production Lead runs it.",
+        "empty": "No productions yet. The President or Vice President proposes one; its director runs it.",
         "stageNow": "Stage",
         "moveTo": "Move to {stage}",
         "cancelProduction": "Cancel the production",
@@ -2611,7 +2709,7 @@
           "addNote": "Add note",
           "notesPrivate": "Panel notes are seen only by whoever runs this production, never by the person auditioning.",
           "score": {
-            "title": "Score sheet (F-25)",
+            "title": "Score sheet",
             "criteria": {
               "presence": "Presence",
               "voice": "Voice and clarity",
@@ -2643,10 +2741,11 @@
           "showOutside": "They agreed to have their name shown",
           "hours": "Hours",
           "recordHours": "Record hours",
-          "recorded": "Recorded as service."
+          "recorded": "Recorded as service.",
+          "outsideInvite": "Someone from outside the Society? Invite them as a guest first (Membership, Guests); once their account is made, they are here."
         },
         "rehearsalsTab": {
-          "lede": "Rehearsal calls. The company sees them on My calendar.",
+          "lede": "Rehearsal calls. The company sees them under Events, in their accounts.",
           "add": "Call a rehearsal",
           "starts": "Starts",
           "ends": "Ends",
@@ -2767,13 +2866,13 @@
         "tabs": {
           "games": "Games"
         },
-        "edition": "Issue",
+        "edition": "Edition",
         "launch": "Launch",
         "launchNotSet": "Launch not set",
-        "editionsLede": "An issue is a themed online collection: Haven is the pilot issue, and Issue 1 comes in spring 2027. Its launch is when every piece tagged to it goes out.",
-        "newEdition": "New issue",
+        "editionsLede": "An Edition is a themed online collection: Haven is the pilot, and Edition 1 comes in spring 2027. Its launch is when every piece tagged to it goes out.",
+        "newEdition": "New Edition",
         "season": "Season",
-        "launchHint": "Every piece in this issue without its own time publishes at the launch. Leave it empty until the time is known.",
+        "launchHint": "Every piece in this Edition without its own time publishes at the launch. Leave it empty until the time is known.",
         "untitled": "Untitled",
         "piece": "Piece",
         "type": "Type",
@@ -2784,11 +2883,11 @@
         "sortedBy": "Pieces in order of stage (work in progress first), then date",
         "newPiece": "New staff piece",
         "noPieces": "No pieces in this section yet. Write one with New staff piece; work members send appears above, read blind.",
-        "newPieceLede": "A piece written by the newsroom, in any section. It needs no submission and no Publication Agreement.",
+        "newPieceLede": "A piece written by the newsroom, in any section. It needs no submission and no publication agreement.",
         "choose": "Choose…",
-        "noEdition": "No issue",
+        "noEdition": "No Edition",
         "create": "Create the piece",
-        "frontLede": "Rank 1 is the lead story. The front page also shows the latest news, a Letters spread, a Gallery strip and the current issue.",
+        "frontLede": "Rank 1 is the lead story. The front page also shows the latest news, a Letters spread, a Gallery strip and the current Edition.",
         "noPublished": "Nothing is published yet.",
         "penName": "Pen name",
         "text": "The piece",
@@ -2814,7 +2913,7 @@
           "chief_approval": "The Editor-in-Chief’s or Managing Editor’s approval",
           "copy_approval": "The copy edit (the Copy Chief or a copy editor)",
           "author_approval": "The author’s approval of the final text",
-          "agreement": "The author’s signed Publication Agreement",
+          "agreement": "The author’s signed publication agreement",
           "titles": "Both an English and an Arabic title",
           "images": "At least one image",
           "video": "The video link",
@@ -2860,7 +2959,11 @@
           "setDate": "Set the date",
           "clearDate": "Clear the date",
           "datedLog": "Set to {date} on {when}",
-          "datedCleared": "Cleared on {when}"
+          "datedCleared": "Cleared on {when}",
+          "factChecked": "Every fact checked against a second source or document on {date}.",
+          "factCheckNeeded": "News: every fact is checked against a second source or document before the second approval.",
+          "recordFactCheck": "Record the second-source check",
+          "disclosure": "The writer’s ties to what this covers: {text}"
         },
         "thread": {
           "title": "Conversation with the author",
@@ -2918,7 +3021,8 @@
           "decline": "Decline",
           "openFile": "Open file {number}",
           "title": "Taken up before the one door",
-          "reasonNeeded": "A decision needs its reason."
+          "reasonNeeded": "A decision needs its reason.",
+          "revise": "Revise and resend"
         },
         "games": {
           "lede": "Crosswords, word searches and anagrams, on auibsal.org/qirtas/games. Games come from the editors only. The site makes a word, a word search, a crossword and anagrams every day by itself.",
@@ -2989,7 +3093,7 @@
         },
         "sections": "Sections",
         "calls": "Calls",
-        "noEditions": "No issues yet. Start one with New issue.",
+        "noEditions": "No Editions yet. Start one with New Edition.",
         "event": "Event",
         "noEvent": "No event",
         "extras": {
@@ -3042,7 +3146,7 @@
         }
       },
       "needs": {
-        "lede": "What this event needs from Student Life: the item, how many, by when and what for. No costs. The General Secretary sends each request and records what was provided.",
+        "lede": "What this event needs from Student Life: the item, how many, by when and what for. No costs. The Secretary sends each request and records what was provided.",
         "logLede": "Every needs list in one place. Send each request to Student Life, then record what was provided and when.",
         "empty": "Nothing listed yet.",
         "new": "Add a need",
@@ -3076,7 +3180,7 @@
       },
       "hiring": {
         "title": "Hiring",
-        "lede": "Every role on Get involved. The seat that hires for a role runs it with a second reviewer: the applications, the interviews (F-02), the shortlist and the offer. A director seat is appointed by the President after the Executive Board’s resolution and Student Life’s “eligible”.",
+        "lede": "Every role on Get involved. The seat that hires for a role runs it with a second reviewer: the applications, the interviews, the shortlist and the offer. A director seat is appointed by the President after the Executive Board’s resolution and Student Life’s “eligible”.",
         "empty": "No roles posted yet.",
         "open": "Open",
         "closed": "Closed",
@@ -3138,7 +3242,7 @@
         "notes": "Notes",
         "saveReview": "Save my review",
         "recuse": "I recuse myself",
-        "interviews": "Interviews (F-02)",
+        "interviews": "Interviews",
         "recommendation": "Recommendation",
         "recordInterview": "Record the interview",
         "recommendations": {
@@ -3167,7 +3271,7 @@
           "library": "Library",
           "qirtas": "Qirtas",
           "newsroom": "Newsroom",
-          "editions": "Issues",
+          "editions": "Editions",
           "meetings": "Meetings",
           "tour": "Typewriter Tour",
           "prize": "Mutanabbi Prize",
@@ -3195,7 +3299,7 @@
       "society": {
         "requests": {
           "title": "Requests to Student Life",
-          "lede": "Every section’s needs, for the General Secretary to send to Student Life and log what was provided."
+          "lede": "Every section’s needs, for the Secretary to send to Student Life and log what was provided."
         },
         "elections": {
           "title": "Elections",
@@ -3215,7 +3319,7 @@
         },
         "declarations": {
           "title": "Declarations",
-          "lede": "Conflict of Interest Declarations (Form F-18) from role holders. The General Secretary records receipt."
+          "lede": "Conflict of Interest Declarations from role holders. The Secretary records receipt."
         }
       },
       "activity": {
@@ -3254,7 +3358,7 @@
           "journal_calls": "the call",
           "journal_corrections": "a correction",
           "journal_decisions": "a decision",
-          "journal_issues": "the issue",
+          "journal_issues": "the Edition",
           "journal_pieces": "the piece",
           "journal_puzzles": "the game",
           "membership_certificates": "a certificate",
@@ -3326,7 +3430,7 @@
       },
       "prize": {
         "title": "The Mutanabbi Prize",
-        "lede": "Each year’s round: editors shortlist works in each category, the outside judge scores each out of 100, voting members vote for one work in each category, and the Editor-in-Chief and the General Secretary check the count. Final score: 70% judge, 30% members.",
+        "lede": "Each year’s round: editors shortlist works in each category, the outside judge scores each out of 100, voting members vote for one work in each category, and the Editor-in-Chief and the Secretary check the count. Final score: 70% judge, 30% members.",
         "round": "Round",
         "noRounds": "No rounds yet. The first Prize is given in April 2028.",
         "addRound": "Add a round",
@@ -3368,8 +3472,8 @@
         "finalScore": "Final score",
         "checkedEic": "The Editor-in-Chief has checked the count.",
         "uncheckedEic": "The Editor-in-Chief has not checked the count yet.",
-        "checkedGs": "The General Secretary has checked the count.",
-        "uncheckedGs": "The General Secretary has not checked the count yet.",
+        "checkedGs": "The Secretary has checked the count.",
+        "uncheckedGs": "The Secretary has not checked the count yet.",
         "checkCount": "I’ve checked the count",
         "publish": "Publish the results",
         "publishHint": "The results show on the Prize’s page from the award day. This can’t be undone.",
@@ -3383,7 +3487,7 @@
       },
       "qalam": {
         "title": "Qalam",
-        "lede": "Qirtas’s summer program for high school students. Applications and the roster are kept here only. Students never get accounts, and their families consent on the forms page. Records are deleted three years after the program.",
+        "lede": "Qirtas’s summer program for high school students. The roster is kept here only. Each student has a guest account with the Qalam student role, made when a parent signs the consent; records are deleted three years after the program.",
         "year": "Summer",
         "name": "Student",
         "school": "School",
@@ -3403,27 +3507,29 @@
         "publishing": "Publishing",
         "noConsent": "None yet",
         "empty": "No students for this summer yet.",
-        "add": "Add a student",
-        "firstName": "First name",
-        "lastName": "Last name",
         "links": {
           "title": "Parents’ links",
-          "lede": "A parent signs the consent (F-38) or the publishing release (F-39) through a single-use link, valid for 14 days. The link goes to the teacher, who passes it on: the Society reaches parents only through the teacher.",
+          "lede": "Each parent signs the consent, or a publishing release, through their own single-use link, valid for 14 days. The school gives the parents’ addresses with its application; the teacher gets a copy of each signed consent. Contact with students goes only through the teacher.",
           "form": "Form",
-          "f38": "F-38, parent’s consent",
-          "f39": "F-39, publishing release",
+          "qalam-parent-consent": "Parent’s consent",
+          "qalam-publishing-consent": "Publishing release",
           "teacher": "The teacher’s email",
-          "teacherHint": "The link is sent here, to pass on to the parent.",
+          "teacherHint": "The teacher gets a copy of each signed consent.",
           "note": "For",
-          "noteHint": "The student’s first name and last initial, to tell the links apart.",
+          "noteHint": "To tell the links apart, such as the school; never the student’s name.",
           "sentTo": "Sent to",
           "state": "Status",
           "signed": "Signed",
           "expired": "Expired",
           "waiting": "Waiting",
           "empty": "No links sent yet.",
-          "send": "Send a link"
-        }
+          "send": "Send a link",
+          "student": "Student",
+          "pickStudent": "Pick a student",
+          "parents": "The parents’ email addresses",
+          "parentsHint": "One link goes to each address, from the school’s application."
+        },
+        "joinByConsent": "Students join the roster when a parent signs the consent: send the consent link below to each parent. The name the parent gives becomes the student’s account name, so no one types it here."
       },
       "games": {
         "title": "Check the coming games",
@@ -3498,7 +3604,10 @@
           "choose": "Upload {file}",
           "done": "Uploaded.",
           "failed": "The file could not be uploaded. It must be an MP4."
-        }
+        },
+        "sendTest": "Send me a test",
+        "testSent": "Sent to your address, in English and in Arabic.",
+        "testFailed": "The test didn’t go. Try again in a few minutes."
       },
       "announcements": {
         "title": "Announcements",
@@ -3536,7 +3645,7 @@
       },
       "sundayPaper": {
         "title": "The Sunday Paper",
-        "lede": "Put each issue together and send it by hand: the editor’s letter here; the month’s pieces, “From the Society”, What’s on, the open roles and a call to write are added from the site. A test goes to the Editor-in-Chief before you send.",
+        "lede": "Put each issue together and send it by hand: the editor’s letter here; the month’s pieces, “From the Society”, Events, the open roles and a call to write are added from the site. A test goes to the Editor-in-Chief before you send.",
         "month": "Issue",
         "letter": "The editor’s letter",
         "letterHint": "Separate paragraphs with a blank line. Save, then send the test; any change asks for a new test.",
@@ -3650,7 +3759,7 @@
       "nothing": "I have nothing to declare at this time",
       "promise": "I will declare new conflicts at the start of the meeting concerned.",
       "sign": "Sign the declaration",
-      "saved": "Declaration signed. The General Secretary will record receipt.",
+      "saved": "Declaration signed. The Secretary will record receipt.",
       "history": "Your declarations",
       "noHistory": "You haven’t signed a declaration yet.",
       "makeOne": "Make a declaration",
@@ -3661,8 +3770,8 @@
       "notReceived": "Not yet received"
     },
     "service": {
-      "title": "Record",
-      "lede": "Your recorded service and certificates. Hours count once someone else confirms them.",
+      "title": "Documents",
+      "lede": "Everything you have signed, each with its check, and your certificates.",
       "thisYear": "This academic year",
       "hours": "{hours} hours",
       "logTitle": "Log hours",
@@ -3673,7 +3782,7 @@
       "noProgramme": "The Society",
       "activity": "Activity",
       "what": "What you did",
-      "confirmNote": "An event lead or the General Secretary confirms each entry. Shifts and event staffing are recorded for you.",
+      "confirmNote": "An event lead or the Secretary confirms each entry. Shifts and event staffing are recorded for you.",
       "log": "Log hours",
       "recordsTitle": "Your service",
       "noRecords": "No service recorded yet.",
@@ -3711,7 +3820,29 @@
         "prize": "The Mutanabbi Prize"
       },
       "lettersTitle": "Service letters",
-      "letter": "Service letter, {date}"
+      "letter": "Service letter, {date}",
+      "signedTitle": "Agreements and consents",
+      "rolesTitle": "Roles and service",
+      "rolesLede": "The roles you hold and have held, your hours and your service letters. Hours count once someone else confirms them.",
+      "roles": {
+        "title": "Your roles",
+        "none": "You hold no role yet.",
+        "getInvolved": "Get involved",
+        "since": "Since {from}",
+        "held": "{from} – {to}"
+      },
+      "handover": {
+        "title": "Handovers",
+        "sign": "Sign the handover for {role}",
+        "countersign": "Countersign {name}’s handover for {role}",
+        "countersignTitle": "Handover for {role}",
+        "countersignLede": "Signed by {name} on {date}. Read it, then countersign: your signature says you have received it.",
+        "countersignAs": "Countersign as {name}",
+        "countersigned": "Countersigned. Both of you keep the signed copy in Documents.",
+        "notFound": "This handover is not waiting for you.",
+        "back": "Back to Roles and service",
+        "failed": "It could not be countersigned. Try again."
+      }
     },
     "certificate": {
       "title": "Certificate",
@@ -3724,7 +3855,9 @@
       "draftNote": {
         "qalam": "A draft: it is issued once the Qalam lead and the Editor-in-Chief have both signed.",
         "prize": "A draft: it is issued once the Editor-in-Chief and the President have both signed."
-      }
+      },
+      "otherEdition": "The other language’s edition",
+      "ownEdition": "Back to your edition"
     },
     "productions": {
       "title": "The Company",
@@ -3760,7 +3893,7 @@
       "rehearsalsTitle": "Upcoming rehearsals",
       "noRehearsals": "No rehearsals are called yet.",
       "auditionsTitle": "Auditions",
-      "noAuditions": "No auditions now. They are announced on What’s on and Get involved at least two weeks ahead.",
+      "noAuditions": "No auditions now. They are announced on Events and Get involved at least two weeks ahead.",
       "findShift": "Find a shift instead",
       "by": "By {name}",
       "prepare": "Prepare: {what}",
@@ -3809,8 +3942,8 @@
         "vice_president": "About the Vice President",
         "president": "About the President"
       },
-      "anonymous": "Send without my name",
-      "anonymousHint": "No account is stored with it, so we cannot reply and you will not see it in Requests and reports.",
+      "anonymous": "Keep my name from the panel",
+      "anonymousHint": "Your name is sealed: the panel reads your concern without it, and opens it only for a safety risk or with your agreement. A concern without a name is harder to act on, because nobody can ask you more.",
       "sentAnonymously": "Sent without your name. Thank you for telling us.",
       "problems": "Some answers are missing or not valid: {fields}",
       "send": "Send",
@@ -3826,10 +3959,10 @@
       "print": "Print",
       "update": "Update",
       "defs": {
-        "f06": {
+        "conflict-of-interest-declaration": {
           "title": "Conflict-of-interest declaration",
           "action": "Declare a conflict of interest",
-          "purpose": "Each term, and whenever something new arises. Confidential.",
+          "purpose": "Each semester, and whenever something new arises. Confidential.",
           "preamble": "A conflict is any situation where a personal interest, relationship or loyalty could affect, or seem to affect, a Society decision. Declaring one is normal; hiding one is not. It applies if a close friend, partner or relative is applying, auditioning or submitting work; if you or your family own or work for a possible partner or sponsor; if you hold a role in a partner organization; or if you receive anything of value connected to the role.",
           "fields": {
             "nothing": "Nothing to declare",
@@ -3843,10 +3976,10 @@
             }
           }
         },
-        "f10": {
+        "members-meeting-motion": {
           "title": "Motion for a members’ meeting",
           "action": "Propose a motion to a members’ meeting",
-          "purpose": "Sent to the General Secretary. The proposer and the seconder, both voting members, each sign by typing their name.",
+          "purpose": "Sent to the Secretary. The proposer and the seconder, both voting members, each sign by typing their name.",
           "fields": {
             "seconder": "Seconder (a voting member)",
             "title": "Title of the motion",
@@ -3862,10 +3995,10 @@
             }
           }
         },
-        "f11": {
+        "event-pitch": {
           "title": "Event proposal",
           "action": "Propose an event",
-          "purpose": "Anyone, within or outside the Society, may pitch; one page is enough. If the Council agrees, it goes on the term calendar and the Director of Events picks a lead.",
+          "purpose": "Anyone, within or outside the Society, may pitch; one page is enough. If the Council agrees, it goes on the semester calendar and the Director of Events picks a lead.",
           "fields": {
             "title": "What the event is, titled plainly",
             "idea": "The idea in three sentences",
@@ -3885,7 +4018,7 @@
             }
           }
         },
-        "f15": {
+        "media-release": {
           "title": "Media release",
           "action": "Sign a media release",
           "purpose": "For anyone clearly featured in Society photos, video or interviews. Under 18: a parent or guardian signs.",
@@ -3905,7 +4038,7 @@
             }
           }
         },
-        "f17": {
+        "partnership-memorandum": {
           "title": "Partnership memorandum",
           "action": "Sign a partnership memorandum",
           "purpose": "For any partnership with shared branding or shared responsibility, approved by the Council. Signed by the President and the partner, each by typing their name.",
@@ -3921,7 +4054,7 @@
             "contacts": "Contacts"
           }
         },
-        "f21": {
+        "concern": {
           "title": "Concern",
           "action": "Raise a concern",
           "purpose": "Confidential. Harassment, safety and anything involving someone under 18 go straight to Student Life. Your name is optional, but without it we cannot reply.",
@@ -3943,7 +4076,7 @@
             }
           }
         },
-        "f26": {
+        "company-agreement": {
           "title": "Company agreement",
           "action": "Sign the Company agreement",
           "purpose": "Every cast and crew member, at the read-through.",
@@ -3955,7 +4088,7 @@
             "under_18": "I am under 18; my parent’s or guardian’s consent is attached"
           }
         },
-        "f37": {
+        "qalam-mentor-agreement": {
           "title": "Qalam mentor agreement",
           "action": "Sign the Qalam mentor agreement",
           "purpose": "Every Qalam mentor, after training. Countersigned by the Qalam lead.",
@@ -3973,13 +4106,15 @@
             }
           }
         },
-        "f38": {
+        "qalam-parent-consent": {
           "title": "Qalam parental consent",
           "action": "Give consent for Qalam",
-          "purpose": "One form per student, signed by a parent or guardian from the link the school’s teacher sends. No student attends any session until it is signed. No box ticked means no.",
-          "preamble": "I agree that my child may take part in Qalam, the summer program of Qirtas, the paper of the AUIB Society of Arts and Letters. Qalam is never filmed for Next Stop or any public video. On public channels, photos show no faces and name students by first name only. If published, the byline is the student’s first name, last initial and school; the full name appears only on the certificate. My child may stop at any time, and I may withdraw this consent at any time by telling the teacher. All contact with Qalam is through the teacher.",
+          "purpose": "One consent per student, signed by each parent or guardian through their own link from the Society; the teacher gets a copy. Signing makes your guest account and your child’s. No student attends any session until it is signed. No box ticked means no.",
+          "preamble": "I agree that my child may take part in Qalam, the summer program of Qirtas, the paper of the AUIB Society of Arts and Letters. Qalam is never filmed for Next Stop or any public video. On public channels, photos show no faces and name students by first name only. If published, the byline is the student’s first name, last initial and school; the full name appears only on the certificate. My child may stop at any time, and I may withdraw this consent at any time from your account or by telling the teacher. All contact with Qalam is through the teacher.",
           "fields": {
-            "student_name": "The student’s name",
+            "student_first_name": "The student’s first name",
+            "student_last_name": "The student’s family name",
+            "student_email": "The student’s email address (their account’s address)",
             "grade": "Grade",
             "school": "School",
             "relationship": "Your relationship to the student",
@@ -3998,26 +4133,24 @@
               "no_photos": "No photos of my child"
             },
             "publishing": {
-              "qirtas": "My child’s work may appear in Qirtas (a separate consent, F-39, is asked for each piece)",
+              "qirtas": "My child’s work may appear in Qirtas (a separate consent is asked for each piece)",
               "prize": "My child’s work may be shortlisted for the Mutanabbi Prize, Qalam category, with the name hidden in the members’ vote"
             }
           }
         },
-        "f39": {
+        "qalam-publishing-consent": {
           "title": "Qalam publishing consent",
           "action": "Give consent to publish a Qalam piece",
-          "purpose": "For one piece only, and only where the student’s consent form (F-38) allows publishing. Signed by a parent or guardian from the link the school’s teacher sends.",
+          "purpose": "For one piece only, and only where the student’s consent allows publishing. Signed by a parent or guardian through their own link; the teacher gets a copy.",
           "preamble": "I agree that the piece named below may be published in Qirtas, on the terms in the Terms of Use. The student keeps the copyright. The byline is the student’s first name, last initial and school; the full name appears only on the certificate. The editors decide whether the piece is published, as for any piece; no contact details, age, photo or school details appear with it beyond the byline; the family and the school are told, through the teacher, before it goes live; and it comes down whenever the family or the student asks, through the teacher.",
           "fields": {
             "piece_title": "Title of the piece",
             "section": "Section of Qirtas",
             "language": "Language",
-            "student_name": "The student’s name",
-            "school": "School",
             "student_agrees": "The student: I agree"
           }
         },
-        "f45": {
+        "trip-consent": {
           "title": "Trip consent",
           "action": "Sign the trip consent form",
           "purpose": "For an event off campus, signed before you book. Student Life has approved the trip in writing.",
@@ -4028,13 +4161,12 @@
             "agree": "I agree"
           }
         },
-        "f46": {
+        "parent-consent": {
           "title": "Parent’s consent for a member under 18",
           "action": "Give consent for a member under 18",
           "purpose": "Signed once by a parent or guardian, from the link the site sends when a student under 18 joins. Until it is signed, the student’s account is limited.",
           "preamble": "I agree that my child, an enrolled AUIB student, may be a member of the AUIB Society of Arts and Letters until they turn 18, on the terms in the Terms of Use, the Privacy Notice and the Code of Conduct. Members under 18 are covered by the Society’s safeguarding: no one-on-one meetings with adults, and a separate consent for any trip. My child may hold team roles but not a Council seat until 18. I may withdraw this consent at any time by writing to hello@auibsal.org.",
           "fields": {
-            "student_name": "The student’s name",
             "relationship": "Your relationship to the student",
             "photos": "Photos",
             "consent": "I give my consent"
@@ -4044,6 +4176,19 @@
               "photos": "My child may appear in the Society’s photos and video",
               "no_photos": "Please keep my child out of photos and video"
             }
+          }
+        },
+        "handover": {
+          "title": "Handover",
+          "action": "Sign the handover",
+          "purpose": "When you leave a role: what you hand over to whoever holds it next. The incoming holder, or the seat’s officer, countersigns it.",
+          "fields": {
+            "in_progress": "What is in progress, and where it stands",
+            "open_items": "What is promised or owed to anyone, with dates",
+            "where": "Where things live (Notion pages, files, materials)",
+            "access": "Accounts and access to hand over or reset",
+            "contacts": "People and partners to know",
+            "notes": "Anything else the next holder should know"
           }
         }
       },
@@ -4055,7 +4200,7 @@
       },
       "home": "Back to the site",
       "signed": "Signed and sent. Thank you.",
-      "whatsOn": "What’s on",
+      "whatsOn": "Events",
       "noEvent": "This form names an event that isn’t open to you.",
       "forEvent": "For {title}",
       "signature": "Signature: type your full name",
@@ -4064,7 +4209,7 @@
       "signAndSend": "Sign and send",
       "date": "Date",
       "kept": "The site keeps the signed copy. A printed copy is this page printed from the browser.",
-      "esignAgree": "I agree to sign electronically. My typed name is my signature, and I’ll get a copy by email.",
+      "esignAgree": "I agree to sign electronically. The name on my account is my signature, and I’ll get a copy by email.",
       "esignField": "Agreement to sign electronically",
       "needsLink": "This form is signed through the link sent to you. Ask the person who sent it for a new one.",
       "refusals": {
@@ -4072,8 +4217,35 @@
         "human_check_failed": "The check that you’re a person didn’t pass. Try again.",
         "link_not_valid": "This link has been used or has expired. Ask for a new one.",
         "rate_limited": "Too many tries from here. Wait a few minutes and try again.",
-        "sign_in_required": "Sign in to send this form."
-      }
+        "sign_in_required": "Sign in to send this form.",
+        "role_agreement_first": "Sign the role agreement for each of your roles first: it is on Today, in your role’s first steps."
+      },
+      "signInFirst": "Sign in to raise a concern",
+      "signInFirstWhy": "Concerns are raised signed in, so the panel can answer you. You can still ask to keep your name from the panel.",
+      "sealed": {
+        "sealed": "The name is sealed: it was raised signed in, and the panel reads it without the name.",
+        "opened": "The name is sealed, and was opened once, for a recorded reason.",
+        "name": "Raised by {name}.",
+        "openSafety": "Open the name: a safety risk",
+        "openAgreed": "Open the name: they agreed",
+        "hint": "Open it only for a risk to someone’s safety, or once the person has agreed. The opening is recorded with your name and the reason."
+      },
+      "withdraw": "Withdraw for the future",
+      "withdrawAsk": "Withdraw this for the future? What was already made under it stays; nothing new will use it.",
+      "withdrawTripAsk": "Withdraw your consent for this trip? Your place on the trip is given back.",
+      "withdrawnOn": "Withdrawn for the future on {date}.",
+      "signAsLabel": "Your signature",
+      "signAsHint": "You sign in your name as the register holds it. The signed copy keeps it, the time and the form’s version.",
+      "signAs": "Sign as {name}",
+      "linkSubject": "The student: {name}",
+      "recordNumber": "{reference} · {kind}, version {version}",
+      "checkAt": "Anyone can check it at",
+      "backToDocuments": "Back to Documents",
+      "signedTitle": "Your signed copy",
+      "noSigned": "Nothing signed yet.",
+      "check": "Check",
+      "version": "version {version}",
+      "forRole": "For your role: {role}."
     },
     "qirtas": {
       "pieceTitle": "Your piece",
@@ -4095,11 +4267,15 @@
         "bio": "Bio",
         "words": "English: {en} words · Arabic: {ar} words",
         "save": "Save"
+      },
+      "disclosure": {
+        "label": "Your ties to what this covers",
+        "hint": "Anything that could look like a conflict: a club you belong to, a friend or relative in the story, a role you hold. The editors reassign or note it. Leave it empty if there’s nothing."
       }
     },
     "details": {
       "title": "More about you",
-      "lede": "All optional. These answers help the Society plan events, find volunteers and report on who it serves. Only you and the General Secretary’s team see them.",
+      "lede": "All optional. These answers help the Society plan events, find volunteers and report on who it serves. Only you and the Secretary’s team see them.",
       "choose": "Choose…",
       "affiliation": "You are",
       "affiliations": {
@@ -4230,11 +4406,11 @@
         "council": "The Council"
       },
       "application": {
-        "new": "You said you’re interested. The General Secretary’s team will be in touch.",
-        "talking": "The General Secretary’s team has set a time to talk. Check your email.",
-        "picked": "Good news is on its way. The General Secretary’s team will be in touch.",
+        "new": "You said you’re interested. The Secretary’s team will be in touch.",
+        "talking": "The Secretary’s team has set a time to talk. Check your email.",
+        "picked": "Good news is on its way. The Secretary’s team will be in touch.",
         "not_picked": "Not this time. Thank you for your interest.",
-        "offered": "The General Secretary’s team has sent you an offer.",
+        "offered": "The Secretary’s team has sent you an offer.",
         "onboarded": "You’re on the team.",
         "withdrawn": "This application is closed."
       },
@@ -4270,6 +4446,19 @@
         "submit": "Change the password",
         "done": "Your password is changed. Use it next time you sign in.",
         "code": "The code from the email"
+      },
+      "sessions": {
+        "title": "Where you’re signed in",
+        "lede": "Each device signed in to your account. A sign-in from a new device also sends you an email.",
+        "this": "this device",
+        "lastSeen": "Last used {when}",
+        "signOutOthers": "Sign out everywhere else",
+        "done": "Signed out everywhere else. This device stays signed in.",
+        "failed": "That didn’t work. Try again."
+      },
+      "language": {
+        "label": "Language for emails and messages",
+        "hint": "Set from the page you signed up on. Emails, Hudhud’s messages and your certificates come in this language; the site follows its address."
       }
     },
     "recoveryCodes": {
@@ -4331,12 +4520,11 @@
         "linksHint": "Up to five, one per line, starting with https://.",
         "accommodation": "Anything we should arrange for you (optional)",
         "accommodationHint": "For an interview or audition: access, timing or anything else. Only the people reviewing your application see it.",
-        "gpaConsent": "A director seat needs a GPA of at least 2.0, which Student Life checks. Typing your legal name below signs your consent to that check; Student Life tells us only whether you are eligible.",
-        "gpaName": "Your legal name, as on your account",
-        "gpaHint": "Your first and last name, or all four parts, in English or Arabic.",
+        "gpaConsent": "A director seat needs a GPA of at least 2.0, which Student Life checks. Student Life tells us only whether you are eligible.",
         "send": "Send the application",
         "saveDraft": "Save as a draft",
-        "draftSaved": "Draft saved. You can finish it any time before the role closes."
+        "draftSaved": "Draft saved. You can finish it any time before the role closes.",
+        "gpaSignAs": "I consent to Student Life checking my GPA. Sign as {name}."
       },
       "applications": {
         "title": "Your applications",
@@ -4419,12 +4607,14 @@
     },
     "partnerDesk": {
       "none": "You are not on a partner’s team.",
-      "lede": "Your organization’s dashboard: its profile, the events it runs with the Society, its guests and its team.",
+      "lede": "Your organization’s dashboard: the events it runs with the Society, their checklists, its guests, its team and its memorandum.",
       "tabsLabel": "Partner",
       "tabs": {
-        "profile": "Profile",
-        "people": "People",
-        "events": "Events"
+        "events": "Events",
+        "checklist": "Checklist",
+        "guests": "Guests",
+        "team": "Team",
+        "memorandum": "Memorandum"
       },
       "open": "Open the dashboard of {name}",
       "profile": {
@@ -4507,12 +4697,19 @@
       "bookLine": "Events that take bookings, on your calendar.",
       "write": "Write for Qirtas",
       "writeLine": "Calls opened to your partner.",
-      "record": "Your record",
+      "record": "Your documents",
       "societyGuest": "Guest of the Society",
       "societyGuestLine": "You may book places at events and write for calls open to you.",
-      "recordLine": "Service and certificates.",
+      "recordLine": "What you have signed, and certificates.",
       "involved": "Get involved",
-      "involvedLine": "Every open place, with the Society and its partners."
+      "involvedLine": "Every open place, with the Society and its partners.",
+      "children": {
+        "title": "Your child’s consents",
+        "signedLine": "For {name}, signed {date}",
+        "withdrawnLine": "For {name}, withdrawn {date}",
+        "withdraw": "Withdraw",
+        "withdrawAsk": "Withdraw this consent for the future? What was already done under it stays; nothing new will use it."
+      }
     },
     "partnerInvite": {
       "title": "An invitation",
@@ -4591,6 +4788,38 @@
       },
       "photoAlt": "The typed page, as the station photographed it",
       "seePage": "See the page"
+    },
+    "report": {
+      "title": "Report a problem",
+      "lede": "Something on the site not working, wrong or hard to use? Tell the web lead, who reads every report.",
+      "page": "The page",
+      "message": "What happened",
+      "messageHint": "What you did, what you expected and what you saw. Don’t include passwords or anyone’s personal details.",
+      "signedIn": "Your account goes with the report, so the web lead can reply.",
+      "replyTo": "Your email, for a reply (optional)",
+      "send": "Send the report",
+      "sent": "Sent. Thank you: the web lead reads every report and fixes what they can.",
+      "failed": "That didn’t send. Try again in a moment.",
+      "rate_limited": "You’ve sent several reports just now. Try again in a few minutes.",
+      "admin": {
+        "title": "Reported problems",
+        "lede": "From “Report a problem” on every page. Fix what you can, then close each one.",
+        "empty": "No open reports.",
+        "member": "from a signed-in member",
+        "fixed": "Fixed",
+        "close": "Close without a fix"
+      }
+    },
+    "esign": {
+      "title": "Signing electronically",
+      "lede": "One question, asked once.",
+      "what": "The agreements and consents you sign on the site (the Code of Conduct, a role agreement, a media release and the rest) are signed electronically: in the name on your account, with a copy of each emailed to you and kept in Documents. Do you agree to sign this way? You can withdraw it in Settings at any time.",
+      "agree": "I agree to sign electronically",
+      "notNow": "Not now",
+      "settingsTitle": "Signing electronically",
+      "given": "You agreed to sign electronically on {date}.",
+      "notGiven": "You have not agreed to sign electronically; each page you sign on asks you.",
+      "withdraw": "Withdraw my consent"
     }
   },
   "web": {
@@ -4598,7 +4827,7 @@
       "about": "About",
       "programs": "Events",
       "journal": "Qirtas",
-      "events": "What’s on",
+      "events": "Events",
       "give": "Give",
       "join": "Join",
       "news": "News",
@@ -4613,37 +4842,62 @@
       "nextStop": "Next Stop"
     },
     "footer": {
-      "contact": "Contact",
-      "mediaKit": "Press kit",
-      "privacy": "Privacy and photo policy",
-      "partners": "Partners",
-      "newsletter": "The Sunday Paper",
-      "governance": "The Council",
-      "terms": "Terms of use",
-      "accessibility": "Accessibility",
       "columns": {
-        "society": "Society",
-        "contactHeading": "Stay in touch",
-        "email": "hello@auibsal.org",
-        "programs": "Events"
+        "society": "The Society",
+        "takePart": "Take part",
+        "read": "Read and watch",
+        "policies": "Policies"
       },
-      "verify": "Verify a card or certificate",
-      "nextStop": "Next Stop"
+      "about": "About",
+      "council": "The Council",
+      "press": "Press",
+      "partners": "Partners",
+      "contact": "Contact",
+      "join": "Join",
+      "involved": "Get involved",
+      "events": "Events",
+      "write": "Write for Qirtas",
+      "qirtas": "Qirtas",
+      "editions": "Editions",
+      "nextStop": "Next Stop",
+      "company": "The Company",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "accessibility": "Accessibility",
+      "conduct": "Code of Conduct",
+      "security": "Security",
+      "social": {
+        "instagram": "Instagram",
+        "telegram": "Telegram",
+        "youtube": "YouTube",
+        "linkedin": "LinkedIn"
+      },
+      "concern": "Raise a concern",
+      "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
+      "address": "AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq",
+      "paperless": "Paperless by default. Books reused through Second Chapter.",
+      "pieces": "Each piece belongs to its writer, under the license shown on it.",
+      "copyright": "© {years} AUIB Society of Arts and Letters. All rights reserved.",
+      "help": "Help",
+      "report": "Report a problem",
+      "version": "Version {version}, build {build}",
+      "local": "local",
+      "sundayPaper": "The Sunday Paper"
     },
     "home": {
       "metaTitle": "The paper and the pen",
       "title": "The paper and the pen.",
       "lede": "A society for literature, theater and the arts at the American University of Iraq – Baghdad. Our motto is a line of al‑Mutanabbi.",
       "join": "Join the Society",
-      "whatsOn": "What’s on",
-      "thisTerm": "The next three weeks",
-      "noEvents": "Nothing is announced for the next three weeks.",
+      "thisTerm": "Coming up",
       "allEvents": "The whole calendar",
       "closes": "Closes {date}",
-      "programs": "Events",
-      "sundayPaper": "The Sunday Paper",
-      "sundayPaperLede": "One email a month, on the first Sunday: what Qirtas published, what’s on and the places open to members.",
-      "nextEvent": "Next: {title}, {date}, {time}"
+      "call": "Write for the next Edition",
+      "edition": "The newest Edition",
+      "nextStop": "Next Stop’s latest",
+      "nextStopAll": "Every episode",
+      "openRoles": "Open roles",
+      "openRolesAll": "Every open role"
     },
     "documents": {
       "title": "Library",
@@ -4653,11 +4907,6 @@
       "contents": "Contents",
       "empty": "The documents will appear here.",
       "noText": "The text of this document has not been entered yet.",
-      "shelves": {
-        "society": "Society documents",
-        "policies": "Website policies"
-      },
-      "proposedShort": "Proposed",
       "header": {
         "keptBy": "Kept by the {seat}",
         "adopted": "Version {version} · Effective {date}",
@@ -4667,15 +4916,28 @@
         "other": {
           "ar": "العربية",
           "en": "English"
-        }
+        },
+        "onPublication": "Effective the day it is published · Version {version}, proposed"
+      },
+      "find": "Find a document",
+      "noMatch": "No document matches.",
+      "readers": {
+        "everyone": "For everyone",
+        "members": "For members",
+        "staff": "For officers and teams"
+      },
+      "statuses": {
+        "proposed": "Proposed",
+        "adopted": "Adopted",
+        "rescinded": "Rescinded"
       }
     },
     "events": {
-      "title": "What’s on",
+      "title": "Events",
       "lede": "Events all year, on one calendar. Some you just come to, some you book, and some are for members.",
       "subscribe": "Subscribe to the calendar",
       "subscribeHint": "(adds every public event to your phone or computer calendar)",
-      "all": "What’s on",
+      "all": "Events",
       "cancelled": "This event has been canceled.",
       "rsvp": "Book a place",
       "rsvpHint": "Sign in to book a place: members and the Society’s guests book.",
@@ -4696,7 +4958,7 @@
       },
       "remind": "Remind me",
       "remindHint": "No booking needed. Members can ask for a reminder the day before.",
-      "inCalendar": "See it in What’s on",
+      "inCalendar": "See it in Events",
       "dates": "Coming dates",
       "noDates": "No dates are announced yet.",
       "nextLabel": "Next:",
@@ -4716,12 +4978,45 @@
       "leaveWaitlist": "Leave the waitlist",
       "youreBooked": "You have a place.",
       "youreWaiting": "You’re on the waitlist; you’ll hear if a place opens.",
+      "claim": "Claim your place",
+      "decline": "Let it go",
+      "held": "A place is held for you until {until}. Claim it, or let it go to the next person.",
       "notices": {
         "booked": "Booked. A confirmation is on its way.",
         "waitlisted": "It’s full, so you’re on the waitlist; you’ll hear if a place opens.",
         "cancelled": "Done.",
         "reminded": "We’ll remind you the day before.",
         "failed": "That didn’t go through. Try again, or book from your calendar."
+      },
+      "access": {
+        "title": "Access",
+        "stepFree": "Step-free: no steps on the way in or in the room.",
+        "notStepFree": "Not step-free: there are steps on the way in or in the room.",
+        "stepUnknown": "Ask us about the way in and the room: {email}.",
+        "seating": {
+          "seated": "Seated.",
+          "standing": "Standing.",
+          "mixed": "Some seats, some standing."
+        },
+        "noFood": "No food is served.",
+        "foodWithout": "Food is served, without any of the main allergens.",
+        "foodWith": "Food is served. It contains {allergens}.",
+        "allergens": {
+          "gluten": "gluten",
+          "crustaceans": "crustaceans",
+          "eggs": "eggs",
+          "fish": "fish",
+          "peanuts": "peanuts",
+          "soy": "soy",
+          "milk": "milk",
+          "tree_nuts": "tree nuts",
+          "celery": "celery",
+          "mustard": "mustard",
+          "sesame": "sesame",
+          "sulphites": "sulfites",
+          "lupin": "lupin",
+          "molluscs": "mollusks"
+        }
       }
     },
     "journal": {
@@ -4731,13 +5026,13 @@
       "noCalls": "No call is open at the moment.",
       "closes": "Closes {date}",
       "opensCloses": "Opens {opens}. Closes {closes}.",
-      "issues": "Issues",
+      "issues": "Editions",
       "volumeNumber": "Vol. {volume}, No. {number}",
       "latest": "Latest pieces",
       "noPieces": "Nothing published yet.",
-      "inThisIssue": "In this issue",
+      "inThisIssue": "In this Edition",
       "editorsNote": "Editor’s note",
-      "coverAlt": "The issue’s cover",
+      "coverAlt": "The Edition’s cover",
       "pdf": "Download the print edition (PDF)",
       "membersOnly": "Members",
       "membersOnlyBody": "This piece is for members of the Society.",
@@ -4801,10 +5096,10 @@
       },
       "tagline": "AUIB’s paper of news, letters and art",
       "sections": "Sections",
-      "editions": "Issues",
+      "editions": "Editions",
       "firstEdition": "The first pieces arrive with the News desk on November 15.",
       "lead": "Lead story",
-      "currentEdition": "The current issue",
+      "currentEdition": "The current Edition",
       "sendNews": "Write for Qirtas",
       "deskLedes": {
         "news": "Campus and Society news: reports, features, interviews, profiles, event coverage and explainers, by named reporters.",
@@ -4826,9 +5121,9 @@
       "readingTime": "{minutes} min read",
       "firstPublished": "First published in Qirtas. The author keeps the copyright.",
       "moreFrom": "More from {desk}",
-      "editionsLede": "Qirtas’s themed online collections: Haven is the pilot issue, and Issue 1 comes in spring 2027.",
-      "noEditions": "No issue has been published yet.",
-      "edition": "Issue",
+      "editionsLede": "Qirtas’s themed online collections: Haven is the pilot, and Edition 1 comes in spring 2027.",
+      "noEditions": "No Edition has been published yet.",
+      "edition": "Edition",
       "games": "Games",
       "newsletter": "The Sunday Paper",
       "newsletterLede": "One email a month: what Qirtas published and the Society’s coming public events.",
@@ -4873,28 +5168,28 @@
         "guest": "Guest"
       },
       "nothingYet": "Nothing published yet.",
-      "editionsAsList": "See the issues as a list",
-      "editionsOnShelf": "See the issues on the shelf",
-      "editionNumber": "Issue {number}",
-      "launchTitle": "The issue’s launch",
-      "shelfPrevious": "Previous issue",
-      "shelfNext": "Next issue",
-      "comingLede": "The pilot issue is being made. Send your work while the call is open.",
+      "editionsAsList": "See the Editions as a list",
+      "editionsOnShelf": "See the Editions on the shelf",
+      "editionNumber": "Edition {number}",
+      "launchTitle": "The Edition’s launch",
+      "shelfPrevious": "Previous Edition",
+      "shelfNext": "Next Edition",
+      "comingLede": "The pilot is being made. Send your work while the call is open.",
       "writeForEdition": "Write for Qirtas",
       "reading": {
         "after": "Read on",
         "next": "Next",
-        "inEdition": "In the issue",
+        "inEdition": "In the Edition",
         "notes": "Notes",
         "translation": "The translation",
         "original": "The original, in {language}",
         "contents": "Contents"
       },
       "contents": "Contents",
-      "otherEditions": "Other issues",
-      "previousEdition": "The issue before",
-      "nextEdition": "The issue after",
-      "theEdition": "The issue",
+      "otherEditions": "Other Editions",
+      "previousEdition": "The Edition before",
+      "nextEdition": "The Edition after",
+      "theEdition": "The Edition",
       "photoOf": "{n} of {total}",
       "archive": {
         "title": "The archive",
@@ -4917,7 +5212,7 @@
         "empty": "Nothing saved yet. Save a piece from Qirtas to read it later.",
         "browse": "Read Qirtas"
       },
-      "authorEditions": "In the issues",
+      "authorEditions": "In the Editions",
       "authorShortlisted": "{title} · shortlisted, {award}",
       "authorWon": "{title} · winner, {award}",
       "listen": "Hear it read",
@@ -4970,14 +5265,16 @@
       "correctionsPolicy": "How Qirtas corrects its errors",
       "haven": {
         "title": "Haven",
-        "dek": "Dreams and memories · the pilot issue of Qirtas",
+        "dek": "Dreams and memories · the pilot Edition of Qirtas",
         "call": "Send a poem, a short story, a creative essay or an artwork, about a memory, a dream or both. Everything is read blind.",
         "submit": "Submit your work now."
       },
-      "pilotIssue": "The pilot issue",
+      "pilotIssue": "The pilot",
       "fromTheSocietyLede": "The Society’s notices, newest first: calls, openings, elections and results, and what changes.",
       "fromTheSocietyEmpty": "No notices yet.",
-      "fromTheSocietyAll": "All notices"
+      "fromTheSocietyAll": "All notices",
+      "colophon": "Set in Ubuntu and Markazi Text. Written in Baghdad.",
+      "deskEditor": "Edited by {name}"
     },
     "about": {
       "title": "About the Society",
@@ -4985,7 +5282,7 @@
       "constitution": "Read the proposed Constitution",
       "mottoTitle": "Our motto",
       "motto": "The paper and the pen.",
-      "mottoNote": "From al-Mutanabbi’s most quoted line: the horses, the night and the desert know me; so do the sword, the lance, the paper and the pen. We keep only the last two.",
+      "mottoNote": "Al-Mutanabbi’s most quoted line. We keep only its last two words.",
       "doesTitle": "What the Society does",
       "does": {
         "qirtas": {
@@ -5002,7 +5299,7 @@
         },
         "events": {
           "title": "Events",
-          "body": "Events all year, at least one a month in term, on one calendar: among them the Typewriter Tour in the spring club fair week and Second Chapter, a book drive and sale for a charity, at the fall club fair."
+          "body": "Events all year, at least one a month each semester, on one calendar: among them the Typewriter Tour in the spring club fair week and Second Chapter, a book drive and sale for a charity, at the fall club fair."
         }
       },
       "runTitle": "How it is run",
@@ -5013,7 +5310,7 @@
         },
         "council": {
           "title": "A Council of nine",
-          "body": "Three officers, the President, Vice President and General Secretary, and six directors, each with their own work. The Council meets monthly in term; every member is welcome at the general meetings, every two weeks."
+          "body": "Three officers, the President, Vice President and Secretary, and six directors, each with their own work. The Council meets monthly in the semester; every member is welcome at the general meetings, every two weeks."
         },
         "elections": {
           "title": "Elections",
@@ -5070,9 +5367,27 @@
         "verify": {
           "title": "Verify",
           "body": "Check a membership card or a certificate the Society issued."
+        },
+        "credits": {
+          "title": "Credits",
+          "body": "The fonts, icons and software the site is made with."
         }
       },
-      "spring2026": "Spring 2026"
+      "spring2026": "Spring 2026",
+      "verseTranslation": "The horses, the night and the desert know me, and the sword, the lance, the paper and the pen.",
+      "qirtasName": "Qirtas, the name of the Society’s paper, is the Arabic word for paper: the qirtas of the same verse.",
+      "numbersTitle": "The Society by the numbers",
+      "numbers": {
+        "members": "Members of every class",
+        "events": "Events held",
+        "pieces": "Pieces in Qirtas",
+        "editions": "Editions"
+      },
+      "numbersNote": "Counted by the site from its own records.",
+      "independenceTitle": "Independence",
+      "independence": "The AUIB Society of Arts and Letters is a registered student organization at the American University of Iraq – Baghdad. Its views and publications are its own and not those of the University.",
+      "verseFirst": "الخيلُ والليلُ والبيداءُ تعرفني",
+      "verseSecond": "والسيفُ والرمحُ والقرطاسُ والقلمُ"
     },
     "join": {
       "title": "Join the Society",
@@ -5088,7 +5403,7 @@
         },
         "twoThings": {
           "title": "Come to two things",
-          "body": "Attend two events or general meetings in the 12 months before an election and you are a Voting Member: you vote, and after a term as a member you can stand for office."
+          "body": "Attend two events or general meetings in the 12 months before an election and you are a Voting Member: you vote, and after a semester as a member you can stand for office."
         }
       },
       "gives": {
@@ -5103,7 +5418,7 @@
         },
         "vote": {
           "title": "A vote",
-          "body": "Attend two events or general meetings in 12 months and you are a Voting Member: you vote in elections, and after a term as a member you can stand for office."
+          "body": "Attend two events or general meetings in 12 months and you are a Voting Member: you vote in elections, and after a semester as a member you can stand for office."
         }
       },
       "tiersTitle": "Kinds of membership",
@@ -5121,7 +5436,7 @@
         "short": "Our welcome to new students, at a typewriter.",
         "lede": "The Typewriter Tour is the Society’s welcome to new students: sit at the typewriter, type six words, and join. It belongs to membership, run by the Director of Membership and the Tour lead.",
         "whenTitle": "When",
-        "when": "Once a year, in the spring club fair week, with the fair as one of its days. The 2027 dates follow Student Life’s fair and are posted on What’s on.",
+        "when": "Once a year, in the spring club fair week, with the fair as one of its days. The 2027 dates follow Student Life’s fair and are posted on Events.",
         "wordsTitle": "Who sees your page",
         "words": "Six Words are written only on the typewriter, never on the site. Your page is private until you choose otherwise in your account: only you, your profile, or this page too. That choice is your consent, and you can change it any time.",
         "back": "Join the Society",
@@ -5171,16 +5486,50 @@
     },
     "contact": {
       "title": "Contact",
-      "lede": "Find us on Instagram and in the members’ group on Telegram, or talk to us at any event.",
-      "instagram": "Instagram",
-      "telegram": "Telegram",
-      "telegramName": "The Common Room",
-      "email": "Email",
-      "concernTitle": "Raising a concern",
-      "concern": "If something is wrong, tell any officer, our Faculty Advisor or the Office of Student Life, in person, or raise a concern in your account, under Society. Harassment, safety and anything involving a child go straight to Student Life.",
-      "concernSource": "Member Handbook",
+      "lede": "Choose what you’re writing about: each goes straight to the person who answers it, and says when to expect a reply.",
+      "topics": {
+        "question": {
+          "title": "A question",
+          "time": "Within two working days"
+        },
+        "press": {
+          "title": "The press",
+          "time": "Within one working day"
+        },
+        "letter": {
+          "title": "A letter to the editor",
+          "time": "Within a week"
+        },
+        "nextStop": {
+          "title": "Next Stop: appearing or pitching",
+          "time": "Within two working days"
+        },
+        "accessibility": {
+          "title": "Accessibility",
+          "time": "Within three working days"
+        },
+        "privacy": {
+          "title": "Privacy and your data",
+          "time": "Within 30 days"
+        },
+        "removal": {
+          "title": "A photo or video of you",
+          "action": "Ask for it to be removed",
+          "time": "Hidden at once; decided within two working days"
+        },
+        "concern": {
+          "title": "A concern",
+          "action": "Raise a concern",
+          "time": "Decided within 14 days"
+        },
+        "partnership": {
+          "title": "A partnership",
+          "action": "Apply to be a partner",
+          "time": "Within two working days"
+        }
+      },
       "photoTitle": "A photo or video of you",
-      "photo": "Ask here: whatever on the site you point to is hidden at once, and within two business days we take it down from the Society’s channels or tell you why not."
+      "photo": "Ask here: whatever on the site you point to is hidden at once, and within two working days we take it down from the Society’s channels or tell you why not."
     },
     "mediaKit": {
       "title": "Press kit",
@@ -5248,7 +5597,7 @@
       "short": "Type at least two letters.",
       "groups": {
         "piece": "In Qirtas",
-        "event": "What’s on",
+        "event": "Events",
         "production": "The Company",
         "document": "The Library"
       },
@@ -5259,11 +5608,6 @@
       "title": "Partners",
       "lede": "The AUIB Society of Arts and Letters works with clubs, departments, charities and cultural organizations whose aims fit its own. Every partnership has a memorandum, signed by both sides.",
       "empty": "Our first partnerships are being agreed. They will appear here once signed.",
-      "reach": {
-        "auib": "At AUIB",
-        "iraq": "In Iraq",
-        "international": "Beyond Iraq"
-      },
       "visit": "Visit {name}",
       "workTitle": "Work with us",
       "work": "Clubs, departments, charities and cultural organizations apply here and sign the memorandum by name; the Society’s Council votes on each. Sponsors are acknowledged and never have editorial influence.",
@@ -5294,14 +5638,21 @@
       "secondChapter": {
         "title": "Second Chapter",
         "body": "Second Chapter is our book drive and sale for a charity, at the fall club fair, from October 2027. Books find new readers, and what the sale raises goes to the charity, never to the Society. The Director of Partnerships chooses the charity and runs it with them."
+      },
+      "groups": {
+        "clubs": "Clubs",
+        "culture": "Culture and the press",
+        "charities": "Charities",
+        "schools": "Schools and universities",
+        "others": "Others"
       }
     },
     "verify": {
-      "title": "Check a certificate, letter or card",
-      "lede": "Certificates and service letters from the AUIB Society of Arts and Letters carry a code and a QR at the foot; membership cards carry a QR that changes every 30 seconds. Scan one, or type a code, to see whether it stands.",
-      "code": "Certificate, letter or card code",
+      "title": "Check a certificate, agreement, letter or card",
+      "lede": "Certificates, signed agreements and consents, and service letters from the AUIB Society of Arts and Letters carry a code; membership cards carry a QR that changes every 30 seconds. Scan one, or type a code, to see whether it stands.",
+      "code": "Certificate, agreement, letter or card code",
       "check": "Check",
-      "invalid": "That doesn’t look like a certificate, letter or card code.",
+      "invalid": "That doesn’t look like a certificate, agreement, letter or card code.",
       "notFound": "Nothing has this code. Check it and try again.",
       "again": "Check another code",
       "valid": "This certificate was issued by the Society and stands.",
@@ -5334,7 +5685,18 @@
       "signedBy": {
         "qalam": "Signed on this website by the Qalam lead and the Editor-in-Chief.",
         "prize": "Signed on this website by the Editor-in-Chief and the President."
-      }
+      },
+      "tooMany": "Too many checks from here in a short time. Try again in ten minutes.",
+      "agreement": "Signed",
+      "agreementName": "Kind and version",
+      "version": "version {version}",
+      "reference": "Record number",
+      "signer": "Signed by",
+      "signed": "Signed on",
+      "fingerprint": "Fingerprint (SHA-256)",
+      "agreementValid": "This was signed on the Society’s website and stands.",
+      "agreementWithdrawn": "This was signed on the Society’s website and withdrawn on {date}.",
+      "agreementSignedOn": "Signed electronically on this website; the Society keeps the signed copy."
     },
     "verifyCard": {
       "title": "Membership card",
@@ -5355,7 +5717,10 @@
       "statusInactive": "Not active",
       "notLiveHint": "It may be a screenshot or an old link. Ask to see the card on the holder’s own phone.",
       "number": "No.",
-      "role": "Role"
+      "role": "Role",
+      "tooMany": "Too many checks from here in a short time. Try again in ten minutes.",
+      "school": "School",
+      "summer": "Summer"
     },
     "productions": {
       "title": "Plays",
@@ -5388,16 +5753,6 @@
       "search": "Search the site",
       "line": "The best companion, in any age, is a book.",
       "lineBy": "al-Mutanabbi"
-    },
-    "footerExtra": {
-      "copyright": "© {year} AUIB Society of Arts and Letters. All rights reserved.",
-      "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
-      "colophon": "Set in Ubuntu and Markazi Text. Written in Baghdad.",
-      "paperless": "Paperless by default. Books reused through Second Chapter.",
-      "instagram": "Instagram",
-      "telegram": "Telegram",
-      "youtube": "YouTube",
-      "linkedin": "LinkedIn"
     },
     "games": {
       "title": "Games",
@@ -5514,8 +5869,8 @@
       },
       "archive": {
         "title": "Past issues",
-        "issueLine": "Qirtas, What’s on and the Society’s news",
-        "whatsOn": "What’s on",
+        "issueLine": "Qirtas, Events and the Society’s news",
+        "whatsOn": "Events",
         "noPieces": "Qirtas published nothing new that month.",
         "noEvents": "Nothing was on the calendar.",
         "subscribe": "Get the next one by email",
@@ -5526,15 +5881,16 @@
         "legend": "What you’d like",
         "paper": "The Sunday Paper",
         "news": "Society news and events"
-      }
+      },
+      "emailForPaper": "Your address for the Sunday Paper"
     },
     "governance": {
       "title": "The Council",
       "lede": "The Council, what the Society has adopted, and whom members elected.",
       "council": "The Council",
       "councilEmpty": "The Council appears here once its members hold their roles.",
-      "resolutions": "Adopted resolutions",
-      "resolutionsEmpty": "No resolutions have been adopted yet.",
+      "resolutions": "Resolutions about partners and documents",
+      "resolutionsEmpty": "No resolutions about partners or documents have been adopted yet. Members read every adopted resolution in their account.",
       "votes": "{for} for, {against} against, {abstain} abstaining",
       "elections": "Election results",
       "electionsEmpty": "Results appear here once the Elections Committee publishes them.",
@@ -5545,7 +5901,7 @@
       "seats": {
         "president": "President",
         "vice_president": "Vice President",
-        "general_secretary": "General Secretary",
+        "general_secretary": "Secretary",
         "eic": "Editor-in-Chief",
         "media_director": "Director of Media",
         "artistic_director": "Artistic Director",
@@ -5556,7 +5912,7 @@
       "seatsFeminine": {
         "president": "President",
         "vice_president": "Vice President",
-        "general_secretary": "General Secretary",
+        "general_secretary": "Secretary",
         "eic": "Editor-in-Chief",
         "media_director": "Director of Media",
         "artistic_director": "Artistic Director",
@@ -5598,8 +5954,8 @@
       "productions": "Plays",
       "by": "By {playwright}",
       "auditions": "Auditions",
-      "auditionsLede": "Auditions are announced on What’s on and Get involved at least two weeks ahead.",
-      "dates": "The Company’s dates on What’s on"
+      "auditionsLede": "Auditions are announced on Events and Get involved at least two weeks ahead.",
+      "dates": "The Company’s dates on Events"
     },
     "tour": {
       "wall": "The Six Words wall",
@@ -5631,6 +5987,184 @@
         "qalam": "Qalam"
       },
       "finalScore": "{score} of 100"
+    },
+    "policies": {
+      "conduct": "Code of Conduct",
+      "conductLede": "How everyone in the Society treats one another: Article II of the Policy Manual."
+    },
+    "help": {
+      "title": "Help",
+      "lede": "Answers to the questions people ask most. Can’t find yours? Contact will route it.",
+      "questions": "Common questions",
+      "words": "Words we use",
+      "wordsLede": "The Society’s own words, and what each one means.",
+      "report": "Report a problem",
+      "reportLine": "Something on the site not working? Tell the web lead.",
+      "contact": "Contact",
+      "items": [
+        {
+          "q": "Who can join the Society?",
+          "a": "Every AUIB student: students in a degree, and students in the English Language Academy on the way to one. Faculty, staff and alumni join as Associate Members; everyone else 18 or older can make a guest account."
+        },
+        {
+          "q": "Are there dues?",
+          "a": "No. The Society has no dues, prices or payments."
+        },
+        {
+          "q": "How do I join?",
+          "a": "Go to auibsal.org/join and sign up with your AUIB email. It takes three short screens: your address and password, your name, and the agreements."
+        },
+        {
+          "q": "I’m not an AUIB student. Can I take part?",
+          "a": "Yes, as a guest: you can RSVP to open events and write for Qirtas in any section but Games. Faculty, staff and alumni can ask for Associate membership on the Join page."
+        },
+        {
+          "q": "What’s the difference between a Member, an Associate and a guest?",
+          "a": "Members are AUIB students: they vote, hold office and can win the Mutanabbi Prize. Associates (faculty, staff and alumni) and guests come to events and write, but don’t vote."
+        },
+        {
+          "q": "I’m under 18. Can I join?",
+          "a": "Yes, if you’re an AUIB student. A parent gives consent once by a link we email them; until then your account stays private."
+        },
+        {
+          "q": "How do I RSVP to an event?",
+          "a": "Open the event on Events and choose RSVP. Its confirmation stays on the page and comes by email; if it’s full, you join the waitlist."
+        },
+        {
+          "q": "How do I cancel an RSVP?",
+          "a": "Open the event, or Your account → Calendar, and choose Cancel before it starts. Your place goes to the next person on the waitlist."
+        },
+        {
+          "q": "How do I write for Qirtas?",
+          "a": "Go to Write for Qirtas (auibsal.org/qirtas/submit), pick a section and send your work. You get an email with a record number, then one at each step."
+        },
+        {
+          "q": "Is my work read without my name?",
+          "a": "Yes. Readers see your work without your name until a decision is made. Letters to the editor and outside opinion pieces are the exception: they carry your name."
+        },
+        {
+          "q": "How do I get a role?",
+          "a": "Open Get involved, choose an open role and apply. Each opening says what it involves and the hours it needs."
+        },
+        {
+          "q": "Where is my membership card?",
+          "a": "In Your account, with its live code for the door. You can add it to Google Wallet from there."
+        },
+        {
+          "q": "How do I change the name shown on the site?",
+          "a": "Your account → Settings → Profile. You can change the name you’re shown by at any time, in each language. Your legal name is changed only by the Director of Membership, on your request."
+        },
+        {
+          "q": "How do I set up two-step sign-in?",
+          "a": "Your account → Settings → Two-step sign-in, with an authenticator app on your phone. Signing in with a passkey counts as two steps on its own."
+        },
+        {
+          "q": "I forgot my password.",
+          "a": "On the sign-in page, choose “Forgot your password?” and we email you a link to set a new one."
+        },
+        {
+          "q": "How do I stop the Society’s emails?",
+          "a": "Use the unsubscribe link at the foot of any newsletter, or Your account → Settings → Notices. Emails about your account and security always come."
+        },
+        {
+          "q": "How do I download or delete my data?",
+          "a": "Your account → Settings: “Download your data” gives a readable page and a file; “Delete my account” deletes it after 30 days, unless you sign in again first."
+        },
+        {
+          "q": "How do I raise a concern?",
+          "a": "Use “Raise a concern” at the foot of any page. It goes only to those who must handle it, never to the person it’s about."
+        },
+        {
+          "q": "How do I ask for a photo or video of me to be removed?",
+          "a": "Use the removal request on Contact. What you point to is hidden at once while staff look at it."
+        },
+        {
+          "q": "How do I reach the Society?",
+          "a": "Contact routes your question to the right person and says when to expect an answer. The general address is hello@auibsal.org."
+        }
+      ],
+      "terms": [
+        {
+          "term": "The Society",
+          "meaning": "The AUIB Society of Arts and Letters (SAL), AUIB’s student organization for literature and the arts."
+        },
+        {
+          "term": "The Council",
+          "meaning": "The Society’s nine elected and appointed seats: the President, the Vice President, the Secretary and six directors."
+        },
+        {
+          "term": "The Diwan",
+          "meaning": "The staff’s side of the site, at auibsal.org/diwan, where officers do the Society’s work."
+        },
+        {
+          "term": "Your account",
+          "meaning": "Your own pages on the site: Today, your events, your work, your card and your settings."
+        },
+        {
+          "term": "Qirtas",
+          "meaning": "AUIB’s paper of news, letters and art, published by the Society on the site."
+        },
+        {
+          "term": "Edition",
+          "meaning": "Qirtas’s themed collection, made from one call for work. Haven is the pilot."
+        },
+        {
+          "term": "The Sunday Paper",
+          "meaning": "Qirtas’s monthly email, on the first Sunday of the month."
+        },
+        {
+          "term": "From the Society",
+          "meaning": "The Society’s own announcements, on Qirtas’s front page."
+        },
+        {
+          "term": "Next Stop",
+          "meaning": "The Society’s video series."
+        },
+        {
+          "term": "The Company",
+          "meaning": "The Society’s theater company."
+        },
+        {
+          "term": "The Typewriter Tour",
+          "meaning": "Where anyone types six words on a typewriter, for the Society’s six-word pages."
+        },
+        {
+          "term": "Second Chapter",
+          "meaning": "The Society’s used-book drive: books are reused, not thrown away."
+        },
+        {
+          "term": "Hudhud",
+          "meaning": "The Society’s Telegram bot, for reminders and the members’ group."
+        },
+        {
+          "term": "Member, Associate, Honorary Member, Guest",
+          "meaning": "The four classes: AUIB students; faculty, staff and alumni; those the Council honors; everyone else."
+        },
+        {
+          "term": "Get involved",
+          "meaning": "The open roles you can apply for, each with what it involves."
+        },
+        {
+          "term": "The Register",
+          "meaning": "The private list of members, seen only by the Executive Board and the Director of Membership."
+        },
+        {
+          "term": "The Mutanabbi Prize",
+          "meaning": "The Society’s yearly prize for writing and art, open to Members."
+        },
+        {
+          "term": "Qalam",
+          "meaning": "The Society’s summer writing program for school students."
+        }
+      ]
+    },
+    "credits": {
+      "title": "Credits",
+      "lede": "The fonts, icons and software this site is made with, and their licenses. Thank you to everyone who made them.",
+      "fonts": "Fonts",
+      "icons": "Icons",
+      "software": "Software",
+      "rights": "The site’s own code and design are the AUIB Society of Arts and Letters’; all rights reserved."
     }
   }
 }

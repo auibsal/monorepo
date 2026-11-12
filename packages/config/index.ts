@@ -9,7 +9,7 @@ const projectSchema = z
   .object({
     /**
      * AUIB's public calendar (iCal): its dates sit beside the Society's on
-     * What's on, and its semesters are the Society's terms.
+     * Events, and its semesters are the Society's terms.
      */
     campusCalendar: z.url(),
     /**
@@ -40,12 +40,23 @@ const projectSchema = z
         message: "locale.default must be one of locale.enabled",
       }),
     /**
-     * The Society's mailboxes (decisions §6): hello@ sends the site's
-     * emails and takes replies; qirtas@ sends the Sunday Paper and takes
-     * its replies; security@ is in /.well-known/security.txt.
+     * The Society's role addresses (decisions.md, Channels and email):
+     * hello@ sends the site's emails and takes replies; qirtas@ sends the
+     * Sunday Paper and takes its replies; security@ is in security.txt;
+     * the rest are where Contact routes each topic.
      */
     mailboxes: z
-      .object({ hello: z.email(), qirtas: z.email(), security: z.email() })
+      .object({
+        accessibility: z.email(),
+        hello: z.email(),
+        letters: z.email(),
+        nextstop: z.email(),
+        partners: z.email(),
+        press: z.email(),
+        privacy: z.email(),
+        qirtas: z.email(),
+        security: z.email(),
+      })
       .strict(),
     motto: z.object({ ar: z.string().min(1), en: z.string().min(1) }),
     name: z.string().min(1),

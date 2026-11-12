@@ -37,15 +37,17 @@ import { ErrorState, SectionSpinner } from "../states";
 const KEY = ["partner-desk"] as const;
 
 const TABS = [
-  { href: "/partners/dashboard", key: "profile" },
-  { href: "/partners/dashboard/events", key: "events" },
-  { href: "/partners/dashboard/people", key: "people" },
+  { href: "/partners/dashboard", key: "events" },
+  { href: "/partners/dashboard/checklist", key: "checklist" },
+  { href: "/partners/dashboard/guests", key: "guests" },
+  { href: "/partners/dashboard/team", key: "team" },
+  { href: "/partners/dashboard/memorandum", key: "memorandum" },
 ] as const;
 
 /**
  * The partner's dashboard (decisions.md: one fixed address,
- * /partners/dashboard): its title and its tabs, Profile, Events (A41)
- * and People.
+ * /partners/dashboard): its title and its five tabs (decisions.md, The
+ * site): Events, Checklist, Guests, Team and Memorandum.
  * Someone on two partners' teams keeps the first.
  */
 const PartnerFrame = ({
@@ -387,20 +389,15 @@ const AskForGrants = ({
   );
 };
 
-/** /partners/dashboard: the partner's profile and its memoranda. */
-export const PartnerProfile = () => {
+/** /partners/dashboard/memorandum: the memoranda and what they turn on. */
+export const PartnerMemorandum = () => {
   const t = useTranslations("diwan.partnerDesk");
   return (
     <PartnerFrame>
       {(partner) => (
-        <>
-          <DiwanSection id="profile" title={t("profile.title")}>
-            <ProfileLoader id={partner.id} />
-          </DiwanSection>
-          <DiwanSection id="memorandum" title={t("memorandum.title")}>
-            <Memoranda partnerId={partner.id} />
-          </DiwanSection>
-        </>
+        <DiwanSection id="memorandum" title={t("memorandum.title")}>
+          <Memoranda partnerId={partner.id} />
+        </DiwanSection>
       )}
     </PartnerFrame>
   );
@@ -430,15 +427,22 @@ const ProfileLoader = ({ id }: { id: string }) => {
 };
 
 /**
- * /partners/dashboard/events: the events run with the Society (the design
- * review A41), soonest first, each with the checklist both sides keep; the
- * partner adds and ticks its own items.
+ * /partners/dashboard: the events run with the Society (the design review
+ * A41), soonest first.
  */
 export const PartnerEvents = () => (
-  <PartnerFrame>{() => <JointEvents />}</PartnerFrame>
+  <PartnerFrame>{() => <JointEvents checklists={false} />}</PartnerFrame>
 );
 
-const JointEvents = () => {
+/**
+ * /partners/dashboard/checklist: each event's checklist, which both sides
+ * keep; the partner adds and ticks its own items.
+ */
+export const PartnerChecklist = () => (
+  <PartnerFrame>{() => <JointEvents checklists />}</PartnerFrame>
+);
+
+const JointEvents = ({ checklists }: { checklists: boolean }) => {
   const t = useTranslations("diwan.joint");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -471,7 +475,9 @@ const JointEvents = () => {
               : ""}
             {event.status === "draft" ? ` · ${t("planned")}` : ""}
           </p>
-          <JointChecklist eventId={event.id} society={false} />
+          {checklists ? (
+            <JointChecklist eventId={event.id} society={false} />
+          ) : null}
         </DiwanSection>
       ))}
     </>
@@ -929,28 +935,45 @@ const Team = ({ partnerId }: { partnerId: string }) => {
   );
 };
 
-/** /partners/dashboard/people: the partner's guests and its own team. */
-export const PartnerPeople = () => {
+/** /partners/dashboard/guests: the partner's guests and invitations. */
+export const PartnerGuests = () => {
+  const t = useTranslations("diwan.partnerDesk");
+  return (
+    <PartnerFrame>
+      {(partner) => (
+        <DiwanSection
+          description={t("guests.lede")}
+          id="guests"
+          title={t("guests.title")}
+        >
+          <Guests partnerId={partner.id} />
+          <InviteByEmail kind="guest" partnerId={partner.id} />
+          <OpenInvitations kind="guest" partnerId={partner.id} />
+        </DiwanSection>
+      )}
+    </PartnerFrame>
+  );
+};
+
+/**
+ * /partners/dashboard/team: the partner's own team, and the page it keeps
+ * on the site.
+ */
+export const PartnerTeam = () => {
   const t = useTranslations("diwan.partnerDesk");
   return (
     <PartnerFrame>
       {(partner) => (
         <>
           <DiwanSection
-            description={t("guests.lede")}
-            id="guests"
-            title={t("guests.title")}
-          >
-            <Guests partnerId={partner.id} />
-            <InviteByEmail kind="guest" partnerId={partner.id} />
-            <OpenInvitations kind="guest" partnerId={partner.id} />
-          </DiwanSection>
-          <DiwanSection
             description={t("team.lede")}
             id="team"
             title={t("team.title")}
           >
             <Team partnerId={partner.id} />
+          </DiwanSection>
+          <DiwanSection id="profile" title={t("profile.title")}>
+            <ProfileLoader id={partner.id} />
           </DiwanSection>
         </>
       )}

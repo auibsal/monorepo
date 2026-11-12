@@ -158,16 +158,16 @@ select ok(
 -- The mailing list.
 select ok(exists (select 1 from access.role_permissions where role = 'media_director' and permission = 'mailing.read'),
   'Media reads the mailing list');
-select ok(not exists (select 1 from access.role_permissions where role = 'tech_admin' and permission = 'mailing.read'),
+select ok(not exists (select 1 from access.role_permissions where role = 'web_lead' and permission = 'mailing.read'),
   'the web lead does not');
 
 -- The quarterly access review.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000c5a02');
 select throws_ok($$ select access.record_access_review('Checked') $$, '42501', null,
-  'Only the General Secretary records the access review');
+  'Only the Secretary records the access review');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000c5a05');
 select lives_ok($$ select access.record_access_review('Checked every holder against the manuals.') $$,
-  'The General Secretary records it');
+  'The Secretary records it');
 select ok((select holders > 0 from access.access_reviews order by reviewed_at desc limit 1),
   'with the number of current assignments');
 

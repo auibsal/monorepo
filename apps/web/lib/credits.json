@@ -1,0 +1,223 @@
+{
+  "fonts": [
+    {
+      "license": "Ubuntu Font Licence 1.0",
+      "name": "Ubuntu",
+      "url": "https://design.ubuntu.com/font"
+    },
+    {
+      "license": "SIL Open Font License 1.1",
+      "name": "Markazi Text",
+      "url": "https://fonts.google.com/specimen/Markazi+Text"
+    },
+    {
+      "license": "SIL Open Font License 1.1",
+      "name": "Mrs Saint Delafield",
+      "url": "https://fonts.google.com/specimen/Mrs+Saint+Delafield"
+    }
+  ],
+  "icons": [
+    {
+      "license": "ISC",
+      "name": "Lucide",
+      "url": "https://lucide.dev"
+    }
+  ],
+  "software": [
+    {
+      "license": "MIT",
+      "name": "@date-fns/tz",
+      "url": "https://github.com/date-fns/date-fns#readme"
+    },
+    {
+      "license": "MIT",
+      "name": "@grammyjs/auto-retry",
+      "url": "https://grammy.dev/plugins/auto-retry.html"
+    },
+    {
+      "license": "MIT",
+      "name": "@next/bundle-analyzer",
+      "url": "https://github.com/vercel/next.js"
+    },
+    {
+      "license": "MIT",
+      "name": "@react-email/components",
+      "url": "https://github.com/resend/react-email"
+    },
+    {
+      "license": "MIT",
+      "name": "@supabase/ssr",
+      "url": "https://github.com/supabase/ssr#readme"
+    },
+    {
+      "license": "MIT",
+      "name": "@supabase/supabase-js",
+      "url": "https://github.com/supabase/supabase-js/tree/master/packages/core/supabase-js"
+    },
+    {
+      "license": "MIT",
+      "name": "@t3-oss/env-nextjs",
+      "url": "https://github.com/t3-oss/t3-env"
+    },
+    {
+      "license": "MIT",
+      "name": "@tanstack/react-query",
+      "url": "https://tanstack.com/query"
+    },
+    {
+      "license": "MIT",
+      "name": "@tiptap/core",
+      "url": "https://tiptap.dev"
+    },
+    {
+      "license": "MIT",
+      "name": "@tiptap/extension-table",
+      "url": "https://tiptap.dev"
+    },
+    {
+      "license": "MIT",
+      "name": "@tiptap/pm",
+      "url": "https://tiptap.dev"
+    },
+    {
+      "license": "MIT",
+      "name": "@tiptap/react",
+      "url": "https://tiptap.dev"
+    },
+    {
+      "license": "MIT",
+      "name": "@tiptap/starter-kit",
+      "url": "https://tiptap.dev"
+    },
+    {
+      "license": "MIT",
+      "name": "@vercel/analytics",
+      "url": "https://github.com/vercel/analytics"
+    },
+    {
+      "license": "Apache-2.0",
+      "name": "@vercel/speed-insights",
+      "url": "https://github.com/vercel/speed-insights"
+    },
+    {
+      "license": "Apache-2.0",
+      "name": "class-variance-authority",
+      "url": "https://github.com/joe-bell/cva#readme"
+    },
+    {
+      "license": "MIT",
+      "name": "clsx",
+      "url": "https://github.com/lukeed/clsx"
+    },
+    {
+      "license": "MIT",
+      "name": "fflate",
+      "url": "https://101arrowz.github.io/fflate"
+    },
+    {
+      "license": "MIT",
+      "name": "grammy",
+      "url": "https://grammy.dev/"
+    },
+    {
+      "license": "MIT",
+      "name": "jose",
+      "url": "https://github.com/panva/jose"
+    },
+    {
+      "license": "Apache-2.0",
+      "name": "jsqr",
+      "url": "https://github.com/cozmo/jsQR"
+    },
+    {
+      "license": "BSD-2-Clause",
+      "name": "mammoth",
+      "url": "https://github.com/mwilliamson/mammoth"
+    },
+    {
+      "license": "MIT",
+      "name": "next",
+      "url": "https://nextjs.org"
+    },
+    {
+      "license": "MIT",
+      "name": "next-intl",
+      "url": "https://next-intl.dev"
+    },
+    {
+      "license": "MIT",
+      "name": "pdf-lib",
+      "url": "https://pdf-lib.js.org"
+    },
+    {
+      "license": "Apache-2.0",
+      "name": "pdfjs-dist",
+      "url": "https://mozilla.github.io/pdf.js/"
+    },
+    {
+      "license": "MIT",
+      "name": "radix-ui",
+      "url": "https://radix-ui.com/primitives"
+    },
+    {
+      "license": "MIT",
+      "name": "react",
+      "url": "https://react.dev/"
+    },
+    {
+      "license": "MIT",
+      "name": "react-dom",
+      "url": "https://react.dev/"
+    },
+    {
+      "license": "MIT",
+      "name": "react-qr-code",
+      "url": "https://github.com/rosskhanas/react-qr-code"
+    },
+    {
+      "license": "MIT",
+      "name": "resend",
+      "url": "https://github.com/resend/resend-node#readme"
+    },
+    {
+      "license": "MIT",
+      "name": "sanitize-html",
+      "url": "https://github.com/apostrophecms/apostrophe/tree/main/packages/sanitize-html#readme"
+    },
+    {
+      "license": "MIT",
+      "name": "server-only",
+      "url": "https://reactjs.org/"
+    },
+    {
+      "license": "Apache-2.0",
+      "name": "sharp",
+      "url": "https://sharp.pixelplumbing.com"
+    },
+    {
+      "license": "MIT",
+      "name": "sonner",
+      "url": "https://sonner.emilkowal.ski/"
+    },
+    {
+      "license": "MIT",
+      "name": "tailwind-merge",
+      "url": "https://github.com/dcastil/tailwind-merge"
+    },
+    {
+      "license": "MIT",
+      "name": "tw-animate-css",
+      "url": "https://github.com/Wombosvideo/tw-animate-css#readme"
+    },
+    {
+      "license": "MPL-2.0",
+      "name": "web-push",
+      "url": "https://github.com/web-push-libs/web-push#readme"
+    },
+    {
+      "license": "MIT",
+      "name": "zod",
+      "url": "https://zod.dev"
+    }
+  ]
+}

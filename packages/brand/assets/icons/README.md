@@ -25,7 +25,7 @@ The Society's icon set: Lucide (ISC license, lucide.dev), redrawn for the brand 
 | `icon-mail.svg` | Email | Interface |
 | `icon-file-text.svg` | Document | Interface |
 | `icon-bell.svg` | Reminder | Interface |
-| `icon-calendar.svg` | Date, What’s on | Events |
+| `icon-calendar.svg` | Date, Events | Events |
 | `icon-clock.svg` | Time | Events |
 | `icon-map-pin.svg` | Place | Events |
 | `icon-ticket.svg` | RSVP | Events |

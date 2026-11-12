@@ -10,9 +10,16 @@ import {
 } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { DataError, localized, unwrap } from "@/lib/data";
+import {
+  type DoorTarget,
+  enqueue,
+  flush,
+  isOffline,
+  readQueue,
+} from "@/lib/diwan/door-queue";
 import { Link } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { RowList } from "../../page";
@@ -39,6 +46,7 @@ type Outcome =
   | { kind: "invalid" }
   | { kind: "notLive" }
   | { kind: "unknown" }
+  | { kind: "saved" }
   | { kind: "error" };
 
 /**
@@ -148,13 +156,9 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
   });
   const results = useAttendeeSearch(eventId, query);
 
-  const checkIn = useMutation({
-    mutationFn: async (
-      target:
-        | { ticket_code: string }
-        | { target_user: string }
-        | { card_code: string; digits: string }
-    ) =>
+  // One check-in, by ticket, card or name.
+  const send = useCallback(
+    async (target: DoorTarget) =>
       unwrap(
         "card_code" in target
           ? await supabase.schema("events").rpc("check_in_card", {
@@ -166,8 +170,41 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
               .schema("events")
               .rpc("check_in", { event_id: eventId, ...target })
       ),
-    onError: (error) => {
-      if (
+    [eventId, supabase]
+  );
+
+  // Without a connection the door keeps working (decisions.md, Events):
+  // check-ins wait on this device and go when the connection is back.
+  const [waiting, setWaiting] = useState(0);
+  const sendWaiting = useCallback(async () => {
+    const left = await flush(localStorage, eventId, async (target) => {
+      try {
+        await send(target);
+        return "sent";
+      } catch (error) {
+        return isOffline(error) ? "offline" : "refused";
+      }
+    });
+    setWaiting(left);
+    await queryClient.invalidateQueries({ queryKey: ["admin"] });
+  }, [eventId, queryClient, send]);
+  useEffect(() => {
+    setWaiting(readQueue(localStorage, eventId).length);
+    sendWaiting().catch(() => undefined);
+    const online = () => {
+      sendWaiting().catch(() => undefined);
+    };
+    window.addEventListener("online", online);
+    return () => window.removeEventListener("online", online);
+  }, [eventId, sendWaiting]);
+
+  const checkIn = useMutation({
+    mutationFn: send,
+    onError: (error, target) => {
+      if (isOffline(error)) {
+        setWaiting(enqueue(localStorage, eventId, target));
+        setOutcome({ kind: "saved" });
+      } else if (
         error instanceof DataError &&
         error.message.includes("card_not_live")
       ) {
@@ -216,6 +253,8 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
     message = t("cardNotLive");
   } else if (outcome?.kind === "unknown") {
     message = t("unknownCode");
+  } else if (outcome?.kind === "saved") {
+    message = t("saved");
   } else if (outcome?.kind === "error") {
     message = tk("reasons.unknown");
   }
@@ -240,6 +279,11 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
       <p className="text-text font-medium" role="status">
         {t("count", { count: formatNumber(count.data ?? 0) })}
       </p>
+      {waiting > 0 ? (
+        <p className="type-body" role="status">
+          {t("waiting", { count: waiting, number: formatNumber(waiting) })}
+        </p>
+      ) : null}
 
       <CardScanner onCode={handleCode} />
 

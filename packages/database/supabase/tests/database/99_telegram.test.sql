@@ -110,11 +110,11 @@ select plan(30);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000007a1', 'tg1@auib.edu.iq', 'Linked Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000007a2', 'tg2@auib.edu.iq', 'Other Member');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000007a3', 'tg3@auib.edu.iq', 'Tech Admin');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000007a3', 'tg3@auib.edu.iq', 'Web Lead');
 insert into membership.memberships (user_id) values
   ('00000000-0000-0000-0000-0000000007a1'), ('00000000-0000-0000-0000-0000000007a2')
   on conflict do nothing;
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000007a3', 'tech_admin');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000007a3', 'web_lead');
 
 -- Only this test's events (the Tuesday series is seeded data).
 delete from events.events;

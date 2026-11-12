@@ -28,16 +28,25 @@ media do.
     time through `roughlyNow`, never `new Date()` in a page).
   - `app/[locale]/(account)`: **your account**, the members' pages on the
     site: `/sign-in`, `/sign-up` (and `/sign-up/guest`), `/auth/*`,
-    `/welcome`, `/get-involved` (public), `/forms/<number>`,
+    `/welcome`, `/get-involved` (public), each form at its place in its
+    flow (`formPaths` in `lib/data/forms.ts`: `/about/contact/concern`,
+    `/consent/<kind>` …; every old `/forms` address redirects),
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
-    members, everything under `/account`, in six tabs (decisions.md, The site):
-    Today, Calendar (`/calendar`), Record (`/record`, certificates at
-    `/record/certificates/<ref>`, letters at `/record/letters/<ref>`, a year
-    at `/record/year/<yyyy>`), Work (`/work`: drafts, submissions at
-    `/work/submissions/<id>`, pieces at `/work/<id>`, and what was saved),
-    Elections (`/elections`, standing for a position at
-    `/elections/<position>`) and Settings (`/settings`, `/settings/profile`,
-    `/settings/notifications`, officers' `/settings/disclosures`), with
+    members, everything under `/account`, in tabs shown by class and role
+    (decisions.md, The site; `useAccountLinks` in
+    `components/account/member-shell.tsx`): Today, Events (`/events`), Work
+    (`/work`: drafts, submissions at `/work/submissions/<id>`, pieces at
+    `/work/<id>`), Applications (`/applications`), Saved (`/saved`), Roles and
+    service (`/roles`, for those who hold or held a role: roles, handovers at
+    `/roles/handover` and `/roles/countersign/<id>`, hours, service letters,
+    a year at `/documents/year/<yyyy>`), Documents (`/documents`: signed
+    copies at `/documents/signed/<id>`, certificates at
+    `/documents/certificates/<ref>`, letters at `/documents/letters/<ref>`),
+    Elections (`/elections`, while one is open; standing for a position at
+    `/elections/<position>`), Card (`/card`) and Settings (`/settings`,
+    `/settings/profile`, `/settings/notifications`, officers'
+    `/settings/disclosures`); guests have Today, Events, Work, Documents and
+    Settings. With
     what you sent at `/requests` and `/requests/<id>`. Also `/company/auditions`,
     `/qirtas/submit` (public; the forms at `/qirtas/submit/<type>`, a draft at
     `/qirtas/submit/<type>/<draft>`) and `/qirtas/read/<slug>` (a
@@ -128,7 +137,7 @@ bun run test                # Vitest in every workspace
 bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
 bun run check:i18n          # UI text not in the messages files; the language standard
-bun run check:forms         # the forms registry against SAL-EXB-01 (needs NOTION_TOKEN)
+bun run check:forms         # the register's kinds against SAL-EXB-01, by name (needs NOTION_TOKEN)
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
@@ -179,15 +188,33 @@ any schema change. Integration tests run against a local stack with
   student is 18 or older; the Code of Conduct is the only pledge. A password change
   on an old sign-in asks for an emailed code (secure password change);
   deleting the account needs a sign-in from the last 15 minutes
-  (`signedInWithin`) and removes the person's own files. "Download your
-  data" is JSON from `/api/account/export`. The Diwan signs a device out
+  (`signedInWithin`) and takes effect 30 days later
+  (`core.profiles.deletion_requested_at`; signing in restores it, the
+  retention job then removes the account and the person's own files).
+  Settings lists the devices signed in (`core.my_sessions()`, "Sign out
+  everywhere else"); a new kind of device emails the person
+  (`core.known_devices`). "Download your data" is `/api/account/export`,
+  shown as a page or saved as JSON. Each September members confirm "I'm
+  still here" (`membership.renewed_at`; `private.is_active_member()` is
+  the active count). The Diwan signs a device out
   after an hour with no use of your account or the Diwan (`IdleSignOut`,
   NIST SP 800-63B-4's AAL2 inactivity timeout). An AUIB sign-in address is not
   changed from the account (`private.keep_auib_address`).
-- **Two-step sign-in for sensitive roles.** Roles with `requires_mfa` (the
-  Council and the Elections Committee) count only on
-  an `aal2` session; `access.has_permission` enforces it. Don't add
-  bypasses. A passkey is a first step only. A lost authenticator is
+- **One account model (decisions.md, Members).** A class (Member,
+  Associate, Honorary, Guest) says whether someone is a member; a role
+  says what they do. Outside roles (Faculty Advisor, Student Life,
+  Advisory Board, partner roles, Parent, Qalam student) sit on whatever
+  account the class gives; a Parent's role is scoped to the child
+  (`scope_type = 'member'`). There is no "staff" class.
+- **Two-step sign-in (decisions.md, Members).** An authenticator app is
+  offered to everyone (Settings). Roles with `requires_mfa` (the Council,
+  the Elections Committee and, from Sun Nov 22, 2026, every role that sees
+  personal data: `requires_mfa_from`, turned on by the hourly
+  `sal-two-step-from` job) count only on a two-step session
+  (`private.session_two_step()`: `aal2`, or a passkey sign-in, which is two
+  factors on its own); `access.has_permission` enforces it. Don't add
+  bypasses. A new role that sees personal data gets `requires_mfa` in its
+  migration. A lost authenticator is
   recovered with one of ten recovery codes (`access.recovery_codes`,
   `/api/two-step/recover`) or reset by whoever holds `roles.assign`
   (`/api/two-step/reset`); either is recorded in `access.two_step_resets`
@@ -205,14 +232,14 @@ any schema change. Integration tests run against a local stack with
   members-only directory (`in_directory`). The site keeps only what it
   needs: no optional profile details or demographic reports. A member
   under 18 gives the month and year of birth (deleted at 18) and a
-  parent's consent by link (F-46), and nothing shows or names them until
+  parent's consent by link (`parent-consent`), and nothing shows or names them until
   then. No phone numbers until they can be verified. Never ask for a
   student ID number: the AUIB address is the identifier, never shown
   publicly.
 - **Blind review.** Readers never receive an author's identity before a
   decision; verify against network responses, not the UI. Clients never
   read `contributors.user_id`, so a pen name can't be traced. Readers
-  read the work, never the file: after signing F-40 (the readers'
+  read the work, never the file: after signing `confidentiality-agreement` (the readers'
   pledge) on the reading page, the text on
   the page (`journal.entry_text`) and images marked with their card
   number (`/api/files/blind`); originals open by role through
@@ -229,7 +256,7 @@ any schema change. Integration tests run against a local stack with
 ## The Society's domain
 
 `docs/platform/domain.md` describes the Society as the code models it:
-the Council and the first term, members and classes, names and titles,
+the Council and the first semester, members and classes, names and titles,
 the card, numbers and codes, forms and signatures, events and the
 calendar, the Typewriter Tour, partners, guests, governance, Qirtas
 (Write for Qirtas, the Newsroom, reading, Editions, Games, the Prize,
@@ -259,8 +286,9 @@ everywhere:
   `/search?q=`). Links point at the current address. An address that was
   shared (in an email, a post, a poster or a QR code) and then changes
   gets a permanent redirect (308, `MOVED` in `apps/web/next.config.ts`);
-  one never shared simply changes. The address alone decides the
-  language (`localeDetection: false`).
+  one never shared simply changes. The address decides the language
+  (`localeDetection: false`), except a person's first visit, which
+  follows the browser (`lib/i18n/first-visit.ts`).
 - **Big records get pages; small rows are edited in place.** A record
   with its own life (an event, a piece, a production, a partner, a
   memorandum, a document, an election, an opening, a meeting) has its own
@@ -275,9 +303,13 @@ everywhere:
   from ten). Never write `<select>`, never stack action buttons in a
   column.
 - **One frame.** The public pages, your account and the Diwan share one
-  header (`components/masthead.tsx` with `site-header.tsx`) and one
-  footer (`components/footer.tsx`, not in the Diwan). One main menu:
-  What's on, Qirtas, The Company, Next Stop, Get involved and About, with
+  header (`components/masthead.tsx` with `site-header.tsx`). The public
+  pages take the four-column footer (`Footer`; Qirtas's pages add its
+  line); your account, the partner dashboard and the Diwan take the slim
+  one (`SlimFooter`; the Diwan's shows the version and build), chosen by
+  address (`FooterSwitch`). The Diwan's seats are a side list on a
+  computer and a row on a phone (`DiwanNav`). One main menu:
+  Events, Qirtas, The Company, Next Stop, Get involved and About, with
   a Join button (signed in,
   the end of the line opens Membership; the Diwan under it for staff, the
   Partner dashboard for a partner's team, `useWays`). No link appears
@@ -306,10 +338,12 @@ everywhere:
 - **Arabic:** Modern Standard Arabic for the site, your account, the
   Diwan, emails, documents, certificates and Qirtas, written by Claude
   with no native-review gate; Iraqi Arabic (with گ، چ، پ) only where the
-  Society chats: Hudhud's copy, social captions and stories, signs at the
-  door. Never both in one message. Latin digits, the Iraqi month names
-  (`ar-IQ`), ، ؛ ؟ and «», tanween on the letter before the alif
-  (شكرًا), one word per term (`claude/glossary_ar.md`).
+  Society chats: Hudhud's chat, reminders and Sunday note, social captions
+  and stories, signs at the door; Hudhud's removals, consents and appeals
+  are standard. Never both in one message. Latin digits, the Iraqi month
+  names (`ar-IQ`), ، ؛ ؟ and «», tanween al-fath on the letter before the
+  alif (شكرًا) and no other tanween, no tatweel, Latin addresses isolated
+  (⁦…⁩ or `<bdi>`), one word per term (`claude/glossary_ar.md`).
   `scripts/check-language.ts` enforces it.
 - **One language per page.** The English pages carry no Arabic and the
   Arabic pages no English, except the language switcher, fields meant for
@@ -361,7 +395,9 @@ everywhere:
 - **Package manager:** Bun with the hoisted linker (`bunfig.toml`).
   Declare every dependency a workspace imports; keep versions aligned. Bun
   installs and runs scripts; Next.js runs on Node.
-- **Auth:** email sign-in (AUIB address first; magic link or password). In
+- **Auth:** email and password (AUIB address first), a passkey as an
+  optional other way in; no sign-in link by email (email only confirms the
+  address and resets a password). In
   your account and the Diwan, query with `useAuth().supabase` so RLS
   applies. In the API routes, identify callers with
   `authenticateRequest` and re-check permissions with `hasPermission`

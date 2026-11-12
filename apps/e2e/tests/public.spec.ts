@@ -31,7 +31,7 @@ test.describe("public site", () => {
     const book = page.getByRole("link", { name: /rsvp|book/iu }).first();
     await expect(book).toHaveAttribute(
       "href",
-      new RegExp(`/account/calendar#${event.slug}$`, "u")
+      new RegExp(`/account/events#${event.slug}$`, "u")
     );
     const ld = await page
       .locator('script[type="application/ld+json"]')
@@ -40,7 +40,7 @@ test.describe("public site", () => {
     await expectAccessible(page);
   });
 
-  test("What's on shows the event in its month and is accessible", async ({
+  test("Events shows the event in its month and is accessible", async ({
     page,
   }) => {
     // The fixture event is five days out (global-setup); Baghdad is UTC+3.
@@ -49,9 +49,7 @@ test.describe("public site", () => {
       .slice(0, 7);
     // A month is a query string (decisions.md, The site).
     await page.goto(`${urls.web}/events?month=${month}`);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "What’s on"
-    );
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Events");
     await expect(
       page.getByRole("link", { name: event.title }).first()
     ).toBeAttached();
@@ -122,14 +120,18 @@ test.describe("public site", () => {
     await expectAccessible(page);
   });
 
-  test("the Issues page shows the pilot issue's call, and the list has its own path", async ({
+  test("the Editions page shows the pilot's call, and the list has its own path", async ({
     page,
   }) => {
-    await page.goto(`${urls.web}/qirtas/issues`);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Issues");
+    await page.goto(`${urls.web}/qirtas/editions`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Editions"
+    );
     await expectAccessible(page);
-    await page.goto(`${urls.web}/qirtas/issues?view=list`);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Issues");
+    await page.goto(`${urls.web}/qirtas/editions?view=list`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Editions"
+    );
     await expectAccessible(page);
   });
 });
@@ -161,7 +163,10 @@ test("a shared address that changed redirects to its new one, in both languages"
       ["/qirtas/write", "/qirtas/submit"],
       ["/library/privacy", "/privacy"],
       ["/partners/join", "/partners/apply"],
-      ["/qirtas/editions", "/qirtas/issues"],
+      ["/qirtas/issues", "/qirtas/editions"],
+      // Forms live in their flows; the old numbered addresses go on.
+      ["/forms/21", "/about/contact/concern"],
+      ["/forms/F-45", "/consent/trip"],
       [
         "/events/writing-workshop-2026-11-17",
         "/events/writing-workshop-2026-12-08",

@@ -3,6 +3,9 @@ import { admin, member, PASSWORD } from "../fixtures";
 import { urls } from "../playwright.config";
 import { expectAccessible, latestMail, signInWithPassword } from "./helpers";
 
+// No button offers a sign-in link by email.
+const LINK = /link/iu;
+
 test("sign up with an AUIB address, confirm by email, finish setup", async ({
   page,
 }) => {
@@ -41,51 +44,34 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.goto((link ?? "").replaceAll("&amp;", "&"));
   await page.getByRole("button", { name: /continue/iu }).click();
 
-  // One question per screen.
-  // One question per screen, each at its own address.
+  // Three screens at most (the third prompt, §1): the account, then the
+  // names in both languages on one screen, then the Code of Conduct.
   await expect(page).toHaveURL(/\/welcome\/1(\?|$)/u);
-  await expect(page.getByText("Step 1 of 5")).toBeVisible();
+  await expect(page.getByText("Step 1 of 2")).toBeVisible();
   await expectAccessible(page);
-  // The name in four parts, in English, then in Arabic.
-  await page.getByLabel("Name", { exact: true }).fill("New");
-  await page.getByLabel("Father’s name", { exact: true }).fill("Kareem");
-  await page.getByLabel("Grandfather’s name").fill(grandfather);
-  await page.getByLabel("Family name").fill("Member");
-  await page.getByLabel("Family name").press("Enter");
-
-  await expect(page.getByText("Step 2 of 5")).toBeVisible();
-  await expect(page).toHaveURL(/\/welcome\/2(\?|$)/u);
-  await page.getByLabel("Name", { exact: true }).fill("عضو");
-  await page.getByLabel("Father’s name", { exact: true }).fill("كريم");
-  await page
+  const english = page.getByRole("group", { name: "Your name in English" });
+  await english.getByLabel("Name", { exact: true }).fill("New");
+  await english.getByLabel("Father’s name", { exact: true }).fill("Kareem");
+  await english.getByLabel("Grandfather’s name").fill(grandfather);
+  await english.getByLabel("Family name").fill("Member");
+  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
+  await arabic.getByLabel("Name", { exact: true }).fill("عضو");
+  await arabic.getByLabel("Father’s name", { exact: true }).fill("كريم");
+  await arabic
     .getByLabel("Grandfather’s name")
     .fill(
       `حسن${grandfather.slice(5).replace(/[a-j]/gu, (c) => "ابتثجحخدذر"[c.charCodeAt(0) - 97] ?? "")}`
     );
-  await page.getByLabel("Family name").fill("جديد");
-  // The browser's Back goes to the last screen, answers kept.
-  await page.goBack();
-  await expect(page.getByLabel("Father’s name", { exact: true })).toHaveValue(
-    "Kareem"
-  );
-  await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByLabel("Family name")).toHaveValue("جديد");
+  await arabic.getByLabel("Family name").fill("جديد");
   await page.getByRole("button", { name: "Continue" }).click();
 
-  // How the name appears: the given and father's names, before it shows.
-  await expect(page.getByText("Step 3 of 5")).toBeVisible();
-  await expect(page.getByText("New Kareem", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Keep it" }).click();
-
-  await expect(page.getByText("Step 4 of 5")).toBeVisible();
+  // No "keep or change" step: the default name shows (fourth prompt, 3a).
+  await expect(page.getByText("Step 2 of 2")).toBeVisible();
+  await expect(page).toHaveURL(/\/welcome\/2(\?|$)/u);
   // The Code of Conduct is the only pledge (decisions.md, Members).
   await page
     .getByRole("button", { name: "I acknowledge the Code of Conduct" })
     .click();
-  await expect(
-    page.getByRole("heading", { name: "Happy to appear in event photos?" })
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Yes, that’s fine" }).click();
 
   await expect(
     page.getByRole("heading", { level: 1, name: "Welcome, New" })
@@ -151,36 +137,14 @@ test("signing in with an address that has no account says only that it doesn't m
   await expect(page.getByText("No account uses this address.")).toHaveCount(0);
 });
 
-test("an AUIB address signs in by password, with a link one click away", async ({
+test("an AUIB address signs in by password; no sign-in link is offered", async ({
   page,
 }) => {
   await page.goto(`${urls.web}/sign-in`);
   await page.getByLabel("Email").fill(member.email);
-  await expect(
-    page.getByRole("button", { name: "Email me a sign-in link instead" })
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: LINK })).toHaveCount(0);
   await signInWithPassword(page, member.email);
   await expectAccessible(page);
-});
-
-test("a sign-in email's code works where its link can't be opened", async ({
-  page,
-}) => {
-  await page.goto(`${urls.web}/sign-in`);
-  await page.getByLabel("Email").fill(member.email);
-  await page
-    .getByRole("button", { name: "Email me a sign-in link instead" })
-    .click();
-  const sentAt = Date.now();
-  await page.getByRole("button", { name: "Send the link" }).click();
-  await expect(page.getByRole("status")).toContainText("type its code");
-
-  const mail = await latestMail(member.email, sentAt);
-  const code = /letter-spacing:0\.25em[^>]*>(\d{6,10})</u.exec(mail.HTML)?.[1];
-  expect(code).toBeTruthy();
-  await page.getByLabel("Code from the email").fill(code ?? "");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
 });
 
 test("a member with a name from before the four parts is asked for them at sign-in", async ({
@@ -189,8 +153,7 @@ test("a member with a name from before the four parts is asked for them at sign-
   const db = admin();
   const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
   const id = users.users.find((u) => u.email === member.email)?.id ?? "";
-  // As members kept them until Oct 31, 2026: one whole name per language,
-  // and not yet seen how the site shows it.
+  // As members kept them until Oct 31, 2026: one whole name per language.
   await db
     .schema("core")
     .from("profiles")
@@ -203,7 +166,6 @@ test("a member with a name from before the four parts is asked for them at sign-
       grandfather_name_en: null,
       last_name_ar: null,
       last_name_en: null,
-      name_confirmed_at: null,
       signup_name_ar: "اختبار تجريبي",
       signup_name_en: "Tess Tester",
     })
@@ -214,24 +176,21 @@ test("a member with a name from before the four parts is asked for them at sign-
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
   await expect(page).toHaveURL(/\/welcome\/1/u);
-  // The first and last words are offered as the first and fourth parts.
-  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("Tess");
-  await expect(page.getByLabel("Family name")).toHaveValue("Tester");
-  await page.getByLabel("Father’s name", { exact: true }).fill("Test");
-  await page.getByLabel("Grandfather’s name").fill("Auto");
+  // Both languages on one screen; the first and last words are offered
+  // as the first and fourth parts.
+  const english = page.getByRole("group", { name: "Your name in English" });
+  await expect(english.getByLabel("Name", { exact: true })).toHaveValue("Tess");
+  await expect(english.getByLabel("Family name")).toHaveValue("Tester");
+  await english.getByLabel("Father’s name", { exact: true }).fill("Test");
+  await english.getByLabel("Grandfather’s name").fill("Auto");
+  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
+  await expect(arabic.getByLabel("Family name")).toHaveValue("تجريبي");
+  await arabic.getByLabel("Father’s name", { exact: true }).fill("تجريبي");
+  await arabic.getByLabel("Grandfather’s name").fill("آلي");
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByLabel("Family name")).toHaveValue("تجريبي");
-  await page.getByLabel("Father’s name", { exact: true }).fill("تجريبي");
-  await page.getByLabel("Grandfather’s name").fill("آلي");
-  await page.getByRole("button", { name: "Continue" }).click();
-  // How the name appears: the given and father's names, kept.
-  await expect(
-    page.getByRole("heading", {
-      name: "This is how your name appears on the site",
-    })
-  ).toBeVisible();
-  await expect(page.getByText("Tess Test", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Keep it" }).click();
+  // The default name (the given and father's names) shows at once, on
+  // the card (its own tab, decisions.md, Your account).
   await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
+  await page.goto(`${urls.web}/account/card`);
   await expect(page.getByText("Tess Test").first()).toBeVisible();
 });

@@ -2,7 +2,7 @@ import "server-only";
 
 import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
-import { QIRTAS_SENDER, resend, SENDER } from "@repo/email";
+import { BULK_SENDER, QIRTAS_SENDER, resend } from "@repo/email";
 import type { Built } from "@repo/email/copy";
 import {
   Notice,
@@ -40,6 +40,8 @@ export interface BroadcastContact {
 }
 
 export interface BroadcastJob {
+  /** The web copy, linked at the top as "View in your browser". */
+  readonly browser?: string;
   readonly built: Built;
   readonly contacts: readonly BroadcastContact[];
   /**
@@ -345,10 +347,11 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
     }
     const sent = ok(
       await client().broadcasts.create({
-        from: job.kind === "sunday_paper" ? QIRTAS_SENDER : SENDER,
+        from: job.kind === "sunday_paper" ? QIRTAS_SENDER : BULK_SENDER,
         name: job.key,
         react: Notice({
           blocks: job.built.blocks,
+          browser: job.browser,
           footer: job.footer,
           preview: job.built.preview,
         }),
@@ -360,7 +363,11 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
         segmentId: row.segment_id,
         ...(job.draft ? { send: false as const } : { send: true as const }),
         subject: job.built.subject,
-        text: noticeText({ blocks: job.built.blocks, footer: job.footer }),
+        text: noticeText({
+          blocks: job.built.blocks,
+          browser: job.browser,
+          footer: job.footer,
+        }),
       }),
       "broadcast"
     );

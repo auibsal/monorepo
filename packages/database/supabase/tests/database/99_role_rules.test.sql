@@ -97,6 +97,10 @@ $$;
 -- </preamble>
 select plan(13);
 
+-- These test the action itself; the second officer's approval is given
+-- (99_two_officers tests asking and approving).
+select set_config('sal.second_officer', 'on', true);
+
 -- f1 assigns roles (President); a1 to a4 receive them.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'pres-rr@auib.edu.iq', 'The President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'one-rr@auib.edu.iq', 'Officer One');
@@ -125,7 +129,7 @@ select throws_ok(
 select throws_ok(
   $$ select access.assign_role('00000000-0000-0000-0000-0000000000f1', 'general_secretary') $$,
   '23P01', 'one_council_seat',
-  'so the President is never also the General Secretary'
+  'so the President is never also the Secretary'
 );
 select access.end_role_assignment(
   (select id from access.role_assignments where user_id = '00000000-0000-0000-0000-0000000000a1'),

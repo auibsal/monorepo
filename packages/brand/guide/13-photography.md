@@ -12,6 +12,6 @@ Our own photos of our own people, taken with consent, always beat stock images. 
 | Treat | Keep |
 | --- | --- |
 | Color natural and slightly warm | Each event's photos linked on its page within a week |
-| Duotone in crimson or ink for posters and covers | Releases (F-15) signed on the site, at auibsal.org/forms/F-15; no photo log |
+| Duotone in crimson or ink for posters and covers | Releases (`media-release`) signed on the site, at auibsal.org/forms/`media-release`; no photo log |
 | Never set type over a photo: the words go on a solid panel | Members set their own photo choice in their account |
-| No photo means a typographic layout: never an empty image box | Qalam: never filmed; photos only with a parent's consent (F-38), no faces on public channels |
+| No photo means a typographic layout: never an empty image box | Qalam: never filmed; photos only with a parent's consent (`qalam-parent-consent`), no faces on public channels |

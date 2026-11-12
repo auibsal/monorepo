@@ -130,7 +130,7 @@ const day = (value: string | null) => (value ? value.slice(0, 10) : null);
 const SEATS = [
   "President",
   "Vice President",
-  "General Secretary",
+  "Secretary",
   "Editor-in-Chief",
   "Director of Media",
   "Artistic Director",

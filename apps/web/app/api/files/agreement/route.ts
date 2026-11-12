@@ -13,7 +13,7 @@ const body = z.object({ id: z.uuid() });
 
 /**
  * A five-minute link to the signed copy of a partnership memorandum (Form
- * F-26). The caller reads the row with their own JWT, so RLS decides
+ * company-agreement). The caller reads the row with their own JWT, so RLS decides
  * (partnership managers, signers and governance managers only).
  */
 export const POST = async (request: Request) => {

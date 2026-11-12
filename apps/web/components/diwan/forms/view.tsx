@@ -2,12 +2,13 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import type { Tables } from "@repo/database/types";
-import type { Locale } from "@repo/internationalization";
+import { type Locale, siteUrl } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
+import { InlineConfirm } from "@/components/frame/inline-confirm";
 import { useAuth } from "@/lib/auth/provider";
 import { forms, unwrap } from "@/lib/data";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
@@ -15,12 +16,61 @@ import { useMemberNames } from "../admin/member-picker";
 import { memberName } from "../admin/members/directory";
 import { EmptyLine, SectionSpinner } from "../states";
 import { FormValues, useFormLabels } from "./field";
-import { useFormTypes } from "./forms";
+import { kindTitle, useFormTypes } from "./forms";
+
+/** The form's own label, else the kind's title from the database. */
+const SheetTitle = ({
+  formKey,
+  label,
+}: {
+  readonly formKey: string;
+  readonly label: string;
+}) => {
+  const locale = useLocale();
+  const types = useFormTypes();
+  return (
+    <>
+      {label ||
+        kindTitle(
+          types.data?.find((k) => k.key === formKey),
+          locale
+        ) ||
+        formKey}
+    </>
+  );
+};
 
 export type Submission = Tables<{ schema: "governance" }, "form_submissions">;
 
 const addDays = (iso: string, days: number) =>
   new Date(new Date(iso).getTime() + days * 864e5).toISOString();
+
+/** The signing's record number and where anyone can check it. */
+const RecordLine = ({ submission }: { submission: Submission }) => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale() as Locale;
+  if (!submission.reference) {
+    return null;
+  }
+  return (
+    <p className="type-caption">
+      {t("recordNumber", {
+        kind: submission.form_key,
+        reference: submission.reference,
+        version: String(submission.form_version),
+      })}
+      {submission.verification_code ? (
+        <>
+          {" · "}
+          {t("checkAt")}{" "}
+          <bdi dir="ltr">
+            {siteUrl(locale, `/verify/${submission.verification_code}`)}
+          </bdi>
+        </>
+      ) : null}
+    </p>
+  );
+};
 
 /**
  * A submitted form laid out for reading and printing (light paper, like
@@ -36,7 +86,9 @@ export const SubmissionSheet = ({
   const t = useTranslations("diwan.forms");
   const locale = useLocale() as Locale;
   const key = submission.form_key as forms.FormKey;
-  const definition = forms.forms[key];
+  // Kinds signed on their own page (the Code of Conduct, a role agreement)
+  // have no fields here: their copy is the record line and the signature.
+  const definition = forms.forms[key] as forms.FormDefinition | undefined;
   const labels = useFormLabels(key);
   const types = useFormTypes();
   const names = useMemberNames([
@@ -56,11 +108,10 @@ export const SubmissionSheet = ({
       data-theme="light"
     >
       <header className="border-line grid gap-1 border-b-2 pb-3">
-        <h2 className="type-heading">{labels.title()}</h2>
-        <p className="type-caption">
-          {actions ? `${definition.code} · ` : ""}
-          {t("society")}
-        </p>
+        <h2 className="type-heading">
+          <SheetTitle formKey={key} label={labels.title()} />
+        </h2>
+        <p className="type-caption">{t("society")}</p>
         <p className="type-caption">
           {t(`statuses.${submission.status as forms.FormStatus}`)}
           {submission.submitted_at
@@ -77,6 +128,14 @@ export const SubmissionSheet = ({
             ? ""
             : ` · ${t(`routings.${submission.routing as forms.Routing}`)}`}
         </p>
+        <RecordLine submission={submission} />
+        {submission.withdrawn_at ? (
+          <p className="type-caption font-medium">
+            {t("withdrawnOn", {
+              date: formatLongDate(submission.withdrawn_at, locale, true),
+            })}
+          </p>
+        ) : null}
         {open && type?.acknowledge_days && !submission.acknowledged_at ? (
           <p className="type-caption">
             {t("acknowledgeBy", {
@@ -98,12 +157,15 @@ export const SubmissionSheet = ({
           </p>
         ) : null}
       </header>
+      {submission.submitted_by ? null : (
+        <SealedName canOpen={Boolean(actions)} id={submission.id} />
+      )}
       <FormValues
         data={(submission.data ?? {}) as forms.FormData}
-        fields={definition.fields}
+        fields={definition?.fields ?? []}
         labels={labels}
       />
-      {definition.office && Object.keys(submission.office ?? {}).length > 0 ? (
+      {definition?.office && Object.keys(submission.office ?? {}).length > 0 ? (
         <section className="grid gap-2">
           <h3 className="type-subheading">{t("office")}</h3>
           <FormValues
@@ -120,8 +182,16 @@ export const SubmissionSheet = ({
 };
 
 /** One of your forms (or one about you), to read, print or keep updating. */
-export const ViewForm = () => {
+export const ViewForm = ({
+  signed = false,
+}: {
+  /** Opened from Documents (a signed copy) rather than from Requests. */
+  readonly signed?: boolean;
+}) => {
   const t = useTranslations("diwan.forms");
+  const back = signed
+    ? { href: "/account/documents", label: t("backToDocuments") }
+    : { href: "/account/requests", label: t("back") };
   const { supabase } = useAuth();
   const id = useQueryParam("id") ?? "";
   const submission = useQuery({
@@ -142,25 +212,136 @@ export const ViewForm = () => {
     return <SectionSpinner />;
   }
   if (!submission.data) {
-    return (
-      <EmptyLine action={{ href: "/account/requests", label: t("back") }}>
-        {t("notFound")}
-      </EmptyLine>
-    );
+    return <EmptyLine action={back}>{t("notFound")}</EmptyLine>;
   }
   const row = submission.data;
 
   return (
     <div className="grid max-w-3xl gap-4">
       <div className="flex flex-wrap items-center gap-3 print:hidden">
-        <Link className="type-body underline" href="/account/requests">
-          {t("back")}
+        <Link className="type-body underline" href={back.href}>
+          {back.label}
         </Link>
         <Button onClick={() => window.print()} size="sm" variant="outline">
           {t("print")}
         </Button>
       </div>
+      <WithdrawConsent submission={row} />
       <SubmissionSheet submission={row} />
+    </div>
+  );
+};
+
+/**
+ * A concern whose name is sealed (decisions.md, Governance): the panel
+ * sees that it is sealed, and whoever handles it may open the name only
+ * for a safety risk or with the signer's agreement; the opening is kept.
+ */
+const SealedName = ({
+  canOpen,
+  id,
+}: {
+  readonly canOpen: boolean;
+  readonly id: string;
+}) => {
+  const t = useTranslations("diwan.forms.sealed");
+  const { supabase } = useAuth();
+  const state = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase.schema("governance").rpc("sealed_state", {
+          submission_id: id,
+        })
+      ),
+    queryKey: ["forms", "sealed", id],
+  });
+  const open = useMutation({
+    mutationFn: async (reason: "safety" | "agreed") =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("open_sealed", { reason, submission_id: id })
+      ),
+  });
+  if (!state.data) {
+    return null;
+  }
+  return (
+    <section className="border-line grid gap-2 border-t pt-3 print:hidden">
+      <p className="type-body">
+        {state.data === "opened" ? t("opened") : t("sealed")}
+      </p>
+      {open.data ? (
+        <p className="type-body font-medium">
+          {t("name", { name: open.data })}
+        </p>
+      ) : null}
+      {canOpen && !open.data ? (
+        <div className="flex flex-wrap gap-3">
+          <Button
+            disabled={open.isPending}
+            onClick={() => open.mutate("safety")}
+            size="sm"
+            variant="outline"
+          >
+            {t("openSafety")}
+          </Button>
+          <Button
+            disabled={open.isPending}
+            onClick={() => open.mutate("agreed")}
+            size="sm"
+            variant="outline"
+          >
+            {t("openAgreed")}
+          </Button>
+        </div>
+      ) : null}
+      {canOpen ? <p className="type-caption">{t("hint")}</p> : null}
+    </section>
+  );
+};
+
+/** The consents and releases a signer may withdraw for the future. */
+const WITHDRAWABLE = new Set(["media-release", "trip-consent"]);
+
+/**
+ * Undo what is still yours (decisions.md, Documents and forms): a media
+ * release or a trip's consent is withdrawn for the future, with a second
+ * step on the page. The signed copy stays, marked withdrawn.
+ */
+const WithdrawConsent = ({ submission }: { submission: Submission }) => {
+  const t = useTranslations("diwan.forms");
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
+  const withdraw = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("withdraw_consent", { submission_id: submission.id })
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["forms"] }),
+  });
+  if (
+    !WITHDRAWABLE.has(submission.form_key) ||
+    submission.submitted_by !== user?.id ||
+    submission.withdrawn_at
+  ) {
+    return null;
+  }
+  return (
+    <div className="grid gap-2 print:hidden">
+      <InlineConfirm
+        confirm={t("withdraw")}
+        disabled={withdraw.isPending}
+        label={t("withdraw")}
+        onConfirm={() => withdraw.mutate()}
+        question={
+          submission.form_key === "trip-consent"
+            ? t("withdrawTripAsk")
+            : t("withdrawAsk")
+        }
+      />
     </div>
   );
 };

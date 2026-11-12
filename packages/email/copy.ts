@@ -60,6 +60,8 @@ const diwan = (base: string, l: Lang, path = "") => ({
 });
 
 export interface EventInfo {
+  /** The event's address, for "Can't come? Cancel" (its page holds the booking). */
+  slug?: string | null;
   starts_at: string;
   title_ar: string;
   title_en: string;
@@ -75,8 +77,8 @@ const venue = (e: EventInfo, l: Lang) =>
 const eventLines = (e: EventInfo, l: Lang) =>
   [when(e.starts_at, l), venue(e, l)].filter((x): x is string => Boolean(x));
 
-/** Tickets and bookings live on My calendar. */
-const MY_CALENDAR = "/account/calendar";
+/** Tickets and bookings live on Your account → Events. */
+const MY_CALENDAR = "/account/events";
 
 export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
   build(lang, (l) => ({
@@ -88,8 +90,38 @@ export const rsvpConfirmed = (lang: Lang, e: EventInfo, app: string) =>
     paragraphs: [
       ...eventLines(e, l),
       l === "ar"
-        ? "تذكرتك في «تقويمي». وإن تغيّرت خططك فتنازل عن مكانك هناك ليأخذه غيرك."
-        : "Your ticket is on My calendar. If your plans change, give your place back there so someone else can have it.",
+        ? "تذكرتك في «الفعاليات» في حسابك. وإن تغيّرت خططك فتنازل عن مكانك هناك ليأخذه غيرك."
+        : "Your ticket is in your account, under Events. If your plans change, give your place back there so someone else can have it.",
+    ],
+  }));
+
+/**
+ * A released place held for the next on the waitlist (decisions.md,
+ * Events): 12 hours, or until two hours before the start; the one button
+ * claims it on the event's page.
+ */
+export const waitlistOffered = (
+  lang: Lang,
+  e: EventInfo,
+  app: string,
+  until: string
+) =>
+  build(lang, (l) => ({
+    action: e.slug
+      ? {
+          href: `${app}${localizedPath(l, `/events/${e.slug}`)}`,
+          label: l === "ar" ? "احجز المكان" : "Claim your place",
+        }
+      : account(app, l, MY_CALENDAR),
+    heading:
+      l === "ar"
+        ? `مكان محجوز لك: ${title(e, l)}`
+        : `A place is held for you: ${title(e, l)}`,
+    paragraphs: [
+      ...eventLines(e, l),
+      l === "ar"
+        ? `فرغ مكان وأنت التالي على قائمة الانتظار. نحفظه لك حتى ${when(until, l)}؛ وإن لم تحجزه حتى ذلك الحين ذهب إلى من بعدك.`
+        : `A place opened up and you're next on the waiting list. It's held for you until ${when(until, l)}; if you don't claim it by then, it goes to the next person.`,
     ],
   }));
 
@@ -103,15 +135,15 @@ export const waitlistPromoted = (lang: Lang, e: EventInfo, app: string) =>
     paragraphs: [
       ...eventLines(e, l),
       l === "ar"
-        ? "كنت على قائمة الانتظار، وقد حُجز لك مكان الآن. تذكرتك في «تقويمي»."
-        : "You were on the waiting list and you now have a place. Your ticket is on My calendar.",
+        ? "كنت على قائمة الانتظار، وقد حُجز لك مكان الآن. تذكرتك في «الفعاليات» في حسابك."
+        : "You were on the waiting list and you now have a place. Your ticket is in your account, under Events.",
     ],
   }));
 
 const REMINDER_CLOSE: Record<"booked" | "remindMe", Record<Lang, string>> = {
   booked: {
-    ar: "إن لم تعد تستطيع الحضور، فتنازل عن مكانك في «تقويمي» ليأخذه غيرك.",
-    en: "If you can no longer come, give your place back on My calendar so someone else can have it.",
+    ar: "إن لم تعد تستطيع الحضور، فألغِ حجزك ليأخذ مكانك غيرك.",
+    en: "If you can no longer come, cancel so someone else can have your place.",
   },
   remindMe: {
     ar: "طلبت أن نذكّرك. لا حجز لهذه الفعالية: تعال فحسب.",
@@ -119,9 +151,20 @@ const REMINDER_CLOSE: Record<"booked" | "remindMe", Record<Lang, string>> = {
   },
 };
 
+/** "Can't come? Cancel": the event's page, where the booking is canceled. */
+const cancelAction = (app: string, l: Lang, e: EventInfo) =>
+  e.slug
+    ? {
+        href: `${app}${localizedPath(l, `/events/${e.slug}`)}`,
+        label:
+          l === "ar" ? "لا تستطيع الحضور؟ ألغِ الحجز" : "Can’t come? Cancel",
+      }
+    : account(app, l, MY_CALENDAR);
+
 /**
- * The day before: to everyone booked (who can give the place back) and to
- * everyone who asked "Remind me" for an event without booking.
+ * The day before (decisions.md, Events): one reminder to everyone booked,
+ * whose one button is "Can't come? Cancel", and to everyone who asked
+ * "Remind me" for an event without booking.
  */
 export const eventReminder = (
   lang: Lang,
@@ -130,7 +173,7 @@ export const eventReminder = (
   booked = true
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, MY_CALENDAR),
+    action: booked ? cancelAction(app, l, e) : account(app, l, MY_CALENDAR),
     heading: l === "ar" ? `غدًا: ${title(e, l)}` : `Tomorrow: ${title(e, l)}`,
     paragraphs: [
       ...eventLines(e, l),
@@ -168,13 +211,47 @@ export const submissionReceived = (
   lang: Lang,
   work: string,
   app: string,
-  desk: DeskKind = "blind"
+  desk: DeskKind = "blind",
+  reference: string | null = null
 ) =>
   build(lang, (l) => ({
     action: account(app, l, "/qirtas/submit"),
     heading:
       l === "ar" ? `شكرًا، وصلنا ${work}` : `Thank you: we received ${work}`,
-    paragraphs: RECEIVED[desk][l],
+    paragraphs: [
+      ...(reference
+        ? [
+            l === "ar"
+              ? `رقم السجل: ${reference}.`
+              : `Record number: ${reference}.`,
+          ]
+        : []),
+      ...RECEIVED[desk][l],
+    ],
+  }));
+
+/** In reading (decisions.md, Qirtas): it passed its check; readers have it. */
+export const submissionInReading = (
+  lang: Lang,
+  work: string,
+  app: string,
+  reference: string | null = null
+) =>
+  build(lang, (l) => ({
+    action: account(app, l, "/qirtas/submit"),
+    heading: l === "ar" ? `قيد القراءة: ${work}` : `In reading: ${work}`,
+    paragraphs: [
+      l === "ar"
+        ? "اجتاز عملك الفحص الأول، وهو الآن بين أيدي القرّاء. ستسمع منا حين يُتَّخذ القرار."
+        : "Your work passed its first check and is now with the readers. You’ll hear from us when there’s a decision.",
+      ...(reference
+        ? [
+            l === "ar"
+              ? `رقم السجل: ${reference}.`
+              : `Record number: ${reference}.`,
+          ]
+        : []),
+    ],
   }));
 
 export const returnedForFormatting = (
@@ -242,10 +319,51 @@ export const decision = (
         ACCEPTED[outcome][l],
         l === "ar"
           ? "خلال سبعة أيام: وقّع اتفاقية النشر وأكمل بياناتك ككاتب في صفحة عملك. توافق أنت على كل تغيير، وترى النص النهائي قبل نشره."
-          : "Within 7 days, sign the Publication Agreement and complete your contributor details on your submission's page. You approve every change and see the final text before it is published.",
+          : "Within 7 days, sign the publication agreement and complete your contributor details on your submission's page. You approve every change and see the final text before it is published.",
       ],
     };
   });
+
+/**
+ * Revise and resend (decisions.md, Qirtas): the section editor asks once
+ * for a revision, with a note. The work keeps its number and goes back to
+ * that editor, not to the readers.
+ */
+export const revisionRequested = (
+  lang: Lang,
+  work: string,
+  note: string,
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: account(app, l, "/qirtas/submit"),
+    heading:
+      l === "ar"
+        ? `يطلب المحرر مراجعة ${work}`
+        : `The editor asks you to revise ${work}`,
+    paragraphs: [
+      l === "ar"
+        ? "يرى محرر القسم في هذا العمل ما يستحق، ويطلب مراجعة واحدة قبل القرار:"
+        : "The section editor sees something in this work and asks for one revision before deciding:",
+      note,
+      l === "ar"
+        ? "عدّل العمل في صفحته ثم أرسل المراجعة. يحتفظ برقمه، ويعود إلى المحرر نفسه دون قراءة ثانية. المراجعة اختيارك."
+        : "Revise it on its page, then send the revision. It keeps its number and goes back to the same editor, without a second reading. Whether to revise is your choice.",
+    ],
+  }));
+
+/** To the section editor who asked: the revision is back, in selection. */
+export const revisionResent = (lang: Lang, work: string, app: string) =>
+  build(lang, (l) => ({
+    action: diwan(app, l, "/qirtas"),
+    heading:
+      l === "ar" ? `عادت مراجعة ${work}` : `The revision of ${work} is back`,
+    paragraphs: [
+      l === "ar"
+        ? "أرسل الكاتب المراجعة التي طلبتها. هي الآن في الاختيار بانتظار قرارك."
+        : "The writer sent the revision you asked for. It is in selection, waiting for your decision.",
+    ],
+  }));
 
 export const agreementReminder = (lang: Lang, work: string, app: string) =>
   build(lang, (l) => ({
@@ -257,7 +375,7 @@ export const agreementReminder = (lang: Lang, work: string, app: string) =>
     paragraphs: [
       l === "ar"
         ? "قُبل عملك في قرطاس، ولا يمكن نشره قبل أن توقّع اتفاقية النشر في صفحة عملك."
-        : "Your work is accepted for Qirtas, and it cannot be published until you sign the Publication Agreement on your submission's page.",
+        : "Your work is accepted for Qirtas, and it cannot be published until you sign the publication agreement on your submission's page.",
     ],
   }));
 
@@ -508,7 +626,7 @@ export const personalEmailConfirm = (lang: Lang, confirm: string) =>
     ],
   }));
 
-const SOCIETY_AR = "جمعية الفنون والآداب في الجامعة الأمريكية في بغداد";
+const SOCIETY_AR = "جمعية الفنون والآداب في الجامعة الأمريكية";
 
 /** A partner invitation's heading and first lines, by kind and language. */
 type InvitationKind = "team" | "guest" | "society" | "associate" | "honorary";
@@ -556,7 +674,7 @@ const invitationLines = (
   if (kind === "team") {
     return l === "ar"
       ? {
-          body: `${partner} شريك لـ${SOCIETY_AR}، ويدعوك إلى فريقه على منصة الجمعية: ملف الشريك وضيوفه.`,
+          body: `${partner} شريك ل${SOCIETY_AR}، ويدعوك إلى فريقه على منصة الجمعية: ملف الشريك وضيوفه.`,
           heading: `انضم إلى فريق ${partner}`,
         }
       : {
@@ -566,7 +684,7 @@ const invitationLines = (
   }
   return l === "ar"
     ? {
-        body: `${partner} شريك لـ${SOCIETY_AR}. بصفتك ضيفه تحجز مقاعد في الفعاليات وتكتب لقرطاس حين تُفتح دعوة لـ${partner}.`,
+        body: `${partner} شريك ل${SOCIETY_AR}. بصفتك ضيفه تحجز مقاعد في الفعاليات وتكتب لقرطاس حين تُفتح دعوة لضيوف ${partner}.`,
         heading: `يدعوك ${partner} ضيفًا`,
       }
     : {
@@ -623,9 +741,9 @@ const pick = (l: Lang, ar: string, en: string) =>
 
 const PAPER_TITLES = {
   ar: {
-    events: "ما يجري هذا الشهر",
+    events: "فعاليات هذا الشهر",
     heading: "جريدة الأحد",
-    lede: "ما نُشر في قرطاس هذا الشهر، وما يجري في الجمعية، والأماكن المفتوحة لمن يريد أن يشارك.",
+    lede: "ما نُشر في قرطاس هذا الشهر، وفعاليات الجمعية، والأماكن المفتوحة لمن يريد أن يشارك.",
     open: "افتح قرطاس",
     pieces: "جديد قرطاس",
     places: "أدوار مفتوحة في «شارك معنا»",
@@ -634,7 +752,7 @@ const PAPER_TITLES = {
     writeTitle: "اكتب لقرطاس",
   },
   en: {
-    events: "What's on this month",
+    events: "Events this month",
     heading: "The Sunday Paper",
     lede: "This month in Qirtas, what's on at the Society, and the places open to anyone who wants to get involved.",
     open: "Open Qirtas",
@@ -649,7 +767,7 @@ const PAPER_TITLES = {
 /**
  * The Sunday Paper (decisions.md, Qirtas): sent by hand by the Managing
  * Editor, to members and to the public list alike: the editor's letter,
- * the month's pieces, "From the Society", What's on, the open roles and a
+ * the month's pieces, "From the Society", Events, the open roles and a
  * call to write, each a list of links. The stop link is
  * in the footer and the List-Unsubscribe header.
  */
@@ -781,6 +899,45 @@ export const removalReceived = (lang: Lang, dueAt: string) =>
     ],
   }));
 
+/**
+ * To the complaints panel's chair, at once (decisions.md, Governance;
+ * fourth prompt, 7p): a concern came in. It names no one, since a concern
+ * may be sealed; the chair reads it in the Diwan.
+ */
+export const concernRaised = (lang: Lang, app: string) =>
+  build(lang, (l) => ({
+    action: diwan(app, l, "/council/concerns"),
+    heading: l === "ar" ? "وصل إبلاغ جديد عن مخاوف" : "A new concern came in",
+    paragraphs: [
+      l === "ar"
+        ? "تقرّر لجنة الشكاوى خلال 14 يومًا. اقرأه في الديوان؛ لا يحمل هذا البريد تفاصيله."
+        : "The panel decides within 14 days. Read it in the Diwan; this email carries none of it.",
+    ],
+  }));
+
+/**
+ * To the Director of Events and the President, at once: an incident report
+ * from an event's page. The event is named; what happened is read in the
+ * Diwan.
+ */
+export const incidentReported = (
+  lang: Lang,
+  event: { slug: string; title: string },
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: diwan(app, l, `/events/${event.slug}`),
+    heading:
+      l === "ar"
+        ? `تقرير حادثة: ${event.title}`
+        : `An incident report: ${event.title}`,
+    paragraphs: [
+      l === "ar"
+        ? "كتب أحد العاملين في الفعالية تقرير حادثة من صفحتها. اقرأه في الديوان؛ لا يحمل هذا البريد تفاصيله."
+        : "Someone running the event wrote an incident report from its page. Read it in the Diwan; this email carries none of it.",
+    ],
+  }));
+
 /** The test notice sent from Profile and privacy (push only, no email). */
 export interface FailedJob {
   failures: number;
@@ -838,8 +995,8 @@ export const eventChanged = (
               ? `لن تُقام ${title(e, l)} في ${when(e.starts_at, l)}. ألغينا حجزك، ولا شيء عليك أن تفعله.`
               : `${title(e, l)} on ${when(e.starts_at, l)} won't take place. Your booking is canceled; there's nothing you need to do.`,
             l === "ar"
-              ? "نأسف لذلك. ما يجري بعدها في «تقويمي» وفي صفحة «ما يجري»."
-              : "We're sorry. What's coming up next is on My calendar and What's on.",
+              ? "نأسف لذلك. ما يجري بعدها في «الفعاليات» في حسابك وعلى الموقع."
+              : "We're sorry. What's coming up next is under Events, in your account and on the site.",
           ],
         }
       : {
@@ -854,8 +1011,8 @@ export const eventChanged = (
               : "The day, time or place has changed. This is when and where it is now:",
             ...eventLines(e, l),
             l === "ar"
-              ? "مكانك محفوظ. إن لم يعد الموعد يناسبك، فتنازل عنه في «تقويمي» ليأخذه غيرك."
-              : "Your place is kept. If the new time doesn't suit you, give it back on My calendar so someone else can have it.",
+              ? "مكانك محفوظ. إن لم يعد الموعد يناسبك، فتنازل عنه في «الفعاليات» في حسابك ليأخذه غيرك."
+              : "Your place is kept. If the new time doesn't suit you, give it back under Events in your account so someone else can have it.",
           ],
         }
   );
@@ -873,21 +1030,6 @@ export const applicationReceived = (lang: Lang, partner: string, app: string) =>
       l === "ar"
         ? "سنكتب إليك حين يُتّخذ القرار. ويمكنك رؤية الطلب في أي وقت من الرابط أدناه."
         : "We'll write to you when it's decided. You can see the application at any time from the link below.",
-    ],
-  }));
-
-/** Partnerships and the Council: an application waits for the vote. */
-export const applicationWaiting = (lang: Lang, partner: string, app: string) =>
-  build(lang, (l) => ({
-    action: diwan(app, l, "/partnerships/applications"),
-    heading:
-      l === "ar"
-        ? `طلب شراكة: ${partner}`
-        : `A partner application: ${partner}`,
-    paragraphs: [
-      l === "ar"
-        ? `تقدّم ${partner} بطلب الشراكة مع الجمعية، ووقّع ممثله مذكرة التفاهم. الطلب في الديوان بانتظار القرار.`
-        : `${partner} has applied to partner with the Society, and its signatory has signed the memorandum. It waits in the Diwan for a decision.`,
     ],
   }));
 
@@ -1034,6 +1176,42 @@ const CANDIDACY: Record<
   },
 };
 
+/** A nominee's receipt: the nomination is with the Elections Committee. */
+export const candidacyReceived = (
+  lang: Lang,
+  seat: { title_ar: string; title_en: string },
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: account(app, l, "/account/elections"),
+    heading:
+      l === "ar"
+        ? `وصل ترشّحك: ${pick(l, seat.title_ar, seat.title_en)}`
+        : `Your nomination is in: ${pick(l, seat.title_ar, seat.title_en)}`,
+    paragraphs: [
+      l === "ar"
+        ? "تراجعه لجنة الانتخابات وتردّ عليك بالبريد. تجد ترشّحك وحالته في صفحة الانتخابات في حسابك."
+        : "The Elections Committee reviews it and answers you by email. Your nomination and where it stands are on Elections in your account.",
+    ],
+  }));
+
+/**
+ * A request for Associate membership (decisions.md, Members), received:
+ * the Director of Membership answers by email.
+ */
+export const associateRequestReceived = (lang: Lang) =>
+  build(lang, (l) => ({
+    heading:
+      l === "ar"
+        ? "وصل طلب العضوية المنتسبة"
+        : "Your request for Associate membership is in",
+    paragraphs: [
+      l === "ar"
+        ? "يراجعه مدير العضوية، ويصلك الردّ بالبريد خلال يومي عمل. إن قُبل، تصلك دعوة لإنشاء حسابك."
+        : "The Director of Membership reviews it and answers by email within two working days. If it is approved, an invitation to create your account follows.",
+    ],
+  }));
+
 /** A nominee: the Elections Committee's answer. */
 export const candidacyDecided = (
   lang: Lang,
@@ -1062,7 +1240,7 @@ export const certificateIssued = (
 ) =>
   build(lang, (l) => ({
     action: {
-      href: `${app}${localizedPath(l, `/account/record/certificates/${certificateId}`)}`,
+      href: `${app}${localizedPath(l, `/account/documents/certificates/${certificateId}`)}`,
       label: l === "ar" ? "افتح الشهادة" : "Open the certificate",
     },
     heading: l === "ar" ? "شهادتك جاهزة" : "Your certificate is ready",
@@ -1074,7 +1252,7 @@ export const certificateIssued = (
     ],
   }));
 
-/** A service letter (F-05), written and signed for its holder. */
+/** A service letter (service-letter), written and signed for its holder. */
 export const serviceLetterWritten = (
   lang: Lang,
   role: string,
@@ -1083,7 +1261,7 @@ export const serviceLetterWritten = (
 ) =>
   build(lang, (l) => ({
     action: {
-      href: `${app}${localizedPath(l, `/account/record/letters/${letterId}`)}`,
+      href: `${app}${localizedPath(l, `/account/documents/letters/${letterId}`)}`,
       label: l === "ar" ? "افتح الرسالة" : "Open the letter",
     },
     heading: l === "ar" ? "رسالة خدمتك جاهزة" : "Your service letter is ready",
@@ -1099,18 +1277,71 @@ export const serviceLetterWritten = (
  * The signer's copy of a form signed on the site (decisions §11, E-SIGN and
  * UETA): what was signed, by whom, when, and its fingerprint.
  */
-export const formSignedCopy = (
-  lang: Lang,
-  form: {
-    answers: { label: string; value: string }[];
-    code: string;
-    fingerprint: string;
-    signedAt: string;
-    signer: string;
-    title: string;
-    url: string | null;
+interface SignedCopy {
+  answers: { label: string; value: string }[];
+  fingerprint: string;
+  /** A copy for someone the link names (the teacher, for Qalam). */
+  forSomeoneElse?: boolean;
+  /** The signing's record number, AGR-<year>-<four digits>. */
+  reference?: string | null;
+  signedAt: string;
+  signer: string;
+  title: string;
+  url: string | null;
+  /** Where anyone can check it (/verify/<code>). */
+  verifyUrl?: string | null;
+}
+
+const signedLine = (form: SignedCopy, l: Lang) => {
+  const at = when(form.signedAt, l);
+  if (form.forSomeoneElse) {
+    return l === "ar"
+      ? `وقّع ${form.signer} ${form.title} في ${at}. هذه نسختك منه.`
+      : `${form.signer} signed ${form.title} on ${at}. This is your copy.`;
   }
-) =>
+  return l === "ar"
+    ? `وقّعتَ ${form.title} باسم ${form.signer} في ${at}. يحتفظ الموقع بالنسخة الموقّعة، وهذه نسختك.`
+    : `You signed ${form.title} as ${form.signer} on ${at}. The site keeps the signed copy; this one is yours.`;
+};
+
+const signedHeading = (form: SignedCopy, l: Lang) => {
+  if (form.forSomeoneElse) {
+    return l === "ar"
+      ? `نسخة موقّعة: ${form.title}`
+      : `A signed copy: ${form.title}`;
+  }
+  return l === "ar"
+    ? `نسختك الموقّعة: ${form.title}`
+    : `Your signed copy: ${form.title}`;
+};
+
+/** The record number, the check link and the fingerprint. */
+const signedProof = (form: SignedCopy, l: Lang) => [
+  ...(form.reference
+    ? [
+        l === "ar"
+          ? `رقم السجل: ${form.reference}`
+          : `Record number: ${form.reference}`,
+      ]
+    : []),
+  ...(form.verifyUrl
+    ? [
+        l === "ar"
+          ? `يتحقق منه أي شخص عبر ⁦${form.verifyUrl}⁩`
+          : `Anyone can check it at ${form.verifyUrl}`,
+      ]
+    : []),
+  l === "ar"
+    ? `البصمة (SHA-256): ${form.fingerprint}`
+    : `Fingerprint (SHA-256): ${form.fingerprint}`,
+];
+
+/**
+ * The copy of a signed agreement or consent: to the signer, or to someone
+ * the link names (the teacher, for Qalam), with its record number and the
+ * link where anyone can check it.
+ */
+export const formSignedCopy = (lang: Lang, form: SignedCopy) =>
   build(lang, (l) => ({
     ...(form.url
       ? {
@@ -1120,10 +1351,7 @@ export const formSignedCopy = (
           },
         }
       : {}),
-    heading:
-      l === "ar"
-        ? `نسختك الموقّعة: ${form.title}`
-        : `Your signed copy: ${form.title}`,
+    heading: signedHeading(form, l),
     lists: form.answers.length
       ? [
           {
@@ -1132,29 +1360,18 @@ export const formSignedCopy = (
           },
         ]
       : [],
-    paragraphs: [
-      l === "ar"
-        ? `وقّعتَ ${form.title} (${form.code}) باسم ${form.signer} في ${when(form.signedAt, l)}. يحتفظ الموقع بالنسخة الموقّعة، وهذه نسختك.`
-        : `You signed ${form.title} (${form.code}) as ${form.signer} on ${when(form.signedAt, l)}. The site keeps the signed copy; this one is yours.`,
-      l === "ar"
-        ? `البصمة (SHA-256): ${form.fingerprint}`
-        : `Fingerprint (SHA-256): ${form.fingerprint}`,
-    ],
+    paragraphs: [signedLine(form, l), ...signedProof(form, l)],
   }));
 
 /**
- * A single-use link to sign a form without an account (a parent's consent
- * for Qalam), sent to the teacher, who passes it on: the Society reaches
- * parents only through the teacher.
+ * A single-use link to sign an agreement or consent without an account,
+ * sent to the person who signs it (a parent's consent, a media release).
  */
-export const formLink = (
-  lang: Lang,
-  link: { code: string; title: string; url: string }
-) =>
+export const formLink = (lang: Lang, link: { title: string; url: string }) =>
   build(lang, (l) => ({
     action: {
       href: link.url,
-      label: l === "ar" ? "افتح النموذج" : "Open the form",
+      label: l === "ar" ? "افتح لتوقّع" : "Open to sign",
     },
     heading:
       l === "ar"
@@ -1162,19 +1379,19 @@ export const formLink = (
         : `A link to sign: ${link.title}`,
     paragraphs: [
       l === "ar"
-        ? `أرسِل هذا الرابط إلى ولي الأمر ليوقّع ${link.title} (${link.code}). يعمل الرابط مرة واحدة خلال 14 يومًا، ولا يحتاج إلى حساب.`
-        : `Please pass this link to the parent or guardian to sign ${link.title} (${link.code}). It works once, within 14 days, and needs no account.`,
+        ? `هذا الرابط لك لتوقّع ${link.title}. يعمل مرة واحدة خلال 14 يومًا، ولا يحتاج إلى حساب.`
+        : `This link is for you to sign ${link.title}. It works once, within 14 days, and needs no account.`,
     ],
   }));
 
-/** The register's numbers (SAL-EXB-01; decisions.md). */
+/** What each kind of request is called in its updates, by its name. */
 const REQUEST_NAMES: Record<string, Record<Lang, string>> = {
-  f10: {
+  concern: { ar: "ما رفعته من قلق", en: "your concern" },
+  "event-pitch": { ar: "مقترح الفعالية", en: "your event pitch" },
+  "members-meeting-motion": {
     ar: "مقترحك لاجتماع الأعضاء",
     en: "your motion for a members’ meeting",
   },
-  f11: { ar: "مقترح الفعالية", en: "your event pitch" },
-  f21: { ar: "ما رفعته من قلق", en: "your concern" },
 };
 
 /** A concern, a motion or a pitch: taken up, then closed. */
@@ -1300,7 +1517,7 @@ const REPLY_LINES: Record<
   received: {
     ar: {
       body: () =>
-        "وصل طلبك. يقرؤه المقعد الذي يوظّف لهذا الدور مع مراجع ثانٍ، وترى حالته في «طلباتك» في حسابك. يمكنك سحبه من هناك متى شئت.",
+        "وصل طلبك. يقرؤه المقعد الذي يوظّف لهذا الدور مع مراجع ثان، وترى حالته في «طلباتك» في حسابك. يمكنك سحبه من هناك متى شئت.",
       heading: "وصل طلبك",
     },
     en: {
@@ -1383,7 +1600,7 @@ const AUDITION_LINES: Record<
   called_back: (l, play) =>
     l === "ar"
       ? [
-          `استدعاء ثانٍ: ${play}`,
+          `استدعاء ثان: ${play}`,
           "تودّ الفرقة رؤيتك مرة أخرى. ستتواصل معك لتحديد الموعد.",
         ]
       : [
@@ -1482,6 +1699,75 @@ export const roleAssigned = (
   });
 
 /** The end of the welcome: the member's first pledge is made. */
+/**
+ * To a parent, after their consent (decisions.md, Members: Parents): their
+ * guest account shows the child's consents and withdraws them. A new
+ * account sets its password with "Forgot your password?".
+ */
+const SIGN_IN: Record<"existing" | "new", Record<Lang, string>> = {
+  existing: {
+    ar: "ادخل بعنوانك وكلمة مرورك المعتادة.",
+    en: "Sign in with your address and your usual password.",
+  },
+  new: {
+    ar: "اختر كلمة مرور لعنوانك هذا، ثم ادخل.",
+    en: "Choose a password for this address, then sign in.",
+  },
+};
+
+export const parentAccount = (
+  lang: Lang,
+  existing: boolean,
+  app: string,
+  qalam = false
+) =>
+  build(lang, (l) => ({
+    action: existing
+      ? account(app, l)
+      : {
+          href: `${app}${localizedPath(l, "/forgot-password")}`,
+          label: l === "ar" ? "اختر كلمة مرور" : "Choose a password",
+        },
+    heading:
+      l === "ar"
+        ? "شكرًا لموافقتك، وهذا حسابك"
+        : "Thank you for your consent; here is your account",
+    paragraphs: [
+      l === "ar"
+        ? "صار لك حساب ضيف في جمعية الفنون والآداب، يعرض الموافقات التي وقّعتها لابنك أو ابنتك، ويتيح لك سحب أي منها متى شئت."
+        : "You now have a guest account with the AUIB Society of Arts and Letters. It shows the consents you signed for your child and lets you withdraw any of them at any time.",
+      ...(qalam
+        ? [
+            l === "ar"
+              ? "وصار لابنك أو ابنتك حساب ضيف في «قلم» بالعنوان الذي كتبته، يدخل إليه باختيار كلمة مرور. نتواصل مع الطلبة عبر المعلم وحده، وقد وصلته نسخة من موافقتك."
+              : "Your child now has a guest account for Qalam at the address you gave; they sign in by choosing a password. We reach students only through their teacher, who has a copy of your consent.",
+          ]
+        : []),
+      SIGN_IN[existing ? "existing" : "new"][l],
+    ],
+  }));
+
+/**
+ * To a member the Council removed from membership (decisions.md,
+ * Governance): plain, with where to ask. The account stays.
+ */
+export const membershipRemoved = (lang: Lang, app: string) =>
+  build(lang, (l) => ({
+    action: account(app, l),
+    heading:
+      l === "ar"
+        ? "أُسقطت عضويتك في الجمعية"
+        : "Your membership of the Society has ended",
+    paragraphs: [
+      l === "ar"
+        ? "صوّت المجلس على إسقاط عضويتك بعد الإخطار والاستماع، ووافق على ذلك مسؤولان. انتهت عضويتك وأي دور كنت تشغله اليوم."
+        : "The Council voted to remove you from membership after notice and a hearing, and two officers recorded it. Your membership and any role you held ended today.",
+      l === "ar"
+        ? "يبقى حسابك وسجلّك. لأي سؤال أو اعتراض، اكتب إلى ⁦hello@auibsal.org⁩."
+        : "Your account and your record stay. For any question or appeal, write to hello@auibsal.org.",
+    ],
+  }));
+
 export const welcome = (lang: Lang, app: string) =>
   build(lang, (l) => {
     const link = (path: string) => `${app}${localizedPath(l, path)}`;
@@ -1498,8 +1784,8 @@ export const welcome = (lang: Lang, app: string) =>
               href: link("/events"),
               title:
                 l === "ar"
-                  ? "ما يجري: أمسيات القراءة، ونقاشات الكتب، وورش الكتابة، وغيرها"
-                  : "What's on: readings, book discussions, writing workshops and more",
+                  ? "الفعاليات: أمسيات القراءة، ونقاشات الكتب، وورش الكتابة، وغيرها"
+                  : "Events: readings, book discussions, writing workshops and more",
             },
             {
               href: link("/qirtas/submit"),
@@ -1556,8 +1842,60 @@ export const shiftReminder = (lang: Lang, s: ShiftInfo, app: string) =>
         ? [pick(l, s.location_ar ?? "", s.location_en ?? "")]
         : []),
       l === "ar"
-        ? "إن لم تعد تستطيع، فاطلب تبديلًا في «تقويمي» ليغطيها غيرك."
-        : "If you can no longer make it, ask for a swap on My calendar so someone can cover it.",
+        ? "إن لم تعد تستطيع، فاطلب تبديلًا في «الفعاليات» في حسابك ليغطيها غيرك."
+        : "If you can no longer make it, ask for a swap under Events in your account so someone can cover it.",
+    ],
+  }));
+
+/**
+ * After someone deletes their account: it goes in 30 days, and signing in
+ * before then keeps it (decisions.md, Members).
+ */
+export const accountDeletionScheduled = (
+  lang: Lang,
+  deletesOn: string,
+  base: string
+) =>
+  build(lang, (l) => ({
+    action: {
+      href: `${base}${localizedPath(l, "/sign-in")}`,
+      label: l === "ar" ? "سجّل الدخول لإبقاء حسابك" : "Sign in to keep it",
+    },
+    heading:
+      l === "ar"
+        ? `سيُحذف حسابك في ${formatLongDate(deletesOn, l)}`
+        : `Your account will be deleted on ${formatLongDate(deletesOn, l)}`,
+    paragraphs: [
+      l === "ar"
+        ? "طلبت حذف حسابك في جمعية الفنون والآداب. سيُحذف هو وحجوزاتك وملفك الشخصي في هذا التاريخ."
+        : "You asked to delete your account with the AUIB Society of Arts and Letters. It goes on that date, with your bookings and your profile.",
+      l === "ar"
+        ? "غيّرت رأيك؟ سجّل الدخول قبل ذلك ويبقى حسابك كما هو. وإن لم تطلب ذلك، فسجّل الدخول وغيّر كلمة المرور."
+        : "Changed your mind? Sign in before then and your account stays as it is. If you didn't ask for this, sign in and change your password.",
+    ],
+  }));
+
+/**
+ * A sign-in from a kind of device the account hasn't used (decisions.md,
+ * Members). Account email: always sent.
+ */
+export const newDevice = (
+  lang: Lang,
+  at: string,
+  device: string,
+  base: string
+) =>
+  build(lang, (l) => ({
+    action: account(base, l, "/account/settings"),
+    heading:
+      l === "ar" ? "تسجيل دخول من جهاز جديد" : "A sign-in from a new device",
+    paragraphs: [
+      l === "ar"
+        ? `سُجّل الدخول إلى حسابك في ${formatLongDate(at, l)}، الساعة ${formatClock(at, l)}، من: ${device}`
+        : `Your account was signed in on ${formatLongDate(at, l)}, at ${formatClock(at, l)}, from: ${device}`,
+      l === "ar"
+        ? "إن كان هذا أنت فلا تفعل شيئًا. وإن لم يكن، فافتح «الإعدادات»، واختر «الخروج من الأجهزة الأخرى»، وغيّر كلمة المرور."
+        : "If this was you, there's nothing to do. If it wasn't, open Settings, choose “Sign out everywhere else” and change your password.",
     ],
   }));
 
@@ -1575,33 +1913,36 @@ export const accountDeleted = (lang: Lang) =>
     ],
   }));
 
-export interface ReplyLine {
-  count: number;
-  role: string;
+export interface DigestSection {
+  readonly items: readonly { meta?: string; title: string }[];
+  readonly title: string;
 }
 
 /**
- * The hiring seats: the day's new applications, counted by role. Staff
- * alerts carry no names (decisions.md, Get involved and roles); the applications are read in the
- * Diwan.
+ * The staff digest (decisions.md, Channels and email): once a day, what
+ * waits for the officer in the Diwan, counted and named by record, never
+ * by person; urgent alerts still go at once.
  */
-export const repliesDigest = (lang: Lang, replies: ReplyLine[], app: string) =>
+export const staffDigest = (
+  lang: Lang,
+  sections: readonly DigestSection[],
+  app: string
+) =>
   build(lang, (l) => ({
-    action: diwan(app, l, "/membership/openings"),
+    action: diwan(app, l, "/"),
     heading:
-      l === "ar"
-        ? `طلبات جديدة في «شارك معنا» (${replies.reduce((n, r) => n + r.count, 0)})`
-        : `New applications on Get involved (${replies.reduce((n, r) => n + r.count, 0)})`,
-    lists: [
-      {
-        items: replies.map((r) => ({ meta: String(r.count), title: r.role })),
-        title: l === "ar" ? "منذ الأمس" : "Since yesterday",
-      },
-    ],
+      l === "ar" ? "ما ينتظرك في الديوان" : "Waiting for you in the Diwan",
+    lists: sections.map((section) => ({
+      items: section.items.map((item) => ({
+        meta: item.meta,
+        title: item.title,
+      })),
+      title: section.title,
+    })),
     paragraphs: [
       l === "ar"
-        ? "اقرأ الطلبات وقيّمها في الديوان."
-        : "Read and review the applications in the Diwan.",
+        ? "هذه رسالة يومية واحدة بما وصل منذ الأمس. أما العاجل فيصلك فور حدوثه."
+        : "One email a day with what came in since yesterday. Anything urgent still reaches you at once.",
     ],
   }));
 
@@ -1685,10 +2026,10 @@ const plainInvitation = (
   paragraphs: [
     hello,
     l === "ar"
-      ? "أودّ أن أدعوك إلى الانضمام إلى جمعية الفنون والآداب في الجامعة الأمريكية في بغداد. نُصدر «قرطاس»، جريدة الجامعة للأخبار والأدب والفن، ونُدير «الفرقة»، مسرحنا، ونصنع «المحطة التالية»، برنامجنا المصوّر، ونقيم الفعاليات طوال العام."
+      ? "أودّ أن أدعوك إلى الانضمام إلى جمعية الفنون والآداب في الجامعة الأمريكية. نُصدر «قرطاس»، صحيفة الجامعة الأمريكية للأخبار والآداب والفن، ونُدير «الفرقة»، مسرحنا، ونصنع «المحطة التالية»، برنامجنا المصوّر، ونقيم الفعاليات طوال العام."
       : "I’d like to invite you to join the AUIB Society of Arts and Letters. We publish Qirtas, AUIB’s paper of news, letters and art; run the Company, our theater; make Next Stop, our show; and hold events all year.",
     l === "ar"
-      ? "انضم عبر auibsal.org/join بهذا البريد. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نكتب إليك مرة أخرى."
+      ? "انضم عبر ⁦auibsal.org/join⁩ بهذا البريد. إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نكتب إليك مرة أخرى."
       : "Join at auibsal.org/join with this email. If you’d rather not, simply ignore this email; we won’t write to you again.",
   ],
   signoff: presidentSignoff(l, signer),
@@ -1798,7 +2139,7 @@ export const invitation = (
         hello,
         typed,
         l === "ar"
-          ? "افتتحنا auibsal.org، البيت الجديد للجمعية، ويسعدني أن تكون من أوائل أعضائه. انضم عبر auibsal.org/join بهذا البريد، فتجد صفحتك بانتظارك في حسابك. تبقى خاصة حتى تقرر هل تظهر في ملفك أو في صفحة الجولة."
+          ? "افتتحنا ⁦auibsal.org⁩، البيت الجديد للجمعية، ويسعدني أن تكون من أوائل أعضائه. انضم عبر ⁦auibsal.org/join⁩ بهذا البريد، فتجد صفحتك بانتظارك في حسابك. تبقى خاصة حتى تقرر هل تظهر في ملفك أو في صفحة الجولة."
           : "We’ve just opened auibsal.org, the Society’s new home, and I’d love for you to be one of its first members. Join at auibsal.org/join with this email, and your page will be waiting in your account. It stays private until you decide whether to show it on your profile or on the Tour’s page.",
         l === "ar"
           ? "إن لم ترغب في ذلك فتجاهل هذه الرسالة؛ لن نعرض صفحتك في أي مكان ولن نكتب إليك مرة أخرى."
@@ -1842,3 +2183,131 @@ export const announcement = (
       .map((p) => p.trim())
       .filter(Boolean),
   }));
+
+/**
+ * The sign-in emails (Supabase's Send Email hook, the third prompt, §8):
+ * the Society's template, in the person's language, from hello@. A link
+ * goes to /auth/confirm, which signs in only when the person presses its
+ * button; a code works where the link cannot be opened.
+ */
+export type AuthEmailKind =
+  | "email_change"
+  | "email_changed"
+  | "mfa_added"
+  | "mfa_removed"
+  | "password_changed"
+  | "reauthentication"
+  | "recovery"
+  | "signup";
+
+const AUTH: Record<
+  AuthEmailKind,
+  Record<Lang, { button?: string; heading: string; line: string }>
+> = {
+  email_change: {
+    ar: {
+      button: "أكّد بريدك الجديد",
+      heading: "أكّد بريدك الجديد",
+      line: "طلبت تغيير بريد الدخول إلى هذا العنوان. اضغط الزر لتأكيده.",
+    },
+    en: {
+      button: "Confirm your new email",
+      heading: "Confirm your new email",
+      line: "You asked to sign in with this address from now on. Press the button to confirm it.",
+    },
+  },
+  email_changed: {
+    ar: {
+      heading: "تغيّر بريد الدخول",
+      line: "تغيّر البريد الذي تدخل به إلى حسابك. إن لم تكن أنت، فاكتب إلينا فورًا بالرد على هذه الرسالة.",
+    },
+    en: {
+      heading: "Your sign-in email was changed",
+      line: "The email you sign in with was changed. If it wasn’t you, reply to this email at once.",
+    },
+  },
+  mfa_added: {
+    ar: {
+      heading: "أُضيفت خطوة ثانية لتسجيل الدخول",
+      line: "صار حسابك يطلب خطوة ثانية عند الدخول. إن لم تكن أنت، فاكتب إلينا فورًا بالرد على هذه الرسالة.",
+    },
+    en: {
+      heading: "Two-step sign-in was added",
+      line: "Your account now asks for a second step when you sign in. If it wasn’t you, reply to this email at once.",
+    },
+  },
+  mfa_removed: {
+    ar: {
+      heading: "أُزيلت خطوة من خطوات الدخول",
+      line: "أُزيلت خطوة الدخول الثانية من حسابك. إن لم تكن أنت، فاكتب إلينا فورًا بالرد على هذه الرسالة.",
+    },
+    en: {
+      heading: "Two-step sign-in was removed",
+      line: "A second sign-in step was removed from your account. If it wasn’t you, reply to this email at once.",
+    },
+  },
+  password_changed: {
+    ar: {
+      heading: "تغيّرت كلمة مرورك",
+      line: "تغيّرت كلمة مرور حسابك. إن لم تكن أنت، فاختر كلمة مرور جديدة من «نسيت كلمة المرور؟» واكتب إلينا بالرد على هذه الرسالة.",
+    },
+    en: {
+      heading: "Your password was changed",
+      line: "Your account’s password was changed. If it wasn’t you, choose a new one with “Forgot your password?” and reply to this email.",
+    },
+  },
+  reauthentication: {
+    ar: {
+      heading: "رمز تأكيدك",
+      line: "أدخل هذا الرمز في الصفحة التي طلبته لتغيير كلمة مرورك.",
+    },
+    en: {
+      heading: "Your confirmation code",
+      line: "Enter this code on the page that asked for it to change your password.",
+    },
+  },
+  recovery: {
+    ar: {
+      button: "اختر كلمة مرور جديدة",
+      heading: "تعيين كلمة مرور جديدة",
+      line: "طلبت تعيين كلمة مرور جديدة لحسابك. اضغط الزر لاختيارها. إن لم تطلب ذلك، فتجاهل هذه الرسالة.",
+    },
+    en: {
+      button: "Choose a new password",
+      heading: "Set a new password",
+      line: "You asked to set a new password for your account. Press the button to choose it. If you didn’t ask, ignore this email.",
+    },
+  },
+  signup: {
+    ar: {
+      button: "أكّد بريدك",
+      heading: "أكّد بريدك الإلكتروني",
+      line: "أهلًا بك في جمعية الفنون والآداب. اضغط الزر لتأكيد بريدك وإكمال حسابك.",
+    },
+    en: {
+      button: "Confirm your email",
+      heading: "Confirm your email",
+      line: "Welcome to the AUIB Society of Arts and Letters. Press the button to confirm your email and finish your account.",
+    },
+  },
+};
+
+export const authEmail = (
+  lang: Lang,
+  kind: AuthEmailKind,
+  { code, link }: { code?: string; link?: string }
+) =>
+  build(lang, (l) => {
+    const words = AUTH[kind][l];
+    const codeLine = code
+      ? [l === "ar" ? `الرمز: ${code}` : `The code: ${code}`]
+      : [];
+    return {
+      action:
+        link && words.button
+          ? { fallback: true, href: link, label: words.button }
+          : undefined,
+      heading: words.heading,
+      paragraphs: [words.line, ...codeLine],
+    };
+  });

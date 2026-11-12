@@ -4,25 +4,21 @@ import { FormHeader } from "@repo/brand/components/sal/form-header";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
+import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useRef, useState } from "react";
 import { PasswordInput } from "@/components/fields/password-input";
-import { sendMagicLink, signInWithPassword } from "@/lib/auth/email";
+import { signInWithPassword } from "@/lib/auth/email";
 import { passkeysSupported, signInWithPasskey } from "@/lib/auth/passkeys";
 import { useAuth } from "@/lib/auth/provider";
 import { useAuthError, usePasskeyError } from "@/lib/diwan/auth-messages";
-import { callbackUrl, safeNextPath } from "@/lib/diwan/navigation";
-import { useScreenTop } from "@/lib/diwan/use-screen-top";
-import { EmailCode } from "./email-code";
+import { safeNextPath } from "@/lib/diwan/navigation";
 import { useHumanCheck } from "./human-check";
 
-/** The submit button's text, idle and while sending. */
-const SUBMIT = {
-  link: ["signIn.sendLink", "forgot.sending"],
-  password: ["signIn.submit", "signIn.submitting"],
-} as const;
+/** A day as the deletion route returns it (yyyy-mm-dd). */
+const DAY = /^\d{4}-\d{2}-\d{2}$/u;
 
 /**
  * `embedded`: inside another page (the partner application), which has
@@ -42,33 +38,25 @@ export const SignInForm = ({
   const next = safeNextPath(params.get("next"));
   const id = useId();
   const [email, setEmail] = useState("");
-  // Password first for everyone; a sign-in link is the fallback. Links
-  // cost an email each, and Resend's free plan allows 100 a day.
-  const [mode, setMode] = useState<"password" | "link">("password");
+  // The email and password is the way in (decisions.md, Members); a
+  // passkey is an optional other way, never pushed. There is no sign-in
+  // link by email: every link spends the email quota.
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
-  const [linkSent, setLinkSent] = useState(false);
-  useScreenTop(linkSent);
   // Checked after mount: the page is prerendered without a browser.
   const [canUsePasskey, setCanUsePasskey] = useState(false);
   useEffect(() => setCanUsePasskey(passkeysSupported()), []);
 
-  // One request at a time: a second magic-link request replaces the first
-  // link and this browser's PKCE verifier (see ForgotForm).
+  // One request at a time.
   const inFlight = useRef<boolean>(false);
   const human = useHumanCheck("sign-in");
 
   const submitLabel = human.label(
     pending,
-    t(SUBMIT[mode][0]),
-    t(SUBMIT[mode][1])
+    t("signIn.submit"),
+    t("signIn.submitting")
   );
-
-  const request = () =>
-    mode === "password"
-      ? signInWithPassword(supabase, email, password, human.token)
-      : sendMagicLink(supabase, email, callbackUrl(locale, next), human.token);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -80,17 +68,20 @@ export const SignInForm = ({
     setError(undefined);
     // The answer never says whether an address has an account (OWASP ASVS
     // 2.2.2, NIST SP 800-63B): a wrong address and a wrong password read
-    // the same, and a sign-in link "is on its way" either way.
-    const result = await request();
+    // the same.
+    const result = await signInWithPassword(
+      supabase,
+      email,
+      password,
+      human.token
+    );
     inFlight.current = false;
     human.reset();
     setPending(false);
     if (!result.ok) {
       setError(errorText(result.code));
-    } else if (mode === "link") {
-      setLinkSent(true);
     }
-    // Password sign-in: GuestOnly sends the member on to `next`.
+    // Signed in: GuestOnly sends the member on to `next`.
   };
 
   const signInPasskey = async () => {
@@ -118,15 +109,18 @@ export const SignInForm = ({
         </FormHeader>
       )}
       {params.get("idle") ? <p role="status">{t("signIn.idle")}</p> : null}
-      {params.get("deleted") ? (
-        <p role="status">{t("signIn.deleted")}</p>
+      {DAY.test(params.get("deleted") ?? "") ? (
+        <p role="status">
+          {t("signIn.deleted", {
+            date: formatLongDate(
+              `${params.get("deleted")}T12:00:00+03:00`,
+              locale,
+              true
+            ),
+          })}
+        </p>
       ) : null}
-      {linkSent ? (
-        <>
-          <p role="status">{t("signIn.linkSent", { email })}</p>
-          <EmailCode email={email} />
-        </>
-      ) : (
+      {
         <form className="grid gap-4" noValidate onSubmit={submit}>
           <div className="grid gap-2">
             <Label htmlFor={`${id}-email`}>{t("email")}</Label>
@@ -145,18 +139,16 @@ export const SignInForm = ({
               {t("emailHint")}
             </p>
           </div>
-          {mode === "password" ? (
-            <div className="grid gap-2">
-              <Label htmlFor={`${id}-password`}>{t("password")}</Label>
-              <PasswordInput
-                autoComplete="current-password"
-                id={`${id}-password`}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-                value={password}
-              />
-            </div>
-          ) : null}
+          <div className="grid gap-2">
+            <Label htmlFor={`${id}-password`}>{t("password")}</Label>
+            <PasswordInput
+              autoComplete="current-password"
+              id={`${id}-password`}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              value={password}
+            />
+          </div>
           {human.element}
           {error ? (
             <p className="text-text" role="alert">
@@ -166,30 +158,18 @@ export const SignInForm = ({
           <Button disabled={pending || !human.ready} type="submit">
             {submitLabel}
           </Button>
-          <Button
-            onClick={() => {
-              setError(undefined);
-              setMode(mode === "password" ? "link" : "password");
-            }}
-            type="button"
-            variant="link"
-          >
-            {mode === "password"
-              ? t("signIn.magicLink")
-              : t("signIn.usePassword")}
-          </Button>
           {canUsePasskey ? (
             <Button
               disabled={pending || !human.ready}
               onClick={signInPasskey}
               type="button"
-              variant="outline"
+              variant="link"
             >
               {t("signIn.passkey")}
             </Button>
           ) : null}
         </form>
-      )}
+      }
       <nav className="type-body grid gap-2">
         <Link className="link" href="/forgot-password">
           {t("signIn.forgot")}

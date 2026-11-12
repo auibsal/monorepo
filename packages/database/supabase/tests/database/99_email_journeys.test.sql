@@ -165,7 +165,7 @@ select ok(
 
 -- 5. A request taken up tells its sender; "in progress" doesn't.
 insert into governance.form_submissions (id, form_key, submitted_by, status, submitted_at, signer_name, signed_at)
-values ('0e000000-0000-0000-0000-0000000e0d01', 'f21', '00000000-0000-0000-0000-0000000e0a01',
+values ('0e000000-0000-0000-0000-0000000e0d01', 'concern', '00000000-0000-0000-0000-0000000e0a01',
   'submitted', now(), 'A Member', now());
 update governance.form_submissions set status = 'in_progress'
 where id = '0e000000-0000-0000-0000-0000000e0d01';

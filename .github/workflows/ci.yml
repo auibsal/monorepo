@@ -108,6 +108,8 @@ jobs:
       - run: bun run test:coverage
       - run: bun run check:placeholders
       - run: bun run check:rtl
+      - run: bun run check:credits
+      - run: bun run check:permissions
       # The decisions mirror is replaced whole from the Claude project;
       # its first line dates it (a real day, its weekday right, not ahead).
       - run: bun run check:decisions
@@ -274,7 +276,7 @@ jobs:
           fi
       # The journeys run against production builds (next start), not the dev
       # server: faster, and what actually ships. Their data is seeded first:
-      # the build caches what it reads (What's on's current month, for one),
+      # the build caches what it reads (the Events page's current month, for one),
       # and seeded rows bypass the publish path that would revalidate it.
       - name: Seed the journeys' data
         run: |

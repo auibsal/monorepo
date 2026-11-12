@@ -13,7 +13,7 @@ import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
 /**
- * A service letter (SAL-EXB-01 · F-05; decisions.md): the one letter
+ * A service letter (SAL-EXB-01; decisions.md): the one letter
  * template (`Letter`, `@repo/brand`), in the letter's own language, with
  * its verification code and QR at the foot. Download is the browser's own
  * print-to-PDF. Its holder and the Director of Membership read it.
@@ -48,7 +48,7 @@ export const ServiceLetter = () => {
   }
   if (!letter.data) {
     return (
-      <EmptyLine action={{ href: "/account/record", label: t("back") }}>
+      <EmptyLine action={{ href: "/account/documents", label: t("back") }}>
         {t("missing")}
       </EmptyLine>
     );

@@ -3,15 +3,22 @@ import type { ReactElement } from "react";
 import { Resend } from "resend";
 import { keys } from "./keys";
 
-const { RESEND_TOKEN } = keys();
+const { RESEND_BULK_DOMAIN, RESEND_TOKEN } = keys();
 
 /**
- * The sender, in code (audit D1): every email and Broadcast comes from the
- * Society by its full name, at an address people reply to: hello@ for the
- * site's emails; Qirtas's own box for the Sunday Paper (decisions.md, Channels and email).
+ * The senders, in code (decisions.md, Channels and email): the site's own
+ * emails come from "AUIB Society of Arts and Letters" at hello@; bulk mail
+ * (announcements) from the same name and the Sunday Paper from "Qirtas",
+ * both sent from news.auibsal.org once Resend has verified it, with
+ * replies to hello@ and qirtas@.
  */
-export const SENDER = `${project.name} <${project.mailboxes.hello}>`;
-export const QIRTAS_SENDER = `${project.journal.name_en}, ${project.name} <${project.mailboxes.qirtas}>`;
+const SENDER = `${project.name} <${project.mailboxes.hello}>`;
+export const BULK_SENDER = RESEND_BULK_DOMAIN
+  ? `${project.name} <news@${RESEND_BULK_DOMAIN}>`
+  : SENDER;
+export const QIRTAS_SENDER = RESEND_BULK_DOMAIN
+  ? `${project.journal.name_en} <qirtas@${RESEND_BULK_DOMAIN}>`
+  : `${project.journal.name_en} <${project.mailboxes.qirtas}>`;
 
 export const resend = RESEND_TOKEN ? new Resend(RESEND_TOKEN) : undefined;
 

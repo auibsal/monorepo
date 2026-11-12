@@ -31,7 +31,7 @@ type UniversityRow = events.UniversityEvent;
  */
 const rowHref = (row: Row) =>
   row.teaser || row.members_only
-    ? `/account/calendar#${row.slug}`
+    ? `/account/events#${row.slug}`
     : `/events/${row.slug}`;
 
 type WayKey = "canceled" | "members" | "open" | "rsvp" | "invite";
@@ -220,7 +220,7 @@ export const MonthCalendar = async ({
 type Href = ComponentProps<typeof Link>["href"];
 
 /**
- * A month of What's on with the way to the months either side: the whole
+ * A month of Events with the way to the months either side: the whole
  * calendar at /events, and the Company's at /company.
  */
 export const MonthSection = async ({

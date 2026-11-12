@@ -18,12 +18,12 @@
             <p style="margin:0 0 16px;font-size:17px;line-height:1.9;">أهلًا بك في جمعية الفنون والآداب. أكّد هذا العنوان لإكمال إنشاء حسابك.</p>
             <p style="margin:0 0 16px;"><a href="{{ .SiteURL }}/ar/auth/confirm?token_hash={{ .TokenHash }}&amp;type=signup&amp;next={{ .RedirectTo }}" style="display:inline-block;background:#9c213e;color:#ffffff;padding:14px 24px;font-size:15px;font-weight:500;text-decoration:none;">تأكيد بريدي</a></p>
             <p style="margin:24px 0 8px;font-size:16px;line-height:1.9;font-weight:500;">بعد التأكيد</p>
-            <p style="margin:0 0 16px;font-size:16px;line-height:1.9;">بطاقة عضويتك الحية في حسابك، تُبرزها عند الباب. ثم: <a href="{{ .SiteURL }}/ar/events" style="color:#9c213e;">ما يجري</a> · <a href="{{ .SiteURL }}/ar/qirtas/submit" style="color:#9c213e;">اكتب لقرطاس</a> · <a href="{{ .SiteURL }}/ar/get-involved" style="color:#9c213e;">شارك معنا</a> · <a href="https://t.me/auibsal_bot" style="color:#9c213e;">هدهد على تيليغرام</a></p>
+            <p style="margin:0 0 16px;font-size:16px;line-height:1.9;">بطاقة عضويتك الحية في حسابك، تُبرزها عند الباب. ثم: <a href="{{ .SiteURL }}/ar/events" style="color:#9c213e;">الفعاليات</a> · <a href="{{ .SiteURL }}/ar/qirtas/submit" style="color:#9c213e;">اكتب لقرطاس</a> · <a href="{{ .SiteURL }}/ar/get-involved" style="color:#9c213e;">شارك معنا</a> · <a href="https://t.me/auibsal_bot" style="color:#9c213e;">هدهد على تيليغرام</a></p>
             <p style="margin:24px 0 8px;font-size:16px;line-height:1.9;">لا تستطيع فتح الرابط على هذا الجهاز؟ اكتب هذا الرمز بدلًا منه:</p>
             <p dir="ltr" style="margin:0 0 24px;font-family:'Ubuntu Mono',Menlo,Consolas,monospace;font-size:28px;letter-spacing:0.25em;color:#273236;text-align:right;">{{ .Token }}</p>
             <p style="margin:0;color:#5c6568;font-size:13px;line-height:1.9;">إن لم تطلب ذلك، فتجاهل هذه الرسالة؛ لن يتغير شيء.</p>
             <hr style="border:none;border-top:1px solid #e2ddd6;margin:32px 0 16px;" />
-            <p style="margin:0;color:#5c6568;font-size:12px;line-height:1.9;">أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية في بغداد. الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني».</p>
+            <p style="margin:0;color:#5c6568;font-size:12px;line-height:1.9;">أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية. الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني».</p>
           </td></tr>
 {{ else }}
           <tr><td dir="ltr" lang="en" style="padding:8px 32px 32px;font-family:Ubuntu,'Segoe UI',Tahoma,Arial,sans-serif;color:#273236;text-align:left;">
@@ -32,7 +32,7 @@
             <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">Welcome to the AUIB Society of Arts and Letters. Confirm this address to finish creating your account.</p>
             <p style="margin:0 0 16px;"><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=signup&amp;next={{ .RedirectTo }}" style="display:inline-block;background:#9c213e;color:#ffffff;padding:14px 24px;font-size:15px;font-weight:500;text-decoration:none;">Confirm my email</a></p>
             <p style="margin:24px 0 8px;font-size:15px;line-height:1.6;font-weight:500;">Once you’re in</p>
-            <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">Your live membership card is in your account: show it at the door. Then: <a href="{{ .SiteURL }}/events" style="color:#9c213e;">What’s on</a> · <a href="{{ .SiteURL }}/qirtas/submit" style="color:#9c213e;">Write for Qirtas</a> · <a href="{{ .SiteURL }}/get-involved" style="color:#9c213e;">Get involved</a> · <a href="https://t.me/auibsal_bot" style="color:#9c213e;">Hudhud on Telegram</a></p>
+            <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">Your live membership card is in your account: show it at the door. Then: <a href="{{ .SiteURL }}/events" style="color:#9c213e;">Events</a> · <a href="{{ .SiteURL }}/qirtas/submit" style="color:#9c213e;">Write for Qirtas</a> · <a href="{{ .SiteURL }}/get-involved" style="color:#9c213e;">Get involved</a> · <a href="https://t.me/auibsal_bot" style="color:#9c213e;">Hudhud on Telegram</a></p>
             <p style="margin:24px 0 8px;font-size:15px;line-height:1.6;">Can't open the link on this device? Type this code instead:</p>
             <p style="margin:0 0 24px;font-family:'Ubuntu Mono',Menlo,Consolas,monospace;font-size:28px;letter-spacing:0.25em;color:#273236;">{{ .Token }}</p>
             <p style="margin:0;color:#5c6568;font-size:13px;line-height:1.6;">If you didn't ask for this, ignore this email; nothing changes.</p>

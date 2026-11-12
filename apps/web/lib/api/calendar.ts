@@ -46,7 +46,7 @@ const toIcs = (
   title: locale === "ar" ? event.title_ar : event.title_en,
   uid: `${event.id}@${project.domain}`,
   url: event.members_only
-    ? siteUrl(locale, "/account/calendar")
+    ? siteUrl(locale, "/account/events")
     : siteUrl(locale, `/events/${event.slug}`),
 });
 

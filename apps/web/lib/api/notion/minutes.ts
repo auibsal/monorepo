@@ -70,21 +70,24 @@ interface Draft {
   title_en: string;
 }
 
-/** The meeting event's day in Baghdad (the database sets it again). */
-const eventDay = async (ctx: SyncContext, eventId: string | null) => {
+/** The meeting event's day in Baghdad (the database sets it again) and its access. */
+const eventFacts = async (ctx: SyncContext, eventId: string | null) => {
   if (!eventId) {
     return null;
   }
   const { data } = await ctx.admin
     .schema("events")
     .from("events")
-    .select("starts_at")
+    .select("starts_at, entry")
     .eq("id", eventId)
     .maybeSingle();
   return data
-    ? new Date(data.starts_at).toLocaleDateString("en-CA", {
-        timeZone: "Asia/Baghdad",
-      })
+    ? {
+        day: new Date(data.starts_at).toLocaleDateString("en-CA", {
+          timeZone: "Asia/Baghdad",
+        }),
+        entry: data.entry,
+      }
     : null;
 };
 
@@ -124,7 +127,15 @@ const readDraft = async (
   if (body && !text) {
     problems.push("Write the minutes in the page.");
   }
-  const day = meetingOn ?? (await eventDay(ctx, eventId));
+  const facts = await eventFacts(ctx, eventId);
+  // Council meetings are Members events: members may observe them, with
+  // the closed session held apart (decisions.md, Events: Access).
+  if (body === "council" && facts && facts.entry !== "members") {
+    problems.push(
+      "A Council meeting's event takes Access: Members (members may observe it)."
+    );
+  }
+  const day = meetingOn ?? facts?.day ?? null;
   if (problems.length > 0 || !(body && day && text)) {
     return { problems };
   }
@@ -174,7 +185,7 @@ const sendMinutes = async (
   const publisher = await publisherFor(ctx, email);
   if (!publisher) {
     await refuse(ctx, page, [
-      `${email} does not hold governance.manage in the Diwan. Ask the General Secretary to set Minutes in the Diwan.`,
+      `${email} does not hold governance.manage in the Diwan. Ask the Secretary to set Minutes in the Diwan.`,
     ]);
     return;
   }

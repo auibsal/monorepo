@@ -6,9 +6,13 @@
  *
  *   bun run check:i18n   (runs this after check-i18n.ts)
  *
- * Arabic: tanween on the letter before the alif (ـًا, not ـاً), Latin
- * digits, the Iraqi month names the ar-IQ formatter uses, Arabic
- * punctuation (، ؛ ؟) and «» quotes, and Iraqi Arabic only in Hudhud.
+ * Arabic (decisions.md, Language; the fourth prompt, 7f): tanween
+ * al-fath on the letter before the alif (ـًا, not ـاً) and no other tanween
+ * (no ٌ or ٍ), no tatweel, Latin digits, the Iraqi month names the ar-IQ
+ * formatter uses, Arabic punctuation (، ؛ ؟) and «» quotes, taa marbuta and
+ * alif maqsura only at a word's end, hamzat al-wasl on the derived nouns,
+ * AUIB's name always with «في بغداد» but in the Society's own names, Latin addresses isolated (⁦…⁩, or <bdi>)
+ * so they read left to right, and Iraqi Arabic only in Hudhud.
  * English (decisions.md: the Chicago Manual of Style for prose,
  * sentence case for interface labels): American spelling, curly quotes and
  * apostrophes, "for example" over "e.g.", the ellipsis character, no
@@ -59,7 +63,41 @@ const ARABIC: Rule[] = [
     why: "Arabic punctuation: ، ؛ ؟",
   },
   { pattern: /[ء-ي][^\n]*[“”]|[“”][^\n]*[ء-ي]/u, why: "«» quotes in Arabic" },
+  // decisions.md, Retired names: «أمين السر», never «الأمين العام»; Events
+  // is «الفعاليات».
+  {
+    pattern: /الأمين العام|الأمينة العامة|«ما يجري»|المحطة القادمة/u,
+    why: "a retired name (the glossary)",
+  },
+  // Tanween is written only as al-fath (ـًا); never ٌ or ٍ.
+  { pattern: /[\u064C\u064D]/u, why: "no tanween but al-fath (no ٌ or ٍ)" },
+  { pattern: /\u0640/u, why: "no tatweel (ـ): rephrase, as بالنطاق or ضمن" },
+  // Taa marbuta and alif maqsura end a word.
+  {
+    pattern: /[ةى][\u0621-\u063A\u0641-\u064A]/u,
+    why: "taa marbuta (ة) and alif maqsura (ى) only at a word's end",
+  },
+  // Hamzat al-wasl: the derived nouns of forms VII, VIII and X take a bare
+  // alif (استمارة, اجتماع), never إ.
+  {
+    pattern:
+      /(^|[\s«(،])(إستمارة|إجتماع|إنتخاب|إستخدام|إشتراك|إنضمام|إختيار|إستلام|إنتهاء|إبتداء|إستقالة|إستثناء|إجتهاد|إقتراح|إنسحاب|إستعادة)/u,
+    why: "hamzat al-wasl: a bare alif (استمارة, اجتماع), not إ",
+  },
+  // decisions.md, Language (the seventh prompt, 5): AUIB is always
+  // «الجامعة الأمريكية في بغداد», in compounds too (طلبة الجامعة الأمريكية في
+  // بغداد); only the names the Society made keep «الجامعة الأمريكية» alone:
+  // the Society's name and Qirtas's line. Never «… في العراق».
+  {
+    pattern:
+      /(?<!جمعية الفنون والآداب في |صحيفة )الجامعة الأمريكية(?! في بغداد)|(جمعية الفنون والآداب|صحيفة) (في )?الجامعة الأمريكية في بغداد|الجامعة الأمريكية في العراق|(صحيفة|جريدة) الجامعة للأخبار/u,
+    why: "AUIB's Arabic name: «الجامعة الأمريكية في بغداد», but «الجامعة الأمريكية» in the Society's name and Qirtas's line (the glossary)",
+  },
 ];
+
+/** A web or email address in Arabic text, not already isolated. */
+const BARE_ADDRESS =
+  /(?<![\u2066\w@./="':>-])(https?:\/\/|[\w.+-]+@[\w-]+\.|[\w-]+\.(org|edu\.iq|com)\b)/u;
 
 // Iraqi spellings and words (گ, چ, پ and common colloquial words).
 const IRAQI =
@@ -74,6 +112,13 @@ const ENGLISH: Rule[] = [
   { pattern: /\.\.\./u, why: "the ellipsis character (…)" },
   { pattern: /\b(e\.g\.|i\.e\.)/u, why: '"for example" or "that is"' },
   { pattern: /!/u, why: "no exclamation marks" },
+  // decisions.md, Language (the seventh prompt, 4): AUIB says "semester"
+  // for fall and spring; "term" is only a term of office.
+  {
+    pattern:
+      /\b(in term|out of term|term calendar|first term|each term|every term|this term|once a term|a term as a member|at least a term)\b/iu,
+    why: '"semester" for AUIB’s fall and spring; "term" only for a term of office',
+  },
   {
     pattern:
       /\b(colour|centre|programmes?\b|cancelled|cancelling|organis|behaviour|catalogue|travelled|judgement|favourite|honour|theatre|licence|recognis|apologis|labelled|modelling|enrolment|analyse)/iu,
@@ -82,7 +127,7 @@ const ENGLISH: Rule[] = [
   // Owner, Nov 7, 2026 (decisions.md, "Retired names"): never use these.
   {
     pattern:
-      /\b(the Salon|Book Circle|Open Pages|Listening Room|Launch Night|[Oo]pen nights?|[Ss]tation days?|Candidates’ Reading|the Ribbon|[Ww]orst-poem contest|Apprenticeships?|First Ink|[Tt]rial term|General Assembly|AGM|Qirtas Awards?|(Tabari|Jahiz|Nazik|Wasiti|Ibn al-Haytham) Award|Qirtas Prizes|[Cc]hapbook|Fellows?|Fellowship|Life Members?|Majlis|Munazara|Mutanabbi Friday|Bad Poetry Night|Open Stage|Scratch Night|Motion Night|Mutanabbi Walk|Productions|Gallery Wall|Month in Qirtas|Side Quest|BusTalks|Waraq|Nexus|Book of (Members|Fellows)|Charter (Night|Day)|Director of (the Company|Letters|Stage and Arts|Programs)|Editor of Qirtas|(Deputy )?Treasurer|Green Room|AUIB SAL HQ|Callboard|Program Leads?|Salon|[Ll]edgers?|[Rr]otas?|[Bb]ook votes?|[Pp]rompt cards?|[Ss]ix programs|Standing Programs?|[Ff]lagships?|the Evenings|the Specials|[Ww]eekly evenings?|[Ff]our-week cycle|[Ee]very fourth week|Arts and Sciences College)\b/u,
+      /\b(the Salon|Book Circle|Open Pages|Listening Room|Launch Night|[Oo]pen nights?|[Ss]tation days?|Candidates’ Reading|the Ribbon|[Ww]orst-poem contest|Apprenticeships?|First Ink|[Tt]rial term|General Assembly|AGM|Qirtas Awards?|(Tabari|Jahiz|Nazik|Wasiti|Ibn al-Haytham) Award|Qirtas Prizes|[Cc]hapbook|Fellows?|Fellowship|Life Members?|Majlis|Munazara|Mutanabbi Friday|Bad Poetry Night|Open Stage|Scratch Night|Motion Night|Mutanabbi Walk|Productions|Gallery Wall|Month in Qirtas|Side Quest|BusTalks|Waraq|Nexus|Book of (Members|Fellows)|Charter (Night|Day)|Director of (the Company|Letters|Stage and Arts|Programs)|Editor of Qirtas|(Deputy )?Treasurer|Green Room|AUIB SAL HQ|Callboard|Program Leads?|Salon|[Ll]edgers?|[Rr]otas?|[Bb]ook votes?|[Pp]rompt cards?|[Ss]ix programs|Standing Programs?|[Ff]lagships?|the Evenings|the Specials|[Ww]eekly evenings?|[Ff]our-week cycle|[Ee]very fourth week|Arts and Sciences College|What[’']s on|General Secretary|Acting President|Submissions Manager|Event Coordinator|Venues and Logistics Lead|Production Lead|Event Staff|Arabic Editor|Onboarding Lead|Records and Recognition Lead|Technical Administrator|Founders[’'] Roll|Honorary Fellows?|[Pp]aperless pledge|Ubuntu Arabic|Issue 1|[Pp]ilot issue|printed year-in-review)\b/u,
     why: "a retired name",
   },
   // Document codes (decisions.md): GOV, EXB, EVT, MEM, PTN, MED, ART
@@ -114,8 +159,18 @@ const check = (where: string, text: string, rules: Rule[]) => {
   }
 };
 
+const isolated = (where: string, text: string) => {
+  if (HAS_ARABIC.test(text) && BARE_ADDRESS.test(text)) {
+    findings.push(
+      `${where}: a Latin address in Arabic text is isolated (⁦…⁩ or <bdi>)\n    ${text.slice(0, 120)}`
+    );
+  }
+};
+
+const HAS_ARABIC = /[ء-ي]/u;
 for (const [key, value] of await readMessages("ar")) {
   check(`ar.json ${key}`, value, ARABIC);
+  isolated(`ar.json ${key}`, value);
   if (IRAQI.test(value)) {
     findings.push(
       `ar.json ${key}: standard Arabic on the site (Iraqi only in Hudhud)\n    ${value.slice(0, 120)}`
@@ -126,7 +181,6 @@ for (const [key, value] of await readMessages("en")) {
   check(`en.json ${key}`, value, ENGLISH);
 }
 
-const HAS_ARABIC = /[ء-ي]/u;
 const copies = await Promise.all(
   COPY_FILES.map(async (file) => ({
     file,
@@ -139,6 +193,7 @@ for (const { file, lines } of copies) {
       continue;
     }
     check(`${file}:${index + 1}`, line, ARABIC);
+    isolated(`${file}:${index + 1}`, line);
     if (file !== IRAQI_HOME && IRAQI.test(line)) {
       findings.push(
         `${file}:${index + 1}: standard Arabic here (Iraqi only in Hudhud)\n    ${line.trim().slice(0, 120)}`

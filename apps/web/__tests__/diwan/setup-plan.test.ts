@@ -8,8 +8,8 @@ const all = {
   en: { father: "Kareem", first: "Lina", grandfather: "Hasan", last: "Tamimi" },
 };
 
-describe("setup, one question per screen", () => {
-  test("a new member: both names, the Code of Conduct, photos, then welcome", () => {
+describe("setup, in three screens at most (with sign-up's own)", () => {
+  test("a new member: both names on one screen, the Code of Conduct, then welcome", () => {
     expect(
       planSetup({
         names: none,
@@ -18,10 +18,8 @@ describe("setup, one question per screen", () => {
       })
     ).toEqual({
       steps: [
-        { kind: "nameEn" },
-        { kind: "nameAr" },
+        { kind: "names", languages: ["en", "ar"] },
         { kind: "pledge", pledge: "member" },
-        { kind: "photos" },
       ],
       welcome: true,
     });
@@ -30,7 +28,7 @@ describe("setup, one question per screen", () => {
   test("names given at sign-up are not asked again", () => {
     expect(
       planSetup({ names: all, pending: ["member"], setupDone: false }).steps
-    ).toEqual([{ kind: "pledge", pledge: "member" }, { kind: "photos" }]);
+    ).toEqual([{ kind: "pledge", pledge: "member" }]);
   });
 
   test("a renewed pledge asks only the pledge, with no welcome", () => {
@@ -49,7 +47,7 @@ describe("setup, one question per screen", () => {
         pending: [],
         setupDone: true,
       }).steps
-    ).toEqual([{ kind: "nameAr" }]);
+    ).toEqual([{ kind: "names", languages: ["ar"] }]);
   });
 
   test("a partner's representative who is not a member gives names only", () => {
@@ -61,33 +59,22 @@ describe("setup, one question per screen", () => {
         setupDone: false,
       })
     ).toEqual({
-      steps: [{ kind: "nameEn" }, { kind: "nameAr" }],
+      steps: [{ kind: "names", languages: ["en", "ar"] }],
       welcome: false,
     });
   });
 });
 
 describe("how a member's name appears", () => {
-  const threeParts = {
-    ar: { father: "ب", first: "أ", grandfather: "ج", last: "" },
-    en: { father: "B", first: "A", grandfather: "C", last: "" },
-  };
-  test("a member who hasn't seen it is asked once, after their names", () => {
+  // No "keep or change" step (fourth prompt, 3a): the default shows until
+  // the member chooses a preferred name in Settings.
+  test("a member whose names are complete is not asked about them", () => {
     expect(
       planSetup({
-        nameSeen: false,
-        names: threeParts,
-        pending: [],
-        setupDone: true,
-      }).steps
-    ).toEqual([{ kind: "shownName" }]);
-  });
-  test("a partner's person is never asked", () => {
-    expect(
-      planSetup({
-        member: false,
-        nameSeen: false,
-        names: threeParts,
+        names: {
+          ar: { father: "ب", first: "أ", grandfather: "ج", last: "" },
+          en: { father: "B", first: "A", grandfather: "C", last: "" },
+        },
         pending: [],
         setupDone: true,
       }).steps

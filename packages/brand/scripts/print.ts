@@ -96,7 +96,7 @@ const stickerPack = async () => {
 <div><h3>Material</h3><p>White vinyl, matte. Every sticker is cut on its own edge or on its ground: no white borders.</p></div>
 <div><h3>Color</h3><p>The Society’s colors only: crimson #9C213E, ink #273236, paper #F5F2EE, stone #E2DDD6, ash #5C6568 and white. No other color, and no pink.</p></div>
 <div><h3>Bleed</h3><p>Shapes printed to their edge carry 1.5 mm of bleed past the cut. Keep text 2 mm inside every cut.</p></div>
-<div><h3>Quantity</h3><p>Print to the confirmed need: the expected joiners at the club fair or the Typewriter Tour, plus 10%, as requested through the General Secretary’s needs list.</p></div>
+<div><h3>Quantity</h3><p>Print to the confirmed need: the expected joiners at the club fair or the Typewriter Tour, plus 10%, as requested through the Secretary’s needs list.</p></div>
 <div><h3>Questions</h3><p>hello@auibsal.org</p></div>
 </div></section>`);
 

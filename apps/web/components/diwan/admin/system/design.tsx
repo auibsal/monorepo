@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { DiwanPage } from "@/components/diwan/page";
 import { SectionSpinner } from "@/components/diwan/states";
 import { useAuth } from "@/lib/auth/provider";
+import { callApi } from "@/lib/diwan/api";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermissionAnywhere } from "@/lib/rbac";
@@ -75,6 +76,42 @@ const useEntries = (kit: string) =>
 /** The site's theme as the stories name it. */
 const themeNow = () =>
   document.documentElement.dataset.theme === "dark" ? "ink" : "light";
+
+/**
+ * "Send me a test" (decisions.md, Channels and email): the email on show,
+ * in both languages, mailed only to the officer who asks.
+ */
+const SendTest = ({ name }: { name: string }) => {
+  const t = useTranslations("diwan.admin.design");
+  const { supabase } = useAuth();
+  const send = useMutation({
+    mutationFn: () =>
+      callApi(supabase, "/email/test", { name: name.replaceAll(" ", "") }),
+  });
+  let status: string | null = null;
+  if (send.isSuccess) {
+    status = t("testSent");
+  } else if (send.isError) {
+    status = t("testFailed");
+  }
+  return (
+    <p className="flex flex-wrap items-center gap-x-6 gap-y-2">
+      <button
+        className="link"
+        disabled={send.isPending}
+        onClick={() => send.mutate()}
+        type="button"
+      >
+        {t("sendTest")}
+      </button>
+      {status ? (
+        <span className="type-caption" role="status">
+          {status}
+        </span>
+      ) : null}
+    </p>
+  );
+};
 
 /**
  * One entry, drawn by the design system's own renderer at this page's
@@ -227,6 +264,9 @@ export const DesignSystem = ({ entryId }: { entryId: string | null }) => {
                 ))}
               </div>
             </nav>
+          ) : null}
+          {entry.title === "Emails/Platform" ? (
+            <SendTest key={`test-${entry.id}`} name={entry.name} />
           ) : null}
           <Canvas entry={entry} key={entry.id} kit={kit} />
         </div>

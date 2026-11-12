@@ -113,7 +113,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000008a2', 'st2@auib.edu.i
 insert into membership.memberships (user_id) values
   ('00000000-0000-0000-0000-0000000008a1'), ('00000000-0000-0000-0000-0000000008a2')
   on conflict do nothing;
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000008a1', 'tech_admin');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000008a1', 'web_lead');
 insert into core.telegram_accounts (user_id, telegram_id) values
   ('00000000-0000-0000-0000-0000000008a1', 801), ('00000000-0000-0000-0000-0000000008a2', 802);
 

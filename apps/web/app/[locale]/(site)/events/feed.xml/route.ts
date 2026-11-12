@@ -2,7 +2,7 @@ import { isLocale } from "@repo/internationalization";
 import { getTranslations } from "next-intl/server";
 import { eventsFeed } from "@/lib/feed";
 
-/** What's on's RSS feed (decisions.md, Standards). */
+/** The Events RSS feed (decisions.md, Standards). */
 export const GET = async (
   _request: Request,
   { params }: { params: Promise<{ locale: string }> }

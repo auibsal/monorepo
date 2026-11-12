@@ -274,11 +274,11 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
   );
 };
 
-/** The criteria F-25 scores, 1 to 5 each, out of 25 (SAL-EXB-01). */
+/** The criteria audition-score-sheet scores, 1 to 5 each, out of 25 (SAL-EXB-01). */
 const CRITERIA = ["presence", "voice", "note", "fit", "commitment"] as const;
 
 /**
- * F-25, the audition score sheet (decisions.md, Get involved and roles): each scorer marks the
+ * audition-score-sheet, the audition score sheet (decisions.md, Get involved and roles): each scorer marks the
  * criteria from 1 to 5 with a note, kept as a Diwan record; the others'
  * sheets are shown beside one's own.
  */
@@ -418,9 +418,7 @@ interface Person {
 const emptyCredit = {
   department: "cast" as Department,
   member: null as Person | null,
-  person_name: "",
   role: { ar: "", en: "" },
-  who: "member" as "member" | "outside",
 };
 
 export const CreditsTab = ({ production }: { production: ProductionRow }) => {
@@ -726,10 +724,10 @@ const NewCredit = ({
     mutationFn: () =>
       productions.addCredit(supabase, production.id, {
         department: form.department,
-        person_name: form.who === "outside" ? form.person_name : null,
+        person_name: null,
         role_ar: form.role.ar,
         role_en: form.role.en,
-        user_id: form.who === "member" ? (form.member?.id ?? null) : null,
+        user_id: form.member?.id ?? null,
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
@@ -765,56 +763,22 @@ const NewCredit = ({
             </SelectInput>
           )}
         </Field>
-        <Field label={t("who")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  who: e.target.value as "member" | "outside",
-                }))
-              }
-              value={form.who}
-            >
-              <option value="member">{t("aMember")}</option>
-              <option value="outside">{t("someoneOutside")}</option>
-            </SelectInput>
-          )}
-        </Field>
       </div>
-      {form.who === "member" ? (
-        <MemberPicker
-          label={t("member")}
-          onChange={(member) => setForm((f) => ({ ...f, member }))}
-          value={form.member}
-        />
-      ) : (
-        <Field hint={t("outsideHint")} label={t("personName")}>
-          {(id) => (
-            <Input
-              dir="auto"
-              id={id}
-              maxLength={200}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, person_name: e.target.value }))
-              }
-              required
-              value={form.person_name}
-            />
-          )}
-        </Field>
-      )}
+      {/* Everyone credited is picked from the site's people (the third
+          prompt, §1); someone from outside is invited as a guest first. */}
+      <MemberPicker
+        label={t("member")}
+        onChange={(member) => setForm((f) => ({ ...f, member }))}
+        value={form.member}
+      />
+      <p className="type-caption">{t("outsideInvite")}</p>
       <BilingualField
         label={t("role")}
         maxLength={200}
         onChange={(role) => setForm((f) => ({ ...f, role }))}
         value={form.role}
       />
-      <SaveButton
-        disabled={form.who === "member" && !form.member}
-        pending={add.isPending}
-      />
+      <SaveButton disabled={!form.member} pending={add.isPending} />
       <ErrorLine error={add.error} />
     </form>
   );

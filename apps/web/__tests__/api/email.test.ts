@@ -28,7 +28,7 @@ describe("platform email", () => {
     expect(html).toContain("حُجز مكانك");
     expect(html).not.toContain("booked: Charter Day");
     expect(html).toContain("/brand/sal-lockup-horizontal-ar-email.png");
-    expect(html).toContain(`href="${APP}/ar/account/calendar"`);
+    expect(html).toContain(`href="${APP}/ar/account/events"`);
     const english = await render(Notice(rsvpConfirmed("en", event, APP)));
     expect(english).toContain("Tuesday, October 13 · 6:00 p.m.");
     expect(english).toContain("Main Hall");
@@ -56,7 +56,7 @@ describe("platform email", () => {
   test("acceptance points to the agreement; a decline does not", () => {
     const [accepted] = decision("en", "W", "accept", APP).blocks;
     const [declined] = decision("en", "W", "decline", APP).blocks;
-    expect(accepted?.paragraphs.join(" ")).toContain("Publication Agreement");
+    expect(accepted?.paragraphs.join(" ")).toContain("publication agreement");
     expect(declined?.paragraphs.join(" ")).not.toContain("Agreement");
     expect(declined?.paragraphs.join(" ")).toContain("submit again");
   });
@@ -74,7 +74,7 @@ describe("the newsletter", () => {
     );
   });
 
-  test("the Sunday Paper lists pieces, What's on and open places as links", () => {
+  test("the Sunday Paper lists pieces, Events and open places as links", () => {
     const built = sundayPaper("en", {
       events: [{ ...event, url: "https://auibsal.org/events/the-salon" }],
       front: "https://auibsal.org/qirtas",

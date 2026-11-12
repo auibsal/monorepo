@@ -84,7 +84,7 @@ export const PostsArabic: Story = {
 };
 
 /**
- * "What's on this spring" (decisions §6, §7): the term calendar, posted
+ * "Events this spring" (decisions §6, §7): the semester calendar, posted
  * once as a carousel. One carousel, each English slide followed by the
  * same slide in Arabic; there is no standing weekly post, and each event
  * gets its own post once its room is confirmed.
@@ -173,20 +173,20 @@ const Wordmark = ({ lang }: { lang: "ar" | "en" }) => (
 
 /** The cover, the numbered slides and the wordmark: English, then Arabic. */
 export const WhatsOnThisSpring: Story = {
-  name: "Carousel: What's on this spring",
+  name: "Carousel: Events this spring",
   render: () => (
     <div className={grid}>
       <SocialPost
         date="Spring 2027"
         ground="white"
-        headline={<>What’s on this spring.</>}
+        headline={<>Events this spring.</>}
         lang="en"
         lede="Rooms and each event’s own post follow on auibsal.org/events."
       />
       <SocialPost
         date="ربيع 2027"
         ground="white"
-        headline={<>ما يجري هذا الربيع.</>}
+        headline={<>فعاليات هذا الربيع.</>}
         lang="ar"
         lede="القاعات ومنشور كل فعالية تتبع على auibsal.org/events."
       />
@@ -264,7 +264,7 @@ export const StoryArabic: Story = { render: () => <StoryFrame lang="ar" /> };
 
 // The six Instagram highlights, in order, each with its icon (Highlights).
 const highlights: [string, IconName][] = [
-  ["What's on", "calendar"],
+  ["Events", "calendar"],
   ["Qirtas", "newspaper"],
   ["The Company", "drama"],
   ["Next Stop", "bus"],

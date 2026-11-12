@@ -1,6 +1,6 @@
-# Files and templates
+# Files
 
-Everything lives here, in the Society's design system in the Diwan, built from `packages/brand` in the platform's repository. Every file has its download in Logos, Social and Print.
+Every template is listed under [Templates](?path=/docs/guide-templates--docs). Everything lives here, in the Society's design system in the Diwan, built from `packages/brand` in the platform's repository. Every file has its download in Logos, Social and Print.
 
 | File | What it is |
 | --- | --- |

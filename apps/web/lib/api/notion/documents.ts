@@ -37,7 +37,7 @@ import {
  * in the Diwan's Library and written back to the row. The text on the
  * site is a rendering of the page and is never edited there. The person
  * who set the status needs governance.manage (the President, the Vice
- * President and the General Secretary).
+ * President and the Secretary).
  *
  * Each document has an English and an Arabic edition, separate rows with the
  * same Code (decisions.md): the English row makes the Library's
@@ -105,6 +105,15 @@ const editionRow = async (
   return rows.find((row) => read.select(row, "Status") !== "Retired") ?? null;
 };
 
+/** Notion's For field (Everyone, Members, Staff): the Library's group. */
+const FOR: Record<string, "everyone" | "members" | "staff"> = {
+  Everyone: "everyone",
+  Members: "members",
+  Staff: "staff",
+};
+const readersOf = (page: NotionPage) =>
+  FOR[read.select(page, "For") ?? ""] ?? "everyone";
+
 /** An Arabic row's Audience is its English row's. */
 const audienceOf = async (ctx: SyncContext, page: NotionPage) => {
   const own = read.select(page, "Audience");
@@ -168,7 +177,7 @@ const publishDocument = async (
   const publisher = await publisherFor(ctx, email);
   if (!publisher) {
     await needsChanges(ctx, page, [
-      `${email} does not hold governance.manage in the Diwan. Ask the President, the Vice President or the General Secretary to set Ready to publish.`,
+      `${email} does not hold governance.manage in the Diwan. Ask the President, the Vice President or the Secretary to set Ready to publish.`,
     ]);
     return;
   }
@@ -203,6 +212,7 @@ const publishDocument = async (
     code: v.code,
     notion_url: pageUrl(page.id),
     on_site: true,
+    readers: readersOf(page),
     slug: v.slug,
     title_en: v.title,
     ...(v.summary ? { summary_en: v.summary } : {}),

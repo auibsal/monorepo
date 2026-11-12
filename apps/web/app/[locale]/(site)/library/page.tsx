@@ -1,9 +1,13 @@
 import type { Locale } from "@repo/internationalization";
-import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { seatName } from "@/components/library/document-page";
+import {
+  type LibraryItem,
+  LibraryList,
+} from "@/components/library/library-list";
 import { ManageLinks } from "@/components/manage-links";
-import { PageHeader, Section } from "@/components/section";
+import { PageHeader } from "@/components/section";
 import { documents } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -33,16 +37,21 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
     []
   );
 
-  const shelves = [
-    {
-      docs: list.filter((doc) => !documents.isWebsitePolicy(doc)),
-      key: "society",
-    },
-    {
-      docs: list.filter(documents.isWebsitePolicy),
-      key: "policies",
-    },
-  ] as const;
+  const tk = await getTranslations({
+    locale,
+    namespace: "web.documents.header",
+  });
+  const items: LibraryItem[] = list.map((doc) => ({
+    code: doc.code,
+    href: documents.documentPath(doc.slug),
+    keeper: doc.owner
+      ? tk("keptBy", { seat: seatName(doc.owner, locale) })
+      : null,
+    reader: documents.readerOf(doc),
+    status: t(`statuses.${doc.status as documents.DocumentStatus}`),
+    summary: documents.documentSummary(doc, locale),
+    title: documents.documentTitle(doc, locale),
+  }));
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-16 px-4 py-16 sm:py-24">
@@ -52,56 +61,18 @@ const DocumentsPage = async ({ params }: DocumentsProps) => {
         ) : null}
         <ManageLinks diwan="/council/library" />
       </PageHeader>
-      {shelves.map((shelf) => (
-        <Section
-          id={shelf.key}
-          key={shelf.key}
-          title={t(`shelves.${shelf.key}`)}
-        >
-          <ul className="grid gap-x-10 md:grid-cols-2">
-            {shelf.docs.map((doc) => (
-              <Entry
-                href={documents.documentPath(doc.slug)}
-                key={doc.code}
-                proposed={doc.status === "proposed" ? t("proposedShort") : null}
-                summary={documents.documentSummary(doc, locale)}
-                title={documents.documentTitle(doc, locale)}
-              />
-            ))}
-          </ul>
-          {shelf.docs.length === 0 ? (
-            <p className="type-body">{t("empty")}</p>
-          ) : null}
-        </Section>
-      ))}
+      <LibraryList
+        empty={t("empty")}
+        findLabel={t("find")}
+        groups={documents.readers.map((key) => ({
+          key,
+          title: t(`readers.${key}`),
+        }))}
+        items={items}
+        noMatch={t("noMatch")}
+      />
     </div>
   );
 };
-
-const Entry = ({
-  href,
-  proposed = null,
-  summary,
-  title,
-}: {
-  readonly href: string;
-  readonly proposed?: string | null;
-  readonly summary: string | null;
-  readonly title: string;
-}) => (
-  <li className="border-line py-space-4 grid content-start gap-2 border-t">
-    <h3 className="type-heading">
-      <Link className="hover:text-accent" href={href}>
-        {title}
-      </Link>
-    </h3>
-    {summary ? (
-      <p className="type-body text-text-secondary">{summary}</p>
-    ) : null}
-    {proposed ? (
-      <p className="type-label text-text-secondary">{proposed}</p>
-    ) : null}
-  </li>
-);
 
 export default DocumentsPage;

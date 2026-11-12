@@ -1,6 +1,6 @@
 -- No money (migration 20261030000100): no Treasurer, no spending, no costs;
 -- needs lists in their place; the collection record kept, with the
--- General Secretary witnessing and the handover on the campaign.
+-- Secretary witnessing and the handover on the campaign.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -110,7 +110,7 @@ select ok(
 );
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a1', 'salon.lead@auib.edu.iq', 'Salon Lead');
-select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a2', 'gs-nm@auib.edu.iq', 'General Secretary');
+select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a2', 'gs-nm@auib.edu.iq', 'Secretary');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a3', 'member-nm@auib.edu.iq', 'Member');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a4', 'editor-nm@auib.edu.iq', 'Editor');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000b0a1', 'programme_lead', 'programme',
@@ -135,7 +135,7 @@ select throws_ok(
 select throws_ok(
   $$ update programmes.needs set status = 'requested', requested_on = current_date
      where id = '0ee00000-0000-0000-0000-0000000000a1' $$,
-  '42501', null, 'Only the General Secretary sends a request to Student Life'
+  '42501', null, 'Only the Secretary sends a request to Student Life'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b0a3');
@@ -149,7 +149,7 @@ select lives_ok(
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b0a2');
-select is((select count(*)::integer from programmes.needs), 2, 'The General Secretary sees every list');
+select is((select count(*)::integer from programmes.needs), 2, 'The Secretary sees every list');
 select lives_ok(
   $$ update programmes.needs set status = 'requested', requested_on = current_date
      where id = '0ee00000-0000-0000-0000-0000000000a1' $$,

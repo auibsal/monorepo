@@ -19,10 +19,21 @@ rejected, so every sender must go through Resend.
 
 ## Auth emails (Supabase)
 
-One language per email (Arabic when the member signed up in Arabic,
-`user_metadata.locale`); the subjects are in both, since Supabase subjects
-can't choose. Paste each file into **Authentication → Emails** with the
-subject from `templates/subjects.txt`.
+**Through the Send Email hook (preferred).** Supabase hands every sign-in
+email to `/api/hooks/auth-email`, which sends it through Resend from
+hello@ in the Society's template (`authEmail` in `@repo/email/copy`), in
+the person's language only (`user_metadata.locale`), with a subject in
+that language. To turn it on: Supabase → Authentication → Hooks → Send
+Email → HTTPS, URL `https://auibsal.org/api/hooks/auth-email`; copy the
+secret it shows (`v1,whsec_…`) into Vercel as `SEND_EMAIL_HOOK_SECRET`
+(Production). With the hook on, the SMTP settings and the pasted templates
+below are no longer used; they stay as the fallback until the hook is on.
+
+**The fallback (SMTP and pasted templates).** One language per email
+(Arabic when the member signed up in Arabic, `user_metadata.locale`); the
+subjects are in both, since Supabase subjects can't choose. Paste each
+file into **Authentication → Emails** with the subject from
+`templates/subjects.txt`.
 
 | Template | When | Notes |
 | --- | --- | --- |
@@ -68,8 +79,9 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | Kind | When | To | Footer |
 | --- | --- | --- | --- |
 | `membership.welcome` | The first member pledge (the end of `/welcome`) | The new member: their card and where to start | Service |
-| `events.rsvp_confirmed`, `events.waitlist_promoted` | A place booked, or freed from the waiting list | The member | Service |
-| `events.reminder` | The day before | Booked: the member; "Remind me": whoever asked | Optional when booked; service for "Remind me" |
+| `events.rsvp_confirmed` | A place booked, or a held place claimed | The member | Service |
+| `events.waitlist_offered` | A released place held for the next on the waiting list: 12 hours, or until two hours before the start; one button claims it | The member | Service |
+| `events.reminder` | The day before | Booked: the member, with "Can't come? Cancel" (the event's page); "Remind me": whoever asked | Service |
 | `events.changed` | A published event canceled, or its day, time or place changed | Everyone booked, waiting or asking to be reminded; edits within ten minutes make one email | Service |
 | `events.shift_reminder` | The day before a shift | Whoever is on it | Optional |
 | `company.audition_update` | An audition time booked; called back, cast or not cast | The member | Service |
@@ -79,16 +91,16 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `access.role_ending` | Seven days before a role ends | The holder | Officer |
 | `access.two_step_reset` | An authenticator removed (by an officer or a recovery code) | The person | Service |
 | `access.recovery_attempts` | Five wrong recovery codes within an hour (`/api/two-step/recover`; once an hour) | The person | Service |
-| `qirtas.submission_received`, `qirtas.returned_for_formatting`, `qirtas.decision`, `qirtas.agreement_reminder` (weekly, four weeks at most), `qirtas.final_check`, `qirtas.piece_note`, `qirtas.piece_published` | Work sent to Qirtas, through to publication | The author | Service |
+| `qirtas.submission_received` (with the record number, SUB-<year>-<n>), `qirtas.in_reading`, `qirtas.returned_for_formatting`, `qirtas.decision` (revise and resend among them, with the editor's note), `qirtas.agreement_reminder` (weekly, four weeks at most), `qirtas.final_check`, `qirtas.piece_note`, `qirtas.piece_published` | Work sent to Qirtas, through to publication | The author | Service |
 | `qirtas.call_opened` | A Qirtas call opens | Whoever asked "Tell me when" | Service (they stop it on the page) |
 | `membership.certificate_issued` | A certificate signed by both and issued | The holder | Service |
-| `membership.service_letter` | A service letter (F-05) written | The holder | Service |
-| `forms.signed_copy` | A form signed on the site (not an anonymous concern) | The signer: their account, or the address a signer without one gave | Service |
-| `forms.link` | A Qalam lead sends a parent's single-use link (F-38, F-39) | The teacher, who passes it on | Direct |
+| `membership.service_letter` | A service letter (`service-letter`) written | The holder | Service |
+| `forms.signed_copy` | An agreement or consent signed on the site (not an anonymous concern), with its AGR number and check link | The signer: their account, or the address the link went to; and anyone the link names for a copy (the teacher, for Qalam) | Service |
+| `forms.link` | A single-use link to sign (Qalam's `qalam-parent-consent` and `qalam-publishing-consent`, a parent's `parent-consent`, a guest's `media-release`) | The person who signs | Direct |
 | `forms.updated` | A concern, motion or pitch taken up, then closed | Its sender | Service |
 | `governance.election` | The notice; voting open; the results | Every member; then everyone on the register | Service |
 | `governance.candidacy_decided` | The Elections Committee's answer | The nominee | Service |
-| `partners.application_received` | An application to partner | The applicant; Partnerships and the President (that it waits) | Direct; officer |
+| `partners.application_received` | An application to partner | The applicant (Partnerships and the President read it in the next staff digest) | Direct |
 | `partners.application_decided` | Signed (active) or not taken forward | The applicant | Direct |
 | `partners.invitation` | A partner's or the Society's email invitation | The invited address | Direct |
 | `sunday_paper.broadcast` (a Resend Broadcast, from qirtas@auibsal.org, replies to it) | The Managing Editor's send, from the Diwan, after a preview and a test to the Editor-in-Chief (decisions.md, Qirtas) | "The Sunday Paper" topic (`core.mailing_recipients('paper')`), one Broadcast per language | Optional (each person's own preferences page) |
@@ -96,9 +108,16 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `announcement.broadcast` (a Resend Broadcast) | The President's go (The Council → Announcements; `core.send_announcement(id)`), only after the notice's test has reached the President in both languages (`/api/announcements/test`, recorded as `announcements.tested_at`, cleared by any change). Hudhud posts the same notice | "Society news and events" (`core.mailing_recipients('news')`), one Broadcast per language; at most one a week | Optional (each person's own preferences page) |
 | `newsletter.confirm` | A public sign-up | The address (double opt-in) | Direct |
 | `personal_email.confirm` | A personal email added | The new address only | Direct |
+| `governance.concern_raised` | A concern is sent (urgent, at once); it names no one and carries none of the concern | The complaints panel's chair, the Vice President; one about the Vice President or the President to whoever holds `concerns.about_vp` or `concerns.about_president` | Officer |
+| `qirtas.revision_resent` | The writer sends back the revision the section editor asked for | That section editor | Officer |
+| `membership.parent_account` | A parent signs the consent for a member under 18 (`parent-consent`) or Qalam's consent (`qalam-parent-consent`, also making the student's guest account); the link makes their guest account with the Parent role | The parent | Service |
+| `membership.removed` | The Council removes a member (two thirds), approved by a second officer | The person removed | Service |
+| `governance.candidacy_received` | A member stands for a seat | The nominee: a receipt; the Elections Committee answers later | Service |
+| `membership.associate_request_received` | A request for Associate membership from /join | The address that asked: a receipt | Service |
+| `events.incident_reported` | An incident report from an event's page in the Diwan (urgent, at once); it names the event, not what happened | The Director of Events and the President | Officer |
 | `removal.requested`, `removal.overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
 | `removal.done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |
-| `get_involved.replies_digest` | Daily, when applications arrived on Get involved: counts by role, no names (decisions.md, Get involved and roles) | Membership (`members.manage`) | Officer |
+| `staff.digest` | Daily: what came in since yesterday that the officer can act on: Get involved replies counted by role (no names), partner applications, actions waiting for a second officer, problem reports. Urgent alerts (a removal request, a concern, an incident report, a failed job) still go at once (decisions.md, Channels and email) | Each officer holding `members.manage`, `partners.manage` or `partners.sign`, a pending action's permission, or `settings.manage` | Officer |
 | `membership.verification_decided` | An account from outside AUIB decided (requests from before partners verified their own) | The account | Service |
 | `platform.cron_failed` | A database job failed in the last day | Administrators | Officer |
 | `account.deleted` | An account deleted | The address it had (the last email) | Direct |

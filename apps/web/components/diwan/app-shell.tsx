@@ -12,9 +12,9 @@ import { LanguageSwitcher } from "./language-switcher";
 
 /**
  * The Diwan frame (officers only): skip link, the site's own header (decisions.md:
- * the same main menu everywhere), the Diwan's row of six
- * sections, the find-anything line (it opens in place, pushing the page
- * down), main. Members' own pages are on the site (/account).
+ * the same main menu everywhere), the Diwan's seats (a side list on a
+ * computer, a row across the top on a phone), the find-anything line (it
+ * opens in place, pushing the page down), main. Members' own pages are on the site (/account).
  */
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const t = useTranslations("common");
@@ -30,12 +30,12 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       <SiteHeader language={<LanguageSwitcher />} ways={useWays()} />
       <DiwanNav />
       <FindPanel />
-      <main
-        className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"
-        id="main"
-      >
-        <LinkProvider value={Link}>{children}</LinkProvider>
-      </main>
+      <div className="mx-auto w-full max-w-6xl flex-1 px-4 lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-10">
+        <DiwanNav side />
+        <main className="min-w-0 pt-12 pb-20 sm:pt-16 sm:pb-24" id="main">
+          <LinkProvider value={Link}>{children}</LinkProvider>
+        </main>
+      </div>
     </div>
   );
 };

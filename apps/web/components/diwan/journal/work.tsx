@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@repo/brand/components/ui/button";
+import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
@@ -16,6 +17,8 @@ import {
   BilingualField,
   ConfirmAction,
   ErrorLine,
+  Field,
+  SaveButton,
 } from "../admin/kit";
 import { DiwanSection } from "../page";
 import { OnTheSite } from "../site-links";
@@ -216,6 +219,15 @@ export const MyPiece = () => {
         </p>
       ) : null}
 
+      {piece.desk === "news" &&
+      status !== "published" &&
+      status !== "unpublished" ? (
+        <Disclosure
+          current={piece.conflict_disclosure}
+          key={piece.conflict_disclosure ?? ""}
+          pieceId={piece.id}
+        />
+      ) : null}
       {piece.submission_id ? (
         <Agreement submissionId={piece.submission_id} />
       ) : null}
@@ -236,5 +248,58 @@ export const MyPiece = () => {
       <Thread pieceId={piece.id} />
       <ContributorForm contributorId={piece.contributor_id} />
     </div>
+  );
+};
+
+/**
+ * The writer's ties to what they cover (decisions.md, Qirtas: the
+ * newsroom's standards), for the editors to reassign or note.
+ */
+const Disclosure = ({
+  current,
+  pieceId,
+}: {
+  current: string | null;
+  pieceId: string;
+}) => {
+  const t = useTranslations("diwan.qirtas.disclosure");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const [text, setText] = useState(current ?? "");
+  const save = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase.schema("journal").rpc("set_conflict_disclosure", {
+          disclosure: text,
+          piece_id: pieceId,
+        })
+      ),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["journal", "my-piece", pieceId],
+      }),
+  });
+  return (
+    <form
+      className="grid max-w-3xl gap-3"
+      onSubmit={(e) => {
+        e.preventDefault();
+        save.mutate();
+      }}
+    >
+      <Field hint={t("hint")} label={t("label")}>
+        {(id) => (
+          <Textarea
+            id={id}
+            maxLength={2000}
+            onChange={(e) => setText(e.target.value)}
+            rows={3}
+            value={text}
+          />
+        )}
+      </Field>
+      <SaveButton pending={save.isPending} quiet success={save.isSuccess} />
+      <ErrorLine error={save.error} />
+    </form>
   );
 };

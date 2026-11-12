@@ -52,7 +52,7 @@ Practice this on a scratch Supabase project first. Restoring over production rep
 
 ## The quarterly restore test
 
-Once a term (September, January, April and June), the General Secretary or whoever keeps the platform restores the latest backup with Storage into a scratch Supabase project, following the steps above, and checks that:
+Four times a year (September, January, April and June), the Secretary or whoever keeps the platform restores the latest backup with Storage into a scratch Supabase project, following the steps above, and checks that:
 
 - the restore runs with no errors;
 - the row counts of `core.profiles`, `events.events`, `journal.pieces` and `governance.minutes` match production’s on the backup’s date;

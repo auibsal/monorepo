@@ -1,88 +1,74 @@
 import { project } from "@repo/config";
+import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { RemovalForm } from "@/components/removal-form";
 import { PageHeader, Section } from "@/components/section";
-import { content } from "@/lib/data";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
-import { readPublished } from "@/lib/supabase";
-
-const text = (value: unknown) => (typeof value === "string" ? value : "");
 
 export const generateMetadata = sectionMetadata(
   "web.contact",
   "/about/contact"
 );
 
-const INSTAGRAM = "https://www.instagram.com/auibsal";
+const { mailboxes } = project;
 
+/**
+ * Each topic and where it goes (decisions.md, The site: Contact; Channels
+ * and email: role addresses and answer times). A topic answered by a form
+ * links to it instead of an address.
+ */
+const TOPICS = [
+  { email: mailboxes.hello, key: "question" },
+  { email: mailboxes.press, key: "press" },
+  { email: mailboxes.letters, key: "letter" },
+  { email: mailboxes.nextstop, key: "nextStop" },
+  { email: mailboxes.accessibility, key: "accessibility" },
+  { email: mailboxes.privacy, key: "privacy" },
+  { href: "#photo", key: "removal" },
+  { href: "/about/contact/concern", key: "concern" },
+  { href: "/partners/apply", key: "partnership" },
+] as const;
+
+/**
+ * Contact: one page that routes by topic to the right role address, with
+ * the answer time; the photo and video removal form below.
+ */
 const ContactPage = async ({ params }: LocaleParams) => {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.contact" });
-  // The Society's address is in the project file; the Telegram group is
-  // joined through Hudhud, who sends the invite to members.
-  const email = project.supportEmail;
-  const bot = await readPublished(
-    ["about"],
-    (c) => content.publicSetting(c, "telegram.bot_username"),
-    null
-  );
-  const telegram = text(bot) ? `https://t.me/${text(bot)}` : "";
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
       <PageHeader lede={t("lede")} title={t("title")} />
-      <dl className="grid gap-4 sm:grid-cols-3">
-        <div className="border-line py-space-4 grid gap-1 border-t">
-          <dt className="type-caption">{t("instagram")}</dt>
-          <dd>
-            <a
-              className="type-subheading underline-offset-4 hover:underline"
-              dir="ltr"
-              href={INSTAGRAM}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              @auibsal
-            </a>
-          </dd>
-        </div>
-        <div className="border-line py-space-4 grid gap-1 border-t">
-          <dt className="type-caption">{t("telegram")}</dt>
-          <dd className="type-subheading" dir="ltr" lang="en">
-            {telegram ? (
-              <a
-                className="underline-offset-4 hover:underline"
-                href={telegram}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {t("telegramName")}
-              </a>
-            ) : (
-              t("telegramName")
-            )}
-          </dd>
-        </div>
-        <div className="border-line py-space-4 grid gap-1 border-t">
-          <dt className="type-caption">{t("email")}</dt>
-          <dd>
-            <a
-              className="type-subheading break-all underline-offset-4 hover:underline"
-              dir="ltr"
-              href={`mailto:${email}`}
-            >
-              {email}
-            </a>
-          </dd>
-        </div>
-      </dl>
-      <Section id="concern" title={t("concernTitle")}>
-        <blockquote className="border-accent grid gap-1 border-s-2 ps-4">
-          <p className="type-body">{t("concern")}</p>
-          <footer className="type-caption">{t("concernSource")}</footer>
-        </blockquote>
-      </Section>
+      <ul className="border-line grid border-b">
+        {TOPICS.map((topic) => (
+          <li
+            className="border-line grid gap-1 border-t py-4 sm:grid-cols-[16rem_minmax(0,1fr)_12rem] sm:items-baseline sm:gap-6"
+            key={topic.key}
+          >
+            <p className="type-body font-medium">
+              {t(`topics.${topic.key}.title`)}
+            </p>
+            <p className="type-body">
+              {"email" in topic ? (
+                <a
+                  className="link break-all"
+                  dir="ltr"
+                  href={`mailto:${topic.email}`}
+                >
+                  {topic.email}
+                </a>
+              ) : (
+                <Link className="link" href={topic.href}>
+                  {t(`topics.${topic.key}.action`)}
+                </Link>
+              )}
+            </p>
+            <p className="type-caption">{t(`topics.${topic.key}.time`)}</p>
+          </li>
+        ))}
+      </ul>
       <Section id="photo" title={t("photoTitle")}>
         <p className="type-body">{t("photo")}</p>
         {/* The one removal form (MEM-02, decisions §13): on Contact. */}

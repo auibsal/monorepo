@@ -77,7 +77,9 @@ export const publicEvent = async (client: Client, eventSlug: string) =>
   unwrap(
     await events(client)
       .from("events")
-      .select(`${eventColumns}, body_en, body_ar, questions`)
+      .select(
+        `${eventColumns}, body_en, body_ar, questions, serves_food, step_free, seating, allergens`
+      )
       .eq("slug", eventSlug)
       .eq("members_only", false)
       .in("status", ["published", "canceled"])
@@ -141,7 +143,7 @@ export const myRsvps = async (client: Client, userId: string) =>
   );
 
 /**
- * What's on between two times: everything the caller may see, and
+ * Events between two times: everything the caller may see, and
  * members-only events as teasers (title, time and program only) for those
  * who may not. Invitation-only events reach only the invited.
  */

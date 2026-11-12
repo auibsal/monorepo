@@ -1,14 +1,6 @@
 "use client";
 
 import { Button } from "@repo/brand/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@repo/brand/components/ui/dialog";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { useRouter } from "@repo/internationalization/navigation";
@@ -26,7 +18,11 @@ const normalize = (value: string) =>
 export const matchesConfirmation = (typed: string, phrase: string) =>
   normalize(typed) === normalize(phrase);
 
-/** Account deletion, through the API routes (it needs the admin API). */
+/**
+ * Deleting the account (decisions.md, Members), through the API routes:
+ * it is deleted 30 days later, and signing in before then restores it.
+ * The confirmation is a second step on the page, never a pop-up.
+ */
 export const DeleteAccount = () => {
   const t = useTranslations("diwan.profile.delete");
   const { supabase } = useAuth();
@@ -34,14 +30,20 @@ export const DeleteAccount = () => {
   const queryClient = useQueryClient();
   const id = useId();
   const [typed, setTyped] = useState("");
+  const [confirming, setConfirming] = useState(false);
   const phrase = t("phrase");
 
   const remove = useMutation({
-    mutationFn: () => callApi(supabase, "/account/delete", {}),
-    onSuccess: async () => {
-      await supabase.auth.signOut({ scope: "local" });
+    mutationFn: () =>
+      callApi<{ deletesOn: string }>(supabase, "/account/delete", {}),
+    onSuccess: async ({ deletesOn }) => {
+      // Every device signs out; signing in again restores the account.
+      await supabase.auth.signOut({ scope: "global" });
       queryClient.clear();
-      router.replace({ pathname: "/sign-in", query: { deleted: "1" } });
+      router.replace({
+        pathname: "/sign-in",
+        query: { deleted: deletesOn.slice(0, 10) },
+      });
     },
   });
 
@@ -54,17 +56,8 @@ export const DeleteAccount = () => {
       id="delete-account"
       title={t("title")}
     >
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="justify-self-start" variant="outline">
-            {t("submit")}
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t("title")}</DialogTitle>
-            <DialogDescription>{t("description")}</DialogDescription>
-          </DialogHeader>
+      {confirming ? (
+        <div className="border-line grid max-w-xl gap-3 border-t pt-4">
           <Label htmlFor={id}>{t("prompt", { phrase })}</Label>
           <Input
             autoComplete="off"
@@ -80,7 +73,7 @@ export const DeleteAccount = () => {
                   <button
                     className="link"
                     onClick={async () => {
-                      // A fresh sign-in, then back here (decisions §11).
+                      // A fresh sign-in, then back here.
                       await supabase.auth.signOut({ scope: "local" });
                       queryClient.clear();
                       router.replace({
@@ -98,14 +91,34 @@ export const DeleteAccount = () => {
               )}
             </p>
           ) : null}
-          <Button
-            disabled={!matchesConfirmation(typed, phrase) || remove.isPending}
-            onClick={() => remove.mutate()}
-          >
-            {remove.isPending ? t("deleting") : t("submit")}
-          </Button>
-        </DialogContent>
-      </Dialog>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <Button
+              onClick={() => {
+                setConfirming(false);
+                setTyped("");
+              }}
+              type="button"
+              variant="link"
+            >
+              {t("cancel")}
+            </Button>
+            <Button
+              disabled={!matchesConfirmation(typed, phrase) || remove.isPending}
+              onClick={() => remove.mutate()}
+            >
+              {remove.isPending ? t("deleting") : t("submit")}
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <Button
+          className="justify-self-start"
+          onClick={() => setConfirming(true)}
+          variant="outline"
+        >
+          {t("submit")}
+        </Button>
+      )}
     </DiwanSection>
   );
 };

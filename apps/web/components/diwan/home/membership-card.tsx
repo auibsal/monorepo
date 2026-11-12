@@ -176,6 +176,18 @@ export const MembershipCard = () => {
     queryFn: () => membership.myCardFace(supabase),
     queryKey: [...cardKey, "face", user?.id],
   });
+  // The card's own name (an under-18's first name and last initial).
+  const cardName = useQuery({
+    enabled: Boolean(user && kind),
+    queryFn: () => membership.myCardName(supabase),
+    queryKey: [...cardKey, "name", user?.id],
+  });
+  // A Qalam student's school and summer (decisions.md, the card).
+  const qalam = useQuery({
+    enabled: Boolean(user && kind),
+    queryFn: () => membership.myCardQalam(supabase),
+    queryKey: [...cardKey, "qalam", user?.id],
+  });
   const reissue = useMutation({
     mutationFn: () => membership.reissueCard(supabase),
     onSuccess: (fresh) =>
@@ -188,17 +200,29 @@ export const MembershipCard = () => {
   }
 
   const name =
-    (locale === "ar" && profile.data.full_name_ar) || profile.data.full_name_en;
+    (locale === "ar" ? cardName.data?.name_ar : cardName.data?.name_en) ??
+    ((locale === "ar" && profile.data.full_name_ar) ||
+      profile.data.full_name_en);
   const link = live.digits
     ? siteUrl(locale, membership.livePath(card.data.code, live.digits))
     : null;
-  // A member's tier; a guest's or a partner's card says which it is.
+  // A member's tier; everyone else, a partner's people too, holds a guest
+  // account (decisions.md, Members: one account model).
   let tier = "";
   if (kind !== "member") {
-    tier = t(`kinds.${kind}`);
+    tier = t("kinds.guest");
   } else if (status.data.tier) {
     tier = t(`tiers.${status.data.tier}`);
   }
+
+  const cardSince = () => {
+    if (qalam.data?.school) {
+      return `${qalam.data.school} · ${String(qalam.data.year)}`;
+    }
+    return face.data?.since
+      ? t("card.since", { year: String(face.data.since) })
+      : undefined;
+  };
 
   const code = (size: number) =>
     link ? (
@@ -218,7 +242,6 @@ export const MembershipCard = () => {
         {t("card.title")}
       </h2>
       <CardFace
-        classLabel={tier}
         labels={{
           class: t("card.tier"),
           number: t("card.numberLabel"),
@@ -227,13 +250,16 @@ export const MembershipCard = () => {
         locale={locale}
         name={name}
         number={card.data.number}
-        office={locale === "ar" ? face.data?.role_ar : face.data?.role_en}
+        // One card for everyone (decisions.md, the card): the class and
+        // the role held now on the second line, "Guest · Parent".
+        office={[
+          tier,
+          locale === "ar" ? face.data?.role_ar : face.data?.role_en,
+        ]
+          .filter(Boolean)
+          .join(" · ")}
         qr={{ left: live.secondsLeft / TOTP_PERIOD_SECONDS, value: link }}
-        since={
-          face.data?.since
-            ? t("card.since", { year: String(face.data.since) })
-            : undefined
-        }
+        since={cardSince()}
         title={t("card.title")}
       />
       {/* How it is used, under the card rather than on it. */}

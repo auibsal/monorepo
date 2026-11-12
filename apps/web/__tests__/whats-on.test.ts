@@ -10,7 +10,7 @@ import {
   weekdayColumns,
 } from "@/lib/whats-on";
 
-describe("What's on months", () => {
+describe("Events months", () => {
   test("a month starts and ends at Baghdad midnight", () => {
     const month = monthFrom("2026-11");
     expect(month.from.toISOString()).toBe("2026-10-31T21:00:00.000Z");

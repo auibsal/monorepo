@@ -17,7 +17,7 @@ const key = ["admin", "access-reviews"];
 
 /**
  * The quarterly access review (decisions.md, Get involved and roles): the
- * General Secretary checks who holds what against the manuals each quarter
+ * Secretary checks who holds what against the manuals each quarter
  * and records it here. The last review shows, and a quarter without one says
  * so.
  */

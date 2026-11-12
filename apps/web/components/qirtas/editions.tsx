@@ -87,7 +87,7 @@ export const EditionShelfItem = async ({
   edition: Edition;
   locale: Locale;
 }) => (
-  <Link className="group grid gap-2" href={`/qirtas/issues/${edition.slug}`}>
+  <Link className="group grid gap-2" href={`/qirtas/editions/${edition.slug}`}>
     <EditionCover edition={edition} locale={locale} />
     <span className="type-heading group-hover:underline">
       {localized(edition, "title", locale)}

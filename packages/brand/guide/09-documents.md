@@ -16,7 +16,7 @@ Each family is a Council seat; GOV is the members' own. 01 is the family's gener
 
 | Family | Owner | Documents |
 | --- | --- | --- |
-| SAL-GOV | The members (kept by the General Secretary) | 01 Constitution, 02 Bylaws, 03 Policy Manual, 04 Privacy Notice, 05 Terms of Use, 06 Accessibility Statement |
+| SAL-GOV | The members (kept by the Secretary) | 01 Constitution, 02 Bylaws, 03 Policy Manual, 04 Privacy Notice, 05 Terms of Use, 06 Accessibility Statement |
 | SAL-EXB | The Executive Board | 01 Leadership Handbook (with the forms register), 02 Annual Plan |
 | SAL-EVT | Director of Events | 01 Events Manual |
 | SAL-MEM | Director of Membership | 01 Membership Manual, 02 Member Handbook, 03 Typewriter Tour Playbook |
@@ -37,7 +37,7 @@ Forms are digital by default. Every form is in the Leadership Handbook's registe
 
 **The form page** (Components → Brand, Form page)
 
-- The code in Ubuntu Mono (SAL-EXB-01 · F-15) and a Light title, then one sentence on what the form is for and who reads it.
+- The code in Ubuntu Mono (SAL-EXB-01 · `media-release`) and a Light title, then one sentence on what the form is for and who reads it.
 - Fields in one column. Labels are nouns in sentence case ("Date", "Proposed by"), never questions; a field that counts says what it counts ("Expected attendance"). Choices are a vertical list.
 - The signature: "Type your full name to sign", the date filled in, and one line saying the typed name is the signature.
 - One solid button, "Sign and send"; after sending, the page says what happens next and where the signed copy is kept.
@@ -52,8 +52,8 @@ Each is designed once (decided Nov 7: one template, many outputs). Its words liv
 | Component | Where it appears | What it holds |
 | --- | --- | --- |
 | Form (`FormPage`, `FormHeader`) | auibsal.org/forms/F-xx; printed as a backup | Code SAL-EXB-01 · F-xx, a title in sentence case, one sentence on what it is for, the fields, a typed-name signature and the date |
-| Letter (`Letter`) | Every letter: F-03, F-05, F-30, F-32, F-33, F-34, F-42 | An American business letter, A4 portrait: the lockup; the date with no weekday ("November 7, 2026", «7 تشرين الثاني 2026»); the recipient; a subject line; the greeting with a colon ("Dear Mr. Najm:"), or a comma only in a personal letter to a member ("Dear Lina,"), in Arabic «السيد علي نجم المحترم،» or «عزيزتي لينا،»; the body; "Sincerely," («مع خالص التحية،»), then the signer's name and seat. At the foot the form code and the Society's addresses, and room for a verification code and QR (auibsal.org/verify/<code>), which service letters (F-05) use |
+| Letter (`Letter`) | Every letter: `appointment-letter`, `service-letter`, `thank-you-letter`, `application-outcome`, `welcome-letter`, `honorary-membership-invitation` | An American business letter, A4 portrait: the lockup; the date with no weekday ("November 7, 2026", «7 تشرين الثاني 2026»); the recipient; a subject line; the greeting with a colon ("Dear Mr. Najm:"), or a comma only in a personal letter to a member ("Dear Lina,"), in Arabic «السيد علي نجم المحترم،» or «عزيزتي لينا،»; the body; "Sincerely," («مع خالص التحية،»), then the signer's name and seat. At the foot the form code and the Society's addresses, and room for a verification code and QR (auibsal.org/verify/<code>), which service letters (`service-letter`) use |
 | Membership card | The member's account and Google Wallet; printed only on request | The live site's card: the guilloche drawn from the card number (still), the live QR panel with its 30-second countdown, and the Google Wallet link. Name, member number, class (Member, Associate Member, Honorary Member) and member since. Never an "ID card": the AUIB ID is the university's |
 | Certificate | Finishing Qalam; the Mutanabbi Prize (each category) | The live site's certificate: the rosette seal drawn from the serial and the QR to its check page, auibsal.org/verify/<code> |
 
-No other certificates: service is a letter (F-05) and honorary membership an invitation (F-34).
+No other certificates: service is a letter (`service-letter`) and honorary membership an invitation (`honorary-membership-invitation`).

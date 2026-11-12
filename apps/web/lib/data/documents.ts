@@ -25,6 +25,7 @@ export interface SalDocument {
   /** The seat that keeps it (Notion's Owner), for its header. */
   owner?: string | null;
   ratification: string | null;
+  readers?: string | null;
   slug: string;
   sort: number;
   status: string;
@@ -38,7 +39,7 @@ export interface SalDocument {
 }
 
 const LISTING =
-  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, status, version, dated, ratification, adopted_on, vote, sort, updated_at, notion_url";
+  "id, slug, code, title_en, title_ar, summary_en, summary_ar, audience, readers, status, version, dated, ratification, adopted_on, vote, sort, updated_at, notion_url, owner";
 
 /** The public documents, without their text (for listings and the sitemap). */
 export const publicDocuments = async (client: Client) =>
@@ -83,11 +84,34 @@ const WEBSITE_POLICIES = new Set(["SAL-GOV-04", "SAL-GOV-05", "SAL-GOV-06"]);
 export const isWebsitePolicy = (doc: Pick<SalDocument, "code">) =>
   WEBSITE_POLICIES.has(doc.code);
 
+/**
+ * Who a document is for (decisions.md, the Library: everyone, members,
+ * staff), from Notion's For field (fourth prompt, 7m); Audience stays the
+ * publish switch.
+ */
+export const readers = ["everyone", "members", "staff"] as const;
+export type Reader = (typeof readers)[number];
+export const readerOf = (doc: { readers?: string | null }): Reader =>
+  (readers as readonly string[]).includes(doc.readers ?? "")
+    ? (doc.readers as Reader)
+    : "everyone";
+
 /** The title in the page's language (English when there is no Arabic). */
+/**
+ * Arabic titles the glossary fixes, by slug, over what Notion holds (GOV-07
+ * is «سياسة الإبلاغ عن الثغرات الأمنية»; fourth prompt, 7o).
+ */
+const GLOSSARY_TITLES_AR: Readonly<Record<string, string>> = {
+  security: "سياسة الإبلاغ عن الثغرات الأمنية",
+};
+
 export const documentTitle = (
-  doc: Pick<SalDocument, "title_ar" | "title_en">,
+  doc: Pick<SalDocument, "title_ar" | "title_en"> & { slug?: string },
   locale: string
-) => (locale === "ar" && doc.title_ar ? doc.title_ar : doc.title_en);
+) =>
+  locale === "ar"
+    ? (GLOSSARY_TITLES_AR[doc.slug ?? ""] ?? doc.title_ar ?? doc.title_en)
+    : doc.title_en;
 
 /** The summary in the page's language only (never the other language's). */
 export const documentSummary = (
@@ -268,6 +292,24 @@ export const documentSections = (
 };
 
 /**
+ * One section of a document's HTML: from the heading that matches to the
+ * next heading of the same level (the Code of Conduct, Article II of the
+ * Policy Manual, at /code-of-conduct). Null when no heading matches.
+ */
+export const documentSection = (html: string, heading: RegExp) => {
+  const headings = [...html.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/gu)];
+  const start = headings.findIndex((match) =>
+    heading.test(plain(match[1] ?? ""))
+  );
+  if (start === -1) {
+    return null;
+  }
+  const from = headings[start]?.index ?? 0;
+  const to = headings[start + 1]?.index ?? html.length;
+  return html.slice(from, to);
+};
+
+/**
  * The Privacy Notice, Terms of Use and Accessibility Statement (GOV-04 to
  * GOV-06) have their own addresses (decisions §6); every other document is
  * at /library/<slug>.
@@ -275,6 +317,7 @@ export const documentSections = (
 export const OWN_ADDRESSES: Readonly<Record<string, string>> = {
   accessibility: "/accessibility",
   privacy: "/privacy",
+  security: "/security",
   "terms-of-use": "/terms",
 };
 

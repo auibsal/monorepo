@@ -101,6 +101,9 @@ const useScopeOptions = () => {
           id: i.id,
           label: `${i.volume}.${i.number} · ${localized(i, "title", locale)}`,
         })),
+        // A parent's role is linked to their child by the consent link,
+        // never picked here.
+        member: [],
         partner: (unwrap(partnerRows) ?? []).map((p) => ({
           id: p.id,
           label: localized(p, "name", locale),
@@ -276,7 +279,7 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
   const now = new Date();
   const state = (a: Assignment) => {
     if (access.isActiveAssignment(a, now)) {
-      // New team members and appointees serve their first term on
+      // New team members and appointees serve their first semester on
       // probation, then are confirmed (decisions.md).
       return a.confirmed_at ? t("active") : t("probation");
     }
@@ -317,7 +320,7 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
     { cell: state, header: "", key: "state" },
     {
       // Student Life's GPA answer for a Council seat; not eligible gives
-      // one term to recover (Bylaws 4.6).
+      // one semester to recover (Bylaws 4.6).
       cell: (a) => {
         if (a.student_life_answer === "not_eligible" && a.recovery_by) {
           return t("recoveryBy", {
@@ -458,9 +461,12 @@ const AssignRole = ({
         title_ar: form.title.ar,
         title_en: form.title.en,
       }),
-    onSuccess: async () => {
+    onSuccess: async (id) => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
-      onDone();
+      // A Council role waits for a second officer (decisions.md).
+      if (id) {
+        onDone();
+      }
     },
   });
   const brokenRule = access.brokenRoleRule(assign.error);
@@ -623,6 +629,11 @@ const AssignRole = ({
           {t("assignButton")}
         </ConfirmAction>
       </div>
+      {assign.isSuccess && !assign.data ? (
+        <p className="type-body" role="status">
+          {t("waitingSecondOfficer")}
+        </p>
+      ) : null}
       {brokenRule ? (
         <p className="text-text text-sm" role="alert">
           {t(`rules.${brokenRule}`)}
@@ -720,6 +731,103 @@ const Departure = ({ name, userId }: { name: string; userId: string }) => {
         </p>
       ) : null}
       <ErrorLine error={record.error} />
+    </section>
+  );
+};
+
+/**
+ * Removal from membership (decisions.md, Governance): only by the
+ * Council's two-thirds vote, cited here by its adopted resolution; a second
+ * officer holding governance.manage approves on the Desk
+ * (`governance.request_removal`).
+ */
+const Removal = ({ userId }: { userId: string }) => {
+  const t = useTranslations("diwan.admin.member.removal");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const [resolution, setResolution] = useState("");
+  const [reason, setReason] = useState("");
+  const resolutions = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("resolutions")
+          .select("id, code, title_en, title_ar, adopted_on")
+          .eq("status", "adopted")
+          .order("adopted_on", { ascending: false })
+          .limit(50)
+      ) ?? [],
+    queryKey: ["admin", "resolutions", "adopted"],
+  });
+  const ask = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase.schema("governance").rpc("request_removal", {
+          member: userId,
+          reason: reason.trim(),
+          resolution,
+        })
+      ),
+  });
+  const rows = resolutions.data ?? [];
+  return (
+    <section className="grid gap-3">
+      <h2 className="type-heading">{t("title")}</h2>
+      <p className="type-body text-text-secondary max-w-2xl">{t("body")}</p>
+      {rows.length === 0 ? (
+        <p className="type-caption">{t("none")}</p>
+      ) : (
+        <form
+          className="grid max-w-2xl gap-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            ask.mutate();
+          }}
+        >
+          <Field label={t("resolution")}>
+            {(id) => (
+              <SelectInput
+                id={id}
+                onChange={(e) => setResolution(e.target.value)}
+                required
+                value={resolution}
+              >
+                {rows.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {`${r.code ?? ""} · ${localized(r, "title", locale)}`}
+                  </option>
+                ))}
+              </SelectInput>
+            )}
+          </Field>
+          <Field label={t("reason")}>
+            {(id) => (
+              <Input
+                id={id}
+                maxLength={2000}
+                onChange={(e) => setReason(e.target.value)}
+                required
+                value={reason}
+              />
+            )}
+          </Field>
+          <Button
+            className="justify-self-start"
+            disabled={ask.isPending || !resolution || !reason.trim()}
+            type="submit"
+            variant="outline"
+          >
+            {t("submit")}
+          </Button>
+          {ask.isSuccess ? (
+            <p className="type-body" role="status">
+              {t("sent")}
+            </p>
+          ) : null}
+          <ErrorLine error={ask.error} />
+        </form>
+      )}
     </section>
   );
 };
@@ -973,6 +1081,11 @@ export const MemberDetail = () => {
       {canManage ? <ActivitySection userId={userId} /> : null}
       {canManage && row.tier === "member" ? (
         <Departure name={name} userId={userId} />
+      ) : null}
+      {hasPermission(grants.data, "governance.manage") &&
+      row.tier &&
+      userId !== user?.id ? (
+        <Removal userId={userId} />
       ) : null}
       <RolesSection name={name} userId={userId} />
       {canAssign && userId !== user?.id ? (

@@ -107,12 +107,12 @@ end;
 $$;
 grant execute on function pg_temp.as_api() to public;
 
-select plan(27);
+select plan(31);
 
 -- Forms signed on the site (decisions.md): /forms/<number>, a typed
 -- name for a signature, the signed copy keeping the signer, the time and the
 -- form's version. a1 a member, a2 the President, a3 the Vice President, a4
--- the Faculty Advisor, a6 the General Secretary.
+-- the Faculty Advisor, a6 the Secretary.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member-fm@auib.edu.iq', 'A Member');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-fm@auib.edu.iq', 'The President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'vp-fm@auib.edu.iq', 'The VP');
@@ -128,89 +128,93 @@ create temp table ids (name text primary key, id uuid);
 grant all on ids to public;
 
 select is(
-  (select array_agg(code order by sort) from governance.form_types where filled = 'site'),
-  array['F-06', 'F-10', 'F-11', 'F-15', 'F-17', 'F-21', 'F-26', 'F-37', 'F-38', 'F-39', 'F-45', 'F-46'],
-  'The forms signed on the site'
+  (select array_agg(key order by sort) from governance.form_types where filled = 'site'),
+  array['conflict-of-interest-declaration', 'handover', 'members-meeting-motion', 'event-pitch', 'media-release',
+    'partnership-memorandum', 'concern', 'company-agreement', 'qalam-mentor-agreement',
+    'qalam-parent-consent', 'qalam-publishing-consent', 'trip-consent', 'parent-consent'],
+  'The agreements and consents signed on the site, by name'
 );
 select is(
-  (select filled from governance.form_types where key = 'f22'),
-  'removed',
-  'F-22 is removed and never reused'
+  (select key from governance.form_types where legacy_number = 'F-15'),
+  'media-release',
+  'An old number still resolves to its name'
 );
 
 -- ── Who may sign what ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok(
-  $$ insert into ids select 'f10', governance.sign_form('f10', '{"title":"Hold the Annual Meeting in the library"}', 'A Member', esign_agreed => true) $$,
+  $$ insert into ids select 'members-meeting-motion', governance.sign_form('members-meeting-motion', '{"title":"Hold the Annual Meeting in the library"}', 'A Member', esign_agreed => true) $$,
   'A member proposes a motion for a members’ meeting (F-10)'
 );
 select ok(
   (select signer_name = 'A Member' and signed_at is not null and form_version is not null
-   from governance.form_submissions where id = (select id from ids where name = 'f10')),
+   from governance.form_submissions where id = (select id from ids where name = 'members-meeting-motion')),
   'The signed copy keeps the signer, the time and the form’s version'
 );
 select throws_ok(
-  $$ select governance.sign_form('f11', '{"title":"A walk"}', 'A Member') $$,
+  $$ select governance.sign_form('event-pitch', '{"title":"A walk"}', 'A Member') $$,
   '23514', 'esign_agreement_required',
   'The signer agrees to sign electronically'
 );
 select ok(
   (select document_sha256 ~ '^[0-9a-f]{64}$' and esign_agreed
-   from governance.form_submissions where id = (select id from ids where name = 'f10')),
+   from governance.form_submissions where id = (select id from ids where name = 'members-meeting-motion')),
   'and the signed copy keeps the fingerprint of what was signed'
 );
 select pg_temp.logout();
 select is(
   (select count(*)::int from core.outbox where kind = 'forms.signed_copy'
-   and payload ->> 'submission_id' = (select id::text from ids where name = 'f10')),
+   and payload ->> 'submission_id' = (select id::text from ids where name = 'members-meeting-motion')),
   1, 'The signer is emailed a copy'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select throws_ok(
-  $$ select governance.sign_form('f11', '{"title":"A walk"}', ' ', esign_agreed => true) $$,
-  '23514', 'signature_required',
-  'A form is signed by typing a name'
+select lives_ok(
+  $$ select governance.sign_form('event-pitch', '{"title":"A walk"}', ' ', esign_agreed => true) $$,
+  'A signed-in member signs as themselves: nothing typed is needed (Sign as …)'
 );
+select pg_temp.logout();
+delete from governance.form_submissions where form_key = 'event-pitch' and data ->> 'title' = 'A walk';
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
-  $$ select governance.sign_form('f04', '{}', 'A Member') $$,
+  $$ select governance.sign_form('role-holder-checklist', '{}', 'A Member') $$,
   'P0002', 'unknown_form',
   'A form kept elsewhere is not signed here'
 );
 select throws_ok(
-  $$ select governance.sign_form('f10', '{}', 'A Member', null, null, true) $$,
-  '42501', 'use_the_form_page',
-  'Anonymous forms go through the form page''s check, not the browser'
+  $$ select governance.sign_form('members-meeting-motion', '{}', 'A Member', null, null, true, 'none', true) $$,
+  '22023', 'anonymous_not_allowed',
+  'Only a concern may keep its name sealed'
 );
 select throws_ok(
-  $$ select governance.sign_form('f11', '{}', 'A Member', null, null, false, 'president', true) $$,
+  $$ select governance.sign_form('event-pitch', '{}', 'A Member', null, null, false, 'president', true) $$,
   '22023', 'routing_only_for_concerns',
   'Routing is only for concerns'
 );
 select throws_ok(
   $$ insert into governance.form_submissions (form_key, submitted_by, data)
-     values ('f10', auth.uid(), '{}') $$,
+     values ('members-meeting-motion', auth.uid(), '{}') $$,
   '42501', null,
   'Nobody writes submissions directly'
 );
 
--- ── Concerns (F-21): anonymity and routing ──
+-- ── Concerns (F-21): raised signed in, the name sealed if asked; routing ──
 select pg_temp.as_api();
-insert into ids select 'anon', governance.sign_form('f21', '{"what":"Something at an event"}', '', null, null, true);
 select throws_ok(
-  $$ select governance.sign_form('f11', '{}', 'A Member', null, null, true) $$,
-  '22023', 'anonymous_not_allowed',
-  'Only concerns may be anonymous'
+  $$ select governance.sign_form('concern', '{"what":"Something at an event"}', '', null, null, true) $$,
+  '42501', 'sign_in_required',
+  'A concern is raised signed in'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-insert into ids select 'about_vp', governance.sign_form('f21', '{"what":"About the VP"}', 'A Member', null, null, false, 'vice_president', true);
-select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 1,
-  'An anonymous concern cannot be read back even by whoever sent it');
+insert into ids select 'sealed', governance.sign_form('concern', '{"what":"Something at an event"}', 'A Member', null, null, true, 'none', true);
+insert into ids select 'about_vp', governance.sign_form('concern', '{"what":"About the VP"}', 'A Member', null, null, false, 'vice_president', true);
+select is((select count(*)::int from governance.form_submissions where form_key = 'concern'), 2,
+  'The signer still reads a concern whose name is sealed');
 select pg_temp.logout();
-select is((select array[submitted_by::text, signer_name] from governance.form_submissions where id = (select id from ids where name = 'anon')),
-  array[null, null]::text[], 'and no account or signature is stored with it');
+select is((select array[submitted_by::text, signer_name, signer_contact] from governance.form_submissions where id = (select id from ids where name = 'sealed')),
+  array[null, null, null]::text[], 'and the copy the panel reads holds no name');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 1,
+select is((select count(*)::int from governance.form_submissions where form_key = 'concern'), 1,
   'The Vice President receives concerns, but never one about the Vice President');
 select throws_ok(
   format($$ select governance.handle_form(%L, 'acknowledged') $$, (select id from ids where name = 'about_vp')),
@@ -218,35 +222,50 @@ select throws_ok(
   'nor handles it'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 2,
+select is((select count(*)::int from governance.form_submissions where form_key = 'concern'), 2,
   'The President receives both');
+select is(governance.sealed_state((select id from ids where name = 'sealed')), 'sealed',
+  'and sees that one is sealed, not by whom');
+select throws_ok(
+  format($$ select governance.open_sealed(%L, 'curious') $$, (select id from ids where name = 'sealed')),
+  '22023', 'reason_required',
+  'A sealed name opens only for a safety risk or with the signer''s agreement'
+);
+select is(governance.open_sealed((select id from ids where name = 'sealed'), 'safety'), 'A Member',
+  'For a safety risk the handler opens it, and the opening is kept');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-select is((select count(*)::int from governance.form_submissions where form_key = 'f21'), 2,
+select is((select count(*)::int from governance.form_submissions where form_key = 'concern'), 2,
   'and so does the Faculty Advisor');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
+select throws_ok(
+  format($$ select governance.open_sealed(%L, 'agreed') $$, (select id from ids where name = 'about_vp')),
+  '42501', 'not_allowed',
+  'Only whoever handles a concern opens a name'
+);
 
 -- ── Anyone, signed in or not, may sign a form that needs no account ──
 select pg_temp.login_anon();
 select throws_ok(
-  $$ select governance.sign_form('f11', '{"title":"x"}', 'A Visitor', esign_agreed => true) $$,
+  $$ select governance.sign_form('event-pitch', '{"title":"x"}', 'A Visitor', esign_agreed => true) $$,
   '42501', null,
   'Signed out, the browser cannot sign directly'
 );
 select pg_temp.as_api();
 select lives_ok(
-  $$ select governance.sign_form('f11', '{"title":"A walk on the river","idea":"Read on the bank."}', 'A Visitor', null, 'visitor@example.com', esign_agreed => true, signer_ip => '203.0.113.5') $$,
+  $$ select governance.sign_form('event-pitch', '{"title":"A walk on the river","idea":"Read on the bank."}', 'A Visitor', null, 'visitor@example.com', esign_agreed => true, signer_ip => '203.0.113.5') $$,
   'A visitor pitches an event (F-11) and signs it, through the form page'
 );
-select is((select signer_ip from governance.form_submissions where form_key = 'f11'), '203.0.113.5',
+select is((select signer_ip from governance.form_submissions where form_key = 'event-pitch'), '203.0.113.5',
   'and the signed copy keeps the IP address');
 select throws_ok(
-  $$ select governance.sign_form('f10', '{"title":"x"}', 'A Visitor', esign_agreed => true) $$,
+  $$ select governance.sign_form('members-meeting-motion', '{"title":"x"}', 'A Visitor', esign_agreed => true) $$,
   '42501', 'sign_in_required',
   'but a motion needs an account'
 );
 
 -- ── A parent's consent: a single-use link, sent through the teacher ──
 select throws_ok(
-  $$ select governance.sign_form('f39', '{}', 'A Parent', esign_agreed => true, link_token => 'nope') $$,
+  $$ select governance.sign_form('qalam-publishing-consent', '{}', 'A Parent', esign_agreed => true, link_token => 'nope') $$,
   '42501', 'link_not_valid',
   'A parent''s form needs its link'
 );
@@ -254,17 +273,17 @@ select throws_ok(
 -- ── Handling ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
 select lives_ok(
-  format($$ select governance.handle_form(id, 'acknowledged', '{"received":"2026-11-09"}') from governance.form_submissions where form_key = 'f11' $$),
+  format($$ select governance.handle_form(id, 'acknowledged', '{"received":"2026-11-09"}') from governance.form_submissions where form_key = 'event-pitch' $$),
   'The President acknowledges the pitch'
 );
 select ok((select acknowledged_at is not null and office ->> 'received' = '2026-11-09'
-  from governance.form_submissions where form_key = 'f11'),
+  from governance.form_submissions where form_key = 'event-pitch'),
   'with the time and the office-use boxes');
 
 -- A trip consent (F-45) names a published trip.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
-  $$ select governance.sign_form('f45', '{"agree":true}', 'A Member', esign_agreed => true) $$,
+  $$ select governance.sign_form('trip-consent', '{"agree":true}', 'A Member', esign_agreed => true) $$,
   '22023', 'not_a_trip',
   'A trip consent names a published trip off campus'
 );
