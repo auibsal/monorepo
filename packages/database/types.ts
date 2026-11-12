@@ -1462,6 +1462,7 @@ export type Database = {
           title_form: string;
         }[];
       };
+      my_register_name: { Args: Record<PropertyKey, never>; Returns: string };
       my_sessions: {
         Args: Record<PropertyKey, never>;
         Returns: {

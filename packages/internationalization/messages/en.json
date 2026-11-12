@@ -4159,7 +4159,10 @@
       "withdraw": "Withdraw for the future",
       "withdrawAsk": "Withdraw this for the future? What was already made under it stays; nothing new will use it.",
       "withdrawTripAsk": "Withdraw your consent for this trip? Your place on the trip is given back.",
-      "withdrawnOn": "Withdrawn for the future on {date}."
+      "withdrawnOn": "Withdrawn for the future on {date}.",
+      "signAsLabel": "Your signature",
+      "signAsHint": "You sign in your name as the register holds it. The signed copy keeps it, the time and the form’s version.",
+      "signAs": "Sign as {name}"
     },
     "qirtas": {
       "pieceTitle": "Your piece",
@@ -4430,12 +4433,11 @@
         "linksHint": "Up to five, one per line, starting with https://.",
         "accommodation": "Anything we should arrange for you (optional)",
         "accommodationHint": "For an interview or audition: access, timing or anything else. Only the people reviewing your application see it.",
-        "gpaConsent": "A director seat needs a GPA of at least 2.0, which Student Life checks. Typing your legal name below signs your consent to that check; Student Life tells us only whether you are eligible.",
-        "gpaName": "Your legal name, as on your account",
-        "gpaHint": "Your first and last name, or all four parts, in English or Arabic.",
+        "gpaConsent": "A director seat needs a GPA of at least 2.0, which Student Life checks. Student Life tells us only whether you are eligible.",
         "send": "Send the application",
         "saveDraft": "Save as a draft",
-        "draftSaved": "Draft saved. You can finish it any time before the role closes."
+        "draftSaved": "Draft saved. You can finish it any time before the role closes.",
+        "gpaSignAs": "I consent to Student Life checking my GPA. Sign as {name}."
       },
       "applications": {
         "title": "Your applications",

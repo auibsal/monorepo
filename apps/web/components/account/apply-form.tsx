@@ -2,7 +2,8 @@
 
 import { Field } from "@repo/brand/components/sal/field";
 import { Button } from "@repo/brand/components/ui/button";
-import { Input } from "@repo/brand/components/ui/input";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -48,6 +49,19 @@ export const ApplyForm = ({
     queryKey: key,
   });
   const existing = applications.data?.find((a) => a.opening_id === openingId);
+  // The name the register holds: the GPA consent is signed in it.
+  const signer = useQuery({
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .schema("core")
+        .rpc("my_register_name");
+      if (error) {
+        throw error;
+      }
+      return data;
+    },
+    queryKey: ["register-name"],
+  });
   const [form, setForm] = useState({
     accommodation: "",
     answers: {} as Record<string, string>,
@@ -64,7 +78,7 @@ export const ApplyForm = ({
         accommodation: existing.accommodation ?? "",
         answers: (existing.answers ?? {}) as Record<string, string>,
         availability: existing.availability ?? "",
-        gpa: existing.gpa_consent_name ?? "",
+        gpa: existing.gpa_consent_name ? "yes" : "",
         lang: existing.lang === "ar" ? "ar" : "en",
         links: (existing.files ?? []).join("\n"),
       }));
@@ -239,18 +253,19 @@ export const ApplyForm = ({
         {director ? (
           <div className="border-line grid gap-3 border-y py-4">
             <p className="type-body">{t("gpaConsent")}</p>
-            <Field hint={t("gpaHint")} label={t("gpaName")}>
-              {(id) => (
-                <Input
-                  autoComplete="name"
-                  id={id}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, gpa: e.target.value }))
-                  }
-                  value={form.gpa}
-                />
-              )}
-            </Field>
+            {/* "Sign as …": the register's name signs it, never typed. */}
+            <div className="flex items-start gap-3">
+              <Checkbox
+                checked={form.gpa !== ""}
+                id={`${openingId}-gpa`}
+                onCheckedChange={(checked) =>
+                  setForm((f) => ({ ...f, gpa: checked === true ? "yes" : "" }))
+                }
+              />
+              <Label htmlFor={`${openingId}-gpa`}>
+                {t("gpaSignAs", { name: signer.data ?? "" })}
+              </Label>
+            </div>
           </div>
         ) : null}
         <div className="flex flex-wrap items-center gap-3">

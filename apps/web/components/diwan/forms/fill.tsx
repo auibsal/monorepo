@@ -376,17 +376,11 @@ const FormEditor = ({
   const router = useRouter();
   const queryClient = useQueryClient();
   const event = useNamedEvent(eventSlug);
+  // "Sign as …": the name the register holds (the database signs in it).
   const me = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("core")
-          .from("profiles")
-          .select("full_name_en, full_name_ar")
-          .eq("id", user?.id ?? "")
-          .maybeSingle()
-      ),
+      unwrap(await supabase.schema("core").rpc("my_register_name")),
     queryKey: ["forms", "me", user?.id],
   });
   const [data, setData] = useState<Data>({});
@@ -400,11 +394,8 @@ const FormEditor = ({
   // Signed out: Turnstile, checked by /api/forms/sign.
   const human = useHumanCheck("form");
   const throughApi = !user;
-  // A member signs in the name on their account, unless they change it.
-  const myName = me.data
-    ? (locale === "ar" && me.data.full_name_ar) || me.data.full_name_en
-    : "";
-  const signature = signer ?? myName;
+  const myName = me.data ?? "";
+  const signature = user ? myName : (signer ?? "");
 
   const sign = useMutation({
     mutationFn: () =>
@@ -479,15 +470,25 @@ const FormEditor = ({
         onSubmit={onSubmit}
         pending={sign.isPending || (throughApi && !human.ready)}
         purpose={labels.purpose()}
-        signature={{
-          hint: t("signatureHint"),
-          invalid: problems.includes("signature"),
-          label: t("signature"),
-          omit: false,
-          onChange: setSigner,
-          value: signature,
-        }}
-        submit={t("signAndSend")}
+        signature={
+          user
+            ? {
+                hint: t("signAsHint"),
+                label: t("signAsLabel"),
+                signAs: myName,
+              }
+            : {
+                hint: t("signatureHint"),
+                invalid: problems.includes("signature"),
+                label: t("signature"),
+                omit: false,
+                onChange: setSigner,
+                value: signature,
+              }
+        }
+        submit={
+          user && myName ? t("signAs", { name: myName }) : t("signAndSend")
+        }
         title={labels.title()}
       >
         {event.data ? (

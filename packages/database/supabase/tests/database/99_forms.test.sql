@@ -166,11 +166,13 @@ select is(
   1, 'The signer is emailed a copy'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select throws_ok(
+select lives_ok(
   $$ select governance.sign_form('f11', '{"title":"A walk"}', ' ', esign_agreed => true) $$,
-  '23514', 'signature_required',
-  'A form is signed by typing a name'
+  'A signed-in member signs as themselves: nothing typed is needed (Sign as …)'
 );
+select pg_temp.logout();
+delete from governance.form_submissions where form_key = 'f11' and data ->> 'title' = 'A walk';
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
   $$ select governance.sign_form('f04', '{}', 'A Member') $$,
   'P0002', 'unknown_form',

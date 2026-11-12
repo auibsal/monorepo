@@ -36,7 +36,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   accounts; one card for everyone, class and role on its second line
   ("Guest · Parent"); under-18s show first name and last initial (Qalam
   adds school and year).
-- [ ] **2. "Sign as …" everywhere:** no typed legal name anywhere, the GPA
+- [x] **2. "Sign as …" everywhere:** no typed legal name anywhere, the GPA
   consent on a director application included.
 - [ ] **3. Two-step from Nov 22:** no lock-out, no reminder; a role that
   sees personal data is taken to set it up at sign-in (passkey first, then
