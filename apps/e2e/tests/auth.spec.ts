@@ -188,7 +188,9 @@ test("a member with a name from before the four parts is asked for them at sign-
   await arabic.getByLabel("Father’s name", { exact: true }).fill("تجريبي");
   await arabic.getByLabel("Grandfather’s name").fill("آلي");
   await page.getByRole("button", { name: "Continue" }).click();
-  // The default name (the given and father's names) shows at once.
+  // The default name (the given and father's names) shows at once, on
+  // the card (its own tab, decisions.md, Your account).
   await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
+  await page.goto(`${urls.web}/account/card`);
   await expect(page.getByText("Tess Test").first()).toBeVisible();
 });

@@ -166,7 +166,10 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
 
   const guest = await (await browser.newContext()).newPage();
   await guest.goto(`${urls.web}/invite/${invitation?.code}`);
-  await expect(guest.getByLabel("Email")).toHaveValue(guestEmail);
+  // "Email" exactly: the e-sign line below it mentions email too.
+  await expect(guest.getByLabel("Email", { exact: true })).toHaveValue(
+    guestEmail
+  );
   await guest.getByLabel("Password").fill(PASSWORD);
   for (const [name, parts] of [
     ["Your name in English", ["Guest", "Ali", "Omar", "Writer"]],
