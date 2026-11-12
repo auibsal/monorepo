@@ -13,7 +13,11 @@ import { ErrorLine } from "./kit";
 import { useMemberNames } from "./member-picker";
 import { memberName } from "./members/directory";
 
-type Kind = "council_role" | "legal_name" | "student_life_export";
+type Kind =
+  | "council_role"
+  | "legal_name"
+  | "member_removal"
+  | "student_life_export";
 
 interface Action {
   id: string;
@@ -53,6 +57,9 @@ const useDetail = () => {
           ? [p.first_ar, p.father_ar, p.grandfather_ar, p.last_ar]
           : [p.first_en, p.father_en, p.grandfather_en, p.last_en];
       return parts.map(text).filter(Boolean).join(" ");
+    }
+    if (a.kind === "member_removal") {
+      return text(p.reason);
     }
     return text(p.name);
   };

@@ -1,8 +1,10 @@
-import { FormRoute, type FormRouteProps } from "@/components/diwan/forms/route";
+import { PartnerMemorandum } from "@/components/diwan/partner/workspace";
+import { titleFrom } from "@/lib/diwan/metadata";
 
-// Its query string decides what it shows, so it renders per request.
-export const instant = false;
+export const generateMetadata = titleFrom((t) =>
+  t("diwan.partnerDesk.tabs.memorandum")
+);
 
-const Page = (props: FormRouteProps) => <FormRoute formKey="f17" {...props} />;
+const Page = () => <PartnerMemorandum />;
 
 export default Page;

@@ -21,7 +21,9 @@ import {
   incidentReported,
   invitation,
   type Lang,
+  membershipRemoved,
   newsletterConfirm,
+  parentAccount,
   pieceNote,
   piecePublished,
   type RemovalInfo,
@@ -192,8 +194,10 @@ export const samples = {
       },
       APP
     ),
+  MembershipRemoved: (l) => membershipRemoved(l, APP),
   NewsletterConfirm: (l) =>
     newsletterConfirm(l, "https://auibsal.org/newsletter/confirm?token=sample"),
+  ParentAccount: (l) => parentAccount(l, false, APP),
   PieceNote: (l) => pieceNote(l, WORK, PIECE, APP),
   PiecePublished: (l) =>
     piecePublished(l, WORK, "https://auibsal.org/qirtas/pieces/sample"),

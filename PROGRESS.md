@@ -86,10 +86,18 @@ First the second prompt's part 2 (7j), then the rest in place.
   back; same SUB number, back to that editor in selection, not read blind
   again (`private.request_revision`, `journal.resend_revision`); emails to
   the writer and, when it is back, to the editor.
-- [~] **7k. Removal from membership** is the Council's (§7), still to build;
-  parents withdraw their child's consents from the Parent view.
-  Done: leavers become Associates (`record_departure`). Open: member removal
-  by the Council, and a Parent withdrawing a consent from the Parent view.
+- [x] **7k. Removal from membership** is the Council's (§7); parents
+  withdraw their child's consents from the Parent view. Leavers become
+  Associates (`record_departure`). Removal: an officer holding
+  governance.manage cites the Council's adopted resolution (two thirds of
+  those voting) on the member's page; another approves on the Desk; roles
+  and membership end, the account stays, the person is emailed
+  (`20261113003100_member_removal.sql`, `governance.removals`). Parents:
+  signing F-46 by link makes or finds the parent's account by the address
+  the link went to, a guest's with the Parent role on the child until 18,
+  and emails how to sign in; Today shows the child's consents, each
+  withdrawn in place; withdrawing F-46 puts the child's limits back
+  (`20261113003000_parent_accounts.sql`).
 - [x] **7l. The Sunday Paper sign-up** in the public footer's Read and watch
   column.
 - [x] **7m. The Library's groups** from Notion's "For" field (Everyone,
@@ -149,7 +157,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   active count and Student Life's lists. **Migrates:** `renewed_at`
   (empty: every member joined or renews this year, so September 2027 is
   the first ask); `private.is_active_member()` is the active count.
-- [ ] **The classes:** Member, Associate, Honorary, Guest as decisions.md
+- [x] **The classes:** Member, Associate, Honorary, Guest as decisions.md
   defines them; the class follows the person's status on the same account
   and number; no "staff" class. The Parent and Qalam account types go: a
   parent is a guest with the "Parent" role linked to the child, a Qalam
@@ -160,17 +168,23 @@ First the second prompt's part 2 (7j), then the rest in place.
   role (by the role it holds, never by a name or address in the migration).
   Done so far: the outside roles Parent (scoped to the child), Qalam
   student and Student Life exist (`20261113000600_outside_roles.sql`).
-  Still to build: the consent link making the parent's guest account with
-  the role, the parent's view of the child's consents, the class following
-  status (graduation to Associate), and the Campus Recreation Officer's
-  move, which is the owner's step (assign "Student Life" on their member
-  page; no migration names a person).
-- [ ] **The card:** no photo; everyone with an account gets one; class and
+  Since: the consent link makes the parent's guest account with the role,
+  and the parent's view (7k); graduates and leavers become Associates;
+  assigning Student Life or the Faculty Advisor moves the account to
+  Associate (6), and a guest may hold the Parent and Qalam student roles.
+  **Owner:** assign "Student Life" to the Campus Recreation Officer on
+  their member page (no migration names a person).
+- [x] **The card:** no photo; everyone with an account gets one; class and
   role on the second line ("Guest · Parent"); under 18, the first name and
   last initial only (Qalam adds school and year); the Wallet pass updates
   on a role, class or name change and is withdrawn the day the account
-  ends. **Owner:** Apple Wallet waits on Apple's developer account (a need).
-- [ ] **Guests' tabs:** Today, Events, Work, Documents, Settings.
+  ends. Done: the card's second line, under-18 names, and the Wallet pass
+  refreshed on a role, class or name change
+  (`20261113002900_wallet_follows_name.sql`). Qalam's school and year wait
+  until Qalam's students have accounts (the roster has none today).
+  **Owner:** Apple Wallet waits on Apple's developer account (a need).
+- [x] **Guests' tabs:** Today, Events, Work, Documents, Settings
+  (`member-shell.tsx`; «أعمالك» and «المستندات» from the glossary).
 - [ ] **No name fields anywhere:** the only name entry is the account at
   sign-up. Signing shows the legal name with "Sign as …"; credits,
   co-authors, event guests and anyone named on a record are picked from
@@ -229,13 +243,12 @@ First the second prompt's part 2 (7j), then the rest in place.
   name; Anonymous left out; minors only with consent).
 - [x] The colophon on Qirtas's pages and in each Edition, not the site
   footer.
-- [ ] Writers' emails at each step: received (record number), in reading,
+- [x] Writers' emails at each step: received (record number), in reading,
   the decision (accepted, declined with a standard note, revise and
   resend), edits to approve, published with the link. Done: the record
   number (SUB-<year>-<n>) and "in reading"; received, accepted, declined,
-  edits to approve and published were already sent. Open: "revise and
-  resend", a new decision that sends the work back to its writer and into
-  reading again (a change to the blind-review pipeline).
+  edits to approve and published were already sent; revise and resend
+  (7i) now too.
 - [x] Newsroom: a checker field for News's second-source check and a
   conflict-disclosure field for writers.
 
@@ -265,8 +278,10 @@ First the second prompt's part 2 (7j), then the rest in place.
 - [x] Private spaces (your account, the partner dashboard, the Diwan): a
   slim footer (Help, Privacy, Terms, Report a problem); the Diwan's adds
   the version and build.
-- [ ] The partner dashboard keeps its own tabs: Events, Checklist, Guests,
-  Team, Memorandum.
+- [x] The partner dashboard keeps its own tabs: Events, Checklist, Guests,
+  Team (with the partner's page on the site), Memorandum (signing it at
+  `/partners/dashboard/memorandum/sign`); the old `/people` and `/events`
+  addresses redirect.
 - [x] The Diwan's seats: a side list on a computer (the Desk first), across
   the top on a phone.
 

@@ -7,7 +7,7 @@ export const formPaths = {
   f10: "/account/elections/motion",
   f11: "/get-involved/propose-an-event",
   f15: "/consent/media-release",
-  f17: "/partners/dashboard/memorandum",
+  f17: "/partners/dashboard/memorandum/sign",
   f21: "/about/contact/concern",
   f26: "/company/agreement",
   f37: "/get-involved/qalam-mentor-agreement",

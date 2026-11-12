@@ -25,7 +25,9 @@ interface AccountLink {
   readonly key:
     | "today"
     | "calendar"
+    | "events"
     | "record"
+    | "documents"
     | "work"
     | "elections"
     | "settings";
@@ -111,8 +113,17 @@ const useAccountLinks = (): AccountLink[] => {
       settings,
     ];
   }
+  // Guests (decisions.md, Members): Today, Events, Work, Documents and
+  // Settings; their calendar is the events they book, their record the
+  // documents they hold.
   return kind === "guest"
-    ? [today, calendar, { href: "/account/work", key: "work" }, settings]
+    ? [
+        { ...today, also: [] },
+        { ...calendar, key: "events" },
+        { href: "/account/work", key: "work" },
+        { href: "/account/record", key: "documents" },
+        settings,
+      ]
     : [today, settings];
 };
 

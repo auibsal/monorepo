@@ -127,8 +127,15 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await expect(
     applicant.getByRole("heading", { level: 1, name: organization })
   ).toBeVisible();
+  // Five tabs (decisions.md, The site): Events, Checklist, Guests, Team,
+  // Memorandum.
+  const tabs = applicant.getByRole("navigation", { name: "Partner" });
+  for (const name of ["Events", "Checklist", "Guests", "Team", "Memorandum"]) {
+    await expect(tabs.getByRole("link", { name })).toBeVisible();
+  }
   // A partner turns on what it runs with the Society by asking; the
   // Society approves.
+  await tabs.getByRole("link", { name: "Memorandum" }).click();
   await applicant
     .getByRole("checkbox", { name: "Their members may volunteer at events" })
     .click();
@@ -140,7 +147,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await expect(applicant.getByRole("link", { name: "Perks" })).toHaveCount(0);
 
   // The lead invites a guest by email; the invitation's link signs them up.
-  await applicant.getByRole("link", { name: "People" }).click();
+  await tabs.getByRole("link", { name: "Guests" }).click();
   const guestEmail = `e2e-guest-${stamp}@example.org`;
   await applicant
     .getByRole("region", { name: "Guests" })

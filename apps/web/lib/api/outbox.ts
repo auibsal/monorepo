@@ -36,8 +36,10 @@ import {
   incidentReported,
   invitationBroadcast,
   invitationContact,
+  membershipRemoved,
   newDevice,
   newsletterConfirm,
+  parentAccount,
   partnerInvitation,
   personalEmailConfirm,
   pieceNote,
@@ -1465,6 +1467,21 @@ const handlers: Record<string, Handler> = {
     }
     if (waiting.length > 0) {
       throw new BroadcastPending(waiting.join(" "));
+    }
+  },
+  "membership.parent_account": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(
+        to,
+        parentAccount(to.lang, payload.existing === true, appUrl())
+      );
+    }
+  },
+  "membership.removed": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(to, membershipRemoved(to.lang, appUrl()));
     }
   },
   "membership.service_letter": async (admin, payload) => {

@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 import { DiwanPage } from "../page";
+import { ChildConsents } from "./child-consents";
 import { JournalSection } from "./journal";
 import { MembershipCard } from "./membership-card";
 import { NextEvents } from "./next-events";
@@ -101,6 +102,8 @@ export const MemberHome = () => {
           <SixWords />
         </div>
       ) : null}
+      {/* A parent's view of their child's consents, whatever their class. */}
+      <ChildConsents />
       {/* A guest, a partner's person, or someone not yet either. */}
       {mine.isSuccess && mine.data.kind !== "member" ? <OtherHome /> : null}
       {mine.data?.kind === "guest" ? <SavedReadingSection /> : null}

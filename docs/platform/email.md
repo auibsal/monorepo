@@ -99,6 +99,8 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `personal_email.confirm` | A personal email added | The new address only | Direct |
 | `governance.concern_raised` | A concern is sent (urgent, at once); it names no one and carries none of the concern | The complaints panel's chair, the Vice President; one about the Vice President or the President to whoever holds `concerns.about_vp` or `concerns.about_president` | Officer |
 | `qirtas.revision_resent` | The writer sends back the revision the section editor asked for | That section editor | Officer |
+| `membership.parent_account` | A parent signs the consent for a member under 18 (F-46); the link makes their guest account with the Parent role | The parent | Service |
+| `membership.removed` | The Council removes a member (two thirds), approved by a second officer | The person removed | Service |
 | `events.incident_reported` | An incident report from an event's page in the Diwan (urgent, at once); it names the event, not what happened | The Director of Events and the President | Officer |
 | `removal.requested`, `removal.overdue` | A Next Stop removal request; past its 24 hours | Next Stop's managers; the requester gets a receipt in the language they asked in | Officer; direct |
 | `removal.done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |

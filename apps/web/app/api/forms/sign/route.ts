@@ -78,5 +78,57 @@ export const POST = async (request: Request) => {
     log.error(`Form not signed: ${parseError(error)}`);
     return json({ error: "failed" }, 500);
   }
+  if (input.form === "f46" && typeof data === "string") {
+    await makeParent(data, input.signer_name).catch((cause: unknown) =>
+      log.error(`Parent account not made: ${parseError(cause)}`)
+    );
+  }
   return json({ id: data });
+};
+
+/**
+ * A parent's consent (F-46) makes the parent a guest account with the
+ * "Parent" role on the child (decisions.md, Members: Parents), found or
+ * created by the address the link was sent to; the parent is emailed how
+ * to sign in. The consent stands even if this step fails.
+ */
+const makeParent = async (submissionId: string, signerName: string) => {
+  const admin = createAdminClient();
+  const link = await admin
+    .schema("governance")
+    .rpc("parent_link", { submission_id: submissionId })
+    .maybeSingle();
+  const email = link.data?.sent_to;
+  if (!email) {
+    return;
+  }
+  const found = await admin
+    .schema("governance")
+    .rpc("user_by_email", { email });
+  let parent = found.data ?? null;
+  const existing = Boolean(parent);
+  if (!parent) {
+    const created = await admin.auth.admin.createUser({
+      email,
+      email_confirm: true,
+      user_metadata: { full_name_en: signerName.trim() },
+    });
+    if (created.error) {
+      throw created.error;
+    }
+    parent = created.data.user.id;
+  }
+  const made = await admin
+    .schema("governance")
+    .rpc("make_parent", { parent, submission_id: submissionId });
+  if (made.error) {
+    throw made.error;
+  }
+  await admin
+    .schema("core")
+    .from("outbox")
+    .insert({
+      kind: "membership.parent_account",
+      payload: { existing, user_id: parent },
+    });
 };

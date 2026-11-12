@@ -1620,6 +1620,63 @@ export const roleAssigned = (
   });
 
 /** The end of the welcome: the member's first pledge is made. */
+/**
+ * To a parent, after their consent (decisions.md, Members: Parents): their
+ * guest account shows the child's consents and withdraws them. A new
+ * account sets its password with "Forgot your password?".
+ */
+const SIGN_IN: Record<"existing" | "new", Record<Lang, string>> = {
+  existing: {
+    ar: "ادخل بعنوانك وكلمة مرورك المعتادة.",
+    en: "Sign in with your address and your usual password.",
+  },
+  new: {
+    ar: "اختر كلمة مرور لعنوانك هذا، ثم ادخل.",
+    en: "Choose a password for this address, then sign in.",
+  },
+};
+
+export const parentAccount = (lang: Lang, existing: boolean, app: string) =>
+  build(lang, (l) => ({
+    action: existing
+      ? account(app, l)
+      : {
+          href: `${app}${localizedPath(l, "/forgot-password")}`,
+          label: l === "ar" ? "اختر كلمة مرور" : "Choose a password",
+        },
+    heading:
+      l === "ar"
+        ? "شكرًا لموافقتك، وهذا حسابك"
+        : "Thank you for your consent; here is your account",
+    paragraphs: [
+      l === "ar"
+        ? "صار لك حساب ضيف في جمعية الفنون والآداب، يعرض الموافقات التي وقّعتها لابنك أو ابنتك، ويتيح لك سحب أي منها متى شئت."
+        : "You now have a guest account with the AUIB Society of Arts and Letters. It shows the consents you signed for your child and lets you withdraw any of them at any time.",
+      SIGN_IN[existing ? "existing" : "new"][l],
+    ],
+  }));
+
+/**
+ * To a member the Council removed from membership (decisions.md,
+ * Governance): plain, with where to ask. The account stays.
+ */
+export const membershipRemoved = (lang: Lang, app: string) =>
+  build(lang, (l) => ({
+    action: account(app, l),
+    heading:
+      l === "ar"
+        ? "أُسقطت عضويتك في الجمعية"
+        : "Your membership of the Society has ended",
+    paragraphs: [
+      l === "ar"
+        ? "صوّت المجلس على إسقاط عضويتك بعد الإخطار والاستماع، ووافق على ذلك مسؤولان. انتهت عضويتك وأي دور كنت تشغله اليوم."
+        : "The Council voted to remove you from membership after notice and a hearing, and two officers recorded it. Your membership and any role you held ended today.",
+      l === "ar"
+        ? "يبقى حسابك وسجلّك. لأي سؤال أو اعتراض، اكتب إلى ⁦hello@auibsal.org⁩."
+        : "Your account and your record stay. For any question or appeal, write to hello@auibsal.org.",
+    ],
+  }));
+
 export const welcome = (lang: Lang, app: string) =>
   build(lang, (l) => {
     const link = (path: string) => `${app}${localizedPath(l, path)}`;

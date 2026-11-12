@@ -16,6 +16,9 @@ const MOVED: readonly [from: string, to: string][] = [
   // Write for Qirtas's door (Qirtas).
   ["/qirtas/write", "/qirtas/submit"],
   ["/qirtas/write/:path*", "/qirtas/submit/:path*"],
+  // The partner dashboard's five tabs (decisions.md, The site).
+  ["/partners/dashboard/people", "/partners/dashboard/guests"],
+  ["/partners/dashboard/events", "/partners/dashboard"],
   ["/membership", "/account"],
   ["/membership/:path*", "/account/:path*"],
   ["/library/privacy", "/privacy"],

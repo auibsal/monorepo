@@ -226,7 +226,8 @@
       "templates": "Templates and papers",
       "designSystem": "Design system",
       "work": "Work",
-      "elections": "Elections"
+      "elections": "Elections",
+      "documents": "Documents"
     },
     "errors": {
       "loadFailed": "We couldn’t load this. Check your connection and try again.",
@@ -1085,7 +1086,8 @@
           "kinds": {
             "council_role": "{subject} as {detail}",
             "legal_name": "{subject}’s legal name corrected to {detail}",
-            "student_life_export": "A list for Student Life: {detail}"
+            "student_life_export": "A list for Student Life: {detail}",
+            "member_removal": "{subject} removed from membership by the Council’s vote: {detail}"
           },
           "asked": "Asked by {name} on {date}",
           "yours": "Waiting for another officer.",
@@ -1250,7 +1252,7 @@
           "graduatedConfirm": "Make them an Associate Member",
           "graduatedDescription": "{name} graduated: their class becomes Associate Member and any role they hold ends.",
           "left": "Left without graduating",
-          "leftConfirm": "Make them a guest",
+          "leftConfirm": "Make them an Associate Member",
           "leftDescription": "{name} left AUIB without graduating: they become an Associate Member with the same number, and any role they hold ends.",
           "nowGuest": "{name} is now a guest.",
           "nowAssociate": "{name} is now an Associate Member."
@@ -1258,7 +1260,16 @@
         "studentLife": "Student Life",
         "studentLifeIsEligible": "Eligible",
         "recoveryBy": "Not eligible; must recover by {date}",
-        "waitingSecondOfficer": "Asked. A Council role is assigned once a second officer approves it on the Desk."
+        "waitingSecondOfficer": "Asked. A Council role is assigned once a second officer approves it on the Desk.",
+        "removal": {
+          "title": "Remove from membership",
+          "body": "Only by the Council’s vote: two thirds of those voting, after notice and a hearing (decisions.md, Governance). Cite the adopted resolution; another officer approves on the Desk before it takes effect. The account, its number and history stay; membership and any role end, and the person is told by email.",
+          "resolution": "The Council’s resolution",
+          "none": "No adopted resolution yet. The Council votes first.",
+          "reason": "Reason, as the resolution states it",
+          "submit": "Ask a second officer to approve",
+          "sent": "Sent to the Desk for a second officer."
+        }
       },
       "verification": {
         "title": "Partner applications",
@@ -4532,12 +4543,14 @@
     },
     "partnerDesk": {
       "none": "You are not on a partner’s team.",
-      "lede": "Your organization’s dashboard: its profile, the events it runs with the Society, its guests and its team.",
+      "lede": "Your organization’s dashboard: the events it runs with the Society, their checklists, its guests, its team and its memorandum.",
       "tabsLabel": "Partner",
       "tabs": {
-        "profile": "Profile",
-        "people": "People",
-        "events": "Events"
+        "events": "Events",
+        "checklist": "Checklist",
+        "guests": "Guests",
+        "team": "Team",
+        "memorandum": "Memorandum"
       },
       "open": "Open the dashboard of {name}",
       "profile": {
@@ -4625,7 +4638,14 @@
       "societyGuestLine": "You may book places at events and write for calls open to you.",
       "recordLine": "Service and certificates.",
       "involved": "Get involved",
-      "involvedLine": "Every open place, with the Society and its partners."
+      "involvedLine": "Every open place, with the Society and its partners.",
+      "children": {
+        "title": "Your child’s consents",
+        "signedLine": "For {name}, signed {date}",
+        "withdrawnLine": "For {name}, withdrawn {date}",
+        "withdraw": "Withdraw",
+        "withdrawAsk": "Withdraw this consent for the future? What was already done under it stays; nothing new will use it."
+      }
     },
     "partnerInvite": {
       "title": "An invitation",

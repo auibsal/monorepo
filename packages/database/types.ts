@@ -3273,6 +3273,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      removals: {
+        Row: {
+          approved_by: string | null;
+          id: string;
+          reason: string;
+          removed_at: string;
+          requested_by: string | null;
+          resolution_id: string;
+          user_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          approved_by?: string | null;
+          id?: string;
+          reason: string;
+          removed_at?: string;
+          requested_by?: string | null;
+          resolution_id: string;
+          user_id?: string | null;
+        };
+        Update: {
+          approved_by?: string | null;
+          id?: string;
+          reason?: string;
+          removed_at?: string;
+          requested_by?: string | null;
+          resolution_id?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "removals_resolution_id_fkey";
+            columns: ["resolution_id"];
+            isOneToOne: false;
+            referencedRelation: "resolutions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       resolutions: {
         Row: {
           adopted_on: string | null;
@@ -3623,6 +3662,22 @@ export type Database = {
         Args: { form_key: string; note?: string; sent_to: string };
         Returns: string;
       };
+      make_parent: {
+        Args: { parent: string; submission_id: string };
+        Returns: string;
+      };
+      my_children_consents: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          child: string;
+          child_name_ar: string;
+          child_name_en: string;
+          form_key: string;
+          signed_at: string;
+          submission_id: string;
+          withdrawn_at: string;
+        }[];
+      };
       my_partner_application: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -3659,6 +3714,17 @@ export type Database = {
         Returns: string;
       };
       open_voting: { Args: { election_id: string }; Returns: number };
+      parent_link: {
+        Args: { submission_id: string };
+        Returns: {
+          child: string;
+          sent_to: string;
+        }[];
+      };
+      parent_withdraw_consent: {
+        Args: { submission_id: string };
+        Returns: string;
+      };
       partner_applications: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -3773,6 +3839,10 @@ export type Database = {
         Args: { name: string; params?: Json };
         Returns: string;
       };
+      request_removal: {
+        Args: { member: string; reason: string; resolution: string };
+        Returns: string;
+      };
       sealed_state: { Args: { submission_id: string }; Returns: string };
       second_sign_form: {
         Args: { signer_name: string; submission_id: string };
@@ -3827,6 +3897,7 @@ export type Database = {
           voted: number;
         }[];
       };
+      user_by_email: { Args: { email: string }; Returns: string };
       vote_tally: {
         Args: { election_id: string };
         Returns: {

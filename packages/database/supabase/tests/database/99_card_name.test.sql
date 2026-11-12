@@ -96,7 +96,7 @@ $$;
 -- The card's name (decisions.md, the card): an under-18's first name and
 -- last initial, on the card and its check page; everyone else's shown name.
 
-select plan(2);
+select plan(4);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000fd001', 'young@auib.edu.iq', 'Young One');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000fd002', 'adult@auib.edu.iq', 'Adult One');
@@ -109,6 +109,18 @@ select is(private.card_name('00000000-0000-0000-0000-0000000fd001', 'en'), 'Zaid
 select is(private.card_name('00000000-0000-0000-0000-0000000fd002', 'en'),
   (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-0000000fd002'),
   'Everyone else''s card shows the name shown on the site');
+
+-- A saved pass follows a name change; a pass not saved is left alone.
+insert into membership.wallet_passes (code, user_id) values ('pass-fd002', '00000000-0000-0000-0000-0000000fd002');
+delete from core.outbox where kind = 'wallet.refresh';
+update core.profiles set first_name_en = 'Renamed' where id = '00000000-0000-0000-0000-0000000fd002';
+select ok(exists (select 1 from core.outbox where kind = 'wallet.refresh'
+  and payload->>'user_id' = '00000000-0000-0000-0000-0000000fd002'),
+  'A saved Wallet pass is refreshed when the name changes');
+update core.profiles set first_name_en = 'Zayd' where id = '00000000-0000-0000-0000-0000000fd001';
+select ok(not exists (select 1 from core.outbox where kind = 'wallet.refresh'
+  and payload->>'user_id' = '00000000-0000-0000-0000-0000000fd001'),
+  'No pass, nothing to refresh');
 
 select * from finish();
 rollback;
