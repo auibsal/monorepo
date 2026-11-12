@@ -98,6 +98,12 @@ $$;
 
 select plan(9);
 
+-- TEMPORARY (20261113004400): the President needs no second officer for
+-- now. This test checks the lasting rule, so the exemption is set aside
+-- inside this test's transaction. Remove with the exemption.
+create or replace function private.is_president() returns boolean
+language sql stable set search_path = '' as $$ select false $$;
+
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f0001', 'pres-two@auib.edu.iq', 'President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f0002', 'vp-two@auib.edu.iq', 'Vice President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f0003', 'member-two@auib.edu.iq', 'Member Two');

@@ -14,6 +14,25 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: temporary (Nov 12)
+
+- [x] **The President holds every permission**, to see, test, edit and
+  submit everything while the site is set up
+  (`20261113004300_president_all_permissions.sql`). It lifts the seat's
+  usual limits (Qirtas and blind review, concerns about the President,
+  elections, the Faculty Advisor's countersignature). Two-step sign-in
+  and people's own rows are unchanged.
+- [x] **No second officer for the President**, and the Vice President
+  standing in does not inherit the temporary grants
+  (`20261113004400_president_no_second_officer.sql`).
+- [ ] **Undo when testing is done:** a migration deleting the 23 grants
+  listed there; restore the President test in `lib/rbac/rbac.test.ts` and
+  `roles.ts`; drop the set-aside block from `95_journal_pipeline`,
+  `99_president_absence`, `99_qirtas_by_the_decisions` and
+  `99_two_officers`, and `99_president_temporary.test.sql`; restore
+  `private.second_officer()` and `private.has_permission()` and drop
+  `private.is_president()`.
+
 ## Now: the ninth prompt (Nov 12)
 
 - [x] **1. The name shown:** the first and second names (the given and the

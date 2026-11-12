@@ -102,6 +102,18 @@ $$;
 
 select plan(20);
 
+-- TEMPORARY (20261113004300): the President holds every permission for
+-- now. These tests check the seat's lasting limits, so the extra grants are
+-- set aside inside this test's transaction. Remove with the grant.
+delete from access.role_permissions where role = 'president' and permission in (
+  'certificates.countersign', 'concerns.about_president', 'elections.manage',
+  'journal.advise', 'journal.approve', 'journal.copy', 'journal.decide',
+  'journal.edit.gallery', 'journal.edit.games', 'journal.edit.letters',
+  'journal.edit.news', 'journal.edit.video', 'journal.edit.voices',
+  'journal.frontpage', 'journal.identity.view', 'journal.manage', 'journal.prize',
+  'journal.publish', 'journal.review', 'media.guest_ideas', 'partners.lead',
+  'partners.own', 'qalam.manage');
+
 -- ── The 22 pieces made on Oct 14 ────────────────────────────────────────────
 
 select is((select count(*)::integer from journal.pieces where slug in (

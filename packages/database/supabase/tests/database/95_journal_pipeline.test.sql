@@ -98,6 +98,18 @@ delete from journal.issues;
 
 select plan(11);
 
+-- TEMPORARY (20261113004300): the President holds every permission for
+-- now. These tests check the seat's lasting limits, so the extra grants are
+-- set aside inside this test's transaction. Remove with the grant.
+delete from access.role_permissions where role = 'president' and permission in (
+  'certificates.countersign', 'concerns.about_president', 'elections.manage',
+  'journal.advise', 'journal.approve', 'journal.copy', 'journal.decide',
+  'journal.edit.gallery', 'journal.edit.games', 'journal.edit.letters',
+  'journal.edit.news', 'journal.edit.video', 'journal.edit.voices',
+  'journal.frontpage', 'journal.identity.view', 'journal.manage', 'journal.prize',
+  'journal.publish', 'journal.review', 'media.guest_ideas', 'partners.lead',
+  'partners.own', 'qalam.manage');
+
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000005a1', 'sm@auib.edu.iq', 'Submissions Manager');
