@@ -46,6 +46,7 @@ import {
   personalEmailConfirm,
   pieceNote,
   piecePublished,
+  qalamAccount,
   recoveryAttempts,
   removalDone,
   removalReceived,
@@ -1515,6 +1516,15 @@ const handlers: Record<string, Handler> = {
       await send(
         to,
         parentAccount(to.lang, payload.existing === true, appUrl())
+      );
+    }
+  },
+  "membership.qalam_account": async (admin, payload) => {
+    const to = await recipient(admin, payload.user_id);
+    if (to) {
+      await send(
+        to,
+        qalamAccount(to.lang, payload.existing === true, appUrl())
       );
     }
   },

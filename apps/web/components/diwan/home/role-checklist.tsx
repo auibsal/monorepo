@@ -195,3 +195,56 @@ export const RoleChecklist = () => {
     </>
   );
 };
+
+interface Unsigned {
+  assignment_id: string;
+  role_ar: string;
+  role_en: string;
+}
+
+/**
+ * The role agreement for roles held from before it existed (decisions.md,
+ * Documents and forms): asked on Today at the next sign-in, one per role,
+ * until it is signed. Roles newer than the checklist's window ask in the
+ * checklist above instead.
+ */
+export const UnsignedRoleAgreements = () => {
+  const t = useTranslations("diwan.home.roleChecklist");
+  const locale = useLocale();
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
+  const key = ["home", "unsigned-role-agreements", user?.id];
+  const roles = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      (unwrap(
+        await supabase.schema("access").rpc("my_unsigned_role_agreements")
+      ) ?? []) as Unsigned[],
+    queryKey: key,
+  });
+  if (!roles.data?.length) {
+    return null;
+  }
+  return (
+    <>
+      {roles.data.map((r) => (
+        <Section
+          id={`agreement-${r.assignment_id}`}
+          key={r.assignment_id}
+          title={t("signAgreement", {
+            role: localized(
+              { role_ar: r.role_ar, role_en: r.role_en },
+              "role",
+              locale
+            ),
+          })}
+        >
+          <RoleAgreement
+            assignmentId={r.assignment_id}
+            onSigned={() => queryClient.invalidateQueries({ queryKey: key })}
+          />
+        </Section>
+      ))}
+    </>
+  );
+};

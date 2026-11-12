@@ -182,6 +182,12 @@ export const MembershipCard = () => {
     queryFn: () => membership.myCardName(supabase),
     queryKey: [...cardKey, "name", user?.id],
   });
+  // A Qalam student's school and summer (decisions.md, the card).
+  const qalam = useQuery({
+    enabled: Boolean(user && kind),
+    queryFn: () => membership.myCardQalam(supabase),
+    queryKey: [...cardKey, "qalam", user?.id],
+  });
   const reissue = useMutation({
     mutationFn: () => membership.reissueCard(supabase),
     onSuccess: (fresh) =>
@@ -200,13 +206,23 @@ export const MembershipCard = () => {
   const link = live.digits
     ? siteUrl(locale, membership.livePath(card.data.code, live.digits))
     : null;
-  // A member's tier; a guest's or a partner's card says which it is.
+  // A member's tier; everyone else, a partner's people too, holds a guest
+  // account (decisions.md, Members: one account model).
   let tier = "";
   if (kind !== "member") {
-    tier = t(`kinds.${kind}`);
+    tier = t("kinds.guest");
   } else if (status.data.tier) {
     tier = t(`tiers.${status.data.tier}`);
   }
+
+  const cardSince = () => {
+    if (qalam.data?.school) {
+      return `${qalam.data.school} · ${String(qalam.data.year)}`;
+    }
+    return face.data?.since
+      ? t("card.since", { year: String(face.data.since) })
+      : undefined;
+  };
 
   const code = (size: number) =>
     link ? (
@@ -243,11 +259,7 @@ export const MembershipCard = () => {
           .filter(Boolean)
           .join(" · ")}
         qr={{ left: live.secondsLeft / TOTP_PERIOD_SECONDS, value: link }}
-        since={
-          face.data?.since
-            ? t("card.since", { year: String(face.data.since) })
-            : undefined
-        }
+        since={cardSince()}
         title={t("card.title")}
       />
       {/* How it is used, under the card rather than on it. */}

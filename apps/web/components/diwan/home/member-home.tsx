@@ -12,7 +12,7 @@ import { Notices } from "./notices";
 import { OtherHome } from "./other-home";
 import { MyProgrammes } from "./programmes";
 import { Renewal } from "./renewal";
-import { RoleChecklist } from "./role-checklist";
+import { RoleChecklist, UnsignedRoleAgreements } from "./role-checklist";
 import { SavedReadingSection } from "./saved-reading";
 import { SixWords } from "./six-words";
 
@@ -93,6 +93,7 @@ export const MemberHome = () => {
       {mine.data?.kind === "member" ? (
         <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
           <Renewal />
+          <UnsignedRoleAgreements />
           <RoleChecklist />
           <Notices />
           <NextEvents />

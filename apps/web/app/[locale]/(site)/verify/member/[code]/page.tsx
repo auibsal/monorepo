@@ -93,13 +93,23 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   if (card.kind === "member" && card.tier) {
     rows.push([t("tier"), tt(card.tier), undefined]);
   } else if (card.kind === "guest" || card.kind === "partner") {
-    rows.push([t("tier"), tk(card.kind), undefined]);
+    // A partner's people hold guest accounts (decisions.md, Members).
+    rows.push([t("tier"), tk("guest"), undefined]);
   }
   const role = locale === "ar" ? card.role_ar : card.role_en;
   if (role) {
     rows.push([t("role"), role, "auto"]);
   }
-  if (card.since) {
+  // A Qalam student: the school and the summer in place of the year since
+  // (decisions.md, the card).
+  const qalam = await readLive(
+    (c) => membership.verifyCardQalam(c, code, live),
+    null
+  );
+  if (qalam?.school) {
+    rows.push([t("school"), qalam.school, "auto"]);
+    rows.push([t("summer"), String(qalam.year), "ltr"]);
+  } else if (card.since) {
     rows.push([t("since"), String(card.since), "ltr"]);
   }
   rows.push([

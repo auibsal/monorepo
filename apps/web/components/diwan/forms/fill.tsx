@@ -360,6 +360,43 @@ const useNamedEvent = (slug: string | null) => {
   });
 };
 
+/**
+ * The student a consent or release link was sent for (F-38's release,
+ * F-39, F-46): the form asks no name, so the page names them, by first
+ * name and last initial, to whoever holds the open link.
+ */
+const useLinkSubject = (formKey: string, link: string | null) => {
+  const { supabase } = useAuth();
+  return useQuery({
+    enabled: Boolean(link),
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("form_link_subject", { form_key: formKey, token: link ?? "" })
+          .maybeSingle()
+      ),
+    queryKey: ["forms", "link-subject", formKey, link],
+  });
+};
+
+const LinkSubject = ({
+  formKey,
+  link,
+}: {
+  formKey: string;
+  link: string | null;
+}) => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale();
+  const subject = useLinkSubject(formKey, link);
+  const name =
+    (locale === "ar" && subject.data?.name_ar) || subject.data?.name_en;
+  return name ? (
+    <p className="type-body">{t("linkSubject", { name })}</p>
+  ) : null;
+};
+
 const FormEditor = ({
   eventSlug,
   formKey,
@@ -492,6 +529,7 @@ const FormEditor = ({
         }
         title={labels.title()}
       >
+        <LinkSubject formKey={formKey} link={link} />
         {event.data ? (
           <p className="type-body">
             {t("forEvent", {

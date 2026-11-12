@@ -4,7 +4,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { formatNumber } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
@@ -35,30 +35,26 @@ const FIRST_YEAR = 2028;
 const thisYear = () => Math.max(FIRST_YEAR, new Date().getFullYear());
 
 const roster = (supabase: ReturnType<typeof useAuth>["supabase"]) => ({
+  // The roster is the students' accounts, made by the parent's consent
+  // (F-38); each name comes from the account.
   list: async (year: number) =>
-    unwrap(
-      await supabase
-        .schema("programmes")
-        .from("qalam_students")
-        .select(
-          "id, first_name, last_name, school, grade, status, sessions_attended, photos_allowed, publishing_allowed"
-        )
-        .eq("year", year)
-        .order("last_name")
-    ) ?? [],
+    unwrap(await supabase.schema("programmes").rpc("qalam_roster", { year })) ??
+    [],
 });
 
 type Student = Awaited<ReturnType<ReturnType<typeof roster>["list"]>>[number];
 
 /**
- * Qalam's applications and roster (decisions.md): Qirtas's summer
+ * Qalam's roster (decisions.md, Qirtas: Qalam's shape): Qirtas's summer
  * program for high school students. Staff only (`qalam.manage`), never in
- * Notion; students never get accounts, and their families consent on the
- * forms page (F-38, F-39). Kept three years after the program, then
- * deleted with the consent forms.
+ * Notion. Each student is a guest account with the Qalam student role,
+ * made when the parent signs the consent (F-38); nobody types a student's
+ * name here. Kept three years after the program, then deleted with the
+ * consent forms.
  */
 export const QalamRoster = () => {
   const t = useTranslations("diwan.admin.qalam");
+  const locale = useLocale();
   const { supabase } = useAuth();
   const [year, setYear] = useState(thisYear());
   const students = useQuery({
@@ -91,7 +87,8 @@ export const QalamRoster = () => {
         <DataTable
           columns={[
             {
-              cell: (s) => `${s.first_name} ${s.last_name}`,
+              cell: (s) =>
+                (locale === "ar" && s.full_name_ar) || s.full_name_en || "",
               header: t("name"),
               key: "name",
             },
@@ -130,10 +127,8 @@ export const QalamRoster = () => {
         <SectionSpinner />
       )}
       <ErrorLine error={students.error} />
-      <AddInPlace label={t("add")}>
-        {(close) => <AddStudent onDone={close} year={year} />}
-      </AddInPlace>
-      <ParentLinks />
+      <p className="type-caption max-w-3xl">{t("joinByConsent")}</p>
+      <ParentLinks students={students.data ?? []} />
     </div>
   );
 };
@@ -143,7 +138,7 @@ export const QalamRoster = () => {
  * single-use link (decisions §11). The link goes to the teacher, who
  * passes it on: the Society reaches parents only through the teacher.
  */
-const ParentLinks = () => {
+const ParentLinks = ({ students }: { students: Student[] }) => {
   const t = useTranslations("diwan.admin.qalam.links");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -199,6 +194,7 @@ const ParentLinks = () => {
               close();
               queryClient.invalidateQueries({ queryKey: [...key, "links"] });
             }}
+            students={students}
           />
         )}
       </AddInPlace>
@@ -206,21 +202,39 @@ const ParentLinks = () => {
   );
 };
 
-const SendLink = ({ onDone }: { onDone: () => void }) => {
+const SendLink = ({
+  onDone,
+  students,
+}: {
+  onDone: () => void;
+  students: Student[];
+}) => {
   const t = useTranslations("diwan.admin.qalam.links");
+  const locale = useLocale();
   const { supabase } = useAuth();
   const [form, setForm] = useState<"f38" | "f39">("f38");
+  const [student, setStudent] = useState("");
   const [teacher, setTeacher] = useState("");
   const [note, setNote] = useState("");
   const send = useMutation({
+    // The consent goes out for a student who has no account yet; the
+    // release, for a student on the roster, whom the link names.
     mutationFn: async () =>
-      unwrap(
-        await supabase.schema("governance").rpc("issue_form_link", {
-          form_key: form,
-          note,
-          sent_to: teacher.trim(),
-        })
-      ),
+      form === "f39"
+        ? unwrap(
+            await supabase.schema("programmes").rpc("qalam_release_link", {
+              note,
+              sent_to: teacher.trim(),
+              student_row: student,
+            })
+          )
+        : unwrap(
+            await supabase.schema("governance").rpc("issue_form_link", {
+              form_key: form,
+              note,
+              sent_to: teacher.trim(),
+            })
+          ),
     onSuccess: onDone,
   });
   const submit = (event: FormEvent) => {
@@ -241,6 +255,25 @@ const SendLink = ({ onDone }: { onDone: () => void }) => {
           </SelectInput>
         )}
       </Field>
+      {form === "f39" ? (
+        <Field label={t("student")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) => setStudent(e.target.value)}
+              required
+              value={student}
+            >
+              <option value="">{t("pickStudent")}</option>
+              {students.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {(locale === "ar" && s.full_name_ar) || s.full_name_en}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+      ) : null}
       <Field hint={t("teacherHint")} label={t("teacher")}>
         {(id) => (
           <Input
@@ -330,89 +363,5 @@ const Attendance = ({ student }: { student: Student }) => {
       </Button>
       <ErrorLine error={add.error} />
     </div>
-  );
-};
-
-const AddStudent = ({ onDone, year }: { onDone: () => void; year: number }) => {
-  const t = useTranslations("diwan.admin.qalam");
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [first, setFirst] = useState("");
-  const [last, setLast] = useState("");
-  const [school, setSchool] = useState("");
-  const [grade, setGrade] = useState("");
-  const add = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("qalam_students")
-          .insert({
-            first_name: first.trim(),
-            grade: grade.trim() || null,
-            last_name: last.trim(),
-            school: school.trim(),
-            year,
-          })
-      ),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
-      onDone();
-    },
-  });
-  const onSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    add.mutate();
-  };
-  return (
-    <form className="grid max-w-xl gap-4" onSubmit={onSubmit}>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t("firstName")}>
-          {(id) => (
-            <Input
-              id={id}
-              maxLength={80}
-              onChange={(e) => setFirst(e.target.value)}
-              required
-              value={first}
-            />
-          )}
-        </Field>
-        <Field label={t("lastName")}>
-          {(id) => (
-            <Input
-              id={id}
-              maxLength={80}
-              onChange={(e) => setLast(e.target.value)}
-              required
-              value={last}
-            />
-          )}
-        </Field>
-      </div>
-      <Field label={t("school")}>
-        {(id) => (
-          <Input
-            id={id}
-            maxLength={200}
-            onChange={(e) => setSchool(e.target.value)}
-            required
-            value={school}
-          />
-        )}
-      </Field>
-      <Field label={t("grade")}>
-        {(id) => (
-          <Input
-            id={id}
-            maxLength={40}
-            onChange={(e) => setGrade(e.target.value)}
-            value={grade}
-          />
-        )}
-      </Field>
-      <SaveButton pending={add.isPending} />
-      <ErrorLine error={add.error} />
-    </form>
   );
 };

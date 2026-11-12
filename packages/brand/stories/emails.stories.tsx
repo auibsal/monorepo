@@ -74,6 +74,7 @@ export const SubmissionReceivedNamed = email(samples.SubmissionReceivedNamed);
 export const FinalCheck = email(samples.FinalCheck);
 export const MembershipRemoved = email(samples.MembershipRemoved);
 export const ParentAccount = email(samples.ParentAccount);
+export const QalamAccount = email(samples.QalamAccount);
 export const PieceNote = email(samples.PieceNote);
 export const PiecePublished = email(samples.PiecePublished);
 export const SundayPaper = email(samples.SundayPaper);

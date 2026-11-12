@@ -111,6 +111,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `governance.concern_raised` | A concern is sent (urgent, at once); it names no one and carries none of the concern | The complaints panel's chair, the Vice President; one about the Vice President or the President to whoever holds `concerns.about_vp` or `concerns.about_president` | Officer |
 | `qirtas.revision_resent` | The writer sends back the revision the section editor asked for | That section editor | Officer |
 | `membership.parent_account` | A parent signs the consent for a member under 18 (F-46); the link makes their guest account with the Parent role | The parent | Service |
+| `membership.qalam_account` | A parent signs Qalam's consent (F-38); it makes the student's guest account with the Qalam student role | The student | Service |
 | `membership.removed` | The Council removes a member (two thirds), approved by a second officer | The person removed | Service |
 | `governance.candidacy_received` | A member stands for a seat | The nominee: a receipt; the Elections Committee answers later | Service |
 | `membership.associate_request_received` | A request for Associate membership from /join | The address that asked: a receipt | Service |

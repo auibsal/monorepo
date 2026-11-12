@@ -389,8 +389,7 @@
         "offer": "You have an offer for a role"
       },
       "kinds": {
-        "guest": "Guest",
-        "partner": "Partner"
+        "guest": "Guest"
       },
       "sixWords": {
         "title": "Your Typewriter Tour pages",
@@ -434,7 +433,8 @@
           "license": "For work you make in the role (design, code, photos, video, writing for the Society), you keep your copyright and give the Society a lasting license to use it.",
           "sign": "Sign as {name}",
           "failed": "It wasn’t signed. Try again in a moment."
-        }
+        },
+        "signAgreement": "Sign the role agreement: {role}"
       },
       "renewal": {
         "title": "I’m still here",
@@ -3486,7 +3486,7 @@
       },
       "qalam": {
         "title": "Qalam",
-        "lede": "Qirtas’s summer program for high school students. Applications and the roster are kept here only. Students never get accounts, and their families consent on the forms page. Records are deleted three years after the program.",
+        "lede": "Qirtas’s summer program for high school students. The roster is kept here only. Each student has a guest account with the Qalam student role, made when a parent signs the consent; records are deleted three years after the program.",
         "year": "Summer",
         "name": "Student",
         "school": "School",
@@ -3506,9 +3506,6 @@
         "publishing": "Publishing",
         "noConsent": "None yet",
         "empty": "No students for this summer yet.",
-        "add": "Add a student",
-        "firstName": "First name",
-        "lastName": "Last name",
         "links": {
           "title": "Parents’ links",
           "lede": "A parent signs the consent or the publishing release through a single-use link, valid for 14 days. The link goes to the teacher, who passes it on: the Society reaches parents only through the teacher.",
@@ -3518,15 +3515,18 @@
           "teacher": "The teacher’s email",
           "teacherHint": "The link is sent here, to pass on to the parent.",
           "note": "For",
-          "noteHint": "The student’s first name and last initial, to tell the links apart.",
+          "noteHint": "To tell the links apart, such as the school; never the student’s name.",
           "sentTo": "Sent to",
           "state": "Status",
           "signed": "Signed",
           "expired": "Expired",
           "waiting": "Waiting",
           "empty": "No links sent yet.",
-          "send": "Send a link"
-        }
+          "send": "Send a link",
+          "student": "Student",
+          "pickStudent": "Pick a student"
+        },
+        "joinByConsent": "Students join the roster when a parent signs the consent: send the consent link below to the teacher. The name the parent gives becomes the student’s account name, so no one types it here."
       },
       "games": {
         "title": "Check the coming games",
@@ -4087,7 +4087,9 @@
           "purpose": "One form per student, signed by a parent or guardian from the link the school’s teacher sends. No student attends any session until it is signed. No box ticked means no.",
           "preamble": "I agree that my child may take part in Qalam, the summer program of Qirtas, the paper of the AUIB Society of Arts and Letters. Qalam is never filmed for Next Stop or any public video. On public channels, photos show no faces and name students by first name only. If published, the byline is the student’s first name, last initial and school; the full name appears only on the certificate. My child may stop at any time, and I may withdraw this consent at any time by telling the teacher. All contact with Qalam is through the teacher.",
           "fields": {
-            "student_name": "The student’s name",
+            "student_first_name": "The student’s first name",
+            "student_last_name": "The student’s family name",
+            "student_email": "The student’s email address (their account’s address)",
             "grade": "Grade",
             "school": "School",
             "relationship": "Your relationship to the student",
@@ -4120,8 +4122,6 @@
             "piece_title": "Title of the piece",
             "section": "Section of Qirtas",
             "language": "Language",
-            "student_name": "The student’s name",
-            "school": "School",
             "student_agrees": "The student: I agree"
           }
         },
@@ -4142,7 +4142,6 @@
           "purpose": "Signed once by a parent or guardian, from the link the site sends when a student under 18 joins. Until it is signed, the student’s account is limited.",
           "preamble": "I agree that my child, an enrolled AUIB student, may be a member of the AUIB Society of Arts and Letters until they turn 18, on the terms in the Terms of Use, the Privacy Notice and the Code of Conduct. Members under 18 are covered by the Society’s safeguarding: no one-on-one meetings with adults, and a separate consent for any trip. My child may hold team roles but not a Council seat until 18. I may withdraw this consent at any time by writing to hello@auibsal.org.",
           "fields": {
-            "student_name": "The student’s name",
             "relationship": "Your relationship to the student",
             "photos": "Photos",
             "consent": "I give my consent"
@@ -4199,7 +4198,8 @@
       "withdrawnOn": "Withdrawn for the future on {date}.",
       "signAsLabel": "Your signature",
       "signAsHint": "You sign in your name as the register holds it. The signed copy keeps it, the time and the form’s version.",
-      "signAs": "Sign as {name}"
+      "signAs": "Sign as {name}",
+      "linkSubject": "The student: {name}"
     },
     "qirtas": {
       "pieceTitle": "Your piece",
@@ -5651,7 +5651,9 @@
       "notLiveHint": "It may be a screenshot or an old link. Ask to see the card on the holder’s own phone.",
       "number": "No.",
       "role": "Role",
-      "tooMany": "Too many checks from here in a short time. Try again in ten minutes."
+      "tooMany": "Too many checks from here in a short time. Try again in ten minutes.",
+      "school": "School",
+      "summer": "Summer"
     },
     "productions": {
       "title": "Plays",

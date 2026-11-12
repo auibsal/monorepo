@@ -5,6 +5,11 @@
 -- prompt, §2). One per role given, signed by the holder in the name the
 -- register holds ("Sign as …"), before the conflict-of-interest
 -- declaration, which the database now refuses until it is signed.
+--
+-- People who already held a role when the agreement was introduced are
+-- asked on Today at their next sign-in, and it stays there until they sign
+-- (decisions.md, Documents and forms; the fifth prompt, 2). Nothing is
+-- recorded for anyone until they sign it themselves.
 
 insert into core.settings (key, value) values ('role_agreement.version', '"1"')
 on conflict (key) do nothing;
@@ -76,23 +81,6 @@ as $$ select private.sign_role_agreement($1) $$;
 revoke all on function access.sign_role_agreement(uuid) from public, anon;
 grant execute on function access.sign_role_agreement(uuid) to authenticated, service_role;
 
--- When the agreement began to be asked: the moment this migration ran.
-insert into core.settings (key, value) values ('role_agreement.since', to_jsonb(now()))
-on conflict (key) do nothing;
-
-create function private.role_agreement_since()
-returns timestamptz
-language sql
-stable
-security definer
-set search_path = ''
-as $$
-  select coalesce((select (s.value #>> '{}')::timestamptz from core.settings s
-    where s.key = 'role_agreement.since'), '-infinity'::timestamptz)
-$$;
-revoke all on function private.role_agreement_since() from public, anon;
-grant execute on function private.role_agreement_since() to authenticated, service_role;
-
 -- Whether the person has a current role whose agreement is unsigned.
 create function private.role_agreement_missing(uid uuid)
 returns boolean
@@ -103,10 +91,9 @@ set search_path = ''
 as $$
   select exists (
     select 1 from access.role_assignments a
+    join access.roles r on r.key = a.role
     where a.user_id = uid and a.starts_at <= now() and (a.ends_at is null or a.ends_at > now())
-      -- Asked of roles given from the day the agreement exists; roles
-      -- given before were accepted under the Code of Conduct alone.
-      and a.starts_at >= private.role_agreement_since()
+      and r.kind <> 'outside'
       and not exists (select 1 from access.role_agreements g where g.assignment_id = a.id)
   );
 $$;
@@ -148,7 +135,43 @@ begin
     raise exception 'Unexpected body in private.my_role_checklist';
   end if;
   def := replace(def, old_step,
-    E'      when ''pledge'' then\n        (exists (\n          select 1 from access.role_agreements g where g.assignment_id = s.id\n        ) or (s.starts_at < private.role_agreement_since() and exists (\n          select 1 from membership.pledges p\n          where p.user_id = (select auth.uid()) and p.pledge_type = ''member''\n        )))');
+    E'      when ''pledge'' then\n        (exists (\n          select 1 from access.role_agreements g where g.assignment_id = s.id\n        ))');
   execute def;
 end
 $$;
+
+-- Roles held from before the checklist's window (120 days) still ask for
+-- the agreement on Today until it is signed. Outside roles (a parent, a
+-- partner's people, Student Life) are not the Society's to hold to it.
+create function private.my_unsigned_role_agreements()
+returns table (assignment_id uuid, role text, role_en text, role_ar text)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select a.id, a.role, coalesce(a.title_en, r.name_en),
+    coalesce(a.title_ar,
+      case when private.feminine_title(a.user_id) then r.name_ar_feminine end,
+      r.name_ar)
+  from access.role_assignments a
+  join access.roles r on r.key = a.role
+  where a.user_id = (select auth.uid())
+    and a.starts_at <= now() - interval '120 days'
+    and (a.ends_at is null or a.ends_at > now())
+    and r.kind <> 'outside'
+    and not exists (select 1 from access.role_agreements g where g.assignment_id = a.id)
+  order by r.is_council desc, r.sort, a.starts_at;
+$$;
+revoke all on function private.my_unsigned_role_agreements() from public, anon;
+grant execute on function private.my_unsigned_role_agreements() to authenticated;
+
+create function access.my_unsigned_role_agreements()
+returns table (assignment_id uuid, role text, role_en text, role_ar text)
+language sql
+stable
+security invoker
+set search_path = ''
+as $$ select * from private.my_unsigned_role_agreements() $$;
+revoke all on function access.my_unsigned_role_agreements() from public, anon;
+grant execute on function access.my_unsigned_role_agreements() to authenticated, service_role;

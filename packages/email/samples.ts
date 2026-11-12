@@ -28,6 +28,7 @@ import {
   parentAccount,
   pieceNote,
   piecePublished,
+  qalamAccount,
   type RemovalInfo,
   type RoleInfo,
   recoveryAttempts,
@@ -212,6 +213,7 @@ export const samples = {
       { first_name: null, kind: "plain", pages: 0, station: null, words: null },
       `${APP}/join`
     ),
+  QalamAccount: (l) => qalamAccount(l, false, APP),
   RecoveryAttempts: (l) => recoveryAttempts(l, APP),
   RemovalDone: (l) => removalDone(l, "removed", null),
   RemovalOverdue: (l) => removalRequested(l, removal, APP, true),

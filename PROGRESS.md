@@ -14,6 +14,34 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the fifth prompt (Nov 12, morning)
+
+- [x] **Mirror:** `claude/decisions.md` and `claude/glossary_ar.md`
+  replaced.
+- [x] **1. Outside roles on the account the class gives:** Student Life's
+  staff and the Faculty Advisor on Associate accounts (unchanged); a
+  partner's people, parents, Qalam students and outside advisors on guest
+  accounts. The Advisory Board role may now sit on a guest's account
+  (`one_membership_role`), and a partner's people show as Guest on the
+  card, its check page and the Wallet pass.
+- [x] **2. The role agreement for people who already held a role:** no
+  backfill; each current role holder sees "Sign the role agreement: …" on
+  Today until they sign (`access.my_unsigned_role_agreements`, beside the
+  checklist, which covers roles under 120 days old). The declaration waits
+  for it too. Outside roles are not asked.
+- [x] **3. Names typed only where they make the account:** Qalam's roster is
+  the list of student accounts made by F-38; F-39 and F-46 name the
+  student from the link (`20261113003600_qalam_accounts.sql`).
+- [x] **4. Qalam's card,** built now and tested with a sample account.
+- [x] **Also fixed:** a parent's account made by the F-46 link was refused
+  for an address outside AUIB (the sign-up guard); it is made as a guest's
+  now.
+- **Owner:** SAL-EXB-01 in Notion: F-38 now asks the student's first name,
+  family name and email (their account's address); F-39 and F-46 no
+  longer ask the student's name or school (the link names the student).
+  Update the register's entries when convenient; the CI check passes either
+  way.
+
 ## Now: the third prompt (Nov 12, the whole review)
 
 Built in this order, one commit per part, in one pull request. Each line
@@ -192,8 +220,11 @@ First the second prompt's part 2 (7j), then the rest in place.
   on a role, class or name change and is withdrawn the day the account
   ends. Done: the card's second line, under-18 names, and the Wallet pass
   refreshed on a role, class or name change
-  (`20261113002900_wallet_follows_name.sql`). Qalam's school and year wait
-  until Qalam's students have accounts (the roster has none today).
+  (`20261113002900_wallet_follows_name.sql`). Qalam's card (fifth
+  prompt): the first name and last initial, "Guest · Qalam student", and
+  the school and summer on the card and its check page
+  (`20261113003600_qalam_accounts.sql`, tested with a sample account in
+  `99_qalam.test.sql`).
   **Owner:** Apple Wallet waits on Apple's developer account (a need).
 - [x] **Guests' tabs:** Today, Events, Work, Documents, Settings
   (`member-shell.tsx`; «أعمالك» and «المستندات» from the glossary).
@@ -208,9 +239,12 @@ First the second prompt's part 2 (7j), then the rest in place.
   first); Next Stop's guest from outside is invited by email and named by
   the release they sign (`20261113003500_no_typed_names.sql`). The
   database refuses new typed names; rows typed before stay until they
-  point to accounts, then the columns go. Typed names remain only where
-  the person has no account by design: a parent signing by link, a
-  request for Associate membership, and Qalam's roster.
+  point to accounts, then the columns go. A name is typed only where it
+  becomes the new account's own name (fifth prompt, 3): the parent's
+  consent link (F-46) making the parent's guest account, a request for
+  Associate membership, and Qalam's consent (F-38) making each student's
+  guest account. Qalam's roster is now the list of those accounts; F-39
+  and F-46 no longer ask the student's name (the link names the student).
 
 ### 2. Records, receipts and agreements (decisions.md, Documents and forms)
 - [x] Every action that creates a record shows a confirmation that stays on

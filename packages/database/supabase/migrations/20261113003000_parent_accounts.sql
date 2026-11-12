@@ -214,7 +214,7 @@ begin
     if not private.may_become(new.user_id, 'partner') then
       raise exception 'one_membership' using errcode = '42501';
     end if;
-  elsif new.role not in ('guest_editor', 'parent', 'qalam_student')
+  elsif new.role not in ('guest_editor', 'parent', 'qalam_student', 'advisory_board_member')
     and (private.is_guest(new.user_id)
       or (private.is_partner_team(new.user_id) and not private.is_member(new.user_id))) then
     raise exception 'one_membership' using errcode = '42501';

@@ -94,9 +94,10 @@ $$;
 -- </preamble>
 
 -- The role agreement (decisions.md, Documents and forms): signed for each
--- role given from Nov 13, 2026, before the conflict-of-interest declaration.
+-- role, before the conflict-of-interest declaration; people who already
+-- held a role are asked on Today until they sign (the fifth prompt, 2).
 
-select plan(7);
+select plan(14);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000ab001', 'holder@auib.edu.iq', 'Role Holder');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000ab002', 'other@auib.edu.iq', 'Someone Else');
@@ -130,6 +131,37 @@ select is((select signer_name from access.role_agreements where assignment_id = 
   private.register_name('00000000-0000-0000-0000-0000000ab001'), 'In the name the register holds');
 select is(private.role_agreement_missing('00000000-0000-0000-0000-0000000ab001'), false,
   'Nothing waits now');
+
+-- Someone who has held a role for a year is asked too, on Today, and
+-- nothing is recorded for them until they sign.
+select pg_temp.make_user('00000000-0000-0000-0000-0000000ab003', 'longtime@auib.edu.iq', 'Long Time');
+insert into membership.memberships (user_id) values ('00000000-0000-0000-0000-0000000ab003') on conflict do nothing;
+insert into access.role_assignments (id, user_id, role, scope_type, starts_at)
+values ('00000000-0000-0000-0000-0000000ab0a3', '00000000-0000-0000-0000-0000000ab003', 'design_lead', 'global',
+  now() - interval '1 year');
+select is(private.role_agreement_missing('00000000-0000-0000-0000-0000000ab003'), true,
+  'A role held from before the agreement asks for it too');
+select is((select count(*)::int from access.role_agreements where user_id = '00000000-0000-0000-0000-0000000ab003'), 0,
+  'with nothing recorded for its holder');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000ab003');
+select is((select assignment_id from access.my_unsigned_role_agreements()),
+  '00000000-0000-0000-0000-0000000ab0a3'::uuid, 'Today asks for it, past the checklist''s window');
+select isnt(access.sign_role_agreement('00000000-0000-0000-0000-0000000ab0a3'), null, 'The holder signs');
+select is((select count(*)::int from access.my_unsigned_role_agreements()), 0, 'and Today stops asking');
+select pg_temp.logout();
+
+-- Outside roles are not the Society's to hold to it, and an outside
+-- advisor holds the Advisory Board role on a guest account (decisions.md,
+-- Members: one account model).
+select pg_temp.make_user('00000000-0000-0000-0000-0000000ab004', 'advisor@example.org', 'Outside Advisor');
+insert into membership.guests (user_id) values ('00000000-0000-0000-0000-0000000ab004');
+select lives_ok(
+  $$ insert into access.role_assignments (user_id, role, scope_type)
+     values ('00000000-0000-0000-0000-0000000ab004', 'advisory_board_member', 'global') $$,
+  'An outside advisor holds the Advisory Board role on a guest account'
+);
+select is(private.role_agreement_missing('00000000-0000-0000-0000-0000000ab004'), false,
+  'and is not asked for the role agreement');
 
 select * from finish();
 rollback;

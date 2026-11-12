@@ -233,8 +233,12 @@ export const forms: Record<FormKey, FormDefinition> = {
   f38: {
     byLink: true,
     code: "F-38",
+    // The student's name and address make their guest account, the one
+    // place a name is typed (decisions.md, Members: no name fields).
     fields: [
-      { key: "student_name", max: 200, required: true, type: "text" },
+      { key: "student_first_name", max: 80, required: true, type: "text" },
+      { key: "student_last_name", max: 80, required: true, type: "text" },
+      { key: "student_email", max: 320, required: true, type: "text" },
       { key: "grade", max: 40, required: true, type: "text" },
       { key: "school", max: 200, required: true, type: "text" },
       { key: "relationship", max: 80, required: true, type: "text" },
@@ -262,8 +266,7 @@ export const forms: Record<FormKey, FormDefinition> = {
       { key: "piece_title", max: 200, required: true, type: "text" },
       { key: "section", max: 80, required: true, type: "text" },
       { key: "language", max: 40, required: true, type: "text" },
-      { key: "student_name", max: 200, required: true, type: "text" },
-      { key: "school", max: 200, required: true, type: "text" },
+      // The student is the one the link was sent for, from the roster.
       { key: "student_agrees", required: true, type: "check" },
     ],
     key: "f39",
@@ -285,8 +288,8 @@ export const forms: Record<FormKey, FormDefinition> = {
   f46: {
     byLink: true,
     code: "F-46",
+    // The student is the account the link was sent for.
     fields: [
-      { key: "student_name", max: 200, required: true, type: "text" },
       { key: "relationship", max: 80, required: true, type: "text" },
       {
         key: "photos",

@@ -104,6 +104,10 @@ export const myCardFace = async (client: Client) =>
 export const myCardName = async (client: Client) =>
   unwrap(await membership(client).rpc("my_card_name"))?.[0] ?? null;
 
+/** A Qalam student's school and summer, shown on their card. */
+export const myCardQalam = async (client: Client) =>
+  unwrap(await membership(client).rpc("my_card_qalam"))?.[0] ?? null;
+
 /** A new code for a lost or shared card; the old link stops working. */
 export const reissueCard = async (client: Client) =>
   unwrap(await membership(client).rpc("reissue_card"))?.[0] ?? null;
@@ -116,6 +120,19 @@ export const verifyCard = async (
 ) =>
   unwrap(
     await membership(client).rpc("verify_card", {
+      code,
+      ...(digits ? { digits } : {}),
+    })
+  )?.[0] ?? null;
+
+/** A live Qalam card's school and summer, for its check page. */
+export const verifyCardQalam = async (
+  client: Client,
+  code: string,
+  digits?: string
+) =>
+  unwrap(
+    await membership(client).rpc("verify_card_qalam", {
       code,
       ...(digits ? { digits } : {}),
     })

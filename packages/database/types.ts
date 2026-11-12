@@ -376,6 +376,15 @@ export type Database = {
           step: string;
         }[];
       };
+      my_unsigned_role_agreements: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          assignment_id: string;
+          role: string;
+          role_ar: string;
+          role_en: string;
+        }[];
+      };
       needs_two_step: { Args: Record<PropertyKey, never>; Returns: boolean };
       notion_publisher: {
         Args: {
@@ -3675,6 +3684,13 @@ export type Database = {
         Args: { form_key: string; token: string };
         Returns: boolean;
       };
+      form_link_subject: {
+        Args: { form_key: string; token: string };
+        Returns: {
+          name_ar: string;
+          name_en: string;
+        }[];
+      };
       form_queue: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6561,6 +6577,13 @@ export type Database = {
           name_en: string;
         }[];
       };
+      my_card_qalam: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          school: string;
+          year: number;
+        }[];
+      };
       my_membership: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6660,6 +6683,13 @@ export type Database = {
           role_en: string;
           since: number;
           tier: Database["membership"]["Enums"]["tier"];
+        }[];
+      };
+      verify_card_qalam: {
+        Args: { code: string; digits?: string };
+        Returns: {
+          school: string;
+          year: number;
         }[];
       };
       verify_certificate: {
@@ -7511,10 +7541,8 @@ export type Database = {
           consent_form_id: string | null;
           created_at: string;
           created_by: string | null;
-          first_name: string;
           grade: string | null;
           id: string;
-          last_name: string;
           note: string | null;
           photos_allowed: boolean;
           publishing_allowed: boolean;
@@ -7522,6 +7550,7 @@ export type Database = {
           sessions_attended: number;
           status: string;
           updated_at: string;
+          user_id: string;
           year: number;
         };
         ComputedFields: never;
@@ -7529,10 +7558,8 @@ export type Database = {
           consent_form_id?: string | null;
           created_at?: string;
           created_by?: string | null;
-          first_name: string;
           grade?: string | null;
           id?: string;
-          last_name: string;
           note?: string | null;
           photos_allowed?: boolean;
           publishing_allowed?: boolean;
@@ -7540,16 +7567,15 @@ export type Database = {
           sessions_attended?: number;
           status?: string;
           updated_at?: string;
+          user_id: string;
           year: number;
         };
         Update: {
           consent_form_id?: string | null;
           created_at?: string;
           created_by?: string | null;
-          first_name?: string;
           grade?: string | null;
           id?: string;
-          last_name?: string;
           note?: string | null;
           photos_allowed?: boolean;
           publishing_allowed?: boolean;
@@ -7557,6 +7583,7 @@ export type Database = {
           sessions_attended?: number;
           status?: string;
           updated_at?: string;
+          user_id?: string;
           year?: number;
         };
         Relationships: [];
@@ -8056,6 +8083,30 @@ export type Database = {
           summary_en: string;
           title_ar: string;
           title_en: string;
+        }[];
+      };
+      qalam_enroll: {
+        Args: { student: string; submission_id: string };
+        Returns: string;
+      };
+      qalam_release_link: {
+        Args: { note?: string; sent_to: string; student_row: string };
+        Returns: string;
+      };
+      qalam_roster: {
+        Args: { year?: number };
+        Returns: {
+          full_name_ar: string;
+          full_name_en: string;
+          grade: string;
+          id: string;
+          photos_allowed: boolean;
+          publishing_allowed: boolean;
+          school: string;
+          sessions_attended: number;
+          status: string;
+          user_id: string;
+          year: number;
         }[];
       };
       record_six_words: {

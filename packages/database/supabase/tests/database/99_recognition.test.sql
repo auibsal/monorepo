@@ -107,8 +107,10 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a5', 'gs-rc@auib.edu
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'eic');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a6', 'qalam_lead');
-insert into programmes.qalam_students (id, year, first_name, last_name, school)
-values ('00000000-0000-0000-0000-00000000c001', 2028, 'Sara', 'Ahmed', 'Baghdad High');
+-- A Qalam student is an account on the roster (made by the parent's consent).
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000a7', 'sara@school.example', 'Sara Ahmed');
+insert into programmes.qalam_students (id, user_id, year, school)
+values ('00000000-0000-0000-0000-00000000c001', '00000000-0000-0000-0000-0000000000a7', 2028, 'Baghdad High');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'programme_lead', 'programme',
   (select id from core.programmes where slug = 'company'));
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a5', 'general_secretary');

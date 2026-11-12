@@ -354,9 +354,17 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   checked by the Editor-in-Chief and the Secretary; a winner
   chooses whether to be named (`prize_entries.winner_named`), and anyone
   connected to a work steps aside from it (`journal.prize_recusals`).
-- **Qalam**, Qirtas's summer program for high school students. Its roster
-  is staff only (`/diwan/qirtas/qalam`, `qalam.manage`), never in Notion,
-  deleted three years on. High school students never get accounts.
+- **Qalam**, Qirtas's summer program for high school students. The
+  parent's consent (F-38, by link through the teacher) makes each
+  student's guest account with the "Qalam student" role
+  (`programmes.qalam_enroll`, from `/api/forms/sign`): the name and
+  address on it become the account's own. The roster is the list of those
+  accounts (`programmes.qalam_roster`), staff only (`/diwan/qirtas/qalam`,
+  `qalam.manage`), never in Notion, deleted three years on; the role ends
+  when the student finishes, withdraws or is declined, and the guest
+  account stays. The release (F-39) is sent for a student on the roster,
+  and the link names them. The card shows the first name and last initial,
+  "Guest · Qalam student", and the school and summer.
 - **Next Stop** is the Director of Media's video show at `/next-stop`
   (its promise at `/next-stop/care`), not part of Qirtas. Episodes are
   `programmes.episodes`, edited in the Diwan (Media → Next Stop): number,

@@ -285,16 +285,12 @@ const useFinishedStudents = (enabled: boolean) => {
   const { supabase } = useAuth();
   return useQuery({
     enabled,
+    // The roster names each student from their account.
     queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("qalam_students")
-          .select("id, first_name, last_name, school, year")
-          .in("status", ["accepted", "finished"])
-          .order("year", { ascending: false })
-          .order("last_name")
-      ) ?? [],
+      (
+        unwrap(await supabase.schema("programmes").rpc("qalam_roster", {})) ??
+        []
+      ).filter((s) => s.status === "accepted" || s.status === "finished"),
     queryKey: [...key, "qalam-students"],
   });
 };
@@ -302,8 +298,8 @@ const useFinishedStudents = (enabled: boolean) => {
 /**
  * Drafting a certificate (decisions.md: only for finishing Qalam and
  * for the Mutanabbi Prize, each category): the Prize's names a member, its
- * category and its citation; Qalam's names a student from the roster
- * (students have no accounts). Each is in one language, the one its
+ * category and its citation; Qalam's names a student from the roster,
+ * and their account. Each is in one language, the one its
  * recipient chose. Signers: Qalam, the Qalam lead and the Editor-in-Chief;
  * the Prize, the Editor-in-Chief and the President.
  */
@@ -329,7 +325,11 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
         lang: form.lang,
         prize_category: form.kind === "prize" ? form.category : null,
         qalam_student_id: form.kind === "qalam" ? form.student : null,
-        user_id: form.kind === "prize" ? (person?.id ?? null) : null,
+        user_id:
+          form.kind === "prize"
+            ? (person?.id ?? null)
+            : (students.data?.find((s) => s.id === form.student)?.user_id ??
+              null),
       });
       unwrap(
         await supabase.schema("membership").from("certificates").insert(row)
@@ -417,7 +417,7 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
             >
               {(students.data ?? []).map((s) => (
                 <option key={s.id} value={s.id}>
-                  {`${s.first_name} ${s.last_name} · ${s.school} · ${s.year}`}
+                  {`${s.full_name_en ?? ""} · ${s.school} · ${s.year}`}
                 </option>
               ))}
             </SelectInput>
@@ -526,7 +526,7 @@ const Certificates = () => {
   const nameOf = (row: CertificateRow) => {
     if (row.qalam_student_id) {
       const s = students.data?.find((x) => x.id === row.qalam_student_id);
-      return s ? `${s.first_name} ${s.last_name}` : "";
+      return s?.full_name_en ?? "";
     }
     const member = names.data?.find((n) => n.id === row.user_id);
     return member ? memberName(member, locale) : "";

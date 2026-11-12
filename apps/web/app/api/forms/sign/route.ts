@@ -83,7 +83,66 @@ export const POST = async (request: Request) => {
       log.error(`Parent account not made: ${parseError(cause)}`)
     );
   }
+  if (input.form === "f38" && typeof data === "string") {
+    await makeQalamStudent(data, input.data).catch((cause: unknown) =>
+      log.error(`Qalam student's account not made: ${parseError(cause)}`)
+    );
+  }
   return json({ id: data });
+};
+
+const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/u;
+
+const text = (value: unknown, max: number) =>
+  typeof value === "string" ? value.trim().slice(0, max) : "";
+
+/**
+ * Qalam's application, the parent's consent (F-38), makes the student's
+ * guest account with the "Qalam student" role (decisions.md, Qirtas:
+ * Qalam's accounts): found or created by the student's address on it,
+ * named by the name typed there, the one place it is typed. The student is
+ * emailed how to sign in. The consent stands even if this step fails.
+ */
+const makeQalamStudent = async (
+  submissionId: string,
+  answers: Record<string, unknown>
+) => {
+  const email = text(answers.student_email, 320).toLowerCase();
+  const first = text(answers.student_first_name, 80);
+  const last = text(answers.student_last_name, 80);
+  if (!(EMAIL.test(email) && first && last)) {
+    return;
+  }
+  const admin = createAdminClient();
+  const found = await admin
+    .schema("governance")
+    .rpc("user_by_email", { email });
+  let student = found.data ?? null;
+  const existing = Boolean(student);
+  if (!student) {
+    const created = await admin.auth.admin.createUser({
+      email,
+      email_confirm: true,
+      user_metadata: { first_name_en: first, guest: true, last_name_en: last },
+    });
+    if (created.error) {
+      throw created.error;
+    }
+    student = created.data.user.id;
+  }
+  const enrolled = await admin
+    .schema("programmes")
+    .rpc("qalam_enroll", { student, submission_id: submissionId });
+  if (enrolled.error) {
+    throw enrolled.error;
+  }
+  await admin
+    .schema("core")
+    .from("outbox")
+    .insert({
+      kind: "membership.qalam_account",
+      payload: { existing, user_id: student },
+    });
 };
 
 /**
@@ -111,7 +170,8 @@ const makeParent = async (submissionId: string, signerName: string) => {
     const created = await admin.auth.admin.createUser({
       email,
       email_confirm: true,
-      user_metadata: { full_name_en: signerName.trim() },
+      // A guest's account: an address outside AUIB is allowed for it.
+      user_metadata: { full_name_en: signerName.trim(), guest: true },
     });
     if (created.error) {
       throw created.error;

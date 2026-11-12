@@ -95,29 +95,76 @@ as $$
 $$;
 -- </preamble>
 
-select plan(5);
+select plan(21);
+
+-- Qalam's students are accounts (decisions.md, Qirtas: Qalam's shape; the
+-- fifth prompt, 3 and 4): the parent's consent (F-38) makes the student's
+-- guest account with the Qalam student role, and the roster lists them.
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f1a01', 'qalam-lead@auib.edu.iq', 'Qalam Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f1a02', 'qalam-member@auib.edu.iq', 'Qalam Member');
 insert into membership.memberships (user_id) values ('00000000-0000-0000-0000-0000000f1a02') on conflict do nothing;
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000f1a01', 'qalam_lead');
 
+-- A sample student, as the API route makes the account from F-38: the
+-- name on the consent is the account's own.
+insert into auth.users (id, email, email_confirmed_at, raw_user_meta_data, aud, role)
+values ('00000000-0000-0000-0000-0000000f1a03', 'sara@school.example', now(),
+  '{"first_name_en": "Sara", "last_name_en": "Ahmed", "guest": true}', 'authenticated', 'authenticated');
+update core.profiles set first_name_ar = 'سارة', last_name_ar = 'أحمد', full_name_ar = 'سارة أحمد'
+where id = '00000000-0000-0000-0000-0000000f1a03';
+
+-- The signed consent (by link; the parent signs).
+insert into governance.form_submissions (id, form_key, status, data, signer_name, signed_at, submitted_at)
+values ('00000000-0000-0000-0000-0000000f1c01', 'f38', 'submitted',
+  '{"school": "Baghdad High", "grade": "11", "photos": "no_photos", "publishing": ["qirtas"]}',
+  'A Parent', now(), now());
+
+-- Staff can't add a student by typing a name any more.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
-select lives_ok(
-  $$ insert into programmes.qalam_students (id, year, first_name, last_name, school)
-     values ('a0000000-0000-0000-0000-0000000f1b01', 2028, 'Sara', 'Ahmed', 'Baghdad High') $$,
-  'Qalam''s staff add a student'
+select throws_ok(
+  $$ insert into programmes.qalam_students (user_id, year, school)
+     values ('00000000-0000-0000-0000-0000000f1a03', 2028, 'Baghdad High') $$,
+  '42501', null,
+  'Staff never add a student by hand'
 );
+select throws_ok(
+  $$ select programmes.qalam_enroll('00000000-0000-0000-0000-0000000f1c01', '00000000-0000-0000-0000-0000000f1a03') $$,
+  '42501', null,
+  'and can''t enroll one: only the consent does'
+);
+select pg_temp.logout();
+
+-- The consent enrolls the student (as the API route does, with the secret key).
+set local role service_role;
+select isnt(programmes.qalam_enroll('00000000-0000-0000-0000-0000000f1c01', '00000000-0000-0000-0000-0000000f1a03'), null,
+  'The parent''s consent puts the student on the roster');
+reset role;
+
+select is(private.membership_kind('00000000-0000-0000-0000-0000000f1a03'), 'guest',
+  'on a guest account');
+select ok(private.is_qalam_student('00000000-0000-0000-0000-0000000f1a03'),
+  'with the Qalam student role');
+select is((select school || ' · ' || coalesce(grade, '') from programmes.qalam_students
+  where user_id = '00000000-0000-0000-0000-0000000f1a03'), 'Baghdad High · 11',
+  'the school and grade from the consent');
+select is((select photos_allowed::text || publishing_allowed::text from programmes.qalam_students
+  where user_id = '00000000-0000-0000-0000-0000000f1a03'), 'falsetrue',
+  'and its photo and publishing answers');
+select is((select subject_user_id from governance.form_submissions where id = '00000000-0000-0000-0000-0000000f1c01'),
+  '00000000-0000-0000-0000-0000000f1a03'::uuid, 'The consent is about the student''s account');
+
+-- The roster reads names from the accounts, for Qalam's staff only.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
+select is((select full_name_en from programmes.qalam_roster(null)), 'Sara Ahmed',
+  'The roster names the student from their account');
 select lives_ok(
   $$ update programmes.qalam_students set status = 'accepted', sessions_attended = 1
-     where id = 'a0000000-0000-0000-0000-0000000f1b01' $$,
-  'and keep the roster'
-);
-select is((select count(*)::int from programmes.qalam_students), 1, 'and read it');
-
+     where user_id = '00000000-0000-0000-0000-0000000f1a03' $$,
+  'Staff keep the roster');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a02');
 select is((select count(*)::int from programmes.qalam_students), 0, 'Members never read the roster');
-
+select is((select count(*)::int from programmes.qalam_roster(null)), 0, 'nor its names');
 select pg_temp.logout();
 select pg_temp.login_anon();
 select throws_ok(
@@ -125,6 +172,43 @@ select throws_ok(
   '42501', null,
   'and visitors are refused'
 );
+select pg_temp.logout();
+
+-- The card (decisions.md, the card): first name and last initial, the
+-- second line "Guest · Qalam student", and the school and the summer.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a03');
+select is((select name_en || ' / ' || name_ar from membership.my_card_name()), 'Sara A. / سارة أ.',
+  'A Qalam student''s card shows the first name and last initial');
+select is((select role_en from membership.my_card_face()), 'Qalam student',
+  'and the role beside the class');
+select is((select school || ' · ' || year from membership.my_card_qalam()),
+  'Baghdad High · ' || greatest(extract(year from now() at time zone 'Asia/Baghdad')::integer, 2028),
+  'and the school and the summer');
+select pg_temp.logout();
+
+select is((select school from membership.verify_card_qalam(
+    (select code from membership.cards where user_id = '00000000-0000-0000-0000-0000000f1a03'), null)),
+  null, 'The check page shows the school only for a live code');
+
+-- The release goes out for a student on the roster; the link names them.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
+select isnt(programmes.qalam_release_link(
+    (select id from programmes.qalam_students where user_id = '00000000-0000-0000-0000-0000000f1a03'),
+    'teacher@school.example', 'Baghdad High'), null,
+  'A release link is sent for a student on the roster');
+select pg_temp.logout();
+select is((select subject_user from governance.form_links where form_key = 'f39' and sent_to = 'teacher@school.example'),
+  '00000000-0000-0000-0000-0000000f1a03'::uuid, 'and names the student''s account');
+
+-- The role ends with the program; the guest account stays.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
+update programmes.qalam_students set status = 'finished'
+where user_id = '00000000-0000-0000-0000-0000000f1a03';
+select pg_temp.logout();
+select ok(not private.is_qalam_student('00000000-0000-0000-0000-0000000f1a03'),
+  'Finishing ends the Qalam student role');
+select is(private.membership_kind('00000000-0000-0000-0000-0000000f1a03'), 'guest',
+  'and the guest account stays');
 
 select * from finish();
 rollback;

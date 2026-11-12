@@ -1693,6 +1693,29 @@ export const parentAccount = (lang: Lang, existing: boolean, app: string) =>
   }));
 
 /**
+ * To a Qalam student whose parent signed the consent (F-38): the guest
+ * account it made, with the Qalam student role (decisions.md, Qirtas:
+ * Qalam's accounts). It shows their sessions, assignments, card and
+ * certificate, and nothing else.
+ */
+export const qalamAccount = (lang: Lang, existing: boolean, app: string) =>
+  build(lang, (l) => ({
+    action: existing
+      ? account(app, l)
+      : {
+          href: `${app}${localizedPath(l, "/forgot-password")}`,
+          label: l === "ar" ? "اختر كلمة مرور" : "Choose a password",
+        },
+    heading: l === "ar" ? "أهلًا بك في «قلم»" : "Welcome to Qalam",
+    paragraphs: [
+      l === "ar"
+        ? "وقّع وليّ أمرك موافقته على مشاركتك في «قلم»، برنامج قرطاس الصيفي، فصار لك حساب ضيف في جمعية الفنون والآداب. يعرض حسابك جلساتك ومهامك وبطاقتك وشهادتك حين تنهي البرنامج."
+        : "Your parent or guardian signed the consent for you to take part in Qalam, the summer program of Qirtas, so you now have a guest account with the AUIB Society of Arts and Letters. It shows your sessions, your assignments, your card and, when you finish, your certificate.",
+      SIGN_IN[existing ? "existing" : "new"][l],
+    ],
+  }));
+
+/**
  * To a member the Council removed from membership (decisions.md,
  * Governance): plain, with where to ask. The account stays.
  */
