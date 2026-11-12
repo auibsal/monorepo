@@ -50,7 +50,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   renders GOV-07 («سياسة الإبلاغ عن الثغرات الأمنية») once published, "Effective
   the day it is published"; security.txt points to /security; three
   business days to acknowledge.
-- [ ] **5. Council meetings show as Members events.**
+- [x] **5. Council meetings show as Members events.**
 - [ ] **6. Student Life's staff answer from Associate accounts.**
 - [ ] **7. The permissions table** for EXB-01: report where it lives.
 - [x] **7a. The stack page:** Notion on the free Plus plan for student

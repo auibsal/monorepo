@@ -24,7 +24,8 @@ planning: **Officers** and **Qirtas pipeline** (counts only; review is
 blind). Edit them on the site; each row links there.
 
 **Events** (decisions §10). Each English row sets **Way in** (Open, RSVP,
-Members or Private; Private for a Council meeting), which alone decides who
+Members or Private; Members for a Council meeting, which members may
+observe, with the closed session held apart), which alone decides who
 sees and books it, and, for an event away from campus, **Off campus**.
 Events are made here only: the Diwan shows them and keeps the site's own
 parts (bookings, check-in, registration questions, shifts, the partner
