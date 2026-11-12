@@ -45,8 +45,11 @@ type State =
  */
 export const NewsletterSignup = ({
   compact = false,
+  inFooter = false,
 }: {
   compact?: boolean;
+  /** In the footer the field names the paper: a page may have its own email field. */
+  inFooter?: boolean;
 }) => {
   const t = useTranslations("web.newsletter");
   const locale = useLocale();
@@ -139,7 +142,9 @@ export const NewsletterSignup = ({
 
   return (
     <form className="grid gap-3" noValidate onSubmit={submit}>
-      <Label htmlFor={`${id}-email`}>{t("email")}</Label>
+      <Label htmlFor={`${id}-email`}>
+        {inFooter ? t("emailForPaper") : t("email")}
+      </Label>
       <div className={compact ? "flex flex-wrap gap-2" : "grid gap-3 sm:flex"}>
         <Input
           autoComplete="email"

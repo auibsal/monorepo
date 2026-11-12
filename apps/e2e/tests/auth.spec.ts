@@ -166,8 +166,7 @@ test("a member with a name from before the four parts is asked for them at sign-
   const db = admin();
   const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
   const id = users.users.find((u) => u.email === member.email)?.id ?? "";
-  // As members kept them until Oct 31, 2026: one whole name per language,
-  // and not yet seen how the site shows it.
+  // As members kept them until Oct 31, 2026: one whole name per language.
   await db
     .schema("core")
     .from("profiles")
@@ -180,7 +179,6 @@ test("a member with a name from before the four parts is asked for them at sign-
       grandfather_name_en: null,
       last_name_ar: null,
       last_name_en: null,
-      name_confirmed_at: null,
       signup_name_ar: "اختبار تجريبي",
       signup_name_en: "Tess Tester",
     })

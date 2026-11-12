@@ -619,9 +619,11 @@
       "recoveryFailed": "That code didn’t work. Check it, or try another one. If none are left, ask whoever assigns roles to reset your two-step sign-in.",
       "settingsTitle": "Two-step sign-in",
       "settingsOffer": "Optional for you: after your password, a six-digit code from an authenticator app on your phone. Signing in with a passkey counts as two steps on its own.",
-      "settingsFrom": "From {date}, one of your roles needs two-step sign-in: after your password, a six-digit code from an authenticator app on your phone. Set it up now, or sign in with a passkey, which counts as two steps on its own.",
       "settingsOn": "On. You enter a code from your authenticator app after your password.",
-      "settingsOnNextTime": "On. You’ll enter a code from your authenticator app where a page needs it."
+      "settingsOnNextTime": "On. You’ll enter a code from your authenticator app where a page needs it.",
+      "passkeyFirst": "A passkey on this device",
+      "passkeyBody": "Quickest: add a passkey, then sign out and sign in with it. A passkey counts as two steps on its own.",
+      "orAuthenticator": "Or an authenticator app"
     },
     "journal": {
       "status": {
@@ -5762,7 +5764,8 @@
         "legend": "What you’d like",
         "paper": "The Sunday Paper",
         "news": "Society news and events"
-      }
+      },
+      "emailForPaper": "Your address for the Sunday Paper"
     },
     "governance": {
       "title": "The Council",

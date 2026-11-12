@@ -49,7 +49,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   // Signed in the applicant's name on the platform, never typed: a
   // signature in the signature face, with their card number and the date.
   await expect(
-    applicant.getByRole("figure").filter({ hasText: "Tess Partner" })
+    applicant.getByRole("figure").filter({ hasText: "Tess Test" })
   ).toBeVisible();
   await applicant
     .getByRole("checkbox", { name: /I sign this memorandum/u })

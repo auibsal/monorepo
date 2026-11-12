@@ -3,15 +3,20 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
-import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { useTranslations } from "next-intl";
+import { type FormEvent, lazy, Suspense, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
 import { DiwanSection } from "../page";
 import { SectionSpinner } from "../states";
+
+// Loaded only when the panel offers it: the gates share this module, and
+// the sign-in page must stay light.
+const Passkeys = lazy(() =>
+  import("../profile/passkeys").then((m) => ({ default: m.Passkeys }))
+);
 
 /** The sign-in methods that are already two factors (decisions.md, Members). */
 const PASSKEY_METHODS = new Set(["passkey", "webauthn", "mfa/webauthn"]);
@@ -27,9 +32,8 @@ export const useTwoStep = () => {
   return useQuery({
     enabled: Boolean(user),
     queryFn: async () => {
-      const [needs, from, level, factors] = await Promise.all([
+      const [needs, level, factors] = await Promise.all([
         supabase.schema("access").rpc("needs_two_step"),
-        supabase.schema("access").rpc("two_step_from"),
         supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
         supabase.auth.mfa.listFactors(),
       ]);
@@ -46,7 +50,6 @@ export const useTwoStep = () => {
             )
           ),
         factorId: verified?.id ?? null,
-        from: (unwrap(from) as string | null) ?? null,
         needs: Boolean(unwrap(needs)),
       };
     },
@@ -254,6 +257,19 @@ export const TwoStepPanel = () => {
         {factorId ? t("verifyTitle") : t("setupTitle")}
       </h2>
       <p className="type-body">{factorId ? t("verifyBody") : t("setupBody")}</p>
+      {/* Set-up order (fourth prompt, 3): a passkey first (two factors on
+          its own), then an authenticator app; recovery codes follow on the
+          Desk once it is done. */}
+      {factorId ? null : (
+        <>
+          <h3 className="type-subheading">{t("passkeyFirst")}</h3>
+          <p className="type-body">{t("passkeyBody")}</p>
+          <Suspense fallback={null}>
+            <Passkeys />
+          </Suspense>
+          <h3 className="type-subheading">{t("orAuthenticator")}</h3>
+        </>
+      )}
       <SetupSteps factorId={factorId} setup={setup} />
       {factorId && !setup.enrolling ? (
         <RecoveryCodeForm
@@ -269,12 +285,12 @@ export const TwoStepPanel = () => {
 };
 
 /**
- * Settings, for everyone: whether two-step is on, the offer to set it up,
- * and the date a role of theirs starts to need it.
+ * Settings, for everyone: whether two-step is on, and the offer to set it
+ * up. No reminder before a role needs it (fourth prompt, 3): the set-up
+ * comes at sign-in once it does.
  */
 export const TwoStepSettings = () => {
   const t = useTranslations("diwan.twoStep");
-  const locale = useLocale();
   const state = useTwoStep();
   const setup = useSetup();
   if (!state.data) {
@@ -289,15 +305,10 @@ export const TwoStepSettings = () => {
       </DiwanSection>
     );
   }
-  const { from } = state.data;
   return (
     <DiwanSection id="two-step" title={t("settingsTitle")}>
       <div className="grid max-w-xl gap-4">
-        <p className="type-body">
-          {from
-            ? t("settingsFrom", { date: formatLongDate(from, locale) })
-            : t("settingsOffer")}
-        </p>
+        <p className="type-body">{t("settingsOffer")}</p>
         <SetupSteps factorId={setup.enrolling?.id ?? null} setup={setup} />
       </div>
     </DiwanSection>

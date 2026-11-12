@@ -107,7 +107,7 @@ export const Footer = async ({
                 <Link className={linkClass} href="/sunday-paper">
                   {t("sundayPaper")}
                 </Link>
-                <NewsletterSignup compact />
+                <NewsletterSignup compact inFooter />
               </div>
             ) : null}
           </div>

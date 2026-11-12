@@ -38,10 +38,12 @@ First the second prompt's part 2 (7j), then the rest in place.
   adds school and year).
 - [x] **2. "Sign as …" everywhere:** no typed legal name anywhere, the GPA
   consent on a director application included.
-- [ ] **3. Two-step from Nov 22:** no lock-out, no reminder; a role that
-  sees personal data is taken to set it up at sign-in (passkey first, then
-  an authenticator app, then recovery codes); shift-scoped station access
-  exempt.
+- [~] **3. Two-step from Nov 22:** no reminder (the "From {date}" line is
+  gone); the set-up panel offers a passkey first, then an authenticator
+  app, with recovery codes on the Desk once done; shift-scoped station
+  access is not a role, so it is exempt. Open: taking the person to set-up
+  straight from sign-in (the Diwan already stops them until it is done; a
+  partner's people need their own step on the dashboard first).
 - [x] **3a. Names:** no "keep or change" prompt; the default preferred name
   set for everyone alike (the President's and the host's stay); the legal
   name locked for every account, changed only in the Diwan with a second
