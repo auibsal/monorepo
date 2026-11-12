@@ -117,7 +117,7 @@ select is(
   'Three parts are a name: the family name only where there is one'
 );
 -- Complete, the official name is locked: even an empty family name is
--- added only in the Diwan's Membership (the owner, Nov 12, 2026).
+-- added only in the Diwan's Membership (decisions.md, Members).
 select throws_ok(
   $$ update core.profiles set last_name_ar = 'التميمي'
      where id = '00000000-0000-0000-0000-0000000000a1' $$,
