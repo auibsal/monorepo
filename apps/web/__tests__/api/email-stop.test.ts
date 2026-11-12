@@ -44,3 +44,24 @@ describe("plain-text emails", () => {
     expect(text).toContain("auibsal.org.");
   });
 });
+
+describe("bulk email's web copy", () => {
+  test("opens with the link to read it in the browser", () => {
+    const text = noticeText({
+      blocks: [
+        { heading: "The Sunday Paper", lang: "en", paragraphs: ["Hello."] },
+      ],
+      browser: "https://auibsal.org/sunday-paper/2026-12",
+    });
+    expect(text.split("\n")[0]).toBe(
+      "View in your browser: https://auibsal.org/sunday-paper/2026-12"
+    );
+  });
+
+  test("is left out of personal email", () => {
+    const text = noticeText({
+      blocks: [{ heading: "You're booked", lang: "en", paragraphs: [] }],
+    });
+    expect(text).not.toContain("View in your browser");
+  });
+});

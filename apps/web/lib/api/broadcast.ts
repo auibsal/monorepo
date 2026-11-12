@@ -40,6 +40,8 @@ export interface BroadcastContact {
 }
 
 export interface BroadcastJob {
+  /** The web copy, linked at the top as "View in your browser". */
+  readonly browser?: string;
   readonly built: Built;
   readonly contacts: readonly BroadcastContact[];
   /**
@@ -349,6 +351,7 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
         name: job.key,
         react: Notice({
           blocks: job.built.blocks,
+          browser: job.browser,
           footer: job.footer,
           preview: job.built.preview,
         }),
@@ -360,7 +363,11 @@ export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
         segmentId: row.segment_id,
         ...(job.draft ? { send: false as const } : { send: true as const }),
         subject: job.built.subject,
-        text: noticeText({ blocks: job.built.blocks, footer: job.footer }),
+        text: noticeText({
+          blocks: job.built.blocks,
+          browser: job.browser,
+          footer: job.footer,
+        }),
       }),
       "broadcast"
     );

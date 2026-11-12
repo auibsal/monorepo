@@ -223,9 +223,11 @@ production; **Owner** is a step only the owner can take.
   security.
 - [x] Senders: "AUIB Society of Arts and Letters" (site, announcements),
   "Qirtas" (the Sunday Paper), a person's name and seat (letters).
-- [ ] Bulk email: "View in your browser" at the top; unsubscribing lands on
-  a page that confirms and offers topics; sent from news.auibsal.org with
-  replies to hello@ and qirtas@.
+- [x] Bulk email: "View in your browser" at the top (the Sunday Paper's
+  month page, From the Society for announcements); unsubscribing lands on
+  a page that confirms and offers the two topics; sent from
+  news.auibsal.org once `RESEND_BULK_DOMAIN` is set, with replies to
+  hello@ and qirtas@.
 - [ ] Every template previewable in both languages on the design page, with
   a test to yourself.
 - [ ] Staff alerts: urgent at once, the rest in one daily digest.

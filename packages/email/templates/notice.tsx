@@ -77,6 +77,11 @@ export interface NoticeFooterLine {
 export interface NoticeProps {
   /** The recipient's language first, then the other one. */
   readonly blocks: readonly NoticeBlock[];
+  /**
+   * Bulk mail's web copy (decisions.md, Channels and email): "View in your
+   * browser" at the top, for the Sunday Paper and announcements.
+   */
+  readonly browser?: string;
   readonly footer?: readonly NoticeFooterLine[];
   readonly preview: string;
 }
@@ -84,6 +89,11 @@ export interface NoticeProps {
 const FALLBACK = {
   ar: "إن لم يعمل الزر، فافتح هذا الرابط:",
   en: "If the button doesn't work, open this link:",
+};
+
+const IN_BROWSER = {
+  ar: "اقرأها في المتصفح",
+  en: "View in your browser",
 };
 
 const NAME = {
@@ -108,9 +118,13 @@ const FOOTER = {
  */
 export const noticeText = ({
   blocks,
+  browser,
   footer = [],
-}: Pick<NoticeProps, "blocks" | "footer">) =>
+}: Pick<NoticeProps, "blocks" | "browser" | "footer">) =>
   [
+    ...(browser
+      ? [`${IN_BROWSER[blocks[0]?.lang ?? "en"]}: ${browser}`, ""]
+      : []),
     ...blocks.flatMap((block) => [
       block.heading,
       "",
@@ -271,7 +285,12 @@ const Block = ({ block }: { block: NoticeBlock }) => {
  * letter's signature), no tracking,
  * no exclamation marks.
  */
-export const Notice = ({ blocks, footer = [], preview }: NoticeProps) => {
+export const Notice = ({
+  blocks,
+  browser,
+  footer = [],
+  preview,
+}: NoticeProps) => {
   const first = blocks[0]?.lang ?? "en";
   const small = {
     color: ASH,
@@ -292,6 +311,13 @@ export const Notice = ({ blocks, footer = [], preview }: NoticeProps) => {
       <Preview>{preview}</Preview>
       <Body style={{ backgroundColor: WHITE, margin: 0, padding: "24px 0" }}>
         <Container style={{ maxWidth: 600, padding: "8px 32px 32px" }}>
+          {browser ? (
+            <Text style={{ ...small, margin: "0 0 16px" }}>
+              <Link href={browser} style={{ color: ASH }}>
+                {IN_BROWSER[first]}
+              </Link>
+            </Text>
+          ) : null}
           <Img
             alt={NAME[first]}
             height={48}

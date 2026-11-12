@@ -799,6 +799,7 @@ const handlers: Record<string, Handler> = {
       try {
         // biome-ignore lint/performance/noAwaitInLoops: one language at a time
         await runBroadcast(admin, {
+          browser: site(lang, "/qirtas/from-the-society"),
           built: announcement(lang, notice, origin()),
           contacts,
           footer: [
@@ -1700,6 +1701,7 @@ const handlers: Record<string, Handler> = {
       const line = FOOTER_LINES.optional[lang];
       try {
         await runBroadcast(admin, {
+          browser: site(lang, `/sunday-paper/${month}`),
           built: sundayPaper(lang, paper),
           contacts,
           footer: [
