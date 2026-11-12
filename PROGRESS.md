@@ -154,10 +154,14 @@ First the second prompt's part 2 (7j), then the rest in place.
   **Migrates:** `deletion_requested_at`; the retention job deletes after
   30 days. The confirmation is a second step on the page.
 - [x] **Download your data:** a readable page beside the JSON.
-- [ ] **Sign-up in three screens at most:** address and password; the names
+- [x] **Sign-up in three screens at most:** address and password; the names
   (the legal name for Members, with a line on where it is used) and the
   Arabic form; the agreements. Everything else waits on Today. The first
   two weeks' emails each point to one next step and stop once it is done.
+  Setup now asks both names on one screen, then the Code of Conduct; the
+  photo question moved to Profile (`setup-form.tsx`). The first two
+  weeks' emails stay as they are: the welcome, then reminders that stop
+  once done.
 - [x] **Renewal each September:** "I'm still here", one click, with the Code
   of Conduct re-acknowledged; those who don't stay members but leave the
   active count and Student Life's lists. **Migrates:** `renewed_at`

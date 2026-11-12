@@ -40,10 +40,8 @@ type PledgeKind = "member";
 export type Names = nameParts.FourPartNames;
 
 type SetupStep =
-  | { kind: "nameEn" }
-  | { kind: "nameAr" }
-  | { kind: "pledge"; pledge: PledgeKind }
-  | { kind: "photos" };
+  | { kind: "names"; languages: ("en" | "ar")[] }
+  | { kind: "pledge"; pledge: PledgeKind };
 
 export interface SetupPlan {
   steps: SetupStep[];
@@ -52,13 +50,22 @@ export interface SetupPlan {
 }
 
 /**
- * What setup still asks, one question per screen (owner, 2026-10-25): each
- * name the member hasn't given (English, then Arabic), each pledge not yet
- * made in its current version, and, the first time, whether they're happy
- * to be photographed. Everything is saved as it's answered, so a reload
- * asks only what's left. Language and email notices aren't asked: they
- * follow the language signed up in and start on (both in Settings).
+ * What setup still asks (the third prompt, §1: sign-up in three screens at
+ * most, the address and password being the first): the names not yet
+ * given, both languages on one screen, then each pledge not yet made in
+ * its current version. Everything else waits on Today or Settings (the
+ * photo question is in Profile). Everything is saved as it's answered, so
+ * a reload asks only what's left.
  */
+const namesStep = (names: Names): SetupStep[] => {
+  const languages = (["en", "ar"] as const).filter(
+    (language) => !nameParts.partsComplete(names[language])
+  );
+  return languages.length > 0
+    ? [{ kind: "names", languages: [...languages] }]
+    : [];
+};
+
 export const planSetup = ({
   member = true,
   names,
@@ -72,12 +79,10 @@ export const planSetup = ({
   setupDone: boolean;
 }): SetupPlan => ({
   steps: [
-    ...(nameParts.partsComplete(names.en) ? [] : [{ kind: "nameEn" } as const]),
-    ...(nameParts.partsComplete(names.ar) ? [] : [{ kind: "nameAr" } as const]),
+    ...namesStep(names),
     ...(member
       ? pending.map((pledge) => ({ kind: "pledge", pledge }) as const)
       : []),
-    ...(setupDone || !member ? [] : [{ kind: "photos" } as const]),
   ],
   welcome: member && !setupDone,
 });
@@ -115,10 +120,8 @@ const stepUrl = (index: number) =>
   `${window.location.pathname.replace(STEP_PATH, `/welcome/${index + 1}`)}${window.location.search}`;
 
 type Answer =
-  | { kind: "nameEn"; names: Names }
-  | { kind: "nameAr"; names: Names }
-  | { kind: "pledge"; pledge: PledgeKind }
-  | { kind: "photos"; cameraShy: boolean };
+  | { kind: "names"; languages: ("en" | "ar")[]; names: Names }
+  | { kind: "pledge"; pledge: PledgeKind };
 
 export const SetupForm = () => {
   const t = useTranslations("diwan.setup");
@@ -158,8 +161,25 @@ export const SetupForm = () => {
       setupDone: Boolean(profile.data.setup_completed_at),
     });
     setPlan(planned);
+    // Nothing to ask (names given at sign-up, no pledge due): setup is done.
+    if (planned.steps.length === 0 && !profile.data.setup_completed_at) {
+      supabase
+        .schema("core")
+        .from("profiles")
+        .update({ setup_completed_at: new Date().toISOString() })
+        .eq("id", user?.id ?? "")
+        .then(() => queryClient.invalidateQueries());
+    }
     window.history.replaceState(null, "", stepUrl(0));
-  }, [mine.data, plan, profile.data, status.data]);
+  }, [
+    mine.data,
+    plan,
+    profile.data,
+    queryClient,
+    status.data,
+    supabase,
+    user?.id,
+  ]);
 
   // The browser's Back and Forward move between the steps.
   useEffect(() => {
@@ -201,21 +221,29 @@ export const SetupForm = () => {
           throw error;
         }
       };
-      if (answer.kind === "nameEn") {
-        await update(nameParts.partsUpdate(answer.names.en, "en"));
-      } else if (answer.kind === "nameAr") {
-        await update(nameParts.partsUpdate(answer.names.ar, "ar"));
-      } else if (answer.kind === "pledge") {
+      if (answer.kind === "names") {
+        await update(
+          Object.assign(
+            {},
+            ...answer.languages.map((language) =>
+              nameParts.partsUpdate(answer.names[language], language)
+            )
+          )
+        );
+      } else {
         await membership.acceptPledge(
           supabase,
           answer.pledge,
           versions.data?.[answer.pledge] ?? "1"
         );
-      } else {
-        await update({
-          camera_shy: answer.cameraShy,
-          setup_completed_at: new Date().toISOString(),
-        });
+      }
+      // The last answer finishes setup.
+      if (
+        plan &&
+        index + 1 >= plan.steps.length &&
+        !profile.data?.setup_completed_at
+      ) {
+        await update({ setup_completed_at: new Date().toISOString() });
       }
     },
     onSuccess: async () => {
@@ -304,15 +332,17 @@ export const SetupForm = () => {
           style={{ width: `${((index + 1) / plan.steps.length) * 100}%` }}
         />
       </div>
-      {step.kind === "nameEn" || step.kind === "nameAr" ? (
+      {step.kind === "names" ? (
         <NameStep
           back={back}
           failed={failed}
           heading={heading}
-          language={step.kind === "nameEn" ? "en" : "ar"}
+          languages={step.languages}
           names={names}
           onChange={setNames}
-          onSubmit={() => save.mutate({ kind: step.kind, names })}
+          onSubmit={() =>
+            save.mutate({ kind: "names", languages: step.languages, names })
+          }
           pending={save.isPending}
         />
       ) : null}
@@ -325,15 +355,6 @@ export const SetupForm = () => {
           pending={save.isPending}
           pledge={step.pledge}
           version={versions.data?.[step.pledge] ?? "1"}
-        />
-      ) : null}
-      {step.kind === "photos" ? (
-        <PhotosStep
-          back={back}
-          failed={failed}
-          heading={heading}
-          onAnswer={(cameraShy) => save.mutate({ cameraShy, kind: "photos" })}
-          pending={save.isPending}
         />
       ) : null}
     </>
@@ -363,25 +384,30 @@ const StepHeading = ({
   </h2>
 );
 
-/** One language's four parts, as on the person's papers; Enter moves on. */
+/**
+ * The name as on the person's papers, in English and its Arabic form on
+ * one screen (each language's four parts); Enter moves on.
+ */
 const NameStep = ({
   back,
   failed,
   heading,
-  language,
+  languages,
   names,
   onChange,
   onSubmit,
   pending,
 }: StepProps & {
-  language: "en" | "ar";
+  languages: ("en" | "ar")[];
   names: Names;
   onChange: (names: Names) => void;
   onSubmit: () => void;
 }) => {
   const t = useTranslations("diwan.setup");
   const id = useId();
-  const ready = nameParts.partsReady(names[language], language);
+  const ready = languages.every((language) =>
+    nameParts.partsReady(names[language], language)
+  );
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (ready && !pending) {
@@ -391,19 +417,24 @@ const NameStep = ({
   return (
     <form className="grid gap-6" onSubmit={submit}>
       <div className="grid gap-2">
-        <StepHeading heading={heading}>
-          {language === "en" ? t("nameEn.title") : t("nameAr.title")}
-        </StepHeading>
+        <StepHeading heading={heading}>{t("names.title")}</StepHeading>
         <p className="type-body text-text-secondary" id={`${id}-hint`}>
           {t("name.hint")}
         </p>
       </div>
-      <NamePartsFields
-        describedBy={`${id}-hint`}
-        language={language}
-        onChange={(parts) => onChange({ ...names, [language]: parts })}
-        parts={names[language]}
-      />
+      {languages.map((language) => (
+        <fieldset className="grid gap-3" key={language}>
+          <legend className="type-subheading mb-2">
+            {language === "en" ? t("nameEn.title") : t("nameAr.title")}
+          </legend>
+          <NamePartsFields
+            describedBy={`${id}-hint`}
+            language={language}
+            onChange={(parts) => onChange({ ...names, [language]: parts })}
+            parts={names[language]}
+          />
+        </fieldset>
+      ))}
       {failed}
       <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
         <Button disabled={!ready || pending} type="submit">
@@ -513,45 +544,6 @@ const PledgeStep = ({
       <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
         <Button disabled={pending} onClick={onAgree} type="button">
           {t(`${key}.accept`)}
-        </Button>
-        {back}
-      </div>
-    </div>
-  );
-};
-
-/** Consent to be photographed: a yes or a no, both one tap. */
-const PhotosStep = ({
-  back,
-  failed,
-  heading,
-  onAnswer,
-  pending,
-}: StepProps & { onAnswer: (cameraShy: boolean) => void }) => {
-  const t = useTranslations("diwan.setup");
-  return (
-    <div className="grid gap-6">
-      <div className="grid gap-2">
-        <StepHeading heading={heading}>{t("photos.title")}</StepHeading>
-        <p className="type-body text-text-secondary">{t("photos.body")}</p>
-      </div>
-      {failed}
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-        <Button
-          disabled={pending}
-          onClick={() => onAnswer(false)}
-          type="button"
-        >
-          {t("photos.yes")}
-        </Button>
-        <Button
-          className="px-0"
-          disabled={pending}
-          onClick={() => onAnswer(true)}
-          type="button"
-          variant="link"
-        >
-          {t("photos.no")}
         </Button>
         {back}
       </div>

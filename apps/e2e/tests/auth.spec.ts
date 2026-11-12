@@ -44,47 +44,34 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.goto((link ?? "").replaceAll("&amp;", "&"));
   await page.getByRole("button", { name: /continue/iu }).click();
 
-  // One question per screen.
-  // One question per screen, each at its own address.
+  // Three screens at most (the third prompt, §1): the account, then the
+  // names in both languages on one screen, then the Code of Conduct.
   await expect(page).toHaveURL(/\/welcome\/1(\?|$)/u);
-  await expect(page.getByText("Step 1 of 4")).toBeVisible();
+  await expect(page.getByText("Step 1 of 2")).toBeVisible();
   await expectAccessible(page);
-  // The name in four parts, in English, then in Arabic.
-  await page.getByLabel("Name", { exact: true }).fill("New");
-  await page.getByLabel("Father’s name", { exact: true }).fill("Kareem");
-  await page.getByLabel("Grandfather’s name").fill(grandfather);
-  await page.getByLabel("Family name").fill("Member");
-  await page.getByLabel("Family name").press("Enter");
-
-  await expect(page.getByText("Step 2 of 4")).toBeVisible();
-  await expect(page).toHaveURL(/\/welcome\/2(\?|$)/u);
-  await page.getByLabel("Name", { exact: true }).fill("عضو");
-  await page.getByLabel("Father’s name", { exact: true }).fill("كريم");
-  await page
+  const english = page.getByRole("group", { name: "Your name in English" });
+  await english.getByLabel("Name", { exact: true }).fill("New");
+  await english.getByLabel("Father’s name", { exact: true }).fill("Kareem");
+  await english.getByLabel("Grandfather’s name").fill(grandfather);
+  await english.getByLabel("Family name").fill("Member");
+  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
+  await arabic.getByLabel("Name", { exact: true }).fill("عضو");
+  await arabic.getByLabel("Father’s name", { exact: true }).fill("كريم");
+  await arabic
     .getByLabel("Grandfather’s name")
     .fill(
       `حسن${grandfather.slice(5).replace(/[a-j]/gu, (c) => "ابتثجحخدذر"[c.charCodeAt(0) - 97] ?? "")}`
     );
-  await page.getByLabel("Family name").fill("جديد");
-  // The browser's Back goes to the last screen, answers kept.
-  await page.goBack();
-  await expect(page.getByLabel("Father’s name", { exact: true })).toHaveValue(
-    "Kareem"
-  );
-  await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByLabel("Family name")).toHaveValue("جديد");
+  await arabic.getByLabel("Family name").fill("جديد");
   await page.getByRole("button", { name: "Continue" }).click();
 
   // No "keep or change" step: the default name shows (fourth prompt, 3a).
-  await expect(page.getByText("Step 3 of 4")).toBeVisible();
+  await expect(page.getByText("Step 2 of 2")).toBeVisible();
+  await expect(page).toHaveURL(/\/welcome\/2(\?|$)/u);
   // The Code of Conduct is the only pledge (decisions.md, Members).
   await page
     .getByRole("button", { name: "I acknowledge the Code of Conduct" })
     .click();
-  await expect(
-    page.getByRole("heading", { name: "Happy to appear in event photos?" })
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Yes, that’s fine" }).click();
 
   await expect(
     page.getByRole("heading", { level: 1, name: "Welcome, New" })

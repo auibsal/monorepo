@@ -304,6 +304,9 @@
         "body": "You’re a member of the AUIB Society of Arts and Letters. This is your membership card: show it at the door.",
         "open": "Open your account",
         "more": "Tell us more about yourself (two minutes, optional)"
+      },
+      "names": {
+        "title": "Your name"
       }
     },
     "home": {
