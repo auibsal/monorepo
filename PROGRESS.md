@@ -248,8 +248,10 @@ production; **Owner** is a step only the owner can take.
 - [x] A stack page in the docs: every service with its plan, owner account,
   renewal date and exit.
 - [x] Journey maps in the docs, one per kind of person.
-- [ ] The templates index on the design page, and the certificate with two
-  signatures. (Open Badges only from 2028.)
+- [x] The templates index on the design page (Guide → Templates: each
+  template, what it is for and where it is used, linked to its entry), and
+  the certificate with two signatures (`Certificate`, two signers). (Open
+  Badges only from 2028.)
 - [ ] The monthly advisors' report on the Desk.
 - [ ] **Owner:** news.auibsal.org in Resend (its DNS records); a free public
   status page at status.auibsal.org fed by the uptime check; Supabase's
