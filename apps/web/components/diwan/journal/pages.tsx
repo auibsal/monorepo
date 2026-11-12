@@ -18,7 +18,6 @@ import {
   useMemberStatus,
   useMySubmissions,
   type useOpenCalls,
-  useProfile,
 } from "@/lib/diwan/queries";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import {
@@ -334,10 +333,14 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  // A signature is the author's name on the platform, dated when signed
+  // "Sign as …": the name the register holds, dated when signed
   // (decisions.md); the database signs in that name.
-  const profile = useProfile();
-  const name = profile.data ? localized(profile.data, "full_name", locale) : "";
+  const registered = useQuery({
+    queryFn: async () =>
+      unwrap(await supabase.schema("core").rpc("my_register_name")) ?? "",
+    queryKey: ["core", "register-name"],
+  });
+  const name = registered.data ?? "";
   const agreement = useQuery({
     queryFn: async () =>
       unwrap(

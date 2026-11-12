@@ -197,12 +197,20 @@ First the second prompt's part 2 (7j), then the rest in place.
   **Owner:** Apple Wallet waits on Apple's developer account (a need).
 - [x] **Guests' tabs:** Today, Events, Work, Documents, Settings
   (`member-shell.tsx`; «أعمالك» and «المستندات» from the glossary).
-- [ ] **No name fields anywhere:** the only name entry is the account at
+- [x] **No name fields anywhere:** the only name entry is the account at
   sign-up. Signing shows the legal name with "Sign as …"; credits,
   co-authors, event guests and anyone named on a record are picked from
   the site's people; outsiders are invited by email first. Every free-text
   name field goes. **Migrates:** the typed-name columns are dropped once
-  their rows point to accounts.
+  their rows point to accounts. Done: forms, the GPA consent and the
+  Publication Agreement sign in the register's name; a production credit
+  is picked from the people (someone from outside is invited as a guest
+  first); Next Stop's guest from outside is invited by email and named by
+  the release they sign (`20261113003500_no_typed_names.sql`). The
+  database refuses new typed names; rows typed before stay until they
+  point to accounts, then the columns go. Typed names remain only where
+  the person has no account by design: a parent signing by link, a
+  request for Associate membership, and Qalam's roster.
 
 ### 2. Records, receipts and agreements (decisions.md, Documents and forms)
 - [x] Every action that creates a record shows a confirmation that stays on

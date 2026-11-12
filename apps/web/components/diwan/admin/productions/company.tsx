@@ -418,9 +418,7 @@ interface Person {
 const emptyCredit = {
   department: "cast" as Department,
   member: null as Person | null,
-  person_name: "",
   role: { ar: "", en: "" },
-  who: "member" as "member" | "outside",
 };
 
 export const CreditsTab = ({ production }: { production: ProductionRow }) => {
@@ -726,10 +724,10 @@ const NewCredit = ({
     mutationFn: () =>
       productions.addCredit(supabase, production.id, {
         department: form.department,
-        person_name: form.who === "outside" ? form.person_name : null,
+        person_name: null,
         role_ar: form.role.ar,
         role_en: form.role.en,
-        user_id: form.who === "member" ? (form.member?.id ?? null) : null,
+        user_id: form.member?.id ?? null,
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
@@ -765,56 +763,22 @@ const NewCredit = ({
             </SelectInput>
           )}
         </Field>
-        <Field label={t("who")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  who: e.target.value as "member" | "outside",
-                }))
-              }
-              value={form.who}
-            >
-              <option value="member">{t("aMember")}</option>
-              <option value="outside">{t("someoneOutside")}</option>
-            </SelectInput>
-          )}
-        </Field>
       </div>
-      {form.who === "member" ? (
-        <MemberPicker
-          label={t("member")}
-          onChange={(member) => setForm((f) => ({ ...f, member }))}
-          value={form.member}
-        />
-      ) : (
-        <Field hint={t("outsideHint")} label={t("personName")}>
-          {(id) => (
-            <Input
-              dir="auto"
-              id={id}
-              maxLength={200}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, person_name: e.target.value }))
-              }
-              required
-              value={form.person_name}
-            />
-          )}
-        </Field>
-      )}
+      {/* Everyone credited is picked from the site's people (the third
+          prompt, §1); someone from outside is invited as a guest first. */}
+      <MemberPicker
+        label={t("member")}
+        onChange={(member) => setForm((f) => ({ ...f, member }))}
+        value={form.member}
+      />
+      <p className="type-caption">{t("outsideInvite")}</p>
       <BilingualField
         label={t("role")}
         maxLength={200}
         onChange={(role) => setForm((f) => ({ ...f, role }))}
         value={form.role}
       />
-      <SaveButton
-        disabled={form.who === "member" && !form.member}
-        pending={add.isPending}
-      />
+      <SaveButton disabled={!form.member} pending={add.isPending} />
       <ErrorLine error={add.error} />
     </form>
   );

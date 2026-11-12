@@ -7928,6 +7928,10 @@ export type Database = {
         Returns: string;
       };
       import_tour: { Args: { invitations: Json; pages: Json }; Returns: Json };
+      invite_on_camera: {
+        Args: { email: string; episode: string };
+        Returns: string;
+      };
       member_productions: {
         Args: Record<PropertyKey, never>;
         Returns: {

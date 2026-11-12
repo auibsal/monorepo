@@ -1567,8 +1567,8 @@
             "add": "Add someone on camera",
             "member": "A member",
             "asGuest": "Credit them as a guest",
-            "guestName": "Or a guest’s name",
-            "guestEmail": "The guest’s email address"
+            "guestEmail": "The guest’s email address",
+            "inviteHint": "A guest from outside: their address. The release link goes to it at once, and their name is the one they sign with."
           },
           "credits": {
             "title": "Credits",
@@ -2740,7 +2740,8 @@
           "showOutside": "They agreed to have their name shown",
           "hours": "Hours",
           "recordHours": "Record hours",
-          "recorded": "Recorded as service."
+          "recorded": "Recorded as service.",
+          "outsideInvite": "Someone from outside the Society? Invite them as a guest first (Membership, Guests); once their account is made, they are here."
         },
         "rehearsalsTab": {
           "lede": "Rehearsal calls. The company sees them on My calendar.",
