@@ -93,7 +93,13 @@ as $$
 $$;
 -- </preamble>
 
-select plan(1);
+select plan(5);
+
+select pg_temp.make_user('00000000-0000-0000-0000-0000000fa001', 'pres-temp@auib.edu.iq', 'President');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000fa002', 'vp-temp@auib.edu.iq', 'Vice President');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000fa003', 'member-temp@auib.edu.iq', 'Member');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000fa001', 'president');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000fa002', 'vice_president');
 
 -- TEMPORARY (20261113004300): the President holds every permission.
 select is(
@@ -103,6 +109,27 @@ select is(
   0::bigint,
   'For now the President holds every permission'
 );
+
+-- TEMPORARY (20261113004400): no second officer for the President.
+select pg_temp.login_as('00000000-0000-0000-0000-0000000fa001');
+select ok(private.second_officer(), 'For now the President needs no second officer');
+select membership.correct_name('00000000-0000-0000-0000-0000000fa003',
+  'Noor', 'Sami', 'Karim', null, 'نور', 'سامي', 'كريم', null, 'Setting up the record');
+select pg_temp.logout();
+select is(
+  (select first_name_en from core.profiles where id = '00000000-0000-0000-0000-0000000fa003'),
+  'Noor',
+  'and an official name the President sets takes effect at once'
+);
+
+-- The Vice President, standing in, gets the seat's usual grants only.
+insert into governance.president_absences (starts_on, ends_on)
+  values (current_date - 1, current_date + 1);
+select pg_temp.login_as('00000000-0000-0000-0000-0000000fa002');
+select ok(private.has_permission('roles.assign'),
+  'The Vice President standing in holds the President''s usual grants');
+select ok(not private.has_permission('journal.identity.view'),
+  'but not the President''s temporary ones');
 
 select * from finish();
 rollback;
