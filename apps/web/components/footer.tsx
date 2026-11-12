@@ -121,7 +121,7 @@ export const Footer = async ({
               </li>
             ))}
             <li>
-              <Link className={linkClass} href="/forms/21">
+              <Link className={linkClass} href="/about/contact/concern">
                 {t("concern")}
               </Link>
             </li>

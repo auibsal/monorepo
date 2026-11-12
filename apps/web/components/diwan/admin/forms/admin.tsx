@@ -10,7 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { forms, unwrap } from "@/lib/data";
+import { forms, localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermission, type Permission } from "@/lib/rbac";
@@ -172,7 +172,7 @@ export const RequestQueue = ({
               <option value="">{t("allForms")}</option>
               {handled.map((ty) => (
                 <option key={ty.key} value={ty.key}>
-                  {ty.code}
+                  {localized(ty, "title", locale)}
                 </option>
               ))}
             </SelectInput>

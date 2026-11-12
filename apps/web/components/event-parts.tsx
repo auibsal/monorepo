@@ -44,7 +44,7 @@ export const EventParts = async ({
           {t("approved", {
             date: formatLongDate(event.student_life_approved_on, locale),
           })}{" "}
-          <Link className="link" href={`/forms/F-45?event=${event.slug}`}>
+          <Link className="link" href={`/consent/trip?event=${event.slug}`}>
             {t("consent")}
           </Link>
         </p>

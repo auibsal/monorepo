@@ -145,7 +145,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   issued: a certificate when both sign, a letter when written, a
   resolution when adopted, a memorandum when the President countersigns.
   Verification codes are random and separate. Nobody types a number.
-- **Forms** are at `/forms/<number>` on one standard page, signed in the
+- **Forms** are each a step in their own flow, on one standard page with
+  no form number shown (`formPaths`: a concern at `/about/contact/concern`,
+  consents at `/consent/<kind>`, a declaration under Settings; the old
+  `/forms/<number>` addresses redirect, 308), signed in the
   signer's platform name and kept as the signed copy; staff forms are
   Notion templates. The signer agrees to sign electronically; the copy
   keeps the time, IP address, version and SHA-256 fingerprint, and the

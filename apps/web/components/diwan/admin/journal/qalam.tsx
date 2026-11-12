@@ -177,7 +177,7 @@ const ParentLinks = () => {
         <DataTable
           columns={[
             {
-              cell: (l) => (l.form_key === "f38" ? "F-38" : "F-39"),
+              cell: (l) => (l.form_key === "f38" ? t("f38") : t("f39")),
               header: t("form"),
               key: "form",
             },

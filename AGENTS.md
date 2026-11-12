@@ -28,7 +28,9 @@ media do.
     time through `roughlyNow`, never `new Date()` in a page).
   - `app/[locale]/(account)`: **your account**, the members' pages on the
     site: `/sign-in`, `/sign-up` (and `/sign-up/guest`), `/auth/*`,
-    `/welcome`, `/get-involved` (public), `/forms/<number>`,
+    `/welcome`, `/get-involved` (public), each form at its place in its
+    flow (`formPaths` in `lib/data/forms.ts`: `/about/contact/concern`,
+    `/consent/<kind>` …; the old `/forms/<number>` redirect),
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
     members, everything under `/account`, in six tabs (decisions.md, The site):
     Today, Calendar (`/calendar`), Record (`/record`, certificates at

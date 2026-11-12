@@ -23,10 +23,13 @@ production; **Owner** is a step only the owner can take.
 ### 0. The fourth prompt (Nov 12, late), folded into this plan
 Replaces the mirror (decisions.md and glossary_ar.md of Nov 12, late).
 First the second prompt's part 2 (7j), then the rest in place.
-- [ ] **7j. No F-numbers on the site:** retire /forms and every F-number;
-  "Raise a concern" lives on Contact; every agreement and consent is a step
-  in its own flow; each shared /forms address redirects (308); the footer
-  and Contact stop pointing at /forms/21.
+- [x] **7j. No F-numbers on the site:** /forms and every F-number retired
+  from the site, its emails and the Diwan; each form lives in its flow
+  (`formPaths`): a concern at `/about/contact/concern` (Contact and the
+  footer link it), consents at `/consent/<kind>` (a trip's from its event),
+  the declaration under Settings → Disclosures, a motion under Elections,
+  the memorandum on the partner dashboard; every old `/forms/<number>`
+  address (21, F-21, f21) redirects (308).
 - [ ] **1. Classes** follow status both ways on the same account and number
   (Members: degree and ELA students; Associates: faculty, staff, alumni;
   Guests: everyone else); Parent and Qalam student are roles on guest

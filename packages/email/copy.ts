@@ -1165,7 +1165,6 @@ export const formSignedCopy = (
   lang: Lang,
   form: {
     answers: { label: string; value: string }[];
-    code: string;
     fingerprint: string;
     signedAt: string;
     signer: string;
@@ -1196,8 +1195,8 @@ export const formSignedCopy = (
       : [],
     paragraphs: [
       l === "ar"
-        ? `وقّعتَ ${form.title} (${form.code}) باسم ${form.signer} في ${when(form.signedAt, l)}. يحتفظ الموقع بالنسخة الموقّعة، وهذه نسختك.`
-        : `You signed ${form.title} (${form.code}) as ${form.signer} on ${when(form.signedAt, l)}. The site keeps the signed copy; this one is yours.`,
+        ? `وقّعتَ ${form.title} باسم ${form.signer} في ${when(form.signedAt, l)}. يحتفظ الموقع بالنسخة الموقّعة، وهذه نسختك.`
+        : `You signed ${form.title} as ${form.signer} on ${when(form.signedAt, l)}. The site keeps the signed copy; this one is yours.`,
       l === "ar"
         ? `البصمة (SHA-256): ${form.fingerprint}`
         : `Fingerprint (SHA-256): ${form.fingerprint}`,
@@ -1209,10 +1208,7 @@ export const formSignedCopy = (
  * for Qalam), sent to the teacher, who passes it on: the Society reaches
  * parents only through the teacher.
  */
-export const formLink = (
-  lang: Lang,
-  link: { code: string; title: string; url: string }
-) =>
+export const formLink = (lang: Lang, link: { title: string; url: string }) =>
   build(lang, (l) => ({
     action: {
       href: link.url,
@@ -1224,8 +1220,8 @@ export const formLink = (
         : `A link to sign: ${link.title}`,
     paragraphs: [
       l === "ar"
-        ? `أرسِل هذا الرابط إلى ولي الأمر ليوقّع ${link.title} (${link.code}). يعمل الرابط مرة واحدة خلال 14 يومًا، ولا يحتاج إلى حساب.`
-        : `Please pass this link to the parent or guardian to sign ${link.title} (${link.code}). It works once, within 14 days, and needs no account.`,
+        ? `أرسِل هذا الرابط إلى ولي الأمر ليوقّع ${link.title}. يعمل الرابط مرة واحدة خلال 14 يومًا، ولا يحتاج إلى حساب.`
+        : `Please pass this link to the parent or guardian to sign ${link.title}. It works once, within 14 days, and needs no account.`,
     ],
   }));
 

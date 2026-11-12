@@ -164,6 +164,9 @@ test("a shared address that changed redirects to its new one, in both languages"
       ["/library/privacy", "/privacy"],
       ["/partners/join", "/partners/apply"],
       ["/qirtas/issues", "/qirtas/editions"],
+      // Forms live in their flows; the old numbered addresses go on.
+      ["/forms/21", "/about/contact/concern"],
+      ["/forms/F-45", "/consent/trip"],
       [
         "/events/writing-workshop-2026-11-17",
         "/events/writing-workshop-2026-12-08",

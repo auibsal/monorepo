@@ -422,19 +422,19 @@
       },
       "roleChecklist": {
         "title": "Your first steps as {role}",
-        "lede": "The new role holder’s checklist (F-04). The site marks what it can see; tick the rest when it’s done.",
+        "lede": "The new role holder’s checklist. The site marks what it can see; tick the rest when it’s done.",
         "done": "Done:",
         "todo": "To do:",
         "go": "Go there",
         "tick": "Mark as done",
         "steps": {
           "email": "The role email, with what the role does and who it works with",
-          "pledge": "The Code of Conduct and confidentiality, signed (for Qirtas, F-40 too)",
-          "declaration": "The conflict-of-interest declaration (F-06)",
+          "pledge": "The Code of Conduct and confidentiality, signed (for Qirtas, the readers’ pledge too)",
+          "declaration": "The conflict-of-interest declaration",
           "two_step": "Two-step sign-in or a passkey set up",
           "diwan_group": "In the Diwan group on Telegram, through Hudhud",
           "pages": "The role’s manual, Brand essentials and the role’s Diwan pages opened",
-          "handover": "The previous holder’s handover page walked through (F-07)",
+          "handover": "The previous holder’s handover page walked through",
           "mailbox": "The seat’s mailbox received, with its password and two-step backup reset",
           "notion": "Invited to Notion by the Secretary"
         }
@@ -1170,7 +1170,7 @@
           "associate": "Associate Member",
           "honorary": "Honorary Member",
           "resolution": "The Council’s resolution",
-          "resolutionHint": "An Honorary Member is invited only after the Council adopts its resolution (F-34).",
+          "resolutionHint": "An Honorary Member is invited only after the Council adopts its resolution.",
           "email": "Their email",
           "invite": "Send the invitation",
           "sent": "Invitation sent."
@@ -1425,7 +1425,7 @@
           "withdraw": "Withdraw",
           "sent": "Invitation sent."
         },
-        "debrief": "The debrief (F-13) in Notion",
+        "debrief": "The debrief in Notion",
         "servesFood": "Food is served (the booking also asks about diet)",
         "access": "Access and food",
         "accessHint": "The event’s page states these plainly, so people know before they come.",
@@ -1531,7 +1531,7 @@
           "chapterRemove": "Remove the chapter",
           "chapterAdd": "Add a chapter",
           "chapterTimeError": "Write each chapter’s start as minutes and seconds, such as 4:30.",
-          "releasesMissing": "Everyone on camera signs the media release (F-15) before the episode is published.",
+          "releasesMissing": "Everyone on camera signs the media release before the episode is published.",
           "captions": {
             "en": "English captions (WebVTT)",
             "ar": "Arabic captions (WebVTT)",
@@ -1539,7 +1539,7 @@
           },
           "onCamera": {
             "title": "On camera",
-            "body": "Everyone who appears signs the media release (F-15) on the site, by a single-use link to their address. The episode can’t be published until all have signed.",
+            "body": "Everyone who appears signs the media release on the site, by a single-use link to their address. The episode can’t be published until all have signed.",
             "unsent": "Release not sent",
             "sent": "Link sent, not signed yet",
             "signed": "Release signed",
@@ -2303,7 +2303,7 @@
       },
       "partners": {
         "title": "Partners",
-        "lede": "The partners register, memoranda (Form F-26), affiliations and member offers. Every partnership with shared branding or shared responsibility has a signed memorandum (P11.2).",
+        "lede": "The partners register, memoranda, affiliations and member offers. Every partnership with shared branding or shared responsibility has a signed memorandum (P11.2).",
         "tabs": {
           "register": "Register",
           "agreements": "Memoranda",
@@ -2436,7 +2436,7 @@
           }
         },
         "declarations": {
-          "lede": "Conflict of Interest Declarations (Form F-18) from role holders. The Secretary records receipt.",
+          "lede": "Conflict of Interest Declarations from role holders. The Secretary records receipt.",
           "empty": "No declarations yet.",
           "person": "Person",
           "declared": "Declared",
@@ -2472,7 +2472,7 @@
       },
       "recognition": {
         "title": "Service",
-        "lede": "Staff hours, service letters and certificates (owner, Nov 7, 2026): confirm staff hours, write service letters (F-05), and prepare certificates for finishing Qalam and for the Mutanabbi Prize. Qalam’s are signed by the Qalam lead and the Editor-in-Chief, the Prize’s by the Editor-in-Chief and the President.",
+        "lede": "Staff hours, service letters and certificates (owner, Nov 7, 2026): confirm staff hours, write service letters, and prepare certificates for finishing Qalam and for the Mutanabbi Prize. Qalam’s are signed by the Qalam lead and the Editor-in-Chief, the Prize’s by the Editor-in-Chief and the President.",
         "tabs": {
           "pending": "Hours to confirm",
           "totals": "Service this year",
@@ -2480,7 +2480,7 @@
           "letters": "Service letters"
         },
         "pending": {
-          "lede": "Hours members logged (Form F-16). You see entries for the events you run. Nobody confirms their own.",
+          "lede": "Hours members logged. You see entries for the events you run. Nobody confirms their own.",
           "empty": "No hours waiting.",
           "person": "Person",
           "date": "Date",
@@ -2539,7 +2539,7 @@
           "signedBy": "{role} signed"
         },
         "letters": {
-          "lede": "Service is a letter (F-05), written on request by the Director of Membership in the language the member asks for. Each carries a code anyone can check on the site.",
+          "lede": "Service is a letter, written on request by the Director of Membership in the language the member asks for. Each carries a code anyone can check on the site.",
           "write": "Write a service letter",
           "holder": "Member",
           "role": "Served as",
@@ -2566,12 +2566,12 @@
           "lede": "Every Society letter is sent on one template. Write it from the register’s template in the Leadership Handbook, in the recipient’s language, then print it or save it as PDF. Nothing is kept here: the record stays in Notion.",
           "form": "Letter",
           "forms": {
-            "f03": "F-03 Appointment letter",
-            "f30": "F-30 Thank-you to a partner or sponsor",
-            "f32": "F-32 Application outcome",
-            "f33": "F-33 Welcome to new members",
-            "f34": "F-34 Honorary Membership invitation",
-            "f42": "F-42 Author letter"
+            "f03": "Appointment letter",
+            "f30": "Thank-you to a partner or sponsor",
+            "f32": "Application outcome",
+            "f33": "Welcome to new members",
+            "f34": "Honorary Membership invitation",
+            "f42": "Author letter"
           },
           "language": "Language",
           "languages": {
@@ -2687,7 +2687,7 @@
           "addNote": "Add note",
           "notesPrivate": "Panel notes are seen only by whoever runs this production, never by the person auditioning.",
           "score": {
-            "title": "Score sheet (F-25)",
+            "title": "Score sheet",
             "criteria": {
               "presence": "Presence",
               "voice": "Voice and clarity",
@@ -3156,7 +3156,7 @@
       },
       "hiring": {
         "title": "Hiring",
-        "lede": "Every role on Get involved. The seat that hires for a role runs it with a second reviewer: the applications, the interviews (F-02), the shortlist and the offer. A director seat is appointed by the President after the Executive Board’s resolution and Student Life’s “eligible”.",
+        "lede": "Every role on Get involved. The seat that hires for a role runs it with a second reviewer: the applications, the interviews, the shortlist and the offer. A director seat is appointed by the President after the Executive Board’s resolution and Student Life’s “eligible”.",
         "empty": "No roles posted yet.",
         "open": "Open",
         "closed": "Closed",
@@ -3218,7 +3218,7 @@
         "notes": "Notes",
         "saveReview": "Save my review",
         "recuse": "I recuse myself",
-        "interviews": "Interviews (F-02)",
+        "interviews": "Interviews",
         "recommendation": "Recommendation",
         "recordInterview": "Record the interview",
         "recommendations": {
@@ -3295,7 +3295,7 @@
         },
         "declarations": {
           "title": "Declarations",
-          "lede": "Conflict of Interest Declarations (Form F-18) from role holders. The Secretary records receipt."
+          "lede": "Conflict of Interest Declarations from role holders. The Secretary records receipt."
         }
       },
       "activity": {
@@ -3488,10 +3488,10 @@
         "lastName": "Last name",
         "links": {
           "title": "Parents’ links",
-          "lede": "A parent signs the consent (F-38) or the publishing release (F-39) through a single-use link, valid for 14 days. The link goes to the teacher, who passes it on: the Society reaches parents only through the teacher.",
+          "lede": "A parent signs the consent or the publishing release through a single-use link, valid for 14 days. The link goes to the teacher, who passes it on: the Society reaches parents only through the teacher.",
           "form": "Form",
-          "f38": "F-38, parent’s consent",
-          "f39": "F-39, publishing release",
+          "f38": "Parent’s consent",
+          "f39": "Publishing release",
           "teacher": "The teacher’s email",
           "teacherHint": "The link is sent here, to pass on to the parent.",
           "note": "For",
@@ -4081,7 +4081,7 @@
               "no_photos": "No photos of my child"
             },
             "publishing": {
-              "qirtas": "My child’s work may appear in Qirtas (a separate consent, F-39, is asked for each piece)",
+              "qirtas": "My child’s work may appear in Qirtas (a separate consent is asked for each piece)",
               "prize": "My child’s work may be shortlisted for the Mutanabbi Prize, Qalam category, with the name hidden in the members’ vote"
             }
           }
@@ -4089,7 +4089,7 @@
         "f39": {
           "title": "Qalam publishing consent",
           "action": "Give consent to publish a Qalam piece",
-          "purpose": "For one piece only, and only where the student’s consent form (F-38) allows publishing. Signed by a parent or guardian from the link the school’s teacher sends.",
+          "purpose": "For one piece only, and only where the student’s consent form allows publishing. Signed by a parent or guardian from the link the school’s teacher sends.",
           "preamble": "I agree that the piece named below may be published in Qirtas, on the terms in the Terms of Use. The student keeps the copyright. The byline is the student’s first name, last initial and school; the full name appears only on the certificate. The editors decide whether the piece is published, as for any piece; no contact details, age, photo or school details appear with it beyond the byline; the family and the school are told, through the teacher, before it goes live; and it comes down whenever the family or the student asks, through the teacher.",
           "fields": {
             "piece_title": "Title of the piece",

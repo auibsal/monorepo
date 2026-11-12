@@ -151,9 +151,8 @@ export const samples = {
   FinalCheck: (l) => finalCheck(l, WORK, PIECE, APP),
   FormLink: (l) =>
     formLink(l, {
-      code: "F-38",
       title: l === "ar" ? "موافقة ولي الأمر" : "Parent’s consent",
-      url: `${APP}/forms/F-38?link=example`,
+      url: `${APP}/consent/qalam?link=example`,
     }),
   FormSignedCopy: (l) =>
     formSignedCopy(l, {
@@ -163,7 +162,6 @@ export const samples = {
           value: l === "ar" ? "قراءة على ضفة النهر" : "A reading on the river",
         },
       ],
-      code: "F-11",
       fingerprint:
         "9f2c4e0b7a1d3c5e8f6a2b4d6c8e0f1a3b5c7d9e1f2a4b6c8d0e2f4a6b8c0d2e",
       signedAt: "2026-11-09T15:00:00Z",

@@ -58,10 +58,7 @@ export const SubmissionSheet = ({
     >
       <header className="border-line grid gap-1 border-b-2 pb-3">
         <h2 className="type-heading">{labels.title()}</h2>
-        <p className="type-caption">
-          {actions ? `${definition.code} · ` : ""}
-          {t("society")}
-        </p>
+        <p className="type-caption">{t("society")}</p>
         <p className="type-caption">
           {t(`statuses.${submission.status as forms.FormStatus}`)}
           {submission.submitted_at

@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { env } from "@/env";
+import { formRedirects } from "@/lib/data/form-paths";
 import { config, withAnalyzer } from "@/lib/next-config";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
@@ -127,7 +128,7 @@ let nextConfig: NextConfig = {
   partialPrefetching: false,
   redirects: async () =>
     LANGUAGE_PREFIXES.flatMap((prefix) =>
-      MOVED.map(([from, to]) => ({
+      [...MOVED, ...formRedirects].map(([from, to]) => ({
         destination: `${prefix}${to}`,
         permanent: true,
         source: `${prefix}${from}`,

@@ -1,8 +1,10 @@
 import { type Client, unwrap } from "./client";
 
+export { formPaths } from "./form-paths";
+
 /**
  * The forms signed on the site (decisions.md): one standard page,
- * `/forms/<number>` (F-06, F-10 …), with a typed-name signature; the signed
+ * at its own place in its flow (`formPaths`), with no number shown; the signed
  * copy keeps the signer, the time and the form's version. The fields follow
  * the Leadership Handbook (SAL-EXB-01); labels live in the messages files
  * under `diwan.forms.defs.<key>`. Who may sign a form and who handles it is

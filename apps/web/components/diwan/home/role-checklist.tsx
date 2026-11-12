@@ -25,7 +25,7 @@ const TICKED = new Set<StepKey>(["pages", "handover", "mailbox", "notion"]);
 
 /** Where each step is done, when it is done on the site. */
 const WHERE: Partial<Record<StepKey, string>> = {
-  declaration: "/forms/F-06",
+  declaration: "/account/settings/disclosures/declare",
   diwan_group: "/account/settings",
   pages: "/library",
   two_step: "/account/settings",

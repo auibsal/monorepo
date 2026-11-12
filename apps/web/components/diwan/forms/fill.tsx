@@ -467,7 +467,7 @@ const FormEditor = ({
   return (
     <div className="mx-auto grid w-full max-w-2xl gap-6 px-4 py-10">
       <FormPage
-        code={`SAL-EXB-01 · ${definition.code}`}
+        code="SAL-EXB-01"
         date={formatLongDate(new Date(), locale, true)}
         dateLabel={t("date")}
         kept={t("kept")}
@@ -561,11 +561,10 @@ const SignInFirst = ({
     return null;
   }
   if (!user) {
-    const number = forms.forms[formKey].code.replace("F-", "");
     return (
       <EmptyLine
         action={{
-          href: `/sign-in?next=${encodeURIComponent(`/forms/${number}`)}`,
+          href: `/sign-in?next=${encodeURIComponent(forms.formPaths[formKey])}`,
           label: t("signInFirst"),
         }}
       >

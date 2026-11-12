@@ -25,7 +25,7 @@ const TOPICS = [
   { email: mailboxes.accessibility, key: "accessibility" },
   { email: mailboxes.privacy, key: "privacy" },
   { href: "#photo", key: "removal" },
-  { href: "/forms/21", key: "concern" },
+  { href: "/about/contact/concern", key: "concern" },
   { href: "/partners/apply", key: "partnership" },
 ] as const;
 

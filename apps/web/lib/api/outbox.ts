@@ -84,6 +84,7 @@ import {
 } from "@/lib/api/invitation-letter";
 import { api, origin, site } from "@/lib/api/urls";
 import { journal } from "@/lib/data";
+import { formPaths, isFormKey } from "@/lib/data/forms";
 import { log } from "@/lib/observability/log";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
@@ -1116,17 +1117,18 @@ const handlers: Record<string, Handler> = {
       admin
         .schema("governance")
         .from("form_types")
-        .select("code, title_en")
+        .select("key, title_en")
         .eq("key", String(payload.form_key))
         .maybeSingle(),
     ]);
     if (!(link && type) || link.used_at || typeof payload.token !== "string") {
       return;
     }
-    const url = `${appUrl()}/forms/${type.code}?link=${encodeURIComponent(payload.token)}`;
+    const path = isFormKey(type.key) ? formPaths[type.key] : "/";
+    const url = `${appUrl()}${path}?link=${encodeURIComponent(payload.token)}`;
     await send(
       { email: link.sent_to, lang: "en" },
-      formLink("en", { code: type.code, title: type.title_en, url })
+      formLink("en", { title: type.title_en, url })
     );
     // The token is kept only as a hash: drop it from the outbox row.
     const row = current.getStore()?.row;
@@ -1171,7 +1173,6 @@ const handlers: Record<string, Handler> = {
       to,
       formSignedCopy(to.lang, {
         answers: formAnswers(to.lang, row.form_key, row.data),
-        code: type?.code ?? "",
         fingerprint: row.document_sha256,
         signedAt: row.signed_at,
         signer: row.signer_name,
