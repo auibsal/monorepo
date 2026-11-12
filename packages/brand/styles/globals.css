@@ -361,9 +361,9 @@
     line-height: 1.6;
   }
 
-  /* Arabic sits one step larger than the English beside it, with 1.6–2.0 leading. */
+  /* Arabic sits about 10% larger than the English beside it, with 1.6–2.0 leading. */
   :lang(ar) {
-    font-size: 1.125em;
+    font-size: 1.1em;
     line-height: 1.9;
   }
   :lang(ar) :lang(ar) {

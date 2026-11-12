@@ -3826,7 +3826,9 @@
       "draftNote": {
         "qalam": "A draft: it is issued once the Qalam lead and the Editor-in-Chief have both signed.",
         "prize": "A draft: it is issued once the Editor-in-Chief and the President have both signed."
-      }
+      },
+      "otherEdition": "The other language’s edition",
+      "ownEdition": "Back to your edition"
     },
     "productions": {
       "title": "The Company",
@@ -4403,6 +4405,10 @@
         "signOutOthers": "Sign out everywhere else",
         "done": "Signed out everywhere else. This device stays signed in.",
         "failed": "That didn’t work. Try again."
+      },
+      "language": {
+        "label": "Language for emails and messages",
+        "hint": "Set from the page you signed up on. Emails, Hudhud’s messages and your certificates come in this language; the site follows its address."
       }
     },
     "recoveryCodes": {

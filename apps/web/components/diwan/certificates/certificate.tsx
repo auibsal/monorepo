@@ -8,6 +8,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { project } from "@repo/config";
 import { localizedPath } from "@repo/internationalization";
 import { formatPlainDate } from "@repo/internationalization/format";
+import { Link } from "@repo/internationalization/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
@@ -64,10 +65,11 @@ type Loaded = NonNullable<ReturnType<typeof useCertificate>["data"]>;
 /** The certificate's words and seal, in its own language. */
 const sheetProps = (
   { member, row, signers, student }: Loaded,
-  qrLabel: string
+  qrLabel: string,
+  edition: "ar" | "en" | null = null
 ) => {
   const kind = row.kind as recognition.CertificateKind;
-  const lang = row.lang === "ar" ? "ar" : "en";
+  const lang = edition ?? (row.lang === "ar" ? "ar" : "en");
   const ar = lang === "ar";
   const copy = recognition.certificateCopy[lang];
   const name = student
@@ -130,6 +132,8 @@ const sheetProps = (
 export const Certificate = () => {
   const t = useTranslations("diwan.certificate");
   const id = useQueryParam("id") ?? "";
+  // The other edition (7h): ?edition=ar or ?edition=en.
+  const asked = useQueryParam("edition");
   const certificate = useCertificate(id);
 
   if (!id) {
@@ -153,7 +157,14 @@ export const Certificate = () => {
     );
   }
 
-  const { row, sheet, verifyUrl } = sheetProps(certificate.data, t("qr"));
+  const own = certificate.data.row.lang === "ar" ? "ar" : "en";
+  const other = own === "ar" ? "en" : "ar";
+  const edition = asked === other ? other : null;
+  const { row, sheet, verifyUrl } = sheetProps(
+    certificate.data,
+    t("qr"),
+    edition
+  );
   const kind = row.kind as recognition.CertificateKind;
   const issued = row.status !== "draft" && row.issued_at;
 
@@ -164,6 +175,16 @@ export const Certificate = () => {
           {row.status === "draft" ? t(`draftNote.${kind}`) : t("printNote")}
         </p>
         <div className="flex flex-wrap gap-2">
+          <Link
+            className="link self-center text-sm"
+            href={
+              edition
+                ? `/account/record/certificates/${encodeURIComponent(id)}`
+                : `/account/record/certificates/${encodeURIComponent(id)}?edition=${other}`
+            }
+          >
+            {t(edition ? "ownEdition" : "otherEdition")}
+          </Link>
           <Button onClick={() => window.print()}>{t("download")}</Button>
           {issued && row.serial ? (
             <Button asChild variant="outline">

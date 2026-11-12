@@ -77,10 +77,16 @@ First the second prompt's part 2 (7j), then the rest in place.
   isolated (`<bdi>`).
 - [x] **7g. Hudhud's register:** Iraqi for chat, reminders and the Sunday
   note; Modern Standard for removal notices, consents and appeals.
-- [ ] **7h. Languages:** a first visit in the browser's language (or
+- [x] **7h. Languages:** a first visit in the browser's language (or
   English); an account's language from its sign-up page, changeable in
   Settings; certificates in the recipient's language with the other
-  edition; Arabic about 10% larger in the brand kit.
+  edition; Arabic about 10% larger in the brand kit. The proxy takes a
+  person's first page view to Arabic when the browser prefers it, then
+  leaves every visit to its address (`lib/i18n/first-visit.ts`, cookie
+  `sal_seen`); Settings → Notices sets the account's language; a
+  certificate made for an account takes its language
+  (`20261113003400_certificate_language.sql`) and its page shows the other
+  edition; Arabic text is set 10% larger (`globals.css`, BRAND-BOOK).
 - [x] **7i. Revise and resend:** one revision, asked for by the section
   editor with a reason; the writer revises on the work's page and sends it
   back; same SUB number, back to that editor in selection, not read blind

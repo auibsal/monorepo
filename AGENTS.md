@@ -279,8 +279,9 @@ everywhere:
   `/search?q=`). Links point at the current address. An address that was
   shared (in an email, a post, a poster or a QR code) and then changes
   gets a permanent redirect (308, `MOVED` in `apps/web/next.config.ts`);
-  one never shared simply changes. The address alone decides the
-  language (`localeDetection: false`).
+  one never shared simply changes. The address decides the language
+  (`localeDetection: false`), except a person's first visit, which
+  follows the browser (`lib/i18n/first-visit.ts`).
 - **Big records get pages; small rows are edited in place.** A record
   with its own life (an event, a piece, a production, a partner, a
   memorandum, a document, an election, an opening, a meeting) has its own

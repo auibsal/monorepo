@@ -7,6 +7,7 @@ import { useMyMembership } from "@/lib/diwan/queries";
 import { RecoveryCodes } from "../auth/recovery-codes";
 import { TwoStepSettings } from "../auth/two-step";
 import { DiwanPage, DiwanSection, RowList } from "../page";
+import { AccountLanguage } from "./account-language";
 import { DeleteAccount } from "./delete-account";
 import { DownloadData } from "./download-data";
 import { EmailNotices } from "./email-notices";
@@ -27,6 +28,7 @@ export const NoticesScreen = () => {
   return (
     <DiwanPage lede={t("noticesLede")} narrow title={t("notices")}>
       <DiwanSection id="email" title={t("noticesEmail")}>
+        <AccountLanguage />
         <MailTopics />
         <EmailNotices />
       </DiwanSection>
