@@ -173,7 +173,7 @@ alter table governance.form_types add constraint form_types_subject_kind_check
 
 update governance.form_types
 set filled = 'site', submit_rule = 'anyone', needs_account = true,
-    second_signer = 'successor', subject_kind = 'role', title_en = 'Handover', title_ar = 'التسليم'
+    second_signer = 'successor', subject_kind = 'role', title_en = 'Handover', title_ar = 'التسليم والاستلام'
 where key = 'handover';
 
 -- Who countersigns a handover: the incoming holder of the same role (a
@@ -337,10 +337,12 @@ revoke all on function governance.handovers_to_countersign() from public, anon;
 grant execute on function governance.handovers_to_countersign() to authenticated;
 
 -- ── 3. Titles in sentence case ──────────────────────────────────────────────
--- Proper names keep their capitals (the Code of Conduct, the Faculty
--- Advisor, Honorary Membership, Student Life).
+-- Names and titles keep their capitals (the Code of Conduct, the Faculty
+-- Advisor, Student Life); only the class name, Honorary Member, does, so
+-- "Honorary membership invitation".
 
 update governance.form_types set title_en = 'Publication agreement' where key = 'publication-agreement';
+update governance.form_types set title_en = 'Honorary membership invitation' where key = 'honorary-membership-invitation';
 
 -- The countersigner keeps the signed copy too (Your account → Documents).
 drop policy "Submitters, handlers and subjects read submissions" on governance.form_submissions;

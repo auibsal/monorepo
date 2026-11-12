@@ -7,6 +7,8 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | AUIB Society of Arts and Letters | جمعية الفنون والآداب في الجامعة الأمريكية (then: الجمعية) |
 | AUIB | الجامعة الأمريكية في بغداد, always, in compounds too (طلبة الجامعة الأمريكية في بغداد), never «الجامعة الأمريكية في العراق – بغداد»; only the names the Society made keep «الجامعة الأمريكية» alone (the Society's name, Qirtas's line); after the first mention, «الجامعة» |
 | Student Life | شؤون الطلبة |
+| handover (signed when leaving a role) / countersign | التسليم والاستلام / المصادقة على التسليم |
+| I agree to sign electronically | «أوافق على التوقيع إلكترونيًا» |
 | officer (one of the three: President, Vice President, Secretary) / "For a second officer" (the Desk) | مسؤول / «لمسؤول ثان» |
 | Campus Recreation Officer | مسؤول الأنشطة الترفيهية في الحرم الجامعي |
 | Director of Student Life | مديرة شؤون الطلبة |

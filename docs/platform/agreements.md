@@ -81,7 +81,7 @@ keep stable names too but are templates or records, never in the register.
 | `thank-you-letter` | Thank-you to a partner or sponsor | F-30 | Notion template |
 | `application-outcome` | Application outcome | F-32 | Notion template |
 | `welcome-letter` | Welcome to new members | F-33 | Notion template |
-| `honorary-membership-invitation` | Honorary Membership invitation | F-34 | Notion template |
+| `honorary-membership-invitation` | Honorary membership invitation | F-34 | Notion template |
 | `members-meeting-notice` | Notice of a members’ meeting | F-35 | Notion template |
 | `election-notice` | Notice of election | F-36 | Notion template |
 | `reader-score-sheet` | Reader score sheet | F-41 | In its page on the site |

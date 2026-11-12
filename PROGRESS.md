@@ -29,9 +29,10 @@ fourth prompts (Nov 12).
   Roles and service, Documents, Elections (while one is open), Card and
   Settings, by class and role; guests have Today, Events, Work, Documents
   and Settings. `/account/calendar` redirects to `/account/events`.
-- [x] **4. Titles in sentence case:** "Publication agreement" (the others
-  were already; proper names keep their capitals: the Code of Conduct,
-  the Faculty Advisor, Honorary Membership, Student Life).
+- [x] **4. Titles in sentence case:** "Publication agreement" and
+  "Honorary membership invitation"; names and titles decisions.md
+  capitalizes keep their capitals ("Code of Conduct", "Faculty Advisor
+  invitation", "Request to Student Life").
 
 ## Now: the seventh prompt (Nov 12)
 
