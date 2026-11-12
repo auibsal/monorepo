@@ -42,7 +42,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   sees personal data is taken to set it up at sign-in (passkey first, then
   an authenticator app, then recovery codes); shift-scoped station access
   exempt.
-- [ ] **3a. Names:** no "keep or change" prompt; the default preferred name
+- [x] **3a. Names:** no "keep or change" prompt; the default preferred name
   set for everyone alike (the President's and the host's stay); the legal
   name locked for every account, changed only in the Diwan with a second
   officer.

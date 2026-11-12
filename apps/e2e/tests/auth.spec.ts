@@ -47,7 +47,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   // One question per screen.
   // One question per screen, each at its own address.
   await expect(page).toHaveURL(/\/welcome\/1(\?|$)/u);
-  await expect(page.getByText("Step 1 of 5")).toBeVisible();
+  await expect(page.getByText("Step 1 of 4")).toBeVisible();
   await expectAccessible(page);
   // The name in four parts, in English, then in Arabic.
   await page.getByLabel("Name", { exact: true }).fill("New");
@@ -56,7 +56,7 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.getByLabel("Family name").fill("Member");
   await page.getByLabel("Family name").press("Enter");
 
-  await expect(page.getByText("Step 2 of 5")).toBeVisible();
+  await expect(page.getByText("Step 2 of 4")).toBeVisible();
   await expect(page).toHaveURL(/\/welcome\/2(\?|$)/u);
   await page.getByLabel("Name", { exact: true }).fill("عضو");
   await page.getByLabel("Father’s name", { exact: true }).fill("كريم");
@@ -75,12 +75,8 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await expect(page.getByLabel("Family name")).toHaveValue("جديد");
   await page.getByRole("button", { name: "Continue" }).click();
 
-  // How the name appears: the given and father's names, before it shows.
-  await expect(page.getByText("Step 3 of 5")).toBeVisible();
-  await expect(page.getByText("New Kareem", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Keep it" }).click();
-
-  await expect(page.getByText("Step 4 of 5")).toBeVisible();
+  // No "keep or change" step: the default name shows (fourth prompt, 3a).
+  await expect(page.getByText("Step 3 of 4")).toBeVisible();
   // The Code of Conduct is the only pledge (decisions.md, Members).
   await page
     .getByRole("button", { name: "I acknowledge the Code of Conduct" })
@@ -205,14 +201,7 @@ test("a member with a name from before the four parts is asked for them at sign-
   await page.getByLabel("Father’s name", { exact: true }).fill("تجريبي");
   await page.getByLabel("Grandfather’s name").fill("آلي");
   await page.getByRole("button", { name: "Continue" }).click();
-  // How the name appears: the given and father's names, kept.
-  await expect(
-    page.getByRole("heading", {
-      name: "This is how your name appears on the site",
-    })
-  ).toBeVisible();
-  await expect(page.getByText("Tess Test", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Keep it" }).click();
+  // The default name (the given and father's names) shows at once.
   await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
   await expect(page.getByText("Tess Test").first()).toBeVisible();
 });

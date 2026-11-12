@@ -116,9 +116,8 @@ select throws_ok(
 select throws_ok(
   $$ update core.profiles set first_name_ar = 'Omar' where id = '00000000-0000-0000-0000-00000000c0a1' $$,
   '22023', 'name_script_ar', 'An Arabic part in Latin letters is refused');
-select throws_ok(
-  $$ select core.lock_legal_name() $$,
-  '22023', 'legal_name_incomplete', 'An incomplete legal name cannot be locked');
+select isnt((select legal_name_locked_at from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
+  null, 'The legal name is locked from sign-up (Nov 13, 2026): empty parts are filled, set ones never changed');
 
 select lives_ok(
   $$ update core.profiles set first_name_en = 'Omar', father_name_en = 'Ali',
@@ -128,7 +127,7 @@ select lives_ok(
   'A legal name with no family name is complete');
 select is(
   (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
-  'Signup Name', 'Until the member has seen the default, the sign-up name still shows');
+  'Omar Ali', 'The default shows at once: no "keep or change" step');
 select lives_ok($$ select core.confirm_shown_name() $$, 'The member keeps the name shown at sign-in');
 select is(
   (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),

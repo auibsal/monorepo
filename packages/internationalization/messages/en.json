@@ -303,20 +303,6 @@
         "body": "You’re a member of the AUIB Society of Arts and Letters. This is your membership card: show it at the door.",
         "open": "Open your account",
         "more": "Tell us more about yourself (two minutes, optional)"
-      },
-      "shownName": {
-        "title": "This is how your name appears on the site",
-        "why": "Your card, your profile, bylines and every list show this name. Keep it, or choose the name you go by in each language.",
-        "en": "In English",
-        "ar": "In Arabic",
-        "preferred": {
-          "en": "Your name in English",
-          "ar": "Your name in Arabic"
-        },
-        "hint": "Leave one empty to keep the name above. Write each in its language’s letters. You can change it any time in Settings.",
-        "keep": "Keep it",
-        "change": "Change it",
-        "save": "Save my name"
       }
     },
     "home": {
@@ -952,13 +938,7 @@
       },
       "legal": {
         "title": "Legal name",
-        "check": "Check it",
-        "checkTitle": "Check your legal name",
-        "checkBody": "Make sure it matches your ID exactly. Once you confirm, you can’t change it; the Director of Membership corrects it if needed.",
-        "confirm": "Confirm and lock",
-        "edit": "Edit it",
-        "locked": "Locked on {date}. To correct it, write to membership@auibsal.org.",
-        "lockFailed": "Your legal name could not be locked. Save it complete first."
+        "locked": "Your legal name, as on your papers, is used only on certificates, letters, signed forms and lists for Student Life. To correct it, write to the Director of Membership."
       }
     },
     "admin": {

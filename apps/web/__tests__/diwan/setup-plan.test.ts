@@ -68,26 +68,15 @@ describe("setup, one question per screen", () => {
 });
 
 describe("how a member's name appears", () => {
-  const threeParts = {
-    ar: { father: "ب", first: "أ", grandfather: "ج", last: "" },
-    en: { father: "B", first: "A", grandfather: "C", last: "" },
-  };
-  test("a member who hasn't seen it is asked once, after their names", () => {
+  // No "keep or change" step (fourth prompt, 3a): the default shows until
+  // the member chooses a preferred name in Settings.
+  test("a member whose names are complete is not asked about them", () => {
     expect(
       planSetup({
-        nameSeen: false,
-        names: threeParts,
-        pending: [],
-        setupDone: true,
-      }).steps
-    ).toEqual([{ kind: "shownName" }]);
-  });
-  test("a partner's person is never asked", () => {
-    expect(
-      planSetup({
-        member: false,
-        nameSeen: false,
-        names: threeParts,
+        names: {
+          ar: { father: "ب", first: "أ", grandfather: "ج", last: "" },
+          en: { father: "B", first: "A", grandfather: "C", last: "" },
+        },
         pending: [],
         setupDone: true,
       }).steps
