@@ -1857,6 +1857,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      incident_reports: {
+        Row: {
+          action_taken: string | null;
+          created_at: string;
+          event_id: string;
+          happened_at: string;
+          id: string;
+          reported_by: string | null;
+          what_happened: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          action_taken?: string | null;
+          created_at?: string;
+          event_id: string;
+          happened_at?: string;
+          id?: string;
+          reported_by?: string | null;
+          what_happened: string;
+        };
+        Update: {
+          action_taken?: string | null;
+          created_at?: string;
+          event_id?: string;
+          happened_at?: string;
+          id?: string;
+          reported_by?: string | null;
+          what_happened?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "incident_reports_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       invitations: {
         Row: {
           created_at: string;

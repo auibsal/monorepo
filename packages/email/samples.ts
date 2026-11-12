@@ -8,6 +8,7 @@ import {
   callOpened,
   candidacyDecided,
   certificateIssued,
+  concernRaised,
   cronFailed,
   decision,
   type EventInfo,
@@ -17,6 +18,7 @@ import {
   finalCheck,
   formLink,
   formSignedCopy,
+  incidentReported,
   invitation,
   type Lang,
   newsletterConfirm,
@@ -132,6 +134,7 @@ export const samples = {
       PIECE,
       APP
     ),
+  ConcernRaised: (l) => concernRaised(l, APP),
   CronFailed: (l) =>
     cronFailed(
       l,
@@ -169,6 +172,15 @@ export const samples = {
       title: l === "ar" ? "مقترح فعالية" : "Event pitch",
       url: `${APP}/account/requests/${PIECE}`,
     }),
+  IncidentReported: (l) =>
+    incidentReported(
+      l,
+      {
+        slug: "writing-workshop",
+        title: l === "ar" ? "ورشة الكتابة" : "Writing workshop",
+      },
+      APP
+    ),
   NewsletterConfirm: (l) =>
     newsletterConfirm(l, "https://auibsal.org/newsletter/confirm?token=sample"),
   PieceNote: (l) => pieceNote(l, WORK, PIECE, APP),

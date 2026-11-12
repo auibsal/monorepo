@@ -1434,7 +1434,16 @@
         "yes": "Yes",
         "no": "No",
         "seating": "Seating",
-        "allergens": "The main allergens in the food"
+        "allergens": "The main allergens in the food",
+        "incidents": {
+          "title": "Incident reports",
+          "lede": "Something happened that the Society should know about: an injury, a safety problem, a complaint at the door. Write it the same day. The Director of Events and the President are told at once, and the report is kept seven years.",
+          "add": "Report an incident",
+          "when": "When it happened",
+          "what": "What happened",
+          "whatHint": "Who was involved and what you saw, as plainly as you can.",
+          "action": "What was done"
+        }
       },
       "checkIn": {
         "title": "Check-in",

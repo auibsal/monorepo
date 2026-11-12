@@ -20,6 +20,7 @@ import {
   callOpened,
   candidacyDecided,
   certificateIssued,
+  concernRaised,
   contactField,
   cronFailed,
   type Decision,
@@ -32,6 +33,7 @@ import {
   finalCheck,
   formLink,
   formSignedCopy,
+  incidentReported,
   invitationBroadcast,
   invitationContact,
   newDevice,
@@ -417,6 +419,24 @@ const holders = async (
   const found = await Promise.all(
     (data ?? []).map((h) => recipient(admin, h.user_id))
   );
+  return found.filter((r): r is Recipient => r !== null);
+};
+
+/** Everyone holding one of these roles now (a seat, not a permission). */
+const roleHolders = async (
+  admin: AdminClient,
+  roles: string[]
+): Promise<Recipient[]> => {
+  const now = new Date().toISOString();
+  const { data } = await admin
+    .schema("access")
+    .from("role_assignments")
+    .select("user_id")
+    .in("role", roles)
+    .lte("starts_at", now)
+    .or(`ends_at.is.null,ends_at.gt.${now}`);
+  const ids = [...new Set((data ?? []).map((a) => a.user_id))];
+  const found = await Promise.all(ids.map((id) => recipient(admin, id)));
   return found.filter((r): r is Recipient => r !== null);
 };
 
@@ -1048,6 +1068,39 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
+  "events.incident_reported": async (admin, payload) => {
+    const [{ data: event }, people] = await Promise.all([
+      admin
+        .schema("events")
+        .from("events")
+        .select("slug, title_en, title_ar")
+        .eq("id", String(payload.event_id))
+        .maybeSingle(),
+      roleHolders(admin, ["events_director", "president"]),
+    ]);
+    if (!event?.slug) {
+      return;
+    }
+    await Promise.all(
+      people.map((m) =>
+        send(
+          m,
+          incidentReported(
+            m.lang,
+            {
+              slug: event.slug ?? "",
+              title:
+                (m.lang === "ar" ? event.title_ar : event.title_en) ??
+                event.title_en ??
+                "",
+            },
+            appUrl()
+          ),
+          { category: "officer" }
+        )
+      )
+    );
+  },
   // The day before (decisions.md, Events): one reminder to everyone booked,
   // with "Can't come? Cancel", and to everyone who asked "Remind me". Both
   // were asked for (a booking, a reminder), so both always go.
@@ -1235,6 +1288,26 @@ const handlers: Record<string, Handler> = {
         )
       );
     }
+  },
+  // Urgent staff alerts, at once (fourth prompt, 7p): a concern to the
+  // complaints panel's chair, the Vice President (decisions.md,
+  // Governance); an incident report to the Director of Events and the
+  // President.
+  "governance.concern_raised": async (admin, payload) => {
+    // About the Vice President or the President: whoever receives those.
+    const about: Record<string, string> = {
+      president: "concerns.about_president",
+      vice_president: "concerns.about_vp",
+    };
+    const permission = about[String(payload.routing)];
+    const chairs = permission
+      ? await holders(admin, permission)
+      : await roleHolders(admin, ["vice_president"]);
+    await Promise.all(
+      chairs.map((m) =>
+        send(m, concernRaised(m.lang, appUrl()), { category: "officer" })
+      )
+    );
   },
   "governance.election": async (admin, payload) => {
     const [to, { data: election }] = await Promise.all([

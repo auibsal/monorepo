@@ -21,6 +21,7 @@ import { RecordHistory } from "../record-history";
 import { AccessForm } from "./access-form";
 import { Attendance } from "./attendance";
 import { GuestInvitations } from "./guest-invitations";
+import { Incidents } from "./incidents";
 import { Invitations } from "./invitations";
 import { EventPartsAdmin } from "./parts";
 
@@ -173,6 +174,7 @@ export const EventEditor = () => {
         slug={event.slug}
       />
       <EventPartsAdmin event={event} />
+      <Incidents eventId={eventId} />
       <RecordHistory id={eventId} table="events.events" />
     </div>
   );

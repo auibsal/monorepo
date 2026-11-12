@@ -858,6 +858,45 @@ export const removalReceived = (lang: Lang, dueAt: string) =>
     ],
   }));
 
+/**
+ * To the complaints panel's chair, at once (decisions.md, Governance;
+ * fourth prompt, 7p): a concern came in. It names no one, since a concern
+ * may be sealed; the chair reads it in the Diwan.
+ */
+export const concernRaised = (lang: Lang, app: string) =>
+  build(lang, (l) => ({
+    action: diwan(app, l, "/council/concerns"),
+    heading: l === "ar" ? "وصل إبلاغ جديد عن مخاوف" : "A new concern came in",
+    paragraphs: [
+      l === "ar"
+        ? "تقرّر لجنة الشكاوى خلال 14 يومًا. اقرأه في الديوان؛ لا يحمل هذا البريد تفاصيله."
+        : "The panel decides within 14 days. Read it in the Diwan; this email carries none of it.",
+    ],
+  }));
+
+/**
+ * To the Director of Events and the President, at once: an incident report
+ * from an event's page. The event is named; what happened is read in the
+ * Diwan.
+ */
+export const incidentReported = (
+  lang: Lang,
+  event: { slug: string; title: string },
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: diwan(app, l, `/events/${event.slug}`),
+    heading:
+      l === "ar"
+        ? `تقرير حادثة: ${event.title}`
+        : `An incident report: ${event.title}`,
+    paragraphs: [
+      l === "ar"
+        ? "كتب أحد العاملين في الفعالية تقرير حادثة من صفحتها. اقرأه في الديوان؛ لا يحمل هذا البريد تفاصيله."
+        : "Someone running the event wrote an incident report from its page. Read it in the Diwan; this email carries none of it.",
+    ],
+  }));
+
 /** The test notice sent from Profile and privacy (push only, no email). */
 export interface FailedJob {
   failures: number;

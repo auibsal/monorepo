@@ -86,7 +86,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   call), now in decisions.md.
 - [x] **7o. GOV-07's Arabic title** on the site: «سياسة الإبلاغ عن الثغرات
   الأمنية».
-- [ ] **7p. Immediate staff alerts** also for a new concern (the complaints
+- [x] **7p. Immediate staff alerts** also for a new concern (the complaints
   panel's chair) and an incident report from an event's page (the Director
   of Events and the President).
 - [ ] **7q. The templates index** adds the playbill, an Edition's cover and
