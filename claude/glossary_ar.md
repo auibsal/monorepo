@@ -4,9 +4,10 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 
 | English | Arabic |
 |---|---|
-| AUIB Society of Arts and Letters | جمعية الفنون والآداب في الجامعة الأمريكية في بغداد (then: الجمعية) |
-| AUIB | الجامعة الأمريكية في بغداد (decided Nov 9: everywhere, never «الجامعة الأمريكية في العراق – بغداد») |
+| AUIB Society of Arts and Letters | جمعية الفنون والآداب في الجامعة الأمريكية (then: الجمعية) |
+| AUIB | الجامعة الأمريكية في بغداد when AUIB is named on its own (never «الجامعة الأمريكية في العراق – بغداد»); in a compound name, «الجامعة الأمريكية» alone (صحيفة الجامعة الأمريكية للأخبار والآداب والفن) |
 | Student Life | شؤون الطلبة |
+| officer (one of the three: President, Vice President, Secretary) / "For a second officer" (the Desk) | مسؤول / «لمسؤول ثان» |
 | Campus Recreation Officer | مسؤول الأنشطة الترفيهية في الحرم الجامعي |
 | Director of Student Life | مديرة شؤون الطلبة |
 | Qirtas | قرطاس |
@@ -46,9 +47,9 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | episode / scene / take (the slate) | الحلقة / المشهد / اللقطة |
 | Subscribe / Next episode (end screen) | اشترك / الحلقة التالية |
 | credit labels: Directed by / Produced by / Host / Guests / Director of Photography / Edited by / Original Music / Title Design | إخراج / إنتاج / تقديم / الضيوف / مدير التصوير / مونتاج / موسيقى أصلية / تصميم العناوين |
-| "AUIB Society of Arts and Letters presents" | «جمعية الفنون والآداب في الجامعة الأمريكية في بغداد تقدّم» |
+| "AUIB Society of Arts and Letters presents" | «جمعية الفنون والآداب في الجامعة الأمريكية تقدّم» |
 | "Filmed on location at the American University of Iraq – Baghdad with the support of the Office of Student Life" | «صُوّر في الجامعة الأمريكية في بغداد بمساندة مكتب شؤون الطلبة» |
-| "A production of the AUIB Society of Arts and Letters" / "All rights reserved." | «من إنتاج جمعية الفنون والآداب في الجامعة الأمريكية في بغداد» / «جميع الحقوق محفوظة.» |
+| "A production of the AUIB Society of Arts and Letters" / "All rights reserved." | «من إنتاج جمعية الفنون والآداب في الجامعة الأمريكية» / «جميع الحقوق محفوظة.» |
 | audition / auditions | تجربة أداء / تجارب الأداء |
 | "Join the Society at" (end of a reel) | «انضم إلى الجمعية عبر» |
 | staff lane / contributor lane (Qirtas) | مسار هيئة التحرير / مسار المساهمين |
@@ -116,6 +117,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Code of Conduct | مدونة السلوك |
 | safeguarding | الحماية |
 | Privacy Notice / Terms of Use / Accessibility Statement | إشعار الخصوصية / شروط الاستخدام / بيان إمكانية الوصول |
+| Vulnerability Disclosure Policy | سياسة الإبلاغ عن الثغرات الأمنية |
 | Constitution / Bylaws / Policy Manual | الدستور / النظام الداخلي / دليل السياسات |
 | Leadership Handbook / Qirtas Staff Manual / Editorial Standards and Stylebook | دليل القيادة / دليل فريق قرطاس / معايير التحرير ودليل الأسلوب |
 | Annual Plan | الخطة السنوية |
@@ -136,9 +138,28 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | the Library / Credits (/about/credits) | المكتبة / الاعتمادات |
 | status page | صفحة حالة الموقع |
 | colophon | بيانات النشر |
-| the independence statement | «جمعية الفنون والآداب في الجامعة الأمريكية في بغداد منظمةٌ طلابية مسجّلة في الجامعة. آراؤها ومنشوراتها تخصّها وحدها، ولا تمثّل الجامعة.» |
-| Qirtas's line | «صحيفة الجامعة الأمريكية في بغداد للأخبار والآداب والفن» |
+| the independence statement | «جمعية الفنون والآداب في الجامعة الأمريكية منظمة طلابية مسجّلة في الجامعة الأمريكية في بغداد. آراؤها ومنشوراتها تخصّها وحدها، ولا تمثّل الجامعة.» |
+| Qirtas's line | «صحيفة الجامعة الأمريكية للأخبار والآداب والفن» |
 
 **Titles of named holders and Arabic forms:** every account chooses its Arabic form («عضو» / «عضوة»); never guessed.
 
 **Titles of named holders:** a title that names a woman takes تاء التأنيث (نائبة الرئيس، أمينة السر، رئيسة التحرير، مديرة الإعلام) with feminine verbs and pronouns; a seat named in the abstract keeps the form above and avoids pronouns where it can. The Vice President is «نائبة الرئيس».
+
+**Iraqi Arabic spelling (where the Society chats: Hudhud, captions and stories, the members' group, door signs).** One register per piece. The Society's own names keep the glossary's word (الفعالية، قرطاس، العضوية), never loanwords such as «الإيفنت».
+
+| Sound or word | Write |
+|---|---|
+| g, ch, p, v | گ، چ، پ، ڤ (گال، چا، پاس، ڤيديو) |
+| there is / there isn't | اكو / ماكو |
+| how / what's up | شلون / شكو |
+| now | هسه |
+| what | شنو |
+| why | ليش |
+| where | وين |
+| want | أريد / تريد (not «ابغى») |
+| okay | زين |
+| very | كلش |
+| we're waiting for you | ننتظرك / ننتظركم |
+| see you | نشوفكم |
+
+**Diacritics and punctuation:** sparing diacritics (only where a word would be misread); tanween al-fath always, on the letter before the alif; never ٌ or ٍ; full vowels only for verse and the motto; no tatweel; Arabic punctuation (، ؛ ؟ «») always. Products and platforms in Latin script (Instagram); web addresses, emails and handles in Latin, isolated.

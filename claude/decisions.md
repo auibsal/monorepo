@@ -22,9 +22,27 @@ Every chat in this project follows this file. Where an older document, project d
   - **Titles (Chicago 8.21):** capitalized are only the nine seats, the Managing Editor, the Copy Chief, the Faculty Advisor and the Partner Lead; team roles are lowercase in running text.
   - **Usage:** "advisor", never "adviser". "Graduate" in the singular and "alumni" in the plural. The endorsement line is "a Society of Arts and Letters program".
 - **Arabic:** Modern Standard Arabic, following the Arab language academies, for documents, Qirtas and the site. Iraqi Arabic, written as Iraqis write it (گ، چ، پ), is used only where the Society chats: Hudhud, social captions and stories, the members' group, signs at the door.
-  - **Writing:** Latin digits; «» quotes; tanween on the letter before the alif (شكرًا); the Iraqi month names.
+  - **Writing:** Latin digits; «» quotes; the Iraqi month names; diacritics, spelling and punctuation as set out under AUIB's name below.
   - **One word per term:** the glossary (`claude/glossary_ar.md`).
-  - **AUIB** is «الجامعة الأمريكية في بغداد» everywhere, and the Society «جمعية الفنون والآداب في الجامعة الأمريكية في بغداد»; English keeps "the American University of Iraq – Baghdad".
+  - **AUIB** is «الجامعة الأمريكية في بغداد» when it is named on its own ("at AUIB", the postal address, "Filmed on location at…"); inside a compound name it is «الجامعة الأمريكية» alone: the Society is «جمعية الفنون والآداب في الجامعة الأمريكية» and Qirtas's line «صحيفة الجامعة الأمريكية للأخبار والآداب والفن»; English keeps "the American University of Iraq – Baghdad".
+  - **After the first mention** in a piece, AUIB is «الجامعة» and the Society «الجمعية». Phrases like "AUIB students" take the short form (طلبة الجامعة الأمريكية). Qirtas is «قرطاس», a proper name with no article and masculine (نشر قرطاس، في قرطاس).
+  - **Diacritics (sparing, as edited Arabic prose uses them):** only where a word would be misread without them (a passive verb such as «صُوِّر», a shadda that changes the meaning). Tanween al-fath is always written, on the letter before the alif (شكرًا، أيضًا); the other tanween (ٌ ٍ) never. Full diacritics only for al-Mutanabbi's verse, the motto and any quoted poetry; poems in Qirtas keep the poet's own choice exactly as sent; people's names have none, except a shadda the person asks for. Headlines, buttons and emails follow the same rule.
+  - **Spelling and punctuation:** hamza, taa marbuta and alif maqsura always correct (إ أ آ؛ ة not ه؛ ى and ي), checked in CI for the site's text; no tatweel (كـتـاب) anywhere, display type included; Arabic punctuation always (، ؛ ؟ and «»), never the Latin marks.
+  - **Other scripts inside Arabic:** products and platforms in Latin script (Instagram, Telegram, Notion); the Society's own names in Arabic (قرطاس، الديوان، هدهد); web addresses, emails and handles in Latin, isolated so they don't flip the line's direction.
+  - **Addressing a mixed group** in Arabic: neutral wording where possible (أعضاء الجمعية، كل من…), otherwise the masculine plural, as Modern Standard Arabic does; a person is always addressed in their chosen form.
+- **Iraqi Arabic, exactly where it's used:**
+  - **Iraqi:** Hudhud's chat, reminders and Sunday note; Instagram captions and stories; the members' group; short door and table signs only when they just give directions or a welcome.
+  - **Modern Standard:** everything else, including designed slides and posts, posters and printed material, Next Stop's on-screen text and captions (speech stays as spoken), any Hudhud message with official weight (removal notices, consents, appeals), and any sign or notice with official weight, such as Next Stop's filming notice on the bus door, which tells riders how to opt out of being filmed.
+  - **One register per piece:** a message or post is wholly Iraqi or wholly Modern Standard, never mixed.
+  - **Spelling:** one short Iraqi spelling list in the glossary (گ چ پ ڤ; اكو، ماكو، شلون، هسه، شكو…), so every writer spells it the same. The Society's own names keep the glossary's word even in Iraqi (الفعالية, never «الإيفنت»).
+  - **Tone:** warm and polite, in the person's chosen Arabic form, with no slang that could offend.
+- **English beside Arabic:**
+  - **Where both appear together** (mixed audiences, Telegram posts, signage): English first.
+  - **The site's language** for a first-time visitor is the browser's, or English if it's neither; an account's language is that of the page they signed up on, changeable in Settings.
+  - **Certificates** are in the recipient's language, with the other edition available.
+  - **Type:** in the brand kit, Arabic is set about 10% larger than English so both read at the same size.
+  - **Hashtags:** none, or the one Society tag #auibsal.
+  - **Arabic words in English text** (al-Mutanabbi, Qalam, the Diwan) use simple spelling with no diacritics, as Chicago allows for general readers, from the glossary.
 - **Gender:** seats and roles are written without gender. In English a seat is its title or "they"; in Arabic a seat named in the abstract keeps the glossary's form and avoids pronouns where it can. A title that names a person takes that person's gender, by their own preference, with تاء التأنيث for a woman (نائبة الرئيس، أمينة السر، رئيسة التحرير) and matching verbs and pronouns. Every account sets its Arabic form at sign-up with one grammar question, "In Arabic, address me as: «عضو» / «عضوة»" (existing members are asked once at their next sign-in). It can be changed any time, is never guessed from the name, and sets every Arabic title, card line, email, letter and Hudhud message. The public line: "We address everyone in the form they choose, in both languages."
 - **One language per piece.** Every document and page exists in full in both languages, as separate English and Arabic editions linked to each other. Claude writes the Arabic; no native-speaker check is needed, and the team edits later where needed.
 - **Everything addressed to a person is in that person's language:** the site, emails, the Sunday Paper (an English and an Arabic edition), Hudhud's private messages, letters and forms.
@@ -53,7 +71,7 @@ Every chat in this project follows this file. Where an older document, project d
   - **Hijri dates:** Arabic pages of events and Editions, and Arabic letters, add the full Hijri date after the Gregorian one; English shows Gregorian only.
   - **Titles** of pages, files, emails and buttons are in sentence case, with no emoji, prefixes or brackets; Notion pages start with what they are ("Event: Writing workshop, Dec 8"); email subjects stay under 60 characters.
   - **Speech and screen text:** people in videos speak as they speak (Iraqi Arabic is fine); on-screen text, captions and titles follow the glossary's Modern Standard Arabic.
-- **Answer times:** hello@ and Help Desk in two working days; the press in one; letters to the editor in a week; applications by their stated date; removals in two working days; accessibility requests in three; privacy requests to privacy@ in 30 days, logged in the Diwan.
+- **Answer times:** hello@, Help Desk, nextstop@ and partners@ in two working days; the press in one; letters to the editor in a week; applications by their stated date; removals in two working days; accessibility requests in three; privacy requests to privacy@ in 30 days, logged in the Diwan; security reports to security@ acknowledged within three business days (SAL-GOV-07).
 
 ## 2. Where the Society stands
 - **Its history, as it happened** (shown as a short History on About):
@@ -147,12 +165,12 @@ Every chat in this project follows this file. Where an older document, project d
   - **Roles:** team roles yes, Council seats only from 18.
   - **No birthdays** are collected otherwise, shown or celebrated. Qalam is a separate program.
 - **Names (as US universities keep them):**
-  - **The legal name,** as on official papers, is required for Members in English and Arabic. It is entered in parts (given name, father's, grandfather's, and family name where there is one), each in its own language's script, and used only on certificates, letters, signed forms, minutes and lists for Student Life. Once it is complete, the member can't change it; the Director of Membership corrects it on the member's request.
-  - **The preferred name** is one field in each language, the whole name as the person wants it shown. By default it is the given and father's names from the legal name (for a guest, or until the legal name is complete, the name given at sign-up), and the person can change it at any time, though not to mislead or offend (the Director of Membership may reset it). It is shown everywhere else: the card, the profile, bylines, the Council page, the masthead, and every credit and name caption in the Society's videos. Credits, captions and lists take the name from the site; nobody types a name by hand. Before a default preferred name goes public, the site shows it to the member at their next sign-in, with a choice to keep or change it; that is the notice for the change, so no 14-day email is sent.
+  - **The legal name,** as on official papers, is required for Members in English and Arabic. It is entered in parts (given name, father's, grandfather's, and family name where there is one), each in its own language's script, and used only on certificates, letters, signed forms, minutes and lists for Student Life. It is locked for everyone, including every account that exists now: no member can change it themselves. After sign-up it is changed only in the Diwan (Membership → the member → Official name), by the Director of Membership on the member's request, with a reason and a second officer's approval (§7).
+  - **The preferred name** is one field in each language, the whole name as the person wants it shown. By default it is the given and father's names from the legal name (for a guest, or until the legal name is complete, the name given at sign-up), and the person can change it at any time, though not to mislead or offend (the Director of Membership may reset it). It is shown everywhere else: the card, the profile, bylines, the Council page, the masthead, and every credit and name caption in the Society's videos. Credits, captions and lists take the name from the site; nobody types a name by hand. The default is set for everyone the same way, with no prompt to confirm it; the person can change it in Settings whenever they want.
   - **Guests and partners' people** give a preferred name, plus their full name when they sign. Names never need to be unique. Documents name seats only.
 - **Accounts (NIST SP 800-63B, OWASP ASVS):**
   - **Passwords:** at least 12 characters, with no composition rules, a show-password toggle and a breached-password check.
-  - **Two-step sign-in:** offered to everyone, by an authenticator app (TOTP), and required for officers, Council seats and every role that sees personal data (§8). Signing in with a passkey meets the requirement on its own, since a passkey is already two factors (NIST's phishing-resistant authenticator).
+  - **Two-step sign-in:** offered to everyone, and required for officers, Council seats and every role that sees personal data (§8). From Sun Nov 22, 2026, anyone holding such a role who signs in without it is taken straight to setting it up before they can go on: a passkey first (it counts as two steps on its own, NIST's phishing-resistant authenticator), or an authenticator app (TOTP) if they prefer, with recovery codes. Nobody is locked out or sent reminders; the next sign-in does it.
   - **Privacy:** the site never reveals whether an address has an account.
   - **Sign-up:** the person acknowledges the Code of Conduct (no other pledge), agrees to the Terms and the Privacy Notice, and confirms they are an enrolled AUIB student or 18 or older. It asks only what the site uses: no birth year, gender or skills (skills come from applications, §8).
   - **Reminders:** an unconfirmed email gets one reminder after 24 hours, and the account is deleted after 7 days. An unfinished profile gets reminders after 2 and 7 days, then nothing more.
@@ -303,7 +321,7 @@ Every chat in this project follows this file. Where an older document, project d
   - **the GPA list:** "eligible" or "not eligible" for each name, nothing more;
   - **an event's guest list** for Security, two weeks ahead;
   - **a room booking.**
-  Student Life's staff answer from their guest accounts with the "Student Life" role (§4); the single-use link still works.
+  Student Life's staff answer from their Associate accounts with the "Student Life" role (§4); the single-use link still works.
 
 ### Holders on record (the founding team, until October 2027)
 Wherever a name is shown (the site, credits, captions, the masthead), it is the holder's preferred name from the site (§4). Two are set by choice: the President's, "Shaheen Farjo" («شاهين فرجو»), and the host's, "Hassan Sadeq" («حسن صادق»); the others show the default until each sets their own.
@@ -333,7 +351,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **Who speaks for the Society:** the President; the Editor-in-Chief for Qirtas; the Director of Media for Next Stop; everyone else points the press to press@.
 - **Concerns** are raised signed in. The person may ask to keep their name from the panel: it is sealed, opened only for a safety risk or with their agreement, and the reply notes that anonymous concerns are harder to act on.
 - **Records people can read:** adopted resolutions (number, title, date) are open to members beside the approved minutes; resolutions about partners and documents are public. Each election has a candidates' forum in the week before voting, recorded for those who can't come.
-- **Two officers** approve the most sensitive actions: removing a member, changing a legal name, granting a Council role, exporting a list for Student Life.
+- **Two officers** approve the most sensitive actions: removing a member, changing a legal name, granting a Council role, exporting a list for Student Life. One officer asks; another holding the same permission approves or declines on the Diwan's Desk ("For a second officer"), never their own request; an approved Student Life list downloads once.
 
 ## 8. Get involved and roles
 - **The roles standard (least privilege, as US universities run student systems):**
@@ -344,7 +362,8 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
     - scoped roles (tied to one event, production, Edition, episode, election or shift, and ending with it automatically);
     - outside roles (the Partner Lead and the partner's team, the Faculty Advisor, the Advisory Board, Student Life, Parent).
   - **Covering a seat** is a dated delegation record that ends when the seat is filled, never built into the officer's own role. One person holds at most one Council seat, with no other cap on roles.
-  - **Two-step sign-in** is required for every role that sees personal data, and a passkey counts. It is enforced from Sun Nov 22, 2026, once the site counts a passkey; the Council sets theirs up at the Nov 18 meeting.
+  - **Two-step sign-in** is required for every role that sees personal data, and a passkey counts. From Sun Nov 22, 2026, the site makes each such role holder set it up at their next sign-in (§4).
+  - **Shift-scoped station access is exempt from two-step sign-in:** it lasts one shift, can only attach a page to a card the volunteer scans, and shows nothing beyond the name on that card.
   - **Access ends** the day the role ends (on the site at once; in the Diwan Telegram group 7 days later). The Secretary reviews who holds what every quarter, and every grant and removal is logged.
   - **Personal data is seen only where the job needs it:** member profiles by Membership and the Executive Board; the mailing list by Media and the Managing Editor; writers' names by the Managing Editor only.
   - **Assignment:** roles are given only after an application or election and an appointment on record, by an officer on the member's page.
@@ -371,7 +390,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **Get involved lists open roles only:** Council and team roles, event teams, Qalam mentors and auditions. It has no shifts (they exist only on events) and no skill matching, and it is rendered on the server.
 - **One application system (the American standard for student-organization hiring):**
   - **Openings:** each has its own page, posted in the Diwan by the seat that hires for the role, with up to eight questions, whether it asks for links to work, and who may apply. A director seat opens only after the Executive Board approves it by resolution.
-  - **The application:** signed-in Members only. It has a draft that can be saved; availability; the language the applicant will be written to in; links to work when asked; an optional accommodation request; and, for a director seat, consent to Student Life's GPA check, signed by typing the legal name. A receipt is emailed.
+  - **The application:** signed-in Members only. It has a draft that can be saved; availability; the language the applicant will be written to in; links to work when asked; an optional accommodation request; and, for a director seat, consent to Student Life's GPA check, signed with "Sign as …". A receipt is emailed.
   - **Statuses,** in Your account → Your applications: received, interview, shortlisted, offer, accepted, appointed, not chosen, declined, withdrawn. Withdrawing keeps the application, as withdrawn.
   - **Review:** by the hiring seat and a second reviewer, each scoring 1–5 with notes or recusing. Interviews are scheduled in the Diwan, use the same questions for every candidate, and are recorded in the review screen. Auditions are openings on Get involved: signing up is an application with a time slot and a few questions, scored in the review screen, and posted at least two weeks ahead; casting goes out as offers.
   - **Offers:** accepted or declined from the account within 7 days; an unanswered offer lapses as declined. A team role is assigned on acceptance and starts its first term. A director is appointed only after the Executive Board's resolution and Student Life's "eligible".
@@ -406,6 +425,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Terms:** the submission terms (one's own work, no AI-generated text or images, rights) are set in SAL-EDT-01.
   - **For now** it takes only Letters and Gallery: for Haven until Sun Dec 6, then for the standing call (the standing flow and Edition 1), so the door never closes. News, Voices and Video take no outside submissions until the owner reopens them, and their pages carry no "send your work" link.
   - **The page** leads with Haven's title, line, call and deadline. A signed-in member sees their two most recent drafts there; everything they have sent lives in Your account → Work.
+  - **Revise and resend:** the section editor may ask for one revision; it goes back to that editor, keeps its SUB number and isn't read blind again.
   - **Unpublished submissions** are deleted twelve months after the decision.
 - **Two layers, as American student publications run them:** Qirtas online is the paper, published as pieces are ready (the standing flow). **Editions** («الإصدار») are its journal: numbered, two a year (fall and spring), each printed and digital, like Harvard Review or a college literary magazine.
   - **What an Edition holds:** the term's best Letters, Gallery, Voices essays and reviews, its best long-form News features and profiles, a crossword, and Video as stills with a QR code; never breaking news. Pieces come from the standing flow and from the Edition's own themed call, if it has one; an Edition's theme links to its topic.
@@ -442,7 +462,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **More rules for Qirtas:**
   - **The Prize** judges everything published that year, online or in an Edition; winners appear in the spring Edition.
   - **Unpublishing:** a piece comes down only for safety, legal reasons or a serious error, decided by the Editor-in-Chief, with a note left in its place (the Student Press Law Center's standard).
-  - **AI:** no AI-written text or images in anything Qirtas publishes, staff included; spellcheck, grammar and translation aids only, disclosed where used.
+  - **AI:** no AI-written text or images in anything Qirtas publishes, staff included; spellcheck, grammar checkers and dictionaries only; no machine- or AI-translated text.
   - **No comments** on pieces; readers answer through letters to the editor.
   - **Games** are generated a week ahead and checked once a week.
   - **Licenses:** each piece defaults to CC BY-NC-ND, and the writer may choose another.
@@ -454,7 +474,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 ## 10. Events
 - **One events manager, one standard event.** Every event (Council and general meetings, the Tour's days, Second Chapter, Qalam sessions, each Edition's launch) is made in Notion's Events database and copied to the site, where Events (auibsal.org/events) shows it and takes RSVPs and check-in. Nothing is built for one event or one kind of event anywhere.
 - **The standard page:** title, date and time, place, description, image, lead, host (the Society or the partner it is held for) and links. Every description ends with how to ask for an accommodation and by when.
-- **Access:** Open (anyone, no RSVP), RSVP, Members (check-ins count toward voting) or Private (invited only, such as a Council meeting).
+- **Access:** Open (anyone, no RSVP), RSVP, Members (check-ins count toward voting) or Private (invited only, such as a partner's private event). Council meetings are Members events, since members may observe them (§7), with the closed session held apart.
 - **Standard parts only:** RSVP and check-in, a needs list, volunteer shifts (only on an event; they log no hours), a partner checklist, and links from the night (photos, recordings, the Qirtas piece, minutes).
   - **Capacity:** RSVPs close at the room's posted capacity, with a waitlist.
   - **Debriefs:** each event links its debrief, kept in Notion without names.
@@ -509,6 +529,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 | SAL-GOV-04 | Privacy Notice | Secretary | The site's privacy policy (public, /privacy) |
 | SAL-GOV-05 | Terms of Use | Director of Media | The site's terms, incl. submissions and copyright (/terms) |
 | SAL-GOV-06 | Accessibility Statement | Director of Media | The site's accessibility commitment (/accessibility) |
+| SAL-GOV-07 | Vulnerability Disclosure Policy | Director of Media | How to report a security problem (public, /security), from CISA's template |
 | SAL-EXB-01 | Leadership Handbook | Secretary | The seats and officers, meetings in practice, needs, agreements and consents, where things live, handover; pointers to every other book |
 | SAL-EXB-02 | Annual Plan 2026–27 | President | The year's goals, the five measures (Notion's Measures database, five rows), the calendar; keeps its code each year |
 | SAL-EVT-01 | Events Manual | Director of Events | The term calendar, the standard event, access and parts, ways to run an event, leads, capacity, checklists, coverage |
@@ -533,7 +554,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Style:** Version 1 with no change notes; headings stand alone; it ends with its last section ("Thank you." closes only printed pieces); seats only, no holders' names.
   - **The header line under the title:** the code · the keeper · the status · a short link to the other edition ("SAL-MEM-01 · Kept by the Director of Membership · Version 1, proposed until the Council adopts it · العربية"; Arabic «SAL-MEM-01 · يحفظها مدير العضوية · النسخة 1، مقترحة حتى يعتمدها المجلس · English»).
     - **GOV-01 and GOV-02** say "until the Founding Meeting adopts it".
-    - **GOV-04 to GOV-06** say "Effective November 8, 2026 · Version 1, proposed".
+    - **GOV-04 to GOV-06** say "Effective November 8, 2026 · Version 1, proposed"; **GOV-07** says "Effective the day it is published · Version 1, proposed".
     - **On adoption** the status becomes "Version 1 · Effective <date>". There is no "Dated" line.
 - **Publishing before adoption:** the public documents appear in the library marked "proposed", both editions together. Staff manuals and internal documents (such as the Annual Plan and EDT-02) are never published.
 - **Policy changes:** material changes to GOV-04 and GOV-05 are emailed to members at least 14 days before they take effect. Accessibility requests (GOV-06) are answered within three working days.
@@ -553,7 +574,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **Paper** is only a backup (photographed into the record the same day), plus the two-person cash count.
 - **One source:** the site's list of agreements and consents matches the handbook exactly, and CI checks it.
 - **Electronic signatures,** one standard everywhere (forms, memoranda, consents, nominations):
-  - **Signing:** the signer is signed in (parents and outsiders open a single-use link), agrees to sign electronically, types their full legal name, and confirms "I agree".
+  - **Signing:** the signer is signed in (parents and outsiders open a single-use link), agrees to sign electronically, sees the legal name on their account and clicks "Sign as …" (nobody types a name, §4).
   - **The record:** the site records the name, number, time, IP address, the exact document version and its SHA-256 fingerprint. It shows a signature block, emails the signer a copy, and makes the record checkable at /verify.
 - **One template, many outputs:**
   - **Content** is written once, in the list of agreements and consents.
@@ -574,6 +595,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 | Kinds of agreement and consent | a name and version | media-release, version 1 |
 | Each signed agreement or consent | AGR-<year>-<four digits>, on signing | AGR-2026-0001 |
 | Each application (roles, auditions, Qalam) | APP-<year>-<four digits>, on sending | APP-2026-0001 |
+| Each Write for Qirtas submission | SUB-<year>-<four digits>, on sending | SUB-2026-0001 |
 | Member and guest numbers | five digits, one series (§4) | No. 00042 |
 | Certificates | CERT-<year>-<three digits> | CERT-2028-001 |
 | Letters | LTR-<year>-<three digits> | LTR-2026-001 |
@@ -582,7 +604,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 | Partnership memoranda | MOU-<year>-<three digits> | MOU-2026-001 |
 | Verification codes | random, separate from the record | auibsal.org/verify/<code> |
 | Terms | <term>-<year> | fall-2026 |
-| The Edition | Edition <n>, <year> | Edition 1, 2028 |
+| The Edition | Edition <n>, <year> | Edition 1, 2027 |
 | The Sunday Paper | by month | November 2026 |
 | Daily games | No. <n>, from launch day | No. 1 |
 | Event addresses | <title>-<date> | writing-workshop-2026-12-08 |
@@ -661,19 +683,19 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **The code:** semantic versions on GitHub Releases, with notes for staff only; Renovate weekly; Node's active long-term-support line, with major updates once a term; one retention scheduler (pg_cron); internal names renamed to the Society's language in one planned migration (no "programmes" or "journal"). Preview deployments stay off until Vercel Pro is provided, then return for every pull request.
 - **The frame every page shares:**
   - **The header:** the logo (home), the menu, search, the language switch, the theme toggle, then Join or the account menu.
-  - **The public footer,** four short columns: The Society (About, the Council, Press, Partners, Contact); Take part (Join, Get involved, Events, Write for Qirtas); Read and watch (Qirtas, Editions, Next Stop, The Company); Policies (Privacy, Terms, Accessibility, Code of Conduct, Security). Then the social links, "Raise a concern", the postal address, "Paperless by default. Books reused through Second Chapter." and "© 2026 AUIB Society of Arts and Letters. All rights reserved." (a range, 2026–<year>, from 2027). Qirtas's pages add that each piece belongs to its writer under the license shown on it.
+  - **The public footer,** four short columns: The Society (About, the Council, Press, Partners, Contact); Take part (Join, Get involved, Events, Write for Qirtas); Read and watch (Qirtas, Editions, Next Stop, The Company, The Sunday Paper sign-up); Policies (Privacy, Terms, Accessibility, Code of Conduct, Security). Then the social links, "Raise a concern", the postal address, "Paperless by default. Books reused through Second Chapter." and "© 2026 AUIB Society of Arts and Letters. All rights reserved." (a range, 2026–<year>, from 2027). Qirtas's pages add that each piece belongs to its writer under the license shown on it.
   - **Private spaces** (Your account, the partner dashboard, the Diwan) are workspaces with a slim footer: Help, Privacy, Terms, Report a problem; the Diwan's also shows the site's version and build.
   - **The partner dashboard** stays its own workspace, like the Diwan but only for the partnership, with tabs for Events, Checklist, Guests, Team and Memorandum.
   - **Guests** see Today, Events, Work, Documents and Settings in Your account.
   - **The Diwan's seats** run down a side list on a computer (the Desk first) and across the top on a phone.
 - **Pages and actions:** each page has one main action (Home: Join; Qirtas: Submit; Events: RSVP; an Edition: Read; Next Stop: Watch the latest; the Company: Audition when open, otherwise See the season; Get involved: Apply; Partners: Become a partner). Every section's front page opens the same way: its title, one sentence, its action, then its lists. The home page shows, when each has something: the motto and Join; the next three events; the newest Edition or current call; the latest from Qirtas; Next Stop's latest; open roles; From the Society.
-- **About,** in order: the one sentence, the motto (al-Mutanabbi's full verse in Arabic with its translation, and the story of the name Qirtas), what the Society does, how it's run, a short history, the Society by the numbers (counted by the site), the Council, the Faculty Advisor once there is one, the independence statement ("The AUIB Society of Arts and Letters is a registered student organization at the American University of Iraq – Baghdad. Its views and publications are its own and not those of the University."), and the documents.
+- **About,** in order: the one sentence, the motto (al-Mutanabbi's full verse in Arabic with its translation, and the story of the name: Qirtas is the paper of al-Mutanabbi's verse, the line the motto comes from), what the Society does, how it's run, a short history, the Society by the numbers (counted by the site), the Council, the Faculty Advisor once there is one, the independence statement ("The AUIB Society of Arts and Letters is a registered student organization at the American University of Iraq – Baghdad. Its views and publications are its own and not those of the University."), and the documents.
 - **Help:** a Help page answering the twenty most common questions, a "Words we use" page explaining the Society's terms, and "Report a problem" on every page, reaching the web lead in the Diwan.
 - **Contact:** one page that routes by topic (a question, the press, a letter to the editor, Next Stop, accessibility, privacy, a removal, a concern, a partnership) to the right role address, showing the answer time; signed-in people's details come from their account.
-- **The Library,** grouped by who it's for (everyone, members, staff), each document with its code, keeper, status and a two-line summary, searchable, both editions together; staff manuals only in the Diwan.
-- **Policies at short addresses:** /code-of-conduct (public) and /security (the disclosure policy), beside /privacy, /terms and /accessibility; each keeps its effective date at the top.
-- **Credits:** /about/credits lists the software, fonts and icons the site uses with their licenses (generated), and About → Our people credits the web team. The repository stays private, all rights reserved to the Society, every contribution under the role agreement.
-- **Partners and sponsors on the site:** partners in alphabetical order with equal-size logos, grouped by kind (clubs, charities, schools), then "With the support of", then Become a partner; no tiers or ranking. Sponsors in kind appear at one small size on their event and its thank-you only.
+- **The Library,** grouped by who it's for, from each document's "For" field in Notion's Documents (Everyone, Members, Staff, set by its keeper; Staff documents never leave the Diwan), each document with its code, keeper, status and a two-line summary, searchable, both editions together; staff manuals only in the Diwan.
+- **Policies at short addresses:** /code-of-conduct (public; it shows SAL-GOV-03, Art. II, with no separate document) and /security (SAL-GOV-07), beside /privacy, /terms and /accessibility; each keeps its effective date at the top, and GOV-07's is the day it is published.
+- **Credits:** /about/credits lists the software, fonts and icons the site uses with their licenses (generated), and About → Our people credits the web team. The repository is public (for openness and the free checks a public repository gets: branch rulesets and the weekly OpenSSF Scorecard) but not open source: all rights are reserved to the Society, no one may reuse the code without a written agreement, every contribution is under the role agreement, and nothing secret or personal ever goes in it.
+- **Partners and sponsors on the site:** partners in alphabetical order with equal-size logos, grouped by kind (clubs; culture and the press; charities; schools and universities; others), then "With the support of", then Become a partner; no tiers or ranking. Sponsors in kind appear at one small size on their event and its thank-you only.
 - **Tools and settings:**
   - **A review before any new service or add-on that holds data** (what, where, privacy terms, cost now and later, owner account, how to leave), approved by the Director of Media and recorded; a stack page in the docs lists every service with its plan, owner account, renewal date and exit; a yearly feature audit in September retires what wasn't used.
   - **Supabase:** email confirmation and leaked-password protection on, short token lifetimes, network restrictions where the plan allows, and a monthly look at the advisors on the Desk. Its sign-in emails go through Resend from hello@auibsal.org in the Society's template and the person's language.
@@ -724,7 +746,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
     - **The site** writes to each person at their account email (the AUIB address for students; a confirmed personal address for graduates and guests).
     - **The public** sees only Society addresses; no personal address appears on the site or in a signature.
   - **What sends from where,** through Resend, always with replies to a monitored address (never "no-reply"): the site's emails and broadcasts from hello@, the Sunday Paper from qirtas@, and letters from the signer's seat address. The welcome is part of the confirmation email. Personal addresses are never used for Society business.
-  - **Every bulk email** carries the postal address: "AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq" («جمعية الفنون والآداب في الجامعة الأمريكية في بغداد، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في بغداد، طريق المطار، بغداد، العراق»).
+  - **Every bulk email** carries the postal address: "AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq" («جمعية الفنون والآداب في الجامعة الأمريكية، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في بغداد، طريق المطار، بغداد، العراق»).
   - **The signature,** in the email's language: the sender's name and seat; "AUIB Society of Arts and Letters"; "The paper and the pen."; "auibsal.org · @auibsal"; "Paperless by default. Books reused through Second Chapter."
 - **The emails (the kit's templates, one catalog):**
   - **Grouping:** they are grouped as Account and security, Membership, Get involved, Events, Qirtas, Governance, Agreements and records, Mailing list, and Staff alerts, each named plainly in sentence case.
@@ -800,7 +822,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - headlines in one color with no accent word.
 - **Email standards:** DMARC moves to quarantine and then reject after 30 days of clean reports; every email has a plain-text version; the mailing list sends from news.auibsal.org, with replies to hello@ and qirtas@; the list starts with recently active members before everyone, keeping complaints under 0.1%.
 - **The Sunday Paper** goes at 10:00 a.m. Baghdad time on the first Sunday, scheduled the evening before after the test; each issue has its own address and appears in search.
-- **Hudhud's Sunday note:** one post each Sunday in term in the members' group listing the week's events and open calls, plus the two-day reminders, in place of a post for each new event.
+- **Hudhud's Sunday note:** one post each Sunday in term (any week with an event or an open call; a week with neither gets no note) in the members' group listing the week's events and open calls, plus the two-day reminders, in place of a post for each new event.
 - **Every email carries:** one clear subject; the action first, then the detail; one button; the record number where there is one; why the person is getting it; and, unless it's account or security, a link to preferences. Sender names: "AUIB Society of Arts and Letters" for the site and announcements, "Qirtas" for the Sunday Paper, a person's name and seat for letters. Bulk emails start with "View in your browser", and unsubscribing lands on a page that confirms it and offers topics. Every email can be previewed in both languages on the Diwan's design page, with a test to yourself.
 - **Staff alerts:** urgent ones at once; the rest in one daily digest.
 - **The name held everywhere:** @auibsal is registered, without posting, on TikTok, X, Threads, Facebook and Snapchat, each pointing to auibsal.org.
@@ -860,6 +882,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **Never Notion:** partners and members never use it.
 - **No personal storage:** no Google Drive, and no Society files in personal storage. The Society's files in the President's OneDrive move into Notion (the Tour scans into the site), and the folder is then deleted.
 - **Rows, not pages,** for small records (needs, shifts, credits, hours, roles); big records keep their own pages.
+- **Notion's plan:** the free Plus plan Notion gives student organizations.
 - **Accounts and hosting:** the tool accounts (Vercel, Supabase, Resend, Cloudflare, GitHub, Zoho, Notion) stay as they are for now: owned by the President's AUIB email, with officers added as admins and two-step verification on. Who owns them later is the owner's decision; nothing is moved or newly created until then.
   - **Admin access** passes with the role; ownership stays with the account's owner.
   - **Credentials:** the passwords, recovery codes and two-step backups are kept by the account owner and shared with the admins only where they need them; they are never kept in personal notes or chats, and are reset at each handover. Two-step sign-in is required for every Council role holder on the site.
@@ -881,7 +904,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **Fall 2026:**
   - **Sun Nov 15:** Next Stop's filming request goes to Student Life (the Secretary).
   - **Wed Nov 18, 2:15–3:45 p.m.: the first Council meeting** (agenda sent Mon Nov 16). It ratifies the founding team's actions and every decision in this file up to the meeting; sets the term calendar and the room; plans general meetings; records the President's absence; approves the open call; and covers the founding team's GPA check, the Faculty Advisor invitation and the Founding Proposal's timeline. The launch is reported, not decided.
-  - **Sun Nov 22:** the May applicants' deadline to apply on Get involved; two-step sign-in enforced for roles that see personal data; Haven's call sent as the first announcement (by this date).
+  - **Sun Nov 22:** the May applicants' deadline to apply on Get involved; two-step sign-in set up at the next sign-in by every role that sees personal data; Haven's call sent as the first announcement (by this date).
   - **Wed Nov 25:** the founding team's GPA list goes to Student Life, and the Faculty Advisor invitation goes out.
   - **Tue Dec 1, 2:30–4:00 p.m.: the pilot,** a reading with a guest (the station access is tested).
   - **Wed Dec 2, 2:15–3:00 p.m.:** general meeting.

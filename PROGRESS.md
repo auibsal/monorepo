@@ -11,14 +11,86 @@ migrated on Nov 11) and against decisions.md of Nov 12. The owner's steps
 from the earlier "SAL V1 launch steps" pages are folded in below; those
 pages are deleted.
 
-Branch: `claude/new-session-qosn60`, one pull request for the third
-prompt (Nov 12).
+Branch: `claude/new-session-qosn60`, one pull request for the third and
+fourth prompts (Nov 12).
 
 ## Now: the third prompt (Nov 12, the whole review)
 
 Built in this order, one commit per part, in one pull request. Each line
 says what changes; **Migrates** says what a migration changes in
 production; **Owner** is a step only the owner can take.
+
+### 0. The fourth prompt (Nov 12, late), folded into this plan
+Replaces the mirror (decisions.md and glossary_ar.md of Nov 12, late).
+First the second prompt's part 2 (7j), then the rest in place.
+- [ ] **7j. No F-numbers on the site:** retire /forms and every F-number;
+  "Raise a concern" lives on Contact; every agreement and consent is a step
+  in its own flow; each shared /forms address redirects (308); the footer
+  and Contact stop pointing at /forms/21.
+- [ ] **1. Classes** follow status both ways on the same account and number
+  (Members: degree and ELA students; Associates: faculty, staff, alumni;
+  Guests: everyone else); Parent and Qalam student are roles on guest
+  accounts; one card for everyone, class and role on its second line
+  ("Guest · Parent"); under-18s show first name and last initial (Qalam
+  adds school and year).
+- [ ] **2. "Sign as …" everywhere:** no typed legal name anywhere, the GPA
+  consent on a director application included.
+- [ ] **3. Two-step from Nov 22:** no lock-out, no reminder; a role that
+  sees personal data is taken to set it up at sign-in (passkey first, then
+  an authenticator app, then recovery codes); shift-scoped station access
+  exempt.
+- [ ] **3a. Names:** no "keep or change" prompt; the default preferred name
+  set for everyone alike (the President's and the host's stay); the legal
+  name locked for every account, changed only in the Diwan with a second
+  officer.
+- [ ] **4. Policies:** /code-of-conduct renders GOV-03, Art. II; /security
+  renders GOV-07 («سياسة الإبلاغ عن الثغرات الأمنية») once published, "Effective
+  the day it is published"; security.txt points to /security; three
+  business days to acknowledge.
+- [ ] **5. Council meetings show as Members events.**
+- [ ] **6. Student Life's staff answer from Associate accounts.**
+- [ ] **7. The permissions table** for EXB-01: report where it lives.
+- [ ] **7a. The stack page:** Notion on the free Plus plan for student
+  organizations.
+- [ ] **7b. news.auibsal.org** verified in Resend and `RESEND_BULK_DOMAIN`
+  set: marked done here and in `docs/platform/settings.md`.
+- [ ] **7c. LICENSE.md:** "proprietary", no longer "and confidential"; the
+  repository stays public.
+- [ ] **7d. AUIB's Arabic name:** «الجامعة الأمريكية في بغداد» alone; «الجامعة
+  الأمريكية» inside a compound (the Society, Qirtas's line) across the site,
+  emails, Hudhud, the brand kit and the language check.
+- [x] **7e. Submission numbers** SUB-<year>-<four digits> (now in
+  decisions.md §12). Revise and resend waits on the owner.
+- [ ] **7f. Arabic writing rules in CI:** never ٌ or ٍ; tanween al-fath on
+  the letter before the alif; no tatweel; Arabic punctuation; hamza, taa
+  marbuta and alif maqsura; Latin script for products and addresses,
+  isolated (`<bdi>`).
+- [ ] **7g. Hudhud's register:** Iraqi for chat, reminders and the Sunday
+  note; Modern Standard for removal notices, consents and appeals.
+- [ ] **7h. Languages:** a first visit in the browser's language (or
+  English); an account's language from its sign-up page, changeable in
+  Settings; certificates in the recipient's language with the other
+  edition; Arabic about 10% larger in the brand kit.
+- [ ] **7i. Revise and resend:** one revision, back to the section editor,
+  same SUB number, not read blind again.
+- [ ] **7k. Removal from membership** is the Council's (§7), still to build;
+  parents withdraw their child's consents from the Parent view.
+- [ ] **7l. The Sunday Paper sign-up** in the public footer's Read and watch
+  column.
+- [ ] **7m. The Library's groups** from Notion's "For" field (Everyone,
+  Members, Staff), not from the code.
+- [x] **7n. The Sunday note's "in term"** (a week with an event or an open
+  call), now in decisions.md.
+- [ ] **7o. GOV-07's Arabic title** on the site: «سياسة الإبلاغ عن الثغرات
+  الأمنية».
+- [ ] **7p. Immediate staff alerts** also for a new concern (the complaints
+  panel's chair) and an incident report from an event's page (the Director
+  of Events and the President).
+- [ ] **7q. The templates index** adds the playbill, an Edition's cover and
+  inside, and Next Stop's package ("awaiting approval"); each row names its
+  owner seat.
+- [ ] **7r. "Tech admin" is retired:** the web lead, everywhere, the Desk's
+  Database checks included.
 
 ### 11. Language (first: it touches every part)
 - [x] "Secretary" («أمين السر»; «أمينة السر» for a woman) replaces "General
