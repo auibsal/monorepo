@@ -84,13 +84,16 @@ const renamedRoles = new Map(
 );
 const currentRole = (key: string) => renamedRoles.get(key) ?? key;
 
-const revokedGrants = new Set(
+/** Where each grant was last revoked: a grant made again later counts. */
+const revokedGrants = new Map(
   [
     ...sql.matchAll(
       /delete from access\.role_permissions where role = '([a-z_]+)' and permission = '([a-z_.]+)'/gu
     ),
-  ].map((m) => `${m[1]}:${m[2]}`)
+  ].map((m) => [`${m[1]}:${m[2]}`, m.index ?? 0])
 );
+const revokedAfter = (grantKey: string, at: number) =>
+  (revokedGrants.get(grantKey) ?? -1) > at;
 
 // A role moved onto or off the Council later (the Editor-in-Chief, Nov 5,
 // 2026): the last update wins over the insert.
@@ -142,7 +145,7 @@ describe("mirror of the reference data in the migrations", () => {
       const permission = current(given);
       if (
         !(
-          revokedGrants.has(`${role}:${permission}`) ||
+          revokedAfter(`${role}:${permission}`, at) ||
           retiredPermissions.has(permission) ||
           retiredAfter(role, at)
         )
@@ -173,40 +176,12 @@ describe("mirror of the reference data in the migrations", () => {
     }
   });
 
-  test("the President has every permission but the checks on the President", () => {
-    // Owner, Oct 15, 2026: concerns about the President go elsewhere
-    // (concern); Qirtas reads blind; the Elections Committee runs elections;
-    // the Faculty Advisor countersigns certificates; a partner's own page is
-    // its representatives' (they hold partners.manage anyway).
-    const withheld = new Set([
-      // Next Stop's guest ideas: the Director of Media, producer and host only.
-      "media.guest_ideas",
-      "partners.own",
-      "partners.lead",
-      "concerns.about_president",
-      "journal.review",
-      "journal.identity.view",
-      "elections.manage",
-      "certificates.countersign",
-      // Qirtas's independence (decisions §1, audit Part A).
-      "journal.manage",
-      "journal.advise",
-      "journal.decide",
-      "journal.publish",
-      "journal.edit.news",
-      "journal.edit.letters",
-      "journal.edit.gallery",
-      "journal.edit.video",
-      "journal.edit.voices",
-      "journal.edit.games",
-      "journal.approve",
-      "journal.copy",
-      "journal.frontpage",
-      "journal.prize",
-      "qalam.manage",
-    ]);
+  // TEMPORARY (the owner's ask; 20261113004300): the President holds every
+  // permission while the site is set up. Restore the withheld list when the
+  // grant is undone.
+  test("the President has every permission (temporary)", () => {
     expect([...roles.president.permissions].sort()).toEqual(
-      permissions.filter((p) => !withheld.has(p)).sort()
+      [...permissions].sort()
     );
   });
 
@@ -216,7 +191,8 @@ describe("mirror of the reference data in the migrations", () => {
         "journal.identity.view"
       )
     );
-    expect(holders).toEqual(["managing_editor"]);
+    // The President too, for now (temporary; see above).
+    expect(holders.sort()).toEqual(["managing_editor", "president"]);
   });
 });
 
