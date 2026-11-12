@@ -23,6 +23,7 @@ import { Handover } from "./handover";
 import { AdminHeading } from "./kit";
 import { SecondOfficer } from "./second-officer";
 import { RecentActivity } from "./system/activity";
+import { AdvisorFindings } from "./system/advisors";
 import { EmailDelivery } from "./system/email";
 import { NotionWorkspace } from "./system/notion";
 import { TelegramBot } from "./system/telegram";
@@ -418,6 +419,7 @@ export const AdminOverview = () => {
           <NotionWorkspace />
           <TelegramBot />
           <EmailDelivery />
+          <AdvisorFindings />
         </DiwanSection>
       ) : null}
     </div>

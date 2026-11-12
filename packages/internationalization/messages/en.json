@@ -1973,6 +1973,18 @@
           "stuck": "{count} emails are waiting to be sent.",
           "flowing": "Emails are going out.",
           "lastSent": "Last sent {when}."
+        },
+        "advisors": {
+          "title": "Database checks",
+          "lede": "Each month, look here and at Supabase’s Advisors. These are the checks CI holds at zero, run on the live database.",
+          "clean": "Clean: every table has row level security, functions keep their rights and paths, no policy repeats, every foreign key has an index.",
+          "checks": {
+            "rls_disabled": "No row level security",
+            "definer_exposed": "Owner’s rights open to clients",
+            "search_path": "No fixed search path",
+            "multiple_policies": "Two policies for one action",
+            "unindexed_foreign_key": "Foreign key without an index"
+          }
         }
       },
       "journal": {

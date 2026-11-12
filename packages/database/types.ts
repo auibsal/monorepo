@@ -1358,6 +1358,13 @@ export type Database = {
     };
     Functions: {
       admin_overview: { Args: Record<PropertyKey, never>; Returns: Json };
+      advisor_findings: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          check_key: string;
+          item: string;
+        }[];
+      };
       announcement_instagram_done: { Args: { id: string }; Returns: undefined };
       apply_broadcast_unsubscribes: {
         Args: { emails: string[] };

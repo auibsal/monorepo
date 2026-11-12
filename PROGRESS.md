@@ -252,7 +252,9 @@ production; **Owner** is a step only the owner can take.
   template, what it is for and where it is used, linked to its entry), and
   the certificate with two signatures (`Certificate`, two signers). (Open
   Badges only from 2028.)
-- [ ] The monthly advisors' report on the Desk.
+- [x] The monthly look at the advisors on the Desk (Connected → Database
+  checks: the checks CI holds at zero, run live; Supabase's Advisors for
+  the rest). **Migrates:** `core.advisor_findings()`.
 - [ ] **Owner:** news.auibsal.org in Resend (its DNS records); a free public
   status page at status.auibsal.org fed by the uptime check; Supabase's
   email confirmation and leaked-password protection on, short token
