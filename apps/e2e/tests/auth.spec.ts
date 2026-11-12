@@ -176,15 +176,17 @@ test("a member with a name from before the four parts is asked for them at sign-
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
   await expect(page).toHaveURL(/\/welcome\/1/u);
-  // The first and last words are offered as the first and fourth parts.
-  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("Tess");
-  await expect(page.getByLabel("Family name")).toHaveValue("Tester");
-  await page.getByLabel("Father’s name", { exact: true }).fill("Test");
-  await page.getByLabel("Grandfather’s name").fill("Auto");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByLabel("Family name")).toHaveValue("تجريبي");
-  await page.getByLabel("Father’s name", { exact: true }).fill("تجريبي");
-  await page.getByLabel("Grandfather’s name").fill("آلي");
+  // Both languages on one screen; the first and last words are offered
+  // as the first and fourth parts.
+  const english = page.getByRole("group", { name: "Your name in English" });
+  await expect(english.getByLabel("Name", { exact: true })).toHaveValue("Tess");
+  await expect(english.getByLabel("Family name")).toHaveValue("Tester");
+  await english.getByLabel("Father’s name", { exact: true }).fill("Test");
+  await english.getByLabel("Grandfather’s name").fill("Auto");
+  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
+  await expect(arabic.getByLabel("Family name")).toHaveValue("تجريبي");
+  await arabic.getByLabel("Father’s name", { exact: true }).fill("تجريبي");
+  await arabic.getByLabel("Grandfather’s name").fill("آلي");
   await page.getByRole("button", { name: "Continue" }).click();
   // The default name (the given and father's names) shows at once.
   await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
