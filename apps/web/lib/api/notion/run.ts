@@ -161,43 +161,55 @@ export const runNotionSync = async (
 };
 
 export interface AccessLists {
-  /** Officers in the Diwan with no Notion account under their address. */
-  invite: { email: string; name: string; roles: string[] }[];
-  /** Notion members who hold no role in the Diwan. */
+  /** Holders of a role that opens Notion, with no Notion account under their address. */
+  invite: { email: string; name: string; roles: string[]; user_id: string }[];
+  /** Notion members who hold no role that opens Notion. */
   remove: { email: string; name: string }[];
 }
 
 /**
- * Who should be in the workspace (everyone holding a role in the Diwan)
- * against who is. Notion's API cannot invite or remove people, so these
- * are lists for a workspace owner to act on.
+ * Who should be in the workspace: everyone holding a role that opens
+ * Notion (`access.roles.in_notion`; not partners, parents or Qalam
+ * students), matched to the workspace's members by address. Notion's API
+ * cannot invite or remove; the invitation goes by email with the role.
  */
 export const accessLists = async (notion: Notion): Promise<AccessLists> => {
   const admin = createAdminClient();
-  const [{ data: officers, error }, users] = await Promise.all([
+  const now = new Date().toISOString();
+  const [{ data: officers, error }, held, users] = await Promise.all([
     admin.schema("access").rpc("officer_directory"),
+    admin
+      .schema("access")
+      .from("role_assignments")
+      .select("user_id, roles!inner(in_notion)")
+      .eq("roles.in_notion", true)
+      .lte("starts_at", now)
+      .or(`ends_at.is.null,ends_at.gt.${now}`),
     notion.users(),
   ]);
-  if (error) {
-    throw error;
+  if (error ?? held.error) {
+    throw error ?? held.error;
   }
+  const opensNotion = new Set((held.data ?? []).map((a) => a.user_id));
+  const team = (officers ?? []).filter(
+    (o) => o.email && o.user_id && opensNotion.has(o.user_id)
+  );
   const people = users.filter((u) => u.type === "person" && u.person?.email);
   const inNotion = new Set(
     people.map((u) => (u.person?.email ?? "").toLowerCase())
   );
-  const officerEmails = new Set(
-    (officers ?? []).map((o) => (o.email ?? "").toLowerCase())
-  );
+  const teamEmails = new Set(team.map((o) => (o.email ?? "").toLowerCase()));
   return {
-    invite: (officers ?? [])
-      .filter((o) => o.email && !inNotion.has(o.email.toLowerCase()))
+    invite: team
+      .filter((o) => !inNotion.has((o.email ?? "").toLowerCase()))
       .map((o) => ({
         email: o.email ?? "",
         name: o.full_name_en?.trim() || (o.email ?? ""),
         roles: o.roles ?? [],
+        user_id: o.user_id ?? "",
       })),
     remove: people
-      .filter((u) => !officerEmails.has((u.person?.email ?? "").toLowerCase()))
+      .filter((u) => !teamEmails.has((u.person?.email ?? "").toLowerCase()))
       .map((u) => ({ email: u.person?.email ?? "", name: u.name ?? "" })),
   };
 };
@@ -207,5 +219,19 @@ export const readSyncState = async () =>
 
 export const homeUrl = async () => {
   const value = await setting(createAdminClient(), "notion.home_url");
+  return typeof value === "string" ? value : null;
+};
+
+/** The workspace's invite link, if set (core.settings `notion.invite_link`). */
+export const inviteLink = async () => {
+  const value = await setting(createAdminClient(), "notion.invite_link");
+  return typeof value === "string" && value.startsWith("https://")
+    ? value
+    : null;
+};
+
+/** When the one-time invitations went out (`notion.catch_up_sent_at`). */
+export const catchUpSentAt = async () => {
+  const value = await setting(createAdminClient(), "notion.catch_up_sent_at");
   return typeof value === "string" ? value : null;
 };

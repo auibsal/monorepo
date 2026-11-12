@@ -61,6 +61,12 @@ interface FormPageProps {
      * someone with no account (a parent by link) types a name.
      */
     readonly signAs?: string;
+    /**
+     * The signature as drawn on the memorandum of partnership (its label,
+     * the guilloche, the name in the signature's hand, the card number,
+     * date and seal), when the site has it: shown in place of `signAs`.
+     */
+    readonly block?: ReactNode;
     readonly value?: string;
   };
   /** The button: "Sign and send". */
@@ -107,7 +113,13 @@ export const FormPage = ({
     {signature.omit ? null : (
       <fieldset className="gap-space-3 border-line pt-space-5 grid border-t">
         <legend className="sr-only">{signature.label}</legend>
-        {signature.signAs ? (
+        {signature.block ? (
+          <div className="gap-space-2 grid">
+            {signature.block}
+            <p className="text-text-secondary text-sm">{signature.hint}</p>
+          </div>
+        ) : null}
+        {!signature.block && signature.signAs ? (
           <div className="gap-space-2 grid">
             <p className="type-label">{signature.label}</p>
             <p className="font-signature text-text border-text border-b pb-1 text-2xl">
@@ -115,7 +127,8 @@ export const FormPage = ({
             </p>
             <p className="text-text-secondary text-sm">{signature.hint}</p>
           </div>
-        ) : (
+        ) : null}
+        {signature.block || signature.signAs ? null : (
           <FormField
             hint={signature.hint}
             id="form-signature"

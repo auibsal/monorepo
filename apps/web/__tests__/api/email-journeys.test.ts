@@ -174,4 +174,13 @@ describe("the email journeys", () => {
     expect(strict.blocks[0]?.paragraphs.join(" ")).toContain("two-step");
     expect(plain.blocks[0]?.paragraphs.join(" ")).not.toContain("two-step");
   });
+
+  test("the role email carries the Notion invitation only when there is one", () => {
+    const role = { ends_at: null, name_ar: "محرر", name_en: "Editor" };
+    const link = "https://www.notion.so/team/join";
+    const invited = roleAssigned("en", role, false, APP, link);
+    const outside = roleAssigned("en", role, false, APP);
+    expect(invited.blocks[0]?.lists?.[0]?.items[0]?.href).toBe(link);
+    expect(outside.blocks[0]?.lists).toBeUndefined();
+  });
 });

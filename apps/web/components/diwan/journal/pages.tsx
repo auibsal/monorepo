@@ -379,7 +379,10 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
               name: name || agreement.data.signer_name,
             })}
           </p>
-          <MySignature date={agreement.data.signed_at} />
+          <MySignature
+            date={agreement.data.signed_at}
+            label={t("signedLabel")}
+          />
         </>
       ) : (
         <form
@@ -396,7 +399,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
               name,
             })}
           </p>
-          <MySignature />
+          <MySignature label={t("signAsLabel")} />
           <Button
             className="justify-self-start"
             disabled={!name || sign.isPending}

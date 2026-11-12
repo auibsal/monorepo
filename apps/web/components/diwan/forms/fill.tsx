@@ -11,6 +11,7 @@ import { useRouter } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
+import { MySignature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { forms, unwrap } from "@/lib/data";
 import { ApiError } from "@/lib/diwan/api";
@@ -550,6 +551,7 @@ const FormEditor = ({
         signature={
           user
             ? {
+                block: <MySignature label={t("signAsLabel")} />,
                 hint: t("signAsHint"),
                 label: t("signAsLabel"),
                 signAs: myName,

@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 
-select plan(10);
+select plan(11);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'lina-names@auib.edu.iq', 'Lina Tamimi');
 update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000000a1';
@@ -116,17 +116,18 @@ select is(
   'لينا كريم',
   'Three parts are a name: the family name only where there is one'
 );
-update core.profiles set last_name_ar = 'التميمي'
-where id = '00000000-0000-0000-0000-0000000000a1';
-select is(
-  (select full_name_ar from core.profiles where id = '00000000-0000-0000-0000-0000000000a1'),
-  'لينا كريم',
-  'A family name does not change the name shown'
+-- Complete, the official name is locked: even an empty family name is
+-- added only in the Diwan's Membership (decisions.md, Members).
+select throws_ok(
+  $$ update core.profiles set last_name_ar = 'التميمي'
+     where id = '00000000-0000-0000-0000-0000000000a1' $$,
+  '42501', 'legal_name_locked',
+  'A complete official name is changed only in the Diwan'
 );
 
 select is(
-  (select last_name_ar from core.my_name_parts()),
-  'التميمي',
+  (select first_name_ar from core.my_name_parts()),
+  'لينا',
   'A member reads their own parts'
 );
 select pg_temp.logout();
@@ -148,6 +149,15 @@ select is(
   (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-0000000000b1'),
   'Sara Ali / سارة علي',
   'Sign-up keeps the parts and shows the given and father''s names'
+);
+insert into auth.users (id, email, email_confirmed_at, raw_user_meta_data, aud, role)
+values ('00000000-0000-0000-0000-0000000000b2', 'new-guest-names@example.org', now(),
+  '{"first_name_en":"Noor","father_name_en":"Sami","grandfather_name_en":"Adel","guest":true}',
+  'authenticated', 'authenticated');
+select is(
+  (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-0000000000b2'),
+  'Noor Sami',
+  'For everyone, guests too, the name shown is the first and second names from the start'
 );
 
 select * from finish();

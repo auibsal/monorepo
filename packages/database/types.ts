@@ -254,6 +254,7 @@ export type Database = {
         Row: {
           description: string | null;
           hiring_owner: string | null;
+          in_notion: boolean;
           is_council: boolean;
           key: string;
           kind: string;
@@ -269,6 +270,7 @@ export type Database = {
         Insert: {
           description?: string | null;
           hiring_owner?: string | null;
+          in_notion?: boolean;
           is_council?: boolean;
           key: string;
           kind?: string;
@@ -283,6 +285,7 @@ export type Database = {
         Update: {
           description?: string | null;
           hiring_owner?: string | null;
+          in_notion?: boolean;
           is_council?: boolean;
           key?: string;
           kind?: string;

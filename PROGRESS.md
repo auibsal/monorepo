@@ -14,6 +14,28 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the ninth prompt (Nov 12)
+
+- [x] **1. The name shown:** the first and second names (the given and the
+  father's) for everyone, guests and new accounts included; people still
+  choose their own in Settings. Every name shown was recomputed
+  (`20261113004100_names_default_and_lock.sql`).
+- [x] **2. Official names locked:** no part of a complete official name
+  changes from the account; only the Diwan's Membership corrects it, with
+  a reason.
+- [x] **3. Signature blocks:** every signature (a form, the role agreement,
+  the publication agreement, a handover and its countersignature, the
+  signed copies) is drawn like the memorandum of partnership's, with its
+  label over the signature, in the name the register holds.
+- [x] **4. Notion by invitation:** the role email carries the workspace's
+  invite link for every role that opens Notion; the Connected panel shows,
+  once, who to invite and who to remove, with one button that sends the
+  invitations and then takes the block away
+  (`20261113004200_notion_invites.sql`).
+- [ ] **Owner:** save the workspace's invite link in the Desk's Connected
+  panel (Notion: Settings, People, Invite link), remove the people on the
+  "To remove" list in Notion, then press "Send the invitation".
+
 ## Now: the eighth prompt (Nov 12)
 
 - [x] **Mirror:** `claude/decisions.md` replaced.

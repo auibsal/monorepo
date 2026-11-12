@@ -87,7 +87,8 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `company.audition_update` | An audition time booked; called back, cast or not cast | The member | Service |
 | `get_involved.received` | A member sends an application on Get involved | The applicant (a receipt) | Service |
 | `get_involved.reply_update` | The hiring seat sets an interview, an offer is made (answered within 7 days from Your applications), the applicant accepts a director seat, or someone else is chosen (at the latest 14 days after the opening closes) | The applicant | Service |
-| `access.role_assigned` | A Society role assigned (not a partner's team role) | The holder: what it opens; two-step sign-in first when it needs it | Officer |
+| `access.role_assigned` | A Society role assigned (not a partner's team role) | The holder: what it opens; two-step sign-in first when it needs it; the team's Notion invitation when the role opens Notion | Officer |
+| `notion.invite` | The Diwan's one-time Notion catch-up (`/api/notion/invite`) | Each role holder not yet in the workspace: the invitation | Officer |
 | `access.role_ending` | Seven days before a role ends | The holder | Officer |
 | `access.two_step_reset` | An authenticator removed (by an officer or a recovery code) | The person | Service |
 | `access.recovery_attempts` | Five wrong recovery codes within an hour (`/api/two-step/recover`; once an hour) | The person | Service |

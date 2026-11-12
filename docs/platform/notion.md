@@ -99,8 +99,24 @@ matched by email and must hold the permission on the site (roles that need
 two-step sign-in count only with a verified second factor).
 
 The result is stored in `core.settings` `notion.sync_state` and shown in
-the Desk's Connected panel, with who to invite to and remove from
-the workspace (Notion's API cannot invite people).
+the Desk's Connected panel.
+
+## Who is in the workspace
+
+The only way into the team's Notion is the invitation that comes with a
+role. Notion's API cannot invite or remove people, so the role email
+(`access.role_assigned`) carries the workspace's invite link, saved in the
+Connected panel (`core.settings` `notion.invite_link`; Notion: Settings,
+People, Invite link). Roles that do not open Notion (`access.roles.in_notion`
+false: partners, parents and Qalam students) get no link.
+
+Once, the panel shows who to invite (role holders with no Notion account
+under their address) and who to remove (members holding no such role), and
+one button that emails the invitation to everyone on the first list
+(`/api/notion/invite`, `notion.invite`; `roles.assign`). Removing is done
+in Notion by hand first. When it is sent, `notion.catch_up_sent_at` is set
+and the block goes away for good. People who leave every such role are
+removed in Notion by hand.
 
 ## Setup (done once)
 
