@@ -11,7 +11,6 @@ import {
   whoami,
 } from "../../db";
 import { connectPage, rulesPage } from "../../links";
-import { warnOnJoin } from "./removals";
 
 /**
  * Join requests to a connected group ("Approve new members" on the invite
@@ -142,8 +141,10 @@ joins.on("chat_member", async (ctx) => {
 /**
  * Someone new in the members' group (decisions.md: Send Welcome Messages, a
  * welcome to each new member in their own language): a linked member gets
- * Hudhud's welcome in their chat, with the Code of Conduct; anyone else
- * gets the private notice about linking (removals.ts).
+ * Hudhud's welcome in their chat, with the Code of Conduct. Nobody else
+ * gets a notice at the door: Hudhud lets in only linked members, and
+ * anyone an admin lets in by hand gets the notice at their first post
+ * (removals.ts).
  */
 const greetNewMember = async (
   api: Api,
@@ -156,7 +157,6 @@ const greetNewMember = async (
   }
   const me = await whoami(person.id);
   if (!me?.member) {
-    await warnOnJoin(api, chatId, person);
     return;
   }
   const t = copy[me.locale];

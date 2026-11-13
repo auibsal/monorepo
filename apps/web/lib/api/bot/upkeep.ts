@@ -1,25 +1,54 @@
 import "server-only";
 
+import { siteUrl } from "@repo/internationalization";
+import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import type { Api } from "grammy";
-import { GrammyError, InlineKeyboard } from "grammy";
+import { GrammyError, InlineKeyboard, InputFile } from "grammy";
+import { publicEvents } from "@/lib/data/events";
 import { escapeHtml } from "@/lib/telegram";
 import { copy, type Lang } from "./copy";
-import { db, type Group, groups } from "./db";
+import { anon, db, type Group, groups } from "./db";
 import { postTo, topicOf } from "./features/group/common";
 import { baghdadDate, baghdadHour, copyFor, once } from "./feeds";
-import { web } from "./links";
+import { pick, when } from "./format";
+import { eventPage, web } from "./links";
+import { qrPng } from "./qr";
 
 /** How long after an issue goes out Hudhud keeps bringing it to chats. */
 const PAPER_DAYS = 3;
 /** Members' chats a run, well within Telegram's limits. */
 const PAPER_PER_RUN = 25;
 
+/** Telegram's limit on a group's description. */
+const DESCRIPTION_MAX = 255;
+
+const SCHEME = /^https?:\/\//u;
+const bare = (url: string) => url.replace(SCHEME, "");
+
 /**
  * The members' group's description (decisions.md, Channels and email:
- * "Change Group Info keeps the description in sync with the Diwan").
+ * "Change Group Info keeps the description in sync"): the line decisions.md
+ * gives, with the next public event in place of the events link while
+ * there is one.
  */
-const MEMBERS_DESCRIPTION =
-  "The paper and the pen at @AUIB_BAG. Events: auibsal.org/events · Join: auibsal.org/join";
+export const membersDescription = (
+  next: { slug: string; starts_at: string; title_en: string } | null
+) => {
+  const head = "The paper and the pen at @AUIB_BAG.";
+  const join = `Join: ${bare(siteUrl("en", "/join"))}`;
+  if (!next) {
+    return `${head} Events: ${bare(siteUrl("en", "/events"))} · ${join}`;
+  }
+  const at = `${formatLongDate(next.starts_at, "en")}, ${formatClock(next.starts_at, "en")}`;
+  const link = bare(siteUrl("en", `/events/${next.slug}`));
+  const rest = `, ${at} · ${link} · ${join}`;
+  const room = DESCRIPTION_MAX - head.length - " Next: ".length - rest.length;
+  const title =
+    next.title_en.length > room
+      ? `${next.title_en.slice(0, Math.max(room - 1, 0)).trimEnd()}…`
+      : next.title_en;
+  return `${head} Next: ${title}${rest}`;
+};
 
 const quietly = async (call: Promise<unknown>) => {
   try {
@@ -157,33 +186,197 @@ export const runPaper = async (api: Api, now = new Date()) => {
 };
 
 /**
- * Keeps the members' group's description as decisions.md has it, checked
- * once a day; the photo and welcome message stay Telegram's own settings.
+ * Keeps the members' group's description as membersDescription has it,
+ * checked every run so the next event shows as soon as it changes; the
+ * photo stays Telegram's own setting.
  */
 export const syncDescriptions = async (api: Api, now = new Date()) => {
-  if (baghdadHour(now) !== 7) {
+  const members = (await groups()).filter((g) => g.audience === "members");
+  if (!members.length) {
     return 0;
   }
-  const members = (await groups()).filter((g) => g.audience === "members");
+  const [next] = (await publicEvents(anon(), { from: now, limit: 1 })) ?? [];
+  const wanted = membersDescription(next ?? null);
   const done = await Promise.all(
-    members.map((group) =>
-      once(group, "description", baghdadDate(now), async () => {
-        const chat = await api.getChat(group.chat_id).catch(() => null);
-        if (
-          chat &&
-          "description" in chat &&
-          chat.description !== MEMBERS_DESCRIPTION
-        ) {
-          await quietly(
-            api.setChatDescription(group.chat_id, MEMBERS_DESCRIPTION)
-          );
-        }
-        // Recorded with no message: the day is done.
-        return { message_id: 0 };
-      })
-    )
+    members.map(async (group) => {
+      const chat = await api.getChat(group.chat_id).catch(() => null);
+      if (!chat || ("description" in chat && chat.description === wanted)) {
+        return false;
+      }
+      return quietly(api.setChatDescription(group.chat_id, wanted));
+    })
   );
   return done.filter(Boolean).length;
+};
+
+/** Private reminders a run, well within Telegram's limits. */
+const NUDGES_PER_RUN = 25;
+
+/** Claims a private reminder so it goes once; false when already sent. */
+const claimNudge = async (telegramId: number, kind: string, ref: string) => {
+  const { data } = await db()
+    .schema("core")
+    .from("telegram_nudges")
+    .upsert(
+      { kind, ref, telegram_id: telegramId },
+      { ignoreDuplicates: true, onConflict: "telegram_id,kind,ref" }
+    )
+    .select("telegram_id");
+  return Boolean(data?.length);
+};
+
+const releaseNudge = (telegramId: number, kind: string, ref: string) =>
+  db()
+    .schema("core")
+    .from("telegram_nudges")
+    .delete()
+    .eq("telegram_id", telegramId)
+    .eq("kind", kind)
+    .eq("ref", ref);
+
+/** A reminder that reached a blocked chat: its reminders go off. */
+const sendNudge = async (
+  telegramId: number,
+  kind: string,
+  ref: string,
+  send: () => Promise<unknown>
+) => {
+  if (!(await claimNudge(telegramId, kind, ref))) {
+    return false;
+  }
+  try {
+    await send();
+    return true;
+  } catch (error) {
+    if (error instanceof GrammyError && error.error_code === 403) {
+      await db()
+        .schema("core")
+        .from("telegram_accounts")
+        .update({ reminders: false })
+        .eq("telegram_id", telegramId);
+      return false;
+    }
+    await releaseNudge(telegramId, kind, ref);
+    return false;
+  }
+};
+
+interface TicketRow {
+  event_id: string;
+  locale: string | null;
+  slug: string;
+  starts_at: string;
+  telegram_id: number;
+  ticket_code: string;
+  title_ar: string;
+  title_en: string;
+  venue_ar: string | null;
+  venue_en: string | null;
+}
+
+/**
+ * On an event's day, within three hours of the start: each linked member
+ * who booked gets their ticket in their chat, the same QR code as on Today,
+ * when they keep Hudhud's reminders on.
+ */
+export const runTickets = async (api: Api) => {
+  const { data, error } = await db()
+    .schema("core")
+    .rpc("telegram_tickets_soon");
+  if (error) {
+    throw error;
+  }
+  const rows = ((data ?? []) as TicketRow[]).slice(0, NUDGES_PER_RUN);
+  const sent = await Promise.all(
+    rows.map((row) => {
+      const lang: Lang = row.locale === "ar" ? "ar" : "en";
+      const t = copy[lang];
+      const venue = pick(lang, row.venue_en, row.venue_ar);
+      const caption = [
+        t.ticket(
+          escapeHtml(pick(lang, row.title_en, row.title_ar)),
+          when(lang, row.starts_at)
+        ),
+        venue ? escapeHtml(venue) : null,
+      ]
+        .filter(Boolean)
+        .join("\n");
+      return sendNudge(Number(row.telegram_id), "ticket", row.event_id, () =>
+        api.sendPhoto(
+          Number(row.telegram_id),
+          new InputFile(qrPng(`sal:ticket:${row.ticket_code}`), "ticket.png"),
+          {
+            caption,
+            parse_mode: "HTML",
+            protect_content: true,
+            reply_markup: new InlineKeyboard()
+              .url(t.buttons.ticket, web(lang, "/account"))
+              .url(t.buttons.details, eventPage(lang, row.slug)),
+          }
+        )
+      );
+    })
+  );
+  return sent.filter(Boolean).length;
+};
+
+/** The weekly reminders go on Mondays at 10:00 a.m. Baghdad time. */
+const TODO_HOUR = 10;
+const weekday = new Intl.DateTimeFormat("en-US", {
+  timeZone: "Asia/Baghdad",
+  weekday: "short",
+});
+
+interface TodoRow {
+  assignment_id: string;
+  kind: "handover" | "role_agreement";
+  locale: string | null;
+  role_ar: string;
+  role_en: string;
+  telegram_id: number;
+}
+
+/**
+ * Once a week, a role holder's own to-dos in their chat: a handover to sign
+ * and a role agreement not yet signed (Today in Your account keeps them too),
+ * for those who keep Hudhud's reminders on.
+ */
+export const runRoleTodos = async (api: Api, now = new Date()) => {
+  if (weekday.format(now) !== "Mon" || baghdadHour(now) < TODO_HOUR) {
+    return 0;
+  }
+  const { data, error } = await db().schema("core").rpc("telegram_role_todos");
+  if (error) {
+    throw error;
+  }
+  const week = baghdadDate(now);
+  const rows = ((data ?? []) as TodoRow[]).slice(0, NUDGES_PER_RUN);
+  const sent = await Promise.all(
+    rows.map((row) => {
+      const lang: Lang = row.locale === "ar" ? "ar" : "en";
+      const t = copy[lang];
+      const role = escapeHtml(pick(lang, row.role_en, row.role_ar));
+      const handover = row.kind === "handover";
+      return sendNudge(
+        Number(row.telegram_id),
+        row.kind,
+        `${row.assignment_id}:${week}`,
+        () =>
+          api.sendMessage(
+            Number(row.telegram_id),
+            handover ? t.todoHandover(role) : t.todoAgreement(role),
+            {
+              parse_mode: "HTML",
+              reply_markup: new InlineKeyboard().url(
+                handover ? t.buttons.handover : t.buttons.agreement,
+                web(lang, handover ? "/account/roles/handover" : "/account")
+              ),
+            }
+          )
+      );
+    })
+  );
+  return sent.filter(Boolean).length;
 };
 
 type Team =

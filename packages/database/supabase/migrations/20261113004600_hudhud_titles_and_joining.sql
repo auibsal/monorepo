@@ -1,5 +1,5 @@
 -- Hudhud: role titles in the groups, and joining from the site or the bot
--- (the owner, Nov 12, 2026).
+-- (the owner, Nov 12, 2026; admins by Hudhud, the owner, Nov 13, 2026).
 --
 -- 1. Each connected group keeps a join-request link Hudhud makes itself
 --    (createChatInviteLink, "Approve new members"): members (or, for the
@@ -9,10 +9,18 @@
 --    role that opens the team's work (access.roles.in_notion), with
 --    Telegram linked, carries their seat as their member tag in each group
 --    they are in, and the exempt list its label ("Student Life") in the
---    members' group. Hudhud never makes admins (Add New Admins stays off);
---    officers add admins by hand. When the last role ends the tag comes
---    off, and 7 days later the person leaves the Diwan group.
---    core.telegram_titles keeps whom Hudhud tagged.
+--    members' group.
+-- 3. Admins by Hudhud (the owner, Nov 13, 2026, in place of decisions.md's
+--    "Add New Admins: off"): the President, the Vice President, the
+--    Secretary and the Director of Media are admins of both groups
+--    (decisions.md, Channels and email: "full admins"), and every Council
+--    seat is an admin of the Diwan group, with their seat as their title.
+--    Hudhud gives every right but Remain Anonymous and Add New Admins, so
+--    no admin it makes can make others. When the seat ends Hudhud takes the
+--    rights back (it can only change admins it made); admins added by hand
+--    are left alone. When the last role ends the tag comes off, and 7 days
+--    later the person leaves the Diwan group. core.telegram_titles keeps
+--    whom Hudhud tagged or made an admin.
 
 alter table core.telegram_groups
   add column invite_link text check (invite_link is null or invite_link ~ '^https://t\.me/\+');
@@ -28,11 +36,13 @@ create table core.telegram_titles (
   -- When the last role ended: the tag is off; the Diwan group lets the
   -- person go 7 days later.
   ended_at timestamptz,
+  -- Hudhud made them an admin (and so may take it back).
+  admin boolean not null default false,
   primary key (chat_id, telegram_id)
 );
 
 comment on table core.telegram_titles is
-  'Whom Hudhud gave a member tag in a group (their seat), and when their last role ended.';
+  'Whom Hudhud gave a member tag or made an admin in a group (their seat), and when their last role ended.';
 
 alter table core.telegram_titles enable row level security;
 
@@ -50,24 +60,29 @@ grant all on core.telegram_titles to service_role;
 -- The linked role holders and the tag each should carry (the bot, with
 -- the secret key): the Council seat first, else the earliest role; the
 -- assignment's own title (a director's seat), else the role's name.
+-- `officer`: an admin of both groups; `council`: an admin of the Diwan group.
 create function core.telegram_role_titles()
-returns table (telegram_id bigint, title_en text, title_ar text)
+returns table (telegram_id bigint, title_en text, title_ar text, officer boolean, council boolean)
 language sql
 stable
 security definer
 set search_path = ''
 as $$
-  select distinct on (t.telegram_id)
+  select
     t.telegram_id,
-    coalesce(nullif(btrim(a.title_en), ''), r.name_en),
-    coalesce(nullif(btrim(a.title_ar), ''), r.name_ar)
+    (array_agg(coalesce(nullif(btrim(a.title_en), ''), r.name_en)
+      order by r.is_council desc, a.starts_at))[1],
+    (array_agg(coalesce(nullif(btrim(a.title_ar), ''), r.name_ar)
+      order by r.is_council desc, a.starts_at))[1],
+    bool_or(r.key in ('president', 'vice_president', 'general_secretary', 'media_director')),
+    bool_or(r.is_council)
   from core.telegram_accounts t
   join access.role_assignments a on a.user_id = t.user_id
   join access.roles r on r.key = a.role
   where r.in_notion
     and a.starts_at <= now()
     and (a.ends_at is null or a.ends_at > now())
-  order by t.telegram_id, r.is_council desc, a.starts_at
+  group by t.telegram_id
 $$;
 
 revoke all on function core.telegram_role_titles() from public, anon, authenticated;

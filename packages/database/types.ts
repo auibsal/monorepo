@@ -1455,6 +1455,28 @@ export type Database = {
           },
         ];
       };
+      telegram_nudges: {
+        Row: {
+          kind: string;
+          ref: string;
+          sent_at: string;
+          telegram_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          kind: string;
+          ref: string;
+          sent_at?: string;
+          telegram_id: number;
+        };
+        Update: {
+          kind?: string;
+          ref?: string;
+          sent_at?: string;
+          telegram_id?: number;
+        };
+        Relationships: [];
+      };
       telegram_posts: {
         Row: {
           chat_id: number;
@@ -1490,6 +1512,7 @@ export type Database = {
       };
       telegram_titles: {
         Row: {
+          admin: boolean;
           chat_id: number;
           ended_at: string | null;
           set_at: string;
@@ -1498,6 +1521,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          admin?: boolean;
           chat_id: number;
           ended_at?: string | null;
           set_at?: string;
@@ -1505,6 +1529,7 @@ export type Database = {
           title: string;
         };
         Update: {
+          admin?: boolean;
           chat_id?: number;
           ended_at?: string | null;
           set_at?: string;
@@ -1846,9 +1871,22 @@ export type Database = {
       telegram_role_titles: {
         Args: Record<PropertyKey, never>;
         Returns: {
+          council: boolean;
+          officer: boolean;
           telegram_id: number;
           title_ar: string;
           title_en: string;
+        }[];
+      };
+      telegram_role_todos: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          assignment_id: string;
+          kind: string;
+          locale: string;
+          role_ar: string;
+          role_en: string;
+          telegram_id: number;
         }[];
       };
       telegram_rsvp: {
@@ -1856,6 +1894,21 @@ export type Database = {
         Returns: string;
       };
       telegram_staff_brief: { Args: { at?: string }; Returns: Json };
+      telegram_tickets_soon: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          event_id: string;
+          locale: string;
+          slug: string;
+          starts_at: string;
+          telegram_id: number;
+          ticket_code: string;
+          title_ar: string;
+          title_en: string;
+          venue_ar: string;
+          venue_en: string;
+        }[];
+      };
       telegram_whoami: { Args: { telegram_id: number }; Returns: Json };
     };
     Enums: {

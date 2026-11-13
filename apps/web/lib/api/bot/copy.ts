@@ -54,6 +54,7 @@ const en = {
   briefWaiting: "<b>Waiting in the Diwan</b>",
   briefWaitlist: (n: string) => `${n} on the waitlist`,
   buttons: {
+    agreement: "Sign the agreement",
     // The Arabic edition of a group post (decisions §6): the language's own
     // name, as the language switcher shows it.
     arabic: "العربية",
@@ -63,6 +64,7 @@ const en = {
     details: "Details",
     diwan: "Open the Diwan",
     events: "Events",
+    handover: "Sign the handover",
     joinMembers: "Join the members' group",
     joinStaff: "Join the Diwan group",
     link: "Link my account",
@@ -83,7 +85,9 @@ const en = {
     rsvp: "RSVP",
     rules: "Code of Conduct",
     site: "auibsal.org",
+    ticket: "My ticket",
     unlink: "Unlink Telegram",
+    vote: "Vote",
     word: "Daily word",
     wordOff: "Daily word here: off",
     wordOn: "Daily word here: on",
@@ -167,6 +171,8 @@ const en = {
   placesLeft: (n: string) => `${n} places left`,
 
   // Group posts
+  postDoors: (time: string) =>
+    `<b>Today</b>: doors open at ${time}. Your ticket is on Today in Your account, and in your chat with me.`,
   postEventSoon: (date: string) => `<b>In two days</b>: ${date}`,
   postPiece: "<b>New in Qirtas</b>",
   postWeek: "<b>This week at SAL</b>",
@@ -217,8 +223,18 @@ const en = {
     `${came} came: ${booked} who booked, ${walkIns} without a booking`,
   summaryNoShows: (n: string) => `${n} booked and didn't come`,
   summaryTitle: "<b>After the event</b>",
+  ticket: (title: string, at: string) =>
+    `Your ticket for <b>${title}</b>, ${at}. Show this code at the door.`,
+  todoAgreement: (role: string) =>
+    `The role agreement for <b>${role}</b> is still unsigned. It takes a minute on Today in Your account.`,
+  todoHandover: (role: string) =>
+    `Your handover for <b>${role}</b> is waiting for your signature, in Your account.`,
   unlinked:
     "Unlinked. Your SAL account no longer gets notices here. You can link it again from Settings in Your account.",
+  voteClosing: (title: string, at: string) =>
+    `<b>Voting closes tomorrow</b>: ${title}, at ${at}.`,
+  voteOpen: (title: string, at: string) =>
+    `<b>Voting is open</b>: ${title}. Members vote in Your account until ${at}.`,
   waitlisted: "You're on the waitlist.",
   welcome: (name: string) =>
     `Welcome to the members' group, ${name}. Have a look at the Code of Conduct before you write; questions go to Help Desk.`,
@@ -256,6 +272,7 @@ const ar: Copy = {
   briefWaiting: "<b>شنو ينتظر بالديوان</b>",
   briefWaitlist: (n: string) => `${n} بقائمة الانتظار`,
   buttons: {
+    agreement: "وقّع الاتفاقية",
     arabic: "العربية",
     back: "رجوع",
     calendar: "ضيفها للتقويم",
@@ -263,6 +280,7 @@ const ar: Copy = {
     details: "التفاصيل",
     diwan: "افتح الديوان",
     events: "الفعاليات",
+    handover: "وقّع التسليم",
     joinMembers: "ادخل مجموعة الأعضاء",
     joinStaff: "ادخل مجموعة الديوان",
     link: "اربط حسابي",
@@ -283,7 +301,9 @@ const ar: Copy = {
     rsvp: "احجزلي مقعد",
     rules: "مدونة السلوك",
     site: "auibsal.org",
+    ticket: "تذكرتي",
     unlink: "افصل تيليغرام",
+    vote: "صوّت",
     word: "كلمة اليوم",
     wordOff: "كلمة اليوم هنا: مطفية",
     wordOn: "كلمة اليوم هنا: شغّالة",
@@ -362,6 +382,8 @@ const ar: Copy = {
   paperOut: "طلعت <b>«جريدة الأحد»</b>. عدد هالشهر ينتظرك.",
   placesLeft: (n: string) => `باقي ${n} مقعد`,
 
+  postDoors: (time: string) =>
+    `<b>اليوم</b>: الأبواب تفتح ${time}. تذكرتك في «اليوم» بحسابك، وبالمحادثة وياي.`,
   postEventSoon: (date: string) => `<b>بعد يومين</b>: ${date}`,
   postPiece: "<b>جديد بقرطاس</b>",
   postWeek: "<b>شنو عدنا هالأسبوع</b>",
@@ -410,8 +432,18 @@ const ar: Copy = {
     `إجو ${came}: ${booked} من اللي حجزوا و${walkIns} بلا حجز`,
   summaryNoShows: (n: string) => `${n} حجزوا وما إجو`,
   summaryTitle: "<b>بعد الفعالية</b>",
+  ticket: (title: string, at: string) =>
+    `هاي تذكرتك لفعالية <b>${title}</b>، ${at}. راوي هالرمز عالباب.`,
+  todoAgreement: (role: string) =>
+    `اتفاقية الدور مال <b>${role}</b> بعدها ما موقّعة. تاخذ دقيقة من «اليوم» بحسابك.`,
+  todoHandover: (role: string) =>
+    `التسليم والاستلام مال <b>${role}</b> ينتظر توقيعك بحسابك.`,
   unlinked:
     "انفصل. حسابك بالجمعية ما راح توصله إشعارات هنا بعد. تگدر تربطه مرة لخ من الإعدادات في «حسابك».",
+  voteClosing: (title: string, at: string) =>
+    `<b>التصويت يسكّر باچر</b>: ${title}، ${at}.`,
+  voteOpen: (title: string, at: string) =>
+    `<b>التصويت مفتوح</b>: ${title}. الأعضاء يصوّتون من حسابهم لحد ${at}.`,
   waitlisted: "انت بقائمة الانتظار.",
   welcome: (name: string) =>
     `هلا ${name}، أهلًا بيك بمجموعة الأعضاء. شوف مدونة السلوك قبل لا تكتب، وأي سؤال اسأله في «مكتب المساعدة».`,

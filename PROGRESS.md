@@ -14,6 +14,28 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: Hudhud makes admins, and more (Nov 13)
+
+- [x] **Admins by Hudhud:** the President, Vice President, Secretary and
+  Director of Media in both groups, every Council seat in the Diwan group,
+  with their seats as titles and without Add New Admins; the rights come
+  back when the seat ends (`20261113004600`, `lib/api/bot/titles.ts`).
+- [x] **Members' group:** the newest announcement pinned and the one
+  before unpinned; "doors open" an hour before each event; "voting is
+  open" and "closes tomorrow" for members' elections; the description
+  shows the next event. No removal notice at the door (only linked
+  members get in by Hudhud).
+- [x] **Members' chats:** the ticket's QR code on the event's day, and the
+  weekly handover and role-agreement reminders
+  (`20261113004800_hudhud_reminders.sql`).
+- [ ] **Owner, decisions.md (proposed), Channels and email:** Hudhud's
+  rights include Add New Admins (it makes the four officers admins of
+  both groups and the Council admins of the Diwan group, never with Add
+  New Admins); "a reminder two days before and a 'doors open' post an hour
+  before" in place of "none on the day"; the description shows the next
+  event; the removal notice goes at the first post (not on joining); the
+  event-day story stays with Media (a bot can't post one).
+
 ## Now: one notices model and staff alerts (Nov 12, night)
 
 - [x] **Notices, one model:** five topics (the Sunday Paper, Society news
@@ -25,8 +47,8 @@ fourth prompts (Nov 12).
 - [x] **Hudhud brings the Sunday Paper** to linked members' chats and the
   members' group's Qirtas topic after each Broadcast.
 - [x] **Members' group:** announcements pinned, the description kept as
-  decisions.md has it, a private welcome on joining, the removal notice
-  at the door, live streams announced.
+  decisions.md has it, a private welcome on joining (the removal notice
+  at the door was later dropped), live streams announced.
 - [x] **Staff alerts** to each team's topic in the Diwan group (urgent at
   once, the rest at 8:00 a.m.) and on the Desk: failed deploys, failed
   jobs, the domain and certificate, the database advisors, spam reports
@@ -54,8 +76,8 @@ fourth prompts (Nov 12).
   (`20261113004600_hudhud_titles_and_joining.sql`, `lib/api/bot/titles.ts`).
 - [x] **Joining from the site and the bot:** each group's join-request
   link, offered in the profile's Telegram section and in Hudhud's /me.
-- [ ] **Owner:** in both groups, turn off Hudhud's Add New Admins (decisions.md);
-  every other right but Remain Anonymous stays on.
+- [ ] **Owner:** in both groups, give Hudhud **Add New Admins** (and every
+  other right but Remain Anonymous), so it can make the officers admins.
 
 ## Now: temporary (Nov 12)
 
@@ -597,7 +619,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   open calls), with the two-day reminders, in place of a post for each new
   event; a week with neither has no note. **Migrates:** the
   `sunday_note` post kind.
-- [ ] **Owner:** "Add New Admins" stays off for Hudhud in both groups.
+- [x] Hudhud holds "Add New Admins" in both groups and makes the officers admins (superseded, Nov 13).
 
 ## Open from earlier prompts
 

@@ -86,7 +86,10 @@ And without commands:
   Hudhud's Sunday note, one post each Sunday from 10:00 a.m. listing the
   week's events and the open calls with their closing dates (to `events`,
   else `announcements`; no note in a week with neither, so none outside
-  the semester), a reminder for each event two days before (none on the day), and
+  the semester), a reminder for each event two days before, "doors open"
+  an hour before it starts (answering the event's post, with *My ticket*),
+  "voting is open" and, in its last day, "closes tomorrow" for each
+  members' election (`announcements`, with *Vote*), and
   new Qirtas pieces of the last three days
   (`qirtas`, else `announcements`). The daily word goes only to members'
   own chats, never to a group. A purpose without a topic gets no posts.
@@ -98,15 +101,23 @@ And without commands:
   three days after the go. The President's words go as written, with the
   site button; nothing of the bot's Iraqi copy is added.
 
-- **Member tags** (decisions.md, Channels and email). Every ten minutes
-  Hudhud gives each linked role holder (a role that opens the team's work,
-  `access.roles.in_notion`) their seat as their member tag in each group
-  they are in, 16 characters at most, cut at a word; the exempt list is
-  tagged "Student Life" in the members' group. Hudhud never makes admins
-  (Add New Admins stays off): officers add admins by hand at each
-  handover, and admins keep the titles officers give them. When someone's
-  last role ends the tag comes off, and 7 days later they leave the Diwan
-  group. Only those Hudhud tagged are changed (`core.telegram_titles`).
+- **Admins and member tags.** Every ten minutes Hudhud looks at each
+  linked role holder (a role that opens the team's work,
+  `access.roles.in_notion`) in each group they are in:
+  - **Admins.** The President, the Vice President, the Secretary and the
+    Director of Media are admins of both groups, and every Council seat is
+    an admin of the Diwan group, with their seat as their title. Hudhud
+    gives every right but Remain Anonymous and Add New Admins, so no admin
+    it makes can make others; it holds Add New Admins itself (the owner's
+    change to decisions.md). When the seat ends it takes the rights back.
+    It can change only the admins it made: the owner and admins added by
+    hand are left as they are.
+  - **Member tags.** Everyone else carries their seat as their member
+    tag; the exempt list is tagged "Student Life" in the members' group.
+  - Titles and tags are 16 characters at most, cut at a word. When
+    someone's last role ends the tag comes off, and 7 days later they
+    leave the Diwan group. Only those Hudhud tagged or made admins are
+    changed (`core.telegram_titles`, `admin`).
 - **Joining.** Hudhud makes each group one join-request link
   (`core.telegram_groups.invite_link`). Members see *Join the members'
   group* (and role holders *Join the Diwan group*) in their profile's
@@ -166,15 +177,30 @@ And without commands:
 
 **More in the members' group:**
 
-- **Pinned.** The President's announcements are pinned in their topic,
-  quietly (no second notification).
-- **The description** stays as decisions.md has it ("The paper and the
-  pen at @AUIB_BAG …"), checked each morning at 7:00 (`syncDescriptions`).
-  The photo stays Telegram's own setting.
+- **Pinned.** The President's newest announcement is pinned in its topic,
+  quietly (no second notification), and the one before it unpinned.
+- **The description** is decisions.md's line with the next public event
+  in place of the events link ("The paper and the pen at @AUIB_BAG. Next:
+  Open Mic, Wednesday, November 18, 6:00 p.m. · auibsal.org/events/… ·
+  Join: auibsal.org/join"), 255 characters at most, checked every run
+  (`syncDescriptions`). The photo stays Telegram's own setting.
 - **Welcome.** Someone joining with a linked member's account gets a
-  private welcome with the Code of Conduct; someone joining without one
-  gets the removal notice at once (they have a week to link), not only at
-  their first post.
+  private welcome with the Code of Conduct. Nobody gets a notice at the
+  door: Hudhud lets in only linked members, so the removal notice comes
+  only at the first post of someone an admin let in by hand.
+
+**In members' own chats** (reminders, for those who keep Hudhud's
+reminders on; each goes once, `core.telegram_nudges`):
+
+- **The ticket on the day.** Within three hours of an event they booked,
+  the same QR code as on Today, as an image (`lib/api/bot/qr.ts`), with
+  *My ticket* and *Details* (`core.telegram_tickets_soon`).
+- **Role to-dos, Mondays at 10:00 a.m.:** a handover to sign (a role
+  ended in the last 60 days or ending in the next 14) and a role
+  agreement not yet signed (`core.telegram_role_todos`). Today in Your
+  account keeps them too.
+- Everything else they get by email (Qirtas decisions, election notices,
+  RSVPs, the role email) also comes here while *My notices* is on.
 - **Live.** When an admin schedules or starts a live stream (a video
   chat) in the members' group, Hudhud posts it to `announcements`
   (`features/group/streams.ts`). Bots cannot start streams or post
@@ -236,7 +262,7 @@ And without commands:
    | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/account/settings/profile` and `https://auibsal.org/ar/account/profile` (and `http://localhost:3000/account/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
    | Allow Groups | On | |
    | Group Privacy | On | As an admin the bot sees the group anyway. |
-   | Group Admin Rights | Every right except Remain Anonymous and Add New Admins (decisions.md) | Join requests, member tags, removals, posts in topics. A bot that can make admins could hand over both groups if its token leaked, so officers add admins by hand. |
+   | Group Admin Rights | Every right except Remain Anonymous | Join requests, admins and member tags, removals, posts in topics. Hudhud makes the officers admins without Add New Admins; its token stays in the site's secrets and is rotated at each handover, since a leaked token could make admins. |
    | Channel Admin Rights | None | No channel. |
    | Privacy Policy | `https://auibsal.org/privacy` | Telegram shows it in the bot's profile. |
    | Bot Management Mode | Off | For bots that create bots. |

@@ -152,7 +152,7 @@ alter table core.telegram_posts drop constraint telegram_posts_kind_check;
 alter table core.telegram_posts add constraint telegram_posts_kind_check
   check (kind = any (array['event', 'event_soon', 'piece', 'word', 'brief',
     'event_summary', 'announcement', 'sunday_note', 'paper', 'stream', 'alert',
-    'description']));
+    'description', 'doors', 'vote_open', 'vote_closing']));
 
 -- ── Staff alerts (decisions.md: staff alerts go to the team's topic in the
 -- Diwan group and the Diwan's Desk, never by bulk email; urgent ones at

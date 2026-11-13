@@ -214,7 +214,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
   });
 
   test("sends the daily word to a member who turned it on, once", async () => {
-    await bot.handleUpdate(press("word:on"));
+    await bot.handleUpdate(press("pref:daily_word:on"));
     expect(String(sent("answerCallbackQuery").at(-1)?.payload.text)).toContain(
       "9:00 a.m."
     );
@@ -228,7 +228,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
       .filter((call) => call.payload.chat_id === tgUser);
     expect(words).toHaveLength(1);
     expect(String(words[0]?.payload.text)).toContain("Word No.");
-    await bot.handleUpdate(press("word:off"));
+    await bot.handleUpdate(press("pref:daily_word:off"));
   });
 
   test("lists events and RSVPs as the member", async () => {

@@ -1,4 +1,4 @@
-import { formatLongDate } from "@repo/internationalization/format";
+import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { type Api, GrammyError, InlineKeyboard } from "grammy";
 import { publicEvents } from "@/lib/data/events";
 import { gameDay, gameNumber } from "@/lib/data/games";
@@ -15,8 +15,9 @@ import { staffPosts } from "./staff";
 /**
  * What the bot posts to connected groups, every ten minutes (pg_cron calls
  * /cron/telegram): the Sunday note (the week's events and open calls), a
- * reminder for each event two days before (none on the day), and new
- * Qirtas pieces; each post in English
+ * reminder for each event two days before, "doors open" an hour before it
+ * starts, "voting is open" and "closes tomorrow" for members' elections,
+ * and new Qirtas pieces; each post in English
  * with a button to the Arabic page (decisions §6). The daily word goes only
  * to members who asked for it in their chat with Hudhud (/me). Each post is claimed in
  * core.telegram_posts before it is sent, so overlapping runs never post
@@ -46,7 +47,10 @@ export type Kind =
   | "sunday_note"
   | "paper"
   | "description"
-  | "stream";
+  | "stream"
+  | "doors"
+  | "vote_open"
+  | "vote_closing";
 
 const posts = () => db().schema("core").from("telegram_posts");
 
@@ -188,6 +192,115 @@ const soonEvents = (run: Run, events: PublicEvent[]) =>
           )
         );
       }),
+    MAX_PER_RUN
+  );
+
+/** Doors open within the hour: the one post on the day. */
+const DOORS_LEAD = HOUR;
+
+/**
+ * On the day, an hour before it starts: "doors open" in the members'
+ * group, answering the event's own post, with the ticket's place.
+ */
+const doorsOpen = (run: Run, events: PublicEvent[]) =>
+  sequence(
+    events
+      .filter((event) => {
+        const lead = startsIn(event, run.now);
+        return lead > 0 && lead <= DOORS_LEAD;
+      })
+      .map((event) => async () => {
+        const original =
+          (await posted(run.group.chat_id, "event_soon", event.id)) ??
+          (await posted(run.group.chat_id, "event", event.id));
+        return once(run.group, "doors", event.id, () =>
+          postTo(
+            run.api,
+            run.group,
+            ["events", "announcements"],
+            copyFor(run.group, (lang) =>
+              [
+                `<b>${escapeHtml(pick(lang, event.title_en, event.title_ar))}</b>`,
+                copy[lang].postDoors(formatClock(event.starts_at, lang)),
+              ].join("\n")
+            ),
+            {
+              reply_markup: new InlineKeyboard()
+                .url(
+                  label(run.group.lang, (t) => t.buttons.ticket),
+                  web(linkLang(run.group), "/account")
+                )
+                .url(copy.ar.buttons.arabic, eventPage("ar", event.slug)),
+              reply_parameters: original
+                ? { allow_sending_without_reply: true, message_id: original }
+                : undefined,
+            }
+          )
+        );
+      }),
+    MAX_PER_RUN
+  );
+
+interface Election {
+  id: string;
+  title_ar: string;
+  title_en: string;
+  voting_closes_at: string;
+}
+
+/** Members' elections in their voting days (Hudhud reads them with the key). */
+const votingElections = async (now: Date) => {
+  const { data, error } = await db()
+    .schema("governance")
+    .from("elections")
+    .select("id, title_en, title_ar, voting_closes_at")
+    .eq("status", "voting")
+    .eq("electorate", "members")
+    .lte("voting_opens_at", now.toISOString())
+    .gt("voting_closes_at", now.toISOString());
+  if (error) {
+    throw error;
+  }
+  return (data ?? []) as Election[];
+};
+
+/**
+ * Elections in the members' group: "voting is open" once it opens and
+ * "closes tomorrow" in its last day, each with Vote.
+ */
+const electionPosts = (run: Run, elections: Election[]) =>
+  sequence(
+    elections.flatMap((election) => {
+      const left = Date.parse(election.voting_closes_at) - run.now.getTime();
+      const kind: Kind = left <= NOT_ON_THE_DAY ? "vote_closing" : "vote_open";
+      return [
+        () =>
+          once(run.group, kind, election.id, () =>
+            postTo(
+              run.api,
+              run.group,
+              ["announcements"],
+              copyFor(run.group, (lang) => {
+                const title = escapeHtml(
+                  pick(lang, election.title_en, election.title_ar)
+                );
+                const at = when(lang, election.voting_closes_at);
+                return kind === "vote_open"
+                  ? copy[lang].voteOpen(title, at)
+                  : copy[lang].voteClosing(title, at);
+              }),
+              {
+                reply_markup: new InlineKeyboard()
+                  .url(
+                    label(run.group.lang, (t) => t.buttons.vote),
+                    web(linkLang(run.group), "/account/elections")
+                  )
+                  .url(copy.ar.buttons.arabic, web("ar", "/account/elections")),
+              }
+            )
+          ),
+      ];
+    }),
     MAX_PER_RUN
   );
 
@@ -438,7 +551,8 @@ const noticeButton = (notice: Notice, lang: Lang) =>
 /** The members' group: the Announcements topic, once per notice. */
 /**
  * Pins an announcement in its topic (decisions.md: Pin Messages, the pinned
- * notices), quietly; the post stands whether or not the pin takes.
+ * notices), quietly, and unpins the one before it, so the newest is the one
+ * pinned; the post stands whether or not the pin takes.
  */
 const pinned = async (
   api: Api,
@@ -447,11 +561,25 @@ const pinned = async (
 ) => {
   const message = await post;
   if (message) {
-    await api
-      .pinChatMessage(chatId, message.message_id, {
-        disable_notification: true,
-      })
-      .catch(() => undefined);
+    const { data: before } = await posts()
+      .select("message_id")
+      .eq("chat_id", chatId)
+      .eq("kind", "announcement")
+      .not("message_id", "is", null)
+      .neq("message_id", message.message_id)
+      .order("posted_at", { ascending: false })
+      .limit(1);
+    const previous = before?.[0]?.message_id;
+    await Promise.all([
+      previous
+        ? api.unpinChatMessage(chatId, previous).catch(() => undefined)
+        : undefined,
+      api
+        .pinChatMessage(chatId, message.message_id, {
+          disable_notification: true,
+        })
+        .catch(() => undefined),
+    ]);
   }
   return message;
 };
@@ -617,10 +745,11 @@ export const runFeeds = async (
   if (!connected.length) {
     return { groups: 0, posted: direct };
   }
-  const [upcoming, pieces, calls] = await Promise.all([
+  const [upcoming, pieces, calls, elections] = await Promise.all([
     publicEvents(anon(), { from: now, limit: 20 }),
     publicPieces(10),
     openCalls(anon(), now),
+    votingElections(now),
   ]);
   const events = upcoming ?? [];
   // Groups in parallel; each group's posts in order.
@@ -642,10 +771,12 @@ export const runFeeds = async (
         return staffPosts(run);
       }
       const announced = await groupNotices(run, notices);
+      const voting = await electionPosts(run, elections);
+      const doors = await doorsOpen(run, events);
       const soon = await soonEvents(run, events);
       const week = await sundayNote(run, events, calls ?? []);
       const written = await newPieces(run, pieces);
-      return announced + soon + week + written;
+      return announced + voting + doors + soon + week + written;
     })
   );
   return {

@@ -93,7 +93,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(7);
+select plan(8);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000ab001', 'pres-hud@auib.edu.iq', 'President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000ab002', 'member-hud@auib.edu.iq', 'Member');
@@ -115,6 +115,12 @@ select results_eq(
   $$ select telegram_id, title_en from core.telegram_role_titles() order by 1 $$,
   $$ values (900001::bigint, 'President'::text) $$,
   'Only linked role holders carry a title, with their seat'
+);
+
+select results_eq(
+  $$ select officer, council from core.telegram_role_titles() $$,
+  $$ values (true, true) $$,
+  'The President is an admin of both groups'
 );
 
 select throws_ok(
