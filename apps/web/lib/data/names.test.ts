@@ -84,4 +84,18 @@ describe("four-part names", () => {
       last_name_en: "D",
     });
   });
+
+  test("an update leaves out the parts on record", () => {
+    expect(
+      partsUpdate(
+        { father: "B", first: "A", grandfather: "C", last: "" },
+        "en",
+        ["grandfather"]
+      )
+    ).toEqual({
+      father_name_en: "B",
+      first_name_en: "A",
+      last_name_en: null,
+    });
+  });
 });

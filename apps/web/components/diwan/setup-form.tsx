@@ -20,7 +20,7 @@ import {
 } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { membership, names as nameParts, unwrap } from "@/lib/data";
-import { isNameTaken } from "@/lib/diwan/errors";
+import { isNameLocked, isNameTaken } from "@/lib/diwan/errors";
 import { safeNextPath, stripLocale } from "@/lib/diwan/navigation";
 import {
   useMemberStatus,
@@ -139,6 +139,13 @@ export const SetupForm = () => {
     ar: nameParts.emptyParts(),
     en: nameParts.emptyParts(),
   });
+  // What was on record when setup opened: those parts are locked (the
+  // database refuses to change them from the account), so they show as
+  // read-only and are never sent again.
+  const [saved, setSaved] = useState<Names>({
+    ar: nameParts.emptyParts(),
+    en: nameParts.emptyParts(),
+  });
   const mine = useMyMembership();
   const [index, setIndex] = useState(0);
   const [welcome, setWelcome] = useState(false);
@@ -151,6 +158,7 @@ export const SetupForm = () => {
     }
     const current = namesFrom(profile.data);
     setNames(current);
+    setSaved(current);
     const { kind } = mine.data;
     const planned = planSetup({
       // Members and guests make the pledges; a partner's people, and
@@ -226,7 +234,11 @@ export const SetupForm = () => {
           Object.assign(
             {},
             ...answer.languages.map((language) =>
-              nameParts.partsUpdate(answer.names[language], language)
+              nameParts.partsUpdate(
+                answer.names[language],
+                language,
+                lockedParts(saved[language])
+              )
             )
           )
         );
@@ -312,9 +324,15 @@ export const SetupForm = () => {
         {t("back")}
       </Button>
     ) : null;
+  const failedText = (error: unknown) => {
+    if (isNameTaken(error)) {
+      return te("nameTaken");
+    }
+    return isNameLocked(error) ? te("nameLocked") : te("saveFailed");
+  };
   const failed = save.isError ? (
     <p className="text-text" role="alert">
-      {isNameTaken(save.error) ? te("nameTaken") : te("saveFailed")}
+      {failedText(save.error)}
     </p>
   ) : null;
 
@@ -344,6 +362,7 @@ export const SetupForm = () => {
             save.mutate({ kind: "names", languages: step.languages, names })
           }
           pending={save.isPending}
+          saved={saved}
         />
       ) : null}
       {step.kind === "pledge" ? (
@@ -397,11 +416,13 @@ const NameStep = ({
   onChange,
   onSubmit,
   pending,
+  saved,
 }: StepProps & {
   languages: ("en" | "ar")[];
   names: Names;
   onChange: (names: Names) => void;
   onSubmit: () => void;
+  saved: Names;
 }) => {
   const t = useTranslations("diwan.setup");
   const id = useId();
@@ -430,6 +451,7 @@ const NameStep = ({
           <NamePartsFields
             describedBy={`${id}-hint`}
             language={language}
+            locked={lockedParts(saved[language])}
             onChange={(parts) => onChange({ ...names, [language]: parts })}
             parts={names[language]}
           />
@@ -462,19 +484,27 @@ const autoComplete = (language: "en" | "ar", part: nameParts.NamePart) => {
  * grandfather's names required, the family name where there is one; each
  * in its language's letters (the database checks the same).
  */
+/** The parts already on record: the account can't change them. */
+const lockedParts = (parts: nameParts.NameParts) =>
+  nameParts.nameParts.filter((part) => parts[part].trim() !== "");
+
 export const NamePartsFields = ({
   describedBy,
   language,
+  locked = [],
   onChange,
   parts,
 }: {
   describedBy?: string;
   language: "en" | "ar";
+  /** Parts shown read-only (on record; Membership corrects them). */
+  locked?: readonly nameParts.NamePart[];
   onChange: (parts: nameParts.NameParts) => void;
   parts: nameParts.NameParts;
 }) => {
   const t = useTranslations("diwan.setup.name");
   const id = useId();
+  const anyLocked = locked.length > 0;
   const wrongScript = !nameParts.partsInScript(parts, language);
   return (
     <div className="grid max-w-xl gap-4 sm:grid-cols-2">
@@ -483,12 +513,17 @@ export const NamePartsFields = ({
           <Label htmlFor={`${id}-${part}`}>{t(`parts.${part}`)}</Label>
           <Input
             aria-describedby={
-              [describedBy, wrongScript ? `${id}-script` : null]
+              [
+                describedBy,
+                wrongScript ? `${id}-script` : null,
+                locked.includes(part) ? `${id}-locked` : null,
+              ]
                 .filter(Boolean)
                 .join(" ") || undefined
             }
             aria-invalid={!nameParts.inScript(parts[part], language)}
             autoComplete={autoComplete(language, part)}
+            className="read-only:text-text-secondary"
             dir={language === "en" ? "ltr" : "rtl"}
             id={`${id}-${part}`}
             lang={language}
@@ -496,11 +531,17 @@ export const NamePartsFields = ({
             onChange={(event) =>
               onChange({ ...parts, [part]: event.target.value })
             }
+            readOnly={locked.includes(part)}
             required={nameParts.requiredParts.includes(part)}
             value={parts[part]}
           />
         </div>
       ))}
+      {anyLocked ? (
+        <p className="type-caption sm:col-span-2" id={`${id}-locked`}>
+          {t("locked")}
+        </p>
+      ) : null}
       {wrongScript ? (
         <p
           className="type-caption sm:col-span-2"

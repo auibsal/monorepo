@@ -105,12 +105,16 @@ export const hasFourPartNames = (profile: ProfileNames | null | undefined) =>
   );
 
 /** The update that saves one language's parts. */
-export const partsUpdate = (parts: NameParts, language: NameLanguage) =>
+export const partsUpdate = (
+  parts: NameParts,
+  language: NameLanguage,
+  /** Parts on record, left out: the account can't change them. */
+  skip: readonly NamePart[] = []
+) =>
   Object.fromEntries(
-    nameParts.map((part) => [
-      nameColumn(part, language),
-      parts[part].trim() || null,
-    ])
+    nameParts
+      .filter((part) => !skip.includes(part))
+      .map((part) => [nameColumn(part, language), parts[part].trim() || null])
   ) as Partial<Record<NameColumn, string | null>>;
 
 /** Complete and in its language's letters: ready to save. */
