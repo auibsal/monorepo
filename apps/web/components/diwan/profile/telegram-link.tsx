@@ -43,6 +43,43 @@ const returnAddress = () =>
  * with it. Only links: signing in to the Diwan stays email only. Hidden
  * until the bot's username is set in Settings.
  */
+/**
+ * The Society's groups this person may join (the members' group for a
+ * member, the Diwan group for a role holder), by Hudhud's join-request
+ * links: with Telegram linked, Hudhud lets them in at once.
+ */
+const JoinGroups = () => {
+  const t = useTranslations("diwan.profile.telegram");
+  const { supabase, user } = useAuth();
+  const links = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      unwrap(await supabase.schema("core").rpc("telegram_join_links")) ?? [],
+    queryKey: ["telegram", "join-links", user?.id],
+  });
+  if (!links.data?.length) {
+    return null;
+  }
+  return (
+    <div className="grid gap-2">
+      <p className="type-caption">{t("joinHint")}</p>
+      <div className="flex flex-wrap gap-x-6 gap-y-2">
+        {links.data.map((link) => (
+          <a
+            className="link"
+            href={link.invite_link ?? ""}
+            key={link.audience}
+            rel="noopener"
+            target="_blank"
+          >
+            {link.audience === "staff" ? t("joinStaff") : t("joinMembers")}
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const TelegramLink = () => {
   const t = useTranslations("diwan.profile.telegram");
   const { supabase, user } = useAuth();
@@ -197,6 +234,7 @@ export const TelegramLink = () => {
                 {t("unlink")}
               </Button>
             </div>
+            <JoinGroups />
           </>
         ) : (
           <div className="flex flex-wrap items-center gap-3">

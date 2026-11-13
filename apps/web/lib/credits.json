@@ -156,6 +156,11 @@
     },
     {
       "license": "MIT",
+      "name": "qrcode-generator",
+      "url": "https://github.com/kazuhikoarase/qrcode-generator"
+    },
+    {
+      "license": "MIT",
       "name": "radix-ui",
       "url": "https://radix-ui.com/primitives"
     },

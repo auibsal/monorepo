@@ -40,6 +40,7 @@ export const env = withPresets(
       SEND_EMAIL_HOOK_SECRET: process.env.SEND_EMAIL_HOOK_SECRET,
       TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
       VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
+      VERCEL_WEBHOOK_SECRET: process.env.VERCEL_WEBHOOK_SECRET,
     },
     server: {
       // Shared secret Vercel Cron sends as a Bearer token. Generate with
@@ -78,6 +79,9 @@ export const env = withPresets(
       // Web Push signing key. Without it (or the public key) notices go by
       // email only.
       VAPID_PRIVATE_KEY: z.string().min(40).optional(),
+      // Vercel's webhook secret, for failed deploys at /api/hooks/vercel
+      // (a staff alert to the Council's topic).
+      VERCEL_WEBHOOK_SECRET: z.string().min(16).optional(),
     },
     skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
   }),

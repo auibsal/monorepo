@@ -50,3 +50,6 @@ export const messageLink = (
     ? `https://t.me/c/${internal}/${threadId}/${messageId}`
     : `https://t.me/c/${internal}/${messageId}`;
 };
+
+/** The Code of Conduct, in the member's language. */
+export const rulesPage = (lang: Lang) => siteUrl(lang, "/code-of-conduct");

@@ -17,7 +17,7 @@ Diwan account):
 | `/events` | What's coming up. Each event has a card with RSVP or Cancel, Details and Add to calendar. |
 | `/qirtas` | The latest public Qirtas pieces. |
 | `/word` | Opens today's word: auibsal.org/qirtas/games/word itself, as a Mini App inside Telegram. |
-| `/me` | The linked account, its places, Telegram notices on or off, the daily word here on or off, Unlink. |
+| `/me` | The linked account, its places, the notices switches (the same as Settings → Notices: your notices, reminders, Society news and events, the Sunday Paper, the daily word), join buttons for the groups, Unlink. |
 | `/help` | The list. |
 
 Typing `@<bot> words` in any chat (inline mode) shares a public event or
@@ -25,14 +25,31 @@ Qirtas piece as a card. In a chat the bot isn't in, mentioning it in a
 message (Guest Mode: "@<bot> open mic") answers there with the event or
 piece that matches, or with what's coming up.
 
-Members who link Telegram also get the Diwan notices there (the outbox
-sends them with the email and the push: reminders, RSVPs, waitlist
-places, Qirtas decisions). Reminders of booked events and shifts are
-optional emails: with optional email off, they still come here while
-notices are on (the Sunday Paper stays email only). A member who turns on
-"Daily word here" in /me gets the day's word in their chat at 9:00 a.m.
-Baghdad time, while notices are on (off by default). A member who blocks
-the bot has their notices turned off.
+### One notices model
+
+Every notice the Society sends is one of five topics, and each person
+turns each topic on or off for each channel, in Settings → Notices (a
+grid, `NoticeGrid`) or in Hudhud's /me; both write the same columns
+through `core.set_my_notice(topic, channel, on)` and read them with
+`core.my_notices()`, so they never disagree.
+
+| Topic | Email | Hudhud |
+| --- | --- | --- |
+| The Sunday Paper | `profiles.mail_paper` | `telegram_accounts.paper` |
+| Society news and events | `profiles.mail_news` | `telegram_accounts.news` |
+| Reminders (booked events, shifts, what to sign) | `profiles.notify_email` | `telegram_accounts.reminders` |
+| Your notices (RSVPs, applications, decisions, account) | always | `telegram_accounts.notify` |
+| The daily word | — | `telegram_accounts.daily_word` |
+
+Nothing reaches anyone twice where one copy is enough: with reminders on
+in Hudhud, a reminder goes there **in place of** the email (`reminder`
+in the outbox's `send`). Your notices always come by email, with a copy
+in Hudhud while that switch is on. The Sunday Paper and Society news go
+to both channels each person keeps on: the Paper reaches linked members
+in their chat within three days of the Broadcast (`runPaper`, one
+delivery each, `core.paper_deliveries`), and the members' group gets one
+post in Qirtas's topic. A member who blocks the bot has its switches
+turned off.
 
 **In the Society's group** (a supergroup with topics):
 
@@ -41,8 +58,10 @@ the bot has their notices turned off.
 | `/setup <code>` | Group admins | Connects the group, once. The code comes from the Diwan; the message is deleted at once. |
 | `/events` | Everyone | What's coming up, with buttons that open the bot. |
 
-Nothing else is typed in the chat (decisions.md, Channels and email). A group's settings are
-kept in the Diwan, Media → Channels (`settings.manage`): who it is for
+Nothing else is typed in the chat (decisions.md, Channels and email).
+Hudhud is set up in one place, the Diwan's Media → Channels
+(`settings.manage`): the bot itself (its username, *Connect the bot to
+Telegram*, the group setup code), then each group's settings: who it is for
 (members, or staff for the Diwan group: see below), the language Hudhud
 answers in, and the topic for each kind of post (`announcements`,
 `events`, `qirtas`, `word`, `brief`), by number or link.
@@ -67,7 +86,10 @@ And without commands:
   Hudhud's Sunday note, one post each Sunday from 10:00 a.m. listing the
   week's events and the open calls with their closing dates (to `events`,
   else `announcements`; no note in a week with neither, so none outside
-  the semester), a reminder for each event two days before (none on the day), and
+  the semester), a reminder for each event two days before, "doors open"
+  an hour before it starts (answering the event's post, with *My ticket*),
+  "voting is open" and, in its last day, "closes tomorrow" for each
+  members' election (`announcements`, with *Vote*), and
   new Qirtas pieces of the last three days
   (`qirtas`, else `announcements`). The daily word goes only to members'
   own chats, never to a group. A purpose without a topic gets no posts.
@@ -79,12 +101,35 @@ And without commands:
   three days after the go. The President's words go as written, with the
   site button; nothing of the bot's Iraqi copy is added.
 
+- **Admins and member tags.** Every ten minutes Hudhud looks at each
+  linked role holder (a role that opens the team's work,
+  `access.roles.in_notion`) in each group they are in:
+  - **Admins.** The President, the Vice President, the Secretary and the
+    Director of Media are admins of both groups, and every Council seat is
+    an admin of the Diwan group, with their seat as their title. Hudhud
+    gives every right but Remain Anonymous and Add New Admins, so no admin
+    it makes can make others; it holds Add New Admins itself (the owner's
+    change to decisions.md). When the seat ends it takes the rights back.
+    It can change only the admins it made: the owner and admins added by
+    hand are left as they are.
+  - **Member tags.** Everyone else carries their seat as their member
+    tag; the exempt list is tagged "Student Life" in the members' group.
+  - Titles and tags are 16 characters at most, cut at a word. When
+    someone's last role ends the tag comes off, and 7 days later they
+    leave the Diwan group. Only those Hudhud tagged or made admins are
+    changed (`core.telegram_titles`, `admin`).
+- **Joining.** Hudhud makes each group one join-request link
+  (`core.telegram_groups.invite_link`). Members see *Join the members'
+  group* (and role holders *Join the Diwan group*) in their profile's
+  Telegram section once Telegram is linked, and in Hudhud's /me and the
+  message after linking; Hudhud lets them in at once.
+
 **What Telegram does itself** (so the bot doesn't):
 
 | Need | Telegram's own feature | Where |
 | --- | --- | --- |
 | Welcoming people, the rules | Welcome Message (only new members see it): a greeting, the rules, a link to the Acceptable Use Policy (say it is a draft until the Council adopts it) and to linking in the Diwan | Group → Edit → Welcome Message |
-| Spam | Aggressive Anti-Spam (groups of 200 or more members); Slow Mode; what members may send | Group → Edit → Administrators / Permissions |
+| Spam | Aggressive Anti-Spam, offered only to groups of 200 or more members (so not the Diwan group, whose doors only role holders pass); Slow Mode; what members may send | Group → Edit → Administrators / Permissions |
 | Moderating | Restrict (with a duration), Ban, Delete, Report; every action in Recent Actions | Long-press a message; Group → Edit → Recent Actions |
 | The daily word | The bot's Main App: the web game in Telegram | BotFather → Mini Apps |
 | Logging in | Telegram's login (OpenID Connect), to link accounts only | BotFather → Login Widget |
@@ -96,7 +141,7 @@ And without commands:
   member without one, and anyone not linked, waits in Telegram's request
   list for the group's admins, with a note saying the group is for
   officers. Linking later lets in only those who hold a role. Someone
-  whose role ends is not removed automatically: the admins remove them.
+  whose last role ended leaves 7 days later (see Member tags above).
 - **The morning brief,** once a day from 8:00 a.m. Baghdad time: today's
   events (members-only and invitation events too) with their bookings and
   waitlists, and what waits in the Diwan as counts (partner applications,
@@ -111,6 +156,55 @@ And without commands:
   General. The Diwan group gets none of the public posts. The functions are
   callable with the secret key only. Names never appear, only titles and
   counts.
+- **Staff alerts by team** (decisions.md, Channels and email: urgent ones
+  at once, the rest in the morning). Each Council team can have its own
+  topic in the Diwan group (Media → Channels: `council`, `qirtas`,
+  `media`, `events`, `membership`, `partnerships`; else the brief's, else
+  `announcements`). An alert is one line in each language and a link,
+  with no names (`core.staff_alerts`, written by the server only,
+  `staffAlert` in `lib/api/bot/upkeep.ts`); urgent ones go out on the next
+  run, the rest as one message per team at 8:00 a.m. (`runAlerts`). The
+  Desk lists the last two weeks' under Alerts. The sources today:
+
+  | Source | Team | Urgent |
+  | --- | --- | --- |
+  | A production deploy that failed or was canceled (Vercel webhook, `/api/hooks/vercel`, `VERCEL_WEBHOOK_SECRET`) | Council | yes |
+  | A scheduled job that failed (`platform.cron_failed`) | Council | yes |
+  | The domain or the site's certificate within 30 days of running out (RDAP and TLS, daily at 7:00 a.m., `lib/api/watch.ts`) | Council | at 7 days |
+  | The database advisors' findings (daily) | Council | no |
+  | A Society email marked as spam (Resend webhook) | Media | yes |
+  | A Society email that bounced for good (Resend webhook) | Media | no |
+
+**More in the members' group:**
+
+- **Pinned.** The President's newest announcement is pinned in its topic,
+  quietly (no second notification), and the one before it unpinned.
+- **The description** is decisions.md's line with the next public event
+  in place of the events link ("The paper and the pen at @AUIB_BAG. Next:
+  Open Mic, Wednesday, November 18, 6:00 p.m. · auibsal.org/events/… ·
+  Join: auibsal.org/join"), 255 characters at most, checked every run
+  (`syncDescriptions`). The photo stays Telegram's own setting.
+- **Welcome.** Someone joining with a linked member's account gets a
+  private welcome with the Code of Conduct. Nobody gets a notice at the
+  door: Hudhud lets in only linked members, so the removal notice comes
+  only at the first post of someone an admin let in by hand.
+
+**In members' own chats** (reminders, for those who keep Hudhud's
+reminders on; each goes once, `core.telegram_nudges`):
+
+- **The ticket on the day.** Within three hours of an event they booked,
+  the same QR code as on Today, as an image (`lib/api/bot/qr.ts`), with
+  *My ticket* and *Details* (`core.telegram_tickets_soon`).
+- **Role to-dos, Mondays at 10:00 a.m.:** a handover to sign (a role
+  ended in the last 60 days or ending in the next 14) and a role
+  agreement not yet signed (`core.telegram_role_todos`). Today in Your
+  account keeps them too.
+- Everything else they get by email (Qirtas decisions, election notices,
+  RSVPs, the role email) also comes here while *My notices* is on.
+- **Live.** When an admin schedules or starts a live stream (a video
+  chat) in the members' group, Hudhud posts it to `announcements`
+  (`features/group/streams.ts`). Bots cannot start streams or post
+  stories: those stay with the admins in Telegram.
 
 ## How it works
 
@@ -168,7 +262,7 @@ And without commands:
    | Login Widget → OpenID Connect | Redirect URIs `https://auibsal.org/account/settings/profile` and `https://auibsal.org/ar/account/profile` (and `http://localhost:3000/account/profile` for a test bot); Trusted Origins empty; signing RS256 | Linking from the profile. Copy the Client Secret to the auibsal project; the Client ID is the bot's id and needs no variable. |
    | Allow Groups | On | |
    | Group Privacy | On | As an admin the bot sees the group anyway. |
-   | Group Admin Rights | Invite users via link | Answering join requests is all the bot does as an admin. |
+   | Group Admin Rights | Every right except Remain Anonymous | Join requests, admins and member tags, removals, posts in topics. Hudhud makes the officers admins without Add New Admins; its token stays in the site's secrets and is rotated at each handover, since a leaked token could make admins. |
    | Channel Admin Rights | None | No channel. |
    | Privacy Policy | `https://auibsal.org/privacy` | Telegram shows it in the bot's profile. |
    | Bot Management Mode | Off | For bots that create bots. |
@@ -179,7 +273,7 @@ And without commands:
    | Mini Apps → Menu Button | Open the Main App, title "Daily word" (or leave it on Commands) | BotFather decides it; the bot no longer overrides it. |
    | Payments, Affiliate Program, Games, Serverless | Not used | No online payments of any kind (platform rule); the daily word is the Main App, not a Telegram game; the bot runs in the API routes. |
 
-4. **Connect it.** In the Diwan, the Desk → Connected → Hudhud → *Connect
+4. **Connect it.** In the Diwan, Media → Channels → Hudhud → *Connect
    the bot to Telegram* (settings managers). It sets the webhook (with the updates
    the bot uses, Guest Mode's among them), the commands in English and
    Arabic, and the descriptions; do it again whenever the commands, the
@@ -187,10 +281,10 @@ And without commands:
    `curl -X POST https://auibsal.org/api/telegram/setup -H "Authorization: Bearer $CRON_SECRET" -d '{"connect":true}'`.)
    The scheduled posts need nothing more: the database already calls
    the API routes.
-5. **The Diwan.** The Desk → Connected → Hudhud: the bot's username (this shows
+5. **The Diwan.** Media → Channels → Hudhud: the bot's username (this shows
    *Connect Telegram* in members' profiles).
 6. **The group.** Make it a supergroup with topics. Add the bot as an
-   admin with the rights above. In the Diwan, the Desk → Connected → Hudhud →
+   admin with the rights above. In the Diwan, Media → Channels → Hudhud →
    *Make a setup code*, and send the `/setup …` line in the group. Then,
    in the Diwan (Media → Channels), set who the group is for and each
    topic, and turn on *Approve new members* on the invite link. In the

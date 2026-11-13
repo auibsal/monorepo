@@ -17,12 +17,21 @@ export type Lang = "en" | "ar";
 export const langOf = (code: string | undefined): Lang =>
   code?.toLowerCase().startsWith("ar") ? "ar" : "en";
 
+/**
+ * Each topic's purpose. In the Diwan group the team topics take staff
+ * alerts (decisions.md: a topic for each team; Qirtas and Events share the
+ * members' group's names).
+ */
 const purposes = [
   "announcements",
   "events",
   "qirtas",
   "word",
   "brief",
+  "council",
+  "media",
+  "membership",
+  "partnerships",
 ] as const;
 export type Purpose = (typeof purposes)[number];
 
@@ -45,6 +54,7 @@ const en = {
   briefWaiting: "<b>Waiting in the Diwan</b>",
   briefWaitlist: (n: string) => `${n} on the waitlist`,
   buttons: {
+    agreement: "Sign the agreement",
     // The Arabic edition of a group post (decisions §6): the language's own
     // name, as the language switcher shows it.
     arabic: "العربية",
@@ -54,17 +64,30 @@ const en = {
     details: "Details",
     diwan: "Open the Diwan",
     events: "Events",
+    handover: "Sign the handover",
+    joinMembers: "Join the members' group",
+    joinStaff: "Join the Diwan group",
     link: "Link my account",
     me: "My membership",
     membership: "Open Membership",
-    notifyOff: "Notices here: off",
-    notifyOn: "Notices here: on",
+    newsOff: "Society news here: off",
+    newsOn: "Society news here: on",
+    notifyOff: "My notices here: off",
+    notifyOn: "My notices here: on",
+    paperOff: "The Sunday Paper here: off",
+    paperOn: "The Sunday Paper here: on",
     play: "Play",
     qirtas: "Qirtas",
     read: "Read",
+    readPaper: "Read it",
+    remindersOff: "Reminders here: off",
+    remindersOn: "Reminders here: on",
     rsvp: "RSVP",
+    rules: "Code of Conduct",
     site: "auibsal.org",
+    ticket: "My ticket",
     unlink: "Unlink Telegram",
+    vote: "Vote",
     word: "Daily word",
     wordOff: "Daily word here: off",
     wordOn: "Daily word here: on",
@@ -137,15 +160,19 @@ const en = {
   noPlaces: "No places yet. /events shows what's on.",
   notAdmin: "Only the group's admins can do that.",
   notConnected:
-    "This group isn't connected to the Society yet. An officer can connect it from the Diwan (Settings, Telegram).",
-  notifyOff: "Notices will go by email only.",
-  notifyOn: "Notices will come here again.",
+    "This group isn't connected to the Society yet. An officer can connect it from the Diwan (Media, Channels).",
+  notifyOff: "Your notices will go by email only.",
+  notifyOn: "Your notices will come here again.",
   notLinked:
     "Your Telegram isn't linked to a SAL account yet, so I only know your Telegram name.",
   onePlaceLeft: "1 place left",
+  paperOut:
+    "<b>The Sunday Paper</b> is out. This month's issue is waiting for you.",
   placesLeft: (n: string) => `${n} places left`,
 
   // Group posts
+  postDoors: (time: string) =>
+    `<b>Today</b>: doors open at ${time}. Your ticket is on Today in Your account, and in your chat with me.`,
   postEventSoon: (date: string) => `<b>In two days</b>: ${date}`,
   postPiece: "<b>New in Qirtas</b>",
   postWeek: "<b>This week at SAL</b>",
@@ -153,10 +180,15 @@ const en = {
   postWeekCloses: (date: string) => `closes ${date}`,
   postWeekEvents: "Events",
   postWord: (n: string) => `<b>Word No. ${n}</b> is ready.`,
+  prefSaved: "Saved. It's the same setting as Notices in Your account.",
   purposeNames: {
     announcements: "announcements",
     brief: "the morning brief and event summaries",
+    council: "the Council's alerts",
     events: "events",
+    media: "Media's alerts",
+    membership: "Membership's alerts",
+    partnerships: "Partnerships' alerts",
     qirtas: "Qirtas",
     word: "the daily word",
   } satisfies Record<Purpose, string>,
@@ -177,21 +209,35 @@ const en = {
   rsvpWaitlisted:
     "It's full, so you're on the waitlist. I'll tell you if a place opens.",
   setupBad:
-    "That code didn't work. An officer can make a new one in the Diwan: Settings, Telegram.",
+    "That code didn't work. An officer can make a new one in the Diwan: Media, Channels.",
 
   // Group: connecting
   setupOk:
     "Connected. I'm the Society's messenger here now.\n\nNext:\n1. Make me an admin who can invite users.\n2. Choose each topic's purpose, the language and who the group is for in the Diwan, under Media → Channels.\n3. Turn on <b>Approve new members</b> for the invite link: I let linked members in at once and leave everyone else to you.",
-  setupUsage: "Send /setup with the code from the Diwan (Settings, Telegram).",
+  setupUsage: "Send /setup with the code from the Diwan (Media, Channels).",
   shortDescription:
     "The messenger of the AUIB Society of Arts and Letters: events, Qirtas and a daily word.",
+  streamLive: "<b>Live now</b> in the members' group.",
+  streamSoon: (when: string) => `<b>Live in the members' group</b>: ${when}`,
   summaryCame: (came: string, booked: string, walkIns: string) =>
     `${came} came: ${booked} who booked, ${walkIns} without a booking`,
   summaryNoShows: (n: string) => `${n} booked and didn't come`,
   summaryTitle: "<b>After the event</b>",
+  ticket: (title: string, at: string) =>
+    `Your ticket for <b>${title}</b>, ${at}. Show this code at the door.`,
+  todoAgreement: (role: string) =>
+    `The role agreement for <b>${role}</b> is still unsigned. It takes a minute on Today in Your account.`,
+  todoHandover: (role: string) =>
+    `Your handover for <b>${role}</b> is waiting for your signature, in Your account.`,
   unlinked:
     "Unlinked. Your SAL account no longer gets notices here. You can link it again from Settings in Your account.",
+  voteClosing: (title: string, at: string) =>
+    `<b>Voting closes tomorrow</b>: ${title}, at ${at}.`,
+  voteOpen: (title: string, at: string) =>
+    `<b>Voting is open</b>: ${title}. Members vote in Your account until ${at}.`,
   waitlisted: "You're on the waitlist.",
+  welcome: (name: string) =>
+    `Welcome to the members' group, ${name}. Have a look at the Code of Conduct before you write; questions go to Help Desk.`,
 
   when: (date: string, time: string) => `${date} · ${time}`,
   wordOff: "No more daily word here.",
@@ -226,6 +272,7 @@ const ar: Copy = {
   briefWaiting: "<b>شنو ينتظر بالديوان</b>",
   briefWaitlist: (n: string) => `${n} بقائمة الانتظار`,
   buttons: {
+    agreement: "وقّع الاتفاقية",
     arabic: "العربية",
     back: "رجوع",
     calendar: "ضيفها للتقويم",
@@ -233,17 +280,30 @@ const ar: Copy = {
     details: "التفاصيل",
     diwan: "افتح الديوان",
     events: "الفعاليات",
+    handover: "وقّع التسليم",
+    joinMembers: "ادخل مجموعة الأعضاء",
+    joinStaff: "ادخل مجموعة الديوان",
     link: "اربط حسابي",
     me: "عضويتي",
     membership: "افتح «العضوية»",
-    notifyOff: "الإشعارات هنا: مطفية",
-    notifyOn: "الإشعارات هنا: شغّالة",
+    newsOff: "أخبار الجمعية هنا: مطفية",
+    newsOn: "أخبار الجمعية هنا: شغّالة",
+    notifyOff: "إشعاراتي هنا: مطفية",
+    notifyOn: "إشعاراتي هنا: شغّالة",
+    paperOff: "«جريدة الأحد» هنا: مطفية",
+    paperOn: "«جريدة الأحد» هنا: شغّالة",
     play: "إلعب",
     qirtas: "قرطاس",
     read: "إقرا",
+    readPaper: "اقراها",
+    remindersOff: "التذكيرات هنا: مطفية",
+    remindersOn: "التذكيرات هنا: شغّالة",
     rsvp: "احجزلي مقعد",
+    rules: "مدونة السلوك",
     site: "auibsal.org",
+    ticket: "تذكرتي",
     unlink: "افصل تيليغرام",
+    vote: "صوّت",
     word: "كلمة اليوم",
     wordOff: "كلمة اليوم هنا: مطفية",
     wordOn: "كلمة اليوم هنا: شغّالة",
@@ -313,14 +373,17 @@ const ar: Copy = {
   noPlaces: "بعد ما عندك مقاعد. /events يراويك شنو اكو.",
   notAdmin: "هاي بس لمشرفين المجموعة.",
   notConnected:
-    "هالمجموعة بعدها مو مربوطة بالجمعية. واحد من المسؤولين يگدر يربطها من الديوان (الإعدادات، تيليغرام).",
-  notifyOff: "الإشعارات راح توصلك بالإيميل بس.",
-  notifyOn: "الإشعارات رجعت توصلك هنا.",
+    "هالمجموعة بعدها مو مربوطة بالجمعية. واحد من المسؤولين يگدر يربطها من الديوان («الإعلام»، «القنوات»).",
+  notifyOff: "إشعاراتك راح توصلك بالإيميل بس.",
+  notifyOn: "إشعاراتك رجعت توصلك هنا.",
   notLinked:
     "تيليغرامك بعده مو مربوط بحساب بالجمعية، فما أعرف عنك غير اسمك بتيليغرام.",
   onePlaceLeft: "باقي مقعد واحد",
+  paperOut: "طلعت <b>«جريدة الأحد»</b>. عدد هالشهر ينتظرك.",
   placesLeft: (n: string) => `باقي ${n} مقعد`,
 
+  postDoors: (time: string) =>
+    `<b>اليوم</b>: الأبواب تفتح ${time}. تذكرتك في «اليوم» بحسابك، وبالمحادثة وياي.`,
   postEventSoon: (date: string) => `<b>بعد يومين</b>: ${date}`,
   postPiece: "<b>جديد بقرطاس</b>",
   postWeek: "<b>شنو عدنا هالأسبوع</b>",
@@ -328,10 +391,15 @@ const ar: Copy = {
   postWeekCloses: (date: string) => `آخر موعد ${date}`,
   postWeekEvents: "الفعاليات",
   postWord: (n: string) => `<b>الكلمة رقم ${n}</b> جاهزة.`,
+  prefSaved: "انحفظ. هذا نفس الإعداد اللي في «الإشعارات» بحسابك.",
   purposeNames: {
     announcements: "الإعلانات",
     brief: "موجز الصبح وملخصات الفعاليات",
+    council: "تنبيهات المجلس",
     events: "الفعاليات",
+    media: "تنبيهات الإعلام",
+    membership: "تنبيهات العضوية",
+    partnerships: "تنبيهات الشراكات",
     qirtas: "قرطاس",
     word: "كلمة اليوم",
   },
@@ -351,20 +419,34 @@ const ar: Copy = {
   rsvpNotMember: "الحجز للأعضاء الموثّقين. كمّل انضمامك على ⁦auibsal.org⁩ أول.",
   rsvpWaitlisted: "العدد اكتمل، فحطيتك بقائمة الانتظار. أخبرك إذا فرغ مقعد.",
   setupBad:
-    "هالرمز ما اشتغل. واحد من المسؤولين يگدر يسوي رمز جديد من الديوان: الإعدادات، تيليغرام.",
+    "هالرمز ما اشتغل. واحد من المسؤولين يگدر يسوي رمز جديد من الديوان: «الإعلام»، «القنوات».",
 
   setupOk:
     "انربطت. من هسه آني حامل رسائل الجمعية هنا.\n\nبعدين:\n1. سوّوني مشرف يگدر يدعي مستخدمين.\n2. اختاروا غرض كل موضوع، واللغة، ولمنو المجموعة من الديوان، من «الإعلام ← القنوات».\n3. فعّلوا <b>الموافقة على الأعضاء الجدد</b> لرابط الدعوة: أدخّل الأعضاء المربوطين هسه وأخلّي الباقين عليكم.",
-  setupUsage: "دز /setup ويّا الرمز من الديوان (الإعدادات، تيليغرام).",
+  setupUsage: "دز /setup ويّا الرمز من الديوان («الإعلام»، «القنوات»).",
   shortDescription:
     "حامل رسائل جمعية الفنون والآداب: الفعاليات وقرطاس وكلمة كل يوم.",
+  streamLive: "<b>بث مباشر هسه</b> بمجموعة الأعضاء.",
+  streamSoon: (when: string) => `<b>بث مباشر بمجموعة الأعضاء</b>: ${when}`,
   summaryCame: (came: string, booked: string, walkIns: string) =>
     `إجو ${came}: ${booked} من اللي حجزوا و${walkIns} بلا حجز`,
   summaryNoShows: (n: string) => `${n} حجزوا وما إجو`,
   summaryTitle: "<b>بعد الفعالية</b>",
+  ticket: (title: string, at: string) =>
+    `هاي تذكرتك لفعالية <b>${title}</b>، ${at}. راوي هالرمز عالباب.`,
+  todoAgreement: (role: string) =>
+    `اتفاقية الدور مال <b>${role}</b> بعدها ما موقّعة. تاخذ دقيقة من «اليوم» بحسابك.`,
+  todoHandover: (role: string) =>
+    `التسليم والاستلام مال <b>${role}</b> ينتظر توقيعك بحسابك.`,
   unlinked:
     "انفصل. حسابك بالجمعية ما راح توصله إشعارات هنا بعد. تگدر تربطه مرة لخ من الإعدادات في «حسابك».",
+  voteClosing: (title: string, at: string) =>
+    `<b>التصويت يسكّر باچر</b>: ${title}، ${at}.`,
+  voteOpen: (title: string, at: string) =>
+    `<b>التصويت مفتوح</b>: ${title}. الأعضاء يصوّتون من حسابهم لحد ${at}.`,
   waitlisted: "انت بقائمة الانتظار.",
+  welcome: (name: string) =>
+    `هلا ${name}، أهلًا بيك بمجموعة الأعضاء. شوف مدونة السلوك قبل لا تكتب، وأي سؤال اسأله في «مكتب المساعدة».`,
 
   when: (date: string, time: string) => `${date} · ${time}`,
   wordOff: "ما راح توصلك كلمة اليوم هنا بعد.",

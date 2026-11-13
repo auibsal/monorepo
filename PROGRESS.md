@@ -14,6 +14,71 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: Hudhud makes admins, and more (Nov 13)
+
+- [x] **Admins by Hudhud:** the President, Vice President, Secretary and
+  Director of Media in both groups, every Council seat in the Diwan group,
+  with their seats as titles and without Add New Admins; the rights come
+  back when the seat ends (`20261113004600`, `lib/api/bot/titles.ts`).
+- [x] **Members' group:** the newest announcement pinned and the one
+  before unpinned; "doors open" an hour before each event; "voting is
+  open" and "closes tomorrow" for members' elections; the description
+  shows the next event. No removal notice at the door (only linked
+  members get in by Hudhud).
+- [x] **Members' chats:** the ticket's QR code on the event's day, and the
+  weekly handover and role-agreement reminders
+  (`20261113004800_hudhud_reminders.sql`).
+- [ ] **Owner, decisions.md (proposed), Channels and email:** Hudhud's
+  rights include Add New Admins (it makes the four officers admins of
+  both groups and the Council admins of the Diwan group, never with Add
+  New Admins); "a reminder two days before and a 'doors open' post an hour
+  before" in place of "none on the day"; the description shows the next
+  event; the removal notice goes at the first post (not on joining); the
+  event-day story stays with Media (a bot can't post one).
+
+## Now: one notices model and staff alerts (Nov 12, night)
+
+- [x] **Notices, one model:** five topics (the Sunday Paper, Society news
+  and events, reminders, your notices, the daily word) on email and on
+  Hudhud, one grid in Settings → Notices and the same switches in /me
+  (`20261113004700_one_notices_model.sql`, `core.my_notices`,
+  `core.set_my_notice`). Reminders go by Hudhud in place of the email when
+  that switch is on.
+- [x] **Hudhud brings the Sunday Paper** to linked members' chats and the
+  members' group's Qirtas topic after each Broadcast.
+- [x] **Members' group:** announcements pinned, the description kept as
+  decisions.md has it, a private welcome on joining (the removal notice
+  at the door was later dropped), live streams announced.
+- [x] **Staff alerts** to each team's topic in the Diwan group (urgent at
+  once, the rest at 8:00 a.m.) and on the Desk: failed deploys, failed
+  jobs, the domain and certificate, the database advisors, spam reports
+  and bounces.
+- [ ] **Owner:** in Vercel (Project → Settings → Webhooks), add a webhook
+  to `https://auibsal.org/api/hooks/vercel` for `deployment.error` and
+  `deployment.canceled`, and put its secret in Vercel as
+  `VERCEL_WEBHOOK_SECRET` (Production).
+- [ ] **Owner:** in Media → Channels, set the Diwan group's topics for the
+  teams (Council, Qirtas, Media, Events, Membership, Partnerships); a team
+  without one posts to the brief's topic.
+- [ ] **Owner, decisions.md (proposed):** "one notices model" in Channels
+  and email (each topic on each channel; reminders by Hudhud replace the
+  email; the Paper and news go to both); and that bots cannot post
+  stories or run streams, so those stay with the admins.
+
+## Now: Hudhud (Nov 12, night)
+
+- [x] **One place to set Hudhud up:** the bot's panel moved from the Desk's
+  Connected panel to Media → Channels, beside its groups; the Desk points
+  there.
+- [x] **Member tags:** each linked role holder's seat as their member tag in
+  both groups, "Student Life" for the exempt list; off when the last role
+  ends, and out of the Diwan group 7 days later; Hudhud never makes admins
+  (`20261113004600_hudhud_titles_and_joining.sql`, `lib/api/bot/titles.ts`).
+- [x] **Joining from the site and the bot:** each group's join-request
+  link, offered in the profile's Telegram section and in Hudhud's /me.
+- [ ] **Owner:** in both groups, give Hudhud **Add New Admins** (and every
+  other right but Remain Anonymous), so it can make the officers admins.
+
 ## Now: temporary (Nov 12)
 
 - [x] **The President holds every permission**, to see, test, edit and
@@ -554,7 +619,7 @@ First the second prompt's part 2 (7j), then the rest in place.
   open calls), with the two-day reminders, in place of a post for each new
   event; a week with neither has no note. **Migrates:** the
   `sunday_note` post kind.
-- [ ] **Owner:** "Add New Admins" stays off for Hudhud in both groups.
+- [x] Hudhud holds "Add New Admins" in both groups and makes the officers admins (superseded, Nov 13).
 
 ## Open from earlier prompts
 

@@ -511,6 +511,7 @@ export type Database = {
           letter_ar: string;
           letter_en: string;
           month: string;
+          sent_at: string | null;
           tested_at: string | null;
           updated_at: string;
           updated_by: string | null;
@@ -520,6 +521,7 @@ export type Database = {
           letter_ar?: string;
           letter_en?: string;
           month: string;
+          sent_at?: string | null;
           tested_at?: string | null;
           updated_at?: string;
           updated_by?: string | null;
@@ -528,6 +530,7 @@ export type Database = {
           letter_ar?: string;
           letter_en?: string;
           month?: string;
+          sent_at?: string | null;
           tested_at?: string | null;
           updated_at?: string;
           updated_by?: string | null;
@@ -920,6 +923,25 @@ export type Database = {
         };
         Relationships: [];
       };
+      paper_deliveries: {
+        Row: {
+          month: string;
+          sent_at: string;
+          telegram_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          month: string;
+          sent_at?: string;
+          telegram_id: number;
+        };
+        Update: {
+          month?: string;
+          sent_at?: string;
+          telegram_id?: number;
+        };
+        Relationships: [];
+      };
       personal_email_requests: {
         Row: {
           email: string;
@@ -1245,11 +1267,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      staff_alerts: {
+        Row: {
+          created_at: string;
+          dedupe_key: string | null;
+          id: string;
+          link: string | null;
+          posted_at: string | null;
+          team: string;
+          text_ar: string;
+          text_en: string;
+          urgent: boolean;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          dedupe_key?: string | null;
+          id?: string;
+          link?: string | null;
+          posted_at?: string | null;
+          team: string;
+          text_ar: string;
+          text_en: string;
+          urgent?: boolean;
+        };
+        Update: {
+          created_at?: string;
+          dedupe_key?: string | null;
+          id?: string;
+          link?: string | null;
+          posted_at?: string | null;
+          team?: string;
+          text_ar?: string;
+          text_en?: string;
+          urgent?: boolean;
+        };
+        Relationships: [];
+      };
       telegram_accounts: {
         Row: {
           daily_word: boolean;
           linked_at: string;
+          news: boolean;
           notify: boolean;
+          paper: boolean;
+          reminders: boolean;
           telegram_id: number;
           user_id: string;
           username: string | null;
@@ -1259,7 +1321,10 @@ export type Database = {
         Insert: {
           daily_word?: boolean;
           linked_at?: string;
+          news?: boolean;
           notify?: boolean;
+          paper?: boolean;
+          reminders?: boolean;
           telegram_id: number;
           user_id: string;
           username?: string | null;
@@ -1268,7 +1333,10 @@ export type Database = {
         Update: {
           daily_word?: boolean;
           linked_at?: string;
+          news?: boolean;
           notify?: boolean;
+          paper?: boolean;
+          reminders?: boolean;
           telegram_id?: number;
           user_id?: string;
           username?: string | null;
@@ -1324,6 +1392,7 @@ export type Database = {
         Row: {
           audience: string;
           chat_id: number;
+          invite_link: string | null;
           lang: string;
           registered_at: string;
           registered_by: string | null;
@@ -1334,6 +1403,7 @@ export type Database = {
         Insert: {
           audience?: string;
           chat_id: number;
+          invite_link?: string | null;
           lang?: string;
           registered_at?: string;
           registered_by?: string | null;
@@ -1343,6 +1413,7 @@ export type Database = {
         Update: {
           audience?: string;
           chat_id?: number;
+          invite_link?: string | null;
           lang?: string;
           registered_at?: string;
           registered_by?: string | null;
@@ -1384,6 +1455,28 @@ export type Database = {
           },
         ];
       };
+      telegram_nudges: {
+        Row: {
+          kind: string;
+          ref: string;
+          sent_at: string;
+          telegram_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          kind: string;
+          ref: string;
+          sent_at?: string;
+          telegram_id: number;
+        };
+        Update: {
+          kind?: string;
+          ref?: string;
+          sent_at?: string;
+          telegram_id?: number;
+        };
+        Relationships: [];
+      };
       telegram_posts: {
         Row: {
           chat_id: number;
@@ -1410,6 +1503,42 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "telegram_posts_chat_id_fkey";
+            columns: ["chat_id"];
+            isOneToOne: false;
+            referencedRelation: "telegram_groups";
+            referencedColumns: ["chat_id"];
+          },
+        ];
+      };
+      telegram_titles: {
+        Row: {
+          admin: boolean;
+          chat_id: number;
+          ended_at: string | null;
+          set_at: string;
+          telegram_id: number;
+          title: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          admin?: boolean;
+          chat_id: number;
+          ended_at?: string | null;
+          set_at?: string;
+          telegram_id: number;
+          title: string;
+        };
+        Update: {
+          admin?: boolean;
+          chat_id?: number;
+          ended_at?: string | null;
+          set_at?: string;
+          telegram_id?: number;
+          title?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "telegram_titles_chat_id_fkey";
             columns: ["chat_id"];
             isOneToOne: false;
             referencedRelation: "telegram_groups";
@@ -1516,6 +1645,20 @@ export type Database = {
           last_name_ar: string;
           last_name_en: string;
           legal_name_locked_at: string;
+        }[];
+      };
+      my_notices: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          linked: boolean;
+          news_email: boolean;
+          news_tg: boolean;
+          notices_tg: boolean;
+          paper_email: boolean;
+          paper_tg: boolean;
+          reminders_email: boolean;
+          reminders_tg: boolean;
+          word_tg: boolean;
         }[];
       };
       my_personal_email: {
@@ -1643,6 +1786,10 @@ export type Database = {
         Returns: string;
       };
       send_announcement: { Args: { id: string }; Returns: boolean };
+      set_my_notice: {
+        Args: { channel: string; topic: string; turn_on: boolean };
+        Returns: undefined;
+      };
       set_my_topics: {
         Args: { news: boolean; paper: boolean };
         Returns: undefined;
@@ -1690,6 +1837,24 @@ export type Database = {
         Returns: string;
       };
       telegram_is_staff: { Args: { telegram_id: number }; Returns: boolean };
+      telegram_join_links: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          audience: string;
+          invite_link: string;
+          linked: boolean;
+          title: string;
+        }[];
+      };
+      telegram_join_links_for: {
+        Args: { member: string };
+        Returns: {
+          audience: string;
+          invite_link: string;
+          linked: boolean;
+          title: string;
+        }[];
+      };
       telegram_link_account: {
         Args: { telegram_id: number; user_id: string; username?: string };
         Returns: undefined;
@@ -1703,11 +1868,47 @@ export type Database = {
         Args: { chat_id: number; code: string; title?: string };
         Returns: boolean;
       };
+      telegram_role_titles: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          council: boolean;
+          officer: boolean;
+          telegram_id: number;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
+      telegram_role_todos: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          assignment_id: string;
+          kind: string;
+          locale: string;
+          role_ar: string;
+          role_en: string;
+          telegram_id: number;
+        }[];
+      };
       telegram_rsvp: {
         Args: { event_id: string; telegram_id: number };
         Returns: string;
       };
       telegram_staff_brief: { Args: { at?: string }; Returns: Json };
+      telegram_tickets_soon: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          event_id: string;
+          locale: string;
+          slug: string;
+          starts_at: string;
+          telegram_id: number;
+          ticket_code: string;
+          title_ar: string;
+          title_en: string;
+          venue_ar: string;
+          venue_en: string;
+        }[];
+      };
       telegram_whoami: { Args: { telegram_id: number }; Returns: Json };
     };
     Enums: {

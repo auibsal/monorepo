@@ -24,9 +24,9 @@ import { AdminHeading } from "./kit";
 import { SecondOfficer } from "./second-officer";
 import { RecentActivity } from "./system/activity";
 import { AdvisorFindings } from "./system/advisors";
+import { StaffAlerts } from "./system/alerts";
 import { EmailDelivery } from "./system/email";
 import { NotionWorkspace } from "./system/notion";
-import { TelegramBot } from "./system/telegram";
 
 interface Overview {
   campaigns?: {
@@ -402,6 +402,9 @@ export const AdminOverview = () => {
           )}
         </DiwanSection>
       ) : null}
+      <DiwanSection id="alerts" title={t("alerts.title")}>
+        <StaffAlerts />
+      </DiwanSection>
       {can("audit.read") ? (
         <DiwanSection id="activity" title={t("activity")}>
           <RecentActivity />
@@ -417,7 +420,12 @@ export const AdminOverview = () => {
         <DiwanSection id="connected" title={t("connected")}>
           <p className="type-body">{t("connectedLede")}</p>
           <NotionWorkspace />
-          <TelegramBot />
+          <p className="type-body">
+            {t("hudhudMoved")}{" "}
+            <Link className="link" href="/media/channels">
+              {t("hudhudOpen")}
+            </Link>
+          </p>
           <EmailDelivery />
           <AdvisorFindings />
         </DiwanSection>

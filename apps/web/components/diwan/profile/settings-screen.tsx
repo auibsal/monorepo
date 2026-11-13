@@ -10,9 +10,8 @@ import { DiwanPage, DiwanSection, RowList } from "../page";
 import { AccountLanguage } from "./account-language";
 import { DeleteAccount } from "./delete-account";
 import { DownloadData } from "./download-data";
-import { EmailNotices } from "./email-notices";
 import { EsignSettings } from "./esign";
-import { MailTopics } from "./mail-topics";
+import { NoticeGrid } from "./notice-grid";
 import { Passkeys } from "./passkeys";
 import { ChangePassword } from "./password";
 import { PersonalEmail } from "./personal-email";
@@ -30,8 +29,7 @@ export const NoticesScreen = () => {
     <DiwanPage lede={t("noticesLede")} narrow title={t("notices")}>
       <DiwanSection id="email" title={t("noticesEmail")}>
         <AccountLanguage />
-        <MailTopics />
-        <EmailNotices />
+        <NoticeGrid />
       </DiwanSection>
       <PhoneNotifications />
       <TelegramLink />

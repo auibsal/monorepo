@@ -5,6 +5,7 @@ import { type Copy, copy, type Lang } from "../copy";
 import { db, visibleEvents, whoami } from "../db";
 import { pick, when } from "../format";
 import { accountPage, connectPage, wordPage } from "../links";
+import { joinLinks } from "../titles";
 import { admitPending } from "./group/joins";
 
 /**
@@ -46,7 +47,7 @@ export const redeemLink = async (ctx: BotContext, payload: string) => {
   await ctx.reply(
     ctx.t.linked(accountName(ctx, me?.name_en ?? "", me?.name_ar ?? null)),
     {
-      reply_markup: menu(ctx),
+      reply_markup: await addJoinButtons(menu(ctx), ctx.t, ctx.from.id),
     }
   );
   // Waiting at a group's door because they weren't linked? Let them in.
@@ -67,6 +68,28 @@ const menuFor = (t: Copy, lang: Lang) =>
 export const menu = (ctx: BotContext) => menuFor(ctx.t, ctx.lang);
 
 /**
+ * The groups this linked account may join (the members' group for a
+ * member, the Diwan group for a role holder), as buttons to their
+ * join-request links: Hudhud lets them in at once.
+ */
+const addJoinButtons = async (
+  keyboard: InlineKeyboard,
+  t: Copy,
+  telegramId: number
+) => {
+  const links = await joinLinks(telegramId).catch(() => []);
+  for (const link of links) {
+    keyboard
+      .row()
+      .url(
+        link.audience === "staff" ? t.buttons.joinStaff : t.buttons.joinMembers,
+        link.invite_link
+      );
+  }
+  return keyboard;
+};
+
+/**
  * After a member links Telegram from the Diwan (Telegram's login): the same
  * greeting as a redeemed code, and anyone waiting at a group's door is let
  * in. The login's bot_access scope lets the bot write first.
@@ -80,7 +103,7 @@ export const greetLinked = async (api: Api, telegramId: number) => {
   const name = escapeHtml(pick(me.locale, me.name_en, me.name_ar));
   await api
     .sendMessage(telegramId, t.linked(name), {
-      reply_markup: menuFor(t, me.locale),
+      reply_markup: await addJoinButtons(menuFor(t, me.locale), t, telegramId),
     })
     .catch(() => undefined);
   await admitPending(api, telegramId);
@@ -109,19 +132,37 @@ const meView = async (ctx: BotContext) => {
         )
       : [ctx.t.noPlaces]),
   ];
+  // The same switches as Notices in Your account (one notices model).
+  const { data: prefs } = await db()
+    .schema("core")
+    .from("telegram_accounts")
+    .select("paper, news, reminders")
+    .eq("telegram_id", ctx.from.id)
+    .maybeSingle();
+  const b = ctx.t.buttons;
+  const toggle = (on: boolean, yes: string, no: string, key: string) =>
+    [on ? yes : no, `pref:${key}:${on ? "off" : "on"}`] as const;
   const keyboard = new InlineKeyboard()
-    .text(
-      me.notify ? ctx.t.buttons.notifyOn : ctx.t.buttons.notifyOff,
-      me.notify ? "notify:off" : "notify:on"
-    )
+    .text(...toggle(me.notify, b.notifyOn, b.notifyOff, "notify"))
     .row()
     .text(
-      me.daily_word ? ctx.t.buttons.wordOn : ctx.t.buttons.wordOff,
-      me.daily_word ? "word:off" : "word:on"
+      ...toggle(
+        Boolean(prefs?.reminders),
+        b.remindersOn,
+        b.remindersOff,
+        "reminders"
+      )
     )
+    .row()
+    .text(...toggle(Boolean(prefs?.news), b.newsOn, b.newsOff, "news"))
+    .row()
+    .text(...toggle(Boolean(prefs?.paper), b.paperOn, b.paperOff, "paper"))
+    .row()
+    .text(...toggle(me.daily_word, b.wordOn, b.wordOff, "daily_word"))
     .row()
     .url(ctx.t.buttons.membership, accountPage(ctx.lang))
     .text(ctx.t.buttons.unlink, "unlink");
+  await addJoinButtons(keyboard, ctx.t, ctx.from.id);
   return { keyboard, text: lines.join("\n") };
 };
 
@@ -146,29 +187,37 @@ dm.command("link", async (ctx) => {
   );
 });
 
-dm.callbackQuery(/^notify:(on|off)$/u, async (ctx) => {
-  const on = ctx.match[1] === "on";
-  await db()
-    .schema("core")
-    .from("telegram_accounts")
-    .update({ notify: on })
-    .eq("telegram_id", ctx.from.id);
-  await ctx.answerCallbackQuery(on ? ctx.t.notifyOn : ctx.t.notifyOff);
-  const view = await meView(ctx);
-  await ctx.editMessageText(view.text, { reply_markup: view.keyboard });
-});
-
-dm.callbackQuery(/^word:(on|off)$/u, async (ctx) => {
-  const on = ctx.match[1] === "on";
-  await db()
-    .schema("core")
-    .from("telegram_accounts")
-    .update({ daily_word: on })
-    .eq("telegram_id", ctx.from.id);
-  await ctx.answerCallbackQuery(on ? ctx.t.wordOn : ctx.t.wordOff);
-  const view = await meView(ctx);
-  await ctx.editMessageText(view.text, { reply_markup: view.keyboard });
-});
+// One switch on the same settings as Notices in Your account.
+dm.callbackQuery(
+  /^pref:(notify|reminders|news|paper|daily_word):(on|off)$/u,
+  async (ctx) => {
+    const column = ctx.match[1] as
+      | "daily_word"
+      | "news"
+      | "notify"
+      | "paper"
+      | "reminders";
+    const on = ctx.match[2] === "on";
+    const change: Partial<
+      Record<"daily_word" | "news" | "notify" | "paper" | "reminders", boolean>
+    > = { [column]: on };
+    await db()
+      .schema("core")
+      .from("telegram_accounts")
+      .update(change)
+      .eq("telegram_id", ctx.from.id);
+    const said: Record<typeof column, string> = {
+      daily_word: on ? ctx.t.wordOn : ctx.t.wordOff,
+      news: ctx.t.prefSaved,
+      notify: on ? ctx.t.notifyOn : ctx.t.notifyOff,
+      paper: ctx.t.prefSaved,
+      reminders: ctx.t.prefSaved,
+    };
+    await ctx.answerCallbackQuery(said[column]);
+    const view = await meView(ctx);
+    await ctx.editMessageText(view.text, { reply_markup: view.keyboard });
+  }
+);
 
 dm.callbackQuery("unlink", async (ctx) => {
   await ctx.account();

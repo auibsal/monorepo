@@ -56,12 +56,12 @@ media do.
     section per Council seat (decisions.md, The site; `adminSections` in
     `lib/rbac`; `DiwanNav` and `SectionTabs` in `admin-shell.tsx`): the
     Desk (`/diwan`: what needs you, quick actions, Waiting, what happened,
-    the Connected panel for Notion, Hudhud and email); the Council
+    the Connected panel for Notion and email); the Council
     (`/diwan/council`: meetings and their resolutions, requests to Student
     Life, elections, concerns, motions, disclosures, the Library); Qirtas
     (the Newsroom, one page per section, with submissions, Editions,
     contributors, the Prize, Qalam and certificates); Media
-    (`/diwan/media`: Next Stop's episodes and reels, Hudhud's channels at
+    (`/diwan/media`: Next Stop's episodes and reels, Hudhud and its channels at
     `/diwan/media/channels`, the design system at `/diwan/media/design`); the Company (`/diwan/company`); Events
     (`/diwan/events`, each event at `/diwan/events/<slug>` with its
     check-in at `.../check-in`, event proposals); Partnerships

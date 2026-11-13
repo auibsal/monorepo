@@ -97,6 +97,7 @@ import { formPaths, isFormKey } from "@/lib/data/forms";
 import { log } from "@/lib/observability/log";
 import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
+import { staffAlert } from "./bot/upkeep";
 import { formAnswers } from "./form-answers";
 import { pushToUser } from "./push";
 import { telegramToUser } from "./telegram";
@@ -287,20 +288,39 @@ interface SendOptions {
   /** Footer and headers given whole (the public Sunday Paper list). */
   readonly footer?: NoticeFooterLine[];
   readonly headers?: Record<string, string>;
+  /**
+   * A reminder (one notices model): by Hudhud in place of the email when
+   * the member keeps Hudhud's reminders on, else by email.
+   */
+  readonly reminder?: boolean;
   readonly sticker?: Sticker;
 }
 
 const send = async (
   to: Recipient,
   built: Built,
-  { category = "service", footer, headers, sticker }: SendOptions = {}
+  { category = "service", footer, headers, reminder, sticker }: SendOptions = {}
 ) => {
   const run = current.getStore();
   const row = run?.row;
+  if (
+    reminder &&
+    run &&
+    to.userId &&
+    (await telegramToUser(
+      run.admin,
+      to.userId,
+      pushNotice(built, to.lang, row),
+      sticker,
+      "reminders"
+    ))
+  ) {
+    return;
+  }
   // Optional email turned off: Hudhud still brings the reminder, if they
   // keep notices on in Telegram (its own setting, /me).
   if (category === "optional" && to.optional === false) {
-    if (run && to.userId) {
+    if (run && to.userId && !reminder) {
       await telegramToUser(
         run.admin,
         to.userId,
@@ -343,11 +363,14 @@ const send = async (
     to: to.email,
   });
   if (run && to.userId) {
-    // Neither throws: email is the record.
+    // Neither throws: email is the record. A reminder that came this far
+    // went by email because Hudhud's reminders are off: no copy there.
     const notice = pushNotice(built, to.lang, row);
     await Promise.all([
       pushToUser(run.admin, to.userId, notice),
-      telegramToUser(run.admin, to.userId, notice, sticker),
+      reminder
+        ? Promise.resolve(false)
+        : telegramToUser(run.admin, to.userId, notice, sticker),
     ]);
   }
 };
@@ -1145,6 +1168,7 @@ const handlers: Record<string, Handler> = {
     }
     await send(to, eventReminder(to.lang, event, appUrl(), Boolean(booking)), {
       category: "service",
+      reminder: true,
     });
   },
   "events.rsvp_confirmed": eventNotice(rsvpConfirmed),
@@ -1167,7 +1191,7 @@ const handlers: Record<string, Handler> = {
           { ...shift, role_ar: shift.role_ar ?? "", role_en: shift.role_en },
           appUrl()
         ),
-        { category: "optional" }
+        { category: "optional", reminder: true }
       );
     }
   },
@@ -1776,6 +1800,16 @@ const handlers: Record<string, Handler> = {
         send(a, cronFailed(a.lang, jobs, day), { category: "officer" })
       )
     );
+    // And the Council's topic in the Diwan group, at once (staff alerts).
+    const n = String(jobs.length);
+    await staffAlert({
+      key: `cron:${day}`,
+      link: `${appUrl()}/diwan`,
+      team: "council",
+      text_ar: `تعثّرت ${n} من المهام المجدولة يوم ${day}. التفاصيل في بريد المسؤولين عن الإعدادات.`,
+      text_en: `${n} scheduled jobs failed on ${day}. The details went by email to the settings managers.`,
+      urgent: true,
+    }).catch(() => undefined);
   },
   "qirtas.agreement_reminder": async (admin, payload) => {
     const [to, work] = await Promise.all([
@@ -1783,7 +1817,9 @@ const handlers: Record<string, Handler> = {
       submissionTitle(admin, payload.submission_id),
     ]);
     if (to && work) {
-      await send(to, agreementReminder(to.lang, work, appUrl()));
+      await send(to, agreementReminder(to.lang, work, appUrl()), {
+        reminder: true,
+      });
     }
   },
   "qirtas.call_opened": async (admin, payload) => {
@@ -2060,6 +2096,13 @@ const handlers: Record<string, Handler> = {
     if (waiting.length > 0) {
       throw new BroadcastPending(waiting.join(" "));
     }
+    // Out by email: Hudhud brings it to members' chats (one notices model).
+    await admin
+      .schema("content")
+      .from("sunday_paper_drafts")
+      .update({ sent_at: new Date().toISOString() })
+      .eq("month", month)
+      .is("sent_at", null);
   },
   // The test (decisions.md, Channels and email): the issue in both languages, to the
   // Editor-in-Chief, before the Managing Editor sends it.

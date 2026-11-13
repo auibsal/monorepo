@@ -66,4 +66,4 @@ Vercel (Production). The steps, for a new domain or a move:
    DNS only.
 
 ## Telegram
-- Hudhud stays an admin in both groups with **Add New Admins off**.
+- Hudhud is an admin in both groups with every right but Remain Anonymous, **Add New Admins included**: it makes the officers admins (`docs/platform/telegram.md`).
