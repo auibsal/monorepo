@@ -96,6 +96,19 @@ export const partsFrom = (
   return parts;
 };
 
+/**
+ * The parts actually on record in one language (never the parts
+ * `partsFrom` suggests from an old one-piece name): the account can't
+ * change these, so a form shows them read-only and never sends them.
+ */
+export const storedParts = (
+  profile: ProfileNames | null | undefined,
+  language: NameLanguage
+): NamePart[] =>
+  nameParts.filter(
+    (part) => (profile?.[nameColumn(part, language)] ?? "").trim() !== ""
+  );
+
 /** The legal name is complete in both languages. */
 export const hasFourPartNames = (profile: ProfileNames | null | undefined) =>
   (["en", "ar"] as const).every((language) =>

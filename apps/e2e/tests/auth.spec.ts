@@ -194,3 +194,41 @@ test("a member with a name from before the four parts is asked for them at sign-
   await page.goto(`${urls.web}/account/card`);
   await expect(page.getByText("Tess Test").first()).toBeVisible();
 });
+
+test("a part already on record is shown read-only, and the rest can be filled", async ({
+  page,
+}) => {
+  const db = admin();
+  const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
+  const id = users.users.find((u) => u.email === member.email)?.id ?? "";
+  // One English part on record from before, the rest missing; Arabic whole.
+  await db
+    .schema("core")
+    .from("profiles")
+    .update({
+      father_name_ar: "تجريبي",
+      father_name_en: null,
+      first_name_ar: "اختبار",
+      first_name_en: null,
+      grandfather_name_ar: "آلي",
+      grandfather_name_en: "Old",
+      last_name_ar: "تجريبي",
+      last_name_en: null,
+    })
+    .eq("id", id);
+
+  await page.goto(`${urls.web}/sign-in`);
+  await page.getByLabel("Email").fill(member.email);
+  await page.getByLabel("Password").fill(PASSWORD);
+  await page.getByRole("button", { exact: true, name: "Sign in" }).click();
+  await expect(page).toHaveURL(/\/welcome\/1/u);
+  const english = page.getByRole("group", { name: "Your name in English" });
+  const grandfather = english.getByLabel("Grandfather’s name");
+  await expect(grandfather).toHaveValue("Old");
+  await expect(grandfather).toHaveAttribute("readonly", "");
+  await english.getByLabel("Name", { exact: true }).fill("Tess");
+  await english.getByLabel("Father’s name", { exact: true }).fill("Test");
+  await english.getByLabel("Family name").fill("Tester");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
+});

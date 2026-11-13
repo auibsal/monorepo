@@ -87,6 +87,9 @@ export const planSetup = ({
   welcome: member && !setupDone,
 });
 
+/** Per language, the parts on record when setup opened. */
+type Locked = Record<"en" | "ar", nameParts.NamePart[]>;
+
 const namesFrom = (
   profile: Parameters<typeof nameParts.partsFrom>[0]
 ): Names => ({
@@ -142,10 +145,7 @@ export const SetupForm = () => {
   // What was on record when setup opened: those parts are locked (the
   // database refuses to change them from the account), so they show as
   // read-only and are never sent again.
-  const [saved, setSaved] = useState<Names>({
-    ar: nameParts.emptyParts(),
-    en: nameParts.emptyParts(),
-  });
+  const [saved, setSaved] = useState<Locked>({ ar: [], en: [] });
   const mine = useMyMembership();
   const [index, setIndex] = useState(0);
   const [welcome, setWelcome] = useState(false);
@@ -158,7 +158,10 @@ export const SetupForm = () => {
     }
     const current = namesFrom(profile.data);
     setNames(current);
-    setSaved(current);
+    setSaved({
+      ar: nameParts.storedParts(profile.data, "ar"),
+      en: nameParts.storedParts(profile.data, "en"),
+    });
     const { kind } = mine.data;
     const planned = planSetup({
       // Members and guests make the pledges; a partner's people, and
@@ -237,7 +240,7 @@ export const SetupForm = () => {
               nameParts.partsUpdate(
                 answer.names[language],
                 language,
-                lockedParts(saved[language])
+                saved[language]
               )
             )
           )
@@ -422,7 +425,7 @@ const NameStep = ({
   names: Names;
   onChange: (names: Names) => void;
   onSubmit: () => void;
-  saved: Names;
+  saved: Locked;
 }) => {
   const t = useTranslations("diwan.setup");
   const id = useId();
@@ -451,7 +454,7 @@ const NameStep = ({
           <NamePartsFields
             describedBy={`${id}-hint`}
             language={language}
-            locked={lockedParts(saved[language])}
+            locked={saved[language]}
             onChange={(parts) => onChange({ ...names, [language]: parts })}
             parts={names[language]}
           />
@@ -484,10 +487,6 @@ const autoComplete = (language: "en" | "ar", part: nameParts.NamePart) => {
  * grandfather's names required, the family name where there is one; each
  * in its language's letters (the database checks the same).
  */
-/** The parts already on record: the account can't change them. */
-const lockedParts = (parts: nameParts.NameParts) =>
-  nameParts.nameParts.filter((part) => parts[part].trim() !== "");
-
 export const NamePartsFields = ({
   describedBy,
   language,
