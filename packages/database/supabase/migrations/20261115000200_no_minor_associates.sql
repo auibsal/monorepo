@@ -4,8 +4,11 @@
 -- student's, a guest's).
 --
 -- 1. The class: no membership is an Associate's while its holder is under
---    18, however it is set (a staff address added, leaving AUIB, a merge,
---    the Director's class change). The step is refused and says why.
+--    18 (a staff address added, a merge, the Director's class change): the
+--    step is refused and says why. The one exception is a student who
+--    leaves AUIB before 18, who becomes an Associate as every leaver does,
+--    with the under-18 rules still on (they follow the birth date, not the
+--    class).
 -- 2. Sign-up: someone under 18 can't make an account with a faculty or
 --    staff AUIB address, with another address and no invitation, or by an
 --    invitation to Associate or Honorary membership.
@@ -18,7 +21,8 @@ security definer
 set search_path = ''
 as $$
 begin
-  if new.tier = 'associate' and private.is_minor(new.user_id) then
+  -- Leaving AUIB sets left_auib_at in the same step (private.leave_auib).
+  if new.tier = 'associate' and new.left_auib_at is null and private.is_minor(new.user_id) then
     raise exception 'minor_associate' using errcode = '22023',
       hint = 'Associate Members are 18 or older.';
   end if;

@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(7);
+select plan(8);
 
 -- A student under 18.
 select pg_temp.make_user('a1000000-0000-0000-0000-000000000001', '1250101@auib.edu.iq', 'Young');
@@ -109,9 +109,11 @@ select throws_ok(
   '22023', 'minor_associate', 'Under 18, no one is an Associate Member');
 
 select pg_temp.login_as('a1000000-0000-0000-0000-000000000001');
-select throws_ok($$ select core.report_leaving(true) $$, '22023', 'minor_associate',
-  'Leaving AUIB under 18 is refused too, with the reason');
+select is(core.report_leaving(true), 'associate',
+  'The one exception: a student who leaves AUIB under 18 becomes an Associate');
 select pg_temp.logout();
+select ok(private.is_minor('a1000000-0000-0000-0000-000000000001'),
+  'and the under-18 rules stay on');
 
 -- An adult becomes one as before.
 select pg_temp.make_user('a1000000-0000-0000-0000-000000000002', '1250102@auib.edu.iq', 'Adult');

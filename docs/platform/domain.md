@@ -78,9 +78,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   confirmed personal email becomes the sign-in at once; until there is
   one, Today asks for it (`private.sign_in_after_leaving`).
 - **Associate Members are 18 or older** (the owner, Nov 14, 2026):
-  `private.no_minor_associate` refuses the class to anyone under 18
-  however it is set (a staff address added, leaving AUIB, a merge, the
-  Director's class change), and sign-up under 18 takes only an AUIB
+  `private.no_minor_associate` refuses the class to anyone under 18 (a
+  staff address added, a merge, the Director's class change), except a
+  student who leaves AUIB before 18, who becomes an Associate with the
+  under-18 rules still on; sign-up under 18 takes only an AUIB
   student's address or an invitation that isn't to a class
   (`private.refuse_minor_associate_sign_up`).
 - **Addresses and classes** (decisions.md, Members). The sign-in address
