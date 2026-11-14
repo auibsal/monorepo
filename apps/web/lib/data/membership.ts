@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { type Client, unwrap } from "./client";
 
-export const BIO_MAX_WORDS = 50;
+const BIO_MAX_WORDS = 50;
 
 const WHITESPACE = /\s+/u;
 
@@ -47,12 +47,6 @@ export const myStatus = async (
 
 /** Constitution: a Voting Member has this many activities this or last semester. */
 export const VOTING_ACTIVITIES = 2;
-
-export const acceptPledge = async (
-  client: Client,
-  kind: "human_authorship" | "member",
-  version: string
-) => unwrap(await membership(client).rpc("accept_pledge", { kind, version }));
 
 export const calendarToken = async (client: Client) =>
   unwrap(await membership(client).rpc("calendar_token"));

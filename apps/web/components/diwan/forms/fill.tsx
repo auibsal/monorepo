@@ -11,6 +11,7 @@ import { useRouter } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
+import { useIsStaff } from "@/components/account/member-shell";
 import { MySignature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { forms, unwrap } from "@/lib/data";
@@ -20,6 +21,7 @@ import { ErrorLine, Field, SelectInput } from "../admin/kit";
 import { useHumanCheck } from "../auth/human-check";
 import { EmptyLine } from "../states";
 import { FormFieldInput, type FormLabels, useFormLabels } from "./field";
+import { useFormTypes } from "./forms";
 
 type Data = forms.FormData;
 type FormField = forms.FormField;
@@ -438,6 +440,40 @@ const LinkSubject = ({
   ) : null;
 };
 
+/**
+ * An agreement's summary (decisions.md, Documents and forms): three lines
+ * on what the signer agrees to, above the full text. Until it is written,
+ * staff see "Summary to come"; everyone else sees nothing.
+ */
+const AgreementSummary = ({ formKey }: { readonly formKey: forms.FormKey }) => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale();
+  const types = useFormTypes();
+  const staff = useIsStaff();
+  const type = (types.data ?? []).find((row) => row.key === formKey);
+  const summary = (locale === "ar" ? type?.summary_ar : type?.summary_en)
+    ?.split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (summary && summary.length > 0) {
+    return (
+      <section
+        aria-label={t("summary")}
+        className="border-line grid gap-1 border-y py-3"
+      >
+        {summary.map((line) => (
+          <p className="type-body" key={line}>
+            {line}
+          </p>
+        ))}
+      </section>
+    );
+  }
+  return types.isSuccess && staff ? (
+    <p className="type-caption text-text-secondary">{t("summaryToCome")}</p>
+  ) : null;
+};
+
 /** What the page says once sent. */
 const sentLine = (anonymous: boolean, signed: boolean) => {
   if (anonymous) {
@@ -602,6 +638,7 @@ const FormEditor = ({
         })()}
         title={labels.title()}
       >
+        {signed ? <AgreementSummary formKey={formKey} /> : null}
         <LinkSubject formKey={formKey} link={link} />
         <RoleLine roleId={roleId} />
         {event.data ? (

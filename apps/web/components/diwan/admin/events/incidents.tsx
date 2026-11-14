@@ -1,5 +1,8 @@
 "use client";
 
+import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
+import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
@@ -8,6 +11,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
+import { useGrants } from "@/lib/diwan/queries";
+import { hasPermission } from "@/lib/rbac";
 import {
   AddInPlace,
   DateTimeField,
@@ -34,6 +39,7 @@ const NewIncident = ({
   );
   const [what, setWhat] = useState("");
   const [action, setAction] = useState("");
+  const [qalam, setQalam] = useState(false);
   const add = useMutation({
     mutationFn: async () =>
       unwrap(
@@ -44,6 +50,7 @@ const NewIncident = ({
             action_taken: action.trim() || null,
             event_id: eventId,
             happened_at: happenedAt ?? new Date().toISOString(),
+            qalam,
             reported_by: user?.id ?? "",
             what_happened: what.trim(),
           })
@@ -90,9 +97,61 @@ const NewIncident = ({
           />
         )}
       </Field>
+      <div className="flex items-center gap-2">
+        <Checkbox
+          checked={qalam}
+          id="incident-qalam"
+          onCheckedChange={(checked) => setQalam(checked === true)}
+        />
+        <Label className="font-normal" htmlFor="incident-qalam">
+          {t("qalam")}
+        </Label>
+      </div>
       <ErrorLine error={add.error} />
       <SaveButton disabled={!what.trim()} pending={add.isPending} />
     </form>
+  );
+};
+
+/**
+ * Closing a case (decisions.md, Privacy and data): the Director of Events
+ * or the President; the record is kept two years from then, seven for
+ * Qalam. Reopening clears the date.
+ */
+const CloseCase = ({
+  closedAt,
+  eventId,
+  id,
+}: {
+  readonly closedAt: string | null;
+  readonly eventId: string;
+  readonly id: string;
+}) => {
+  const t = useTranslations("diwan.admin.event.incidents");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const close = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .rpc("close_incident", { closed: !closedAt, report: id })
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: key(eventId) }),
+  });
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+      <Button
+        className="px-0"
+        disabled={close.isPending}
+        onClick={() => close.mutate()}
+        type="button"
+        variant="link"
+      >
+        {closedAt ? t("reopen") : t("close")}
+      </Button>
+      <ErrorLine error={close.error} />
+    </div>
   );
 };
 
@@ -105,13 +164,17 @@ export const Incidents = ({ eventId }: { readonly eventId: string }) => {
   const t = useTranslations("diwan.admin.event.incidents");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
+  const grants = useGrants();
+  const closes = hasPermission(grants.data, "events.manage");
   const reports = useQuery({
     queryFn: async () =>
       unwrap(
         await supabase
           .schema("events")
           .from("incident_reports")
-          .select("id, happened_at, what_happened, action_taken")
+          .select(
+            "id, happened_at, what_happened, action_taken, closed_at, qalam"
+          )
           .eq("event_id", eventId)
           .order("happened_at", { ascending: false })
       ),
@@ -136,6 +199,21 @@ export const Incidents = ({ eventId }: { readonly eventId: string }) => {
                 <p className="type-body text-text-secondary whitespace-pre-line">
                   {`${t("action")}: ${r.action_taken}`}
                 </p>
+              ) : null}
+              <p className="type-caption text-text-secondary">
+                {[
+                  r.qalam ? t("qalam") : null,
+                  r.closed_at
+                    ? t("closedOn", {
+                        date: formatLongDate(r.closed_at, locale),
+                      })
+                    : t("open"),
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+              {closes ? (
+                <CloseCase closedAt={r.closed_at} eventId={eventId} id={r.id} />
               ) : null}
             </li>
           ))}

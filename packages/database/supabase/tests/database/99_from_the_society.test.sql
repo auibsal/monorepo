@@ -95,7 +95,7 @@ $$;
 
 -- "From the Society" (decisions.md, Qirtas): Media writes notices and posts
 -- them to the stream with a date and no email; the President's email puts a
--- notice there too. Haven is the pilot issue, with its dates.
+-- notice there too. Haven is the pilot Edition, with its dates.
 
 select plan(13);
 
@@ -141,10 +141,10 @@ select is((select count(*)::integer from core.society_notices(5) where title_en 
   'and it leaves the stream');
 select pg_temp.logout();
 
--- ── Haven, the pilot issue ──────────────────────────────────────────────────
+-- ── Haven, the pilot Edition ──────────────────────────────────────────────────
 
 select is((select number from journal.issues where slug = 'haven'), null,
-  'Haven, the pilot issue, carries no number');
+  'Haven, the pilot Edition, carries no number');
 select ok((select c.closes_at = timestamptz '2026-12-06 23:59:59+03' and c.max_per_person = 2
   from journal.calls c join journal.issues i on i.id = c.issue_id where i.slug = 'haven'),
   'Its call closes Sun Dec 6 at 11:59 p.m. Baghdad time, two entries each');

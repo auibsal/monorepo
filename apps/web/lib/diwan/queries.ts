@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth/provider";
-import { journal, membership, names, unwrap } from "@/lib/data";
+import { journal, membership, unwrap } from "@/lib/data";
 import type { Grant } from "@/lib/rbac";
 
 /**
@@ -89,12 +89,6 @@ export const useProfile = () => {
     };
   });
 };
-
-/**
- * Both names in all four parts (decisions.md): anyone without them
- * is told on Today how Membership adds the missing parts.
- */
-export const hasAllNames = names.hasFourPartNames;
 
 /** The member's active grants (for showing admin modules; RLS still decides). */
 export const useGrants = () => {
@@ -210,53 +204,6 @@ export const useCalendarToken = () => {
   return useUserQuery(queryKeys.calendarToken, () =>
     membership.calendarToken(supabase)
   );
-};
-
-/**
- * Whether the person holds or has held a role (decisions.md, Your account:
- * the Roles and service tab is shown by role).
- */
-export const useHasRoles = () => {
-  const { supabase, user } = useAuth();
-  const roles = useQuery({
-    enabled: Boolean(user),
-    queryFn: async () =>
-      (
-        unwrap(
-          await supabase
-            .schema("access")
-            .from("role_assignments")
-            .select("id")
-            .eq("user_id", user?.id ?? "")
-            .limit(1)
-        ) ?? []
-      ).length > 0,
-    queryKey: ["account", "has-roles", user?.id],
-    staleTime: 5 * 60 * 1000,
-  });
-  return roles.data ?? false;
-};
-
-/** Whether an election or a members' vote is open (notice to voting). */
-export const useElectionOpen = () => {
-  const { supabase, user } = useAuth();
-  const open = useQuery({
-    enabled: Boolean(user),
-    queryFn: async () =>
-      (
-        unwrap(
-          await supabase
-            .schema("governance")
-            .from("elections")
-            .select("id")
-            .in("status", ["notice", "nominations", "review", "voting"])
-            .limit(1)
-        ) ?? []
-      ).length > 0,
-    queryKey: ["account", "election-open"],
-    staleTime: 5 * 60 * 1000,
-  });
-  return open.data ?? false;
 };
 
 /**

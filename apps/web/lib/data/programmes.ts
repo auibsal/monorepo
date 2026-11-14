@@ -12,10 +12,6 @@ export const sixWordsSchema = z.object({
   text: z.string().trim().min(1).max(400),
 });
 
-/** Who sees a page: the writer chooses; private by default. */
-export const PAGE_VISIBILITY = ["private", "profile", "tour"] as const;
-export type PageVisibility = (typeof PAGE_VISIBILITY)[number];
-
 export const removalRequestSchema = z.object({
   content_url: z.url().max(2048).optional().or(z.literal("")),
   details: z.string().trim().min(1).max(4000),

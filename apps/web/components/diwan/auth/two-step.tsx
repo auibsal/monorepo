@@ -29,7 +29,7 @@ const PASSKEY_METHODS = new Set(["passkey", "webauthn", "mfa/webauthn"]);
  * A passkey sign-in meets it on its own.
  */
 /** How long a second step counts in the Diwan before it is asked again. */
-export const SECOND_STEP_HOURS = 12;
+const SECOND_STEP_HOURS = 12;
 
 const SECOND_STEP_METHODS = new Set([
   "totp",

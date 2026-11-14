@@ -15,8 +15,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   from the database. Each role is hired by its hiring seat
   (`access.roles.hiring_owner`), whoever holds the permissions for it; no
   seat is named in code as covering another. While the President is
-  recorded absent, the Vice President acts (there is no Acting President
-  role). The Council page (`/about/council`,
+  recorded absent, the Vice President acts (no separate role covers it). The Council page (`/about/council`,
   `governance.council_seats()`) lists the nine seats by full title, held
   or open, from the roles people hold: nothing is typed by hand. A second
   Council role needs an adopted Council resolution

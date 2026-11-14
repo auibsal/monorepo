@@ -148,7 +148,7 @@
         "feminine": "In the feminine (مديرة)"
       },
       "adultOnly": "Under 18, you sign up with your AUIB address, or through the invitation your school or parent was sent.",
-      "line": "By creating an account, you agree to the <terms>Terms</terms>, the <privacy>Privacy Notice</privacy> and the <conduct>Code of Conduct</conduct>, and to sign electronically."
+      "line": "By creating an account, you agree to the <terms>Terms</terms>, the <privacy>Privacy Notice</privacy>, and the <conduct>Code of Conduct</conduct> and to signing electronically."
     },
     "forgot": {
       "title": "Reset your password",
@@ -1518,7 +1518,12 @@
           "when": "When it happened",
           "what": "What happened",
           "whatHint": "Who was involved and what you saw, as plainly as you can.",
-          "action": "What was done"
+          "action": "What was done",
+          "qalam": "In Qalam",
+          "close": "Close the case",
+          "reopen": "Reopen the case",
+          "open": "Open",
+          "closedOn": "Closed {date}"
         }
       },
       "checkIn": {
@@ -4329,7 +4334,9 @@
       "forRole": "For your role: {role}.",
       "signedBy": "Signed by",
       "countersignedBy": "Countersigned by",
-      "sent": "Sent. Its record number is on its page in Your account, and a “received” email is on its way."
+      "sent": "Sent. Its record number is on its page in Your account, and a “received” email is on its way.",
+      "summary": "In short",
+      "summaryToCome": "Summary to come"
     },
     "qirtas": {
       "pieceTitle": "Your piece",

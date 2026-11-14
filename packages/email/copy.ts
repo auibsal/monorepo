@@ -964,17 +964,6 @@ export const cronFailed = (lang: Lang, jobs: FailedJob[], day: string) =>
     ],
   }));
 
-export const pushTest = (lang: Lang) =>
-  lang === "ar"
-    ? {
-        body: "ستصلك هنا تذكيرات الفعاليات وأخبار قرطاس وقرارات النشر.",
-        title: "الإشعارات تعمل",
-      }
-    : {
-        body: "Event reminders, Qirtas news and decisions will arrive here.",
-        title: "Notifications are on",
-      };
-
 // ── Journeys added in the email audit (decisions.md) ────────────────
 
 /** An event that is canceled, or moved to another day, time or place. */
