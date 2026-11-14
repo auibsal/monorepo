@@ -91,14 +91,14 @@
       "user_exists": "An account already uses this address. Sign in instead.",
       "weak_password": "Use at least 12 characters.",
       "captcha_failed": "We couldn’t confirm you’re a person. Reload the page and try again.",
-      "names_required": "Enter your first and last name in English and in Arabic.",
+      "names_required": "Give your official name in both languages: the four parts, or your given and family names.",
       "email_reserved": "This address is already a member’s personal email, so it can’t start a new account. Sign in with your own address, or use another one.",
       "invalid_code": "That code doesn’t match or has expired. Check the newest email, or ask for a new one.",
-      "auib_only": "Membership is for AUIB addresses. Use your @auib.edu.iq email.",
       "no_account": "No account uses this address. Check it, or create your account if you study at AUIB.",
       "breached_password": "This password has appeared in a data breach elsewhere, so it isn’t safe. Choose another.",
       "reauthentication_needed": "For your security, confirm it’s you first: enter the code we just emailed you.",
-      "terms_required": "To join, answer whether you’re 18 or older (a student under 18 gives a parent’s email) and agree to the Terms of Use and the Privacy Notice."
+      "class_required": "Say whether you’re a student, or faculty, staff or alumni.",
+      "age_required": "Answer whether you’re 18 or older. Under 18, give your month and year of birth and a parent’s email."
     },
     "signIn": {
       "title": "Sign in",
@@ -114,37 +114,41 @@
     },
     "signUp": {
       "title": "Join the Society",
-      "description": "Membership is open to everyone with an AUIB email.",
+      "description": "One account for everyone. An AUIB address makes you a member or an Associate; any other address, a guest.",
       "submit": "Create account",
       "submitting": "Creating account…",
       "checkInbox": "Check your inbox",
       "checkInboxBody": "We sent a confirmation email to {email}. Open its link, or type its code below to finish signing up.",
-      "haveAccount": "Already a member?",
+      "haveAccount": "Already have an account?",
       "signIn": "Sign in",
       "nameEn": "Your name in English",
       "nameAr": "Your name in Arabic",
-      "namesHint": "In both languages and in four parts, as on your ID. Your card and certificates show your first and last.",
-      "haveAnAccount": "Already have an account?",
-      "notAuib": "Not at AUIB?",
-      "guestLink": "Make a guest account to book events",
-      "guestTitle": "A guest account",
-      "guestLede": "Anyone may make a guest account to book a place at the Society’s open events. Guests aren’t members: membership is for AUIB students, with an AUIB email.",
+      "namesHint": "Your official name in both languages, as on your papers: your given, father’s, grandfather’s and family names. If your papers don’t use four names, give your given and family names. It can’t be changed afterward except by the Director of Membership.",
       "resend": "Send the email again",
       "resendIn": "Send the email again in {seconds} s",
       "resent": "Sent. Check your inbox and spam folder.",
-      "student": "I’m an enrolled AUIB student. (Faculty and staff: ask for Associate membership on Join.)",
-      "agree": "I agree to the <terms>Terms of Use</terms> and the <privacy>Privacy Notice</privacy>.",
       "adultQuestion": "Are you 18 or older?",
       "adultYes": "Yes, 18 or older",
       "adultNo": "No, under 18",
-      "adultGuest": "I’m 18 or older.",
-      "minorHint": "Any enrolled AUIB student may join, whatever their age. Your month and year of birth are used only to lift the rules for members under 18 when you turn 18, and are then deleted. Once you confirm your email, we send your parent or guardian a link to give their consent; until they do, your account is limited.",
+      "minorHint": "Your month and year of birth are used only to lift the rules for members under 18 when you turn 18, and are then deleted. Once you confirm your email, we send your parent or guardian a link to give their consent; until they do, your account is limited.",
       "birthMonth": "Month of birth",
       "birthYear": "Year of birth",
       "parentEmail": "Your parent’s or guardian’s email",
       "parentHint": "Used only to send the consent link.",
       "mailing": "Send me the Sunday Paper and Society news and events. You can stop either at any time.",
-      "esign": "I agree to sign electronically: the agreements and consents I sign on the site are signed in the name on my account, and I get a copy of each by email. I can withdraw this in Settings."
+      "emailHint": "Your @{domain} address if you have one.",
+      "classQuestion": "You are",
+      "classStudent": "An AUIB student",
+      "classStaff": "AUIB faculty, staff or alumni",
+      "studied": "I studied at AUIB",
+      "studiedHint": "We send the Director of Membership a request for Associate membership. Until it is answered, your account is a guest’s.",
+      "titleForm": "A title that names you, in Arabic, reads",
+      "titleForms": {
+        "masculine": "In the masculine (مدير)",
+        "feminine": "In the feminine (مديرة)"
+      },
+      "adultOnly": "Under 18, you sign up with your AUIB address, or through the invitation your school or parent was sent.",
+      "line": "By creating an account, you agree to the <terms>Terms</terms>, the <privacy>Privacy Notice</privacy> and the <conduct>Code of Conduct</conduct>, and to sign electronically."
     },
     "forgot": {
       "title": "Reset your password",
@@ -5552,7 +5556,7 @@
       "firstMonth": "Sign up · join the members’ group on Telegram · come to an event with a friend · tell us after your second event what you would like to do here.",
       "cta": "Sign up",
       "ctaHint": "Use your AUIB email address.",
-      "others": "Not at AUIB? Make a guest account yourself to come to events and write for Qirtas; an organization applies to partner.",
+      "others": "Not at AUIB? Sign up with any address to come to events and write for Qirtas as a guest; an organization applies to partner.",
       "othersLink": "Partners",
       "tour": {
         "title": "The Typewriter Tour",
@@ -5591,20 +5595,7 @@
       },
       "associateRequest": {
         "title": "Faculty, staff and alumni",
-        "lede": "Associate membership is for AUIB faculty, staff and alumni. Ask here; the Director of Membership answers by email with a named invitation.",
-        "name": "Your full name",
-        "email": "Your email",
-        "relation": "You are",
-        "relations": {
-          "faculty": "AUIB faculty",
-          "staff": "AUIB staff",
-          "alumni": "An AUIB graduate"
-        },
-        "note": "Anything we should know (optional)",
-        "send": "Request Associate membership",
-        "sent": "Thank you. The Director of Membership will answer by email.",
-        "failed": "That didn’t go through. Try again in a moment.",
-        "rateLimited": "Too many requests from here. Try again later."
+        "lede": "Associate membership is for AUIB faculty, staff and alumni. Sign up with your AUIB address and say which you are; alumni without one sign up with any address and tick “I studied at AUIB”, and the Director of Membership answers."
       }
     },
     "contact": {

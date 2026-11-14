@@ -19,7 +19,6 @@ the secret is unset.
 | --- | --- | --- | --- | --- |
 | `/api/account/delete` | POST | The member, from Settings | Member, signed in within 15 minutes | — |
 | `/api/account/export` | POST | The member (Download your data) | Member | — |
-| `/api/associate-requests` | POST | Anyone, from /join | Turnstile | per address |
 | `/api/calendar/events/<slug>` | GET | Anyone (Add to calendar) | Public | cached |
 | `/api/calendar/feed/<token>` | GET | A member’s calendar app | The feed’s secret token | — |
 | `/api/calendar/sal.ics` | GET | Anyone (the public calendar, `/calendar.ics`) | Public | cached |
