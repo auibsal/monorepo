@@ -136,7 +136,7 @@ export const partsUpdate = (
 export const partsReady = (parts: NameParts, language: NameLanguage) =>
   partsComplete(parts) && partsInScript(parts, language);
 
-// ── One line per language at sign-up (the owner, Nov 14, 2026) ─────────────
+// ── One line per language at sign-up (decisions.md, Members) ───────────────
 
 const LATIN_LETTERS =
   "A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u024F\\u1E00-\\u1EFF";

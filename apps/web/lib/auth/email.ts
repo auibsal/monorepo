@@ -35,7 +35,7 @@ const ACADEMY_NUMBER = /^0\d{7}$/u;
 
 /**
  * Whether an AUIB student number has an unusual shape, for a soft warning
- * at sign-up (decisions.md, Members; the owner, Nov 14, 2026). As far as
+ * at sign-up (decisions.md, Members). As far as
  * the Society knows, AUIB gave two formats, both 7 digits from the year of
  * entry: a name and digits beginning with 1 or 2 and the two-digit year
  * ("name.124…" is 2024, "name.221…" is 2021), and, from 2025, the digits

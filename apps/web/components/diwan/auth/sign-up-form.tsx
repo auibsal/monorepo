@@ -172,7 +172,7 @@ const WrongAddress = ({
 const tidyName = nameParts.tidyEnglishName;
 
 /**
- * One line of four names in one language (the owner, Nov 14, 2026): as on
+ * One line of four names in one language (decisions.md, Members): as on
  * the person's papers, letters only, a name of two words joined with a
  * hyphen in English («أبو» and «عبد» join the next word in Arabic). The
  * line under it reads the four back, or says what is missing.
@@ -243,8 +243,8 @@ export const SignUpForm = (props: SignUpFormProps) => {
   const auib = email.endsWith(`@${AUIB_DOMAIN}`);
   const invited = Boolean(outside && "invitation" in outside.reason);
   // The official name (decisions.md, Members): four names in each
-  // language as on the person's papers, one line each (the owner, Nov 14,
-  // 2026), locked once the account is made.
+  // language as on the person's papers, one line each, locked once the
+  // account is made.
   const [lines, setLines] = useState({ ar: "", en: "" });
   const named =
     nameParts.lineProblem(lines.en, "en") === null &&
@@ -256,14 +256,14 @@ export const SignUpForm = (props: SignUpFormProps) => {
   // Under 18: the month and year of birth (deleted at 18) and a parent's
   // address for the consent link; for an AUIB student, or by an
   // invitation that isn't to a class. Associate Members are 18 or older
-  // (the owner, Nov 14, 2026).
+  // (decisions.md, Members).
   const minorAllowed =
     !outside?.adultsOnly && (isStudentAddress(email) || invited);
   const [adult, setAdult] = useState<Adult>("");
   const [minor, setMinor] = useState({ month: "", parent: "", year: "" });
   const ageAnswered = isAgeAnswered(adult, minorAllowed, minor);
   // The mailing list (decisions.md, Channels and email): ticked for
-  // everyone, who can untick it (the owner, Nov 14, 2026).
+  // everyone, who can untick it.
   const [mailingOn, setMailing] = useState(true);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
