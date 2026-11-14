@@ -171,18 +171,11 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     guestEmail
   );
   await guest.getByLabel("Password").fill(PASSWORD);
-  for (const [name, parts] of [
-    ["Your name in English", ["Guest", "Ali", "Omar", "Writer"]],
-    ["Your name in Arabic", ["ضيف", "علي", "عمر", "كاتب"]],
-  ] as const) {
-    const group = guest.getByRole("group", { name });
-    await group.getByLabel("Name", { exact: true }).fill(parts[0]);
-    await group.getByLabel("Father’s name", { exact: true }).fill(parts[1]);
-    await group.getByLabel("Grandfather’s name").fill(parts[2]);
-    await group.getByLabel(/Family name/u).fill(parts[3]);
-  }
-  await guest.getByRole("radio", { name: /In the masculine/u }).click();
-  await guest.getByRole("radio", { name: "Yes, 18 or older" }).click();
+  await guest
+    .getByLabel("Your four names in English")
+    .fill("Guest Ali Omar Writer");
+  await guest.getByLabel("Your four names in Arabic").fill("ضيف علي عمر كاتب");
+  await guest.getByLabel("I’m 18 or older").check();
   const sentAt = Date.now();
   await guest.getByRole("button", { name: "Create account" }).click();
   await expect(guest.getByText("Check your inbox")).toBeVisible();

@@ -9,7 +9,7 @@ import { apiPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useId, useState } from "react";
+import { type FormEvent, type ReactNode, useId, useState } from "react";
 import { PasswordInput } from "@/components/fields/password-input";
 import {
   AUIB_DOMAIN,
@@ -25,7 +25,6 @@ import { callbackUrl, safeNextPath } from "@/lib/diwan/navigation";
 import { useScreenTop } from "@/lib/diwan/use-screen-top";
 import { isBreachedPassword } from "@/lib/password";
 import { ChoiceInput } from "../admin/choice-input";
-import { NamePartsFields } from "../name-parts-fields";
 import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
 import { ResendConfirmation } from "./resend-confirmation";
@@ -68,6 +67,7 @@ interface MinorForm {
   readonly year: string;
 }
 
+/** "I'm 18 or older" ticked, or "Under 18?" opened. */
 type Adult = "" | "no" | "yes";
 
 /** 18 or older, or under 18 with the month, year and a parent's address. */
@@ -165,6 +165,65 @@ const WrongAddress = ({
   );
 };
 
+/** Capitalized, hyphens closed up: what an English line is saved as. */
+const tidyName = nameParts.tidyEnglishName;
+
+/**
+ * One line of four names in one language (the owner, Nov 14, 2026): as on
+ * the person's papers, letters only, a name of two words joined with a
+ * hyphen in English («أبو» and «عبد» join the next word in Arabic). The
+ * line under it reads the four back, or says what is missing.
+ */
+const NameLine = ({
+  describedBy,
+  language,
+  onChange,
+  value,
+}: {
+  readonly describedBy: string;
+  readonly language: "ar" | "en";
+  readonly onChange: (value: string) => void;
+  readonly value: string;
+}) => {
+  const t = useTranslations("auth.signUp");
+  const id = useId();
+  const problem = value.trim() ? nameParts.lineProblem(value, language) : null;
+  const names = nameParts.namesInLine(value, language);
+  let caption: ReactNode = t(language === "en" ? "nameHintEn" : "nameHintAr");
+  if (problem) {
+    caption = t(`nameProblems.${problem}`, { count: String(names.length) });
+  } else if (names.length > 0) {
+    caption = (
+      <bdi dir={language === "en" ? "ltr" : "rtl"}>
+        {t("nameReads", { names: names.join(" · ") })}
+      </bdi>
+    );
+  }
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={id}>
+        {language === "en" ? t("nameEn") : t("nameAr")}
+      </Label>
+      <Input
+        aria-describedby={`${describedBy} ${id}-read`}
+        aria-invalid={problem ? true : undefined}
+        autoCapitalize={language === "en" ? "words" : "none"}
+        autoComplete="off"
+        dir={language === "en" ? "ltr" : "rtl"}
+        id={id}
+        lang={language}
+        onBlur={() => language === "en" && onChange(tidyName(value))}
+        onChange={(event) => onChange(event.target.value)}
+        spellCheck={false}
+        value={value}
+      />
+      <p className="type-caption" id={`${id}-read`} role="status">
+        {caption}
+      </p>
+    </div>
+  );
+};
+
 export const SignUpForm = (props: SignUpFormProps) => {
   const t = useTranslations("auth");
   const tp = useTranslations("diwan.partnerJoin");
@@ -180,30 +239,26 @@ export const SignUpForm = (props: SignUpFormProps) => {
   const email = values.email.trim().toLowerCase();
   const auib = email.endsWith(`@${AUIB_DOMAIN}`);
   const invited = Boolean(outside && "invitation" in outside.reason);
-  // The official name (decisions.md, Members): four parts in each
-  // language as on the person's papers, locked once the account is made.
-  const [fullNames, setFullNames] = useState<nameParts.FourPartNames>({
-    ar: nameParts.emptyParts(),
-    en: nameParts.emptyParts(),
-  });
+  // The official name (decisions.md, Members): four names in each
+  // language as on the person's papers, one line each (the owner, Nov 14,
+  // 2026), locked once the account is made.
+  const [lines, setLines] = useState({ ar: "", en: "" });
   const named =
-    nameParts.partsReady(fullNames.en, "en") &&
-    nameParts.partsReady(fullNames.ar, "ar");
+    nameParts.lineProblem(lines.en, "en") === null &&
+    nameParts.lineProblem(lines.ar, "ar") === null;
   // An AUIB address says which it is: a student is a Member; faculty,
   // staff or alumni are Associates. Any other address is a Guest, and
   // "I studied at AUIB" asks for Associate membership.
   const [studied, setStudied] = useState(false);
-  const [titleForm, setTitleForm] = useState<"" | "masculine" | "feminine">("");
   // Under 18: the month and year of birth (deleted at 18) and a parent's
   // address for the consent link; for an AUIB student or by invitation.
   const minorAllowed = auib || invited;
   const [adult, setAdult] = useState<Adult>("");
   const [minor, setMinor] = useState({ month: "", parent: "", year: "" });
   const ageAnswered = isAgeAnswered(adult, minorAllowed, minor);
-  // The mailing list (decisions.md, Channels and email): members are on it
-  // unless they untick the box; everyone else only if they tick it.
-  const [mailing, setMailing] = useState<boolean | null>(null);
-  const mailingOn = mailing ?? auib;
+  // The mailing list (decisions.md, Channels and email): ticked for
+  // everyone, who can untick it (the owner, Nov 14, 2026).
+  const [mailingOn, setMailing] = useState(true);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
@@ -233,14 +288,16 @@ export const SignUpForm = (props: SignUpFormProps) => {
       locale: locale === "ar" ? "ar" : "en",
       mailing: mailingOn,
       minor: minorDetails(adult, minorAllowed, minor),
-      names: fullNames,
+      names: {
+        ar: nameParts.partsFromLine(lines.ar, "ar"),
+        en: nameParts.partsFromLine(tidyName(lines.en), "en"),
+      },
       outside: outside?.reason,
       password: values.password,
       // The confirmation link brings the person back to what they started.
       redirectTo: callbackUrl(locale, next),
       signUpKey,
       studiedAtAuib: !(auib || outside) && studied,
-      titleForm: titleForm || undefined,
     });
     setPending(false);
     human.reset();
@@ -350,47 +407,38 @@ export const SignUpForm = (props: SignUpFormProps) => {
             {t("signUp.namesHint")}
           </p>
           {(["en", "ar"] as const).map((lang) => (
-            <fieldset className="grid gap-3" key={lang}>
-              <legend className="mb-2 text-sm font-medium">
-                {lang === "en" ? t("signUp.nameEn") : t("signUp.nameAr")}
-              </legend>
-              <NamePartsFields
-                describedBy={`${id}-names-hint`}
-                language={lang}
-                onChange={(parts) =>
-                  setFullNames((current) => ({ ...current, [lang]: parts }))
-                }
-                parts={fullNames[lang]}
-              />
-            </fieldset>
+            <NameLine
+              describedBy={`${id}-names-hint`}
+              key={lang}
+              language={lang}
+              onChange={(value) =>
+                setLines((current) => ({ ...current, [lang]: value }))
+              }
+              value={lines[lang]}
+            />
           ))}
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-title-form`}>{t("signUp.titleForm")}</Label>
-          <ChoiceInput
-            id={`${id}-title-form`}
-            onChange={(event) =>
-              setTitleForm(event.target.value as "masculine" | "feminine")
-            }
-            value={titleForm}
-          >
-            <option value="masculine">
-              {t("signUp.titleForms.masculine")}
-            </option>
-            <option value="feminine">{t("signUp.titleForms.feminine")}</option>
-          </ChoiceInput>
-        </div>
         <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-adult`}>{t("signUp.adultQuestion")}</Label>
-            <ChoiceInput
-              id={`${id}-adult`}
-              onChange={(event) => setAdult(event.target.value as "no" | "yes")}
-              value={adult}
-            >
-              <option value="yes">{t("signUp.adultYes")}</option>
-              <option value="no">{t("signUp.adultNo")}</option>
-            </ChoiceInput>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <div className="flex items-center gap-3">
+              <Checkbox
+                checked={adult === "yes"}
+                id={`${id}-adult`}
+                onCheckedChange={(v) => setAdult(v === true ? "yes" : "")}
+              />
+              <Label className="leading-normal" htmlFor={`${id}-adult`}>
+                {t("signUp.adultYes")}
+              </Label>
+            </div>
+            {adult === "no" ? null : (
+              <button
+                className="link"
+                onClick={() => setAdult("no")}
+                type="button"
+              >
+                {t("signUp.under18")}
+              </button>
+            )}
           </div>
           {adult === "no" && !minorAllowed ? (
             <p className="type-caption" role="status">
@@ -496,8 +544,7 @@ export const SignUpForm = (props: SignUpFormProps) => {
             !human.ready ||
             !EMAIL_SHAPE.test(email) ||
             !ageAnswered ||
-            !named ||
-            !titleForm
+            !named
           }
           type="submit"
         >

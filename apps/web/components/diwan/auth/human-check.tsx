@@ -7,8 +7,9 @@ import { clientEnv as env } from "@/env.client";
 
 /**
  * Cloudflare Turnstile, which Supabase Auth asks for on sign-up, sign-in
- * and password reset (Authentication → Attack Protection). Most people
- * never see a challenge; the widget only shows one when it is unsure.
+ * and password reset (Authentication → Attack Protection). It is out of
+ * sight ("interaction-only"): the box appears only when Cloudflare is
+ * unsure and needs a click.
  * Without a site key (local development) there is no check and no token.
  *
  * The form's button waits for the check, so the check must never hang
@@ -34,6 +35,7 @@ interface Turnstile {
     element: HTMLElement,
     options: {
       action?: string;
+      appearance?: "always" | "execute" | "interaction-only";
       callback: (token: string) => void;
       "error-callback": (code?: string) => boolean | undefined;
       "expired-callback": () => void;
@@ -111,6 +113,9 @@ export const useHumanCheck = (action: string) => {
         }
         widget.current = turnstile.render(element, {
           action,
+          // Out of sight unless Cloudflare needs a click (the owner, Nov
+          // 14, 2026): almost everyone never sees it.
+          appearance: "interaction-only",
           callback: (value) => {
             setProblem(null);
             setToken(value);

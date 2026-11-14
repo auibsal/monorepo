@@ -135,3 +135,111 @@ export const partsUpdate = (
 /** Complete and in its language's letters: ready to save. */
 export const partsReady = (parts: NameParts, language: NameLanguage) =>
   partsComplete(parts) && partsInScript(parts, language);
+
+// ── One line per language at sign-up (the owner, Nov 14, 2026) ─────────────
+
+const LATIN_LETTERS =
+  "A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u024F\\u1E00-\\u1EFF";
+const LATIN_WORD = new RegExp(
+  `^[${LATIN_LETTERS}]+(?:-[${LATIN_LETTERS}]+)*$`,
+  "u"
+);
+const ARABIC_WORD = /^[ء-غف-يً-ْٰٱ-ۓ]+$/u;
+const AROUND_HYPHEN = /\s*-\s*/gu;
+const SPACES = /\s+/u;
+
+/**
+ * Arabic names of two words that are one name, written with a space
+ * («أبو بكر», «عبد الله»): the first word joins the next. «عبدالله»,
+ * written as one word, is one word already.
+ */
+const ARABIC_JOINS = new Set(["أبو", "ابو", "أبي", "ابي", "عبد"]);
+
+/** "ali abdul - rahman" → "Ali Abdul-Rahman": hyphens closed up, each name capitalized. */
+export const tidyEnglishName = (value: string) =>
+  value
+    .trim()
+    .replace(AROUND_HYPHEN, "-")
+    .split(SPACES)
+    .filter(Boolean)
+    .map((word) =>
+      word
+        .split("-")
+        .map((piece) => {
+          const rest = piece.slice(1);
+          // A name typed in capitals reads as a name: "ALI" → "Ali".
+          const tail = rest === rest.toUpperCase() ? rest.toLowerCase() : rest;
+          return piece.charAt(0).toUpperCase() + tail;
+        })
+        .join("-")
+    )
+    .join(" ");
+
+/** The names in one line, in order, as the site reads them. */
+export const namesInLine = (value: string, language: NameLanguage) => {
+  const words = value
+    .trim()
+    .replace(AROUND_HYPHEN, "-")
+    .split(SPACES)
+    .filter(Boolean);
+  if (language === "en") {
+    return words;
+  }
+  const names: string[] = [];
+  for (let i = 0; i < words.length; i += 1) {
+    const word = words[i] ?? "";
+    const next = words[i + 1];
+    if (ARABIC_JOINS.has(word) && next) {
+      names.push(`${word} ${next}`);
+      i += 1;
+    } else {
+      names.push(word);
+    }
+  }
+  return names;
+};
+
+/**
+ * What is wrong with one line of four names, or null: exactly four names,
+ * letters only (no digits or symbols), an English name capitalized and a
+ * name of two words joined by a hyphen ("Abdul-Rahman").
+ */
+export const lineProblem = (
+  value: string,
+  language: NameLanguage
+): "count" | "letters" | "capitals" | null => {
+  const names = namesInLine(value, language);
+  if (language === "en") {
+    if (!names.every((name) => LATIN_WORD.test(name))) {
+      return "letters";
+    }
+    if (
+      !names.every((name) =>
+        name
+          .split("-")
+          .every((piece) => piece.charAt(0) === piece.charAt(0).toUpperCase())
+      )
+    ) {
+      return "capitals";
+    }
+  } else if (
+    !names.every((name) =>
+      name.split(" ").every((word) => ARABIC_WORD.test(word))
+    )
+  ) {
+    return "letters";
+  }
+  return names.length === nameParts.length ? null : "count";
+};
+
+/** The four parts of a line that has no problem. */
+export const partsFromLine = (
+  value: string,
+  language: NameLanguage
+): NameParts => {
+  const [first = "", father = "", grandfather = "", last = ""] = namesInLine(
+    value,
+    language
+  );
+  return { father, first, grandfather, last };
+};

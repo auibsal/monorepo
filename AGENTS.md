@@ -188,10 +188,13 @@ any schema change. Integration tests run against a local stack with
   characters or more with no composition rules, checked against known
   breaches by k-anonymity (`lib/password.ts`, `/api/password-check`), with
   a Show button (`PasswordInput`). Sign-up records the Terms and Privacy
-  Notice agreement (`core.profiles.agreed_at`, one line) and asks whether
-  the person is 18 or older, with the official name (four parts, English
-  and Arabic, locked at once; the short name is a choice in Settings,
-  `core.profiles.short_name`). The class comes from the address, never asked:
+  Notice agreement (`core.profiles.agreed_at`, one line), one tick for 18
+  or older ("Under 18?" opens the parent's address), and the official
+  name as one line of four names per language, read back as typed
+  (`lineProblem` in `lib/data/names.ts`; locked at once; the short name is
+  a choice in Settings, `core.profiles.short_name`). The mailing box is
+  ticked for everyone; the Arabic form is a to-do on Today; the
+  Cloudflare check shows only when Cloudflare needs a click. The class comes from the address, never asked:
   an AUIB address ending in a number (`1241295@`, `name.1241295@`) is a
   student's, any other AUIB address faculty or staff
   (`private.is_student_address`). The sign-in address changes only
