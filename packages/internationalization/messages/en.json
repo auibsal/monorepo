@@ -136,7 +136,7 @@
       "emailHint": "Your @{domain} address if you have one.",
       "studied": "I studied at AUIB",
       "studiedHint": "We send the Director of Membership a request for Associate membership. Until it is answered, your account is a guest’s.",
-      "adultOnly": "Under 18, you sign up with your AUIB address, or through the invitation your school or parent was sent.",
+      "adultOnly": "Under 18, you sign up with your AUIB student address, or through the invitation your school or parent was sent. Associate Members are 18 or older.",
       "line": "By creating an account, you agree to the <terms>Terms</terms>, the <privacy>Privacy Notice</privacy>, and the <conduct>Code of Conduct</conduct> and to signing electronically.",
       "wrongAddress": "Wrong address? Fix it",
       "wrongAddressFailed": "That didn’t work. Sign up again with the right address; the other one is deleted after seven days if it isn’t confirmed.",
@@ -4992,7 +4992,8 @@
         "no_account": "There is no confirmed account at that address.",
         "merge_pending": "A merge request is already waiting for the Director of Membership.",
         "not_a_student_member": "Only a student Member can say they have left AUIB.",
-        "unknown": "That didn’t work. Try again in a moment."
+        "unknown": "That didn’t work. Try again in a moment.",
+        "minor_associate": "Associate Members are 18 or older, so this can wait until you turn 18. The Director of Membership can help in the meantime."
       },
       "auib": {
         "why": "Signed up with another address? Add your AUIB address: it becomes the address you sign in with, the other one your personal email, and your class follows it (Member for students, Associate Member for faculty and staff).",

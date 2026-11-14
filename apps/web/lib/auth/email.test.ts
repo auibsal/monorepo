@@ -228,6 +228,32 @@ describe("signing up", () => {
       parent_email: "p@example.com",
     });
   });
+
+  const minor = {
+    adult: false,
+    minor: { birthMonth: 3, birthYear: 2011, parentEmail: "p@example.com" },
+  };
+
+  test("a student signs up with their AUIB address", async () => {
+    const { supabase } = client();
+    const result = await signUpWithEmail(supabase, {
+      ...base,
+      ...minor,
+      email: "2560101@auib.edu.iq",
+    });
+    expect(result.ok).toBe(true);
+  });
+
+  test("never with a faculty or staff address: Associates are 18 or older", async () => {
+    const { signUp, supabase } = client();
+    const result = await signUpWithEmail(supabase, {
+      ...base,
+      ...minor,
+      email: "first.last@auib.edu.iq",
+    });
+    expect(result).toEqual({ code: "age_required", ok: false });
+    expect(signUp).not.toHaveBeenCalled();
+  });
 });
 
 describe("unusualStudentNumber", () => {

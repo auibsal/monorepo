@@ -13,6 +13,7 @@ import { type FormEvent, type ReactNode, useId, useState } from "react";
 import { PasswordInput } from "@/components/fields/password-input";
 import {
   AUIB_DOMAIN,
+  isStudentAddress,
   MIN_PASSWORD_LENGTH,
   newSignUpKey,
   signUpWithEmail,
@@ -35,6 +36,8 @@ import { ResendConfirmation } from "./resend-confirmation";
  * fixed, and its role is attached on confirming.
  */
 interface OutsideSignUp {
+  /** An invitation to Associate or Honorary membership: 18 or older only. */
+  readonly adultsOnly?: boolean;
   readonly email?: string | null;
   readonly reason: { invitation: string } | { partnerApplicant: true };
 }
@@ -251,8 +254,11 @@ export const SignUpForm = (props: SignUpFormProps) => {
   // "I studied at AUIB" asks for Associate membership.
   const [studied, setStudied] = useState(false);
   // Under 18: the month and year of birth (deleted at 18) and a parent's
-  // address for the consent link; for an AUIB student or by invitation.
-  const minorAllowed = auib || invited;
+  // address for the consent link; for an AUIB student, or by an
+  // invitation that isn't to a class. Associate Members are 18 or older
+  // (the owner, Nov 14, 2026).
+  const minorAllowed =
+    !outside?.adultsOnly && (isStudentAddress(email) || invited);
   const [adult, setAdult] = useState<Adult>("");
   const [minor, setMinor] = useState({ month: "", parent: "", year: "" });
   const ageAnswered = isAgeAnswered(adult, minorAllowed, minor);

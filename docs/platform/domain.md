@@ -77,6 +77,12 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   no vote and no role (`membership.memberships.left_auib_at`). A
   confirmed personal email becomes the sign-in at once; until there is
   one, Today asks for it (`private.sign_in_after_leaving`).
+- **Associate Members are 18 or older** (the owner, Nov 14, 2026):
+  `private.no_minor_associate` refuses the class to anyone under 18
+  however it is set (a staff address added, leaving AUIB, a merge, the
+  Director's class change), and sign-up under 18 takes only an AUIB
+  student's address or an invitation that isn't to a class
+  (`private.refuse_minor_associate_sign_up`).
 - **Addresses and classes** (decisions.md, Members). The sign-in address
   changes only through `private.move_sign_in`, which tells the old and
   the new address. Someone who signed up with another address, or a

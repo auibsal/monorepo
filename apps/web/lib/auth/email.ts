@@ -74,6 +74,17 @@ export const unusualStudentNumber = (
 };
 
 /**
+ * A student's AUIB address, a number or a name and a number (the database
+ * decides the same, `private.is_student_address`).
+ */
+export const isStudentAddress = (email: string) => {
+  const address = normalizeEmail(email);
+  return (
+    isAuibEmail(address) && STUDENT_LOCAL.test(address.split("@")[0] ?? "")
+  );
+};
+
+/**
  * A random key the sign-up's browser keeps, for "Wrong address?": only its
  * hash goes with the sign-up.
  */
@@ -248,8 +259,10 @@ const signUpRefusal = (
   auib: boolean
 ): EmailAuthErrorCode | null => {
   // Under 18: an AUIB student, or by an invitation (a Qalam student).
+  // Associate Members are 18 or older, so never a staff address.
   const invited = Boolean(details.outside && "invitation" in details.outside);
-  if (!(details.adult || (details.minor && (auib || invited)))) {
+  const student = auib && isStudentAddress(details.email);
+  if (!(details.adult || (details.minor && (student || invited)))) {
     return "age_required";
   }
   return nameComplete(details.names.en) && nameComplete(details.names.ar)
