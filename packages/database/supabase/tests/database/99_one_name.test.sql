@@ -100,29 +100,28 @@ select plan(6);
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b1a1', 'one-a@auib.edu.iq', 'One A');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b1a2', 'one-b@auib.edu.iq', 'One B');
 
-select pg_temp.login_as('00000000-0000-0000-0000-00000000b1a1');
 select lives_ok(
   $$ update core.profiles set first_name_en = 'Omar', father_name_en = 'Ali',
        grandfather_name_en = 'Hassan', last_name_en = 'Kareem'
      where id = '00000000-0000-0000-0000-00000000b1a1' $$,
-  'A member gives their full name');
+  'An official name of four parts');
 
 -- Two people may share a name (decisions.md, Members): no uniqueness rule.
-select pg_temp.login_as('00000000-0000-0000-0000-00000000b1a2');
 select lives_ok(
   $$ update core.profiles set first_name_en = 'Omar', father_name_en = 'Ali',
        grandfather_name_en = 'Hassan', last_name_en = 'Kareem'
      where id = '00000000-0000-0000-0000-00000000b1a2' $$,
   'Another account may have the same four parts');
 
--- A preferred name is the one shown.
+-- The short form: given and father's by default, or given and family names.
+select pg_temp.login_as('00000000-0000-0000-0000-00000000b1a2');
 select lives_ok(
-  $$ update core.profiles set preferred_name_en = 'Omi Kareem'
+  $$ update core.profiles set short_name = 'fourth'
      where id = '00000000-0000-0000-0000-00000000b1a2' $$,
-  'A member gives a preferred name');
+  'A member chooses the given and family names for the short form');
 select is(
   (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000b1a2'),
-  'Omi Kareem', 'and it is the name shown');
+  'Omar Kareem', 'and it is the name shown');
 
 -- The public forms' rate limit (service role only).
 select pg_temp.logout();

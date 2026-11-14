@@ -175,12 +175,14 @@ describe("the email journeys", () => {
     expect(plain.blocks[0]?.paragraphs.join(" ")).not.toContain("two-step");
   });
 
-  test("the role email carries the Notion invitation only when there is one", () => {
+  test("the role email says the Secretary invites them to Notion, with no link", () => {
     const role = { ends_at: null, name_ar: "محرر", name_en: "Editor" };
-    const link = "https://www.notion.so/team/join";
-    const invited = roleAssigned("en", role, false, APP, link);
+    const invited = roleAssigned("en", role, false, APP, true);
     const outside = roleAssigned("en", role, false, APP);
-    expect(invited.blocks[0]?.lists?.[0]?.items[0]?.href).toBe(link);
-    expect(outside.blocks[0]?.lists).toBeUndefined();
+    expect(invited.blocks[0]?.paragraphs.join(" ")).toContain(
+      "The Secretary will invite you"
+    );
+    expect(JSON.stringify(invited)).not.toContain("notion.so");
+    expect(outside.blocks[0]?.paragraphs.join(" ")).not.toContain("Secretary");
   });
 });

@@ -25,7 +25,6 @@ import {
   type Lang,
   membershipRemoved,
   newsletterConfirm,
-  notionInvite,
   parentAccount,
   pieceNote,
   piecePublished,
@@ -65,7 +64,6 @@ import {
 
 const APP = "https://auibsal.org";
 // A placeholder for the workspace's invite link (core.settings).
-const NOTION_INVITE = "https://www.notion.so/team/join";
 const WORK = "The paper and the pen";
 const PIECE = "00000000-0000-4000-8000-000000000001";
 const event: EventInfo = {
@@ -207,7 +205,6 @@ export const samples = {
   MembershipRemoved: (l) => membershipRemoved(l, APP),
   NewsletterConfirm: (l) =>
     newsletterConfirm(l, "https://auibsal.org/newsletter/confirm?token=sample"),
-  NotionInvite: (l) => notionInvite(l, NOTION_INVITE),
   ParentAccount: (l) => parentAccount(l, false, APP),
   ParentAccountQalam: (l) => parentAccount(l, false, APP, true),
   PieceNote: (l) => pieceNote(l, WORK, PIECE, APP),
@@ -241,7 +238,7 @@ export const samples = {
   ReturnedForFormatting: (l) =>
     returnedForFormatting(l, WORK, "Please send it as one document.", APP),
   RevisionResent: (l) => revisionResent(l, WORK, APP),
-  RoleAssigned: (l) => roleAssigned(l, role, true, APP, NOTION_INVITE),
+  RoleAssigned: (l) => roleAssigned(l, role, true, APP, true),
   RoleEnding: (l) => roleEnding(l, role, APP),
   RsvpConfirmed: (l) => rsvpConfirmed(l, event, APP),
   ServiceLetterWritten: (l) =>

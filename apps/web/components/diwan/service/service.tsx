@@ -14,13 +14,16 @@ import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { Applications } from "@/components/account/applications";
 import { SelectInput } from "@/components/diwan/admin/kit";
 import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, recognition, unwrap } from "@/lib/data";
+import { useMyMembership } from "@/lib/diwan/queries";
 import { AddInPlace, ErrorLine } from "../admin/kit";
 import { SignedList } from "../forms/forms";
 import { DiwanPage, DiwanSection } from "../page";
+import { SocietyRecords } from "../society/society";
 import { EmptyLine, SectionSpinner } from "../states";
 import { Handovers, MyRoles } from "./roles";
 import { YearLinks } from "./year";
@@ -86,6 +89,7 @@ export const Service = () => {
 
   return (
     <DiwanPage lede={t("rolesLede")} narrow title={t("rolesTitle")}>
+      <Applications />
       <MyRoles />
       <Handovers />
       <SalCard>
@@ -307,11 +311,13 @@ const LogHours = ({ onDone }: { readonly onDone: () => void }) => {
 
 /**
  * Documents (decisions.md, Your account): everything signed, each with its
- * check link, then the certificates.
+ * check link, then the certificates; for members, the Society's minutes
+ * and resolutions too.
  */
 export const DocumentsPage = () => {
   const t = useTranslations("diwan.service");
   const { supabase } = useAuth();
+  const member = useMyMembership().data?.kind === "member";
   const certificates = useQuery({
     queryFn: () => recognition.myCertificates(supabase),
     queryKey: [...KEY, "certificates"],
@@ -342,6 +348,7 @@ export const DocumentsPage = () => {
           ))}
         </ul>
       </DiwanSection>
+      {member ? <SocietyRecords /> : null}
     </DiwanPage>
   );
 };

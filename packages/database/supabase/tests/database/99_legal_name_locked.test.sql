@@ -103,12 +103,12 @@ update core.profiles set first_name_en = 'Lina', last_name_en = 'Ali', father_na
 where id = '00000000-0000-0000-0000-0000000fc001';
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000fc001');
-select lives_ok($$ update core.profiles set father_name_en = 'Omar' where id = '00000000-0000-0000-0000-0000000fc001' $$,
-  'A member fills a part that is still empty');
+select throws_ok($$ update core.profiles set father_name_en = 'Omar' where id = '00000000-0000-0000-0000-0000000fc001' $$,
+  '42501', 'legal_name_locked', 'A member cannot fill an empty part: only Membership corrects the name');
 select throws_ok($$ update core.profiles set first_name_en = 'Leena' where id = '00000000-0000-0000-0000-0000000fc001' $$,
-  '42501', 'legal_name_locked', 'but cannot change one that is set');
-select lives_ok($$ update core.profiles set preferred_name_en = 'Leena Ali' where id = '00000000-0000-0000-0000-0000000fc001' $$,
-  'The preferred name stays theirs');
+  '42501', 'legal_name_locked', 'nor change one that is set');
+select lives_ok($$ update core.profiles set short_name = 'fourth' where id = '00000000-0000-0000-0000-0000000fc001' $$,
+  'The short form stays theirs to choose');
 select pg_temp.logout();
 
 select * from finish();

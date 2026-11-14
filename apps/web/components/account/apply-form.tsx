@@ -147,7 +147,7 @@ export const ApplyForm = ({
       <DiwanSection id="apply" title={t("title")}>
         <p className="type-body" role="status">
           {t("sent")}{" "}
-          <Link className="link" href="/account/applications">
+          <Link className="link" href="/account/roles">
             {t("yours")}
           </Link>
         </p>

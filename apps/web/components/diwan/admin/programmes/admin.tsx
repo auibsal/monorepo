@@ -31,6 +31,7 @@ import { uploadMedia } from "@/lib/storage";
 import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
+import { CreditedNames } from "../credited-names";
 import { useProgrammeOptions } from "../events/data";
 import { RequestQueue } from "../forms/admin";
 import { ImageField } from "../image-field";
@@ -1884,6 +1885,7 @@ export const MediaAdmin = () => {
           <GuestIdeas />
         </>
       ) : null}
+      <CreditedNames />
       <DiwanSection id="removals" title={t("removalsTitle")}>
         <Removals />
       </DiwanSection>

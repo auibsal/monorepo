@@ -64,7 +64,7 @@ const FormTitle = ({ formKey }: { formKey: string }) => {
  * ("Pitch a program") and one line on what it is for. Only the ones this
  * person may start are listed; the database checks again on sending.
  */
-export const StartLinks = ({ keys }: { readonly keys?: readonly string[] }) => {
+const StartLinks = ({ keys }: { readonly keys?: readonly string[] }) => {
   const td = useTranslations("diwan.forms.defs");
   const types = useFormTypes();
   const mayStart = useMayStart();

@@ -158,7 +158,9 @@ export const SiteHeader = ({
   const way: Way = signedIn
     ? { href: localizedPath(locale, "/account"), label: t("account") }
     : { href: localizedPath(locale, "/sign-in"), label: t("signIn") };
-  // The Diwan sits under Membership, for staff only (decisions.md); a partner's people have their dashboard there instead (Oct 31).
+  // The account menu (decisions.md, The site): Your account, the Diwan
+  // (role holders), the partner's dashboard (a partner's team), Help,
+  // Report a problem and Sign out, the US convention.
   const extras: Way[] = signedIn
     ? [
         ...(known?.diwan
@@ -172,6 +174,9 @@ export const SiteHeader = ({
               },
             ]
           : []),
+        { href: localizedPath(locale, "/help"), label: t("help") },
+        { href: localizedPath(locale, "/help/report"), label: t("report") },
+        { href: localizedPath(locale, "/sign-out"), label: t("signOut") },
       ]
     : [];
 

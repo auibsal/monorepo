@@ -131,7 +131,7 @@ export const TourStation = () => {
               <>
                 <p className="type-caption text-text-secondary">
                   {t("cardHint")}{" "}
-                  <Link className="link" href="/sign-up/guest">
+                  <Link className="link" href="/sign-up">
                     {t("guestLink")}
                   </Link>
                 </p>

@@ -93,7 +93,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(4);
+select plan(7);
 
 select ok(
   (select bool_and(not in_notion) from access.roles
@@ -107,16 +107,31 @@ select ok(
 );
 
 select is(
-  (select value from core.settings where key = 'notion.invite_link'),
-  'null'::jsonb,
-  'The invite link starts unset'
+  (select count(*)::int from core.settings where key in ('notion.invite_link', 'notion.catch_up_sent_at')),
+  0, 'There is no shared invite link: Notion is by named invitation'
 );
 
-select is(
-  (select value from core.settings where key = 'notion.catch_up_sent_at'),
-  'null'::jsonb,
-  'The one-time catch-up starts unsent'
+select pg_temp.make_user('00000000-0000-0000-0000-0000000a0101', 'notion-sec@auib.edu.iq', 'The Secretary');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000a0102', 'notion-officer@auib.edu.iq', 'An Officer');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000a0101', 'general_secretary');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000a0102', 'president');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000a0101', '{"aal":"aal2"}');
+select ok(
+  exists (select 1 from core.notion_to_invite() where user_id = '00000000-0000-0000-0000-0000000a0102'),
+  'The Secretary sees role holders not yet invited, with their AUIB email'
 );
+select lives_ok(
+  $$ select core.mark_notion_invited('00000000-0000-0000-0000-0000000a0102') $$,
+  'and marks one invited'
+);
+select ok(
+  not exists (select 1 from core.notion_to_invite() where user_id = '00000000-0000-0000-0000-0000000a0102'),
+  'who then leaves the list'
+);
+select pg_temp.logout();
+select pg_temp.make_user('00000000-0000-0000-0000-0000000a0103', 'notion-member@auib.edu.iq', 'A Member');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000a0103');
+select throws_ok($$ select * from core.notion_to_invite() $$, '42501', null, 'A member does not see the list');
 
 select * from finish();
 rollback;

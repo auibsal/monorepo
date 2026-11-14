@@ -31,6 +31,7 @@ import {
   useProfile,
 } from "@/lib/diwan/queries";
 import { CalendarFeed } from "../home/calendar-feed";
+import { SixWords } from "../home/six-words";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
@@ -403,6 +404,7 @@ export const EventsBrowser = () => {
         </DialogContent>
       </Dialog>
 
+      <SixWords />
       <CalendarFeed />
     </DiwanPage>
   );

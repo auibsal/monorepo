@@ -2,7 +2,6 @@ import { buttonVariants } from "@repo/brand/components/ui/button";
 import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { AssociateRequestForm } from "@/components/associate-request-form";
 import { PageHeader, RuledList, Section } from "@/components/section";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 
@@ -102,11 +101,15 @@ const JoinPage = async ({ params }: LocaleParams) => {
         </p>
       </Section>
 
-      {/* Faculty, staff and alumni (decisions §2, §12): ask here, at the
-          Tour's station too; the Director of Membership invites. */}
+      {/* One sign-up for everyone (decisions.md, Members): the address
+          says which class; /join explains and links to it. */}
       <Section id="associate" title={t("associateRequest.title")}>
         <p className="type-body max-w-[60ch]">{t("associateRequest.lede")}</p>
-        <AssociateRequestForm />
+        <p>
+          <a className="link" href={localizedPath(locale, "/sign-up")}>
+            {t("cta")}
+          </a>
+        </p>
       </Section>
 
       <Section id="first-month" title={t("firstMonthTitle")}>

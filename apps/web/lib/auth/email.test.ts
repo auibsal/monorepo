@@ -99,13 +99,6 @@ describe("signing up", () => {
     );
     return { signUp, supabase: { auth: { signUp } } as never };
   };
-  const base = {
-    adult: true,
-    agreed: true,
-    locale: "en" as const,
-    password: "a-long-password",
-    redirectTo: "https://x/cb",
-  };
   const names = {
     ar: { father: "كريم", first: "لينا", grandfather: "حسن", last: "التميمي" },
     en: {
@@ -115,16 +108,29 @@ describe("signing up", () => {
       last: "Tamimi",
     },
   };
+  const base = {
+    adult: true,
+    locale: "en" as const,
+    names,
+    password: "a-long-password",
+    redirectTo: "https://x/cb",
+  };
+  const sentData = (signUp: ReturnType<typeof vi.fn>) =>
+    (
+      (signUp.mock.calls[0] as unknown[])[0] as {
+        options: { data: Record<string, unknown> };
+      }
+    ).options.data;
 
-  test("no account without agreeing to the Terms and Privacy Notice, 18 or older", async () => {
+  test("no account without saying whether you're 18 or older", async () => {
     const { signUp, supabase } = client();
     expect(
       await signUpWithEmail(supabase, {
         ...base,
-        agreed: false,
-        email: "s@auib.edu.iq",
+        adult: false,
+        email: "s@gmail.com",
       })
-    ).toEqual({ code: "terms_required", ok: false });
+    ).toEqual({ code: "age_required", ok: false });
     expect(signUp).not.toHaveBeenCalled();
   });
 
@@ -138,80 +144,93 @@ describe("signing up", () => {
     );
     const supabase = { auth: { signUp } } as never;
     expect(
-      await signUpWithEmail(supabase, { ...base, email: "s@auib.edu.iq" })
+      await signUpWithEmail(supabase, {
+        ...base,
+        class: "student",
+        email: "s@auib.edu.iq",
+      })
     ).toEqual({ code: "user_exists", ok: false });
   });
 
-  test("an AUIB address needs only email and password; names come in setup", async () => {
+  test("an AUIB address says whether it is a student's", async () => {
     const { signUp, supabase } = client();
+    expect(
+      await signUpWithEmail(supabase, { ...base, email: "s@auib.edu.iq" })
+    ).toEqual({ code: "class_required", ok: false });
+    expect(signUp).not.toHaveBeenCalled();
     const result = await signUpWithEmail(supabase, {
       ...base,
+      class: "staff",
       email: "s@auib.edu.iq",
+      titleForm: "feminine",
     });
     expect(result.ok).toBe(true);
-    const sent = (signUp.mock.calls[0] as unknown[])[0] as {
-      options: { data: Record<string, unknown> };
-    };
-    expect(sent.options.data).toEqual({
+    expect(sentData(signUp)).toMatchObject({
       agreed_at: expect.any(String),
-      esign: "false",
-      locale: "en",
-      mailing: "false",
-    });
-  });
-
-  test("membership is for AUIB addresses: an outside one needs a reason", async () => {
-    const { signUp, supabase } = client();
-    expect(
-      await signUpWithEmail(supabase, { ...base, email: "s@gmail.com", names })
-    ).toEqual({ code: "auib_only", ok: false });
-    expect(signUp).not.toHaveBeenCalled();
-  });
-
-  test("an invited outside address gives its name in both languages", async () => {
-    const { signUp, supabase } = client();
-    const outside = { invitation: "abc123" };
-    expect(
-      await signUpWithEmail(supabase, {
-        ...base,
-        email: "s@gmail.com",
-        outside,
-      })
-    ).toEqual({ code: "names_required", ok: false });
-    expect(signUp).not.toHaveBeenCalled();
-    const result = await signUpWithEmail(supabase, {
-      ...base,
-      email: "s@gmail.com",
-      names,
-      outside,
-    });
-    expect(result.ok).toBe(true);
-    const sent = (signUp.mock.calls[0] as unknown[])[0] as {
-      options: { data: Record<string, unknown> };
-    };
-    expect(sent.options.data).toMatchObject({
-      father_name_en: "Kareem",
-      first_name_ar: "لينا",
+      class: "staff",
       first_name_en: "Lina",
-      grandfather_name_ar: "حسن",
-      invitation: "abc123",
       last_name_ar: "التميمي",
-      last_name_en: "Tamimi",
+      title_form: "feminine",
     });
+    // The sign-up line is the consent: no separate e-sign box.
+    expect(sentData(signUp)).not.toHaveProperty("esign");
   });
 
-  test("a guest account is marked for the database", async () => {
+  test("any other address signs up as a guest; alumni ask for Associate", async () => {
     const { signUp, supabase } = client();
     const result = await signUpWithEmail(supabase, {
       ...base,
       email: "visitor@gmail.com",
-      names,
-      outside: { guest: true },
+      studiedAtAuib: true,
     });
     expect(result.ok).toBe(true);
-    const sent = (signUp.mock.calls[0] as unknown[])[0] as {
-      options: { data: Record<string, unknown> };
+    expect(sentData(signUp)).toMatchObject({ studied_at_auib: "true" });
+    expect(sentData(signUp)).not.toHaveProperty("class");
+  });
+
+  test("everyone gives the official name: four parts, or given and family", async () => {
+    const { signUp, supabase } = client();
+    const short = {
+      ar: { father: "", first: "لينا", grandfather: "", last: "" },
+      en: { father: "", first: "Lina", grandfather: "", last: "" },
     };
-    expect(sent.options.data).toMatchObject({ guest: "true" });
+    expect(
+      await signUpWithEmail(supabase, {
+        ...base,
+        email: "s@gmail.com",
+        names: short,
+      })
+    ).toEqual({ code: "names_required", ok: false });
+    expect(signUp).not.toHaveBeenCalled();
+    const twoNames = {
+      ar: { ...short.ar, last: "التميمي" },
+      en: { ...short.en, last: "Tamimi" },
+    };
+    expect(
+      (
+        await signUpWithEmail(supabase, {
+          ...base,
+          email: "s@gmail.com",
+          names: twoNames,
+        })
+      ).ok
+    ).toBe(true);
+  });
+
+  test("an invitation uses the same sign-up and is attached", async () => {
+    const { signUp, supabase } = client();
+    const result = await signUpWithEmail(supabase, {
+      ...base,
+      adult: false,
+      email: "student@school.example",
+      minor: { birthMonth: 3, birthYear: 2011, parentEmail: "p@example.com" },
+      outside: { invitation: "abc123" },
+    });
+    expect(result.ok).toBe(true);
+    expect(sentData(signUp)).toMatchObject({
+      adult: "false",
+      invitation: "abc123",
+      parent_email: "p@example.com",
+    });
   });
 });

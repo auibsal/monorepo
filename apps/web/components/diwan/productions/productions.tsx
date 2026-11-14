@@ -2,7 +2,6 @@
 
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Button } from "@repo/brand/components/ui/button";
-import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
@@ -60,7 +59,7 @@ const useProductionsData = () => {
             .schema("programmes")
             .from("production_credits")
             .select(
-              "id, production_id, department, role_en, role_ar, show_publicly, productions(title_en, title_ar, stage)"
+              "id, production_id, department, role_en, role_ar, productions(title_en, title_ar, stage)"
             )
             .eq("user_id", user?.id ?? ""),
           supabase
@@ -114,12 +113,6 @@ export const Productions = () => {
     mutationFn: (id: string) => productions.cancelAudition(supabase, id),
     onSuccess: refresh,
   });
-  const visibility = useMutation({
-    mutationFn: (input: { id: string; visible: boolean }) =>
-      productions.setCreditVisibility(supabase, input.id, input.visible),
-    onSuccess: refresh,
-  });
-
   if (data.isPending) {
     return <SectionSpinner />;
   }
@@ -164,20 +157,6 @@ export const Productions = () => {
                         {t(`stages.${c.productions.stage as Stage}`)}
                       </p>
                     ) : null}
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        checked={c.show_publicly}
-                        disabled={visibility.isPending}
-                        id={`show-${c.id}`}
-                        onCheckedChange={(checked) =>
-                          visibility.mutate({
-                            id: c.id,
-                            visible: checked === true,
-                          })
-                        }
-                      />
-                      <Label htmlFor={`show-${c.id}`}>{t("showName")}</Label>
-                    </div>
                   </div>
                 </SalCard>
               </li>

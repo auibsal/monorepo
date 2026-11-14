@@ -1,18 +1,13 @@
 "use client";
 
-import { Button } from "@repo/brand/components/ui/button";
 import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
-import { type governance, localized, membership, unwrap } from "@/lib/data";
-import { StartLinks } from "../forms/forms";
-import { VotingEligibility } from "../home/voting";
-import { DiwanPage, DiwanSection, RowList } from "../page";
+import { type governance, localized, unwrap } from "@/lib/data";
+import { RowList } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
-import { Elections } from "./elections";
-import { PrizeVote } from "./prize-vote";
 import { SocietySection } from "./section";
 
 type Lang = "en" | "ar";
@@ -138,89 +133,12 @@ const Resolutions = () => {
 };
 
 /**
- * The members directory (decisions.md): members only, and only those
- * who chose to be listed; the Register itself is private. A member joins or
- * leaves it here.
+ * The Society's minutes and resolutions, for members (decisions.md,
+ * Governance), in Your account → Documents.
  */
-const MembersDirectory = () => {
-  const t = useTranslations("diwan.society.book");
-  const locale = useLocale() as Lang;
-  const { supabase, user } = useAuth();
-  const queryClient = useQueryClient();
-  const book = useQuery({
-    queryFn: () => membership.membersDirectory(supabase),
-    queryKey: ["members-directory"],
-  });
-  const listed = book.data?.some((p) => p.user_id === user?.id) ?? false;
-  const toggle = useMutation({
-    mutationFn: () =>
-      membership.setInDirectory(supabase, user?.id ?? "", !listed),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["members-directory"] }),
-  });
-
-  return (
-    <SocietySection
-      id="book"
-      lede={
-        book.data
-          ? t("lede", { count: book.data.length, members: book.data.length })
-          : undefined
-      }
-      title={t("title")}
-    >
-      {book.isPending ? <SectionSpinner /> : null}
-      {book.isError ? <ErrorState onRetry={() => book.refetch()} /> : null}
-      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-        <p className="type-body text-text-secondary">
-          {listed ? t("listed") : t("notListed")}
-        </p>
-        <Button
-          disabled={toggle.isPending || book.isPending}
-          onClick={() => toggle.mutate()}
-          size="sm"
-          type="button"
-          variant="ghost"
-        >
-          {listed ? t("leave") : t("join")}
-        </Button>
-      </div>
-      <ul className="grid gap-x-8 sm:grid-cols-2">
-        {book.data?.map((person) => (
-          <li className="border-line border-t py-3" key={person.user_id}>
-            <p className="type-subheading">
-              {(locale === "ar" && person.full_name_ar) || person.full_name_en}
-            </p>
-          </li>
-        ))}
-      </ul>
-    </SocietySection>
-  );
-};
-
-/**
- * The Elections tab (/account/elections, decisions §6): your vote, the
- * elections open now and standing for office, the Prize vote, ways to
- * take part, the minutes and the members' directory. The Council itself
- * is the public /about/council.
- */
-export const Society = () => {
-  const t = useTranslations("diwan.society");
-  return (
-    <DiwanPage lede={t("lede")} title={t("title")}>
-      <VotingEligibility />
-      <Elections />
-      <PrizeVote />
-      <DiwanSection
-        description={t("takePart.lede")}
-        id="take-part"
-        title={t("takePart.title")}
-      >
-        <StartLinks keys={["concern", "members-meeting-motion"]} />
-      </DiwanSection>
-      <Minutes />
-      <Resolutions />
-      <MembersDirectory />
-    </DiwanPage>
-  );
-};
+export const SocietyRecords = () => (
+  <>
+    <Minutes />
+    <Resolutions />
+  </>
+);

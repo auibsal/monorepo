@@ -786,6 +786,37 @@ export type Database = {
         };
         Relationships: [];
       };
+      daily_updates: {
+        Row: {
+          created_at: string;
+          detail: NonNullable<Json>;
+          id: string;
+          kind: string;
+          ref: string | null;
+          sent_at: string | null;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          detail?: NonNullable<Json>;
+          id?: string;
+          kind: string;
+          ref?: string | null;
+          sent_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          detail?: NonNullable<Json>;
+          id?: string;
+          kind?: string;
+          ref?: string | null;
+          sent_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       email_suppressions: {
         Row: {
           created_at: string;
@@ -863,6 +894,25 @@ export type Database = {
         Update: {
           device?: string;
           first_seen?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      notion_invitations: {
+        Row: {
+          invited_at: string;
+          invited_by: string | null;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          invited_at?: string;
+          invited_by?: string | null;
+          user_id: string;
+        };
+        Update: {
+          invited_at?: string;
+          invited_by?: string | null;
           user_id?: string;
         };
         Relationships: [];
@@ -1006,6 +1056,7 @@ export type Database = {
       };
       profiles: {
         Row: {
+          accepted_versions: Json | null;
           agreed_at: string | null;
           avatar_path: string | null;
           bio: string | null;
@@ -1013,7 +1064,12 @@ export type Database = {
           birth_year: number | null;
           camera_shy: boolean;
           created_at: string;
+          credited_name_ar: string | null;
+          credited_name_en: string | null;
           deletion_requested_at: string | null;
+          email_daily_updates: boolean;
+          email_receipts: boolean;
+          email_signed_copy: boolean;
           esign_agreed_at: string | null;
           esign_asked_at: string | null;
           father_name_ar: string | null;
@@ -1031,14 +1087,12 @@ export type Database = {
           locale: string;
           mail_news: boolean;
           mail_paper: boolean;
-          name_confirmed_at: string | null;
           notify_email: boolean;
           parent_consent_at: string | null;
           personal_email: string | null;
           personal_email_verified_at: string | null;
-          preferred_name_ar: string | null;
-          preferred_name_en: string | null;
           setup_completed_at: string | null;
+          short_name: string;
           signup_name_ar: string | null;
           signup_name_en: string | null;
           title_form: string | null;
@@ -1047,6 +1101,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          accepted_versions?: Json | null;
           agreed_at?: string | null;
           avatar_path?: string | null;
           bio?: string | null;
@@ -1054,7 +1109,12 @@ export type Database = {
           birth_year?: number | null;
           camera_shy?: boolean;
           created_at?: string;
+          credited_name_ar?: string | null;
+          credited_name_en?: string | null;
           deletion_requested_at?: string | null;
+          email_daily_updates?: boolean;
+          email_receipts?: boolean;
+          email_signed_copy?: boolean;
           esign_agreed_at?: string | null;
           esign_asked_at?: string | null;
           father_name_ar?: string | null;
@@ -1072,14 +1132,12 @@ export type Database = {
           locale?: string;
           mail_news?: boolean;
           mail_paper?: boolean;
-          name_confirmed_at?: string | null;
           notify_email?: boolean;
           parent_consent_at?: string | null;
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
-          preferred_name_ar?: string | null;
-          preferred_name_en?: string | null;
           setup_completed_at?: string | null;
+          short_name?: string;
           signup_name_ar?: string | null;
           signup_name_en?: string | null;
           title_form?: string | null;
@@ -1087,6 +1145,7 @@ export type Database = {
           verified_at?: string | null;
         };
         Update: {
+          accepted_versions?: Json | null;
           agreed_at?: string | null;
           avatar_path?: string | null;
           bio?: string | null;
@@ -1094,7 +1153,12 @@ export type Database = {
           birth_year?: number | null;
           camera_shy?: boolean;
           created_at?: string;
+          credited_name_ar?: string | null;
+          credited_name_en?: string | null;
           deletion_requested_at?: string | null;
+          email_daily_updates?: boolean;
+          email_receipts?: boolean;
+          email_signed_copy?: boolean;
           esign_agreed_at?: string | null;
           esign_asked_at?: string | null;
           father_name_ar?: string | null;
@@ -1112,14 +1176,12 @@ export type Database = {
           locale?: string;
           mail_news?: boolean;
           mail_paper?: boolean;
-          name_confirmed_at?: string | null;
           notify_email?: boolean;
           parent_consent_at?: string | null;
           personal_email?: string | null;
           personal_email_verified_at?: string | null;
-          preferred_name_ar?: string | null;
-          preferred_name_en?: string | null;
           setup_completed_at?: string | null;
+          short_name?: string;
           signup_name_ar?: string | null;
           signup_name_en?: string | null;
           title_form?: string | null;
@@ -1174,37 +1236,6 @@ export type Database = {
           summary_ar?: string | null;
           summary_en?: string | null;
           updated_at?: string;
-        };
-        Relationships: [];
-      };
-      push_subscriptions: {
-        Row: {
-          auth: string;
-          created_at: string;
-          endpoint: string;
-          id: string;
-          label: string | null;
-          p256dh: string;
-          user_id: string;
-        };
-        ComputedFields: never;
-        Insert: {
-          auth: string;
-          created_at?: string;
-          endpoint: string;
-          id?: string;
-          label?: string | null;
-          p256dh: string;
-          user_id?: string;
-        };
-        Update: {
-          auth?: string;
-          created_at?: string;
-          endpoint?: string;
-          id?: string;
-          label?: string | null;
-          p256dh?: string;
-          user_id?: string;
         };
         Relationships: [];
       };
@@ -1566,10 +1597,6 @@ export type Database = {
         Returns: number;
       };
       confirm_personal_email: { Args: { token: string }; Returns: string };
-      confirm_shown_name: {
-        Args: Record<PropertyKey, never>;
-        Returns: undefined;
-      };
       current_semester: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1608,7 +1635,6 @@ export type Database = {
         }[];
       };
       is_partner_guest: { Args: Record<PropertyKey, never>; Returns: boolean };
-      lock_legal_name: { Args: Record<PropertyKey, never>; Returns: string };
       mailing_recipients: {
         Args: { topic: string };
         Returns: {
@@ -1619,6 +1645,7 @@ export type Database = {
           user_id: string;
         }[];
       };
+      mark_notion_invited: { Args: { member: string }; Returns: undefined };
       my_esign: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1673,8 +1700,12 @@ export type Database = {
       my_private_profile: {
         Args: Record<PropertyKey, never>;
         Returns: {
+          email_daily_updates: boolean;
+          email_receipts: boolean;
+          email_signed_copy: boolean;
           notify_email: boolean;
           personal_email: string;
+          short_name: string;
           title_form: string;
         }[];
       };
@@ -1694,6 +1725,16 @@ export type Database = {
         Returns: {
           news: boolean;
           paper: boolean;
+        }[];
+      };
+      notion_to_invite: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          email: string;
+          name_ar: string;
+          name_en: string;
+          roles: string[];
+          user_id: string;
         }[];
       };
       outbox_health: {
@@ -1773,15 +1814,6 @@ export type Database = {
           link_path?: string;
           title_ar: string;
           title_en: string;
-        };
-        Returns: string;
-      };
-      save_push_subscription: {
-        Args: {
-          auth: string;
-          endpoint: string;
-          label?: string;
-          p256dh: string;
         };
         Returns: string;
       };
@@ -2135,29 +2167,35 @@ export type Database = {
       incident_reports: {
         Row: {
           action_taken: string | null;
+          closed_at: string | null;
           created_at: string;
           event_id: string;
           happened_at: string;
           id: string;
+          qalam: boolean;
           reported_by: string | null;
           what_happened: string;
         };
         ComputedFields: never;
         Insert: {
           action_taken?: string | null;
+          closed_at?: string | null;
           created_at?: string;
           event_id: string;
           happened_at?: string;
           id?: string;
+          qalam?: boolean;
           reported_by?: string | null;
           what_happened: string;
         };
         Update: {
           action_taken?: string | null;
+          closed_at?: string | null;
           created_at?: string;
           event_id?: string;
           happened_at?: string;
           id?: string;
+          qalam?: boolean;
           reported_by?: string | null;
           what_happened?: string;
         };
@@ -2444,6 +2482,10 @@ export type Database = {
           full_name_en: string;
           user_id: string;
         }[];
+      };
+      close_incident: {
+        Args: { closed: boolean; report: string };
+        Returns: undefined;
       };
       confirmed_count: { Args: { event_id: string }; Returns: number };
       event_host: {
@@ -3057,6 +3099,8 @@ export type Database = {
           subject_kind: string | null;
           subject_reads: boolean;
           submit_rule: string;
+          summary_ar: string | null;
+          summary_en: string | null;
           title_ar: string;
           title_en: string;
           version: number;
@@ -3079,6 +3123,8 @@ export type Database = {
           subject_kind?: string | null;
           subject_reads?: boolean;
           submit_rule: string;
+          summary_ar?: string | null;
+          summary_en?: string | null;
           title_ar?: string;
           title_en?: string;
           version?: number;
@@ -3100,6 +3146,8 @@ export type Database = {
           subject_kind?: string | null;
           subject_reads?: boolean;
           submit_rule?: string;
+          summary_ar?: string | null;
+          summary_en?: string | null;
           title_ar?: string;
           title_en?: string;
           version?: number;
@@ -3154,6 +3202,33 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [];
+      };
+      motion_supports: {
+        Row: {
+          created_at: string;
+          submission_id: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          submission_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          submission_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "motion_supports_submission_id_fkey";
+            columns: ["submission_id"];
+            isOneToOne: false;
+            referencedRelation: "form_submissions";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       partner_affiliations: {
         Row: {
@@ -4021,6 +4096,23 @@ export type Database = {
         };
         Returns: string;
       };
+      open_motions: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          believes: string;
+          id: string;
+          mine: boolean;
+          motion_type: string;
+          mover_ar: string;
+          mover_en: string;
+          notes: string;
+          reference: string;
+          resolves: string;
+          submitted_at: string;
+          supporters: number;
+          title: string;
+        }[];
+      };
       open_sealed: {
         Args: { reason: string; submission_id: string };
         Returns: string;
@@ -4201,6 +4293,10 @@ export type Database = {
           seat_ar: string;
           seat_en: string;
         }[];
+      };
+      support_motion: {
+        Args: { submission_id: string; support: boolean };
+        Returns: number;
       };
       turnout: {
         Args: { election_id: string };
@@ -4568,8 +4664,6 @@ export type Database = {
       };
       contributors: {
         Row: {
-          bio_ar: string | null;
-          bio_en: string | null;
           created_at: string;
           id: string;
           is_anonymous: boolean;
@@ -4582,8 +4676,6 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
-          bio_ar?: string | null;
-          bio_en?: string | null;
           created_at?: string;
           id?: string;
           is_anonymous?: boolean;
@@ -4595,8 +4687,6 @@ export type Database = {
           user_id?: string | null;
         };
         Update: {
-          bio_ar?: string | null;
-          bio_en?: string | null;
           created_at?: string;
           id?: string;
           is_anonymous?: boolean;
@@ -5469,33 +5559,6 @@ export type Database = {
           },
         ];
       };
-      saved_pieces: {
-        Row: {
-          piece_id: string;
-          saved_at: string;
-          user_id: string;
-        };
-        ComputedFields: never;
-        Insert: {
-          piece_id: string;
-          saved_at?: string;
-          user_id?: string;
-        };
-        Update: {
-          piece_id?: string;
-          saved_at?: string;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "saved_pieces_piece_id_fkey";
-            columns: ["piece_id"];
-            isOneToOne: false;
-            referencedRelation: "pieces";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       scores: {
         Row: {
           archive_factor: number;
@@ -5828,21 +5891,6 @@ export type Database = {
         Returns: string;
       };
       author_approve: { Args: { piece_id: string }; Returns: string };
-      author_card: {
-        Args: { author_slug: string };
-        Returns: {
-          bio_ar: string;
-          bio_en: string;
-          id: string;
-          is_pen_name: boolean;
-          kind: string;
-          name_ar: string;
-          name_en: string;
-          roles_ar: string[];
-          roles_en: string[];
-          slug: string;
-        }[];
-      };
       byline_for: {
         Args: { pen_name?: string; person: string };
         Returns: string;
@@ -5979,8 +6027,6 @@ export type Database = {
       my_contributors: {
         Args: Record<PropertyKey, never>;
         Returns: {
-          bio_ar: string;
-          bio_en: string;
           id: string;
           is_pen_name: boolean;
           name_ar: string;
@@ -6123,16 +6169,6 @@ export type Database = {
       };
       unpublish_piece: {
         Args: { note: string; piece_id: string };
-        Returns: undefined;
-      };
-      update_my_contributor: {
-        Args: {
-          bio_ar: string;
-          bio_en: string;
-          contributor_id: string;
-          name_ar: string;
-          name_en: string;
-        };
         Returns: undefined;
       };
       withdraw_approval: {
@@ -6508,7 +6544,6 @@ export type Database = {
       memberships: {
         Row: {
           created_at: string;
-          in_directory: boolean;
           member_since: string;
           renewed_at: string | null;
           tier: Database["membership"]["Enums"]["tier"];
@@ -6518,7 +6553,6 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           created_at?: string;
-          in_directory?: boolean;
           member_since?: string;
           renewed_at?: string | null;
           tier?: Database["membership"]["Enums"]["tier"];
@@ -6527,7 +6561,6 @@ export type Database = {
         };
         Update: {
           created_at?: string;
-          in_directory?: boolean;
           member_since?: string;
           renewed_at?: string | null;
           tier?: Database["membership"]["Enums"]["tier"];
@@ -6806,11 +6839,32 @@ export type Database = {
         Args: { approve: boolean; note?: string; request_id: string };
         Returns: undefined;
       };
+      enrollment_mismatches: {
+        Args: { enrolled: string[] };
+        Returns: {
+          issue: string;
+          name_ar: string;
+          name_en: string;
+          tier: Database["membership"]["Enums"]["tier"];
+          user_id: string;
+        }[];
+      };
       forget_invitation_list: {
         Args: { list_source: string };
         Returns: number;
       };
       has_current_pledges: { Args: { uid?: string }; Returns: boolean };
+      incomplete_names: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          created_at: string;
+          missing_ar: boolean;
+          missing_en: boolean;
+          name_ar: string;
+          name_en: string;
+          user_id: string;
+        }[];
+      };
       invitation_list: {
         Args: { list: string };
         Returns: {
@@ -6824,17 +6878,6 @@ export type Database = {
       invitations_waiting: { Args: { list: string }; Returns: Json };
       is_member: { Args: { uid?: string }; Returns: boolean };
       is_voting_member: { Args: { uid?: string }; Returns: boolean };
-      members_directory: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          byline_slug: string;
-          full_name_ar: string;
-          full_name_en: string;
-          member_since: string;
-          tier: Database["membership"]["Enums"]["tier"];
-          user_id: string;
-        }[];
-      };
       my_card: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6920,10 +6963,6 @@ export type Database = {
       reset_calendar_token: {
         Args: Record<PropertyKey, never>;
         Returns: string;
-      };
-      reset_preferred_name: {
-        Args: { member: string; reason: string };
-        Returns: undefined;
       };
       revoke_certificate: {
         Args: { certificate_id: string; reason: string };
@@ -7659,7 +7698,6 @@ export type Database = {
           production_id: string;
           role_ar: string | null;
           role_en: string;
-          show_publicly: boolean;
           sort: number;
           user_id: string | null;
         };
@@ -7673,7 +7711,6 @@ export type Database = {
           production_id: string;
           role_ar?: string | null;
           role_en: string;
-          show_publicly?: boolean;
           sort?: number;
           user_id?: string | null;
         };
@@ -7686,7 +7723,6 @@ export type Database = {
           production_id?: string;
           role_ar?: string | null;
           role_en?: string;
-          show_publicly?: boolean;
           sort?: number;
           user_id?: string | null;
         };
@@ -8223,6 +8259,16 @@ export type Database = {
         Args: { credit: string; episode: string; member: string };
         Returns: string;
       };
+      credited_names: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          credited_ar: string;
+          credited_en: string;
+          name_ar: string;
+          name_en: string;
+          user_id: string;
+        }[];
+      };
       episode_credits: {
         Args: { episode: string };
         Returns: {
@@ -8259,6 +8305,17 @@ export type Database = {
       moderate_six_words: {
         Args: { approve: boolean; entry_id: string };
         Returns: undefined;
+      };
+      my_six_words: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          created_at: string;
+          event_id: string;
+          id: string;
+          language: string;
+          text: string;
+          tour: string;
+        }[];
       };
       my_station_shift: { Args: Record<PropertyKey, never>; Returns: string };
       open_place: {
@@ -8309,16 +8366,6 @@ export type Database = {
           role_en: string;
           role_key: string;
           role_order: number;
-        }[];
-      };
-      profile_six_words: {
-        Args: { author_slug: string };
-        Returns: {
-          created_at: string;
-          id: string;
-          language: string;
-          text: string;
-          tour: string;
         }[];
       };
       public_production_credits: {
@@ -8426,8 +8473,8 @@ export type Database = {
         };
         Returns: string;
       };
-      set_credit_visibility: {
-        Args: { credit_id: string; visible: boolean };
+      set_credited_name: {
+        Args: { member: string; name_ar: string; name_en: string };
         Returns: undefined;
       };
       shift_places: {
@@ -8446,15 +8493,11 @@ export type Database = {
         Returns: undefined;
       };
       sign_up_for_shift: { Args: { shift_id: string }; Returns: undefined };
-      six_words_wall: {
-        Args: { max_results?: number };
+      six_words_counts: {
+        Args: Record<PropertyKey, never>;
         Returns: {
-          author_ar: string;
-          author_en: string;
-          created_at: string;
-          id: string;
-          language: string;
-          text: string;
+          pages: number;
+          writers: number;
         }[];
       };
       station_attach: {

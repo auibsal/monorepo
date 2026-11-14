@@ -293,9 +293,9 @@ const electionPosts = (run: Run, elections: Election[]) =>
                 reply_markup: new InlineKeyboard()
                   .url(
                     label(run.group.lang, (t) => t.buttons.vote),
-                    web(linkLang(run.group), "/account/elections")
+                    web(linkLang(run.group), "/account")
                   )
-                  .url(copy.ar.buttons.arabic, web("ar", "/account/elections")),
+                  .url(copy.ar.buttons.arabic, web("ar", "/account")),
               }
             )
           ),

@@ -19,7 +19,7 @@ Policy P15 and Bylaws B11.3 apply to the platform too: **every account has at le
 
 | Secret | Held by |
 | --- | --- |
-| Supabase secret key, Resend token, cron and webhook secrets, Notion token, Telegram token and secrets, Web Push private key (`VAPID_PRIVATE_KEY`), revalidation secret | The auibsal project in Vercel, Production, marked sensitive; read only by the API routes |
+| Supabase secret key, Resend token, cron and webhook secrets, Notion token, Telegram token and secrets, revalidation secret | The auibsal project in Vercel, Production, marked sensitive; read only by the API routes |
 | Supabase access token and database password | GitHub → Settings → Environments → production (used by the migration workflow) |
 | Backup passphrase | GitHub production environment; also kept in the password manager, since a backup is useless without it |
 

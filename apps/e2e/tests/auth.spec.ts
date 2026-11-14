@@ -6,37 +6,40 @@ import { expectAccessible, latestMail, signInWithPassword } from "./helpers";
 // No button offers a sign-in link by email.
 const LINK = /link/iu;
 
-test("sign up with an AUIB address, confirm by email, finish setup", async ({
+test("one sign-up page: the address, the class, the official name, one line", async ({
   page,
 }) => {
-  const local = `e2e-${Date.now()}`;
-  // One person, one name: each run's new member has a grandfather's name of
-  // their own (letters from the clock).
-  const grandfather = `Hasan${String(Date.now()).replace(/\d/gu, (d) => "abcdefghij"[Number(d)] ?? "")}`;
-  const email = `${local}@auib.edu.iq`;
+  const email = `e2e-${Date.now()}@auib.edu.iq`;
   // A phone's screen: the next screen must start at the top, not in the
   // footer where the button left the page.
   await page.setViewportSize({ height: 640, width: 390 });
   await page.goto(`${urls.web}/sign-up`);
   await expectAccessible(page);
-  // Membership is for AUIB addresses: the field takes what goes before
-  // @auib.edu.iq, and needs only a password beside it.
-  await page.getByLabel("Your AUIB email").fill(local);
-  await page.getByLabel("Password").fill(PASSWORD);
-  await expect(page.getByLabel("Family name")).toHaveCount(0);
-  // Students say they are (decisions §2).
-  await page.getByRole("checkbox", { name: /enrolled AUIB student/u }).check();
-  // Students of any age (decisions.md, Members): asked, not assumed.
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
+  // An AUIB address says which class (decisions.md, Members).
+  await page.getByRole("radio", { name: "An AUIB student" }).click();
+  // The official name in both languages, four parts, on the same page.
+  const english = page.getByRole("group", { name: "Your name in English" });
+  await english.getByLabel("Name", { exact: true }).fill("New");
+  await english.getByLabel("Father’s name").fill("Kareem");
+  await english.getByLabel("Grandfather’s name").fill("Hasan");
+  await english.getByLabel(/Family name/u).fill("Member");
+  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
+  await arabic.getByLabel("Name", { exact: true }).fill("عضو");
+  await arabic.getByLabel("Father’s name").fill("كريم");
+  await arabic.getByLabel("Grandfather’s name").fill("حسن");
+  await arabic.getByLabel(/Family name/u).fill("جديد");
+  await page.getByRole("radio", { name: /In the masculine/u }).click();
   await page.getByRole("radio", { name: "Yes, 18 or older" }).click();
-  await page
-    .getByRole("checkbox", { name: /I agree to the Terms of Use/u })
-    .check();
-  // Scrolled down to the button, as on a phone.
+  // One line by the button; no boxes to agree, no signature.
+  await expect(
+    page.getByText(/By creating an account, you agree/u)
+  ).toBeVisible();
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.getByText("Check your inbox")).toBeVisible();
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
-  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
 
   const mail = await latestMail(email);
   const link = /href="([^"]*\/auth\/confirm\?[^"]+)"/u.exec(mail.HTML)?.[1];
@@ -44,83 +47,22 @@ test("sign up with an AUIB address, confirm by email, finish setup", async ({
   await page.goto((link ?? "").replaceAll("&amp;", "&"));
   await page.getByRole("button", { name: /continue/iu }).click();
 
-  // Three screens at most (the third prompt, §1): the account, then the
-  // names in both languages on one screen, then the Code of Conduct.
-  await expect(page).toHaveURL(/\/welcome\/1(\?|$)/u);
-  await expect(page.getByText("Step 1 of 2")).toBeVisible();
+  // Nothing stands between confirming and the account (decisions.md,
+  // Members): no setup steps, no profile step.
+  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
   await expectAccessible(page);
-  const english = page.getByRole("group", { name: "Your name in English" });
-  await english.getByLabel("Name", { exact: true }).fill("New");
-  await english.getByLabel("Father’s name", { exact: true }).fill("Kareem");
-  await english.getByLabel("Grandfather’s name").fill(grandfather);
-  await english.getByLabel("Family name").fill("Member");
-  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
-  await arabic.getByLabel("Name", { exact: true }).fill("عضو");
-  await arabic.getByLabel("Father’s name", { exact: true }).fill("كريم");
-  await arabic
-    .getByLabel("Grandfather’s name")
-    .fill(
-      `حسن${grandfather.slice(5).replace(/[a-j]/gu, (c) => "ابتثجحخدذر"[c.charCodeAt(0) - 97] ?? "")}`
-    );
-  await arabic.getByLabel("Family name").fill("جديد");
-  await page.getByRole("button", { name: "Continue" }).click();
+});
 
-  // No "keep or change" step: the default name shows (fourth prompt, 3a).
-  await expect(page.getByText("Step 2 of 2")).toBeVisible();
-  await expect(page).toHaveURL(/\/welcome\/2(\?|$)/u);
-  // The Code of Conduct is the only pledge (decisions.md, Members).
-  await page
-    .getByRole("button", { name: "I acknowledge the Code of Conduct" })
-    .click();
-
+test("an address outside AUIB is not asked the class", async ({ page }) => {
+  await page.goto(`${urls.web}/sign-up`);
+  await page.getByLabel("Email").fill("someone@example.com");
   await expect(
-    page.getByRole("heading", { level: 1, name: "Welcome, New" })
-  ).toBeVisible();
-  await expectAccessible(page);
-
-  // No optional details are asked for (decisions.md, Members).
-  await expect(
-    page.getByRole("link", { name: /Tell us more about yourself/u })
+    page.getByRole("radio", { name: "An AUIB student" })
   ).toHaveCount(0);
-});
-
-test("sign-up takes only AUIB addresses", async ({ page }) => {
-  await page.goto(`${urls.web}/sign-up`);
-  const field = page.getByLabel("Your AUIB email");
-  // Only what comes before "@" stays (Nov 7, 2026: whole addresses typed
-  // into the field made accounts like name.123auib.edu.iq@auib.edu.iq).
-  await field.fill("someone@example.com");
-  await field.blur();
-  await expect(field).toHaveValue("someone");
-  await field.fill("maryam.1241295auib.edu.iq");
-  await field.blur();
-  await expect(field).toHaveValue("maryam.1241295");
-  await expect(page.getByText("@auib.edu.iq", { exact: true })).toBeVisible();
-  await expect(page.getByLabel("Family name")).toHaveCount(0);
-});
-
-test("a whole address pasted and submitted at once signs up the right address", async ({
-  page,
-}) => {
-  await page.goto(`${urls.web}/sign-up`);
-  // Pasted, then submitted with Enter: the field is never left (no blur).
-  await page
-    .getByLabel("Your AUIB email")
-    .fill(`paste.${Date.now()}@auib.edu.iq`);
-  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
-  await page.getByRole("checkbox", { name: /enrolled AUIB student/u }).check();
-  // Students of any age (decisions.md, Members): asked, not assumed.
-  await page.getByRole("radio", { name: "Yes, 18 or older" }).click();
-  await page
-    .getByRole("checkbox", { name: /I agree to the Terms of Use/u })
-    .check();
-  await page.getByLabel("Password", { exact: true }).press("Enter");
-  const status = page.getByRole("status").first();
-  await expect(status).toContainText("@auib.edu.iq");
-  await expect(status).not.toContainText("auib.edu.iq@auib.edu.iq");
+  await page.getByLabel("Email").fill("someone@auib.edu.iq");
   await expect(
-    page.getByRole("button", { name: /Send the email again in \d+ s/u })
-  ).toBeDisabled();
+    page.getByRole("radio", { name: "An AUIB student" })
+  ).toBeVisible();
 });
 
 // A6: the site never says whether an address has an account.
@@ -147,50 +89,36 @@ test("an AUIB address signs in by password; no sign-in link is offered", async (
   await expectAccessible(page);
 });
 
-test("a member with a name from before the four parts is asked for them at sign-in", async ({
+test("a name from before the four parts is a to-do on Today, not a block", async ({
   page,
 }) => {
   const db = admin();
   const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
   const id = users.users.find((u) => u.email === member.email)?.id ?? "";
-  // As members kept them until Oct 31, 2026: one whole name per language.
+  const { data: before } = await db
+    .schema("core")
+    .from("profiles")
+    .select("father_name_en, grandfather_name_en")
+    .eq("id", id)
+    .single();
   await db
     .schema("core")
     .from("profiles")
-    .update({
-      father_name_ar: null,
-      father_name_en: null,
-      first_name_ar: null,
-      first_name_en: null,
-      grandfather_name_ar: null,
-      grandfather_name_en: null,
-      last_name_ar: null,
-      last_name_en: null,
-      signup_name_ar: "اختبار تجريبي",
-      signup_name_en: "Tess Tester",
-    })
+    .update({ father_name_en: null, grandfather_name_en: null })
     .eq("id", id);
-
-  await page.goto(`${urls.web}/sign-in`);
-  await page.getByLabel("Email").fill(member.email);
-  await page.getByLabel("Password").fill(PASSWORD);
-  await page.getByRole("button", { exact: true, name: "Sign in" }).click();
-  await expect(page).toHaveURL(/\/welcome\/1/u);
-  // Both languages on one screen; the first and last words are offered
-  // as the first and fourth parts.
-  const english = page.getByRole("group", { name: "Your name in English" });
-  await expect(english.getByLabel("Name", { exact: true })).toHaveValue("Tess");
-  await expect(english.getByLabel("Family name")).toHaveValue("Tester");
-  await english.getByLabel("Father’s name", { exact: true }).fill("Test");
-  await english.getByLabel("Grandfather’s name").fill("Auto");
-  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
-  await expect(arabic.getByLabel("Family name")).toHaveValue("تجريبي");
-  await arabic.getByLabel("Father’s name", { exact: true }).fill("تجريبي");
-  await arabic.getByLabel("Grandfather’s name").fill("آلي");
-  await page.getByRole("button", { name: "Continue" }).click();
-  // The default name (the given and father's names) shows at once, on
-  // the card (its own tab, decisions.md, Your account).
-  await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
-  await page.goto(`${urls.web}/account/card`);
-  await expect(page.getByText("Tess Test").first()).toBeVisible();
+  try {
+    await signInWithPassword(page, member.email);
+    await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
+    await expect(
+      page.getByRole("heading", {
+        name: "Part of your official name is missing",
+      })
+    ).toBeVisible();
+  } finally {
+    await db
+      .schema("core")
+      .from("profiles")
+      .update(before ?? {})
+      .eq("id", id);
+  }
 });

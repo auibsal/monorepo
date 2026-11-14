@@ -27,26 +27,29 @@ media do.
     Components prerenders each page around what a request needs (the
     time through `roughlyNow`, never `new Date()` in a page).
   - `app/[locale]/(account)`: **your account**, the members' pages on the
-    site: `/sign-in`, `/sign-up` (and `/sign-up/guest`), `/auth/*`,
-    `/welcome`, `/get-involved` (public), each form at its place in its
+    site: `/sign-in`, `/sign-up` (one page for everyone, invitations
+    included), `/sign-out`, `/auth/*`, `/get-involved` (public), each form at its place in its
     flow (`formPaths` in `lib/data/forms.ts`: `/about/contact/concern`,
     `/consent/<kind>` …; every old `/forms` address redirects),
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
     members, everything under `/account`, in tabs shown by class and role
     (decisions.md, The site; `useAccountLinks` in
-    `components/account/member-shell.tsx`): Today, Events (`/events`), Work
-    (`/work`: drafts, submissions at `/work/submissions/<id>`, pieces at
-    `/work/<id>`), Applications (`/applications`), Saved (`/saved`), Roles and
-    service (`/roles`, for those who hold or held a role: roles, handovers at
-    `/roles/handover` and `/roles/countersign/<id>`, hours, service letters,
-    a year at `/documents/year/<yyyy>`), Documents (`/documents`: signed
-    copies at `/documents/signed/<id>`, certificates at
-    `/documents/certificates/<ref>`, letters at `/documents/letters/<ref>`),
-    Elections (`/elections`, while one is open; standing for a position at
-    `/elections/<position>`), Card (`/card`) and Settings (`/settings`,
-    `/settings/profile`, `/settings/notifications`, officers'
-    `/settings/disclosures`); guests have Today, Events, Work, Documents and
-    Settings. With
+    `components/account/member-shell.tsx`), six tabs: Today (`/account`:
+    the live card, the to-dos, an open election and motions), Events
+    (`/events`), Work (`/work`: drafts, submissions at
+    `/work/submissions/<id>`, pieces at `/work/<id>`), Roles and service
+    (`/roles`:
+    roles, applications, handovers at `/roles/handover` and
+    `/roles/countersign/<id>`, hours, service letters), Documents
+    (`/documents`: signed copies at `/documents/signed/<id>`, certificates
+    at `/documents/certificates/<ref>`, letters at
+    `/documents/letters/<ref>`, a year at `/documents/year/<yyyy>`, and for
+    members the minutes and resolutions) and Settings (`/settings`,
+    `/settings/notifications`, officers' `/settings/disclosures`); standing
+    for a position is at `/elections/<position>`. Guests have Today,
+    Events, Work, Documents and Settings. Signing out is in the header's
+    account menu. Nothing blocks after sign-in but two-step sign-in; the
+    rest are to-dos on Today. With
     what you sent at `/requests` and `/requests/<id>`. Also `/company/auditions`,
     `/qirtas/submit` (public; the forms at `/qirtas/submit/<type>`, a draft at
     `/qirtas/submit/<type>/<draft>`) and `/qirtas/read/<slug>` (a
@@ -60,7 +63,8 @@ media do.
     (`/diwan/council`: meetings and their resolutions, requests to Student
     Life, elections, concerns, motions, disclosures, the Library); Qirtas
     (the Newsroom, one page per section, with submissions, Editions,
-    contributors, the Prize, Qalam and certificates); Media
+    the Prize, Qalam and certificates; a byline is picked at the piece,
+    from the register or as a pen name); Media
     (`/diwan/media`: Next Stop's episodes and reels, Hudhud and its channels at
     `/diwan/media/channels`, the design system at `/diwan/media/design`); the Company (`/diwan/company`); Events
     (`/diwan/events`, each event at `/diwan/events/<slug>` with its
@@ -184,8 +188,10 @@ any schema change. Integration tests run against a local stack with
   characters or more with no composition rules, checked against known
   breaches by k-anonymity (`lib/password.ts`, `/api/password-check`), with
   a Show button (`PasswordInput`). Sign-up records the Terms and Privacy
-  Notice agreement (`core.profiles.agreed_at`) and asks whether the
-  student is 18 or older; the Code of Conduct is the only pledge. A password change
+  Notice agreement (`core.profiles.agreed_at`, one line) and asks whether
+  the person is 18 or older, with the official name (four parts, English
+  and Arabic, locked at once; the short name is a choice in Settings,
+  `core.profiles.short_name`) and the class question for an AUIB address. A password change
   on an old sign-in asks for an emailed code (secure password change);
   deleting the account needs a sign-in from the last 15 minutes
   (`signedInWithin`) and takes effect 30 days later
@@ -196,9 +202,9 @@ any schema change. Integration tests run against a local stack with
   (`core.known_devices`). "Download your data" is `/api/account/export`,
   shown as a page or saved as JSON. Each September members confirm "I'm
   still here" (`membership.renewed_at`; `private.is_active_member()` is
-  the active count). The Diwan signs a device out
-  after an hour with no use of your account or the Diwan (`IdleSignOut`,
-  NIST SP 800-63B-4's AAL2 inactivity timeout). An AUIB sign-in address is not
+  the active count). A sign-in lasts 30 days (Supabase's session
+  time-box); the Diwan asks for the second step again 12 hours after it
+  was last given (`SECOND_STEP_HOURS` in `components/diwan/auth/two-step.tsx`). An AUIB sign-in address is not
   changed from the account (`private.keep_auib_address`).
 - **One account model (decisions.md, Members).** A class (Member,
   Associate, Honorary, Guest) says whether someone is a member; a role
@@ -228,8 +234,10 @@ any schema change. Integration tests run against a local stack with
   a migration: imports of personal data (such as the spring 2026 Tour,
   `programmes.import_tour`) go from the officer's browser straight to the
   database. The Register is private (the Executive Board and the
-  Director of Membership), with no bulk export; members may opt into a
-  members-only directory (`in_directory`). The site keeps only what it
+  Director of Membership), with no bulk export. Nothing about members is
+  public: no directory, no contributor pages, no wall of names; credits
+  show the name each person chose (`programmes.credited_names()`). The
+  site keeps only what it
   needs: no optional profile details or demographic reports. A member
   under 18 gives the month and year of birth (deleted at 18) and a
   parent's consent by link (`parent-consent`), and nothing shows or names them until

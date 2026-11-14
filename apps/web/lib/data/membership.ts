@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { type Client, unwrap } from "./client";
 
-export const BIO_MAX_WORDS = 50;
+const BIO_MAX_WORDS = 50;
 
 const WHITESPACE = /\s+/u;
 
@@ -47,12 +47,6 @@ export const myStatus = async (
 
 /** Constitution: a Voting Member has this many activities this or last semester. */
 export const VOTING_ACTIVITIES = 2;
-
-export const acceptPledge = async (
-  client: Client,
-  kind: "human_authorship" | "member",
-  version: string
-) => unwrap(await membership(client).rpc("accept_pledge", { kind, version }));
 
 export const calendarToken = async (client: Client) =>
   unwrap(await membership(client).rpc("calendar_token"));
@@ -197,31 +191,6 @@ export interface DirectoryRow {
  * Membership (`members.register`). Raises 42501 without the permission. */
 export const register = async (client: Client) =>
   (unwrap(await membership(client).rpc("register")) ?? []) as DirectoryRow[];
-
-export interface DirectoryEntry {
-  full_name_ar: string | null;
-  full_name_en: string;
-  member_since: string | null;
-  user_id: string;
-}
-
-/** The members-only directory: members who chose to be listed. */
-export const membersDirectory = async (client: Client) =>
-  (unwrap(await membership(client).rpc("members_directory")) ??
-    []) as DirectoryEntry[];
-
-/** Opt in to (or out of) the members-only directory. */
-export const setInDirectory = async (
-  client: Client,
-  userId: string,
-  inDirectory: boolean
-) =>
-  unwrap(
-    await membership(client)
-      .from("memberships")
-      .update({ in_directory: inDirectory })
-      .eq("user_id", userId)
-  );
 
 export const setTier = async (client: Client, userId: string, tier: Tier) =>
   unwrap(

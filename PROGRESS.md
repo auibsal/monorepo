@@ -14,6 +14,61 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the ninth to twelfth site prompts (Nov 14)
+
+All in PR #269.
+
+- [x] **Sign-in and sign-up:** nothing blocks after sign-in but two-step
+  sign-in (the rest are to-dos on Today); one sign-up page for everyone,
+  invitations included (`/sign-up/guest` and `/welcome` 308 to it and to
+  `/account`); the official name only, four parts in both languages,
+  locked at once, with the short-name choice and credited names
+  (`20261114000000`, `20261114000100`).
+- [x] **What is signed:** 13 kinds; pitches, concerns and motions are SUB
+  submissions, a motion supported by one click, the GPA consent a box; the
+  signed copy and a "received" email at once, later changes in the daily
+  update, each with a switch in Settings (`20261114000200`).
+- [x] **Nothing public about members:** no six-word wall, directory,
+  contributor pages or hidden credits; six account tabs and the account
+  menu; no Saved, tours or profile step; the enrollment check and
+  incomplete names in Membership; Notion by named invitation
+  (`20261114000300`).
+- [x] **Retention and push:** incidents kept two years after close (seven
+  for Qalam), closed from the event's page; browser push removed
+  (`20261114000400`).
+- [x] **Old records to the standard** (`20261114000500`): the Code of
+  Conduct records (AGR-2026-0001 to 0044) become each account's acceptance
+  and are deleted; a member's byline that no piece uses is deleted, bios
+  and the Diwan's Contributors tab go, and member bylines follow the short
+  name.
+- [x] **Agreements:** a three-line summary slot on each signed kind
+  (`governance.form_types.summary_en/ar`); "Summary to come" to staff only.
+- [x] **Sessions:** 30 days; the Diwan asks for the second step again after
+  12 hours (UX; the database still decides on `aal2`).
+- [x] **Platform:** OpenSSF Scorecard (`.github/workflows/scorecard.yml`,
+  the README badge, `persist-credentials: false` on every checkout);
+  robots.txt blocks AI crawlers; HSTS `max-age=63072000; includeSubDomains;
+  preload` meets hstspreload.org; backups to R2 only (the artifact only if
+  the R2 copy fails, one day).
+- [x] **Media handoff:** no printed card; captions, credits, playbills and
+  lower thirds by the short or credited name; signature blocks by the full
+  official name.
+- [ ] **Scorecard, still open:** Branch-Protection and Code-Review (the
+  owner's GitHub settings: require a review on `main`), Signed-Releases and
+  Packaging (none made), Fuzzing (none) and CII-Best-Practices (the badge is
+  the owner's application). Every action is pinned by commit; Dependabot
+  keeps the pins current.
+- [ ] **Owner:** the summaries of the 13 agreements, three lines in each
+  language (the Governance chat); the Terms of Use's AI line in Notion
+  (GOV); the 13 kinds in SAL-EXB-01's register in Notion; R2's lifecycle
+  at 30 days (Cloudflare → R2 → the bucket → Settings); Supabase's session
+  time-box at 30 days (Authentication → Sessions, Pro); after this
+  deploys, delete `NEXT_PUBLIC_VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY`
+  in Vercel, and correct the comments that name the Nexus or sal-api
+  (`NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`,
+  `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN`, `TELEGRAM_WEBHOOK_SECRET`,
+  `REVALIDATE_SECRET`).
+
 ## Now: Hudhud makes admins, and more (Nov 13)
 
 - [x] **Admins by Hudhud:** the President, Vice President, Secretary and

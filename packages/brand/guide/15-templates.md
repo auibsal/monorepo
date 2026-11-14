@@ -20,9 +20,9 @@ both languages.
 | [Social posts](?path=/story/social-templates--posts-english) ([Arabic](?path=/story/social-templates--posts-arabic)) | Instagram posts and carousels | Media; the content calendar in Notion | Director of Media |
 | [Stories](?path=/story/social-templates--story-english) ([Arabic](?path=/story/social-templates--story-arabic)) and [highlights](?path=/story/social-templates--highlights) | Instagram stories and highlight covers | Media | Director of Media |
 | [Posters and printables](?path=/story/print--printables) | Posters, stickers and the sizes they print at | Events; the Typewriter Tour | Director of Media |
-| Playbill | A production's credits and cast, digital by QR at the door, names from the site; a small printed run to the confirmed need | `/company`, each production's credits; printed from the browser | Artistic Director |
+| Playbill | A production's credits and cast, digital by QR at the door, each name as the person chose to be credited (their short name, or a credited name); signatures and sign-offs keep the full official name; a small printed run to the confirmed need | `/company`, each production's credits; printed from the browser | Artistic Director |
 | An Edition's cover and inside | The cover, contents and inside pages of each Edition of Qirtas | `/qirtas/editions/<slug>`; printed from the browser | Editor-in-Chief |
-| Next Stop's package | Opening titles, cards and lower thirds: an illustrated paper collage in natural colors. Awaiting approval; until then an episode opens with the sound logo and a plain title card | Next Stop's episodes and reels | Director of Media |
+| Next Stop's package | Opening titles, cards and lower thirds (each person by their short or credited name): an illustrated paper collage in natural colors. Awaiting approval; until then an episode opens with the sound logo and a plain title card | Next Stop's episodes and reels | Director of Media |
 | [Hudhud](?path=/story/components-hudhud--hudhud) | The bot's look and its stickers | Telegram | Director of Media |
 
 A new kind of thing gets its template here first; a page never draws its

@@ -33,7 +33,7 @@ export const GetInvolvedLinks = () => {
   }
   return (
     <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-      <Link className="link" href="/account/applications">
+      <Link className="link" href="/account/roles">
         {t("yours")}
       </Link>
       <ManageLinks diwan="/membership/openings" />

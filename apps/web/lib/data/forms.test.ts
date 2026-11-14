@@ -6,9 +6,11 @@ import {
   formKeys,
   formProblems,
   forms,
+  isSigned,
   legacyNumbers,
   nameFromLegacyNumber,
   registerKinds,
+  submissionKinds,
 } from "./forms";
 
 const read = (name: string) =>
@@ -22,8 +24,8 @@ const read = (name: string) =>
   );
 // The names that replaced the F-numbers (decisions.md, Documents and forms).
 const names = read("20261113003700_agreement_names.sql");
-// The register: only what people sign (the seventh prompt, 1).
-const register = read("20261113003900_register_kinds.sql");
+// The register: only what people sign, 13 kinds (the ninth site prompt).
+const register = read("20261114000200_what_is_signed.sql");
 describe("forms", () => {
   test("every kind here is named in the database, by the one mapping", () => {
     const named = new Map(
@@ -38,17 +40,18 @@ describe("forms", () => {
     }
   });
 
-  test("the register is the database's, and every site form is in it", () => {
-    const block = register.slice(
-      register.indexOf("update governance.form_types set in_register = true")
-    );
-    const listed = [
-      ...(block.slice(0, block.indexOf(");")).matchAll(/'([a-z0-9-]+)'/gu) ??
-        []),
-    ].map((m) => m[1]);
-    expect([...listed].sort()).toEqual([...registerKinds].sort());
+  test("the register is the 13 signed kinds; the rest of the form page is submissions", () => {
+    // Code of Conduct, pitch, concern and motion leave the register.
+    for (const key of ["code-of-conduct", "event-pitch", "concern"]) {
+      expect(register).toContain(`'${key}'`);
+    }
+    expect(registerKinds).toHaveLength(13);
+    expect(registerKinds).not.toContain("code-of-conduct");
     for (const key of formKeys) {
-      expect(registerKinds).toContain(key);
+      expect([...registerKinds, ...submissionKinds]).toContain(key);
+    }
+    for (const key of submissionKinds) {
+      expect(isSigned(key)).toBe(false);
     }
   });
 

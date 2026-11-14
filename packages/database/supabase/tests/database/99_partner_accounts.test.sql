@@ -308,11 +308,10 @@ select lives_ok(
   'and may then leave'
 );
 
--- Membership is for AUIB addresses: an outside sign-up needs an invitation
--- or a partner application.
+-- An outside address signs up as a guest; membership is for AUIB addresses.
 select pg_temp.logout();
-select ok(not private.sign_up_allowed('someone@gmail.com', '{}'),
-  'An outside address cannot sign up on its own');
+select ok(private.sign_up_allowed('someone@gmail.com', '{}'),
+  'An outside address signs up on its own, as a guest');
 insert into governance.partner_invitations (partner_id, kind, email)
 values ((select id from governance.partners where slug = 'poetry-club'), 'guest', 'friend@gmail.com');
 select ok(private.sign_up_allowed('friend@gmail.com',

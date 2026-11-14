@@ -243,12 +243,8 @@ select is((select status from programmes.audition_signups), 'called_back',
 
 -- ── Credits, rehearsals and the company ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-select throws_ok(
-  $$ insert into programmes.production_credits (production_id, user_id, department, role_en, show_publicly)
-     values ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-0000000000a1', 'cast', 'Ophelia', true) $$,
-  '42501', 'member_chooses',
-  'Only the member decides to show their name'
-);
+select hasnt_column('programmes', 'production_credits', 'show_publicly',
+  'There is no hiding a name: a credit is public with the production');
 insert into programmes.production_credits (id, production_id, user_id, department, role_en)
 values ('00000000-0000-0000-0000-00000000c001', '00000000-0000-0000-0000-00000000f001',
   '00000000-0000-0000-0000-0000000000a1', 'cast', 'Ophelia');
@@ -256,9 +252,9 @@ values ('00000000-0000-0000-0000-00000000c001', '00000000-0000-0000-0000-0000000
 -- name an account.
 select pg_temp.logout();
 alter table programmes.production_credits disable trigger credit_names_an_account;
-insert into programmes.production_credits (production_id, person_name, partner_id, department, role_en, show_publicly)
+insert into programmes.production_credits (production_id, person_name, partner_id, department, role_en)
 values ('00000000-0000-0000-0000-00000000f001', 'Guest Actor', '00000000-0000-0000-0000-00000000d001',
-  'cast', 'Hamlet', true);
+  'cast', 'Hamlet');
 alter table programmes.production_credits enable trigger credit_names_an_account;
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
 insert into programmes.rehearsals (production_id, starts_at, ends_at, called)
@@ -269,16 +265,13 @@ where id = '00000000-0000-0000-0000-00000000f001';
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select is((select count(*)::int from programmes.productions), 1, 'The company reads its production');
 select is((select count(*)::int from programmes.rehearsals), 1, 'and its rehearsals');
-select lives_ok(
-  $$ select programmes.set_credit_visibility('00000000-0000-0000-0000-00000000c001', true) $$,
-  'A member shows their name on the public page'
-);
+select hasnt_function('programmes', 'set_credit_visibility', 'and no setting for it');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');
 select is((select count(*)::int from programmes.rehearsals), 0, 'Others do not see the rehearsals');
 
 select pg_temp.login_anon();
 select is((select count(*)::int from programmes.public_production_credits('00000000-0000-0000-0000-00000000f001')), 2,
-  'The public page credits the people who agreed');
+  'The public page credits everyone in it');
 select throws_ok(
   $$ select * from programmes.productions $$,
   '42501', null,

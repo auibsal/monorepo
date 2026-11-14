@@ -31,15 +31,15 @@ export const emptyParts = (): NameParts => ({
   last: "",
 });
 
-/** The parts a legal name needs; the family name is only where there is one. */
-export const requiredParts: readonly NamePart[] = [
-  "first",
-  "father",
-  "grandfather",
-];
-
-export const partsComplete = (parts: NameParts) =>
-  requiredParts.every((part) => parts[part].trim() !== "");
+/**
+ * The official name (decisions.md, Members): the four parts, the family
+ * name only where there is one; someone whose papers don't use four names
+ * gives the given and family names.
+ */
+export const partsComplete = (parts: NameParts) => {
+  const has = (part: NamePart) => parts[part].trim() !== "";
+  return has("first") && ((has("father") && has("grandfather")) || has("last"));
+};
 
 /** The default name shown: the given and father's names. */
 export const displayName = (parts: NameParts) =>
@@ -96,21 +96,40 @@ export const partsFrom = (
   return parts;
 };
 
-/** The legal name is complete in both languages. */
-export const hasFourPartNames = (profile: ProfileNames | null | undefined) =>
-  (["en", "ar"] as const).every((language) =>
-    requiredParts.every(
-      (part) => (profile?.[nameColumn(part, language)] ?? "").trim() !== ""
-    )
+/**
+ * The parts actually on record in one language (never the parts
+ * `partsFrom` suggests from an old one-piece name): the account can't
+ * change these, so a form shows them read-only and never sends them.
+ */
+export const storedParts = (
+  profile: ProfileNames | null | undefined,
+  language: NameLanguage
+): NamePart[] =>
+  nameParts.filter(
+    (part) => (profile?.[nameColumn(part, language)] ?? "").trim() !== ""
   );
 
+/** The official name is complete in both languages. */
+export const hasFourPartNames = (profile: ProfileNames | null | undefined) =>
+  (["en", "ar"] as const).every((language) => {
+    const parts = emptyParts();
+    for (const part of nameParts) {
+      parts[part] = profile?.[nameColumn(part, language)] ?? "";
+    }
+    return partsComplete(parts);
+  });
+
 /** The update that saves one language's parts. */
-export const partsUpdate = (parts: NameParts, language: NameLanguage) =>
+export const partsUpdate = (
+  parts: NameParts,
+  language: NameLanguage,
+  /** Parts on record, left out: the account can't change them. */
+  skip: readonly NamePart[] = []
+) =>
   Object.fromEntries(
-    nameParts.map((part) => [
-      nameColumn(part, language),
-      parts[part].trim() || null,
-    ])
+    nameParts
+      .filter((part) => !skip.includes(part))
+      .map((part) => [nameColumn(part, language), parts[part].trim() || null])
   ) as Partial<Record<NameColumn, string | null>>;
 
 /** Complete and in its language's letters: ready to save. */

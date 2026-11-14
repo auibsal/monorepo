@@ -109,7 +109,8 @@ select is(
   (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
   'Signup Name', 'Until the legal name is complete, the name given at sign-up shows');
 
-select pg_temp.login_as('00000000-0000-0000-0000-00000000c0a1');
+-- Sign-up and Membership write the parts (here as the database).
+select pg_temp.logout();
 select throws_ok(
   $$ update core.profiles set first_name_en = 'عمر' where id = '00000000-0000-0000-0000-00000000c0a1' $$,
   '22023', 'name_script_en', 'An English part in Arabic letters is refused');
@@ -117,42 +118,36 @@ select throws_ok(
   $$ update core.profiles set first_name_ar = 'Omar' where id = '00000000-0000-0000-0000-00000000c0a1' $$,
   '22023', 'name_script_ar', 'An Arabic part in Latin letters is refused');
 select isnt((select legal_name_locked_at from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
-  null, 'The legal name is locked from sign-up (Nov 13, 2026): empty parts are filled, set ones never changed');
+  null, 'The official name is locked from sign-up, complete or not');
 
 select lives_ok(
   $$ update core.profiles set first_name_en = 'Omar', father_name_en = 'Ali',
        grandfather_name_en = 'Hassan', last_name_en = null,
        first_name_ar = 'عمر', father_name_ar = 'علي', grandfather_name_ar = 'حسن'
      where id = '00000000-0000-0000-0000-00000000c0a1' $$,
-  'A legal name with no family name is complete');
-select is(
-  (select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
-  'Omar Ali', 'The default shows at once: no "keep or change" step');
-select lives_ok($$ select core.confirm_shown_name() $$, 'The member keeps the name shown at sign-in');
+  'A name with no family name is complete');
 select is(
   (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
-  'Omar Ali / عمر علي', 'The default is the given and father''s names, in each language');
+  'Omar Ali / عمر علي', 'The short form is the given and father''s names, in each language');
 
+select pg_temp.login_as('00000000-0000-0000-0000-00000000c0a1');
 select lives_ok(
-  $$ update core.profiles set preferred_name_ar = 'عمر الحسن'
-     where id = '00000000-0000-0000-0000-00000000c0a1' $$,
-  'A member sets a preferred name in Arabic');
+  $$ update core.profiles set short_name = 'fourth' where id = '00000000-0000-0000-0000-00000000c0a1' $$,
+  'A member chooses the given and family names instead');
 select is(
   (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
-  'Omar Ali / عمر الحسن', 'and only the Arabic name changes');
-
-select isnt((select core.lock_legal_name()), null, 'The member locks a complete legal name');
+  'Omar Ali / عمر علي', 'and with no family name the father''s name stays');
+select throws_ok(
+  $$ update core.profiles set short_name = 'nickname' where id = '00000000-0000-0000-0000-00000000c0a1' $$,
+  '23514', null, 'There is no other short form');
+select hasnt_column('core', 'profiles', 'preferred_name_en', 'There is no preferred name: the official name only');
 select throws_ok(
   $$ update core.profiles set father_name_en = 'Alee' where id = '00000000-0000-0000-0000-00000000c0a1' $$,
-  '42501', 'legal_name_locked', 'A locked legal name cannot be changed by the member');
-select lives_ok(
-  $$ update core.profiles set preferred_name_en = 'Omi'
-     where id = '00000000-0000-0000-0000-00000000c0a1' $$,
-  'The preferred name stays the member''s to change');
-
+  '42501', 'legal_name_locked', 'The member cannot change the official name');
 select throws_ok(
-  $$ select membership.reset_preferred_name('00000000-0000-0000-0000-00000000c0a1', 'Misleading') $$,
-  '42501', null, 'A member cannot reset names');
+  $$ update core.profiles set credited_name_en = 'Omi' where id = '00000000-0000-0000-0000-00000000c0a1' $$,
+  '42501', null, 'nor set a credited name');
+select hasnt_function('membership', 'reset_preferred_name', 'There is no preferred name to reset');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000c0a2');
 select throws_ok(
@@ -162,15 +157,20 @@ select throws_ok(
 select lives_ok(
   $$ select membership.correct_name('00000000-0000-0000-0000-00000000c0a1',
        'Omar', 'Aly', 'Hassan', null, 'عمر', 'علي', 'حسن', null, 'As on the passport') $$,
-  'The Director of Membership corrects a locked legal name');
-select lives_ok(
-  $$ select membership.reset_preferred_name('00000000-0000-0000-0000-00000000c0a1', 'Misleading') $$,
-  'and resets a preferred name');
+  'The Director of Membership corrects the official name');
+select throws_ok(
+  $$ select programmes.set_credited_name('00000000-0000-0000-0000-00000000c0a1', 'Omi', null) $$,
+  '42501', null, 'A credited name is set by Media or the Artistic Director, not Membership');
 
 select pg_temp.logout();
 select is(
   (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
-  'Omar Aly / عمر علي', 'The name shown is the default again, with the corrected part');
+  'Omar Aly / عمر علي', 'The name shown follows the correction');
+update core.profiles set birth_year = extract(year from now())::int - 16, birth_month = 1
+where id = '00000000-0000-0000-0000-00000000c0a1';
+select is(
+  (select full_name_en || ' / ' || full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000c0a1'),
+  'Omar A. / عمر ع.', 'Under 18, the first name and the father''s initial');
 
 select * from finish();
 rollback;
