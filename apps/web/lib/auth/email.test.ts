@@ -233,10 +233,10 @@ describe("signing up", () => {
 describe("unusualStudentNumber", () => {
   test("passes the shapes AUIB gives", () => {
     for (const address of [
-      "1241295@auib.edu.iq",
+      "name.1241295@auib.edu.iq",
       "name.1221002@auib.edu.iq",
+      "name.2210001@auib.edu.iq",
       "2520001@auib.edu.iq",
-      "2210001@auib.edu.iq",
       "2620001@auib.edu.iq",
       "name.02220006@auib.edu.iq",
     ]) {
@@ -244,12 +244,15 @@ describe("unusualStudentNumber", () => {
     }
   });
 
-  test("warns on a length or a year that doesn't fit", () => {
+  test("warns on a format, a length or a year that doesn't fit", () => {
     for (const address of [
+      // The older years come with a name, the newer without.
+      "1241295@auib.edu.iq",
+      "name.2520001@auib.edu.iq",
       "124129@auib.edu.iq",
       "11212345@auib.edu.iq",
-      "1291295@auib.edu.iq",
-      "9241295@auib.edu.iq",
+      "name.1291295@auib.edu.iq",
+      "2720001@auib.edu.iq",
     ]) {
       expect(unusualStudentNumber(address, 2026)).toBe(true);
     }

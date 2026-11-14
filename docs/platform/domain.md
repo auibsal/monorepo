@@ -100,8 +100,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (`/api/sign-up/wrong-address`, with a key only that browser holds). At
   sign-up an AUIB student number of an unusual shape gets a warning, never
   a refusal (`unusualStudentNumber` in `lib/auth/email.ts`: 7 digits
-  beginning with the year of entry, or the English Language Academy's 8
-  beginning with 0). Partners'
+  from the year of entry, as a name and digits beginning with 1 or 2 and
+  the year (`name.124…` is 2024, `name.221…` 2021) or, from 2025, the
+  digits alone beginning with the year (`25…`, `26…`); the English
+  Language Academy's 8 digits beginning with 0). Partners'
   people and advisors from partner organizations hold guest accounts;
   faculty and alumni advisors are Associate Members invited by the
   Director of Membership. `/welcome` asks one question per screen

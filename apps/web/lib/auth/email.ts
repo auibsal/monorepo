@@ -30,16 +30,18 @@ export const auibLocalPart = (typed: string) =>
 
 export const MIN_PASSWORD_LENGTH = 12;
 
-const STUDENT_LOCAL = /^(?:[^.@]+\.)?(\d+)$/u;
+const STUDENT_LOCAL = /^([^.@]+\.)?(\d+)$/u;
 const ACADEMY_NUMBER = /^0\d{7}$/u;
 
 /**
  * Whether an AUIB student number has an unusual shape, for a soft warning
- * at sign-up (decisions.md, Members): undergraduate numbers have 7 digits
- * and start with the year of entry, as 1 or 2 and two digits ("124…" is
- * 2024, "221…" is 2021) or as two digits ("25…" is 2025); the English
- * Language Academy's have 8 and start with 0. A year still to come counts
- * as unusual. It only warns: the person may go on.
+ * at sign-up (decisions.md, Members; the owner, Nov 14, 2026). As far as
+ * the Society knows, AUIB gave two formats, both 7 digits from the year of
+ * entry: a name and digits beginning with 1 or 2 and the two-digit year
+ * ("name.124…" is 2024, "name.221…" is 2021), and, from 2025, the digits
+ * alone beginning with the year ("25…", "26…"). The English Language
+ * Academy's numbers have 8 digits and begin with 0. A year still to come
+ * counts as unusual. It only warns: the person may go on.
  */
 export const unusualStudentNumber = (
   email: string,
@@ -49,7 +51,8 @@ export const unusualStudentNumber = (
   if (!isAuibEmail(address)) {
     return false;
   }
-  const number = STUDENT_LOCAL.exec(address.split("@")[0] ?? "")?.[1];
+  const match = STUDENT_LOCAL.exec(address.split("@")[0] ?? "");
+  const number = match?.[2];
   if (!number || ACADEMY_NUMBER.test(number)) {
     return false;
   }
@@ -57,14 +60,17 @@ export const unusualStudentNumber = (
     return true;
   }
   const latest = year % 100;
-  const isYear = (digits: string) => {
+  const isYear = (digits: string, from: number) => {
     const value = Number(digits);
-    return value >= 18 && value <= latest;
+    return value >= from && value <= latest;
   };
-  const withPrefix =
-    (number.startsWith("1") || number.startsWith("2")) &&
-    isYear(number.slice(1, 3));
-  return !(withPrefix || isYear(number.slice(0, 2)));
+  if (match?.[1]) {
+    return !(
+      (number.startsWith("1") || number.startsWith("2")) &&
+      isYear(number.slice(1, 3), 18)
+    );
+  }
+  return !isYear(number.slice(0, 2), 25);
 };
 
 /**
