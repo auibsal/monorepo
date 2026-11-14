@@ -190,8 +190,11 @@ export const RequireStaff = ({ children }: GateProps) => {
   const twoStep = useTwoStep();
   const router = useRouter();
   // A role that needs two-step sign-in grants nothing until the code is in,
-  // so its holder is staff waiting for the second step, not a member.
-  const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
+  // so its holder is staff waiting for the second step, not a member; and
+  // the Diwan asks for it again 12 hours after it was last given.
+  const waiting = Boolean(
+    twoStep.data?.needs && (!twoStep.data.done || twoStep.data.stale)
+  );
   // A partner's team holds partners.own (and its Leads partners.lead):
   // their partner's dashboard (/partners/dashboard) is theirs, the
   // officers' Diwan is not, even for a member who leads their club.

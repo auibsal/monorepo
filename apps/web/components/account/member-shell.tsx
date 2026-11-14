@@ -2,12 +2,7 @@
 
 import { Icon } from "@repo/brand/components/sal/icon";
 import { cn } from "@repo/brand/lib/utils";
-import {
-  Link,
-  usePathname,
-  useRouter,
-} from "@repo/internationalization/navigation";
-import { useQueryClient } from "@tanstack/react-query";
+import { Link, usePathname } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
 import { useVisibleModules } from "@/components/diwan/admin/admin-shell";
@@ -116,34 +111,13 @@ const useAccountLinks = (): AccountLink[] => {
     : [today, settings];
 };
 
-/** The account's links and sign-out. */
+/** The account's links (signing out is in the header's account menu). */
 const AccountNav = () => {
   const t = useTranslations("diwan.nav");
-  const ta = useTranslations("auth");
   const pathname = usePathname();
-  const router = useRouter();
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
   const links = useAccountLinks();
 
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    rememberWays(null);
-    queryClient.clear();
-    router.replace("/");
-  };
-
   const current = links.find((link) => isCurrent(pathname, link));
-  const extras = (
-    <button
-      className="text-text-secondary hover:text-accent py-3 text-start text-sm font-medium whitespace-nowrap"
-      onClick={signOut}
-      type="button"
-    >
-      {ta("signOut")}
-    </button>
-  );
-
   return (
     <nav
       aria-label={t("account")}
@@ -180,9 +154,8 @@ const AccountNav = () => {
             </li>
           ))}
         </ul>
-        <div className="border-line grid border-t">{extras}</div>
       </details>
-      {/* Wider screens: the links in one row, sign-out at the end. */}
+      {/* Wider screens: the links in one row. */}
       <div className="mx-auto hidden w-full max-w-6xl items-center gap-x-6 px-4 md:flex">
         <ul className="flex min-w-0 gap-x-6 overflow-x-auto">
           {links.map((link) => {
@@ -205,9 +178,6 @@ const AccountNav = () => {
             );
           })}
         </ul>
-        <div className="ms-auto flex shrink-0 items-center gap-x-6">
-          {extras}
-        </div>
       </div>
     </nav>
   );

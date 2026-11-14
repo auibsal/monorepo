@@ -2,12 +2,20 @@
 
 What is backed up, where, for how long, and how to bring it back.
 
-The Supabase project is on the Free plan, which keeps no downloadable backups. The Society’s own backup is a GitHub Actions workflow (`.github/workflows/backup.yml`).
+The Supabase project is on the Free plan, which keeps no downloadable backups. The Society’s own backup is a GitHub Actions workflow (`.github/workflows/backup.yml`) that copies it to Cloudflare R2.
 
 | What | When | Kept | Where |
 | --- | --- | --- | --- |
-| Roles, schema and data of the production database | Nightly at 23:20 UTC (2:20 a.m. Baghdad) | 30 days | GitHub → Actions → **Back up production database** → the run’s artifact, and a second copy in Cloudflare R2 |
-| Every Storage bucket (submissions, the library, Tour pages, media) | The same run on the 1st of each month, or a manual run with “Also back up the Storage buckets” | 30 days in GitHub; in R2 by its lifecycle rule (set it to 12 months) | The same two places, in the same file |
+| Roles, schema and data of the production database | Nightly at 23:20 UTC (2:20 a.m. Baghdad) | 30 days | Cloudflare R2, a private bucket |
+| Every Storage bucket (submissions, the library, Tour pages, media) | The same run on the 1st of each month, or a manual run with “Also back up the Storage buckets” | 30 days | The same file in R2 |
+
+Backups are kept in R2 only (decisions.md, The platform). The repository is public and anyone signed in to GitHub can download a run’s artifacts, so the workflow makes an artifact only when the R2 copy can’t be made (the R2 secrets not set yet, or the copy failed), kept one day so the copy can be retried, and a failed copy fails the run.
+
+**The R2 bucket’s settings** (Cloudflare → R2 → the bucket → Settings):
+
+- **Object lifecycle rule:** delete objects 30 days after upload. This keeps a deleted account gone from every copy within 30 days. Set it to 30 days if it shows anything else (it was documented as 12 months before Nov 14, 2026).
+- **Bucket lock:** a 7-day retention rule on all objects, so no copy can be deleted early.
+- **The token:** an R2 API token with Object Read & Write on this bucket only.
 
 Each backup is encrypted (GPG, AES-256) with `BACKUP_PASSPHRASE` before it leaves the runner, because the repository is public; the passphrase reaches GPG through standard input, never the command line. Without the passphrase the file is useless, so keep it in the password manager as well as in GitHub.
 
@@ -17,7 +25,7 @@ Each backup is encrypted (GPG, AES-256) with `BACKUP_PASSPHRASE` before it leave
 | --- | --- |
 | `SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD` | Reach the project |
 | `BACKUP_PASSPHRASE` | Encrypts the file (the run fails without it) |
-| `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | The second copy: a private R2 bucket and a token that can only write to it. Without them the run warns and keeps the GitHub copy only |
+| `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Where the backup is kept: the private R2 bucket and a token limited to it. Without them the run warns and keeps a one-day artifact only |
 | `RESEND_TOKEN` | Emails hello@auibsal.org when a run fails |
 
 The project ref comes from the repository variable `SUPABASE_PROJECT_REF`.
@@ -26,7 +34,7 @@ The project ref comes from the repository variable `SUPABASE_PROJECT_REF`.
 
 Practice this on a scratch Supabase project first. Restoring over production replaces live data; decide it with the President and record it in the minutes.
 
-1. **Download and decrypt.** Download the artifact `sal-backup-YYYY-MM-DD` (or the file from R2), then:
+1. **Download and decrypt.** Download `sal-YYYY-MM-DD.tar.gz.gpg` from the R2 bucket (or, within a day of a failed copy, the run’s artifact), then:
 
    ```sh
    gpg --decrypt sal-YYYY-MM-DD.tar.gz.gpg > sal.tar.gz

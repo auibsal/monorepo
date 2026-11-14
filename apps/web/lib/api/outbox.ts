@@ -179,6 +179,8 @@ const RECEIPT_KINDS = new Set([
   "governance.candidacy_received",
   "journal.submission_received",
   "partners.application_received",
+  // Write for Qirtas (decisions.md, Qirtas): "received" with its number.
+  "qirtas.submission_received",
 ]);
 
 /**
@@ -194,7 +196,15 @@ const DAILY_KINDS = new Set([
   "partners.application_decided",
   "programmes.audition_update",
   "programmes.reply_update",
+  // A writer's later steps (decisions.md, Qirtas): in reading, the
+  // decision, edits to approve and published, shown in Your account → Work.
   "qirtas.decision",
+  "qirtas.final_check",
+  "qirtas.in_reading",
+  "qirtas.piece_note",
+  "qirtas.piece_published",
+  "qirtas.returned_for_formatting",
+  "qirtas.revision_resent",
 ]);
 
 const recipient = async (

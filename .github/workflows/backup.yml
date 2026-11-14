@@ -3,8 +3,11 @@ name: Back up production database
 # Nightly logical backup of production (roles, schema, data), and on the
 # 1st of each month the Storage buckets too, encrypted before they leave
 # the runner: the repository is public, so the files are useless without
-# BACKUP_PASSPHRASE. Kept 30 days as an artifact and, when the R2 secrets
-# are set, copied to a second place (Cloudflare R2). A failed run emails
+# BACKUP_PASSPHRASE. Kept in a private Cloudflare R2 bucket only, 30 days
+# (decisions.md, The platform). The repository is public and anyone
+# signed in to GitHub can download its artifacts, so an artifact is made
+# only when the R2 copy can't be (no R2 secrets yet, or the copy failed),
+# for one day, long enough to retry it. A failed run emails
 # hello@auibsal.org. Restore steps: docs/platform/backups.md.
 
 on:
@@ -88,20 +91,34 @@ jobs:
           printf '%s' "$BACKUP_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 \
             --symmetric --cipher-algo AES256 -o "$RUNNER_TEMP/sal-$STAMP.tar.gz.gpg" "$RUNNER_TEMP/sal-$STAMP.tar.gz"
           rm -rf "$RUNNER_TEMP/backup" "$RUNNER_TEMP/sal-$STAMP.tar.gz"
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+      - name: Copy to Cloudflare R2
+        id: r2
+        run: |
+          if [ -z "$R2_ACCOUNT_ID" ] || [ -z "$R2_BUCKET" ] || [ -z "$AWS_ACCESS_KEY_ID" ]; then
+            echo "::warning::Not copied: add R2_ACCOUNT_ID, R2_BUCKET, R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY. Kept one day as an artifact instead."
+            echo "copied=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if aws s3 cp "$RUNNER_TEMP/sal-$STAMP.tar.gz.gpg" "s3://$R2_BUCKET/sal-$STAMP.tar.gz.gpg" \
+            --endpoint-url "https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com" --region auto; then
+            echo "copied=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::The R2 copy failed. Kept one day as an artifact to retry."
+            echo "copied=false" >> "$GITHUB_OUTPUT"
+            echo "R2_FAILED=1" >> "$GITHUB_ENV"
+          fi
+      # Only when R2 has no copy, and for one day: artifacts on a public
+      # repository can be downloaded by anyone signed in to GitHub.
+      - if: steps.r2.outputs.copied != 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: sal-backup-${{ env.STAMP }}
           path: ${{ runner.temp }}/sal-${{ env.STAMP }}.tar.gz.gpg
-          retention-days: 30
+          retention-days: 1
           if-no-files-found: error
-      - name: A second copy (Cloudflare R2)
-        run: |
-          if [ -z "$R2_ACCOUNT_ID" ] || [ -z "$R2_BUCKET" ] || [ -z "$AWS_ACCESS_KEY_ID" ]; then
-            echo "::warning::No second copy: add R2_ACCOUNT_ID, R2_BUCKET, R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY."
-            exit 0
-          fi
-          aws s3 cp "$RUNNER_TEMP/sal-$STAMP.tar.gz.gpg" "s3://$R2_BUCKET/sal-$STAMP.tar.gz.gpg" \
-            --endpoint-url "https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com" --region auto
+      - name: A failed R2 copy fails the run
+        if: env.R2_FAILED == '1'
+        run: exit 1
       - name: Email on failure
         if: failure()
         env:

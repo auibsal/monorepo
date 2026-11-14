@@ -3,6 +3,7 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
+import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, lazy, Suspense, useState } from "react";
@@ -27,6 +28,17 @@ const PASSKEY_METHODS = new Set(["passkey", "webauthn", "mfa/webauthn"]);
  * role that sees personal data (access.has_permission checks the session).
  * A passkey sign-in meets it on its own.
  */
+/** How long a second step counts in the Diwan before it is asked again. */
+export const SECOND_STEP_HOURS = 12;
+
+const SECOND_STEP_METHODS = new Set([
+  "totp",
+  "mfa/totp",
+  "webauthn",
+  "mfa/webauthn",
+  "passkey",
+]);
+
 export const useTwoStep = () => {
   const { supabase, user } = useAuth();
   return useQuery({
@@ -41,6 +53,18 @@ export const useTwoStep = () => {
         (factor) => factor.status === "verified"
       );
       const methods = level.data?.currentAuthenticationMethods ?? [];
+      // When the second step was last given on this session (a code or a
+      // passkey), in seconds since the epoch.
+      const stepAt = Math.max(
+        0,
+        ...methods.flatMap((entry) =>
+          typeof entry === "object" &&
+          SECOND_STEP_METHODS.has(entry.method) &&
+          typeof entry.timestamp === "number"
+            ? [entry.timestamp]
+            : []
+        )
+      );
       return {
         done:
           level.data?.currentLevel === "aal2" ||
@@ -51,6 +75,10 @@ export const useTwoStep = () => {
           ),
         factorId: verified?.id ?? null,
         needs: Boolean(unwrap(needs)),
+        // The Diwan asks for the second step again after 12 hours
+        // (decisions.md, Members); a device stays signed in for 30 days.
+        stale:
+          stepAt > 0 && Date.now() / 1000 - stepAt > SECOND_STEP_HOURS * 3600,
       };
     },
     queryKey: ["two-step", user?.id ?? ""],
@@ -243,10 +271,22 @@ export const TwoStepPanel = () => {
   if (state.isPending) {
     return <SectionSpinner />;
   }
-  if (!state.data?.needs || state.data.done) {
+  if (!state.data?.needs || (state.data.done && !state.data.stale)) {
     return null;
   }
   const factorId = setup.enrolling?.id ?? state.data.factorId;
+  // A passkey's second step is given again by signing in with it.
+  if (state.data.stale && !factorId) {
+    return (
+      <section className="border-line pt-space-4 grid max-w-xl gap-4 border-t">
+        <h2 className="type-heading">{t("againTitle")}</h2>
+        <p className="type-body">{t("againPasskey")}</p>
+        <Link className="link justify-self-start" href="/sign-out">
+          {t("againSignIn")}
+        </Link>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -254,7 +294,12 @@ export const TwoStepPanel = () => {
       className="border-line pt-space-4 grid max-w-xl gap-4 border-t"
     >
       <h2 className="type-heading" id="two-step-title">
-        {factorId ? t("verifyTitle") : t("setupTitle")}
+        {(() => {
+          if (state.data.stale) {
+            return t("againTitle");
+          }
+          return factorId ? t("verifyTitle") : t("setupTitle");
+        })()}
       </h2>
       <p className="type-body">{factorId ? t("verifyBody") : t("setupBody")}</p>
       {/* Set-up order (fourth prompt, 3): a passkey first (two factors on

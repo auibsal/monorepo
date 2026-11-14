@@ -154,7 +154,7 @@ const Nominate = ({ position }: { readonly position: Position }) => {
     onError: (error) => setNotice(errorKey(error)),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["elections"] });
-      router.push("/account/elections");
+      router.push("/account");
     },
   });
 
@@ -246,7 +246,7 @@ export const StandForOffice = ({
     election &&
     between(election.nominations_open_at, election.nominations_close_at);
   const back = (
-    <Link className="link" href="/account/elections">
+    <Link className="link" href="/account">
       {t("backToSociety")}
     </Link>
   );

@@ -370,7 +370,7 @@ export const LetterArabic: Story = {
 
 /**
  * The membership card, as the member's account shows it (the same fields
- * go to Google Wallet; a printed card on request is this one, still).
+ * go to Google Wallet). The card is never printed.
  */
 export const MembershipCardStory: Story = {
   name: "Membership card",

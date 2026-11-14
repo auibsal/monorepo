@@ -92,7 +92,7 @@ export const useProfile = () => {
 
 /**
  * Both names in all four parts (decisions.md): anyone without them
- * is asked at /welcome the next time they come in.
+ * is told on Today how Membership adds the missing parts.
  */
 export const hasAllNames = names.hasFourPartNames;
 

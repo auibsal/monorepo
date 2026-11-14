@@ -203,7 +203,14 @@
     "auibEmail": "Your AUIB email",
     "auibEmailHint": "What comes before @auib.edu.iq: usually your ID number, or your name and ID number.",
     "showPassword": "Show",
-    "hidePassword": "Hide"
+    "hidePassword": "Hide",
+    "signedOut": {
+      "title": "Sign out",
+      "pending": "Signing you out on this device…",
+      "body": "You’re signed out on this device. Your other devices stay signed in; sign them out in Settings → Security.",
+      "home": "Go to the home page",
+      "signIn": "Sign in again"
+    }
   },
   "diwan": {
     "nav": {
@@ -653,7 +660,10 @@
       "settingsOnNextTime": "On. You’ll enter a code from your authenticator app where a page needs it.",
       "passkeyFirst": "A passkey on this device",
       "passkeyBody": "Quickest: add a passkey, then sign out and sign in with it. A passkey counts as two steps on its own.",
-      "orAuthenticator": "Or an authenticator app"
+      "orAuthenticator": "Or an authenticator app",
+      "againTitle": "Your second step again",
+      "againPasskey": "The Diwan asks for the second step again 12 hours after you last gave it. You signed in with a passkey: sign in with it again.",
+      "againSignIn": "Sign in again"
     },
     "journal": {
       "status": {
@@ -1213,6 +1223,24 @@
           "email": "Their email",
           "invite": "Send the invitation",
           "sent": "Invitation sent."
+        },
+        "enrollment": {
+          "title": "The enrollment check",
+          "lede": "Once a semester, paste the AUIB addresses on Student Life’s enrollment list. The Register is matched by AUIB email and only the mismatches show: a Member not on the list, and an Associate who is. Nothing of the list is kept.",
+          "list": "Student Life’s enrollment list",
+          "hint": "Paste it as it comes: only the @auib.edu.iq addresses in it are read.",
+          "run": "Check {count} addresses",
+          "none": "No mismatches: every Member is on the list, and no Associate is.",
+          "issues": {
+            "not_enrolled": "Not on the enrollment list: an Associate or a guest now?",
+            "enrolled_associate": "On the enrollment list: a Member now?"
+          }
+        },
+        "incompleteNames": {
+          "title": "Incomplete official names",
+          "lede": "Accounts from before the site asked for the full name. Each is locked; correct it on the person’s page, with a second officer, when they send their name as on their papers.",
+          "missingEn": "English incomplete",
+          "missingAr": "Arabic incomplete"
         }
       },
       "member": {
@@ -4300,7 +4328,8 @@
       "version": "version {version}",
       "forRole": "For your role: {role}.",
       "signedBy": "Signed by",
-      "countersignedBy": "Countersigned by"
+      "countersignedBy": "Countersigned by",
+      "sent": "Sent. Its record number is on its page in Your account, and a “received” email is on its way."
     },
     "qirtas": {
       "pieceTitle": "Your piece",
@@ -4960,7 +4989,10 @@
       "diwan": "The Diwan",
       "company": "The Company",
       "partner": "Partner dashboard",
-      "nextStop": "Next Stop"
+      "nextStop": "Next Stop",
+      "help": "Help",
+      "report": "Report a problem",
+      "signOut": "Sign out"
     },
     "footer": {
       "columns": {
