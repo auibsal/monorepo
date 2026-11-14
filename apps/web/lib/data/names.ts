@@ -24,7 +24,7 @@ export const nameColumns = (["en", "ar"] as const).flatMap((language) =>
   nameParts.map((part) => nameColumn(part, language))
 );
 
-export const emptyParts = (): NameParts => ({
+const emptyParts = (): NameParts => ({
   father: "",
   first: "",
   grandfather: "",
@@ -132,10 +132,6 @@ export const partsUpdate = (
       .map((part) => [nameColumn(part, language), parts[part].trim() || null])
   ) as Partial<Record<NameColumn, string | null>>;
 
-/** Complete and in its language's letters: ready to save. */
-export const partsReady = (parts: NameParts, language: NameLanguage) =>
-  partsComplete(parts) && partsInScript(parts, language);
-
 // ── One line per language at sign-up (decisions.md, Members) ───────────────
 //
 // The four names are typed in one line, word by word. A name of two words
@@ -183,10 +179,7 @@ export const wordsInLine = (value: string) =>
  */
 export type Joins = ReadonlySet<number>;
 
-export const defaultJoins = (
-  words: readonly string[],
-  language: NameLanguage
-) => {
+const defaultJoins = (words: readonly string[], language: NameLanguage) => {
   const joins = new Set<number>();
   if (language === "ar") {
     words.forEach((word, i) => {
