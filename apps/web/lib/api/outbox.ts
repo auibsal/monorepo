@@ -336,6 +336,44 @@ interface SendOptions {
   readonly sticker?: Sticker;
 }
 
+/**
+ * The emails about one's own records follow the person's switches; a later
+ * change waits for the daily update (or, with it off, stays in Your account
+ * only). True when the email is not to go now.
+ */
+const heldForRecords = async (
+  run: { admin: AdminClient; kind: string; row: number },
+  to: Recipient,
+  built: Built
+) => {
+  if (SIGNED_COPY_KINDS.has(run.kind)) {
+    return to.records?.signedCopy === false;
+  }
+  if (RECEIPT_KINDS.has(run.kind)) {
+    return to.records?.receipts === false;
+  }
+  if (!DAILY_KINDS.has(run.kind)) {
+    return false;
+  }
+  if (to.records?.daily !== false && to.userId) {
+    const block =
+      built.blocks.find((b) => b.lang === to.lang) ?? built.blocks[0];
+    const { error } = await run.admin
+      .schema("core")
+      .from("daily_updates")
+      .insert({
+        detail: { href: block?.action?.href ?? null, line: built.subject },
+        kind: run.kind,
+        ref: String(run.row),
+        user_id: to.userId,
+      });
+    if (error) {
+      throw error;
+    }
+  }
+  return true;
+};
+
 const send = async (
   to: Recipient,
   built: Built,
@@ -343,38 +381,8 @@ const send = async (
 ) => {
   const run = current.getStore();
   const row = run?.row;
-  if (run && to.userId) {
-    // The emails about one's own records follow the person's switches.
-    if (SIGNED_COPY_KINDS.has(run.kind) && to.records?.signedCopy === false) {
-      return;
-    }
-    if (RECEIPT_KINDS.has(run.kind) && to.records?.receipts === false) {
-      return;
-    }
-    // A later change waits for the daily update (or, with it off, stays
-    // in Your account only).
-    if (DAILY_KINDS.has(run.kind)) {
-      if (to.records?.daily !== false) {
-        const block =
-          built.blocks.find((b) => b.lang === to.lang) ?? built.blocks[0];
-        const { error } = await run.admin
-          .schema("core")
-          .from("daily_updates")
-          .insert({
-            detail: {
-              href: block?.action?.href ?? null,
-              line: built.subject,
-            },
-            kind: run.kind,
-            ref: String(row),
-            user_id: to.userId,
-          });
-        if (error) {
-          throw error;
-        }
-      }
-      return;
-    }
+  if (run && to.userId && (await heldForRecords(run, to, built))) {
+    return;
   }
   if (
     reminder &&

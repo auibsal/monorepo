@@ -184,6 +184,24 @@ const minorMetadata = (minor: SignUpDetails["minor"]) =>
       }
     : {};
 
+/** Why a sign-up can't go ahead, before anything is sent. */
+const signUpRefusal = (
+  details: SignUpDetails,
+  auib: boolean
+): EmailAuthErrorCode | null => {
+  // Under 18: an AUIB student, or by an invitation (a Qalam student).
+  const invited = Boolean(details.outside && "invitation" in details.outside);
+  if (!(details.adult || (details.minor && (auib || invited)))) {
+    return "age_required";
+  }
+  if (auib && !details.class) {
+    return "class_required";
+  }
+  return nameComplete(details.names.en) && nameComplete(details.names.ar)
+    ? null
+    : "names_required";
+};
+
 /**
  * Creates an account. Metadata here only fills in the profile; it is never
  * used for authorization (roles live in access.role_assignments).
@@ -201,16 +219,9 @@ export const signUpWithEmail = async (
     return { code: "weak_password", ok: false };
   }
   const auib = isAuibEmail(email);
-  // Under 18: an AUIB student, or by an invitation (a Qalam student).
-  const invited = Boolean(details.outside && "invitation" in details.outside);
-  if (!(details.adult || (details.minor && (auib || invited)))) {
-    return { code: "age_required", ok: false };
-  }
-  if (auib && !details.class) {
-    return { code: "class_required", ok: false };
-  }
-  if (!(nameComplete(details.names.en) && nameComplete(details.names.ar))) {
-    return { code: "names_required", ok: false };
+  const refused = signUpRefusal(details, auib);
+  if (refused) {
+    return { code: refused, ok: false };
   }
   const parts = Object.fromEntries(
     (["en", "ar"] as const).flatMap((language) =>
