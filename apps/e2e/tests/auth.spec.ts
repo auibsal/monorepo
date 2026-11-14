@@ -22,12 +22,12 @@ test("one sign-up page: the address, the class, the official name, one line", as
   // The official name in both languages, four parts, on the same page.
   const english = page.getByRole("group", { name: "Your name in English" });
   await english.getByLabel("Name", { exact: true }).fill("New");
-  await english.getByLabel("Father’s name").fill("Kareem");
+  await english.getByLabel("Father’s name", { exact: true }).fill("Kareem");
   await english.getByLabel("Grandfather’s name").fill("Hasan");
   await english.getByLabel(/Family name/u).fill("Member");
   const arabic = page.getByRole("group", { name: "Your name in Arabic" });
   await arabic.getByLabel("Name", { exact: true }).fill("عضو");
-  await arabic.getByLabel("Father’s name").fill("كريم");
+  await arabic.getByLabel("Father’s name", { exact: true }).fill("كريم");
   await arabic.getByLabel("Grandfather’s name").fill("حسن");
   await arabic.getByLabel(/Family name/u).fill("جديد");
   await page.getByRole("radio", { name: /In the masculine/u }).click();
@@ -98,13 +98,17 @@ test("a name from before the four parts is a to-do on Today, not a block", async
   const { data: before } = await db
     .schema("core")
     .from("profiles")
-    .select("father_name_en, grandfather_name_en")
+    .select("father_name_en, grandfather_name_en, last_name_en")
     .eq("id", id)
     .single();
   await db
     .schema("core")
     .from("profiles")
-    .update({ father_name_en: null, grandfather_name_en: null })
+    .update({
+      father_name_en: null,
+      grandfather_name_en: null,
+      last_name_en: null,
+    })
     .eq("id", id);
   try {
     await signInWithPassword(page, member.email);
