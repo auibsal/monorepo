@@ -98,7 +98,6 @@ $$;
 select plan(27);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca01', 'card.one@auib.edu.iq', 'Card One');
-update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-00000000ca01';
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca02', 'card.two@auib.edu.iq', 'Card Two');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca03', 'door@auib.edu.iq', 'Door');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ca04', 'secretary@auib.edu.iq', 'Secretary');
@@ -192,14 +191,14 @@ select is(private.totp(convert_to('12345678901234567890', 'UTF8'), 1), '94287082
 select is(private.totp(convert_to('12345678901234567890', 'UTF8'), 66666666), '69279037',
   'and at 2,000,000,000 seconds');
 
--- Names
-select pg_temp.login_as('00000000-0000-0000-0000-00000000ca01');
+-- Names (given at sign-up; here as the database)
+select pg_temp.logout();
 update core.profiles set first_name_en = '  Layla ', father_name_en = 'Omar',
   grandfather_name_en = 'Ali', last_name_en = 'Hassan',
   first_name_ar = 'ليلى', father_name_ar = 'عمر', grandfather_name_ar = 'علي', last_name_ar = 'حسن'
 where id = '00000000-0000-0000-0000-00000000ca01';
 select is((select full_name_en from core.profiles where id = '00000000-0000-0000-0000-00000000ca01'),
-  'Layla Omar', 'A member gives their name in parts; the given and father''s names show');
+  'Layla Omar', 'The official name in parts; the given and father''s names show');
 select is((select full_name_ar from core.profiles where id = '00000000-0000-0000-0000-00000000ca01'),
   'ليلى عمر', 'and in Arabic');
 

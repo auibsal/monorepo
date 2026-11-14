@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(13);
+select plan(8);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000d4001', 'reader.d4@auib.edu.iq', 'Reader');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000d4002', 'other.d4@auib.edu.iq', 'Other Reader');
@@ -116,44 +116,9 @@ insert into journal.pieces (id, slug, category, language, title_en, title_ar, st
 update journal.pieces set title_en = 'Published, retitled'
   where id = 'd0000000-0000-0000-0000-0000000d4d01';
 
--- A9: saving to read later.
-select pg_temp.login_as('00000000-0000-0000-0000-0000000d4001');
-select lives_ok(
-  $$ insert into journal.saved_pieces (piece_id) values ('d0000000-0000-0000-0000-0000000d4d01') $$,
-  'a reader saves a published piece'
-);
-select is(
-  (select count(*)::int from journal.saved_pieces),
-  1,
-  'and sees it in their list'
-);
-select throws_ok(
-  $$ insert into journal.saved_pieces (piece_id) values ('d0000000-0000-0000-0000-0000000d4d02') $$,
-  '42501', null,
-  'a piece that is not published cannot be saved'
-);
-select throws_ok(
-  $$ insert into journal.saved_pieces (user_id, piece_id)
-     values ('00000000-0000-0000-0000-0000000d4002', 'd0000000-0000-0000-0000-0000000d4d01') $$,
-  '42501', null,
-  'nobody saves for someone else'
-);
+-- Saving to read later is gone (decisions.md, The site).
+select hasnt_table('journal', 'saved_pieces', 'There is no saving: the Saved tab and its table are gone');
 
-select pg_temp.login_as('00000000-0000-0000-0000-0000000d4002');
-select is(
-  (select count(*)::int from journal.saved_pieces),
-  0,
-  'another reader does not see that list'
-);
-delete from journal.saved_pieces;
-
-select pg_temp.login_as('00000000-0000-0000-0000-0000000d4001');
-delete from journal.saved_pieces where piece_id = 'd0000000-0000-0000-0000-0000000d4d01';
-select is(
-  (select count(*)::int from journal.saved_pieces),
-  0,
-  'a reader lets go of what they saved (and only they can)'
-);
 
 -- C24: a record's history, for officers who can see the record.
 select is(

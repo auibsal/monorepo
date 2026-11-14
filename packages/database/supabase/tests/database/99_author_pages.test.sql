@@ -94,7 +94,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(7);
+select plan(6);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000009a1', 'au1@auib.edu.iq', 'Layla Haddad');
 insert into membership.memberships (user_id) values ('00000000-0000-0000-0000-0000000009a1') on conflict do nothing;
@@ -115,27 +115,23 @@ select is(
   'and carries their name from the profile'
 );
 
-select pg_temp.login_anon();
-select is((select kind from journal.author_card('layla-haddad')), 'member',
-  'The page says they are a member, before anything is published');
-select ok((select cardinality(roles_en) > 0 from journal.author_card('layla-haddad')),
-  'and the roles they hold');
+select hasnt_function('journal', 'author_card', 'There are no contributor pages (decisions.md, Members)');
 
 -- A pen name says nothing about the person, and shows only with published work.
 select pg_temp.logout();
 insert into journal.contributors (slug, user_id, name_en, is_pen_name)
 values ('the-night-owl', '00000000-0000-0000-0000-0000000009a1', 'The Night Owl', true);
-select pg_temp.login_anon();
-select is((select count(*)::int from journal.author_card('the-night-owl')), 0,
-  'A pen name without published work has no page');
+select is((select count(*)::int from journal.contributors where slug = 'the-night-owl'), 1,
+  'A pen name is a byline of its own');
 
--- A name change moves the page.
+-- A correction by Membership moves the byline.
 select pg_temp.logout();
-update core.profiles set preferred_name_en = 'Leila Haddad' where id = '00000000-0000-0000-0000-0000000009a1';
+update core.profiles set first_name_en = 'Leila', last_name_en = 'Haddad', short_name = 'fourth'
+where id = '00000000-0000-0000-0000-0000000009a1';
 select is(
   (select slug from journal.contributors where user_id = '00000000-0000-0000-0000-0000000009a1' and not is_pen_name),
   'leila-haddad',
-  'The page follows the name'
+  'The byline follows the name'
 );
 select is(
   (select slug from journal.contributors where user_id = '00000000-0000-0000-0000-0000000009a1' and is_pen_name),

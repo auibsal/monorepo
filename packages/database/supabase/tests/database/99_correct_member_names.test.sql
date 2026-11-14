@@ -104,7 +104,6 @@ select set_config('sal.second_officer', 'on', true);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000072a1', 'director@auib.edu.iq', 'Membership Director');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000072a2', 'member@auib.edu.iq', 'Some Member');
-update core.profiles set name_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000072a2';
 select pg_temp.make_user('00000000-0000-0000-0000-0000000072a3', 'other@auib.edu.iq', 'Other Member');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000072a1', 'membership_director');
 

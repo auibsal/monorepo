@@ -181,16 +181,16 @@ select pg_temp.logout();
 
 insert into auth.users (id, email, raw_user_meta_data, email_confirmed_at, aud, role)
 values ('00000000-0000-0000-0000-0000000ec004', 'newcomer@auib.edu.iq',
-  '{"first_name_en": "New", "last_name_en": "Comer", "agreed_at": "now", "esign": "true"}', now(),
+  '{"first_name_en": "New", "last_name_en": "Comer", "agreed_at": "now"}', now(),
   'authenticated', 'authenticated');
 select ok((select esign_agreed_at is not null and esign_asked_at is not null from core.profiles
   where id = '00000000-0000-0000-0000-0000000ec004'), 'Sign-up''s own line records the consent');
 insert into auth.users (id, email, raw_user_meta_data, email_confirmed_at, aud, role)
 values ('00000000-0000-0000-0000-0000000ec005', 'declined@auib.edu.iq',
-  '{"first_name_en": "No", "last_name_en": "Thanks", "agreed_at": "now", "esign": "false"}', now(),
+  '{"first_name_en": "No", "last_name_en": "Line"}', now(),
   'authenticated', 'authenticated');
-select ok((select esign_agreed_at is null and esign_asked_at is not null from core.profiles
-  where id = '00000000-0000-0000-0000-0000000ec005'), 'and an unticked line is asked, not given');
+select ok((select esign_agreed_at is null and esign_asked_at is null from core.profiles
+  where id = '00000000-0000-0000-0000-0000000ec005'), 'and an account made without it is asked on Today, not given');
 
 select * from finish();
 rollback;

@@ -132,8 +132,8 @@ select throws_ok(
 );
 
 select pg_temp.login_anon();
-select is((select count(*) from programmes.six_words_wall())::integer, 0,
-  'A transcribed page is private until its writer chooses (decisions.md)');
+select is((select pages from programmes.six_words_counts())::integer, 1,
+  'The Tour''s page shows counts only (decisions.md, Members)');
 select pg_temp.logout();
 update programmes.six_words set visibility = 'tour';
 select pg_temp.login_anon();
@@ -151,10 +151,11 @@ select lives_ok(
 );
 
 select pg_temp.login_anon();
-select is((select count(*) from programmes.six_words_wall())::integer, 0, 'and it leaves the wall');
-select lives_ok(
-  $$ select * from programmes.profile_six_words('nobody') $$,
-  'Visitors can read the Tour pages a writer shows on their author page'
+select is((select writers from programmes.six_words_counts())::integer, 0,
+  'An unattached page has no writer to count');
+select throws_ok(
+  $$ select * from programmes.my_six_words() $$,
+  '42501', null, 'Visitors read no one''s pages: nothing about members is public'
 );
 
 -- ── Removal requests ────────────────────────────────────────────────────────
