@@ -62,7 +62,7 @@ test("a mistyped address is put right from the inbox screen, with no second acco
   page,
 }) => {
   const stamp = Date.now();
-  const typo = `e2e.${stamp}@auib.edu.iq`;
+  const typo = `e2e.typo${stamp}x@auib.edu.iq`;
   await page.goto(`${urls.web}/sign-up`);
   await page.getByLabel("Email").fill(`${stamp}1@auib.edu.iq`);
   // A student number of an unusual shape warns, and lets the person go on.
