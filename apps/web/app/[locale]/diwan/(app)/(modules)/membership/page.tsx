@@ -3,6 +3,7 @@ import { MembersDirectory } from "@/components/diwan/admin/members/directory";
 import {
   EnrollmentCheck,
   IncompleteNames,
+  MergeRequests,
 } from "@/components/diwan/admin/members/register-checks";
 import { titleFrom } from "@/lib/diwan/metadata";
 
@@ -14,6 +15,7 @@ const MembersPage = () => (
   <RequireModule module="members">
     <div className="grid gap-16">
       <MembersDirectory />
+      <MergeRequests />
       <IncompleteNames />
       <EnrollmentCheck />
     </div>

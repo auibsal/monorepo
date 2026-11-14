@@ -5,6 +5,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
+import { apiPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -13,7 +14,9 @@ import { PasswordInput } from "@/components/fields/password-input";
 import {
   AUIB_DOMAIN,
   MIN_PASSWORD_LENGTH,
+  newSignUpKey,
   signUpWithEmail,
+  unusualStudentNumber,
 } from "@/lib/auth/email";
 import { useAuth } from "@/lib/auth/provider";
 import { names as nameParts } from "@/lib/data";
@@ -108,6 +111,60 @@ const useSignUpContext = ({
   return { next, outside, partner };
 };
 
+/**
+ * "Wrong address?" on the inbox screen: the sign-up just made is deleted
+ * (it was never confirmed), and the form comes back with everything typed
+ * so the address can be put right; no second account is left behind.
+ */
+const WrongAddress = ({
+  email,
+  onDropped,
+  signUpKey,
+}: {
+  readonly email: string;
+  readonly onDropped: () => void;
+  readonly signUpKey: string;
+}) => {
+  const t = useTranslations("auth.signUp");
+  const [pending, setPending] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const fix = async () => {
+    setPending(true);
+    setFailed(false);
+    const response = await fetch(apiPath("/sign-up/wrong-address"), {
+      body: JSON.stringify({ email, key: signUpKey }),
+      headers: { "content-type": "application/json" },
+      method: "POST",
+    }).catch(() => null);
+    const body = (await response?.json().catch(() => null)) as {
+      dropped?: boolean;
+    } | null;
+    setPending(false);
+    if (body?.dropped) {
+      onDropped();
+    } else {
+      setFailed(true);
+    }
+  };
+  return (
+    <div className="grid gap-2">
+      <button
+        className="link justify-self-start"
+        disabled={pending}
+        onClick={fix}
+        type="button"
+      >
+        {t("wrongAddress")}
+      </button>
+      {failed ? (
+        <p className="type-caption" role="alert">
+          {t("wrongAddressFailed")}
+        </p>
+      ) : null}
+    </div>
+  );
+};
+
 export const SignUpForm = (props: SignUpFormProps) => {
   const t = useTranslations("auth");
   const tp = useTranslations("diwan.partnerJoin");
@@ -150,6 +207,9 @@ export const SignUpForm = (props: SignUpFormProps) => {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
+  // "Wrong address?" (decisions.md, Members): only this browser holds the
+  // key that deletes the sign-up it just made.
+  const [signUpKey] = useState(newSignUpKey);
   useScreenTop(sentTo);
   const human = useHumanCheck("sign-up");
 
@@ -178,6 +238,7 @@ export const SignUpForm = (props: SignUpFormProps) => {
       password: values.password,
       // The confirmation link brings the person back to what they started.
       redirectTo: callbackUrl(locale, next),
+      signUpKey,
       studiedAtAuib: !(auib || outside) && studied,
       titleForm: titleForm || undefined,
     });
@@ -199,6 +260,11 @@ export const SignUpForm = (props: SignUpFormProps) => {
         <ResendConfirmation
           email={sentTo}
           redirectTo={callbackUrl(locale, next)}
+        />
+        <WrongAddress
+          email={sentTo}
+          onDropped={() => setSentTo(undefined)}
+          signUpKey={signUpKey}
         />
       </>
     );
@@ -240,6 +306,11 @@ export const SignUpForm = (props: SignUpFormProps) => {
           <p className="type-caption" id={`${id}-email-hint`}>
             {t("signUp.emailHint", { domain: AUIB_DOMAIN })}
           </p>
+          {unusualStudentNumber(email) ? (
+            <p className="type-caption text-text" role="status">
+              {t("signUp.numberCheck")}
+            </p>
+          ) : null}
         </div>
         <div className="grid gap-2">
           <Label htmlFor={`${id}-password`}>{t("password")}</Label>

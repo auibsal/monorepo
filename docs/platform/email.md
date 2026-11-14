@@ -111,6 +111,10 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `announcement.broadcast` (a Resend Broadcast) | The President's go (The Council → Announcements; `core.send_announcement(id)`), only after the notice's test has reached the President in both languages (`/api/announcements/test`, recorded as `announcements.tested_at`, cleared by any change). Hudhud posts the same notice | "Society news and events" (`core.mailing_recipients('news')`), one Broadcast per language; at most one a week | Optional (each person's own preferences page) |
 | `newsletter.confirm` | A public sign-up | The address (double opt-in) | Direct |
 | `personal_email.confirm` | A personal email added | The new address only | Direct |
+| `address.code` | An AUIB address added in Settings, or a merge asked for | The address to prove only (a six-digit code, one hour) | Direct |
+| `account.sign_in_moved` | The sign-in address changed: an AUIB address added (by the person or the Director of Membership), leaving AUIB with a confirmed personal email, or a merge | The old address and the new one | Direct |
+| `merge.requested` | Someone proved two accounts are theirs | Whoever holds `members.manage` | Officer |
+| `merge.decided` | The Director of Membership approves or declines a merge | The person (the account that stayed) | Service |
 | `governance.concern_raised` | A concern is sent (urgent, at once); it names no one and carries none of the concern | The complaints panel's chair, the Vice President; one about the Vice President or the President to whoever holds `concerns.about_vp` or `concerns.about_president` | Officer |
 | `qirtas.revision_resent` | The writer sends back the revision the section editor asked for | That section editor | Officer |
 | `membership.parent_account` | A parent signs the consent for a member under 18 (`parent-consent`) or Qalam's consent (`qalam-parent-consent`, also making the student's guest account); the link makes their guest account with the Parent role | The parent | Service |

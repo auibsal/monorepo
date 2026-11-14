@@ -14,6 +14,7 @@ import {
   RecordEmails,
   ShortNameChoice,
 } from "./account-settings";
+import { AuibAddress, LeavingAuib, MergeAccounts } from "./addresses";
 import { DeleteAccount } from "./delete-account";
 import { DownloadData } from "./download-data";
 import { EsignSettings } from "./esign";
@@ -60,7 +61,12 @@ export const SettingsScreen = () => {
         <ShortNameChoice />
         <AccountLanguage />
         <ArabicFormChoice />
+        {/* The addresses (decisions.md, Members): an AUIB address added
+            later, the personal email, leaving AUIB and a second account. */}
+        <AuibAddress />
         {member ? <PersonalEmail /> : null}
+        {member ? <LeavingAuib /> : null}
+        <MergeAccounts />
         <RowList>
           {member ? (
             <li className="grid gap-1">

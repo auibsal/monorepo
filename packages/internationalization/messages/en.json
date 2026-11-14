@@ -144,7 +144,10 @@
         "feminine": "In the feminine (مديرة)"
       },
       "adultOnly": "Under 18, you sign up with your AUIB address, or through the invitation your school or parent was sent.",
-      "line": "By creating an account, you agree to the <terms>Terms</terms>, the <privacy>Privacy Notice</privacy>, and the <conduct>Code of Conduct</conduct> and to signing electronically."
+      "line": "By creating an account, you agree to the <terms>Terms</terms>, the <privacy>Privacy Notice</privacy>, and the <conduct>Code of Conduct</conduct> and to signing electronically.",
+      "wrongAddress": "Wrong address? Fix it",
+      "wrongAddressFailed": "That didn’t work. Sign up again with the right address; the other one is deleted after seven days if it isn’t confirmed.",
+      "numberCheck": "AUIB student numbers usually have 7 digits and start with the year you joined. Check your address; you can still go on."
     },
     "forgot": {
       "title": "Reset your password",
@@ -455,6 +458,11 @@
         "name": {
           "title": "Part of your official name is missing",
           "body": "Your account was made before the site asked for the full name. Write to the Director of Membership with your name as on your papers, and they will add it. Until then, your signatures and certificates carry the name on record."
+        },
+        "personalEmail": {
+          "title": "Add a personal email",
+          "body": "You have left AUIB, and your AUIB address will stop working. Add a personal email and confirm it; you will then sign in with it.",
+          "action": "Add it in Settings"
         }
       }
     },
@@ -1237,6 +1245,16 @@
           "lede": "Accounts from before the site asked for the full name. Each is locked; correct it on the person’s page, with a second officer, when they send their name as on their papers.",
           "missingEn": "English incomplete",
           "missingAr": "Arabic incomplete"
+        },
+        "merges": {
+          "title": "Merging two accounts",
+          "lede": "Someone proved with a code that both accounts are theirs. Approved, the account with the older number stays, with the other’s records; an AUIB address becomes its sign-in.",
+          "none": "No requests to merge accounts.",
+          "approve": "Merge them",
+          "decline": "Decline",
+          "merged": "Merged.",
+          "declined": "Declined; both accounts stay as they are.",
+          "number": "No. {number}"
         }
       },
       "member": {
@@ -1328,7 +1346,6 @@
           "left": "Left without graduating",
           "leftConfirm": "Make them an Associate Member",
           "leftDescription": "{name} left AUIB without graduating: they become an Associate Member with the same number, and any role they hold ends.",
-          "nowGuest": "{name} is now a guest.",
           "nowAssociate": "{name} is now an Associate Member."
         },
         "studentLife": "Student Life",
@@ -1343,6 +1360,13 @@
           "reason": "Reason, as the resolution states it",
           "submit": "Ask a second officer to approve",
           "sent": "Sent to the Desk for a second officer."
+        },
+        "auibAddress": {
+          "title": "AUIB address",
+          "body": "For someone who shows you their AUIB address: it becomes the address they sign in with, the old one their personal email, and the class follows it. They can also do this in Settings with a code.",
+          "label": "Their AUIB address",
+          "save": "Add the address",
+          "done": "Done. Their class is now {tier}."
         }
       },
       "verification": {
@@ -4954,6 +4978,53 @@
       "given": "You agreed to sign electronically on {date}.",
       "notGiven": "You have not agreed to sign electronically; each page you sign on asks you.",
       "withdraw": "Withdraw my consent"
+    },
+    "addresses": {
+      "errors": {
+        "email_not_auib": "Type an AUIB address, ending in @auib.edu.iq.",
+        "email_has_account": "That address already has an account of its own. If it is yours, ask to merge the two accounts.",
+        "email_in_use": "That address belongs to someone else’s account.",
+        "already_auib": "This account already signs in with an AUIB address.",
+        "too_soon": "A code was just sent. Wait a minute before asking again.",
+        "invalid_code": "That code is wrong or has expired. Ask for a new one.",
+        "no_account": "There is no confirmed account at that address.",
+        "merge_pending": "A merge request is already waiting for the Director of Membership.",
+        "not_a_student_member": "Only a student Member can say they have left AUIB.",
+        "unknown": "That didn’t work. Try again in a moment."
+      },
+      "auib": {
+        "why": "Signed up with another address? Add your AUIB address: it becomes the address you sign in with, the other one your personal email, and your class follows it (Member for students, Associate Member for faculty and staff).",
+        "label": "Your AUIB address",
+        "send": "Send a code",
+        "sent": "We sent a code to {email}. It works for one hour.",
+        "code": "The code",
+        "confirm": "Add the address",
+        "merge": "Ask to merge the two accounts",
+        "nowMember": "Done. You sign in with your AUIB address now, and you are a Member.",
+        "nowAssociate": "Done. You sign in with your AUIB address now, and you are an Associate Member."
+      },
+      "merge": {
+        "why": "Have a second account by mistake? Type its address and the code we send there. The Director of Membership then makes the two one, keeping the older number and everything in both.",
+        "label": "Your other account’s address",
+        "send": "Send a code",
+        "sent": "We sent a code to {email}. It works for one hour.",
+        "code": "The code",
+        "confirm": "Ask to merge",
+        "waiting": "Waiting for the Director of Membership to merge this account with {email}.",
+        "withdraw": "Withdraw"
+      },
+      "leaving": {
+        "why": "Graduated or left AUIB? Say so here. You become an Associate Member with the same account and number; the vote and any role end.",
+        "open": "I’ve left AUIB",
+        "withPersonal": "Your confirmed personal email becomes the address you sign in with.",
+        "withoutPersonal": "Add a personal email above first, or soon after: your AUIB address will stop working, and once the personal email is confirmed you sign in with it.",
+        "question": "Did you graduate?",
+        "graduated": "I graduated",
+        "left": "I left without graduating",
+        "cancel": "Cancel",
+        "confirm": "Become an Associate Member",
+        "done": "Done. You are an Associate Member now."
+      }
     }
   },
   "web": {

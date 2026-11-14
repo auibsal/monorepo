@@ -194,7 +194,13 @@ any schema change. Integration tests run against a local stack with
   `core.profiles.short_name`). The class comes from the address, never asked:
   an AUIB address ending in a number (`1241295@`, `name.1241295@`) is a
   student's, any other AUIB address faculty or staff
-  (`private.is_student_address`). Signed out, `/partners/apply` sends the
+  (`private.is_student_address`). The sign-in address changes only
+  through `private.move_sign_in`: an AUIB address added later with a
+  code (or by the Director of Membership), leaving AUIB (the confirmed
+  personal email takes over) or two accounts merged with Membership's
+  approval (`docs/platform/domain.md`, Addresses and classes). Sign-ups
+  never confirmed are deleted after seven days; "Wrong address?" deletes
+  one at once. Signed out, `/partners/apply` sends the
   person to `/sign-up?next=/partners/apply` and back to the memorandum. A password change
   on an old sign-in asks for an emailed code (secure password change);
   deleting the account needs a sign-in from the last 15 minutes

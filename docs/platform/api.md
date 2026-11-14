@@ -50,6 +50,7 @@ the secret is unset.
 | `/api/personal-email/confirm` | POST | The confirmation page | The emailed token | — |
 | `/api/push/test` | POST | The member’s notification settings | Member | — |
 | `/api/removal-requests` | POST | Anyone (a request to take something down) | Turnstile | per address |
+| `/api/sign-up/wrong-address` | POST | The inbox screen after sign-up ("Wrong address?") | The key the sign-up's browser kept | 5 in 10 minutes |
 | `/api/revalidate` | POST | Outside callers refreshing published pages | `REVALIDATE_SECRET` Bearer | — |
 | `/api/telegram/link` | POST | The member (link Telegram) | Member | — |
 | `/api/telegram/setup` | POST | The Diwan (set the webhook) | Member + permission | — |

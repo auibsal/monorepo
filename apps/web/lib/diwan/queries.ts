@@ -207,6 +207,20 @@ export const useCalendarToken = () => {
 };
 
 /**
+ * The sign-in address, the class it gives and what is on its way: an AUIB
+ * address waiting for its code, a merge waiting for Membership
+ * (decisions.md, Members).
+ */
+export const useMyAddresses = () => {
+  const { supabase, user } = useAuth();
+  return useQuery({
+    enabled: Boolean(user),
+    queryFn: () => membership.myAddresses(supabase),
+    queryKey: ["account", "addresses", user?.id],
+  });
+};
+
+/**
  * The person's consent to sign electronically (E-SIGN; decisions.md,
  * Documents and forms): asked once, at sign-up or at the next sign-in.
  */

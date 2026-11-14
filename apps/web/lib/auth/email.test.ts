@@ -7,6 +7,7 @@ import {
   sendPasswordReset,
   signUpWithEmail,
   toEmailAuthError,
+  unusualStudentNumber,
 } from "./email";
 
 describe("email helpers", () => {
@@ -226,5 +227,36 @@ describe("signing up", () => {
       invitation: "abc123",
       parent_email: "p@example.com",
     });
+  });
+});
+
+describe("unusualStudentNumber", () => {
+  test("passes the shapes AUIB gives", () => {
+    for (const address of [
+      "1241295@auib.edu.iq",
+      "name.1221002@auib.edu.iq",
+      "2520001@auib.edu.iq",
+      "2210001@auib.edu.iq",
+      "2620001@auib.edu.iq",
+      "name.02220006@auib.edu.iq",
+    ]) {
+      expect(unusualStudentNumber(address, 2026)).toBe(false);
+    }
+  });
+
+  test("warns on a length or a year that doesn't fit", () => {
+    for (const address of [
+      "124129@auib.edu.iq",
+      "11212345@auib.edu.iq",
+      "1291295@auib.edu.iq",
+      "9241295@auib.edu.iq",
+    ]) {
+      expect(unusualStudentNumber(address, 2026)).toBe(true);
+    }
+  });
+
+  test("says nothing of staff or other addresses", () => {
+    expect(unusualStudentNumber("first.last@auib.edu.iq", 2026)).toBe(false);
+    expect(unusualStudentNumber("1@example.com", 2026)).toBe(false);
   });
 });

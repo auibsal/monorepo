@@ -30,6 +30,62 @@ export const auibLocalPart = (typed: string) =>
 
 export const MIN_PASSWORD_LENGTH = 12;
 
+const STUDENT_LOCAL = /^(?:[^.@]+\.)?(\d+)$/u;
+const ACADEMY_NUMBER = /^0\d{7}$/u;
+
+/**
+ * Whether an AUIB student number has an unusual shape, for a soft warning
+ * at sign-up (decisions.md, Members): undergraduate numbers have 7 digits
+ * and start with the year of entry, as 1 or 2 and two digits ("124…" is
+ * 2024, "221…" is 2021) or as two digits ("25…" is 2025); the English
+ * Language Academy's have 8 and start with 0. A year still to come counts
+ * as unusual. It only warns: the person may go on.
+ */
+export const unusualStudentNumber = (
+  email: string,
+  year = new Date().getFullYear()
+) => {
+  const address = normalizeEmail(email);
+  if (!isAuibEmail(address)) {
+    return false;
+  }
+  const number = STUDENT_LOCAL.exec(address.split("@")[0] ?? "")?.[1];
+  if (!number || ACADEMY_NUMBER.test(number)) {
+    return false;
+  }
+  if (number.length !== 7) {
+    return true;
+  }
+  const latest = year % 100;
+  const isYear = (digits: string) => {
+    const value = Number(digits);
+    return value >= 18 && value <= latest;
+  };
+  const withPrefix =
+    (number.startsWith("1") || number.startsWith("2")) &&
+    isYear(number.slice(1, 3));
+  return !(withPrefix || isYear(number.slice(0, 2)));
+};
+
+/**
+ * A random key the sign-up's browser keeps, for "Wrong address?": only its
+ * hash goes with the sign-up.
+ */
+export const newSignUpKey = () => {
+  const bytes = crypto.getRandomValues(new Uint8Array(24));
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+};
+
+const sha256Hex = async (text: string) => {
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(text)
+  );
+  return Array.from(new Uint8Array(digest), (b) =>
+    b.toString(16).padStart(2, "0")
+  ).join("");
+};
+
 export type EmailAuthErrorCode =
   | "captcha_failed"
   | "email_not_confirmed"
@@ -140,6 +196,8 @@ export interface SignUpDetails {
   password: string;
   /** Where the confirmation link lands (/auth/callback). */
   redirectTo: string;
+  /** The browser's key for "Wrong address?" (only its hash is sent). */
+  signUpKey?: string;
   /** Any other address: "I studied at AUIB" sends an Associate request. */
   studiedAtAuib?: boolean;
   /** The Arabic form of a title that names the person, one tap. */
@@ -239,6 +297,9 @@ export const signUpWithEmail = async (
         ...(details.titleForm ? { title_form: details.titleForm } : {}),
         locale: details.locale,
         mailing: details.mailing ? "true" : "false",
+        ...(details.signUpKey
+          ? { sign_up_key: await sha256Hex(details.signUpKey) }
+          : {}),
       },
       emailRedirectTo: details.redirectTo,
     },

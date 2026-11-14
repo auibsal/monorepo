@@ -168,6 +168,70 @@ export const personalEmailError = (
   return "unknown";
 };
 
+// ── Addresses and classes (decisions.md, Members) ───────────────────────────
+
+/** What Settings shows about the sign-in address and what is on its way. */
+export interface MyAddresses {
+  auib_pending: string | null;
+  left_auib_at: string | null;
+  merge_code_sent: string | null;
+  merge_pending: string | null;
+  personal_verified: boolean;
+  sign_in: string;
+  sign_in_auib: boolean;
+  student: boolean;
+  tier: string | null;
+}
+
+export const myAddresses = async (
+  client: Client
+): Promise<MyAddresses | null> =>
+  (unwrap(await client.schema("core").rpc("my_addresses"))?.[0] as
+    | MyAddresses
+    | undefined) ?? null;
+
+/** Sends a code to the AUIB address (email_not_auib, email_has_account…). */
+export const requestAuibAddress = async (client: Client, email: string) =>
+  unwrap(await client.schema("core").rpc("request_auib_address", { email }));
+
+/** The code typed in: the AUIB address becomes the sign-in. */
+export const confirmAuibAddress = async (client: Client, code: string) =>
+  unwrap(await client.schema("core").rpc("confirm_auib_address", { code }));
+
+/** "I've left AUIB": an Associate from now on. */
+export const reportLeaving = async (client: Client, graduated: boolean) =>
+  unwrap(await client.schema("core").rpc("report_leaving", { graduated }));
+
+/** Sends a code to the other account's address. */
+export const requestMerge = async (client: Client, email: string) =>
+  unwrap(await client.schema("core").rpc("request_merge", { email }));
+
+/** The code typed in: the request goes to the Director of Membership. */
+export const proveMerge = async (client: Client, code: string) =>
+  unwrap(await client.schema("core").rpc("prove_merge", { code }));
+
+export const withdrawMerge = async (client: Client) =>
+  unwrap(await client.schema("core").rpc("withdraw_merge"));
+
+const ADDRESS_ERRORS = [
+  "email_not_auib",
+  "email_has_account",
+  "email_in_use",
+  "already_auib",
+  "too_soon",
+  "invalid_code",
+  "no_account",
+  "merge_pending",
+  "not_a_student_member",
+] as const;
+export type AddressError = (typeof ADDRESS_ERRORS)[number] | "unknown";
+
+/** Why an address step was refused, from the database's message. */
+export const addressError = (error: unknown): AddressError => {
+  const message = error instanceof Error ? error.message : "";
+  return ADDRESS_ERRORS.find((code) => message.includes(code)) ?? "unknown";
+};
+
 // ── Admin (members.manage / members.verify / roles.assign) ──────────────────
 
 /** Member, Associate Member, Honorary Member (decisions.md). */

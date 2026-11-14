@@ -651,6 +651,34 @@ export type Database = {
         };
         Relationships: [];
       };
+      address_codes: {
+        Row: {
+          code: string;
+          email: string;
+          purpose: string;
+          requested_at: string;
+          tries: number;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          code: string;
+          email: string;
+          purpose: string;
+          requested_at?: string;
+          tries?: number;
+          user_id: string;
+        };
+        Update: {
+          code?: string;
+          email?: string;
+          purpose?: string;
+          requested_at?: string;
+          tries?: number;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       announcement_deliveries: {
         Row: {
           announcement_id: string;
@@ -1596,6 +1624,7 @@ export type Database = {
         Args: { emails: string[] };
         Returns: number;
       };
+      confirm_auib_address: { Args: { code: string }; Returns: string };
       confirm_personal_email: { Args: { token: string }; Returns: string };
       current_semester: {
         Args: Record<PropertyKey, never>;
@@ -1625,6 +1654,10 @@ export type Database = {
           starts_on: string;
         }[];
       };
+      drop_unconfirmed_sign_up: {
+        Args: { email: string; sign_up_key: string };
+        Returns: boolean;
+      };
       handover: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1646,6 +1679,20 @@ export type Database = {
         }[];
       };
       mark_notion_invited: { Args: { member: string }; Returns: undefined };
+      my_addresses: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          auib_pending: string;
+          left_auib_at: string;
+          merge_code_sent: string;
+          merge_pending: string;
+          personal_verified: boolean;
+          sign_in: string;
+          sign_in_auib: boolean;
+          student: boolean;
+          tier: string;
+        }[];
+      };
       my_esign: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1775,6 +1822,7 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      prove_merge: { Args: { code: string }; Returns: string };
       record_history: {
         Args: { record_id: string; record_table: string };
         Returns: {
@@ -1788,6 +1836,9 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: undefined;
       };
+      report_leaving: { Args: { graduated: boolean }; Returns: string };
+      request_auib_address: { Args: { email: string }; Returns: undefined };
+      request_merge: { Args: { email: string }; Returns: undefined };
       request_personal_email: { Args: { email: string }; Returns: undefined };
       restore_account: { Args: Record<PropertyKey, never>; Returns: boolean };
       retention_due: {
@@ -1942,6 +1993,7 @@ export type Database = {
         }[];
       };
       telegram_whoami: { Args: { telegram_id: number }; Returns: Json };
+      withdraw_merge: { Args: Record<PropertyKey, never>; Returns: undefined };
     };
     Enums: {
       [_ in never]: never;
@@ -6544,6 +6596,8 @@ export type Database = {
       memberships: {
         Row: {
           created_at: string;
+          left_auib_at: string | null;
+          left_graduated: boolean | null;
           member_since: string;
           renewed_at: string | null;
           tier: Database["membership"]["Enums"]["tier"];
@@ -6553,6 +6607,8 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           created_at?: string;
+          left_auib_at?: string | null;
+          left_graduated?: boolean | null;
           member_since?: string;
           renewed_at?: string | null;
           tier?: Database["membership"]["Enums"]["tier"];
@@ -6561,11 +6617,50 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          left_auib_at?: string | null;
+          left_graduated?: boolean | null;
           member_since?: string;
           renewed_at?: string | null;
           tier?: Database["membership"]["Enums"]["tier"];
           updated_at?: string;
           user_id?: string;
+        };
+        Relationships: [];
+      };
+      merge_requests: {
+        Row: {
+          decided_at: string | null;
+          decided_by: string | null;
+          id: string;
+          kept_id: string | null;
+          other_email: string;
+          other_id: string | null;
+          requested_at: string;
+          status: string;
+          user_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          kept_id?: string | null;
+          other_email: string;
+          other_id?: string | null;
+          requested_at?: string;
+          status?: string;
+          user_id?: string | null;
+        };
+        Update: {
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          kept_id?: string | null;
+          other_email?: string;
+          other_id?: string | null;
+          requested_at?: string;
+          status?: string;
+          user_id?: string | null;
         };
         Relationships: [];
       };
@@ -6835,6 +6930,10 @@ export type Database = {
         Args: { approve: boolean; request_id: string; why?: string };
         Returns: undefined;
       };
+      decide_merge: {
+        Args: { approve: boolean; request: string };
+        Returns: string;
+      };
       decide_verification: {
         Args: { approve: boolean; note?: string; request_id: string };
         Returns: undefined;
@@ -6878,6 +6977,23 @@ export type Database = {
       invitations_waiting: { Args: { list: string }; Returns: Json };
       is_member: { Args: { uid?: string }; Returns: boolean };
       is_voting_member: { Args: { uid?: string }; Returns: boolean };
+      merge_requests: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          other_class: string;
+          other_email: string;
+          other_id: string;
+          other_name: string;
+          other_number: number;
+          requested_at: string;
+          user_class: string;
+          user_email: string;
+          user_id: string;
+          user_name: string;
+          user_number: number;
+        }[];
+      };
       my_card: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6982,6 +7098,10 @@ export type Database = {
           hours: number;
           user_id: string;
         }[];
+      };
+      set_auib_address: {
+        Args: { email: string; member: string };
+        Returns: string;
       };
       set_tier: {
         Args: {

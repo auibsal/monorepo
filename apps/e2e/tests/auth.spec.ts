@@ -58,6 +58,46 @@ test("one sign-up page: the address, the class, the official name, one line", as
   await expectAccessible(page);
 });
 
+test("a mistyped address is put right from the inbox screen, with no second account", async ({
+  page,
+}) => {
+  const stamp = Date.now();
+  const typo = `e2e.${stamp}@auib.edu.iq`;
+  await page.goto(`${urls.web}/sign-up`);
+  await page.getByLabel("Email").fill(`${stamp}1@auib.edu.iq`);
+  // A student number of an unusual shape warns, and lets the person go on.
+  await expect(page.getByText(/usually have 7 digits/u)).toBeVisible();
+  await page.getByLabel("Email").fill(typo);
+  await expect(page.getByText(/usually have 7 digits/u)).toHaveCount(0);
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
+  const english = page.getByRole("group", { name: "Your name in English" });
+  await english.getByLabel("Name", { exact: true }).fill("Typo");
+  await english.getByLabel("Father’s name", { exact: true }).fill("Kareem");
+  await english.getByLabel("Grandfather’s name").fill("Hasan");
+  await english.getByLabel(/Family name/u).fill("Member");
+  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
+  await arabic.getByLabel("Name", { exact: true }).fill("عضو");
+  await arabic.getByLabel("Father’s name", { exact: true }).fill("كريم");
+  await arabic.getByLabel("Grandfather’s name").fill("حسن");
+  await arabic.getByLabel(/Family name/u).fill("جديد");
+  await page.getByRole("radio", { name: /In the masculine/u }).click();
+  await page.getByRole("radio", { name: "Yes, 18 or older" }).click();
+  await page.getByRole("button", { name: "Create account" }).click();
+  await expect(page.getByText("Check your inbox")).toBeVisible();
+
+  await page.getByRole("button", { name: "Wrong address? Fix it" }).click();
+  // The form is back with everything typed, and the address is free.
+  await expect(page.getByLabel("Email")).toHaveValue(typo);
+  await expect(
+    english.getByLabel("Name", { exact: true })
+  ).toHaveValue("Typo");
+  const { count } = await admin()
+    .schema("governance")
+    .rpc("user_by_email", { email: typo })
+    .then((r) => ({ count: r.data ? 1 : 0 }));
+  expect(count).toBe(0);
+});
+
 test("a partner signs up on the one page, then comes back to the memorandum", async ({
   page,
 }) => {

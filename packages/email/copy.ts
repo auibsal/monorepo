@@ -626,6 +626,151 @@ export const personalEmailConfirm = (lang: Lang, confirm: string) =>
     ],
   }));
 
+const ADDRESS_CODE: Record<
+  "auib_address" | "merge",
+  Record<Lang, { heading: string; line: string }>
+> = {
+  auib_address: {
+    ar: {
+      heading: "رمز إضافة بريدك الجامعي",
+      line: "طلب أحدهم إضافة هذا العنوان الجامعي إلى حسابه في جمعية الفنون والآداب. أدخل هذا الرمز في «الإعدادات» ليصبح عنوان تسجيل الدخول.",
+    },
+    en: {
+      heading: "Your code to add your AUIB address",
+      line: "Someone asked to add this AUIB address to their account with the AUIB Society of Arts and Letters. Type this code in Settings to make it the address you sign in with.",
+    },
+  },
+  merge: {
+    ar: {
+      heading: "رمز دمج حسابيك",
+      line: "طلب أحدهم، من حساب آخر في جمعية الفنون والآداب، دمج ذلك الحساب مع الحساب المسجَّل بهذا العنوان. أدخل هذا الرمز في «الإعدادات» لتأكيد أن الحسابين لك؛ ثم يراجع مدير العضوية الطلب.",
+    },
+    en: {
+      heading: "Your code to merge your accounts",
+      line: "Someone asked, from another account with the AUIB Society of Arts and Letters, to merge it with the account at this address. Type this code in Settings to confirm both accounts are yours; the Director of Membership then reviews the request.",
+    },
+  },
+};
+
+/**
+ * A code for an address the person says is theirs (decisions.md,
+ * Members): a new AUIB address, or another account's address to merge.
+ * Sent to that address only.
+ */
+export const addressCode = (
+  lang: Lang,
+  purpose: "auib_address" | "merge",
+  code: string
+) =>
+  build(lang, (l) => ({
+    heading: ADDRESS_CODE[purpose][l].heading,
+    paragraphs: [
+      ADDRESS_CODE[purpose][l].line,
+      l === "ar" ? `الرمز: ${code}` : `The code: ${code}`,
+      l === "ar"
+        ? "يعمل الرمز ساعة واحدة. إن لم تكن أنت فتجاهل هذه الرسالة؛ لن يتغير شيء."
+        : "The code works for one hour. If it was not you, ignore this email; nothing will change.",
+    ],
+  }));
+
+const MOVED_REASON: Record<
+  "auib_address" | "left_auib" | "membership" | "merge",
+  Record<Lang, string>
+> = {
+  auib_address: {
+    ar: "أضفت عنوانك الجامعي إلى حسابك.",
+    en: "You added your AUIB address to your account.",
+  },
+  left_auib: {
+    ar: "غادرت الجامعة الأمريكية في بغداد، فأصبح بريدك الشخصي المؤكَّد عنوان تسجيل الدخول.",
+    en: "You left AUIB, so your confirmed personal email is now the address you sign in with.",
+  },
+  membership: {
+    ar: "أضاف مدير العضوية عنوانك الجامعي إلى حسابك.",
+    en: "The Director of Membership added your AUIB address to your account.",
+  },
+  merge: {
+    ar: "وافق مدير العضوية على دمج حسابيك في حساب واحد.",
+    en: "The Director of Membership approved merging your two accounts into one.",
+  },
+};
+
+/**
+ * The sign-in address changed: sent to the old address and the new one,
+ * so either can say if it was not them.
+ */
+export const signInMoved = (
+  lang: Lang,
+  reason: keyof typeof MOVED_REASON,
+  to: string,
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: account(app, l, "/account/settings"),
+    heading:
+      l === "ar"
+        ? "تغيّر عنوان تسجيل الدخول"
+        : "The address you sign in with has changed",
+    paragraphs: [
+      MOVED_REASON[reason][l],
+      l === "ar"
+        ? `تسجّل الدخول الآن بالعنوان ⁦${to}⁩، بكلمة المرور نفسها.`
+        : `You now sign in with ${to}, with the same password.`,
+      l === "ar"
+        ? "إن لم تكن أنت، فردّ على هذه الرسالة الآن."
+        : "If this wasn’t you, reply to this email now.",
+    ],
+  }));
+
+/** For the Director of Membership: someone asks to merge two accounts. */
+export const mergeRequested = (lang: Lang, app: string) =>
+  build(lang, (l) => ({
+    action: diwan(app, l, "/membership#merges"),
+    heading: l === "ar" ? "طلب لدمج حسابين" : "A request to merge two accounts",
+    paragraphs: [
+      l === "ar"
+        ? "أثبت أحد الأشخاص بالرمز أن حسابين في الموقع له، ويطلب دمجهما في حساب واحد. راجع الحسابين في «سجل الأعضاء» ووافق على الطلب أو ارفضه."
+        : "Someone proved with a code that two accounts on the site are theirs and asks to merge them into one. Look at both in the Register, then approve or decline.",
+    ],
+  }));
+
+const MERGE_DECIDED: Record<
+  "approved" | "declined",
+  Record<Lang, { heading: string; line: string }>
+> = {
+  approved: {
+    ar: {
+      heading: "أصبح حساباك حسابًا واحدًا",
+      line: "وافق مدير العضوية على طلبك. بقي الحساب ذو الرقم الأقدم، وانتقل إليه كل ما كان في الحساب الآخر.",
+    },
+    en: {
+      heading: "Your two accounts are now one",
+      line: "The Director of Membership approved your request. The account with the older number stayed, and everything in the other account moved onto it.",
+    },
+  },
+  declined: {
+    ar: {
+      heading: "لم يُدمج حساباك",
+      line: "راجع مدير العضوية طلبك ولم يوافق عليه، فبقي الحسابان كما هما. إن ظننت أن في الأمر خطأ، فردّ على هذه الرسالة.",
+    },
+    en: {
+      heading: "Your accounts were not merged",
+      line: "The Director of Membership looked at your request and did not approve it, so both accounts stay as they are. If you think this is a mistake, reply to this email.",
+    },
+  },
+};
+
+/** The Director's answer to a merge request. */
+export const mergeDecided = (lang: Lang, approved: boolean, app: string) =>
+  build(lang, (l) => {
+    const words = MERGE_DECIDED[approved ? "approved" : "declined"][l];
+    return {
+      action: account(app, l, "/account"),
+      heading: words.heading,
+      paragraphs: [words.line],
+    };
+  });
+
 const SOCIETY_AR = "جمعية الفنون والآداب في الجامعة الأمريكية";
 
 /** A partner invitation's heading and first lines, by kind and language. */
