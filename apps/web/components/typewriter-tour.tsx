@@ -1,15 +1,15 @@
 import type { Locale } from "@repo/internationalization";
+import { formatNumber } from "@repo/internationalization/format";
 import { getTranslations } from "next-intl/server";
 import { Section } from "@/components/section";
 import { TypingToy } from "@/components/typing-toy";
-import { localized, programmes } from "@/lib/data";
+import { programmes } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 
 /**
- * The Typewriter Tour's Six Words wall (the design review A29, Nov 4,
- * 2026): the cards transcribed from the Tour (`programmes.six_words_wall`,
- * approved only), in the page's language, set in Ubuntu Mono like the
- * typewriter; and a typewriter to try, which keeps nothing (A30).
+ * The Typewriter Tour's six words (decisions.md, Members): each page is
+ * its writer's and private, so the Tour's page shows counts only; and a
+ * typewriter to try, which keeps nothing.
  */
 export const TypewriterTourWall = async ({
   locale,
@@ -17,32 +17,21 @@ export const TypewriterTourWall = async ({
   readonly locale: Locale;
 }) => {
   const t = await getTranslations({ locale, namespace: "web.tour" });
-  const wall = (
-    await readPublished(
-      ["programmes"],
-      (c) => programmes.sixWordsWall(c, 120),
-      []
-    )
-  ).filter((entry) => entry.language === locale);
+  const counts = await readPublished(
+    ["programmes"],
+    (c) => programmes.sixWordsCounts(c),
+    { pages: 0, writers: 0 }
+  );
   return (
     <>
-      {wall.length > 0 ? (
+      {Number(counts.pages) > 0 ? (
         <Section id="six-words" title={t("wall")}>
-          <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
-            {wall.map((entry) => (
-              <li
-                className="border-line py-space-4 grid content-start gap-1 border-t"
-                key={entry.id}
-              >
-                <p className="font-mono text-lg">{entry.text}</p>
-                {localized(entry, "author", locale) ? (
-                  <p className="type-caption text-text-secondary">
-                    {localized(entry, "author", locale)}
-                  </p>
-                ) : null}
-              </li>
-            ))}
-          </ul>
+          <p className="type-body max-w-[60ch]">
+            {t("counts", {
+              pages: formatNumber(Number(counts.pages)),
+              writers: formatNumber(Number(counts.writers)),
+            })}
+          </p>
         </Section>
       ) : null}
       <Section id="try" title={t("try")}>

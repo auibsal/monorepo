@@ -7,13 +7,14 @@ import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { ErrorLine } from "@/components/diwan/admin/kit";
-import { DiwanPage, RowList } from "@/components/diwan/page";
+import { DiwanSection, RowList } from "@/components/diwan/page";
 import { SectionSpinner } from "@/components/diwan/states";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, programmes } from "@/lib/data";
 
 /**
- * Your applications (decisions.md, Get involved and roles): where each stands, an interview's
+ * Your applications, in Your account → Roles (decisions.md, Get involved
+ * and roles): where each stands, an interview's
  * time, an offer to accept or decline within 7 days, and withdrawing,
  * which is kept as a status.
  */
@@ -45,7 +46,7 @@ export const Applications = () => {
     onSuccess: refresh,
   });
   return (
-    <DiwanPage lede={t("lede")} title={t("title")}>
+    <DiwanSection description={t("lede")} id="applications" title={t("title")}>
       {list.isPending ? <SectionSpinner /> : null}
       {list.data?.length === 0 ? (
         <p className="type-body text-text-secondary">
@@ -129,6 +130,6 @@ export const Applications = () => {
         })}
       </RowList>
       <ErrorLine error={withdraw.error ?? answer.error ?? list.error} />
-    </DiwanPage>
+    </DiwanSection>
   );
 };

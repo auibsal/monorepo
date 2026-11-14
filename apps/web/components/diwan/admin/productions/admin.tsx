@@ -12,6 +12,7 @@ import { hasPermission } from "@/lib/rbac";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
 import { SectionTabs } from "../admin-shell";
+import { CreditedNames } from "../credited-names";
 import {
   AdminHeading,
   BilingualField,
@@ -239,6 +240,7 @@ export const ProductionsAdmin = () => {
         rowKey={(p) => p.id}
         rows={list.data ?? []}
       />
+      {canPropose ? <CreditedNames /> : null}
     </div>
   );
 };

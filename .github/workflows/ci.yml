@@ -34,6 +34,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: high
@@ -47,6 +49,8 @@ jobs:
       pull-requests: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       # GitHub builds a squash merge's message from every commit in the pull
       # request, and skips every workflow on main when that message carries
       # one of its skip markers: no CI, no migration, no deployment (it
@@ -149,6 +153,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
@@ -170,7 +176,7 @@ jobs:
         run: |
           set -e
           test -d apps/web/.next/static || { echo "Missing apps/web/.next/static"; exit 1; }
-          if grep -rqE "sb_secret_[A-Za-z0-9_-]{8,}|SUPABASE_SECRET_KEY|RESEND_TOKEN|CRON_SECRET|REVALIDATE_SECRET|DATABASE_WEBHOOK_SECRET|TELEGRAM_BOT_TOKEN|VAPID_PRIVATE_KEY|GOOGLE_WALLET_PRIVATE_KEY|TURNSTILE_SECRET_KEY|RESEND_WEBHOOK_SECRET|NOTION_WEBHOOK_SECRET|VERCEL_WEBHOOK_SECRET|sk_(dev|prod)_[A-Za-z0-9_-]{8,}" apps/web/.next/static; then
+          if grep -rqE "sb_secret_[A-Za-z0-9_-]{8,}|SUPABASE_SECRET_KEY|RESEND_TOKEN|CRON_SECRET|REVALIDATE_SECRET|DATABASE_WEBHOOK_SECRET|TELEGRAM_BOT_TOKEN|GOOGLE_WALLET_PRIVATE_KEY|TURNSTILE_SECRET_KEY|RESEND_WEBHOOK_SECRET|NOTION_WEBHOOK_SECRET|VERCEL_WEBHOOK_SECRET|sk_(dev|prod)_[A-Za-z0-9_-]{8,}" apps/web/.next/static; then
             echo "A secret name or value reached a client bundle."
             exit 1
           fi
@@ -181,6 +187,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json
@@ -236,6 +244,8 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version-file: package.json

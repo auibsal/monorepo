@@ -17,11 +17,7 @@ const presets = envPresets(auth(), core(), database(), email(), telegram());
  */
 export const env = withPresets(
   createEnv({
-    client: {
-      // Web Push: the public half of the VAPID pair; the private half is
-      // server-only below.
-      NEXT_PUBLIC_VAPID_PUBLIC_KEY: z.string().min(80).optional(),
-    },
+    client: {},
     // Treat KEY="" (as in .env.example) as unset.
     emptyStringAsUndefined: true,
     extends: presets,
@@ -32,14 +28,12 @@ export const env = withPresets(
       GOOGLE_WALLET_PRIVATE_KEY: process.env.GOOGLE_WALLET_PRIVATE_KEY,
       GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL:
         process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL,
-      NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
       NOTION_TOKEN: process.env.NOTION_TOKEN,
       NOTION_WEBHOOK_SECRET: process.env.NOTION_WEBHOOK_SECRET,
       RESEND_WEBHOOK_SECRET: process.env.RESEND_WEBHOOK_SECRET,
       REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
       SEND_EMAIL_HOOK_SECRET: process.env.SEND_EMAIL_HOOK_SECRET,
       TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
-      VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
       VERCEL_WEBHOOK_SECRET: process.env.VERCEL_WEBHOOK_SECRET,
     },
     server: {
@@ -76,9 +70,6 @@ export const env = withPresets(
       // forms the API routes take (forms, removal requests, the Sunday
       // Paper, Associate requests). Unset locally: no check.
       TURNSTILE_SECRET_KEY: z.string().min(10).optional(),
-      // Web Push signing key. Without it (or the public key) notices go by
-      // email only.
-      VAPID_PRIVATE_KEY: z.string().min(40).optional(),
       // Vercel's webhook secret, for failed deploys at /api/hooks/vercel
       // (a staff alert to the Council's topic).
       VERCEL_WEBHOOK_SECRET: z.string().min(16).optional(),

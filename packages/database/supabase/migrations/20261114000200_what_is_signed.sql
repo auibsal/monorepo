@@ -415,3 +415,37 @@ alter table governance.form_types
 
 comment on column governance.form_types.summary_en is
   'Three lines on what the signer agrees to, above the full text (decisions.md, Documents and forms). Written by the Governance chat; staff see "Summary to come" until then.';
+
+-- The owner reads their own email choices and short form (Settings).
+drop function if exists core.my_private_profile();
+drop function if exists private.my_private_profile();
+
+create function private.my_private_profile()
+returns table (
+  personal_email text, notify_email boolean, title_form text, short_name text,
+  email_signed_copy boolean, email_receipts boolean, email_daily_updates boolean
+)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select p.personal_email, p.notify_email, p.title_form, p.short_name,
+    p.email_signed_copy, p.email_receipts, p.email_daily_updates
+  from core.profiles p where p.id = auth.uid();
+$$;
+revoke all on function private.my_private_profile() from public, anon;
+grant execute on function private.my_private_profile() to authenticated, service_role;
+
+create function core.my_private_profile()
+returns table (
+  personal_email text, notify_email boolean, title_form text, short_name text,
+  email_signed_copy boolean, email_receipts boolean, email_daily_updates boolean
+)
+language sql
+stable
+security invoker
+set search_path = ''
+as $$ select * from private.my_private_profile() $$;
+revoke all on function core.my_private_profile() from public, anon;
+grant execute on function core.my_private_profile() to authenticated, service_role;

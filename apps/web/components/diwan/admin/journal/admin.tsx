@@ -15,7 +15,6 @@ import { journal, localized, sanitizeRichText, unwrap } from "@/lib/data";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermissionAnywhere, type Permission } from "@/lib/rbac";
-import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
 import { type SectionTab, SectionTabs } from "../admin-shell";
 import {
@@ -737,14 +736,9 @@ export const ContributorPage = ({ slug }: { readonly slug: string }) => {
     <div className="grid max-w-3xl gap-8">
       <AdminHeading
         actions={
-          <>
-            <Link className="link" href={back}>
-              {t("back")}
-            </Link>
-            {row.slug ? (
-              <OnTheSite href={`/qirtas/authors/${row.slug}`} />
-            ) : null}
-          </>
+          <Link className="link" href={back}>
+            {t("back")}
+          </Link>
         }
         title={localized(row, "name", locale)}
       />

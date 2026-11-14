@@ -254,6 +254,40 @@ as $$ select private.set_credited_name(member, name_en, name_ar) $$;
 revoke all on function programmes.set_credited_name(uuid, text, text) from public, anon;
 grant execute on function programmes.set_credited_name(uuid, text, text) to authenticated;
 
+-- Who has a credited name, for Media and the Artistic Director.
+create function private.credited_names()
+returns table (user_id uuid, name_en text, name_ar text, credited_en text, credited_ar text)
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+begin
+  if not (private.has_permission_anywhere('content.manage')
+      or private.has_permission_anywhere('productions.manage')) then
+    raise exception 'Only Media or the Artistic Director sees credited names'
+      using errcode = '42501';
+  end if;
+  return query
+  select p.id, p.full_name_en, p.full_name_ar, p.credited_name_en, p.credited_name_ar
+  from core.profiles p
+  where p.credited_name_en is not null or p.credited_name_ar is not null
+  order by lower(p.full_name_en);
+end;
+$$;
+revoke all on function private.credited_names() from public, anon;
+grant execute on function private.credited_names() to authenticated;
+
+create function programmes.credited_names()
+returns table (user_id uuid, name_en text, name_ar text, credited_en text, credited_ar text)
+language sql
+stable
+security invoker
+set search_path = ''
+as $$ select * from private.credited_names() $$;
+revoke all on function programmes.credited_names() from public, anon;
+grant execute on function programmes.credited_names() to authenticated;
+
 -- Next Stop's host is credited on screen as "Hassan Sadeq" (decisions.md,
 -- Next Stop; set here once for the seat's current holder, as Media would).
 update core.profiles

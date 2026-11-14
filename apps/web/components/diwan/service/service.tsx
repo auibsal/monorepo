@@ -14,6 +14,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { Applications } from "@/components/account/applications";
 import { SelectInput } from "@/components/diwan/admin/kit";
 import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
@@ -86,6 +87,7 @@ export const Service = () => {
 
   return (
     <DiwanPage lede={t("rolesLede")} narrow title={t("rolesTitle")}>
+      <Applications />
       <MyRoles />
       <Handovers />
       <SalCard>

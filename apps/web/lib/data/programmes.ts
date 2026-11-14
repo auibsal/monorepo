@@ -23,64 +23,17 @@ export const removalRequestSchema = z.object({
   requester_name: z.string().trim().min(1).max(200),
 });
 
-export const sixWordsWall = async (client: Client, limit = 200) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .rpc("six_words_wall", { max_results: limit })
-  ) ?? [];
+/** The Tour's page: counts only (decisions.md, Members). */
+export const sixWordsCounts = async (client: Client) =>
+  (unwrap(await client.schema("programmes").rpc("six_words_counts")) ??
+    [])[0] ?? {
+    pages: 0,
+    writers: 0,
+  };
 
-/** A member's pages they chose to show, for their profile. */
-export const profileSixWords = async (client: Client, authorSlug: string) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .rpc("profile_six_words", { author_slug: authorSlug })
-  ) ?? [];
-
-/** The signed-in member's own pages, with who sees each. */
-export const myPages = async (client: Client, userId: string) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .from("six_words")
-      .select(
-        "id, text, language, tour, station, visibility, show_full_name, publishable, photo_path, created_at"
-      )
-      .eq("user_id", userId)
-      .order("created_at")
-  ) ?? [];
-
-/** The writer chooses who sees a page: the consent record. */
-export const setPageVisibility = async (
-  client: Client,
-  pageId: string,
-  visibility: PageVisibility
-) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .from("six_words")
-      .update({ visibility })
-      .eq("id", pageId)
-  );
-
-/**
- * On the Tour's wall a page shows the first name and last initial unless
- * the writer chooses the full name (decisions.md, The Typewriter Tour and invitations).
- */
-export const setPageFullName = async (
-  client: Client,
-  pageId: string,
-  full: boolean
-) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .from("six_words")
-      .update({ show_full_name: full })
-      .eq("id", pageId)
-  );
+/** The writer's own pages, each with the event it was typed at. */
+export const mySixWords = async (client: Client) =>
+  unwrap(await client.schema("programmes").rpc("my_six_words")) ?? [];
 
 export const programmes = async (client: Client) =>
   unwrap(

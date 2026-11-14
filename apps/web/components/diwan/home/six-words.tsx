@@ -1,114 +1,78 @@
 "use client";
 
-import { Checkbox } from "@repo/brand/components/ui/checkbox";
-import { Label } from "@repo/brand/components/ui/label";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import type { Locale } from "@repo/internationalization";
+import { formatLongDate } from "@repo/internationalization/format";
+import { useQuery } from "@tanstack/react-query";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
-import { programmes } from "@/lib/data";
-import { ErrorLine, SelectInput } from "../admin/kit";
-import { PagePhoto } from "../tour-station";
-import { Section } from "./section";
+import { localized, programmes, unwrap } from "@/lib/data";
+import { DiwanSection, RowList } from "../page";
 
 /**
- * The member's pages from the Typewriter Tour (decisions.md): typed on
- * the Tour, never on the site, and added to their account when they join
- * with the email they gave. Each stays private until they choose whether it
- * also appears on their profile or on the Tour's page: that choice is the
- * consent record. Shown only once there is one.
+ * The writer's six-word pages (decisions.md, Members), in Your account →
+ * Events, each under the event it was typed at. Private: nothing shows
+ * them publicly. Shown only once there is one.
  */
 export const SixWords = () => {
   const t = useTranslations("diwan.home.sixWords");
+  const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
-  const queryClient = useQueryClient();
-  const key = ["my-tour-pages", user?.id];
   const pages = useQuery({
     enabled: Boolean(user),
-    queryFn: () => programmes.myPages(supabase, user?.id ?? ""),
-    queryKey: key,
+    queryFn: () => programmes.mySixWords(supabase),
+    queryKey: ["my-six-words", user?.id],
   });
-  const choose = useMutation({
-    mutationFn: ({
-      id,
-      visibility,
-    }: {
-      id: string;
-      visibility: programmes.PageVisibility;
-    }) => programmes.setPageVisibility(supabase, id, visibility),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
-  });
-  const naming = useMutation({
-    mutationFn: ({ full, id }: { full: boolean; id: string }) =>
-      programmes.setPageFullName(supabase, id, full),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
+  const eventIds = [
+    ...new Set(
+      (pages.data ?? []).flatMap((p) => (p.event_id ? [p.event_id] : []))
+    ),
+  ];
+  const events = useQuery({
+    enabled: eventIds.length > 0,
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .from("events")
+          .select("id, title_en, title_ar, starts_at")
+          .in("id", eventIds)
+      ) ?? [],
+    queryKey: ["my-six-words-events", ...eventIds],
   });
   if (!pages.data?.length) {
     return null;
   }
-
+  const eventOf = (id: string | null) =>
+    events.data?.find((e) => e.id === id) ?? null;
   return (
-    <Section description={t("description")} id="six-words" title={t("title")}>
-      <ul className="grid gap-6">
-        {pages.data.map((page) => (
-          <li className="grid gap-3" key={page.id}>
-            {page.text ? (
+    <DiwanSection
+      description={t("description")}
+      id="six-words"
+      title={t("title")}
+    >
+      <RowList>
+        {pages.data.map((page) => {
+          const event = eventOf(page.event_id);
+          return (
+            <li className="grid gap-2" key={page.id}>
+              <p className="type-caption">
+                {event
+                  ? `${localized(event, "title", locale)}, ${formatLongDate(event.starts_at, locale)}`
+                  : t("typedOn", {
+                      date: formatLongDate(page.created_at, locale),
+                    })}
+              </p>
               <blockquote
-                className="type-heading font-light whitespace-pre-line"
+                className="type-heading font-mono font-light whitespace-pre-line"
                 dir="auto"
                 lang={page.language === "other" ? undefined : page.language}
               >
                 {page.text}
               </blockquote>
-            ) : (
-              <p className="type-caption text-text-secondary">
-                {t("notTranscribed")}
-              </p>
-            )}
-            {page.photo_path ? <PagePhoto id={page.id} /> : null}
-            <div className="max-w-sm">
-              <SelectInput
-                aria-label={t("who")}
-                disabled={choose.isPending}
-                onChange={(e) =>
-                  choose.mutate({
-                    id: page.id,
-                    visibility: e.target.value as programmes.PageVisibility,
-                  })
-                }
-                value={page.visibility}
-              >
-                {programmes.PAGE_VISIBILITY.map((v) => (
-                  <option key={v} value={v}>
-                    {t(`visibility.${v}`)}
-                  </option>
-                ))}
-              </SelectInput>
-            </div>
-            {page.visibility === "tour" ? (
-              <div className="flex items-start gap-2">
-                <Checkbox
-                  checked={page.show_full_name}
-                  disabled={naming.isPending}
-                  id={`full-name-${page.id}`}
-                  onCheckedChange={(checked) =>
-                    naming.mutate({ full: checked === true, id: page.id })
-                  }
-                />
-                <Label
-                  className="leading-normal"
-                  htmlFor={`full-name-${page.id}`}
-                >
-                  {t("fullName")}
-                </Label>
-              </div>
-            ) : null}
-            {page.publishable ? null : (
-              <p className="type-caption">{t("takenDown")}</p>
-            )}
-          </li>
-        ))}
-      </ul>
-      <ErrorLine error={choose.error ?? naming.error} />
-    </Section>
+            </li>
+          );
+        })}
+      </RowList>
+    </DiwanSection>
   );
 };

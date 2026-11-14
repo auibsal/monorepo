@@ -226,12 +226,8 @@
       "templates": "Templates and papers",
       "designSystem": "Design system",
       "work": "Work",
-      "elections": "Elections",
       "documents": "Documents",
-      "applications": "Applications",
-      "saved": "Saved",
-      "roles": "Roles and service",
-      "card": "Card"
+      "roles": "Roles and service"
     },
     "errors": {
       "loadFailed": "We couldn’t load this. Check your connection and try again.",
@@ -398,17 +394,9 @@
         "guest": "Guest"
       },
       "sixWords": {
-        "title": "Your Typewriter Tour pages",
-        "description": "What you typed on the Typewriter Tour. Each page is private until you choose who sees it.",
-        "who": "Who sees this page",
-        "visibility": {
-          "private": "Only you",
-          "profile": "Your profile",
-          "tour": "Your profile and the Tour’s page"
-        },
-        "takenDown": "The editors have kept this page off the site.",
-        "notTranscribed": "Photographed at the Tour; the Tour lead types its words in soon.",
-        "fullName": "Show my full name on the Tour’s page (otherwise, first name and last initial)"
+        "title": "Your six-word pages",
+        "description": "What you typed on the typewriter, under the event you typed it at. Each page is yours and private: nobody else sees it.",
+        "typedOn": "Typed on {date}"
       },
       "tiers": {
         "member": "Member",
@@ -451,6 +439,16 @@
         "action": "I’m still here",
         "done": "Thank you: you’re on this year’s active list.",
         "failed": "That didn’t go through. Try again."
+      },
+      "toDos": {
+        "arabicForm": {
+          "title": "The Arabic form of your titles",
+          "lede": "How should a title that names you read in Arabic? You can change it in Settings."
+        },
+        "name": {
+          "title": "Part of your official name is missing",
+          "body": "Your account was made before the site asked for the full name. Write to the Director of Membership with your name as on your papers, and they will add it. Until then, your signatures and certificates carry the name on record."
+        }
       }
     },
     "events": {
@@ -617,6 +615,16 @@
         "title": "Resolutions",
         "lede": "What the Council and members’ meetings adopted, by number and date. Those about partners and documents are also on the Council’s public page.",
         "empty": "No resolutions adopted yet."
+      },
+      "motions": {
+        "title": "Motions for the members’ meeting",
+        "lede": "Motions and petitions members have put forward. Support one with a click; the Council puts those with enough support on the agenda.",
+        "propose": "Propose a motion",
+        "line": "{reference} · {mover} · {date}",
+        "support": "Support",
+        "withdrawSupport": "Take back your support",
+        "supporters": "Supporters: {count}",
+        "none": "No motions are open."
       }
     },
     "twoStep": {
@@ -3744,6 +3752,15 @@
           },
           "stopped": "{stopped} stopped; {suppressed} suppressed after a bounce or complaint."
         }
+      },
+      "creditedNames": {
+        "title": "Credited names",
+        "lede": "A name someone is known by on screen or on stage, used only in credits, captions and playbills. Everywhere else carries the official name.",
+        "person": "Who",
+        "en": "Credited name in English",
+        "ar": "Credited name in Arabic",
+        "save": "Save",
+        "remove": "Remove"
       }
     },
     "editor": {
@@ -3858,8 +3875,8 @@
       "lettersTitle": "Service letters",
       "letter": "Service letter, {date}",
       "signedTitle": "Agreements and consents",
-      "rolesTitle": "Roles and service",
-      "rolesLede": "The roles you hold and have held, your hours and your service letters. Hours count once someone else confirms them.",
+      "rolesTitle": "Roles",
+      "rolesLede": "Your applications, the roles you hold and have held, your hours and your service letters. Hours count once someone else confirms them.",
       "roles": {
         "title": "Your roles",
         "none": "You hold no role yet.",
@@ -4468,7 +4485,7 @@
     },
     "settings": {
       "title": "Settings",
-      "lede": "How the Society reaches you and how you sign in.",
+      "lede": "Your account, notifications, security and data.",
       "yours": "Your profile and requests",
       "profile": "Profile",
       "profileLine": "Your name in both languages, a short bio, and what you tell us about yourself.",
@@ -4525,6 +4542,46 @@
         "none": "—",
         "linkFirst": "Link Telegram below",
         "reminderRule": "When reminders are on in Hudhud, they come there instead of by email, so nothing reaches you twice. Your notices always come by email; Hudhud sends a copy if you keep them on."
+      },
+      "sections": {
+        "account": "Account",
+        "notifications": "Notifications",
+        "security": "Security",
+        "data": "Your data"
+      },
+      "noticesByChannel": "Every kind of message, by channel",
+      "account": {
+        "officialName": "Your official name",
+        "officialNameHint": "As on your papers, given at sign-up. To correct it, write to the Director of Membership.",
+        "officialNameIncomplete": "Part of your official name is missing. Write to the Director of Membership with your full name as on your papers, and they will add it.",
+        "shortName": "Your short name",
+        "shortNameHint": "Shown on the site, your card and the menu. Signatures, certificates and letters use your full name.",
+        "shortNames": {
+          "father": "Your given and father’s names",
+          "fourth": "Your given and family names"
+        },
+        "arabicForm": "The Arabic form of your titles",
+        "arabicFormHint": "How a title that names you reads in Arabic, on the Council page, the masthead, your card and letters.",
+        "arabicForms": {
+          "unset": "Not chosen",
+          "masculine": "Masculine (مدير)",
+          "feminine": "Feminine (مديرة)"
+        }
+      },
+      "recordEmails": {
+        "email_signed_copy": {
+          "label": "A copy of what you sign",
+          "hint": "Sent at once, with its record number and check link."
+        },
+        "email_receipts": {
+          "label": "A “received” email",
+          "hint": "When you send an application or a submission (Write for Qirtas, an event pitch, a concern, a motion), with its record number."
+        },
+        "email_daily_updates": {
+          "label": "One daily update",
+          "hint": "Later changes to your applications and submissions, gathered into one email at 8:00 p.m."
+        },
+        "always": "Everything stays in Your account either way. Account and security emails always go."
       }
     },
     "recoveryCodes": {
@@ -6024,7 +6081,7 @@
       "dates": "The Company’s dates on Events"
     },
     "tour": {
-      "wall": "The Six Words wall",
+      "wall": "Six words",
       "try": "Try the typewriter",
       "toy": {
         "label": "Six words, on a typewriter",
@@ -6034,7 +6091,8 @@
         "soundOn": "Key sound: on",
         "clear": "Start again",
         "nothingKept": "Nothing you type here is kept. Your six words for the wall are written on the Tour, on a card."
-      }
+      },
+      "counts": "{pages} pages so far, by {writers} writers. Each page is its writer’s and stays private."
     },
     "prize": {
       "title": "The Mutanabbi Prize",

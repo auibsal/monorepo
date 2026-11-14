@@ -99,7 +99,6 @@ import { type CacheTag, cacheTags } from "@/lib/supabase";
 import type { Sticker } from "./bot/stickers";
 import { staffAlert } from "./bot/upkeep";
 import { formAnswers } from "./form-answers";
-import { pushToUser } from "./push";
 import { telegramToUser } from "./telegram";
 import {
   expireWalletPass,
@@ -362,16 +361,15 @@ const send = async (
     text: noticeText({ blocks: built.blocks, footer: lines }),
     to: to.email,
   });
-  if (run && to.userId) {
-    // Neither throws: email is the record. A reminder that came this far
-    // went by email because Hudhud's reminders are off: no copy there.
-    const notice = pushNotice(built, to.lang, row);
-    await Promise.all([
-      pushToUser(run.admin, to.userId, notice),
-      reminder
-        ? Promise.resolve(false)
-        : telegramToUser(run.admin, to.userId, notice, sticker),
-    ]);
+  // It never throws: email is the record. A reminder that came this far
+  // went by email because Hudhud's reminders are off: no copy there.
+  if (run && to.userId && !reminder) {
+    await telegramToUser(
+      run.admin,
+      to.userId,
+      pushNotice(built, to.lang, row),
+      sticker
+    );
   }
 };
 

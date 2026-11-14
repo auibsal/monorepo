@@ -1700,8 +1700,12 @@ export type Database = {
       my_private_profile: {
         Args: Record<PropertyKey, never>;
         Returns: {
+          email_daily_updates: boolean;
+          email_receipts: boolean;
+          email_signed_copy: boolean;
           notify_email: boolean;
           personal_email: string;
+          short_name: string;
           title_form: string;
         }[];
       };
@@ -8272,6 +8276,16 @@ export type Database = {
       credit_episode: {
         Args: { credit: string; episode: string; member: string };
         Returns: string;
+      };
+      credited_names: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          credited_ar: string;
+          credited_en: string;
+          name_ar: string;
+          name_en: string;
+          user_id: string;
+        }[];
       };
       episode_credits: {
         Args: { episode: string };

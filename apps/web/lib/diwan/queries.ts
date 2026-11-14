@@ -62,7 +62,7 @@ export const useProfile = () => {
         .schema("core")
         .from("profiles")
         .select(
-          "id, full_name_en, full_name_ar, preferred_name_en, preferred_name_ar, name_confirmed_at, bio, avatar_path, locale, camera_shy, setup_completed_at, verified_at, created_at, updated_at"
+          "id, full_name_en, full_name_ar, bio, avatar_path, locale, camera_shy, setup_completed_at, verified_at, legal_name_locked_at, created_at, updated_at"
         )
         .eq("id", userId)
         .single(),
@@ -77,8 +77,14 @@ export const useProfile = () => {
     return {
       ...row,
       ...(unwrap(parts)?.[0] ?? {}),
+      email_daily_updates: own?.email_daily_updates ?? true,
+      email_receipts: own?.email_receipts ?? true,
+      email_signed_copy: own?.email_signed_copy ?? true,
       notify_email: own?.notify_email ?? true,
       personal_email: own?.personal_email ?? null,
+      short_name: (own?.short_name === "fourth" ? "fourth" : "father") as
+        | "father"
+        | "fourth",
       title_form: own?.title_form ?? null,
     };
   });

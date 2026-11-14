@@ -16,7 +16,6 @@ import { SelectionToggle } from "@/components/qirtas/gallery-selection";
 import { CorrectionNotes, PieceBody, texts } from "@/components/qirtas/layouts";
 import { PieceEnd } from "@/components/qirtas/piece-end";
 import { ReadingProgress } from "@/components/qirtas/reading-tools";
-import { SaveForLater } from "@/components/qirtas/save-for-later";
 import { ShareLink } from "@/components/share";
 import { journal, localized } from "@/lib/data";
 import { articleLd, JsonLd } from "@/lib/json-ld";
@@ -154,7 +153,6 @@ export const PieceArticle = async ({
           </h1>
           <ManageLinks diwan={`/qirtas/pieces/${piece.slug}`} />
           <ShareLink title={localized(piece, "title", locale)} />
-          <SaveForLater pieceId={piece.id} />
           {desk === "gallery" && !piece.members_only ? (
             <SelectionToggle slug={piece.slug} />
           ) : null}

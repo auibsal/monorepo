@@ -7,16 +7,8 @@ import { type ReactNode, useEffect } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import type { membership } from "@/lib/data";
 import { safeNextPath } from "@/lib/diwan/navigation";
-import {
-  hasAllNames,
-  useEsign,
-  useGrants,
-  useMemberStatus,
-  useMyMembership,
-  useProfile,
-} from "@/lib/diwan/queries";
+import { useGrants, useMyMembership } from "@/lib/diwan/queries";
 import { TwoStepPanel, useTwoStep } from "./auth/two-step";
-import { EsignQuestion } from "./profile/esign";
 import { ErrorState, FullPageSpinner, PageSpinner } from "./states";
 
 interface GateProps {
@@ -115,76 +107,38 @@ export const kindOpens = (
   );
 
 /**
- * Membership, for every kind (decisions.md): a page the kind doesn't
- * open goes to Today. Members and guests with a pledge to (re-)accept or
- * setup to finish, and anyone whose name is not in four parts, go to
- * /welcome first.
+ * Your account, for every kind (decisions.md): a page the kind doesn't
+ * open goes to Today. Nothing else stands between signing in and the page
+ * but two-step sign-in for a role that needs it (decisions.md, Members);
+ * the e-sign consent, the role agreement, the Arabic form and an
+ * incomplete name are to-dos on Today.
  */
 export const RequireMember = ({ children }: GateProps) => {
-  const status = useMemberStatus();
   const mine = useMyMembership();
-  const profile = useProfile();
   const router = useRouter();
   const pathname = usePathname();
   const kind = mine.data?.kind ?? null;
   const elsewhere = mine.isSuccess && !kindOpens(kind, pathname);
-  const pledges = kind === "member" || kind === "guest";
   // A role that needs two-step sign-in sets it up at sign-in, before
-  // anything else (fourth prompt, 3): a passkey first, then an
-  // authenticator app, then the recovery codes. A partner's people come
-  // here too, since their grants wait for the second step. Shift-scoped
-  // station access is not a role, so it is exempt.
+  // anything else: a passkey first, then an authenticator app, then the
+  // recovery codes. Shift-scoped station access is not a role, so it is
+  // exempt.
   const twoStep = useTwoStep();
   const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
-  const esign = useEsign();
-
-  const needsSetup =
-    mine.isSuccess &&
-    profile.isSuccess &&
-    (!hasAllNames(profile.data) ||
-      // A member sees how their name appears before the default shows.
-      (kind === "member" && !profile.data?.name_confirmed_at) ||
-      (pledges &&
-        ((status.data?.pending_pledges.length ?? 0) > 0 ||
-          !profile.data?.setup_completed_at)));
 
   useEffect(() => {
     if (elsewhere) {
       router.replace("/account");
-    } else if (needsSetup && profile.data) {
-      router.replace({
-        pathname: "/welcome",
-        query: {
-          next: `${pathname}${window.location.search}${window.location.hash}`,
-        },
-      });
     }
-  }, [elsewhere, needsSetup, pathname, profile.data, router]);
+  }, [elsewhere, router]);
 
-  if (status.isError || profile.isError || mine.isError) {
-    return (
-      <ErrorState
-        onRetry={() =>
-          Promise.all([status.refetch(), profile.refetch(), mine.refetch()])
-        }
-      />
-    );
+  if (mine.isError) {
+    return <ErrorState onRetry={() => mine.refetch()} />;
   }
-  if (
-    status.isPending ||
-    profile.isPending ||
-    mine.isPending ||
-    needsSetup ||
-    elsewhere
-  ) {
+  if (mine.isPending || elsewhere) {
     return <PageSpinner />;
   }
-  if (waiting) {
-    return <TwoStepPanel />;
-  }
-  // Consent to sign electronically, asked once at the next sign-in for an
-  // account made before sign-up asked it (decisions.md, Documents and forms).
-  return esign.data && !esign.data.asked_at ? <EsignQuestion /> : children;
+  return waiting ? <TwoStepPanel /> : children;
 };
 
 /**
@@ -194,33 +148,19 @@ export const RequireMember = ({ children }: GateProps) => {
  */
 export const RequirePartner = ({ children }: GateProps) => {
   const grants = useGrants();
-  const profile = useProfile();
   const router = useRouter();
-  const pathname = usePathname();
   const holds = (grants.data ?? []).some(
     (g) => g.permission === "partners.own"
   );
-  // A partner's people give their names in four parts too (decisions.md), at /welcome, before their partner's page.
-  const unnamed = profile.isSuccess && !hasAllNames(profile.data);
   useEffect(() => {
     if (grants.isSuccess && !grants.isFetching && !holds) {
       router.replace("/account");
-    } else if (holds && unnamed) {
-      router.replace({ pathname: "/welcome", query: { next: pathname } });
     }
-  }, [grants.isFetching, grants.isSuccess, holds, pathname, router, unnamed]);
-  if (grants.isError || profile.isError) {
-    return (
-      <ErrorState
-        onRetry={() => Promise.all([grants.refetch(), profile.refetch()])}
-      />
-    );
+  }, [grants.isFetching, grants.isSuccess, holds, router]);
+  if (grants.isError) {
+    return <ErrorState onRetry={() => grants.refetch()} />;
   }
-  return grants.isSuccess && holds && profile.isSuccess && !unnamed ? (
-    children
-  ) : (
-    <PageSpinner />
-  );
+  return grants.isSuccess && holds ? children : <PageSpinner />;
 };
 
 /** Sign-in and sign-up pages: signed-in users go on to their account. */
@@ -248,7 +188,6 @@ const PARTNER_PERMISSIONS = new Set(["partners.own", "partners.lead"]);
 export const RequireStaff = ({ children }: GateProps) => {
   const grants = useGrants();
   const twoStep = useTwoStep();
-  const esign = useEsign();
   const router = useRouter();
   // A role that needs two-step sign-in grants nothing until the code is in,
   // so its holder is staff waiting for the second step, not a member.
@@ -289,10 +228,5 @@ export const RequireStaff = ({ children }: GateProps) => {
   if (!(grants.isSuccess && twoStep.isSuccess && staff)) {
     return <PageSpinner />;
   }
-  if (waiting) {
-    return <TwoStepPanel />;
-  }
-  // Consent to sign electronically, asked once at the next sign-in for an
-  // account made before sign-up asked it (decisions.md, Documents and forms).
-  return esign.data && !esign.data.asked_at ? <EsignQuestion /> : children;
+  return waiting ? <TwoStepPanel /> : children;
 };

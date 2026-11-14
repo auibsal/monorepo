@@ -23,7 +23,7 @@ import { callbackUrl, safeNextPath } from "@/lib/diwan/navigation";
 import { useScreenTop } from "@/lib/diwan/use-screen-top";
 import { isBreachedPassword } from "@/lib/password";
 import { ChoiceInput } from "../admin/choice-input";
-import { NamePartsFields } from "../setup-form";
+import { NamePartsFields } from "../name-parts-fields";
 import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
 import { ResendConfirmation } from "./resend-confirmation";
