@@ -25,18 +25,21 @@ test("one sign-up page: the address, the class, the official name, one line", as
     page.getByRole("radio", { name: "An AUIB student" })
   ).toHaveCount(0);
   // The official name in both languages, four parts, on the same page.
-  const english = page.getByRole("group", { name: "Your name in English" });
-  await english.getByLabel("Name", { exact: true }).fill("New");
-  await english.getByLabel("Father’s name", { exact: true }).fill("Kareem");
-  await english.getByLabel("Grandfather’s name").fill("Hasan");
-  await english.getByLabel(/Family name/u).fill("Member");
-  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
-  await arabic.getByLabel("Name", { exact: true }).fill("عضو");
-  await arabic.getByLabel("Father’s name", { exact: true }).fill("كريم");
-  await arabic.getByLabel("Grandfather’s name").fill("حسن");
-  await arabic.getByLabel(/Family name/u).fill("جديد");
-  await page.getByRole("radio", { name: /In the masculine/u }).click();
-  await page.getByRole("radio", { name: "Yes, 18 or older" }).click();
+  // Four names in one line per language, read back before sending.
+  // A name of two words written with a space is joined by a tap.
+  const english = page.getByLabel("Your four names in English");
+  await english.fill("new mohammed ali kareem member");
+  await english.blur();
+  await expect(english).toHaveValue("New Mohammed Ali Kareem Member");
+  await expect(page.getByText(/reads as 5 names/u)).toBeVisible();
+  await page
+    .getByRole("button", { name: "Join Mohammed and Ali as one name" })
+    .click();
+  await expect(
+    page.getByText("Read as: New · Mohammed Ali · Kareem · Member")
+  ).toBeVisible();
+  await page.getByLabel("Your four names in Arabic").fill("عضو كريم حسن جديد");
+  await page.getByLabel("I’m 18 or older").check();
   // One line by the button; no boxes to agree, no signature.
   await expect(
     page.getByText(/By creating an account, you agree/u)
@@ -70,25 +73,20 @@ test("a mistyped address is put right from the inbox screen, with no second acco
   await page.getByLabel("Email").fill(typo);
   await expect(page.getByText(/usually have 7 digits/u)).toHaveCount(0);
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
-  const english = page.getByRole("group", { name: "Your name in English" });
-  await english.getByLabel("Name", { exact: true }).fill("Typo");
-  await english.getByLabel("Father’s name", { exact: true }).fill("Kareem");
-  await english.getByLabel("Grandfather’s name").fill("Hasan");
-  await english.getByLabel(/Family name/u).fill("Member");
-  const arabic = page.getByRole("group", { name: "Your name in Arabic" });
-  await arabic.getByLabel("Name", { exact: true }).fill("عضو");
-  await arabic.getByLabel("Father’s name", { exact: true }).fill("كريم");
-  await arabic.getByLabel("Grandfather’s name").fill("حسن");
-  await arabic.getByLabel(/Family name/u).fill("جديد");
-  await page.getByRole("radio", { name: /In the masculine/u }).click();
-  await page.getByRole("radio", { name: "Yes, 18 or older" }).click();
+  // Four names in one line per language, read back before sending.
+  const english = page.getByLabel("Your four names in English");
+  await english.fill("typo kareem hasan member");
+  await english.blur();
+  await expect(english).toHaveValue("Typo Kareem Hasan Member");
+  await page.getByLabel("Your four names in Arabic").fill("عضو كريم حسن جديد");
+  await page.getByLabel("I’m 18 or older").check();
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.getByText("Check your inbox")).toBeVisible();
 
   await page.getByRole("button", { name: "Wrong address? Fix it" }).click();
   // The form is back with everything typed, and the address is free.
   await expect(page.getByLabel("Email")).toHaveValue(typo);
-  await expect(english.getByLabel("Name", { exact: true })).toHaveValue("Typo");
+  await expect(english).toHaveValue("Typo Kareem Hasan Member");
   const { count } = await admin()
     .schema("governance")
     .rpc("user_by_email", { email: typo })

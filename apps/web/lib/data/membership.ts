@@ -223,6 +223,7 @@ const ADDRESS_ERRORS = [
   "no_account",
   "merge_pending",
   "not_a_student_member",
+  "minor_associate",
 ] as const;
 export type AddressError = (typeof ADDRESS_ERRORS)[number] | "unknown";
 

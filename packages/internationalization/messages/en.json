@@ -120,15 +120,13 @@
       "checkInboxBody": "We sent a confirmation email to {email}. Open its link, or type its code below to finish signing up.",
       "haveAccount": "Already have an account?",
       "signIn": "Sign in",
-      "nameEn": "Your name in English",
-      "nameAr": "Your name in Arabic",
-      "namesHint": "Your official name in both languages, as on your papers: your given, father’s, grandfather’s and family names. If your papers don’t use four names, give your given and family names. It can’t be changed afterward except by the Director of Membership.",
+      "nameEn": "Your four names in English",
+      "nameAr": "Your four names in Arabic",
+      "namesHint": "Your official name in both languages, as on your papers: your name, your father’s, your grandfather’s and the fourth, with a space between each. It can’t be changed afterward except by the Director of Membership.",
       "resend": "Send the email again",
       "resendIn": "Send the email again in {seconds} s",
       "resent": "Sent. Check your inbox and spam folder.",
-      "adultQuestion": "Are you 18 or older?",
-      "adultYes": "Yes, 18 or older",
-      "adultNo": "No, under 18",
+      "adultYes": "I’m 18 or older",
       "minorHint": "Your month and year of birth are used only to lift the rules for members under 18 when you turn 18, and are then deleted. Once you confirm your email, we send your parent or guardian a link to give their consent; until they do, your account is limited.",
       "birthMonth": "Month of birth",
       "birthYear": "Year of birth",
@@ -138,16 +136,24 @@
       "emailHint": "Your @{domain} address if you have one.",
       "studied": "I studied at AUIB",
       "studiedHint": "We send the Director of Membership a request for Associate membership. Until it is answered, your account is a guest’s.",
-      "titleForm": "A title that names you, in Arabic, reads",
-      "titleForms": {
-        "masculine": "In the masculine (مدير)",
-        "feminine": "In the feminine (مديرة)"
-      },
-      "adultOnly": "Under 18, you sign up with your AUIB address, or through the invitation your school or parent was sent.",
+      "adultOnly": "Under 18, you sign up with your AUIB student address, or through the invitation your school or parent was sent. Associate Members are 18 or older.",
       "line": "By creating an account, you agree to the <terms>Terms</terms>, the <privacy>Privacy Notice</privacy>, and the <conduct>Code of Conduct</conduct> and to signing electronically.",
       "wrongAddress": "Wrong address? Fix it",
       "wrongAddressFailed": "That didn’t work. Sign up again with the right address; the other one is deleted after seven days if it isn’t confirmed.",
-      "numberCheck": "AUIB student numbers usually have 7 digits and start with the year you joined. Check your address; you can still go on."
+      "numberCheck": "AUIB student numbers usually have 7 digits and start with the year you joined. Check your address; you can still go on.",
+      "nameHintEn": "Letters only, each name with a capital, as on your papers. If one of your names is two words (Mohammed Ali), tap between them below to join them.",
+      "nameHintAr": "Arabic letters only, as on your papers. If one of your names is two words («محمد علي»), tap between them below to join them; «أبو» and «عبد» come joined.",
+      "nameReads": "Read as: {names}",
+      "nameProblems": {
+        "count": "Four names, please: this reads as {count}.",
+        "letters": "Letters only, with no numbers or symbols.",
+        "capitals": "Start each name with a capital letter.",
+        "tooMany": "This reads as {count} names. If one of your names is two words, tap between them to join them."
+      },
+      "under18": "Under 18?",
+      "nameWords": "The words of your name: tap between two words to join or separate them",
+      "nameJoin": "Join {first} and {second} as one name",
+      "nameSeparate": "Separate {first} and {second}"
     },
     "forgot": {
       "title": "Reset your password",
@@ -4990,7 +4996,8 @@
         "no_account": "There is no confirmed account at that address.",
         "merge_pending": "A merge request is already waiting for the Director of Membership.",
         "not_a_student_member": "Only a student Member can say they have left AUIB.",
-        "unknown": "That didn’t work. Try again in a moment."
+        "unknown": "That didn’t work. Try again in a moment.",
+        "minor_associate": "Associate Members are 18 or older, so this can wait until you turn 18. The Director of Membership can help in the meantime."
       },
       "auib": {
         "why": "Signed up with another address? Add your AUIB address: it becomes the address you sign in with, the other one your personal email, and your class follows it (Member for students, Associate Member for faculty and staff).",

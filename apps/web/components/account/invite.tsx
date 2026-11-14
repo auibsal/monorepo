@@ -111,7 +111,13 @@ export const Invite = ({ code }: { code: string }) => {
         <div className="grid gap-6">
           <SignUpForm
             next={path}
-            outside={{ email: found.email, reason: { invitation: code } }}
+            outside={{
+              // Associate and Honorary Members are 18 or older.
+              adultsOnly:
+                found.kind === "associate" || found.kind === "honorary",
+              email: found.email,
+              reason: { invitation: code },
+            }}
           />
         </div>
       </DiwanPage>

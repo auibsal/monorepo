@@ -77,6 +77,13 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   no vote and no role (`membership.memberships.left_auib_at`). A
   confirmed personal email becomes the sign-in at once; until there is
   one, Today asks for it (`private.sign_in_after_leaving`).
+- **Associate Members are 18 or older** (the owner, Nov 14, 2026):
+  `private.no_minor_associate` refuses the class to anyone under 18 (a
+  staff address added, a merge, the Director's class change), except a
+  student who leaves AUIB before 18, who becomes an Associate with the
+  under-18 rules still on; sign-up under 18 takes only an AUIB
+  student's address or an invitation that isn't to a class
+  (`private.refuse_minor_associate_sign_up`).
 - **Addresses and classes** (decisions.md, Members). The sign-in address
   changes only through `private.move_sign_in`, which tells the old and
   the new address. Someone who signed up with another address, or a
@@ -100,8 +107,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (`/api/sign-up/wrong-address`, with a key only that browser holds). At
   sign-up an AUIB student number of an unusual shape gets a warning, never
   a refusal (`unusualStudentNumber` in `lib/auth/email.ts`: 7 digits
-  beginning with the year of entry, or the English Language Academy's 8
-  beginning with 0). Partners'
+  from the year of entry, as a name and digits beginning with 1 or 2 and
+  the year (`name.124…` is 2024, `name.221…` 2021) or, from 2025, the
+  digits alone beginning with the year (`25…`, `26…`); the English
+  Language Academy's 8 digits beginning with 0). Partners'
   people and advisors from partner organizations hold guest accounts;
   faculty and alumni advisors are Associate Members invited by the
   Director of Membership. `/welcome` asks one question per screen

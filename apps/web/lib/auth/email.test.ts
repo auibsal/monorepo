@@ -228,15 +228,41 @@ describe("signing up", () => {
       parent_email: "p@example.com",
     });
   });
+
+  const minor = {
+    adult: false,
+    minor: { birthMonth: 3, birthYear: 2011, parentEmail: "p@example.com" },
+  };
+
+  test("a student signs up with their AUIB address", async () => {
+    const { supabase } = client();
+    const result = await signUpWithEmail(supabase, {
+      ...base,
+      ...minor,
+      email: "2560101@auib.edu.iq",
+    });
+    expect(result.ok).toBe(true);
+  });
+
+  test("never with a faculty or staff address: Associates are 18 or older", async () => {
+    const { signUp, supabase } = client();
+    const result = await signUpWithEmail(supabase, {
+      ...base,
+      ...minor,
+      email: "first.last@auib.edu.iq",
+    });
+    expect(result).toEqual({ code: "age_required", ok: false });
+    expect(signUp).not.toHaveBeenCalled();
+  });
 });
 
 describe("unusualStudentNumber", () => {
   test("passes the shapes AUIB gives", () => {
     for (const address of [
-      "1241295@auib.edu.iq",
+      "name.1241295@auib.edu.iq",
       "name.1221002@auib.edu.iq",
+      "name.2210001@auib.edu.iq",
       "2520001@auib.edu.iq",
-      "2210001@auib.edu.iq",
       "2620001@auib.edu.iq",
       "name.02220006@auib.edu.iq",
     ]) {
@@ -244,12 +270,15 @@ describe("unusualStudentNumber", () => {
     }
   });
 
-  test("warns on a length or a year that doesn't fit", () => {
+  test("warns on a format, a length or a year that doesn't fit", () => {
     for (const address of [
+      // The older years come with a name, the newer without.
+      "1241295@auib.edu.iq",
+      "name.2520001@auib.edu.iq",
       "124129@auib.edu.iq",
       "11212345@auib.edu.iq",
-      "1291295@auib.edu.iq",
-      "9241295@auib.edu.iq",
+      "name.1291295@auib.edu.iq",
+      "2720001@auib.edu.iq",
     ]) {
       expect(unusualStudentNumber(address, 2026)).toBe(true);
     }
