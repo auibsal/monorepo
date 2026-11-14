@@ -33,7 +33,7 @@ const useBylines = () => {
  * follows their profile) or under a pen name. Only the id comes back, so a
  * pen name never leads to its author in the browser.
  */
-export const useBylineFor = () => {
+const useBylineFor = () => {
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   return useMutation({

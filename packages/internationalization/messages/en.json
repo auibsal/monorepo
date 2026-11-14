@@ -2079,7 +2079,7 @@
       },
       "journal": {
         "title": "Qirtas: Editions",
-        "lede": "Editions, pieces and contributors. Accepted work becomes a draft piece here; nothing from a submission is published before its author signs the publication agreement.",
+        "lede": "Editions and pieces. Accepted work becomes a draft piece here; nothing from a submission is published before its author signs the publication agreement.",
         "newIssue": "New Edition",
         "newPiece": "New piece",
         "volumeNumber": "Vol. {volume}, No. {number}",
@@ -2180,13 +2180,6 @@
           "agreementNeeded": "The author hasn’t signed the publication agreement yet; publishing will wait for it.",
           "publishConfirm": "Publish this piece? It appears on its Edition’s page at once."
         },
-        "contributor": {
-          "bio": "Bio",
-          "new": "Add a member as a contributor",
-          "title": "Contributors",
-          "back": "The newsroom",
-          "missing": "This contributor is not here"
-        },
         "desks": {
           "news": "News",
           "voices": "Voices",
@@ -2198,8 +2191,7 @@
         "tabs": {
           "issues": "Editions",
           "accepted": "Accepted, to place ({count})",
-          "pieces": "Pieces",
-          "contributors": "Contributors"
+          "pieces": "Pieces"
         },
         "byline": {
           "change": "Change",
@@ -4350,15 +4342,6 @@
       "youApproved": "You approved the text on {date}. It publishes once the editors approve it too.",
       "published": "Published on {date}.",
       "theText": "The text",
-      "contributor": {
-        "title": "Your contributor details",
-        "lede": "How your name is spelled in Latin and Arabic letters, and a short bio: third person, present tense, 50 words at most.",
-        "penNameLede": "This is your pen name. Only the Editor-in-Chief and the Managing Editor know who wrote under it.",
-        "name": "Name",
-        "bio": "Bio",
-        "words": "English: {en} words · Arabic: {ar} words",
-        "save": "Save"
-      },
       "disclosure": {
         "label": "Your ties to what this covers",
         "hint": "Anything that could look like a conflict: a club you belong to, a friend or relative in the story, a role you hold. The editors reassign or note it. Leave it empty if there’s nothing."

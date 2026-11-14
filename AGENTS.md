@@ -63,7 +63,8 @@ media do.
     (`/diwan/council`: meetings and their resolutions, requests to Student
     Life, elections, concerns, motions, disclosures, the Library); Qirtas
     (the Newsroom, one page per section, with submissions, Editions,
-    contributors, the Prize, Qalam and certificates); Media
+    the Prize, Qalam and certificates; a byline is picked at the piece,
+    from the register or as a pen name); Media
     (`/diwan/media`: Next Stop's episodes and reels, Hudhud and its channels at
     `/diwan/media/channels`, the design system at `/diwan/media/design`); the Company (`/diwan/company`); Events
     (`/diwan/events`, each event at `/diwan/events/<slug>` with its

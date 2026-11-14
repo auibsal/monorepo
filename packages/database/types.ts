@@ -4664,8 +4664,6 @@ export type Database = {
       };
       contributors: {
         Row: {
-          bio_ar: string | null;
-          bio_en: string | null;
           created_at: string;
           id: string;
           is_anonymous: boolean;
@@ -4678,8 +4676,6 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
-          bio_ar?: string | null;
-          bio_en?: string | null;
           created_at?: string;
           id?: string;
           is_anonymous?: boolean;
@@ -4691,8 +4687,6 @@ export type Database = {
           user_id?: string | null;
         };
         Update: {
-          bio_ar?: string | null;
-          bio_en?: string | null;
           created_at?: string;
           id?: string;
           is_anonymous?: boolean;
@@ -6033,8 +6027,6 @@ export type Database = {
       my_contributors: {
         Args: Record<PropertyKey, never>;
         Returns: {
-          bio_ar: string;
-          bio_en: string;
           id: string;
           is_pen_name: boolean;
           name_ar: string;
@@ -6177,16 +6169,6 @@ export type Database = {
       };
       unpublish_piece: {
         Args: { note: string; piece_id: string };
-        Returns: undefined;
-      };
-      update_my_contributor: {
-        Args: {
-          bio_ar: string;
-          bio_en: string;
-          contributor_id: string;
-          name_ar: string;
-          name_en: string;
-        };
         Returns: undefined;
       };
       withdraw_approval: {

@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(27);
+select plan(32);
 
 -- ── One sign-up: the class follows the address ──
 create function pg_temp.sign_up(uid uuid, email text, meta jsonb)
@@ -202,6 +202,23 @@ select is((select count(*)::int from core.outbox where kind = 'forms.received'
 select is(to_regclass('core.push_subscriptions'), null, 'There is no browser push: notices are email and Hudhud');
 select ok((select keeps from private.retention_schedule() where runs = 'private.purge_incident_records') like '2 years after the case closes%',
   'Incident records are kept two years after the case closes');
+
+-- Records brought to the standard (20261114000500).
+select hasnt_column('journal', 'contributors', 'bio_en', 'a byline has no bio');
+select hasnt_function('journal', 'update_my_contributor', 'nobody types a byline''s name');
+select is(
+  (select count(*)::int from governance.form_submissions where form_key = 'code-of-conduct'),
+  0, 'no Code of Conduct is a signed record');
+select is(
+  (select count(*)::int from journal.contributors c
+   where not c.is_pen_name and not c.is_anonymous
+     and not exists (select 1 from journal.pieces p where p.contributor_id = c.id)
+     and not exists (select 1 from journal.piece_credits pc where pc.contributor_id = c.id)),
+  0, 'a member''s byline exists only on a piece or a credit');
+select is(
+  (select count(*)::int from journal.contributors c join core.profiles p on p.id = c.user_id
+   where not c.is_pen_name and not c.is_anonymous and c.name_en is distinct from p.full_name_en),
+  0, 'a member''s byline is their short name');
 
 select * from finish();
 rollback;

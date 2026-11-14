@@ -36,6 +36,11 @@ All in PR #269.
 - [x] **Retention and push:** incidents kept two years after close (seven
   for Qalam), closed from the event's page; browser push removed
   (`20261114000400`).
+- [x] **Old records to the standard** (`20261114000500`): the Code of
+  Conduct records (AGR-2026-0001 to 0044) become each account's acceptance
+  and are deleted; a member's byline that no piece uses is deleted, bios
+  and the Diwan's Contributors tab go, and member bylines follow the short
+  name.
 - [x] **Agreements:** a three-line summary slot on each signed kind
   (`governance.form_types.summary_en/ar`); "Summary to come" to staff only.
 - [x] **Sessions:** 30 days; the Diwan asks for the second step again after
