@@ -97,7 +97,6 @@
       "no_account": "No account uses this address. Check it, or create your account if you study at AUIB.",
       "breached_password": "This password has appeared in a data breach elsewhere, so it isn’t safe. Choose another.",
       "reauthentication_needed": "For your security, confirm it’s you first: enter the code we just emailed you.",
-      "class_required": "Say whether you’re a student, or faculty, staff or alumni.",
       "age_required": "Answer whether you’re 18 or older. Under 18, give your month and year of birth and a parent’s email."
     },
     "signIn": {
@@ -137,9 +136,6 @@
       "parentHint": "Used only to send the consent link.",
       "mailing": "Send me the Sunday Paper and Society news and events. You can stop either at any time.",
       "emailHint": "Your @{domain} address if you have one.",
-      "classQuestion": "You are",
-      "classStudent": "An AUIB student",
-      "classStaff": "AUIB faculty, staff or alumni",
       "studied": "I studied at AUIB",
       "studiedHint": "We send the Director of Membership a request for Associate membership. Until it is answered, your account is a guest’s.",
       "titleForm": "A title that names you, in Arabic, reads",
@@ -4741,9 +4737,7 @@
       "oneMembership": "You are the Society’s guest, and a guest is never on a partner’s team. Apply with your organization’s own address: sign out, then come back here.",
       "members": "Leading an AUIB club and already a member? Apply signed in as yourself: you stay a member, and the club’s dashboard opens beside Membership.",
       "kindOther": "What kind of organization",
-      "stepTwo": "Step 2 of 2: the memorandum",
-      "signInTitle": "Sign in",
-      "signUpTitle": "Create an account"
+      "stepTwo": "Step 2 of 2: the memorandum"
     },
     "partnerDesk": {
       "none": "You are not on a partner’s team.",

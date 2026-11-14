@@ -17,8 +17,13 @@ test("one sign-up page: the address, the class, the official name, one line", as
   await expectAccessible(page);
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
-  // An AUIB address says which class (decisions.md, Members).
-  await page.getByRole("radio", { name: "An AUIB student" }).click();
+  // The address says the class (a student's ends in a number): no question.
+  await expect(page.getByRole("radiogroup", { name: "You are" })).toHaveCount(
+    0
+  );
+  await expect(
+    page.getByRole("radio", { name: "An AUIB student" })
+  ).toHaveCount(0);
   // The official name in both languages, four parts, on the same page.
   const english = page.getByRole("group", { name: "Your name in English" });
   await english.getByLabel("Name", { exact: true }).fill("New");
@@ -53,16 +58,18 @@ test("one sign-up page: the address, the class, the official name, one line", as
   await expectAccessible(page);
 });
 
-test("an address outside AUIB is not asked the class", async ({ page }) => {
-  await page.goto(`${urls.web}/sign-up`);
-  await page.getByLabel("Email").fill("someone@example.com");
+test("a partner signs up on the one page, then comes back to the memorandum", async ({
+  page,
+}) => {
+  await page.goto(`${urls.web}/partners/apply`);
+  await expect(page).toHaveURL(/\/sign-up\?next=%2Fpartners%2Fapply$/u);
   await expect(
-    page.getByRole("radio", { name: "An AUIB student" })
-  ).toHaveCount(0);
-  await page.getByLabel("Email").fill("someone@auib.edu.iq");
-  await expect(
-    page.getByRole("radio", { name: "An AUIB student" })
+    page.getByRole("heading", { name: "Partner with the Society" })
   ).toBeVisible();
+  // Signing in instead keeps the way back.
+  await expect(
+    page.getByRole("main").getByRole("link", { exact: true, name: "Sign in" })
+  ).toHaveAttribute("href", /next=%2Fpartners%2Fapply/u);
 });
 
 // A6: the site never says whether an address has an account.

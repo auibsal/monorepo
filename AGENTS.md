@@ -191,7 +191,11 @@ any schema change. Integration tests run against a local stack with
   Notice agreement (`core.profiles.agreed_at`, one line) and asks whether
   the person is 18 or older, with the official name (four parts, English
   and Arabic, locked at once; the short name is a choice in Settings,
-  `core.profiles.short_name`) and the class question for an AUIB address. A password change
+  `core.profiles.short_name`). The class comes from the address, never asked:
+  an AUIB address ending in a number (`1241295@`, `name.1241295@`) is a
+  student's, any other AUIB address faculty or staff
+  (`private.is_student_address`). Signed out, `/partners/apply` sends the
+  person to `/sign-up?next=/partners/apply` and back to the memorandum. A password change
   on an old sign-in asks for an emailed code (secure password change);
   deleting the account needs a sign-in from the last 15 minutes
   (`signedInWithin`) and takes effect 30 days later

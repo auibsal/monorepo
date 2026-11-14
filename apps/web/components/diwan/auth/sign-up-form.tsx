@@ -85,13 +85,36 @@ const minorDetails = (adult: Adult, minorAllowed: boolean, minor: MinorForm) =>
       }
     : undefined;
 
-export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
+/**
+ * Where a partner's application continues (decisions.md, Partners): an
+ * account made on the way there applies for the organization.
+ */
+export const PARTNER_APPLY_PATH = "/partners/apply";
+
+/**
+ * Where the sign-up returns to, and what it brings: signing up on the way
+ * to the memorandum makes a partner's account, never a guest's.
+ */
+const useSignUpContext = ({
+  next: given,
+  outside: givenOutside,
+}: SignUpFormProps) => {
+  const asked = safeNextPath(useSearchParams().get("next"));
+  const next = given ?? asked;
+  const partner = !givenOutside && next === PARTNER_APPLY_PATH;
+  const outside: OutsideSignUp | undefined =
+    givenOutside ??
+    (partner ? { reason: { partnerApplicant: true } } : undefined);
+  return { next, outside, partner };
+};
+
+export const SignUpForm = (props: SignUpFormProps) => {
   const t = useTranslations("auth");
+  const tp = useTranslations("diwan.partnerJoin");
   const errorText = useAuthError();
   const { supabase } = useAuth();
   const locale = useLocale();
-  const asked = safeNextPath(useSearchParams().get("next"));
-  const next = given ?? asked;
+  const { next, outside, partner } = useSignUpContext(props);
   const id = useId();
   const [values, setValues] = useState({
     email: outside?.email ?? "",
@@ -112,7 +135,6 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   // An AUIB address says which it is: a student is a Member; faculty,
   // staff or alumni are Associates. Any other address is a Guest, and
   // "I studied at AUIB" asks for Associate membership.
-  const [klass, setKlass] = useState<"" | "student" | "staff">("");
   const [studied, setStudied] = useState(false);
   const [titleForm, setTitleForm] = useState<"" | "masculine" | "feminine">("");
   // Under 18: the month and year of birth (deleted at 18) and a parent's
@@ -147,7 +169,6 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
     const result = await signUpWithEmail(supabase, {
       adult: adult === "yes",
       captchaToken: human.token,
-      class: auib && klass ? klass : undefined,
       email,
       locale: locale === "ar" ? "ar" : "en",
       mailing: mailingOn,
@@ -185,7 +206,15 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
 
   return (
     <>
-      {/* Invited or applying, the page around the form says what it is for. */}
+      {/* Invited, the page around the form says what it is for. */}
+      {partner ? (
+        <FormHeader title={tp("title")}>
+          <span className="grid gap-2">
+            <span>{tp("account")}</span>
+            <span>{tp("members")}</span>
+          </span>
+        </FormHeader>
+      ) : null}
       {outside ? null : (
         <FormHeader title={t("signUp.title")}>
           {t("signUp.description")}
@@ -227,21 +256,6 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
             {t("passwordHint")}
           </p>
         </div>
-        {auib ? (
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-class`}>{t("signUp.classQuestion")}</Label>
-            <ChoiceInput
-              id={`${id}-class`}
-              onChange={(event) =>
-                setKlass(event.target.value as "student" | "staff")
-              }
-              value={klass}
-            >
-              <option value="student">{t("signUp.classStudent")}</option>
-              <option value="staff">{t("signUp.classStaff")}</option>
-            </ChoiceInput>
-          </div>
-        ) : null}
         {email.includes("@") && !auib && !outside ? (
           <div className="flex items-start gap-3">
             <Checkbox
@@ -412,8 +426,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
             !EMAIL_SHAPE.test(email) ||
             !ageAnswered ||
             !named ||
-            !titleForm ||
-            (auib && !klass)
+            !titleForm
           }
           type="submit"
         >

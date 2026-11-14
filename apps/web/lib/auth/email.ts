@@ -40,7 +40,6 @@ export type EmailAuthErrorCode =
   | "unknown"
   | "user_exists"
   | "names_required"
-  | "class_required"
   | "age_required"
   | "no_account"
   | "email_reserved"
@@ -114,11 +113,6 @@ export interface SignUpDetails {
   adult: boolean;
   /** From the Turnstile widget, when the human check is on. */
   captchaToken?: string;
-  /**
-   * An AUIB address's class (decisions.md, Members): a student is a
-   * Member; faculty, staff or alumni are Associates.
-   */
-  class?: "student" | "staff";
   email: string;
   locale: "ar" | "en";
   /**
@@ -194,9 +188,6 @@ const signUpRefusal = (
   if (!(details.adult || (details.minor && (auib || invited)))) {
     return "age_required";
   }
-  if (auib && !details.class) {
-    return "class_required";
-  }
   return nameComplete(details.names.en) && nameComplete(details.names.ar)
     ? null
     : "names_required";
@@ -244,7 +235,6 @@ export const signUpWithEmail = async (
         // database logs the versions and its own time.
         agreed_at: new Date().toISOString(),
         ...minorMetadata(details.minor),
-        ...(auib && details.class ? { class: details.class } : {}),
         ...(!auib && details.studiedAtAuib ? { studied_at_auib: "true" } : {}),
         ...(details.titleForm ? { title_form: details.titleForm } : {}),
         locale: details.locale,

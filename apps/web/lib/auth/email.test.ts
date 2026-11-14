@@ -146,28 +146,22 @@ describe("signing up", () => {
     expect(
       await signUpWithEmail(supabase, {
         ...base,
-        class: "student",
         email: "s@auib.edu.iq",
       })
     ).toEqual({ code: "user_exists", ok: false });
   });
 
-  test("an AUIB address says whether it is a student's", async () => {
+  test("an AUIB address is never asked its class: the database reads it", async () => {
     const { signUp, supabase } = client();
-    expect(
-      await signUpWithEmail(supabase, { ...base, email: "s@auib.edu.iq" })
-    ).toEqual({ code: "class_required", ok: false });
-    expect(signUp).not.toHaveBeenCalled();
     const result = await signUpWithEmail(supabase, {
       ...base,
-      class: "staff",
-      email: "s@auib.edu.iq",
+      email: "lina.tamimi@auib.edu.iq",
       titleForm: "feminine",
     });
     expect(result.ok).toBe(true);
+    expect(sentData(signUp)).not.toHaveProperty("class");
     expect(sentData(signUp)).toMatchObject({
       agreed_at: expect.any(String),
-      class: "staff",
       first_name_en: "Lina",
       last_name_ar: "التميمي",
       title_form: "feminine",

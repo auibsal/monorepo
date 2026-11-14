@@ -8,21 +8,18 @@ import {
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
-import { Link } from "@repo/internationalization/navigation";
+import { Link, useRouter } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, type ReactNode, Suspense, useState } from "react";
+import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { ErrorLine, SelectInput } from "@/components/diwan/admin/kit";
-import { SignInForm } from "@/components/diwan/auth/sign-in-form";
-import { SignUpForm } from "@/components/diwan/auth/sign-up-form";
-import { DiwanPage, DiwanSection } from "@/components/diwan/page";
+import { PARTNER_APPLY_PATH } from "@/components/diwan/auth/sign-up-form";
+import { DiwanPage } from "@/components/diwan/page";
 import { PageSpinner } from "@/components/diwan/states";
 import { MySignature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, partners, unwrap } from "@/lib/data";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
-
-const PATH = "/partners/apply";
 
 /**
  * Where an organization outside AUIB works; an AUIB club or department is
@@ -380,6 +377,18 @@ const ApplicationForm = () => {
   );
 };
 
+/** Signed out: the one sign-up page, back to the memorandum after. */
+const ToSignUp = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace({
+      pathname: "/sign-up",
+      query: { next: PARTNER_APPLY_PATH },
+    });
+  }, [router]);
+  return <PageSpinner />;
+};
+
 /**
  * Partner with the Society (decisions.md): an organization signs up,
  * proposes the partnership and signs the memorandum by name; the President
@@ -397,28 +406,10 @@ export const PartnerJoin = () => {
     return <PageSpinner />;
   }
   if (!user) {
-    // First, who signs (decisions.md): sign in, or make an account
-    // for whoever signs for the organization (any address will do). A
-    // member signs in as themselves and stays a member.
-    return (
-      <DiwanPage lede={t("lede")} title={t("title")}>
-        <div className="grid gap-12 lg:grid-cols-2">
-          <DiwanSection id="sign-in" title={t("signInTitle")}>
-            <p className="type-body text-text-secondary">{t("members")}</p>
-            <Suspense fallback={<PageSpinner />}>
-              <SignInForm embedded />
-            </Suspense>
-          </DiwanSection>
-          <DiwanSection id="sign-up" title={t("signUpTitle")}>
-            <p className="type-body text-text-secondary">{t("account")}</p>
-            <SignUpForm
-              next={PATH}
-              outside={{ reason: { partnerApplicant: true } }}
-            />
-          </DiwanSection>
-        </div>
-      </DiwanPage>
-    );
+    // Who signs comes first (decisions.md, Partners): the one sign-up
+    // page, coming back here to the memorandum once the account is made
+    // or signed in to.
+    return <ToSignUp />;
   }
   // A member may lead their club's partnership (decisions.md); a
   // guest may not, and applies with the organization's own address.
