@@ -2,7 +2,6 @@
 
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Icon } from "@repo/brand/components/sal/icon";
-import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
 import {
   formatClock,
@@ -11,20 +10,15 @@ import {
 } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { InlineConfirm } from "@/components/frame/inline-confirm";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
 import { SectionSpinner } from "../../states";
-import { type Column, DataTable, ErrorLine, Field, SaveButton } from "../kit";
+import { type Column, DataTable, ErrorLine } from "../kit";
 
 interface Status {
-  catchUpSentAt: string | null;
   configured: boolean;
   home: string | null;
-  invite?: { email: string; name: string; roles: string[]; user_id: string }[];
-  inviteLink: string | null;
   listsError?: string;
   remove?: { email: string; name: string }[];
   state: {
@@ -34,7 +28,6 @@ interface Status {
   } | null;
 }
 
-type Invite = NonNullable<Status["invite"]>[number];
 type Remove = NonNullable<Status["remove"]>[number];
 
 const STATUS_KEY = ["admin", "notion-status"];
@@ -44,131 +37,110 @@ const total = (counts: Record<string, number>, suffix: string) =>
     .filter(([k]) => k.endsWith(suffix))
     .reduce((sum, [, n]) => sum + n, 0);
 
-/**
- * The workspace's invite link (core.settings `notion.invite_link`): the
- * role email carries it, the only way into the team's Notion.
- */
-const InviteLink = ({ saved }: { readonly saved: string | null }) => {
-  const t = useTranslations("diwan.admin.settings.notion");
-  const { supabase, user } = useAuth();
-  const queryClient = useQueryClient();
-  const [link, setLink] = useState(saved ?? "");
-  useEffect(() => {
-    setLink(saved ?? "");
-  }, [saved]);
-  const save = useMutation({
-    mutationFn: async () => {
-      const value = link.trim();
-      unwrap(
-        await supabase
-          .schema("core")
-          .from("settings")
-          .update({ updated_by: user?.id ?? null, value })
-          .eq("key", "notion.invite_link")
-      );
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: STATUS_KEY }),
-  });
-  return (
-    <form
-      className="grid gap-4"
-      onSubmit={(event) => {
-        event.preventDefault();
-        save.mutate();
-      }}
-    >
-      <Field hint={t("inviteLinkHint")} label={t("inviteLink")}>
-        {(id) => (
-          <Input
-            dir="ltr"
-            id={id}
-            inputMode="url"
-            onChange={(event) => setLink(event.target.value)}
-            pattern="https://.*"
-            type="url"
-            value={link}
-          />
-        )}
-      </Field>
-      <SaveButton pending={save.isPending} success={save.isSuccess} />
-      <ErrorLine error={save.error} />
-    </form>
-  );
-};
+interface Invite {
+  email: string;
+  name_ar: string | null;
+  name_en: string;
+  roles: string[];
+  user_id: string;
+}
+
+const INVITE_KEY = ["admin", "notion-to-invite"];
 
 /**
- * For now, once: who to invite and who to remove, and the one button that
- * sends the invitation to everyone on the first list. After it is sent the
- * block goes away for good (`notion.catch_up_sent_at`); from then on the
- * invitation comes with each role.
+ * Notion by named invitation (decisions.md, Notion): the role holders
+ * not yet invited, by their AUIB email. The Secretary invites each in
+ * Notion and marks it done here; whoever is in the workspace without a
+ * role that opens it is listed to remove.
  */
-const CatchUp = ({ data }: { readonly data: Status }) => {
+const Invitations = ({ data }: { readonly data: Status }) => {
   const t = useTranslations("diwan.admin.settings.notion");
+  const locale = useLocale();
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const send = useMutation({
-    mutationFn: () => callApi<{ sent: number }>(supabase, "/notion/invite", {}),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: STATUS_KEY }),
+  const list = useQuery({
+    queryFn: async () =>
+      (unwrap(await supabase.schema("core").rpc("notion_to_invite")) ??
+        []) as Invite[],
+    queryKey: INVITE_KEY,
+  });
+  const mark = useMutation({
+    mutationFn: async (member: string) =>
+      unwrap(
+        await supabase.schema("core").rpc("mark_notion_invited", { member })
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: INVITE_KEY }),
   });
   const inviteColumns: Column<Invite>[] = [
-    { cell: (r) => r.name, header: t("columns.name"), key: "name" },
-    { cell: (r) => r.email, header: t("columns.email"), key: "email" },
+    {
+      cell: (r) => (locale === "ar" && r.name_ar) || r.name_en,
+      header: t("columns.name"),
+      key: "name",
+    },
+    {
+      cell: (r) => <span dir="ltr">{r.email}</span>,
+      header: t("columns.email"),
+      key: "email",
+    },
     {
       cell: (r) => r.roles.join(", "),
       header: t("columns.roles"),
       key: "roles",
+    },
+    {
+      cell: (r) => (
+        <button
+          className="link"
+          disabled={mark.isPending}
+          onClick={() => mark.mutate(r.user_id)}
+          type="button"
+        >
+          {t("markInvited")}
+        </button>
+      ),
+      header: t("columns.done"),
+      key: "done",
     },
   ];
   const removeColumns: Column<Remove>[] = [
     { cell: (r) => r.name, header: t("columns.name"), key: "name" },
     { cell: (r) => r.email, header: t("columns.email"), key: "email" },
   ];
-  const invite = data.invite ?? [];
   return (
     <section className="border-line grid gap-4 border-t pt-4">
-      <h3 className="font-medium">{t("catchUpTitle")}</h3>
-      <p className="type-caption">{t("catchUpHint")}</p>
       <section className="grid gap-2">
-        <h4 className="font-medium">{t("inviteTitle")}</h4>
+        <h3 className="font-medium">{t("inviteTitle")}</h3>
         <p className="type-caption">{t("inviteHint")}</p>
         <DataTable
           caption={t("inviteTitle")}
           columns={inviteColumns}
           empty={t("inviteEmpty")}
-          rowKey={(r) => r.email}
-          rows={invite}
+          rowKey={(r) => r.user_id}
+          rows={list.data ?? []}
         />
+        <ErrorLine error={mark.error ?? list.error} />
       </section>
-      <section className="grid gap-2">
-        <h4 className="font-medium">{t("removeTitle")}</h4>
-        <p className="type-caption">{t("removeHint")}</p>
-        <DataTable
-          caption={t("removeTitle")}
-          columns={removeColumns}
-          empty={t("removeEmpty")}
-          rowKey={(r) => r.email}
-          rows={data.remove ?? []}
-        />
-      </section>
-      {data.inviteLink ? null : (
-        <p className="type-caption font-medium">{t("needsLink")}</p>
-      )}
-      <InlineConfirm
-        confirm={t("sendConfirm")}
-        disabled={!data.inviteLink || send.isPending}
-        label={t("send", { count: formatNumber(invite.length) })}
-        onConfirm={() => send.mutate()}
-        question={t("sendAsk")}
-      />
-      <ErrorLine error={send.error} />
+      {data.remove ? (
+        <section className="grid gap-2">
+          <h3 className="font-medium">{t("removeTitle")}</h3>
+          <p className="type-caption">{t("removeHint")}</p>
+          <DataTable
+            caption={t("removeTitle")}
+            columns={removeColumns}
+            empty={t("removeEmpty")}
+            rowKey={(r) => r.email}
+            rows={data.remove}
+          />
+        </section>
+      ) : null}
     </section>
   );
 };
 
 /**
  * The Desk's Connected panel: the team's Notion workspace. Whether the
- * connection is set up, what the last sync did, the invite link the role
- * email carries, and, until it is sent once, the catch-up block.
+ * connection is set up, what the last sync did, and the named
+ * invitations.
  */
 export const NotionWorkspace = () => {
   const t = useTranslations("diwan.admin.settings.notion");
@@ -231,10 +203,7 @@ export const NotionWorkspace = () => {
       {data?.listsError ? (
         <p className="type-caption">{t("listsError")}</p>
       ) : null}
-      {data ? <InviteLink saved={data.inviteLink} /> : null}
-      {data && !data.catchUpSentAt && (data.invite || data.remove) ? (
-        <CatchUp data={data} />
-      ) : null}
+      {data ? <Invitations data={data} /> : null}
       {data?.home ? (
         <a
           className="inline-flex items-center gap-1.5 justify-self-start underline underline-offset-4"

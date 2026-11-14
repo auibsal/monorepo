@@ -26,6 +26,7 @@ import {
   contactField,
   cronFailed,
   type Decision,
+  dailyUpdate,
   decision,
   deskNames,
   electionStage,
@@ -34,6 +35,7 @@ import {
   type FailedJob,
   finalCheck,
   formLink,
+  formReceived,
   formSignedCopy,
   incidentReported,
   invitationBroadcast,
@@ -41,7 +43,6 @@ import {
   membershipRemoved,
   newDevice,
   newsletterConfirm,
-  notionInvite,
   parentAccount,
   partnerInvitation,
   personalEmailConfirm,
@@ -159,9 +160,42 @@ interface Recipient {
   lang: Lang;
   /** Members: whether they take the optional emails (notify_email). */
   optional?: boolean;
-  /** Set for members (push goes to their devices); unset for guests. */
+  /**
+   * The emails about one's own records (decisions.md, Documents and forms),
+   * each on unless turned off in Settings → Notifications.
+   */
+  records?: { daily: boolean; receipts: boolean; signedCopy: boolean };
+  /** Set for account holders (Hudhud reaches them); unset otherwise. */
   userId?: string;
 }
+
+/** The signer's copy of what they signed, at once. */
+const SIGNED_COPY_KINDS = new Set(["forms.signed_copy"]);
+
+/** The one "received" email for an application or a submission. */
+const RECEIPT_KINDS = new Set([
+  "forms.received",
+  "get_involved.received",
+  "governance.candidacy_received",
+  "journal.submission_received",
+  "partners.application_received",
+]);
+
+/**
+ * Later changes to an application or a submission: gathered into the
+ * person's one daily update email (`account.daily_update`), never sent
+ * one by one.
+ */
+const DAILY_KINDS = new Set([
+  "forms.updated",
+  "get_involved.reply_update",
+  "governance.candidacy_decided",
+  "journal.decision",
+  "partners.application_decided",
+  "programmes.audition_update",
+  "programmes.reply_update",
+  "qirtas.decision",
+]);
 
 const recipient = async (
   admin: AdminClient,
@@ -175,7 +209,9 @@ const recipient = async (
     admin
       .schema("core")
       .from("profiles")
-      .select("locale, notify_email")
+      .select(
+        "locale, notify_email, email_signed_copy, email_receipts, email_daily_updates"
+      )
       .eq("id", userId)
       .maybeSingle(),
   ]);
@@ -187,6 +223,11 @@ const recipient = async (
     email,
     lang: profile?.locale === "ar" ? "ar" : "en",
     optional: profile?.notify_email ?? true,
+    records: {
+      daily: profile?.email_daily_updates ?? true,
+      receipts: profile?.email_receipts ?? true,
+      signedCopy: profile?.email_signed_copy ?? true,
+    },
     userId,
   };
 };
@@ -302,6 +343,39 @@ const send = async (
 ) => {
   const run = current.getStore();
   const row = run?.row;
+  if (run && to.userId) {
+    // The emails about one's own records follow the person's switches.
+    if (SIGNED_COPY_KINDS.has(run.kind) && to.records?.signedCopy === false) {
+      return;
+    }
+    if (RECEIPT_KINDS.has(run.kind) && to.records?.receipts === false) {
+      return;
+    }
+    // A later change waits for the daily update (or, with it off, stays
+    // in Your account only).
+    if (DAILY_KINDS.has(run.kind)) {
+      if (to.records?.daily !== false) {
+        const block =
+          built.blocks.find((b) => b.lang === to.lang) ?? built.blocks[0];
+        const { error } = await run.admin
+          .schema("core")
+          .from("daily_updates")
+          .insert({
+            detail: {
+              href: block?.action?.href ?? null,
+              line: built.subject,
+            },
+            kind: run.kind,
+            ref: String(row),
+            user_id: to.userId,
+          });
+        if (error) {
+          throw error;
+        }
+      }
+      return;
+    }
+  }
   if (
     reminder &&
     run &&
@@ -873,19 +947,6 @@ const PAPER_TEST_LINE = {
   en: "A test of the Sunday Paper, sent only to the Editor-in-Chief before it goes out.",
 } as const;
 
-/** The Notion workspace's invite link (core.settings), if one is set. */
-const notionInviteLink = async (admin: AdminClient) => {
-  const { data } = await admin
-    .schema("core")
-    .from("settings")
-    .select("value")
-    .eq("key", "notion.invite_link")
-    .maybeSingle();
-  return typeof data?.value === "string" && data.value.startsWith("https://")
-    ? data.value
-    : null;
-};
-
 const handlers: Record<string, Handler> = {
   // From /api/two-step/recover: the hour's tries ran out.
   "access.recovery_attempts": async (admin, payload) => {
@@ -908,8 +969,6 @@ const handlers: Record<string, Handler> = {
         .maybeSingle(),
     ]);
     if (to && data?.role) {
-      // The team's Notion is entered only by this invitation.
-      const notion = data.role.in_notion ? await notionInviteLink(admin) : null;
       await send(
         to,
         roleAssigned(
@@ -921,7 +980,8 @@ const handlers: Record<string, Handler> = {
           },
           data.role.requires_mfa,
           appUrl(),
-          notion
+          // The Secretary invites them to Notion by name (decisions.md).
+          data.role.in_notion
         ),
         { category: "officer" }
       );
@@ -964,6 +1024,35 @@ const handlers: Record<string, Handler> = {
           appUrl()
         )
       );
+    }
+  },
+  // Once a day (private.enqueue_daily_updates): the updates it carries.
+  "account.daily_update": async (admin, payload) => {
+    const ids = Array.isArray(payload.update_ids)
+      ? payload.update_ids.map(String)
+      : [];
+    const [to, { data: updates }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("core")
+        .from("daily_updates")
+        .select("detail, created_at")
+        .in("id", ids)
+        .order("created_at"),
+    ]);
+    const items = (updates ?? []).flatMap((u) => {
+      const detail = (u.detail ?? {}) as { href?: unknown; line?: unknown };
+      return typeof detail.line === "string"
+        ? [
+            {
+              href: typeof detail.href === "string" ? detail.href : null,
+              line: detail.line,
+            },
+          ]
+        : [];
+    });
+    if (to && items.length > 0) {
+      await send(to, dailyUpdate(to.lang, items, appUrl()));
     }
   },
   // Sent to the address the account had (it is gone by now).
@@ -1241,6 +1330,30 @@ const handlers: Record<string, Handler> = {
           },
         })
         .eq("id", row);
+    }
+  },
+  // A submission (an event pitch, a concern, a motion): received, at once.
+  "forms.received": async (admin, payload) => {
+    const { data: request } = await admin
+      .schema("governance")
+      .from("form_submissions")
+      .select("id, form_key, reference, submitted_by")
+      .eq("id", String(payload.submission_id))
+      .maybeSingle();
+    const to = request?.submitted_by
+      ? await recipient(admin, request.submitted_by)
+      : null;
+    if (to && request) {
+      await send(
+        to,
+        formReceived(
+          to.lang,
+          request.form_key,
+          request.reference,
+          request.id,
+          appUrl()
+        )
+      );
     }
   },
   // The signer's copy (decisions §11): to the account that signed, or to
@@ -1645,16 +1758,6 @@ const handlers: Record<string, Handler> = {
         `${webUrl()}${prefix(lang)}/sunday-paper/confirm?token=${row.confirm_token}`
       )
     );
-  },
-  // From the Diwan's one-time Notion catch-up (/api/notion/invite).
-  "notion.invite": async (admin, payload) => {
-    const [to, link] = await Promise.all([
-      recipient(admin, payload.user_id),
-      notionInviteLink(admin),
-    ]);
-    if (to && link) {
-      await send(to, notionInvite(to.lang, link), { category: "officer" });
-    }
   },
   "partners.application_decided": async (admin, payload) => {
     const [to, { data: partner }] = await Promise.all([

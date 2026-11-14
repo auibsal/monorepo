@@ -114,9 +114,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   // "I studied at AUIB" asks for Associate membership.
   const [klass, setKlass] = useState<"" | "student" | "staff">("");
   const [studied, setStudied] = useState(false);
-  const [titleForm, setTitleForm] = useState<"" | "masculine" | "feminine">(
-    ""
-  );
+  const [titleForm, setTitleForm] = useState<"" | "masculine" | "feminine">("");
   // Under 18: the month and year of birth (deleted at 18) and a parent's
   // address for the consent link; for an AUIB student or by invitation.
   const minorAllowed = auib || invited;
@@ -291,7 +289,9 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
             }
             value={titleForm}
           >
-            <option value="masculine">{t("signUp.titleForms.masculine")}</option>
+            <option value="masculine">
+              {t("signUp.titleForms.masculine")}
+            </option>
             <option value="feminine">{t("signUp.titleForms.feminine")}</option>
           </ChoiceInput>
         </div>

@@ -116,9 +116,11 @@ describe("signing up", () => {
     redirectTo: "https://x/cb",
   };
   const sentData = (signUp: ReturnType<typeof vi.fn>) =>
-    ((signUp.mock.calls[0] as unknown[])[0] as {
-      options: { data: Record<string, unknown> };
-    }).options.data;
+    (
+      (signUp.mock.calls[0] as unknown[])[0] as {
+        options: { data: Record<string, unknown> };
+      }
+    ).options.data;
 
   test("no account without saying whether you're 18 or older", async () => {
     const { signUp, supabase } = client();
