@@ -26,10 +26,18 @@ test("one sign-up page: the address, the class, the official name, one line", as
   ).toHaveCount(0);
   // The official name in both languages, four parts, on the same page.
   // Four names in one line per language, read back before sending.
+  // A name of two words written with a space is joined by a tap.
   const english = page.getByLabel("Your four names in English");
-  await english.fill("new kareem hasan member");
+  await english.fill("new mohammed ali kareem member");
   await english.blur();
-  await expect(english).toHaveValue("New Kareem Hasan Member");
+  await expect(english).toHaveValue("New Mohammed Ali Kareem Member");
+  await expect(page.getByText(/reads as 5 names/u)).toBeVisible();
+  await page
+    .getByRole("button", { name: "Join Mohammed and Ali as one name" })
+    .click();
+  await expect(
+    page.getByText("Read as: New · Mohammed Ali · Kareem · Member")
+  ).toBeVisible();
   await page.getByLabel("Your four names in Arabic").fill("عضو كريم حسن جديد");
   await page.getByLabel("I’m 18 or older").check();
   // One line by the button; no boxes to agree, no signature.

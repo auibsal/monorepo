@@ -141,15 +141,19 @@
       "wrongAddress": "Wrong address? Fix it",
       "wrongAddressFailed": "That didn’t work. Sign up again with the right address; the other one is deleted after seven days if it isn’t confirmed.",
       "numberCheck": "AUIB student numbers usually have 7 digits and start with the year you joined. Check your address; you can still go on.",
-      "nameHintEn": "Letters only, each name with a capital. Join a name of two words with a hyphen: Abdul-Rahman.",
-      "nameHintAr": "Arabic letters only. «أبو بكر» and «عبد الله» are read as one name.",
+      "nameHintEn": "Letters only, each name with a capital, as on your papers. If one of your names is two words (Mohammed Ali), tap between them below to join them.",
+      "nameHintAr": "Arabic letters only, as on your papers. If one of your names is two words («محمد علي»), tap between them below to join them; «أبو» and «عبد» come joined.",
       "nameReads": "Read as: {names}",
       "nameProblems": {
         "count": "Four names, please: this reads as {count}.",
-        "letters": "Letters only, with no numbers or symbols; join a name of two words with a hyphen.",
-        "capitals": "Start each name with a capital letter."
+        "letters": "Letters only, with no numbers or symbols.",
+        "capitals": "Start each name with a capital letter.",
+        "tooMany": "This reads as {count} names. If one of your names is two words, tap between them to join them."
       },
-      "under18": "Under 18?"
+      "under18": "Under 18?",
+      "nameWords": "The words of your name: tap between two words to join or separate them",
+      "nameJoin": "Join {first} and {second} as one name",
+      "nameSeparate": "Separate {first} and {second}"
     },
     "forgot": {
       "title": "Reset your password",

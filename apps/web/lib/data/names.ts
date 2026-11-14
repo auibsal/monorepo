@@ -137,6 +137,12 @@ export const partsReady = (parts: NameParts, language: NameLanguage) =>
   partsComplete(parts) && partsInScript(parts, language);
 
 // ── One line per language at sign-up (decisions.md, Members) ───────────────
+//
+// The four names are typed in one line, word by word. A name of two words
+// written with a space ("Mohammed Ali", «أبو بكر») is one name: the line
+// is shown back word by word, and the person joins two words by tapping
+// between them. «أبو» and «عبد» (and their spellings) come joined to the
+// next word in Arabic, since they are never a name alone.
 
 const LATIN_LETTERS =
   "A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u024F\\u1E00-\\u1EFF";
@@ -144,24 +150,16 @@ const LATIN_WORD = new RegExp(
   `^[${LATIN_LETTERS}]+(?:-[${LATIN_LETTERS}]+)*$`,
   "u"
 );
-const ARABIC_WORD = /^[ء-غف-يً-ْٰٱ-ۓ]+$/u;
+const ARABIC_WORD =
+  /^[\u0621-\u063A\u0641-\u064A\u064B-\u0652\u0670\u0671-\u06D3]+$/u;
 const AROUND_HYPHEN = /\s*-\s*/gu;
 const SPACES = /\s+/u;
 
-/**
- * Arabic names of two words that are one name, written with a space
- * («أبو بكر», «عبد الله»): the first word joins the next. «عبدالله»,
- * written as one word, is one word already.
- */
 const ARABIC_JOINS = new Set(["أبو", "ابو", "أبي", "ابي", "عبد"]);
 
-/** "ali abdul - rahman" → "Ali Abdul-Rahman": hyphens closed up, each name capitalized. */
+/** "ali abdul - rahman" → "Ali Abdul-Rahman": hyphens closed up, each word capitalized. */
 export const tidyEnglishName = (value: string) =>
-  value
-    .trim()
-    .replace(AROUND_HYPHEN, "-")
-    .split(SPACES)
-    .filter(Boolean)
+  wordsInLine(value)
     .map((word) =>
       word
         .split("-")
@@ -175,71 +173,121 @@ export const tidyEnglishName = (value: string) =>
     )
     .join(" ");
 
-/** The names in one line, in order, as the site reads them. */
-export const namesInLine = (value: string, language: NameLanguage) => {
-  const words = value
-    .trim()
-    .replace(AROUND_HYPHEN, "-")
-    .split(SPACES)
-    .filter(Boolean);
-  if (language === "en") {
-    return words;
+/** The words of a line, in order. */
+export const wordsInLine = (value: string) =>
+  value.trim().replace(AROUND_HYPHEN, "-").split(SPACES).filter(Boolean);
+
+/**
+ * Which gaps between words are joined: gap i joins word i to word i + 1.
+ * Without the person's own choices, «أبو» and «عبد» join the next word.
+ */
+export type Joins = ReadonlySet<number>;
+
+export const defaultJoins = (
+  words: readonly string[],
+  language: NameLanguage
+) => {
+  const joins = new Set<number>();
+  if (language === "ar") {
+    words.forEach((word, i) => {
+      if (ARABIC_JOINS.has(word) && i < words.length - 1 && !joins.has(i - 1)) {
+        joins.add(i);
+      }
+    });
   }
+  return joins;
+};
+
+/** The names a line holds, with its words joined at the given gaps. */
+export const namesInLine = (
+  value: string,
+  language: NameLanguage,
+  joins?: Joins
+) => {
+  const words = wordsInLine(value);
+  const joined = joins ?? defaultJoins(words, language);
   const names: string[] = [];
-  for (let i = 0; i < words.length; i += 1) {
-    const word = words[i] ?? "";
-    const next = words[i + 1];
-    if (ARABIC_JOINS.has(word) && next) {
-      names.push(`${word} ${next}`);
-      i += 1;
+  words.forEach((word, i) => {
+    if (i > 0 && joined.has(i - 1)) {
+      names[names.length - 1] = `${names.at(-1)} ${word}`;
     } else {
       names.push(word);
     }
-  }
+  });
   return names;
 };
 
+const capitalized = (word: string) =>
+  word
+    .split("-")
+    .every((piece) => piece.charAt(0) === piece.charAt(0).toUpperCase());
+
 /**
- * What is wrong with one line of four names, or null: exactly four names,
- * letters only (no digits or symbols), an English name capitalized and a
- * name of two words joined by a hyphen ("Abdul-Rahman").
+ * What is wrong with a line of four names, or null: letters only (no
+ * digits or symbols), each English word capitalized, and exactly four
+ * names, too few or too many (join the words of a two-word name).
  */
 export const lineProblem = (
   value: string,
-  language: NameLanguage
-): "count" | "letters" | "capitals" | null => {
-  const names = namesInLine(value, language);
+  language: NameLanguage,
+  joins?: Joins
+): "count" | "tooMany" | "letters" | "capitals" | null => {
+  const words = wordsInLine(value);
   if (language === "en") {
-    if (!names.every((name) => LATIN_WORD.test(name))) {
+    if (!words.every((word) => LATIN_WORD.test(word))) {
       return "letters";
     }
-    if (
-      !names.every((name) =>
-        name
-          .split("-")
-          .every((piece) => piece.charAt(0) === piece.charAt(0).toUpperCase())
-      )
-    ) {
+    if (!words.every(capitalized)) {
       return "capitals";
     }
-  } else if (
-    !names.every((name) =>
-      name.split(" ").every((word) => ARABIC_WORD.test(word))
-    )
-  ) {
+  } else if (!words.every((word) => ARABIC_WORD.test(word))) {
     return "letters";
   }
-  return names.length === nameParts.length ? null : "count";
+  const count = namesInLine(value, language, joins).length;
+  if (count === nameParts.length) {
+    return null;
+  }
+  return count > nameParts.length ? "tooMany" : "count";
 };
 
 /** The four parts of a line that has no problem. */
 export const partsFromLine = (
   value: string,
-  language: NameLanguage
+  language: NameLanguage,
+  joins?: Joins
 ): NameParts => {
   const [first = "", father = "", grandfather = "", last = ""] = namesInLine(
     value,
-    language
+    language,
+    joins
   );
   return { father, first, grandfather, last };
+};
+
+/**
+ * The person's own taps, kept by the two words around each gap, so a tap
+ * stays with its words as the rest of the line is typed.
+ */
+export type JoinChoices = ReadonlyMap<string, boolean>;
+
+export const gapKey = (words: readonly string[], gap: number) =>
+  `${gap}:${words[gap]}|${words[gap + 1]}`;
+
+/** The joins in effect: the person's taps over the defaults. */
+export const joinsFor = (
+  value: string,
+  language: NameLanguage,
+  choices: JoinChoices
+): Set<number> => {
+  const words = wordsInLine(value);
+  const joins = defaultJoins(words, language);
+  for (let gap = 0; gap < words.length - 1; gap += 1) {
+    const chosen = choices.get(gapKey(words, gap));
+    if (chosen === true) {
+      joins.add(gap);
+    } else if (chosen === false) {
+      joins.delete(gap);
+    }
+  }
+  return joins;
 };
