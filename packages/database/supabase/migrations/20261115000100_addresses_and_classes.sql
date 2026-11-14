@@ -694,7 +694,7 @@ declare
   keep_address text;
   gone_address text;
   fk record;
-  r record;
+  row_id tid;
 begin
   if keep is null or a = b then
     raise exception 'no_account' using errcode = 'P0002';
@@ -716,15 +716,15 @@ begin
       and not (n.nspname = 'core' and t.relname = 'profiles')
       and not (n.nspname = 'membership' and t.relname = 'merge_requests')
   loop
-    for r in execute format('select ctid from %I.%I where %I = $1', fk.schema_name, fk.table_name, fk.column_name)
+    for row_id in execute format('select ctid from %I.%I where %I = $1', fk.schema_name, fk.table_name, fk.column_name)
       using gone
     loop
       begin
         execute format('update %I.%I set %I = $1 where ctid = $2', fk.schema_name, fk.table_name, fk.column_name)
-          using keep, r.ctid;
+          using keep, row_id;
       exception when unique_violation or exclusion_violation then
         execute format('delete from %I.%I where ctid = $1', fk.schema_name, fk.table_name)
-          using r.ctid;
+          using row_id;
       end;
     end loop;
   end loop;

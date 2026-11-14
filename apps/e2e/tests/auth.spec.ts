@@ -88,9 +88,7 @@ test("a mistyped address is put right from the inbox screen, with no second acco
   await page.getByRole("button", { name: "Wrong address? Fix it" }).click();
   // The form is back with everything typed, and the address is free.
   await expect(page.getByLabel("Email")).toHaveValue(typo);
-  await expect(
-    english.getByLabel("Name", { exact: true })
-  ).toHaveValue("Typo");
+  await expect(english.getByLabel("Name", { exact: true })).toHaveValue("Typo");
   const { count } = await admin()
     .schema("governance")
     .rpc("user_by_email", { email: typo })
