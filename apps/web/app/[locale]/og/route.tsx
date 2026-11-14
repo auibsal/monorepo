@@ -8,7 +8,7 @@ import { isSignedOgTitle } from "@/lib/og-signature";
 // at the top start, a Light headline in ink with nothing above it, and the
 // link and @auibsal at the bottom start. One language per image. Colors from
 // packages/brand/assets/tokens.json; logos as supplied. assets-og/ holds Ubuntu Light (Latin)
-// and Ubuntu Arabic with its Extension lookups rewritten as direct ones
+// and Ubuntu's Arabic file with its Extension lookups rewritten as direct ones
 // (Satori cannot read type 7).
 const WHITE = "#ffffff";
 const INK = "#273236";
@@ -96,7 +96,7 @@ export const GET = async (
         color: INK,
         display: "flex",
         flexDirection: "column",
-        fontFamily: rtl ? "Ubuntu Arabic" : "Ubuntu",
+        fontFamily: rtl ? "UbuntuAr" : "Ubuntu",
         height: "100%",
         justifyContent: "space-between",
         padding: "56px 72px",
@@ -129,7 +129,7 @@ export const GET = async (
       ...SIZE,
       fonts: [
         { data: light, name: "Ubuntu", style: "normal", weight: 300 },
-        { data: arabic, name: "Ubuntu Arabic", style: "normal", weight: 400 },
+        { data: arabic, name: "UbuntuAr", style: "normal", weight: 400 },
       ],
       headers: { "Cache-Control": "public, max-age=86400, immutable" },
     }

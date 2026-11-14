@@ -1,29 +1,11 @@
 # Notifications
 
-Email and phone notifications, and what each costs. Every email, its
+Email and Hudhud notifications, and what each costs. Every email, its
 sender and the settings behind it: `email.md`.
 
-Every notice (bookings, reminders, Journal receipts and decisions, role endings, removal requests) goes by **email** through Resend. Members who turn on **phone notifications** also get it on their phones and computers. Both are free.
+Every notice goes by **email** through Resend, and to members who link Telegram, by **Hudhud** in their own chat, by topic and channel as each person chooses in Settings → Notifications (decisions.md, Channels and email). There is no browser push: it was removed on Nov 14, 2026, with its stored subscriptions, its service worker (the old worker now unregisters itself) and the VAPID keys.
 
-## Phone notifications
-
-Standard Web Push, with no vendor in between: the browser makers' push services deliver them, and the API routes sign each one with the Society's VAPID key.
-
-- Members turn them on per device in **Profile and privacy → Phone notifications**, and can send themselves a test.
-- **iPhone and iPad** (iOS 16.4 or later) show them only when auibsal.org is added to the Home Screen: Share → Add to Home Screen, then open it from there. Android and computers work in the browser.
-- Signing out removes the device, so a shared computer never shows the last member's notices.
-- A notice goes to devices after its email. If a push fails, the email is still the record; devices their push service reports gone are removed.
-
-### Keys
-
-Generate the pair once with `bunx web-push generate-vapid-keys`.
-
-| Variable | Where |
-| --- | --- |
-| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | auibsal |
-| `VAPID_PRIVATE_KEY` | auibsal, Production, marked sensitive |
-
-Without them, the Profile section says the browser can't show notifications, and everything still goes by email. Changing the keys signs every device out of notifications; members turn them on again.
+Emails about a person's own records follow three switches in Settings → Notifications, all on by default: the signed copy of what they sign (at once), one "received" email for an application or a submission (at once, with its record number), and one daily update at 8:00 p.m. Baghdad time gathering the later changes (decisions, status changes) to their applications and submissions. Everything stays in Your account either way; account and security emails always go.
 
 ## Email limits
 

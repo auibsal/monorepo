@@ -23,7 +23,7 @@ import {
 } from "./rules";
 
 /**
- * Events and Qirtas pieces are written in Notion (Publishing). An event set
+ * Events are written in Notion (Publishing). An event set
  * to "Ready to publish" is checked and published; "Cancel on the site"
  * cancels a published event. One language per row (Nov 4, 2026): the
  * English row publishes the event, and its Arabic edition (Language

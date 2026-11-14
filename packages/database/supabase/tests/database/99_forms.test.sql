@@ -107,7 +107,7 @@ end;
 $$;
 grant execute on function pg_temp.as_api() to public;
 
-select plan(31);
+select plan(34);
 
 -- Forms signed on the site (decisions.md): /forms/<number>, a typed
 -- name for a signature, the signed copy keeping the signer, the time and the
@@ -147,25 +147,45 @@ select lives_ok(
   'A member proposes a motion for a members’ meeting (F-10)'
 );
 select ok(
-  (select signer_name = 'A Member' and signed_at is not null and form_version is not null
+  (select signer_name is null and signed_at is null and reference like 'SUB-%'
    from governance.form_submissions where id = (select id from ids where name = 'members-meeting-motion')),
-  'The signed copy keeps the signer, the time and the form’s version'
-);
-select throws_ok(
-  $$ select governance.sign_form('event-pitch', '{"title":"A walk"}', 'A Member') $$,
-  '23514', 'esign_agreement_required',
-  'The signer agrees to sign electronically'
-);
-select ok(
-  (select document_sha256 ~ '^[0-9a-f]{64}$' and esign_agreed
-   from governance.form_submissions where id = (select id from ids where name = 'members-meeting-motion')),
-  'and the signed copy keeps the fingerprint of what was signed'
+  'A motion is a submission, not signed: it takes a SUB number (decisions.md, Forms)'
 );
 select pg_temp.logout();
 select is(
   (select count(*)::int from core.outbox where kind = 'forms.signed_copy'
    and payload ->> 'submission_id' = (select id::text from ids where name = 'members-meeting-motion')),
-  1, 'The signer is emailed a copy'
+  0, 'and sends no email of its own'
+);
+select is(
+  (select count(*)::int from core.outbox where kind = 'forms.received'
+   and payload ->> 'submission_id' = (select id::text from ids where name = 'members-meeting-motion')),
+  1, 'but one "received" email with its SUB number'
+);
+insert into access.role_agreements (assignment_id, user_id, version, signer_name)
+select id, user_id, '1', 'The President' from access.role_assignments
+where user_id = '00000000-0000-0000-0000-0000000000a2';
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
+select throws_ok(
+  $$ select governance.sign_form('conflict-of-interest-declaration', '{"none":true}', 'The President') $$,
+  '23514', 'esign_agreement_required',
+  'The signer agrees to sign electronically'
+);
+select lives_ok(
+  $$ insert into ids select 'coi', governance.sign_form('conflict-of-interest-declaration', '{"none":true}', 'The President', esign_agreed => true) $$,
+  'An officer signs the conflict-of-interest declaration'
+);
+select ok(
+  (select signed_at is not null and form_version is not null and document_sha256 ~ '^[0-9a-f]{64}$' and esign_agreed
+     and reference like 'AGR-%'
+   from governance.form_submissions where id = (select id from ids where name = 'coi')),
+  'The signed copy keeps the signer, the time, the form’s version and the fingerprint of what was signed'
+);
+select pg_temp.logout();
+select is(
+  (select count(*)::int from core.outbox where kind = 'forms.signed_copy'
+   and payload ->> 'submission_id' = (select id::text from ids where name = 'coi')),
+  1, 'The signer is emailed a copy at once'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok(
@@ -253,10 +273,10 @@ select throws_ok(
 select pg_temp.as_api();
 select lives_ok(
   $$ select governance.sign_form('event-pitch', '{"title":"A walk on the river","idea":"Read on the bank."}', 'A Visitor', null, 'visitor@example.com', esign_agreed => true, signer_ip => '203.0.113.5') $$,
-  'A visitor pitches an event (F-11) and signs it, through the form page'
+  'A visitor pitches an event through the form page'
 );
-select is((select signer_ip from governance.form_submissions where form_key = 'event-pitch'), '203.0.113.5',
-  'and the signed copy keeps the IP address');
+select is((select signer_ip from governance.form_submissions where form_key = 'event-pitch'), null,
+  'and, not being signed, keeps no IP address');
 select throws_ok(
   $$ select governance.sign_form('members-meeting-motion', '{"title":"x"}', 'A Visitor', esign_agreed => true) $$,
   '42501', 'sign_in_required',

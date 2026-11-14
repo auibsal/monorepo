@@ -1,5 +1,4 @@
 import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
 import { keys as auth } from "@/lib/auth/keys";
 import { envPresets, withPresets } from "@/lib/next-config/env";
 import { keys as core } from "@/lib/next-config/keys";
@@ -13,16 +12,11 @@ const presets = envPresets(auth(), core());
  */
 export const clientEnv = withPresets(
   createEnv({
-    client: {
-      // Web Push: the public half of the VAPID pair.
-      NEXT_PUBLIC_VAPID_PUBLIC_KEY: z.string().min(80).optional(),
-    },
+    client: {},
     // Treat KEY="" (as in .env.example) as unset.
     emptyStringAsUndefined: true,
     extends: presets,
-    runtimeEnv: {
-      NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-    },
+    runtimeEnv: {},
     server: {},
     skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
   }),

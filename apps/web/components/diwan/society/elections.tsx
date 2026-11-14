@@ -3,7 +3,6 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
-import { localizedPath } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { Link, useRouter } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,7 +13,7 @@ import { isAuibEmail } from "@/lib/auth/email";
 import { useAuth } from "@/lib/auth/provider";
 import { governance, localized, unwrap } from "@/lib/data";
 import { DiwanPage } from "../page";
-import { EmptyLine, ErrorState, SectionSpinner } from "../states";
+import { ErrorState, SectionSpinner } from "../states";
 import { SocietySection } from "./section";
 
 type Lang = "en" | "ar";
@@ -155,7 +154,7 @@ const Nominate = ({ position }: { readonly position: Position }) => {
     onError: (error) => setNotice(errorKey(error)),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["elections"] });
-      router.push("/account/elections");
+      router.push("/account");
     },
   });
 
@@ -247,7 +246,7 @@ export const StandForOffice = ({
     election &&
     between(election.nominations_open_at, election.nominations_close_at);
   const back = (
-    <Link className="link" href="/account/elections">
+    <Link className="link" href="/account">
       {t("backToSociety")}
     </Link>
   );
@@ -537,26 +536,16 @@ const ElectionCard = ({
 
 export const Elections = () => {
   const t = useTranslations("diwan.society.elections");
-  const ta = useTranslations("diwan.next");
-  const locale = useLocale();
   const elections = useElections();
+  // On Today only while one is open (decisions.md, The site).
+  if (!elections.data?.elections.length) {
+    return elections.isError ? (
+      <ErrorState onRetry={() => elections.refetch()} />
+    ) : null;
+  }
 
   return (
     <SocietySection id="elections" lede={t("lede")} title={t("title")}>
-      {elections.isPending ? <SectionSpinner /> : null}
-      {elections.isError ? (
-        <ErrorState onRetry={() => elections.refetch()} />
-      ) : null}
-      {elections.data?.elections.length === 0 ? (
-        <EmptyLine
-          action={{
-            href: `${localizedPath(locale, "/library/constitution")}`,
-            label: ta("readConstitution"),
-          }}
-        >
-          {t("empty")}
-        </EmptyLine>
-      ) : null}
       {elections.data?.elections.map((election) => (
         <ElectionCard
           data={elections.data}

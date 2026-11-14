@@ -174,8 +174,8 @@ select ok(membership.is_member(), 'An approved account is a member');
 
 select is(
   (select pending_pledges from membership.my_status()),
-  array['member']::membership.pledge_type[],
-  'The Code of Conduct acknowledgment is pending for a new member (decisions.md, Members)'
+  array[]::membership.pledge_type[],
+  'No pledge is pending: the Code of Conduct is the sign-up line (decisions.md, Members)'
 );
 select throws_ok(
   $$ select membership.accept_pledge('member', '0') $$,

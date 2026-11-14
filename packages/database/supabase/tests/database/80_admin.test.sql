@@ -101,7 +101,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member@auib.ed
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'other@auib.edu.iq', 'Other');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'guest@gmail.com', 'Guest');
 
--- ── The Register (private) and the members directory (opt-in) ───────────────────────────────────────────────────────────────
+-- ── The Register (private) ───────────────────────────────────────────────────────────────
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
@@ -140,16 +140,8 @@ select is((core.admin_overview() ->> 'verification_pending')::integer, 0,
   'The overview counts partner applications, not individual requests');
 select ok(not (core.admin_overview() ? 'campaigns'), 'No charity totals (decisions.md)');
 
--- The members directory lists only members who chose to be listed.
-select pg_temp.logout();
-update membership.memberships set in_directory = true
-where user_id = '00000000-0000-0000-0000-0000000000a2';
-select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select results_eq(
-  $$ select user_id from membership.members_directory() $$,
-  $$ values ('00000000-0000-0000-0000-0000000000a2'::uuid) $$,
-  'A member sees only the members who opted in, with no emails'
-);
+-- There is no members' directory: nothing about members is public.
+select hasnt_function('membership', 'members_directory', 'There is no members'' directory (decisions.md, Members)');
 
 select * from finish();
 rollback;

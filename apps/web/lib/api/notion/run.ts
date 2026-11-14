@@ -221,17 +221,3 @@ export const homeUrl = async () => {
   const value = await setting(createAdminClient(), "notion.home_url");
   return typeof value === "string" ? value : null;
 };
-
-/** The workspace's invite link, if set (core.settings `notion.invite_link`). */
-export const inviteLink = async () => {
-  const value = await setting(createAdminClient(), "notion.invite_link");
-  return typeof value === "string" && value.startsWith("https://")
-    ? value
-    : null;
-};
-
-/** When the one-time invitations went out (`notion.catch_up_sent_at`). */
-export const catchUpSentAt = async () => {
-  const value = await setting(createAdminClient(), "notion.catch_up_sent_at");
-  return typeof value === "string" ? value : null;
-};

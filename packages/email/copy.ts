@@ -964,17 +964,6 @@ export const cronFailed = (lang: Lang, jobs: FailedJob[], day: string) =>
     ],
   }));
 
-export const pushTest = (lang: Lang) =>
-  lang === "ar"
-    ? {
-        body: "ستصلك هنا تذكيرات الفعاليات وأخبار قرطاس وقرارات النشر.",
-        title: "الإشعارات تعمل",
-      }
-    : {
-        body: "Event reminders, Qirtas news and decisions will arrive here.",
-        title: "Notifications are on",
-      };
-
 // ── Journeys added in the email audit (decisions.md) ────────────────
 
 /** An event that is canceled, or moved to another day, time or place. */
@@ -1394,6 +1383,77 @@ const REQUEST_NAMES: Record<string, Record<Lang, string>> = {
   },
 };
 
+/**
+ * A submission, received (decisions.md, Documents and forms): one email at
+ * once, with its record number; later changes go in the daily update.
+ */
+export const formReceived = (
+  lang: Lang,
+  formKey: string,
+  reference: string | null,
+  requestId: string,
+  app: string
+) =>
+  build(lang, (l) => {
+    const thing = (REQUEST_NAMES[formKey] ?? {
+      ar: "طلبك",
+      en: "your request",
+    })[l];
+    return {
+      action: account(app, l, `/account/requests/${requestId}`),
+      heading: l === "ar" ? `استلمنا ${thing}` : `We received ${thing}`,
+      paragraphs: [
+        ...(reference
+          ? [
+              l === "ar"
+                ? `رقم السجل: ${reference}.`
+                : `Record number: ${reference}.`,
+            ]
+          : []),
+        l === "ar"
+          ? "ترى حاله في حسابك متى شئت، وتصلك تحديثاته في رسالتك اليومية."
+          : "You can see where it stands in your account at any time; its updates come in your daily update.",
+      ],
+    };
+  });
+
+/** One line of the daily update: what changed and where to see it. */
+export interface DailyItem {
+  readonly href?: string | null;
+  readonly line: string;
+}
+
+/**
+ * The daily update (decisions.md, Documents and forms): the day's changes
+ * to the person's applications and submissions, in one email.
+ */
+export const dailyUpdate = (
+  lang: Lang,
+  items: readonly DailyItem[],
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: account(app, l),
+    heading: l === "ar" ? "تحديثات اليوم" : "Today’s updates",
+    lists: [
+      {
+        items: items.map((item) => ({
+          href: item.href ?? `${app}${localizedPath(l, "/account")}`,
+          title: item.line,
+        })),
+        title:
+          l === "ar"
+            ? "ما تغيّر في طلباتك ومشاركاتك"
+            : "What changed in your applications and submissions",
+      },
+    ],
+    paragraphs: [
+      l === "ar"
+        ? "تصلك هذه الرسالة مرة في اليوم حين يتغيّر شيء. يمكنك إيقافها من الإعدادات، فكل شيء يبقى في حسابك."
+        : "This comes once a day when something changes. You can turn it off in Settings; everything stays in your account.",
+    ],
+  }));
+
 /** A concern, a motion or a pitch: taken up, then closed. */
 export const requestUpdated = (
   lang: Lang,
@@ -1658,8 +1718,7 @@ export const auditionUpdate = (
 const ROLE_LINES = {
   ar: {
     heading: "دورك الجديد",
-    join: "انضم إلى مساحة الفريق",
-    notion: "مساحة الفريق على Notion",
+    notion: "سيدعوك أمين السر إلى مساحة الفريق على ⁦Notion⁩ بعنوانك في الجامعة.",
     starts: "يبدأ الآن. ما يحتاجه منك في الديوان.",
     team: "دليل الضباط وقوالب العمل في مساحة الفريق على Notion، ويصلك جديد الفريق في مجموعة الديوان على Telegram.",
     twoStep:
@@ -1669,8 +1728,8 @@ const ROLE_LINES = {
   },
   en: {
     heading: "Your new role",
-    join: "Join the workspace",
-    notion: "The team's Notion",
+    notion:
+      "The Secretary will invite you to the team’s Notion by your AUIB email.",
     starts: "It starts now. What it needs from you is in the Diwan.",
     team: "The officer handbook and templates are in the team's Notion, and the team's news comes through the Diwan group on Telegram.",
     twoStep:
@@ -1682,63 +1741,31 @@ const ROLE_LINES = {
 
 /**
  * A new role: what it opens, and two-step sign-in first if it needs it.
- * A role that opens the team's Notion carries the workspace's invitation
- * (`notion`, its invite link): the only way in.
+ * A role that opens the team's Notion says the Secretary will invite them
+ * by name (decisions.md, Notion): there is no shared link.
  */
 export const roleAssigned = (
   lang: Lang,
   role: { ends_at: string | null; name_ar: string; name_en: string },
   twoStep: boolean,
   app: string,
-  notion: string | null = null
+  inNotion = false
 ) =>
   build(lang, (l) => {
     const lines = ROLE_LINES[l];
     return {
       action: diwan(app, l),
       heading: `${lines.heading}: ${pick(l, role.name_ar, role.name_en)}`,
-      lists: notion
-        ? [
-            {
-              items: [{ href: notion, title: lines.join }],
-              title: lines.notion,
-            },
-          ]
-        : undefined,
       paragraphs: [
         role.ends_at
           ? lines.until(formatLongDate(role.ends_at, l))
           : lines.starts,
         ...(twoStep ? [lines.twoStep] : []),
         lines.team,
+        ...(inNotion ? [lines.notion] : []),
       ],
     };
   });
-
-/**
- * The team's Notion, for a role holder not yet in the workspace (the
- * Diwan's one-time catch-up): the invitation the role email now carries.
- */
-export const notionInvite = (lang: Lang, link: string) =>
-  build(lang, (l) => ({
-    action: {
-      fallback: true,
-      href: link,
-      label: ROLE_LINES[l].join,
-    },
-    heading:
-      l === "ar"
-        ? "دعوتك إلى مساحة الفريق على Notion"
-        : "Your invitation to the team's Notion",
-    paragraphs: [
-      l === "ar"
-        ? "دليل الضباط وقوالب العمل وما يعمل عليه الفريق في مساحته على Notion. ادخلها بعنوانك الذي يصلك عليه هذا البريد."
-        : "The officer handbook, the templates and the team's work are in its Notion workspace. Join it with the address this email came to.",
-      l === "ar"
-        ? "من الآن تصل هذه الدعوة مع كل دور جديد، ولا طريق إلى المساحة غيرها."
-        : "From now on this invitation comes with every new role, and it is the only way in.",
-    ],
-  }));
 
 /** The end of the welcome: the member's first pledge is made. */
 /**

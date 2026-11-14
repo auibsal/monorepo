@@ -27,7 +27,7 @@ const MOVED: readonly [from: string, to: string][] = [
   ["/library/security", "/security"],
   ["/partners/join", "/partners/apply"],
   // Your account's tabs match their pages (decisions §6).
-  ["/account/society", "/account/elections"],
+  ["/account/society", "/account"],
   ["/account/society/stand/:position", "/account/elections/:position"],
   // The tabs of decisions.md, Your account (the eighth prompt, 3).
   ["/account/calendar", "/account/events"],
@@ -79,6 +79,21 @@ const MOVED: readonly [from: string, to: string][] = [
     "/events/writing-workshop-2026-12-08",
   ],
   ["/qirtas/issues/:slug", "/qirtas/editions/:slug"],
+  // Your account in six tabs (decisions.md, The site): the card and an open
+  // election are on Today, applications under Roles; Saved and the profile
+  // step are gone, and the name is no longer edited in Settings.
+  ["/account/card", "/account"],
+  ["/account/elections", "/account"],
+  ["/account/applications", "/account/roles"],
+  ["/account/saved", "/account"],
+  ["/account/settings/profile", "/account/settings"],
+  ["/welcome", "/account"],
+  ["/welcome/:path*", "/account"],
+  // One sign-up on one screen (decisions.md, Members).
+  ["/sign-up/guest", "/sign-up"],
+  // Nothing about members is public but bylines and role holders.
+  ["/qirtas/authors/:slug", "/qirtas"],
+  ["/contact", "/about/contact"],
   ["/diwan/qirtas/issues", "/diwan/qirtas/editions"],
   ["/diwan/qirtas/issues/:ref", "/diwan/qirtas/editions/:ref"],
 ];

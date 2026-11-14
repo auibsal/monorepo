@@ -20,7 +20,11 @@
  * migrations). Without NOTION_TOKEN it says so and skips; with
  * REQUIRE_FORMS_REGISTER=1 a missing token fails.
  */
-import { formKeys, registerFields } from "../apps/web/lib/data/forms";
+import {
+  formKeys,
+  registerFields,
+  registerKinds,
+} from "../apps/web/lib/data/forms";
 
 const NOTION = "https://api.notion.com/v1";
 const VERSION = "2026-03-11";
@@ -188,12 +192,16 @@ const typeProblems = (type: FormType, entry: Entry | undefined) => {
 
 /** Field phrases a site form keeps that its register entry no longer has. */
 const fieldProblems = (register: Map<string, Entry>) =>
-  formKeys.flatMap((key) => {
-    const entry = register.get(key);
-    return registerFields[key]
-      .filter((phrase) => entry && !entry.text.includes(normalize(phrase)))
-      .map((phrase) => `${key}: the register no longer asks for "${phrase}".`);
-  });
+  formKeys
+    .filter((key) => (registerKinds as readonly string[]).includes(key))
+    .flatMap((key) => {
+      const entry = register.get(key);
+      return registerFields[key]
+        .filter((phrase) => entry && !entry.text.includes(normalize(phrase)))
+        .map(
+          (phrase) => `${key}: the register no longer asks for "${phrase}".`
+        );
+    });
 
 const main = async () => {
   if (!token) {
@@ -217,7 +225,22 @@ const main = async () => {
     ),
   ]);
   const names = new Set(types.map((t) => t.key));
+  const listed = new Set<string>(registerKinds);
   const problems = [
+    // The 13 kinds people sign (decisions.md, Documents and forms): the
+    // site's list, the database's and the register are one list.
+    ...registerKinds
+      .filter((name) => !names.has(name))
+      .map(
+        (name) =>
+          `${name} is a signed kind on the site but not in the database's register.`
+      ),
+    ...[...names]
+      .filter((name) => !listed.has(name))
+      .map(
+        (name) =>
+          `${name} is in the database's register but not a signed kind on the site.`
+      ),
     ...types.flatMap((type) => typeProblems(type, register.get(type.key))),
     ...[...register.keys()]
       .filter((name) => !names.has(name))

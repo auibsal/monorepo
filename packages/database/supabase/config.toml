@@ -309,10 +309,13 @@ enable_confirmations = false
 template = "Your code is {{ .Code }}"
 max_frequency = "5s"
 
-# Configure logged in session timeouts.
-# [auth.sessions]
+# Configure logged in session timeouts. A device stays signed in for 30
+# days (decisions.md, Members); the Diwan asks for the second step again
+# after 12 hours (the app). Production sets the same under Authentication,
+# Sessions (a Pro feature).
+[auth.sessions]
 # Force log out after the specified duration.
-# timebox = "24h"
+timebox = "720h"
 # Force log out if the user has been inactive longer than the specified duration.
 # inactivity_timeout = "8h"
 

@@ -91,14 +91,14 @@
       "user_exists": "An account already uses this address. Sign in instead.",
       "weak_password": "Use at least 12 characters.",
       "captcha_failed": "We couldn’t confirm you’re a person. Reload the page and try again.",
-      "names_required": "Enter your first and last name in English and in Arabic.",
+      "names_required": "Give your official name in both languages: the four parts, or your given and family names.",
       "email_reserved": "This address is already a member’s personal email, so it can’t start a new account. Sign in with your own address, or use another one.",
       "invalid_code": "That code doesn’t match or has expired. Check the newest email, or ask for a new one.",
-      "auib_only": "Membership is for AUIB addresses. Use your @auib.edu.iq email.",
       "no_account": "No account uses this address. Check it, or create your account if you study at AUIB.",
       "breached_password": "This password has appeared in a data breach elsewhere, so it isn’t safe. Choose another.",
       "reauthentication_needed": "For your security, confirm it’s you first: enter the code we just emailed you.",
-      "terms_required": "To join, answer whether you’re 18 or older (a student under 18 gives a parent’s email) and agree to the Terms of Use and the Privacy Notice."
+      "class_required": "Say whether you’re a student, or faculty, staff or alumni.",
+      "age_required": "Answer whether you’re 18 or older. Under 18, give your month and year of birth and a parent’s email."
     },
     "signIn": {
       "title": "Sign in",
@@ -114,37 +114,41 @@
     },
     "signUp": {
       "title": "Join the Society",
-      "description": "Membership is open to everyone with an AUIB email.",
+      "description": "One account for everyone. An AUIB address makes you a member or an Associate; any other address, a guest.",
       "submit": "Create account",
       "submitting": "Creating account…",
       "checkInbox": "Check your inbox",
       "checkInboxBody": "We sent a confirmation email to {email}. Open its link, or type its code below to finish signing up.",
-      "haveAccount": "Already a member?",
+      "haveAccount": "Already have an account?",
       "signIn": "Sign in",
       "nameEn": "Your name in English",
       "nameAr": "Your name in Arabic",
-      "namesHint": "In both languages and in four parts, as on your ID. Your card and certificates show your first and last.",
-      "haveAnAccount": "Already have an account?",
-      "notAuib": "Not at AUIB?",
-      "guestLink": "Make a guest account to book events",
-      "guestTitle": "A guest account",
-      "guestLede": "Anyone may make a guest account to book a place at the Society’s open events. Guests aren’t members: membership is for AUIB students, with an AUIB email.",
+      "namesHint": "Your official name in both languages, as on your papers: your given, father’s, grandfather’s and family names. If your papers don’t use four names, give your given and family names. It can’t be changed afterward except by the Director of Membership.",
       "resend": "Send the email again",
       "resendIn": "Send the email again in {seconds} s",
       "resent": "Sent. Check your inbox and spam folder.",
-      "student": "I’m an enrolled AUIB student. (Faculty and staff: ask for Associate membership on Join.)",
-      "agree": "I agree to the <terms>Terms of Use</terms> and the <privacy>Privacy Notice</privacy>.",
       "adultQuestion": "Are you 18 or older?",
       "adultYes": "Yes, 18 or older",
       "adultNo": "No, under 18",
-      "adultGuest": "I’m 18 or older.",
-      "minorHint": "Any enrolled AUIB student may join, whatever their age. Your month and year of birth are used only to lift the rules for members under 18 when you turn 18, and are then deleted. Once you confirm your email, we send your parent or guardian a link to give their consent; until they do, your account is limited.",
+      "minorHint": "Your month and year of birth are used only to lift the rules for members under 18 when you turn 18, and are then deleted. Once you confirm your email, we send your parent or guardian a link to give their consent; until they do, your account is limited.",
       "birthMonth": "Month of birth",
       "birthYear": "Year of birth",
       "parentEmail": "Your parent’s or guardian’s email",
       "parentHint": "Used only to send the consent link.",
       "mailing": "Send me the Sunday Paper and Society news and events. You can stop either at any time.",
-      "esign": "I agree to sign electronically: the agreements and consents I sign on the site are signed in the name on my account, and I get a copy of each by email. I can withdraw this in Settings."
+      "emailHint": "Your @{domain} address if you have one.",
+      "classQuestion": "You are",
+      "classStudent": "An AUIB student",
+      "classStaff": "AUIB faculty, staff or alumni",
+      "studied": "I studied at AUIB",
+      "studiedHint": "We send the Director of Membership a request for Associate membership. Until it is answered, your account is a guest’s.",
+      "titleForm": "A title that names you, in Arabic, reads",
+      "titleForms": {
+        "masculine": "In the masculine (مدير)",
+        "feminine": "In the feminine (مديرة)"
+      },
+      "adultOnly": "Under 18, you sign up with your AUIB address, or through the invitation your school or parent was sent.",
+      "line": "By creating an account, you agree to the <terms>Terms</terms>, the <privacy>Privacy Notice</privacy>, and the <conduct>Code of Conduct</conduct> and to signing electronically."
     },
     "forgot": {
       "title": "Reset your password",
@@ -199,7 +203,14 @@
     "auibEmail": "Your AUIB email",
     "auibEmailHint": "What comes before @auib.edu.iq: usually your ID number, or your name and ID number.",
     "showPassword": "Show",
-    "hidePassword": "Hide"
+    "hidePassword": "Hide",
+    "signedOut": {
+      "title": "Sign out",
+      "pending": "Signing you out on this device…",
+      "body": "You’re signed out on this device. Your other devices stay signed in; sign them out in Settings → Security.",
+      "home": "Go to the home page",
+      "signIn": "Sign in again"
+    }
   },
   "diwan": {
     "nav": {
@@ -226,17 +237,14 @@
       "templates": "Templates and papers",
       "designSystem": "Design system",
       "work": "Work",
-      "elections": "Elections",
       "documents": "Documents",
-      "applications": "Applications",
-      "saved": "Saved",
-      "roles": "Roles and service",
-      "card": "Card"
+      "roles": "Roles and service"
     },
     "errors": {
       "loadFailed": "We couldn’t load this. Check your connection and try again.",
       "saveFailed": "We couldn’t save your changes. Please try again.",
-      "nameTaken": "Another account already has this full name. If it’s yours, sign in with that account instead; if not, write to hello@auibsal.org and we’ll sort it out."
+      "nameTaken": "Another account already has this full name. If it’s yours, sign in with that account instead; if not, write to hello@auibsal.org and we’ll sort it out.",
+      "nameLocked": "Part of your name is already on your record and can’t be changed here. Membership corrects it: write to hello@auibsal.org with what it should be."
     },
     "next": {
       "browseEvents": "Browse events",
@@ -285,7 +293,8 @@
         "script": {
           "en": "Write your English name in Latin letters.",
           "ar": "Write your Arabic name in Arabic letters."
-        }
+        },
+        "locked": "Already on your record. If it’s wrong, Membership corrects it: write to hello@auibsal.org."
       },
       "personalEmailLater": "After graduation? You can add a personal email in Profile once you’re in.",
       "stepOf": "Step {step} of {count}",
@@ -396,17 +405,9 @@
         "guest": "Guest"
       },
       "sixWords": {
-        "title": "Your Typewriter Tour pages",
-        "description": "What you typed on the Typewriter Tour. Each page is private until you choose who sees it.",
-        "who": "Who sees this page",
-        "visibility": {
-          "private": "Only you",
-          "profile": "Your profile",
-          "tour": "Your profile and the Tour’s page"
-        },
-        "takenDown": "The editors have kept this page off the site.",
-        "notTranscribed": "Photographed at the Tour; the Tour lead types its words in soon.",
-        "fullName": "Show my full name on the Tour’s page (otherwise, first name and last initial)"
+        "title": "Your six-word pages",
+        "description": "What you typed on the typewriter, under the event you typed it at. Each page is yours and private: nobody else sees it.",
+        "typedOn": "Typed on {date}"
       },
       "tiers": {
         "member": "Member",
@@ -449,6 +450,16 @@
         "action": "I’m still here",
         "done": "Thank you: you’re on this year’s active list.",
         "failed": "That didn’t go through. Try again."
+      },
+      "toDos": {
+        "arabicForm": {
+          "title": "The Arabic form of your titles",
+          "lede": "How should a title that names you read in Arabic? You can change it in Settings."
+        },
+        "name": {
+          "title": "Part of your official name is missing",
+          "body": "Your account was made before the site asked for the full name. Write to the Director of Membership with your name as on your papers, and they will add it. Until then, your signatures and certificates carry the name on record."
+        }
       }
     },
     "events": {
@@ -615,6 +626,16 @@
         "title": "Resolutions",
         "lede": "What the Council and members’ meetings adopted, by number and date. Those about partners and documents are also on the Council’s public page.",
         "empty": "No resolutions adopted yet."
+      },
+      "motions": {
+        "title": "Motions for the members’ meeting",
+        "lede": "Motions and petitions members have put forward. Support one with a click; the Council puts those with enough support on the agenda.",
+        "propose": "Propose a motion",
+        "line": "{reference} · {mover} · {date}",
+        "support": "Support",
+        "withdrawSupport": "Take back your support",
+        "supporters": "Supporters: {count}",
+        "none": "No motions are open."
       }
     },
     "twoStep": {
@@ -639,7 +660,10 @@
       "settingsOnNextTime": "On. You’ll enter a code from your authenticator app where a page needs it.",
       "passkeyFirst": "A passkey on this device",
       "passkeyBody": "Quickest: add a passkey, then sign out and sign in with it. A passkey counts as two steps on its own.",
-      "orAuthenticator": "Or an authenticator app"
+      "orAuthenticator": "Or an authenticator app",
+      "againTitle": "Your second step again",
+      "againPasskey": "The Diwan asks for the second step again 12 hours after you last gave it. You signed in with a passkey: sign in with it again.",
+      "againSignIn": "Sign in again"
     },
     "journal": {
       "status": {
@@ -1199,6 +1223,24 @@
           "email": "Their email",
           "invite": "Send the invitation",
           "sent": "Invitation sent."
+        },
+        "enrollment": {
+          "title": "The enrollment check",
+          "lede": "Once a semester, paste the AUIB addresses on Student Life’s enrollment list. The Register is matched by AUIB email and only the mismatches show: a Member not on the list, and an Associate who is. Nothing of the list is kept.",
+          "list": "Student Life’s enrollment list",
+          "hint": "Paste it as it comes: only the @auib.edu.iq addresses in it are read.",
+          "run": "Check {count} addresses",
+          "none": "No mismatches: every Member is on the list, and no Associate is.",
+          "issues": {
+            "not_enrolled": "Not on the enrollment list: an Associate or a guest now?",
+            "enrolled_associate": "On the enrollment list: a Member now?"
+          }
+        },
+        "incompleteNames": {
+          "title": "Incomplete official names",
+          "lede": "Accounts from before the site asked for the full name. Each is locked; correct it on the person’s page, with a second officer, when they send their name as on their papers.",
+          "missingEn": "English incomplete",
+          "missingAr": "Arabic incomplete"
         }
       },
       "member": {
@@ -1476,7 +1518,12 @@
           "when": "When it happened",
           "what": "What happened",
           "whatHint": "Who was involved and what you saw, as plainly as you can.",
-          "action": "What was done"
+          "action": "What was done",
+          "qalam": "In Qalam",
+          "close": "Close the case",
+          "reopen": "Reopen the case",
+          "open": "Open",
+          "closedOn": "Closed {date}"
         }
       },
       "checkIn": {
@@ -1979,8 +2026,8 @@
           "noSyncYet": "Connected; the first sync runs within five minutes.",
           "listsError": "Could not read the workspace’s members. Check that the connection may read user information including email addresses.",
           "inviteTitle": "To invite",
-          "inviteHint": "They hold a role that opens Notion but have no Notion account under their address.",
-          "inviteEmpty": "Everyone holding a role that opens Notion is in the workspace.",
+          "inviteHint": "They hold a role that opens Notion and have not been invited yet. Invite each in Notion (Settings, People, Add members) by the AUIB email shown, then mark it done here. There is no shared link.",
+          "inviteEmpty": "Everyone holding a role that opens Notion has been invited.",
           "removeTitle": "To remove",
           "removeHint": "In the workspace but holding no role that opens Notion. Remove them in Notion (Settings, People) unless they own the workspace.",
           "removeEmpty": "No one to remove.",
@@ -1988,16 +2035,10 @@
           "columns": {
             "name": "Name",
             "email": "Email",
-            "roles": "Roles"
+            "roles": "Roles",
+            "done": "Done"
           },
-          "inviteLink": "Invite link",
-          "inviteLinkHint": "The workspace’s invite link, from Notion: Settings, People, Invite link. Every role that opens Notion sends it with the role email; it is the only way in.",
-          "catchUpTitle": "Bring the workspace up to date, once",
-          "catchUpHint": "Remove the people on the second list in Notion first. Then send the invitation to everyone on the first list; once it is sent, this block goes away and each new role brings its own invitation.",
-          "needsLink": "Save the invite link first.",
-          "send": "Send the invitation ({count})",
-          "sendAsk": "Email the workspace’s invitation to everyone on the first list? This is done once.",
-          "sendConfirm": "Send the invitations"
+          "markInvited": "Invited"
         },
         "telegram": {
           "title": "Telegram",
@@ -2038,7 +2079,7 @@
       },
       "journal": {
         "title": "Qirtas: Editions",
-        "lede": "Editions, pieces and contributors. Accepted work becomes a draft piece here; nothing from a submission is published before its author signs the publication agreement.",
+        "lede": "Editions and pieces. Accepted work becomes a draft piece here; nothing from a submission is published before its author signs the publication agreement.",
         "newIssue": "New Edition",
         "newPiece": "New piece",
         "volumeNumber": "Vol. {volume}, No. {number}",
@@ -2139,13 +2180,6 @@
           "agreementNeeded": "The author hasn’t signed the publication agreement yet; publishing will wait for it.",
           "publishConfirm": "Publish this piece? It appears on its Edition’s page at once."
         },
-        "contributor": {
-          "bio": "Bio",
-          "new": "Add a member as a contributor",
-          "title": "Contributors",
-          "back": "The newsroom",
-          "missing": "This contributor is not here"
-        },
         "desks": {
           "news": "News",
           "voices": "Voices",
@@ -2157,8 +2191,7 @@
         "tabs": {
           "issues": "Editions",
           "accepted": "Accepted, to place ({count})",
-          "pieces": "Pieces",
-          "contributors": "Contributors"
+          "pieces": "Pieces"
         },
         "byline": {
           "change": "Change",
@@ -3742,6 +3775,15 @@
           },
           "stopped": "{stopped} stopped; {suppressed} suppressed after a bounce or complaint."
         }
+      },
+      "creditedNames": {
+        "title": "Credited names",
+        "lede": "A name someone is known by on screen or on stage, used only in credits, captions and playbills. Everywhere else carries the official name.",
+        "person": "Who",
+        "en": "Credited name in English",
+        "ar": "Credited name in Arabic",
+        "save": "Save",
+        "remove": "Remove"
       }
     },
     "editor": {
@@ -3856,8 +3898,8 @@
       "lettersTitle": "Service letters",
       "letter": "Service letter, {date}",
       "signedTitle": "Agreements and consents",
-      "rolesTitle": "Roles and service",
-      "rolesLede": "The roles you hold and have held, your hours and your service letters. Hours count once someone else confirms them.",
+      "rolesTitle": "Roles",
+      "rolesLede": "Your applications, the roles you hold and have held, your hours and your service letters. Hours count once someone else confirms them.",
       "roles": {
         "title": "Your roles",
         "none": "You hold no role yet.",
@@ -4283,7 +4325,10 @@
       "version": "version {version}",
       "forRole": "For your role: {role}.",
       "signedBy": "Signed by",
-      "countersignedBy": "Countersigned by"
+      "countersignedBy": "Countersigned by",
+      "sent": "Sent. Its record number is on its page in Your account, and a “received” email is on its way.",
+      "summary": "In short",
+      "summaryToCome": "Summary to come"
     },
     "qirtas": {
       "pieceTitle": "Your piece",
@@ -4297,15 +4342,6 @@
       "youApproved": "You approved the text on {date}. It publishes once the editors approve it too.",
       "published": "Published on {date}.",
       "theText": "The text",
-      "contributor": {
-        "title": "Your contributor details",
-        "lede": "How your name is spelled in Latin and Arabic letters, and a short bio: third person, present tense, 50 words at most.",
-        "penNameLede": "This is your pen name. Only the Editor-in-Chief and the Managing Editor know who wrote under it.",
-        "name": "Name",
-        "bio": "Bio",
-        "words": "English: {en} words · Arabic: {ar} words",
-        "save": "Save"
-      },
       "disclosure": {
         "label": "Your ties to what this covers",
         "hint": "Anything that could look like a conflict: a club you belong to, a friend or relative in the story, a role you hold. The editors reassign or note it. Leave it empty if there’s nothing."
@@ -4466,7 +4502,7 @@
     },
     "settings": {
       "title": "Settings",
-      "lede": "How the Society reaches you and how you sign in.",
+      "lede": "Your account, notifications, security and data.",
       "yours": "Your profile and requests",
       "profile": "Profile",
       "profileLine": "Your name in both languages, a short bio, and what you tell us about yourself.",
@@ -4523,6 +4559,46 @@
         "none": "—",
         "linkFirst": "Link Telegram below",
         "reminderRule": "When reminders are on in Hudhud, they come there instead of by email, so nothing reaches you twice. Your notices always come by email; Hudhud sends a copy if you keep them on."
+      },
+      "sections": {
+        "account": "Account",
+        "notifications": "Notifications",
+        "security": "Security",
+        "data": "Your data"
+      },
+      "noticesByChannel": "Every kind of message, by channel",
+      "account": {
+        "officialName": "Your official name",
+        "officialNameHint": "As on your papers, given at sign-up. To correct it, write to the Director of Membership.",
+        "officialNameIncomplete": "Part of your official name is missing. Write to the Director of Membership with your full name as on your papers, and they will add it.",
+        "shortName": "Your short name",
+        "shortNameHint": "Shown on the site, your card and the menu. Signatures, certificates and letters use your full name.",
+        "shortNames": {
+          "father": "Your given and father’s names",
+          "fourth": "Your given and family names"
+        },
+        "arabicForm": "The Arabic form of your titles",
+        "arabicFormHint": "How a title that names you reads in Arabic, on the Council page, the masthead, your card and letters.",
+        "arabicForms": {
+          "unset": "Not chosen",
+          "masculine": "Masculine (مدير)",
+          "feminine": "Feminine (مديرة)"
+        }
+      },
+      "recordEmails": {
+        "email_signed_copy": {
+          "label": "A copy of what you sign",
+          "hint": "Sent at once, with its record number and check link."
+        },
+        "email_receipts": {
+          "label": "A “received” email",
+          "hint": "When you send an application or a submission (Write for Qirtas, an event pitch, a concern, a motion), with its record number."
+        },
+        "email_daily_updates": {
+          "label": "One daily update",
+          "hint": "Later changes to your applications and submissions, gathered into one email at 8:00 p.m."
+        },
+        "always": "Everything stays in Your account either way. Account and security emails always go."
       }
     },
     "recoveryCodes": {
@@ -4903,7 +4979,10 @@
       "diwan": "The Diwan",
       "company": "The Company",
       "partner": "Partner dashboard",
-      "nextStop": "Next Stop"
+      "nextStop": "Next Stop",
+      "help": "Help",
+      "report": "Report a problem",
+      "signOut": "Sign out"
     },
     "footer": {
       "columns": {
@@ -5493,7 +5572,7 @@
       "firstMonth": "Sign up · join the members’ group on Telegram · come to an event with a friend · tell us after your second event what you would like to do here.",
       "cta": "Sign up",
       "ctaHint": "Use your AUIB email address.",
-      "others": "Not at AUIB? Make a guest account yourself to come to events and write for Qirtas; an organization applies to partner.",
+      "others": "Not at AUIB? Sign up with any address to come to events and write for Qirtas as a guest; an organization applies to partner.",
       "othersLink": "Partners",
       "tour": {
         "title": "The Typewriter Tour",
@@ -5532,20 +5611,7 @@
       },
       "associateRequest": {
         "title": "Faculty, staff and alumni",
-        "lede": "Associate membership is for AUIB faculty, staff and alumni. Ask here; the Director of Membership answers by email with a named invitation.",
-        "name": "Your full name",
-        "email": "Your email",
-        "relation": "You are",
-        "relations": {
-          "faculty": "AUIB faculty",
-          "staff": "AUIB staff",
-          "alumni": "An AUIB graduate"
-        },
-        "note": "Anything we should know (optional)",
-        "send": "Request Associate membership",
-        "sent": "Thank you. The Director of Membership will answer by email.",
-        "failed": "That didn’t go through. Try again in a moment.",
-        "rateLimited": "Too many requests from here. Try again later."
+        "lede": "Associate membership is for AUIB faculty, staff and alumni. Sign up with your AUIB address and say which you are; alumni without one sign up with any address and tick “I studied at AUIB”, and the Director of Membership answers."
       }
     },
     "contact": {
@@ -6022,7 +6088,7 @@
       "dates": "The Company’s dates on Events"
     },
     "tour": {
-      "wall": "The Six Words wall",
+      "wall": "Six words",
       "try": "Try the typewriter",
       "toy": {
         "label": "Six words, on a typewriter",
@@ -6032,7 +6098,8 @@
         "soundOn": "Key sound: on",
         "clear": "Start again",
         "nothingKept": "Nothing you type here is kept. Your six words for the wall are written on the Tour, on a card."
-      }
+      },
+      "counts": "{pages} pages so far, by {writers} writers. Each page is its writer’s and stays private."
     },
     "prize": {
       "title": "The Mutanabbi Prize",

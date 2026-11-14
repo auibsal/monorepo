@@ -40,14 +40,14 @@ export type EmailAuthErrorCode =
   | "unknown"
   | "user_exists"
   | "names_required"
-  | "auib_only"
+  | "class_required"
+  | "age_required"
   | "no_account"
   | "email_reserved"
   | "invalid_code"
   | "weak_password"
   | "breached_password"
-  | "reauthentication_needed"
-  | "terms_required";
+  | "reauthentication_needed";
 
 export type AuthResult<T = undefined> =
   | { ok: true; value: T }
@@ -110,74 +110,70 @@ const captcha = (captchaToken?: string) =>
 const SHOWN: EmailAuthErrorCode[] = ["captcha_failed", "rate_limited"];
 
 export interface SignUpDetails {
-  /** 18 or older; a student under 18 gives `minor` instead (decisions §10). */
+  /** 18 or older; under 18 gives `minor` instead (decisions.md, Members). */
   adult: boolean;
-  /**
-   * That the person agrees to the Terms of Use and the Privacy Notice
-   * (decisions §4); recorded with the account.
-   */
-  agreed: boolean;
   /** From the Turnstile widget, when the human check is on. */
   captchaToken?: string;
+  /**
+   * An AUIB address's class (decisions.md, Members): a student is a
+   * Member; faculty, staff or alumni are Associates.
+   */
+  class?: "student" | "staff";
   email: string;
-  /** Consent to sign electronically (E-SIGN), asked on its own line. */
-  esign?: boolean;
   locale: "ar" | "en";
   /**
-   * The mailing list's two topics, the Sunday Paper and Society news and
-   * events (decisions.md, Channels and email): ticked for members (an
-   * opt-out box), unticked for guests.
+   * The mailing list's two topics (decisions.md, Channels and email):
+   * ticked for members (an opt-out box), unticked for guests.
    */
   mailing?: boolean;
   /**
-   * A student under 18 (decisions §10, Minors): the month and year of
-   * birth, kept only to lift the minors' rules at 18, and the parent's
-   * address, where the consent link (parent-consent) goes once the account is
-   * confirmed.
+   * Under 18 (decisions.md, Members): the month and year of birth, kept
+   * only to lift the minors' rules at 18, and the parent's address, where
+   * the consent link (parent-consent) goes once the account is confirmed.
    */
   minor?: { birthMonth: number; birthYear: number; parentEmail: string };
   /**
-   * The name in English and in Arabic, each in four parts as on the
-   * person's papers: name, father's, grandfather's and last (decisions.md). Required for addresses outside AUIB, which a partner verifies by
-   * them; AUIB addresses give their names in setup, after confirming the
-   * email.
+   * The official name in English and in Arabic (decisions.md, Members):
+   * the four parts as on the person's papers, or the given and family
+   * names where the papers don't use four. Locked at once.
    */
-  names?: Record<"ar" | "en", NameParts>;
+  names: Record<"ar" | "en", NameParts>;
   /**
-   * Why an outside address may sign up (decisions.md: membership is
-   * for AUIB addresses): a partner's invitation code, or an application to
-   * partner, or a guest account to book events (decisions.md). The
-   * database refuses an outside address with none of these.
+   * What an invitation or a partner application attaches (decisions.md,
+   * Members): every invitation uses this one sign-up and adds its role.
    */
-  outside?:
-    | { invitation: string }
-    | { partnerApplicant: true }
-    | { guest: true };
+  outside?: { invitation: string } | { partnerApplicant: true };
   password: string;
-  /** Where the confirmation link lands (the Diwan /auth/callback). */
+  /** Where the confirmation link lands (/auth/callback). */
   redirectTo: string;
+  /** Any other address: "I studied at AUIB" sends an Associate request. */
+  studiedAtAuib?: boolean;
+  /** The Arabic form of a title that names the person, one tap. */
+  titleForm?: "masculine" | "feminine";
 }
 
 const NAME_PARTS = ["first", "father", "grandfather", "last"] as const;
 
-/** One language's name: name, father's, grandfather's and last. */
+/** One language's name: given, father's, grandfather's and family. */
 type NameParts = Record<(typeof NAME_PARTS)[number], string>;
 
-/** Where an outside address came from, for the profile trigger. */
+/** The official name is complete: four parts, or given and family. */
+const nameComplete = (parts: NameParts) => {
+  const has = (part: keyof NameParts) => parts[part].trim() !== "";
+  return has("first") && ((has("father") && has("grandfather")) || has("last"));
+};
+
+/** What an invitation or a partner application attaches, for the trigger. */
 const outsideMetadata = (outside: SignUpDetails["outside"]) => {
   if (!outside) {
     return {};
   }
-  if ("invitation" in outside) {
-    return { invitation: outside.invitation };
-  }
-  if ("partnerApplicant" in outside) {
-    return { partner_applicant: "true" };
-  }
-  return "guest" in outside ? { guest: "true" } : {};
+  return "invitation" in outside
+    ? { invitation: outside.invitation }
+    : { partner_applicant: "true" };
 };
 
-/** A student under 18 (decisions.md, Members): birth month and year, the parent. */
+/** Under 18 (decisions.md, Members): birth month and year, the parent. */
 const minorMetadata = (minor: SignUpDetails["minor"]) =>
   minor
     ? {
@@ -187,6 +183,24 @@ const minorMetadata = (minor: SignUpDetails["minor"]) =>
         parent_email: normalizeEmail(minor.parentEmail),
       }
     : {};
+
+/** Why a sign-up can't go ahead, before anything is sent. */
+const signUpRefusal = (
+  details: SignUpDetails,
+  auib: boolean
+): EmailAuthErrorCode | null => {
+  // Under 18: an AUIB student, or by an invitation (a Qalam student).
+  const invited = Boolean(details.outside && "invitation" in details.outside);
+  if (!(details.adult || (details.minor && (auib || invited)))) {
+    return "age_required";
+  }
+  if (auib && !details.class) {
+    return "class_required";
+  }
+  return nameComplete(details.names.en) && nameComplete(details.names.ar)
+    ? null
+    : "names_required";
+};
 
 /**
  * Creates an account. Metadata here only fills in the profile; it is never
@@ -204,45 +218,35 @@ export const signUpWithEmail = async (
   if (details.password.length < MIN_PASSWORD_LENGTH) {
     return { code: "weak_password", ok: false };
   }
-  if (!details.agreed) {
-    return { code: "terms_required", ok: false };
-  }
-  // Under 18 only as an AUIB student, with the parent's address.
-  if (!(details.adult || (details.minor && isAuibEmail(email)))) {
-    return { code: "terms_required", ok: false };
-  }
   const auib = isAuibEmail(email);
-  // Membership is for AUIB addresses (decisions.md); an outside one
-  // comes only with a partner's invitation or an application to partner.
-  if (!(auib || details.outside)) {
-    return { code: "auib_only", ok: false };
+  const refused = signUpRefusal(details, auib);
+  if (refused) {
+    return { code: refused, ok: false };
   }
   const parts = Object.fromEntries(
     (["en", "ar"] as const).flatMap((language) =>
       NAME_PARTS.map((part) => [
         `${part}_name_${language}`,
-        details.names?.[language][part].trim() ?? "",
+        details.names[language][part].trim(),
       ])
     )
   );
-  // The family name is only where there is one (decisions.md, Members).
-  const named = Object.entries(parts).every(
-    ([column, part]) => column.startsWith("last_") || part !== ""
-  );
-  if (!(auib || named)) {
-    return { code: "names_required", ok: false };
-  }
 
   const { data, error } = await supabase.auth.signUp({
     email,
     options: {
       ...captcha(details.captchaToken),
       data: {
-        ...(named ? parts : {}),
+        ...parts,
         ...outsideMetadata(details.outside),
+        // The sign-up line (decisions.md, Members): the Terms, the Privacy
+        // Notice, the Code of Conduct and signing electronically. The
+        // database logs the versions and its own time.
         agreed_at: new Date().toISOString(),
         ...minorMetadata(details.minor),
-        esign: details.esign ? "true" : "false",
+        ...(auib && details.class ? { class: details.class } : {}),
+        ...(!auib && details.studiedAtAuib ? { studied_at_auib: "true" } : {}),
+        ...(details.titleForm ? { title_form: details.titleForm } : {}),
         locale: details.locale,
         mailing: details.mailing ? "true" : "false",
       },

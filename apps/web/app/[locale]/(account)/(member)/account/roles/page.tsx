@@ -3,6 +3,10 @@ import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) => t("diwan.service.rolesTitle"));
 
-const ServicePage = () => <Service />;
+/**
+ * /account/roles (decisions.md, The site): applications, then the roles
+ * held, hours and service letters.
+ */
+const RolesPage = () => <Service />;
 
-export default ServicePage;
+export default RolesPage;

@@ -19,7 +19,6 @@ the secret is unset.
 | --- | --- | --- | --- | --- |
 | `/api/account/delete` | POST | The member, from Settings | Member, signed in within 15 minutes | — |
 | `/api/account/export` | POST | The member (Download your data) | Member | — |
-| `/api/associate-requests` | POST | Anyone, from /join | Turnstile | per address |
 | `/api/calendar/events/<slug>` | GET | Anyone (Add to calendar) | Public | cached |
 | `/api/calendar/feed/<token>` | GET | A member’s calendar app | The feed’s secret token | — |
 | `/api/calendar/sal.ics` | GET | Anyone (the public calendar, `/calendar.ics`) | Public | cached |
@@ -33,7 +32,7 @@ the secret is unset.
 | `/api/files/agreement` | POST | A writer | Member | — |
 | `/api/files/blind` | POST | A reader (a Gallery entry’s images, each marked with the reader’s card number and the day, sent inline; never a file or its address) | Member who may read the entry and has signed `confidentiality-agreement`, the readers’ pledge (`journal.entry_text`) | — |
 | `/api/files/rights` | POST | The Company | Member + permission | — |
-| `/api/files/submission` | POST | A writer, the Submissions Manager in intake, the section’s editor or the Editor-in-Chief once accepted (an original; each opening by anyone but the writer is kept, `journal.original_openings`) | Member (`journal.open_original`) | — |
+| `/api/files/submission` | POST | A writer, the Managing Editor in intake, the section’s editor or the Editor-in-Chief once accepted (an original; each opening by anyone but the writer is kept, `journal.original_openings`) | Member (`journal.open_original`) | — |
 | `/api/qirtas/images` | POST | A Qirtas editor (a piece accepted from a submission takes the writer’s images, metadata stripped) | Member (the piece’s editor, under RLS) | — |
 | `/api/forms/sign` | POST | Anyone signing without an account; anonymous concerns | Turnstile, or a single-use form link | per address |
 | `/api/health` | GET | Uptime checks | Public (`no-store`) | — |

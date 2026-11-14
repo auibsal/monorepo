@@ -1,9 +1,7 @@
 "use client";
 
 import { Button } from "@repo/brand/components/ui/button";
-import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
-import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -456,18 +454,6 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
       ),
     onSuccess: refresh,
   });
-  const showOutside = useMutation({
-    mutationFn: async (input: { id: string; visible: boolean }) =>
-      unwrap(
-        await supabase
-          .schema("programmes")
-          .from("production_credits")
-          .update({ show_publicly: input.visible })
-          .eq("id", input.id)
-      ),
-    onSuccess: refresh,
-  });
-
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
       <p className="type-body">{t("lede")}</p>
@@ -502,22 +488,6 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
                 {t("remove")}
               </ConfirmAction>
             </div>
-            {c.user_id ? (
-              <p className="type-caption">
-                {c.show_publicly ? t("shown") : t("notShown")}
-              </p>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  checked={c.show_publicly}
-                  id={`outside-${c.id}`}
-                  onCheckedChange={(checked) =>
-                    showOutside.mutate({ id: c.id, visible: checked === true })
-                  }
-                />
-                <Label htmlFor={`outside-${c.id}`}>{t("showOutside")}</Label>
-              </div>
-            )}
           </li>
         ))}
       </ul>

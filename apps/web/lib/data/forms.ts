@@ -97,22 +97,20 @@ export type FormKey = (typeof formKeys)[number];
 
 /**
  * The register "Agreements and consents" (SAL-EXB-01; decisions.md,
- * Documents and forms): only what people sign, by name. The Code of
- * Conduct, the role agreement, the readers' confidentiality agreement and
- * the publication agreement are signed on their own pages; the handover in
- * Notion; the rest on the standard form page (`formKeys`). Every other kind
- * (letters, notices, minutes, score sheets, reports, lists, checklists) is a
- * template or record, in the templates index, never in the register.
+ * Documents and forms): only what people sign, by name, the 13 kinds. The
+ * role agreement, the readers' confidentiality agreement and the
+ * publication agreement are signed on their own pages; the rest on the
+ * standard form page (`formKeys`). The Code of Conduct is accepted by the
+ * sign-up line, never signed; an event pitch, a concern and a members'
+ * meeting motion are submissions (SUB numbers) on the same page, outside
+ * the register. Every other kind is a template or record, in the
+ * templates index.
  */
 export const registerKinds = [
-  "code-of-conduct",
   "role-agreement",
   "conflict-of-interest-declaration",
   "confidentiality-agreement",
   "handover",
-  "members-meeting-motion",
-  "event-pitch",
-  "concern",
   "media-release",
   "partnership-memorandum",
   "company-agreement",
@@ -123,6 +121,17 @@ export const registerKinds = [
   "qalam-parent-consent",
   "qalam-publishing-consent",
 ] as const;
+
+/** The kinds on the form page that are sent, not signed. */
+export const submissionKinds = [
+  "concern",
+  "event-pitch",
+  "members-meeting-motion",
+] as const;
+
+/** Whether a kind is signed (in the register) or only sent. */
+export const isSigned = (key: string) =>
+  (registerKinds as readonly string[]).includes(key);
 
 export const forms: Record<FormKey, FormDefinition> = {
   "company-agreement": {
@@ -227,7 +236,6 @@ export const forms: Record<FormKey, FormDefinition> = {
   },
   "members-meeting-motion": {
     fields: [
-      { key: "seconder", max: 200, required: true, type: "text" },
       { key: "title", max: 200, required: true, type: "text" },
       { key: "notes", max: 2000, required: true, type: "textarea" },
       { key: "believes", max: 2000, required: true, type: "textarea" },
@@ -379,7 +387,6 @@ export const registerFields: Record<FormKey, readonly string[]> = {
     "under 18: a parent or guardian signs",
   ],
   "members-meeting-motion": [
-    "proposer and seconder",
     "title",
     "this meeting notes",
     "believes",

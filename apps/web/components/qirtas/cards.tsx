@@ -40,18 +40,9 @@ export const Byline = ({
   showDate?: boolean;
 }) => (
   <p className="type-caption">
-    {piece.contributor && !piece.contributor.is_anonymous ? (
-      <Link
-        className="underline-offset-4 hover:underline"
-        href={`/qirtas/authors/${piece.contributor.slug}`}
-      >
-        {localized(piece.contributor, "name", locale)}
-      </Link>
-    ) : null}
-    {/* Anonymous has no page of its own (decisions.md, Qirtas). */}
-    {piece.contributor?.is_anonymous
-      ? localized(piece.contributor, "name", locale)
-      : null}
+    {/* A byline is only a name: there are no contributor pages
+        (decisions.md, Members). */}
+    {piece.contributor ? localized(piece.contributor, "name", locale) : null}
     {showDate && piece.published_at
       ? `${piece.contributor ? " · " : ""}${formatLongDate(piece.published_at, locale)}`
       : ""}

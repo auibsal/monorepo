@@ -36,7 +36,9 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
   await page.getByRole("button", { name: "Choose" }).first().click();
   await page.getByLabel("Pen name (optional)").fill("The Night Editor");
   await page.getByRole("button", { name: "Use this byline" }).click();
-  await expect(page.getByText("The Night Editor")).toBeVisible();
+  await expect(
+    page.locator("form").getByText("The Night Editor")
+  ).toBeVisible();
   await page.getByRole("button", { name: "Create the piece" }).click();
   await expect(page).toHaveURL(/\/diwan\/qirtas\/pieces\/(?!new)[^/?]+$/u);
 
@@ -59,26 +61,17 @@ test("each event has its own check-in, and the Desk opens the next one", async (
   await expectAccessible(page);
 });
 
-test("editing in the Diwan opens its own page, one step under its list", async ({
+test("a record in the Diwan opens its own page, one step under its list", async ({
   page,
 }) => {
   await signInWithPassword(page, editor.email);
-  await page.goto(`${urls.app}/qirtas`);
-  const contributor = page
-    .getByRole("link", { name: "The Night Editor" })
-    .first();
-  await contributor.click();
-  await expect(page).toHaveURL(/\/diwan\/qirtas\/contributors\/[^/]+$/u);
+  await page.goto(`${urls.app}/events`);
+  await page.getByRole("link", { name: event.title }).first().click();
+  await expect(page).toHaveURL(new RegExp(`/diwan/events/${event.slug}$`, "u"));
   await expect(
-    page.getByRole("heading", { level: 1, name: "The Night Editor" })
+    page.getByRole("heading", { level: 1, name: event.title })
   ).toBeVisible();
-  await page
-    .getByRole("textbox", { name: "English" })
-    .first()
-    .fill("Writes the Society's notes at night.");
-  await page.getByRole("button", { name: "Save" }).click();
-  // Saving returns to the list it came from.
-  await expect(page).toHaveURL(/\/diwan\/qirtas$/u);
+  await expectAccessible(page);
 });
 
 test("the design system is part of the Diwan, for officers only", async ({

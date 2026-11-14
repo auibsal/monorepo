@@ -885,41 +885,6 @@ export const topicPage = async (client: Client, slug: string) => {
   return pieces.length < TOPIC_PUBLIC_AT ? null : { pieces, topic };
 };
 
-/** A contributor's page: bio and every published piece. */
-/**
- * An author page: the byline, and for a person's own byline what they are
- * to the Society (kind) and the roles they hold; never for a pen name.
- */
-export const authorPage = async (client: Client, slug: string) => {
-  const contributor =
-    (unwrap(await journal(client).rpc("author_card", { author_slug: slug })) ??
-      [])[0] ?? null;
-  if (!contributor) {
-    return null;
-  }
-  const [pieces, inEditions] = await Promise.all([
-    publishedPieces(client)
-      .eq("contributor_id", contributor.id)
-      .order("published_at", { ascending: false }),
-    // The Editions their work appeared in (design review C18), newest first.
-    journal(client)
-      .from("pieces")
-      .select("issue:issues(slug, title_en, title_ar, published_at)")
-      .eq("contributor_id", contributor.id)
-      .eq("status", "published")
-      .lte("published_at", currentDate().toISOString())
-      .not("issue_id", "is", null),
-  ]);
-  const editions = [
-    ...new Map(
-      (unwrap(inEditions) ?? []).flatMap((row) =>
-        row.issue ? [[row.issue.slug, row.issue] as const] : []
-      )
-    ).values(),
-  ].sort((a, b) => (b.published_at ?? "").localeCompare(a.published_at ?? ""));
-  return { ...contributor, editions, pieces: unwrap(pieces) ?? [] };
-};
-
 /**
  * One language per page (SAL-MED-02): a list on the English site shows the
  * pieces written in English (or in both), the Arabic site those in Arabic.

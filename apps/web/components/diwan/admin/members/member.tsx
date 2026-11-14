@@ -20,7 +20,7 @@ import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { hasPermission, type ScopeType, scopeTypes } from "@/lib/rbac";
-import { NamePartsFields } from "../../setup-form";
+import { NamePartsFields } from "../../name-parts-fields";
 import { ErrorState, SectionSpinner } from "../../states";
 import {
   AddInPlace,
@@ -863,7 +863,6 @@ const NameCorrection = ({ userId }: { userId: string }) => {
   });
   const [draft, setDraft] = useState<names.FourPartNames | null>(null);
   const [reason, setReason] = useState("");
-  const [resetReason, setResetReason] = useState("");
   const parts: names.FourPartNames = draft ?? {
     ar: names.partsFrom(current.data, "ar"),
     en: names.partsFrom(current.data, "en"),
@@ -893,19 +892,6 @@ const NameCorrection = ({ userId }: { userId: string }) => {
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
     },
   });
-  const reset = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase.schema("membership").rpc("reset_preferred_name", {
-          member: userId,
-          reason: resetReason.trim(),
-        })
-      ),
-    onSuccess: async () => {
-      setResetReason("");
-      await queryClient.invalidateQueries({ queryKey: ["admin"] });
-    },
-  });
   if (current.isPending) {
     return <SectionSpinner />;
   }
@@ -919,12 +905,6 @@ const NameCorrection = ({ userId }: { userId: string }) => {
     event.preventDefault();
     if (complete && reasoned) {
       save.mutate();
-    }
-  };
-  const submitReset = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (resetReason.trim().length >= 3) {
-      reset.mutate();
     }
   };
   return (
@@ -968,37 +948,6 @@ const NameCorrection = ({ userId }: { userId: string }) => {
           ) : null}
         </div>
         <ErrorLine error={save.error} />
-      </form>
-      <form className="grid gap-3" onSubmit={submitReset}>
-        <h3 className="type-subheading">{t("preferredTitle")}</h3>
-        <p className="type-body text-text-secondary max-w-2xl">
-          {t("preferredBody")}
-        </p>
-        <div className="grid max-w-xl gap-2">
-          <Label htmlFor={`${id}-reset-reason`}>{t("preferredReason")}</Label>
-          <Input
-            id={`${id}-reset-reason`}
-            maxLength={300}
-            onChange={(event) => setResetReason(event.target.value)}
-            required
-            value={resetReason}
-          />
-        </div>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-          <Button
-            disabled={resetReason.trim().length < 3 || reset.isPending}
-            type="submit"
-            variant="outline"
-          >
-            {t("reset")}
-          </Button>
-          {reset.isSuccess ? (
-            <p className="type-body" role="status">
-              {t("resetDone")}
-            </p>
-          ) : null}
-        </div>
-        <ErrorLine error={reset.error} />
       </form>
     </section>
   );

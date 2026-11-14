@@ -1,5 +1,7 @@
 # auibsal.org
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/auibsal/mono/badge)](https://scorecard.dev/viewer/?uri=github.com/auibsal/mono)
+
 The platform of the AUIB Society of Arts and Letters (SAL, «جمعية الفنون
 والآداب»), the bilingual student society for literature, theater and the
 arts at the American University of Iraq – Baghdad. *The paper and the pen.*

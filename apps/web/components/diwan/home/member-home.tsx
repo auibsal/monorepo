@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 import { DiwanPage } from "../page";
 import { Handovers } from "../service/roles";
+import { Elections } from "../society/elections";
+import { Motions } from "../society/motions";
+import { PrizeVote } from "../society/prize-vote";
 import { ChildConsents } from "./child-consents";
 import { JournalSection } from "./journal";
 import { MembershipCard } from "./membership-card";
@@ -14,8 +17,8 @@ import { OtherHome } from "./other-home";
 import { MyProgrammes } from "./programmes";
 import { Renewal } from "./renewal";
 import { RoleChecklist, UnsignedRoleAgreements } from "./role-checklist";
-import { SavedReadingSection } from "./saved-reading";
-import { SixWords } from "./six-words";
+import { ArabicFormToDo, EsignToDo, NameToDo } from "./to-dos";
+import { VotingEligibility } from "./voting";
 
 type Greeting = "morning" | "afternoon" | "evening" | "late" | "friday";
 
@@ -60,12 +63,10 @@ const useGreeting = () => {
 };
 
 /**
- * Today, mobile-first (the overhaul, Oct 30, 2026): what
- * needs the member (notices, only when there are some), what's next, their
- * shifts and Get involved, Qirtas, what they have sent, and their six
- * words once the Tour has them. Sections in twos, so a full page reads in
- * threes. Voting eligibility is on Society; the calendar feed on My
- * calendar.
+ * Today (decisions.md, The site): the first screen after signing in, for
+ * everyone. The live card at the top with Add to Wallet, then the to-dos
+ * to sign or finish, an open election as a card while it's open, and
+ * what's next. Today's to-dos are the only guidance: no walkthroughs.
  */
 export const MemberHome = () => {
   const t = useTranslations("diwan.home");
@@ -81,6 +82,7 @@ export const MemberHome = () => {
   )
     .trim()
     .split(" ");
+  const member = mine.data?.kind === "member";
 
   return (
     <DiwanPage
@@ -90,27 +92,39 @@ export const MemberHome = () => {
           : t("greetingPlain")
       }
     >
-      {/* Members keep the card on its own tab (decisions.md, Your account). */}
-      {mine.data?.kind === "member" ? null : <MembershipCard />}
-      {mine.data?.kind === "member" ? (
-        <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
-          <Renewal />
-          <UnsignedRoleAgreements />
-          <Handovers />
-          <RoleChecklist />
-          <Notices />
-          <NextEvents />
-          <MyProgrammes />
-          <JournalSection />
-          <SavedReadingSection />
-          <SixWords />
-        </div>
+      <MembershipCard />
+      {/* The to-dos: each shows only while there is something to do. */}
+      <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
+        <EsignToDo />
+        <NameToDo />
+        <ArabicFormToDo />
+        {member ? (
+          <>
+            <Renewal />
+            <UnsignedRoleAgreements />
+            <Handovers />
+            <RoleChecklist />
+          </>
+        ) : null}
+      </div>
+      {member ? (
+        <>
+          <Elections />
+          <PrizeVote />
+          <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
+            <Notices />
+            <NextEvents />
+            <MyProgrammes />
+            <JournalSection />
+            <Motions />
+            <VotingEligibility />
+          </div>
+        </>
       ) : null}
       {/* A parent's view of their child's consents, whatever their class. */}
       <ChildConsents />
       {/* A guest, a partner's person, or someone not yet either. */}
-      {mine.isSuccess && mine.data.kind !== "member" ? <OtherHome /> : null}
-      {mine.data?.kind === "guest" ? <SavedReadingSection /> : null}
+      {mine.isSuccess && !member ? <OtherHome /> : null}
     </DiwanPage>
   );
 };

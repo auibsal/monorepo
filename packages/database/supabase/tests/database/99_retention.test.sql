@@ -123,9 +123,10 @@ insert into journal.submission_drafts (user_id, category, updated_at) values
 -- A blind copy whose submission is gone
 insert into journal.blind_entries (blind_id, call_id, category, language, title, updated_at)
 values ('W-E2AAAA', (select id from journal.calls limit 1), 'poetry', 'en', 'Orphan', now() - interval '13 months');
--- An incident record from eight years ago
-insert into governance.form_submissions (form_key, submitted_by, status, created_at, submitted_at, signed_at, signer_name) values
-  ('incident-report', '00000000-0000-0000-0000-0000000e2a02', 'closed', now() - interval '8 years', now() - interval '8 years', now() - interval '8 years', 'New Account');
+-- An incident case closed three years ago, and one still open from eight
+insert into governance.form_submissions (form_key, submitted_by, status, created_at, submitted_at, signed_at, signer_name, closed_at, data) values
+  ('incident-report', '00000000-0000-0000-0000-0000000e2a02', 'closed', now() - interval '3 years', now() - interval '3 years', now() - interval '3 years', 'New Account', now() - interval '3 years', '{"case":"closed"}'),
+  ('incident-report', '00000000-0000-0000-0000-0000000e2a02', 'submitted', now() - interval '8 years', now() - interval '8 years', now() - interval '8 years', 'New Account', null, '{"case":"open"}');
 -- A reply decided over a year ago
 insert into programmes.openings (id, programme_id, role, title_en, title_ar)
 values ('0be00000-0000-0000-0000-0000000e2a0b', (select id from core.programmes where slug = 'company'),
@@ -142,9 +143,6 @@ values ('0be00000-0000-0000-0000-0000000e2a0c', 2099, '2098-09-01', '2099-06-30'
 insert into journal.prize_vote_receipts (round_id, category, user_id)
 values ('0be00000-0000-0000-0000-0000000e2a0c', 'qirtas', '00000000-0000-0000-0000-0000000e2a01');
 -- Devices of an account unused for over a year, and of one in use
-insert into core.push_subscriptions (user_id, endpoint, p256dh, auth) values
-  ('00000000-0000-0000-0000-0000000e2a01', 'https://push.example/old', 'k', 'a'),
-  ('00000000-0000-0000-0000-0000000e2a02', 'https://push.example/new', 'k', 'a');
 insert into membership.calendar_tokens (user_id, token) values ('00000000-0000-0000-0000-0000000e2a01', 'old-token');
 -- An unconfirmed personal address from last week
 insert into core.personal_email_requests (user_id, email, requested_at)
@@ -170,18 +168,17 @@ select is((select count(*)::integer from journal.submission_drafts where user_id
   'a recent draft stays');
 select is((select count(*)::integer from journal.blind_entries where blind_id = 'W-E2AAAA'), 0,
   'A blind copy with no submission is deleted after 12 months');
-select is((select count(*)::integer from governance.form_submissions where form_key = 'incident-report'), 0,
-  'Incident records go after seven years');
+select is((select array_agg(data ->> 'case') from governance.form_submissions where form_key = 'incident-report'),
+  array['open'], 'Incident records go two years after the case closes; an open case stays');
 select is((select array_agg(status) from programmes.opening_replies where opening_id = '0be00000-0000-0000-0000-0000000e2a0b'),
   array['new'], 'A decided reply goes after 12 months; an open one stays');
 select is((select count(*)::integer from programmes.removal_requests where requester_email = 'someone@example.com'), 0,
   'Removal requests go two years after closing');
 select is((select count(*)::integer from journal.prize_vote_receipts where round_id = '0be00000-0000-0000-0000-0000000e2a0c'), 0,
   'Who voted for the Prize goes a year after the vote');
-select is((select array_agg(endpoint) from core.push_subscriptions where endpoint like 'https://push.example/%'),
-  array['https://push.example/new'], 'Push subscriptions of accounts unused for a year go');
+select is(to_regclass('core.push_subscriptions'), null, 'There are no push subscriptions to keep');
 select is((select count(*)::integer from membership.calendar_tokens where token = 'old-token'), 0,
-  'and their calendar feed addresses');
+  'Calendar feed addresses of accounts unused for a year go');
 select is((select count(*)::integer from core.personal_email_requests where email = 'old@example.com'), 0,
   'Personal email requests unconfirmed after seven days go');
 select is((select count(*)::integer from programmes.six_words where photo_path = 'station/00000000-0000-0000-0000-0000000e2a0d.jpg'), 0,

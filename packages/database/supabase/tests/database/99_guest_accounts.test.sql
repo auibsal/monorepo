@@ -111,14 +111,14 @@ grant execute on all functions in schema pg_temp to public;
 
 -- The gate the sign-up service runs (private.sign_up_allowed).
 select ok(
-  not private.sign_up_allowed('visitor@gmail.com', '{}'),
-  'An outside address can''t sign up as a member'
+  private.sign_up_allowed('visitor@gmail.com', '{}'),
+  'Any address may sign up, on the one sign-up page (decisions.md, Members)'
 );
-select ok(
-  private.sign_up_allowed('guest@gmail.com', '{"guest":"true"}'),
-  'but anyone may make a guest account'
+select pg_temp.outside_user('00000000-0000-0000-0000-0000000f2a02', 'guest@gmail.com', '{}');
+select is(
+  (select accepted_versions from core.profiles where id = '00000000-0000-0000-0000-0000000f2a02'),
+  null, 'Without the sign-up line nothing is recorded as accepted'
 );
-select pg_temp.outside_user('00000000-0000-0000-0000-0000000f2a02', 'guest@gmail.com', '{"guest":"true"}');
 update auth.users set email_confirmed_at = now() where id = '00000000-0000-0000-0000-0000000f2a02';
 select ok(
   exists (select 1 from membership.guests where user_id = '00000000-0000-0000-0000-0000000f2a02'),

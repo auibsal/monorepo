@@ -161,8 +161,8 @@ select is(
 );
 select pg_temp.login_anon();
 select ok(
-  not exists (select 1 from programmes.six_words_wall() where id = (select id from unsigned)),
-  'and stays off the Tour''s page'
+  (select pages from programmes.six_words_counts()) >= 1,
+  'and the Tour''s page only counts it'
 );
 
 select pg_temp.logout();
@@ -184,14 +184,14 @@ select lives_ok(
   'Scanning the live card attaches the page to its writer'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000060a1');
-select lives_ok(
-  $$ update programmes.six_words set visibility = 'tour' where id = (select id from unsigned) $$,
-  'The writer chooses the Tour''s page'
+select is(
+  (select text from programmes.my_six_words() where id = (select id from unsigned)),
+  'ink on paper under the stars', 'The writer sees the page in Your account'
 );
 select pg_temp.login_anon();
-select is(
-  (select author_en from programmes.six_words_wall() where id = (select id from unsigned)),
-  'Writer O.', 'and is named on it by first name and last initial (decisions.md, Qirtas)'
+select throws_ok(
+  $$ select * from programmes.my_six_words() $$,
+  '42501', null, 'and no one else does (decisions.md, Members)'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000060a2');

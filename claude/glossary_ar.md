@@ -9,6 +9,8 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Student Life | شؤون الطلبة |
 | handover (signed when leaving a role) / countersign | التسليم والاستلام / المصادقة على التسليم |
 | I agree to sign electronically | «أوافق على التوقيع إلكترونيًا» |
+| The sign-up line: "By creating an account, you agree to the Terms, the Privacy Notice and the Code of Conduct, and to sign electronically." | «إنشاء الحساب يعني الموافقة على شروط الاستخدام وإشعار الخصوصية ومدونة السلوك، وعلى التوقيع إلكترونيًا.» (neutral, so it reads the same for everyone) |
+| Sign-up's class question: "Student" / "Faculty, staff or alumni" / "I studied at AUIB" | «طالب» / «عضو هيئة تدريس أو موظف أو خريج» / «درستُ في الجامعة الأمريكية في بغداد» |
 | officer (one of the three: President, Vice President, Secretary) / "For a second officer" (the Desk) | مسؤول / «لمسؤول ثان» |
 | Campus Recreation Officer | مسؤول الأنشطة الترفيهية في الحرم الجامعي |
 | Director of Student Life | مديرة شؤون الطلبة |
@@ -60,7 +62,8 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | member / Associate Member / Honorary Member | عضو / عضو منتسب / عضو فخري |
 | partner / Partner Lead / the partner's team / partner dashboard | شريك / مسؤول الشريك / فريق الشريك / لوحة الشريك |
 | partner register / guest / guest account | سجل الشركاء / ضيف / حساب ضيف |
-| legal name / preferred name | الاسم القانوني / الاسم المفضّل |
+| official name / full name / short name / credited name / pen name | الاسم الرسمي / الاسم الكامل / الاسم المختصر / الاسم الفني / الاسم المستعار |
+| given name / father's name / grandfather's name / fourth name | الاسم / اسم الأب / اسم الجد / الاسم الرابع |
 | Guest card / membership card / number | بطاقة الضيف / بطاقة العضوية / الرقم |
 | electronic signature / verify | التوقيع الإلكتروني / التحقق |
 | Copy Chief / Managing Editor | رئيس التدقيق / مدير التحرير |
@@ -89,7 +92,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | amendment | تعديل |
 | semester (fall, spring) / the first semester (probation) / term (of office) | الفصل الدراسي / فترة التجربة / الولاية |
 | event / event lead | فعالية / قائد الفعالية |
-| Parent account / Qalam account / Student Life (outside role) | حساب وليّ الأمر / حساب «قلم» / شؤون الطلبة (دور خارجي) |
+| Parent (role) / Qalam student (role) / Student Life (outside role) | وليّ الأمر (دور) / طالب «قلم» (دور) / شؤون الطلبة (دور خارجي) |
 | Sign as … (signing) | «وقّع باسم …» |
 | One Book, One Campus / Poem in Your Pocket Day | «كتاب واحد، حرم واحد» / «يوم القصيدة في جيبك» |
 | press page / logo pack / press release | صفحة الصحافة / حزمة الشعار / بيان صحفي |
@@ -99,10 +102,11 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | charity collection | جمع التبرعات لجهة خيرية |
 | Edition / Edition 1 / the pilot (Haven) | الإصدار / الإصدار 1 / الإصدار التجريبي |
 | the standing flow / table of contents / contributors' notes / cover artist | التدفق المستمر / المحتويات / نبذة عن المساهمين / فنان الغلاف |
-| Submit (Qirtas's button) / Save / Saved | «أرسل عملك» / حفظ / «المحفوظات» |
-| Your account's tabs: Today / Events / Work / Applications / Roles and service / Documents / Card / Settings | «اليوم» / «الفعاليات» / «أعمالك» / «طلباتك» / «الأدوار والخدمة» / «المستندات» / «البطاقة» / «الإعدادات» |
+| Submit (Qirtas's button) | «أرسل عملك» |
+| Your account's tabs: Today / Events / Work / Roles / Documents / Settings; Settings' sections: Account / Notifications / Security / Your data | «اليوم» / «الفعاليات» / «أعمالك» / «الأدوار» / «المستندات» / «الإعدادات»؛ أقسام الإعدادات: «الحساب» / «الإشعارات» / «الأمان» / «بياناتك» |
 | Sign out | تسجيل الخروج |
-| agreements and consents / Raise a concern / Pitch an event | الاتفاقيات والموافقات / «أبلغ عن مخاوف» / «اقترح فعالية» |
+| "Doors open" (Hudhud's post an hour before) | «الأبواب مفتوحة الآن» |
+| agreements and consents / Raise a concern / Pitch an event | الاتفاقيات والموافقات / «أبلِغ عن مخاوف» / «اقترح فعالية» |
 | Haven (the pilot) | «ملاذ» |
 | topic (Qirtas) | موضوع |
 | section editor / assistant editor | محرر القسم / محرر مساعد |
@@ -127,7 +131,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Version 1, proposed | النسخة 1، مقترحة |
 | Article / Section (governing documents) | المادة / البند |
 | camera-shy sticker | ملصق «بلا تصوير» |
-| names of people | the person's preferred name from the site, in the edition's language (one field in English, one in Arabic); never typed or transliterated by hand |
+| names of people | the person's short name, built by the site from their official name, in the edition's language (one field in English, one in Arabic); never typed or transliterated by hand |
 | Jelena Zivkovic / Ali Najm | يلينا زيفكوفيتش / علي نجم |
 | Qirtas (grammar) | قرطاس is masculine (قرطاس يصدر، نشره قرطاس); when the word «صحيفة» is used, agree with it |
 | Help / Words we use / Report a problem | المساعدة / كلمات نستخدمها / أبلِغ عن مشكلة |

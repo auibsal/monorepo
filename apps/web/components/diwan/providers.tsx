@@ -2,7 +2,6 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useState } from "react";
-import { ActivityStamp } from "@/components/diwan/idle-sign-out";
 import { AuthProvider } from "@/lib/auth/provider";
 import { getSupabase } from "@/lib/diwan/supabase";
 
@@ -24,10 +23,7 @@ export const AppProviders = ({ children }: AppProvidersProps) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider client={supabase}>
-        <ActivityStamp />
-        {children}
-      </AuthProvider>
+      <AuthProvider client={supabase}>{children}</AuthProvider>
     </QueryClientProvider>
   );
 };

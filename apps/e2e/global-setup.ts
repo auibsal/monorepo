@@ -89,7 +89,6 @@ export default async function globalSetup() {
         grandfather_name_en: grandfatherOf(id)[0],
         last_name_ar: "تجريبي",
         last_name_en: "Tester",
-        name_confirmed_at: new Date().toISOString(),
         setup_completed_at: new Date().toISOString(),
       })
       .eq("id", id);

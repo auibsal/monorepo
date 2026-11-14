@@ -97,14 +97,11 @@ $$;
 
 select plan(7);
 
--- Two members, a third in the directory, a fourth who holds a role.
+-- Three members and a fourth who holds a role.
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c101', 'reader.1@auib.edu.iq', 'Reader');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c102', 'private.2@auib.edu.iq', 'Private Member');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c103', 'listed.3@auib.edu.iq', 'Listed Member');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c104', 'officer.4@auib.edu.iq', 'Officer');
-insert into membership.memberships (user_id, in_directory)
-  values ('00000000-0000-0000-0000-00000000c103', true)
-  on conflict (user_id) do update set in_directory = true;
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000c104', 'general_secretary');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000c101');
@@ -113,10 +110,10 @@ select is(
   1, 'A member reads their own profile');
 select is(
   (select count(*)::int from core.profiles where id = '00000000-0000-0000-0000-00000000c102'),
-  0, 'A member cannot read another member who is not in the directory (the Register is private)');
+  0, 'A member cannot read another member (the Register is private)');
 select is(
   (select count(*)::int from core.profiles where id = '00000000-0000-0000-0000-00000000c103'),
-  1, 'A member who chose the directory is visible to members');
+  0, 'and there is no directory to be listed in (decisions.md, Members)');
 select is(
   (select count(*)::int from core.profiles where id = '00000000-0000-0000-0000-00000000c104'),
   1, 'A role holder is visible (the Council page, the masthead)');

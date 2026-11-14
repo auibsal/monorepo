@@ -131,14 +131,15 @@ values ('door-writer', 'Typed Name', '00000000-0000-0000-0000-0000000099a1');
 select is((select name_en from journal.contributors
   where user_id = '00000000-0000-0000-0000-0000000099a1' and not is_pen_name), 'Door Writer',
   'A member''s byline takes the name from their profile');
-update core.profiles set preferred_name_en = 'Door W. Writer', preferred_name_ar = 'كاتب الباب'
+update core.profiles set first_name_en = 'Door', father_name_en = 'W.', grandfather_name_en = 'Ink', last_name_en = 'Writer',
+  first_name_ar = 'كاتب', father_name_ar = 'الباب', grandfather_name_ar = 'حبر', last_name_ar = 'قلم'
 where id = '00000000-0000-0000-0000-0000000099a1';
 select is((select name_ar from journal.contributors
   where user_id = '00000000-0000-0000-0000-0000000099a1' and not is_pen_name), 'كاتب الباب',
-  'and follows it when the member changes their name');
+  'and follows it when Membership corrects the name');
 
 select is((select full_name_en from core.profiles where id = '00000000-0000-0000-0000-0000000099a1'),
-  'Door W. Writer', 'A name is one name in each language');
+  'Door W.', 'The name shown is the short form: the given and father''s names');
 select hasnt_column('core', 'profiles', 'given_name_en', 'The first and last name parts are gone');
 
 select throws_ok(

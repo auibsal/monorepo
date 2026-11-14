@@ -179,12 +179,10 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     await group.getByLabel("Name", { exact: true }).fill(parts[0]);
     await group.getByLabel("Father’s name", { exact: true }).fill(parts[1]);
     await group.getByLabel("Grandfather’s name").fill(parts[2]);
-    await group.getByLabel("Family name").fill(parts[3]);
+    await group.getByLabel(/Family name/u).fill(parts[3]);
   }
-  await guest.getByRole("checkbox", { name: /18 or older/u }).check();
-  await guest
-    .getByRole("checkbox", { name: /I agree to the Terms of Use/u })
-    .check();
+  await guest.getByRole("radio", { name: /In the masculine/u }).click();
+  await guest.getByRole("radio", { name: "Yes, 18 or older" }).click();
   const sentAt = Date.now();
   await guest.getByRole("button", { name: "Create account" }).click();
   await expect(guest.getByText("Check your inbox")).toBeVisible();
@@ -194,15 +192,6 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await guest.goto((link ?? "").replaceAll("&amp;", "&"));
   await guest.getByRole("button", { name: /continue/iu }).click();
   await guest.getByRole("button", { name: "Accept the invitation" }).click();
-  // A guest acknowledges the Code of Conduct, like a member, then meets
-  // their card.
-  await expect(guest).toHaveURL(/\/welcome/u);
-  await guest
-    .getByRole("button", { name: "I acknowledge the Code of Conduct" })
-    .click();
-  await expect(guest.getByRole("heading", { level: 1 })).toContainText(
-    "Welcome"
-  );
   // One Membership for everyone: the guest's Today, with a guest's card.
   await guest.goto(`${urls.web}/account`);
   await expect(guest.getByText("Guest", { exact: true }).first()).toBeVisible();
@@ -277,15 +266,12 @@ test("a member who leads their club's partnership stays a member", async ({
     for (const name of [
       "Events",
       "Work",
-      "Applications",
-      "Saved",
+      "Roles and service",
       "Documents",
-      "Card",
+      "Settings",
     ]) {
       await expect(row.getByRole("link", { name })).toBeVisible();
     }
-    await page.goto(`${urls.web}/account/elections`);
-    await expect(page).toHaveURL(/\/account\/elections$/u);
     // Leading a partner is not an officer's role: no Diwan.
     await page.goto(`${urls.app}`);
     await expect(page).toHaveURL(/\/partners\/dashboard$/u);

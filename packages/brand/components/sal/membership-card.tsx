@@ -39,8 +39,8 @@ export interface MembershipCardProps {
   readonly office?: string | null;
   /**
    * The live QR: its link (null while the first code is made) and the share
-   * of its 30 seconds still to run, 0 to 1. A printed card passes no
-   * `left`: the code has no countdown on paper.
+   * of its 30 seconds still to run, 0 to 1. Without `left` the code shows
+   * no countdown (the design system's still pictures).
    */
   readonly qr: { readonly left?: number; readonly value: string | null };
   /** "Since 2026", already formatted. */
@@ -55,8 +55,8 @@ export interface MembershipCardProps {
  * line under it while it is held, the number and the class (or Guest), a
  * rosette drawn from the number, the year since and the live QR, which
  * links to auibsal.org/verify/member/<code>?t=<digits> and changes every 30
- * seconds. One design: the account, Google Wallet (the same fields) and a
- * card printed on request all show this one. The card is an object, like a
+ * seconds. One design, on screens only (there is no printed card): the
+ * account and Google Wallet (the same fields) show this one. The card is an object, like a
  * certificate: it keeps the light theme, and it holds still (no tilt, sheen
  * or turning pattern; the live QR is what shows the card is current).
  */

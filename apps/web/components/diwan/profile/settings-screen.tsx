@@ -8,6 +8,12 @@ import { RecoveryCodes } from "../auth/recovery-codes";
 import { TwoStepSettings } from "../auth/two-step";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { AccountLanguage } from "./account-language";
+import {
+  ArabicFormChoice,
+  OfficialName,
+  RecordEmails,
+  ShortNameChoice,
+} from "./account-settings";
 import { DeleteAccount } from "./delete-account";
 import { DownloadData } from "./download-data";
 import { EsignSettings } from "./esign";
@@ -15,7 +21,6 @@ import { NoticeGrid } from "./notice-grid";
 import { Passkeys } from "./passkeys";
 import { ChangePassword } from "./password";
 import { PersonalEmail } from "./personal-email";
-import { PhoneNotifications } from "./phone-notifications";
 import { Sessions } from "./sessions";
 import { TelegramLink } from "./telegram-link";
 
@@ -31,34 +36,32 @@ export const NoticesScreen = () => {
         <AccountLanguage />
         <NoticeGrid />
       </DiwanSection>
-      <PhoneNotifications />
       <TelegramLink />
     </DiwanPage>
   );
 };
 
 /**
- * Settings (owner, 2026-10-25): three pages of their own (Profile,
- * Requests, Notices; officers also declare conflicts of interest here),
- * then how they sign in, with recovery codes for two-step roles. What they tell us about themselves is in Profile; what
- * they have sent is in Requests and reports.
+ * Settings, in four sections (decisions.md, The site): Account (the
+ * official name, the short-name choice, language, the Arabic form),
+ * Notifications, Security and Your data. What the person sent is under
+ * Requests; officers declare conflicts of interest here.
  */
 export const SettingsScreen = () => {
   const t = useTranslations("diwan.settings");
   const staff = useIsStaff();
   // Requests and the personal email are a member's (an AUIB address that
-  // ends at graduation); everyone has Profile and Notices.
+  // ends at graduation).
   const member = useMyMembership().data?.kind === "member";
   return (
     <DiwanPage lede={t("lede")} narrow title={t("title")}>
-      <DiwanSection id="yours" title={t("yours")}>
+      <DiwanSection id="account" title={t("sections.account")}>
+        <OfficialName />
+        <ShortNameChoice />
+        <AccountLanguage />
+        <ArabicFormChoice />
+        {member ? <PersonalEmail /> : null}
         <RowList>
-          <li className="grid gap-1">
-            <Link className="link font-medium" href="/account/settings/profile">
-              {t("profile")}
-            </Link>
-            <p className="type-caption">{t("profileLine")}</p>
-          </li>
           {member ? (
             <li className="grid gap-1">
               <Link className="link font-medium" href="/account/requests">
@@ -67,15 +70,6 @@ export const SettingsScreen = () => {
               <p className="type-caption">{t("requestsLine")}</p>
             </li>
           ) : null}
-          <li className="grid gap-1">
-            <Link
-              className="link font-medium"
-              href="/account/settings/notifications"
-            >
-              {t("notices")}
-            </Link>
-            <p className="type-caption">{t("noticesLine")}</p>
-          </li>
           {staff ? (
             <li className="grid gap-1">
               <Link
@@ -89,24 +83,27 @@ export const SettingsScreen = () => {
           ) : null}
         </RowList>
       </DiwanSection>
-      {member ? <PersonalEmailSection /> : null}
-      <EsignSettings />
-      <ChangePassword />
-      <TwoStepSettings />
-      <Passkeys />
-      <Sessions />
-      <RecoveryCodes />
-      <DownloadData />
-      <DeleteAccount />
+      <DiwanSection id="notifications" title={t("sections.notifications")}>
+        <RecordEmails />
+        <Link
+          className="link justify-self-start"
+          href="/account/settings/notifications"
+        >
+          {t("noticesByChannel")}
+        </Link>
+      </DiwanSection>
+      <DiwanSection id="security" title={t("sections.security")}>
+        <ChangePassword />
+        <TwoStepSettings />
+        <Passkeys />
+        <Sessions />
+        <RecoveryCodes />
+        <EsignSettings />
+      </DiwanSection>
+      <DiwanSection id="your-data" title={t("sections.data")}>
+        <DownloadData />
+        <DeleteAccount />
+      </DiwanSection>
     </DiwanPage>
-  );
-};
-
-const PersonalEmailSection = () => {
-  const t = useTranslations("diwan.personalEmail");
-  return (
-    <DiwanSection id="personal-email" title={t("title")}>
-      <PersonalEmail />
-    </DiwanSection>
   );
 };

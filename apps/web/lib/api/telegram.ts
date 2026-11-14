@@ -6,7 +6,17 @@ import { env } from "@/env";
 import { log } from "@/lib/observability/log";
 import { noticeMessage } from "@/lib/telegram";
 import { type Sticker, type StickerSet, stickerId } from "./bot/stickers";
-import type { PushNotice } from "./push";
+
+/** A notice sent to a member in their chat with Hudhud, beside the email. */
+export interface Notice {
+  body: string;
+  lang: "en" | "ar";
+  /** Collapses repeats of the same notice. */
+  tag?: string;
+  title: string;
+  /** The page the notice opens. */
+  url: string;
+}
 
 const OPEN = { ar: "افتح", en: "Open" } as const;
 
@@ -20,7 +30,7 @@ const OPEN = { ar: "افتح", en: "Open" } as const;
 export const telegramToUser = async (
   admin: AdminClient,
   userId: string,
-  notice: PushNotice,
+  notice: Notice,
   /** Hudhud after the notice, never instead of it (bot/stickers.ts). */
   sticker?: Sticker,
   /**

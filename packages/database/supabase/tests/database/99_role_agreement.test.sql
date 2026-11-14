@@ -151,21 +151,20 @@ select is((select count(*)::int from core.outbox where kind = 'forms.signed_copy
     where assignment_id = '00000000-0000-0000-0000-0000000ab0a1')), 1,
   'and the signer is emailed a copy');
 
--- The Code of Conduct, accepted on joining, is one too.
-select pg_temp.login_as('00000000-0000-0000-0000-0000000ab002');
-select lives_ok($$ select membership.accept_pledge('member', membership.current_pledge_version('member')) $$,
-  'A member accepts the Code of Conduct');
-select pg_temp.logout();
-select is((select s.form_key from membership.pledges p
-  join governance.form_submissions s on s.id = p.submission_id
-  where p.user_id = '00000000-0000-0000-0000-0000000ab002' and p.pledge_type = 'member'), 'code-of-conduct',
-  'and it is a signature record of the kind "code-of-conduct"');
-select isnt((select s.verification_code from membership.pledges p
-  join governance.form_submissions s on s.id = p.submission_id
-  where p.user_id = '00000000-0000-0000-0000-0000000ab002' and p.pledge_type = 'member'), null,
-  'with its check');
-select is((select count(*)::int from governance.form_types where in_register), 17,
-  'The register holds the seventeen kinds people sign');
+-- The Code of Conduct is not signed: it is accepted by the sign-up line,
+-- logged on the account.
+select is((select filled from governance.form_types where key = 'code-of-conduct'), 'removed',
+  'The Code of Conduct is no signed kind');
+select is((select count(*)::int from membership.pledges where user_id = '00000000-0000-0000-0000-0000000ab002'), 0,
+  'and no pledge is asked of a member');
+select ok(not exists (select 1 from pg_trigger where tgname = 'code_of_conduct_record'),
+  'nor is a record made of one');
+select is((select array_agg(key order by key) from governance.form_types where in_register),
+  array['company-agreement', 'confidentiality-agreement', 'conflict-of-interest-declaration', 'handover',
+    'media-release', 'parent-consent', 'partnership-memorandum', 'publication-agreement',
+    'qalam-mentor-agreement', 'qalam-parent-consent', 'qalam-publishing-consent', 'role-agreement',
+    'trip-consent'],
+  'The register holds the thirteen kinds people sign');
 
 -- Someone who has held a role for a year is asked too, on Today, and
 -- nothing is recorded for them until they sign.

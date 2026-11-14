@@ -9,29 +9,18 @@ import {
 } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { journal, localized, sanitizeRichText, unwrap } from "@/lib/data";
-import { Link, useRouter } from "@/lib/diwan/navigation";
+import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermissionAnywhere, type Permission } from "@/lib/rbac";
-import { OnTheSite } from "../../site-links";
-import { EmptyLine, SectionSpinner } from "../../states";
+import { SectionSpinner } from "../../states";
 import { type SectionTab, SectionTabs } from "../admin-shell";
-import {
-  AdminHeading,
-  BilingualField,
-  type Column,
-  DataTable,
-  ErrorLine,
-  Field,
-  SaveButton,
-} from "../kit";
-import { MemberPicker } from "../member-picker";
+import { AdminHeading, type Column, DataTable, ErrorLine, Field } from "../kit";
 import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
-import { useBylineFor } from "./byline";
 import { GameChecks } from "./game-checks";
 import { FrontRank } from "./workflow";
 
@@ -617,161 +606,6 @@ const FrontPage = () => {
   );
 };
 
-// ── Contributors ────────────────────────────────────────────────────────────
-
-/**
- * Bylines (decisions.md): a contributor is a member, chosen from the
- * register, under their own name (which follows their profile) or a pen
- * name. Only the bio is written here.
- */
-const Contributors = () => {
-  const t = useTranslations("diwan.admin.journal.contributor");
-  const tw = useTranslations("diwan.admin.qirtas");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const contributors = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("journal")
-          .from("contributors")
-          .select("id, slug, name_en, name_ar, bio_en, bio_ar, is_pen_name")
-          .order("name_en")
-      ) ?? [],
-    queryKey: [...key, "contributors"],
-  });
-  const refresh = () => queryClient.invalidateQueries({ queryKey: key });
-  const byline = useBylineFor();
-  return (
-    <div className="grid gap-6">
-      <h3 className="type-subheading">{t("title")}</h3>
-      <ul className="grid gap-2">
-        {contributors.data?.map((c) => (
-          <li className="flex flex-wrap items-center gap-3" key={c.id}>
-            <Link
-              className="font-medium hover:underline"
-              href={`/qirtas/contributors/${c.slug ?? c.id}`}
-            >
-              {localized(c, "name", locale)}
-            </Link>
-            {c.is_pen_name ? (
-              <span className="type-caption">{tw("penName")}</span>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-      <MemberPicker
-        label={t("new")}
-        onChange={(person) => {
-          if (person) {
-            byline.mutate({ person }, { onSuccess: refresh });
-          }
-        }}
-        value={null}
-      />
-      <ErrorLine error={byline.error} />
-    </div>
-  );
-};
-
-/**
- * A contributor's page in the Diwan (/qirtas/contributors/<slug>): only
- * the bio is written here; the name follows the member's profile or is
- * their pen name. Links to their public author page.
- */
-export const ContributorPage = ({ slug }: { readonly slug: string }) => {
-  const t = useTranslations("diwan.admin.journal.contributor");
-  const locale = useLocale() as Locale;
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const back = "/qirtas";
-  const contributor = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("journal")
-          .from("contributors")
-          .select("id, slug, name_en, name_ar, bio_en, bio_ar")
-          .eq(UUID_LIKE.test(slug) ? "id" : "slug", slug)
-          .maybeSingle()
-      ),
-    queryKey: [...key, "contributor", slug],
-  });
-  const [bio, setBio] = useState({ ar: "", en: "" });
-  useEffect(() => {
-    if (contributor.data) {
-      setBio({
-        ar: contributor.data.bio_ar ?? "",
-        en: contributor.data.bio_en ?? "",
-      });
-    }
-  }, [contributor.data]);
-  const save = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("journal")
-          .from("contributors")
-          .update({ bio_ar: bio.ar || null, bio_en: bio.en || null })
-          .eq("id", contributor.data?.id ?? "")
-      ),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
-      router.push(back);
-    },
-  });
-  if (contributor.isPending) {
-    return <SectionSpinner />;
-  }
-  if (!contributor.data) {
-    return (
-      <EmptyLine action={{ href: back, label: t("back") }}>
-        {t("missing")}
-      </EmptyLine>
-    );
-  }
-  const row = contributor.data;
-  return (
-    <div className="grid max-w-3xl gap-8">
-      <AdminHeading
-        actions={
-          <>
-            <Link className="link" href={back}>
-              {t("back")}
-            </Link>
-            {row.slug ? (
-              <OnTheSite href={`/qirtas/authors/${row.slug}`} />
-            ) : null}
-          </>
-        }
-        title={localized(row, "name", locale)}
-      />
-      <form
-        className="grid gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          save.mutate();
-        }}
-      >
-        <BilingualField
-          label={t("bio")}
-          maxLength={1000}
-          multiline
-          onChange={setBio}
-          rows={4}
-          value={bio}
-        />
-        <SaveButton pending={save.isPending} />
-        <ErrorLine error={save.error} />
-      </form>
-    </div>
-  );
-};
-
-const UUID_LIKE = /^[0-9a-f-]{36}$/iu;
-
 const puzzleEditorKeys = [
   "journal.approve",
   "journal.publish",
@@ -864,7 +698,6 @@ export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
       {desk === undefined && reads ? <PipelineAdmin embedded /> : null}
       {desk === "games" && puzzles ? <GameChecks /> : null}
       {desk === undefined && has("journal.frontpage") ? <FrontPage /> : null}
-      {desk === undefined && writes ? <Contributors /> : null}
       {desk === undefined && has("journal.manage") ? <QirtasNeeds /> : null}
     </div>
   );

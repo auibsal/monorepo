@@ -191,17 +191,6 @@ export const cancelAudition = async (client: Client, auditionId: string) =>
       .rpc("cancel_audition", { audition_id: auditionId })
   );
 
-export const setCreditVisibility = async (
-  client: Client,
-  creditId: string,
-  visible: boolean
-) =>
-  unwrap(
-    await client
-      .schema("programmes")
-      .rpc("set_credit_visibility", { credit_id: creditId, visible })
-  );
-
 /** The Company's public productions, the newest first (rights cleared). */
 export const publicProductions = async (client: Client) =>
   unwrap(

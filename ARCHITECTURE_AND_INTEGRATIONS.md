@@ -149,7 +149,7 @@ commit whose subject carries the skip marker builds nothing either
 Environment variables are listed in `apps/web/.env.example`. The server-only
 ones (`SUPABASE_SECRET_KEY`, `RESEND_TOKEN`, `CRON_SECRET`,
 `DATABASE_WEBHOOK_SECRET`, `REVALIDATE_SECRET`, `NOTION_TOKEN`,
-`VAPID_PRIVATE_KEY`, `TELEGRAM_*`) are marked sensitive in Vercel; CI greps
+`TELEGRAM_*`) are marked sensitive in Vercel; CI greps
 the client bundle for their names.
 
 ## Email (Resend)

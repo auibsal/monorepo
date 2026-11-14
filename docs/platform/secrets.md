@@ -20,7 +20,6 @@ fails a build whose client bundle names one.
 | `VERCEL_WEBHOOK_SECRET` | the Vercel webhook’s secret (failed deploys to the Council’s topic) | empty | empty |
 | `NOTION_TOKEN` | the “SAL Platform” connection | empty | empty, or a test workspace |
 | `NOTION_WEBHOOK_SECRET` | the webhook subscription’s verification token | empty | empty (the webhook is off) |
-| `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | one pair | another pair | another pair |
 | `GOOGLE_WALLET_ISSUER_ID`, `GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_WALLET_PRIVATE_KEY` | the issuer’s service account | empty | empty |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`, `TELEGRAM_WEBHOOK_SECRET` | Hudhud | empty | a separate test bot |
 | `TELEGRAM_LOGIN_CLIENT_SECRET` | Hudhud’s OpenID client secret | empty | empty |

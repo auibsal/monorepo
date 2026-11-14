@@ -11,6 +11,7 @@ import { useRouter } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
+import { useIsStaff } from "@/components/account/member-shell";
 import { MySignature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { forms, unwrap } from "@/lib/data";
@@ -20,6 +21,7 @@ import { ErrorLine, Field, SelectInput } from "../admin/kit";
 import { useHumanCheck } from "../auth/human-check";
 import { EmptyLine } from "../states";
 import { FormFieldInput, type FormLabels, useFormLabels } from "./field";
+import { useFormTypes } from "./forms";
 
 type Data = forms.FormData;
 type FormField = forms.FormField;
@@ -230,14 +232,22 @@ const SignerFields = ({
   );
 };
 
-/** What still needs doing before a form can be signed. */
+/** What still needs doing before a form can be signed (or sent). */
 const signingProblems = (
   definition: forms.FormDefinition,
   data: Data,
-  sign: { agreed: boolean; anonymous: boolean; signature: string }
+  sign: {
+    agreed: boolean;
+    anonymous: boolean;
+    signature: string;
+    signed: boolean;
+  }
 ) => {
   const found = forms.formProblems(definition, data);
-  // A sealed concern is signed too; the name is kept apart from the panel.
+  // A submission (a pitch, a concern, a motion) is sent, not signed.
+  if (!sign.signed) {
+    return found;
+  }
   if (sign.signature.trim().length < 2) {
     found.push("signature");
   }
@@ -430,6 +440,48 @@ const LinkSubject = ({
   ) : null;
 };
 
+/**
+ * An agreement's summary (decisions.md, Documents and forms): three lines
+ * on what the signer agrees to, above the full text. Until it is written,
+ * staff see "Summary to come"; everyone else sees nothing.
+ */
+const AgreementSummary = ({ formKey }: { readonly formKey: forms.FormKey }) => {
+  const t = useTranslations("diwan.forms");
+  const locale = useLocale();
+  const types = useFormTypes();
+  const staff = useIsStaff();
+  const type = (types.data ?? []).find((row) => row.key === formKey);
+  const summary = (locale === "ar" ? type?.summary_ar : type?.summary_en)
+    ?.split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (summary && summary.length > 0) {
+    return (
+      <section
+        aria-label={t("summary")}
+        className="border-line grid gap-1 border-y py-3"
+      >
+        {summary.map((line) => (
+          <p className="type-body" key={line}>
+            {line}
+          </p>
+        ))}
+      </section>
+    );
+  }
+  return types.isSuccess && staff ? (
+    <p className="type-caption text-text-secondary">{t("summaryToCome")}</p>
+  ) : null;
+};
+
+/** What the page says once sent. */
+const sentLine = (anonymous: boolean, signed: boolean) => {
+  if (anonymous) {
+    return "sentAnonymously" as const;
+  }
+  return signed ? ("signed" as const) : ("sent" as const);
+};
+
 const FormEditor = ({
   eventSlug,
   formKey,
@@ -474,6 +526,9 @@ const FormEditor = ({
   const throughApi = !user;
   const myName = me.data ?? "";
   const signature = user ? myName : (signer ?? "");
+  // Only the 13 kinds in the register are signed (decisions.md, Documents
+  // and forms); the rest of this page sends a submission with a SUB number.
+  const signed = forms.isSigned(formKey);
 
   const sign = useMutation({
     mutationFn: () =>
@@ -508,7 +563,7 @@ const FormEditor = ({
   if (sent) {
     return (
       <EmptyLine action={{ href: "/", label: t("home") }}>
-        {anonymous ? t("sentAnonymously") : t("signed")}
+        {t(sentLine(anonymous, signed))}
       </EmptyLine>
     );
   }
@@ -520,12 +575,36 @@ const FormEditor = ({
     );
   }
 
+  // Unsigned kinds omit the signature; signed in, the register's name.
+  const signatureProps = () => {
+    if (!signed) {
+      return { hint: "", label: t("signature"), omit: true as const };
+    }
+    if (user) {
+      return {
+        block: <MySignature label={t("signAsLabel")} />,
+        hint: t("signAsHint"),
+        label: t("signAsLabel"),
+        signAs: myName,
+      };
+    }
+    return {
+      hint: t("signatureHint"),
+      invalid: problems.includes("signature"),
+      label: t("signature"),
+      omit: false as const,
+      onChange: setSigner,
+      value: signature,
+    };
+  };
+
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     const found = signingProblems(definition, data, {
       agreed,
       anonymous,
       signature,
+      signed,
     });
     setProblems(found);
     if (found.length === 0) {
@@ -548,28 +627,18 @@ const FormEditor = ({
         onSubmit={onSubmit}
         pending={sign.isPending || (throughApi && !human.ready)}
         purpose={labels.purpose()}
-        signature={
-          user
-            ? {
-                block: <MySignature label={t("signAsLabel")} />,
-                hint: t("signAsHint"),
-                label: t("signAsLabel"),
-                signAs: myName,
-              }
-            : {
-                hint: t("signatureHint"),
-                invalid: problems.includes("signature"),
-                label: t("signature"),
-                omit: false,
-                onChange: setSigner,
-                value: signature,
-              }
-        }
-        submit={
-          user && myName ? t("signAs", { name: myName }) : t("signAndSend")
-        }
+        signature={signatureProps()}
+        submit={(() => {
+          if (!signed) {
+            return t("send");
+          }
+          return user && myName
+            ? t("signAs", { name: myName })
+            : t("signAndSend");
+        })()}
         title={labels.title()}
       >
+        {signed ? <AgreementSummary formKey={formKey} /> : null}
         <LinkSubject formKey={formKey} link={link} />
         <RoleLine roleId={roleId} />
         {event.data ? (
@@ -611,7 +680,7 @@ const FormEditor = ({
           agreed={checked}
           allowAnonymous={Boolean(definition.anonymous)}
           anonymous={anonymous}
-          consented={consented}
+          consented={consented || !signed}
           contact={contact}
           human={throughApi ? human.element : null}
           onAgreed={setAgreed}

@@ -42,7 +42,10 @@ export const emailSignatureText = (
 interface EmailSignatureProps {
   readonly className?: string;
   readonly lang?: "ar" | "en";
-  /** The sender's preferred name, as the site shows it. */
+  /**
+   * The sender's full official name, as the site holds it: a signature
+   * block never uses a short or credited name.
+   */
   readonly name: string;
   /** The seat, as the glossary and the Council page name it. */
   readonly seat: string;

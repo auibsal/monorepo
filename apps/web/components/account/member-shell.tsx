@@ -2,25 +2,14 @@
 
 import { Icon } from "@repo/brand/components/sal/icon";
 import { cn } from "@repo/brand/lib/utils";
-import {
-  Link,
-  usePathname,
-  useRouter,
-} from "@repo/internationalization/navigation";
-import { useQueryClient } from "@tanstack/react-query";
+import { Link, usePathname } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
 import { useVisibleModules } from "@/components/diwan/admin/admin-shell";
 import { useTwoStep } from "@/components/diwan/auth/two-step";
 import { useAuth } from "@/lib/auth/provider";
 import { useMyPartners } from "@/lib/diwan/partners";
-import { disablePush } from "@/lib/diwan/push";
-import {
-  useElectionOpen,
-  useHasRoles,
-  useMemberStatus,
-  useMyMembership,
-} from "@/lib/diwan/queries";
+import { useMemberStatus, useMyMembership } from "@/lib/diwan/queries";
 import { rememberWays, type Ways } from "@/lib/staff";
 
 interface AccountLink {
@@ -31,12 +20,8 @@ interface AccountLink {
     | "today"
     | "events"
     | "work"
-    | "applications"
-    | "saved"
     | "roles"
     | "documents"
-    | "elections"
-    | "card"
     | "settings";
 }
 
@@ -86,18 +71,14 @@ export const useIsStaff = () => useWays().diwan;
 
 /**
  * The account's own pages, in one row under the site's header (decisions.md,
- * The site: "Your account"), shown by class and role: Today · Events · Work
- * · Applications · Saved · Roles and service · Documents · Elections (while
- * one is open) · Card · Settings. Guests have Today, Events, Work,
- * Documents and Settings; a partner's people and anyone with no membership
- * yet, Today and Settings. Get involved is the header's, and the Diwan sits
- * under the header's menu, so neither is repeated here. Profile and what
- * you sent sit under Settings.
+ * The site: "Your account"): Today · Events · Work · Roles · Documents ·
+ * Settings. Today holds the live card and an open election; Roles holds
+ * applications too. Guests have Today, Events, Work, Documents and
+ * Settings; a partner's people and anyone with no membership yet, Today and
+ * Settings. What you sent sits under Settings.
  */
 const useAccountLinks = (): AccountLink[] => {
   const kind = useMyMembership().data?.kind ?? null;
-  const roles = useHasRoles();
-  const election = useElectionOpen();
   const today: AccountLink = {
     // A partner's documents open from Today.
     also: kind === "partner" ? ["/account/documents"] : [],
@@ -120,21 +101,8 @@ const useAccountLinks = (): AccountLink[] => {
       today,
       events,
       work,
-      { href: "/account/applications", key: "applications" },
-      { href: "/account/saved", key: "saved" },
-      ...(roles
-        ? [{ href: "/account/roles", key: "roles" } satisfies AccountLink]
-        : []),
+      { href: "/account/roles", key: "roles" },
       documents,
-      ...(election
-        ? [
-            {
-              href: "/account/elections",
-              key: "elections",
-            } satisfies AccountLink,
-          ]
-        : []),
-      { href: "/account/card", key: "card" },
       settings,
     ];
   }
@@ -143,36 +111,13 @@ const useAccountLinks = (): AccountLink[] => {
     : [today, settings];
 };
 
-/** The account's links and sign-out. */
+/** The account's links (signing out is in the header's account menu). */
 const AccountNav = () => {
   const t = useTranslations("diwan.nav");
-  const ta = useTranslations("auth");
   const pathname = usePathname();
-  const router = useRouter();
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
   const links = useAccountLinks();
 
-  const signOut = async () => {
-    // A shared computer must not show the last member's notices.
-    await disablePush(supabase).catch(() => undefined);
-    await supabase.auth.signOut();
-    rememberWays(null);
-    queryClient.clear();
-    router.replace("/");
-  };
-
   const current = links.find((link) => isCurrent(pathname, link));
-  const extras = (
-    <button
-      className="text-text-secondary hover:text-accent py-3 text-start text-sm font-medium whitespace-nowrap"
-      onClick={signOut}
-      type="button"
-    >
-      {ta("signOut")}
-    </button>
-  );
-
   return (
     <nav
       aria-label={t("account")}
@@ -209,9 +154,8 @@ const AccountNav = () => {
             </li>
           ))}
         </ul>
-        <div className="border-line grid border-t">{extras}</div>
       </details>
-      {/* Wider screens: the links in one row, sign-out at the end. */}
+      {/* Wider screens: the links in one row. */}
       <div className="mx-auto hidden w-full max-w-6xl items-center gap-x-6 px-4 md:flex">
         <ul className="flex min-w-0 gap-x-6 overflow-x-auto">
           {links.map((link) => {
@@ -234,9 +178,6 @@ const AccountNav = () => {
             );
           })}
         </ul>
-        <div className="ms-auto flex shrink-0 items-center gap-x-6">
-          {extras}
-        </div>
       </div>
     </nav>
   );

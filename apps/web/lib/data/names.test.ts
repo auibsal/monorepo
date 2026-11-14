@@ -6,6 +6,7 @@ import {
   nameColumns,
   partsFrom,
   partsUpdate,
+  storedParts,
 } from "./names";
 
 describe("four-part names", () => {
@@ -82,6 +83,34 @@ describe("four-part names", () => {
       first_name_en: "A",
       grandfather_name_en: "C",
       last_name_en: "D",
+    });
+  });
+
+  test("only the parts on record are locked, never the suggested ones", () => {
+    const profile = {
+      father_name_en: null,
+      first_name_en: null,
+      full_name_en: "Tess Tester",
+      grandfather_name_en: "Old",
+      last_name_en: null,
+    };
+    expect(storedParts(profile as never, "en")).toEqual(["grandfather"]);
+    expect(storedParts({ full_name_en: "Tess Tester" } as never, "en")).toEqual(
+      []
+    );
+  });
+
+  test("an update leaves out the parts on record", () => {
+    expect(
+      partsUpdate(
+        { father: "B", first: "A", grandfather: "C", last: "" },
+        "en",
+        ["grandfather"]
+      )
+    ).toEqual({
+      father_name_en: "B",
+      first_name_en: "A",
+      last_name_en: null,
     });
   });
 });

@@ -207,9 +207,8 @@ select is(
 -- Photographed pages show nowhere until whoever runs the Tour transcribes them.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000057a2');
 update programmes.six_words set visibility = 'tour' where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg';
-select is((select count(*)::integer from programmes.six_words_wall() w
-  join programmes.six_words s on s.id = w.id where s.photo_path is not null), 0,
-  'A photographed page the writer put on the wall waits for its words');
+select is((select count(*)::integer from programmes.my_six_words() where text is null), 0,
+  'A photographed page waits for its words before it shows');
 select throws_ok(
   $$ select programmes.transcribe_page((select id from programmes.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg'), 'Six words typed on the Tour today', 'en') $$,
   '42501', null, 'The writer does not type them on the site'
@@ -218,8 +217,8 @@ select pg_temp.logout();
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000057a1', 'tour_lead');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000057a1');
 select programmes.transcribe_page((select id from programmes.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg'), 'Six words typed on the Tour today', 'en');
-select is((select count(*)::integer from programmes.six_words_wall() where text = 'Six words typed on the Tour today'), 1,
-  'Transcribed by whoever runs the Tour, it goes on the wall as chosen');
+select ok((select pages from programmes.six_words_counts()) >= 1,
+  'Transcribed by whoever runs the Tour, it is counted on the Tour''s page');
 
 select * from finish();
 rollback;

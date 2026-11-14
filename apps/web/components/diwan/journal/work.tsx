@@ -1,20 +1,18 @@
 "use client";
 
-import { Button } from "@repo/brand/components/ui/button";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { journal, localized, sanitizeRichText, unwrap } from "@/lib/data";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { Thread } from "../admin/journal/workflow";
 import {
   AdminHeading,
-  BilingualField,
   ConfirmAction,
   ErrorLine,
   Field,
@@ -24,79 +22,6 @@ import { DiwanSection } from "../page";
 import { OnTheSite } from "../site-links";
 import { SectionSpinner } from "../states";
 import { Agreement } from "./pages";
-
-/** The contributor form: how the name is spelled, and the bio. */
-const ContributorForm = ({ contributorId }: { contributorId: string }) => {
-  const t = useTranslations("diwan.qirtas.contributor");
-  const { supabase } = useAuth();
-  const mine = useQuery({
-    queryFn: async () =>
-      unwrap(await supabase.schema("journal").rpc("my_contributors")) ?? [],
-    queryKey: ["journal", "my-contributors"],
-  });
-  const record = mine.data?.find((c) => c.id === contributorId);
-  const [name, setName] = useState({ ar: "", en: "" });
-  const [bio, setBio] = useState({ ar: "", en: "" });
-  useEffect(() => {
-    if (record) {
-      setName({ ar: record.name_ar ?? "", en: record.name_en });
-      setBio({ ar: record.bio_ar ?? "", en: record.bio_en ?? "" });
-    }
-  }, [record]);
-  const save = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase.schema("journal").rpc("update_my_contributor", {
-          bio_ar: bio.ar,
-          bio_en: bio.en,
-          contributor_id: contributorId,
-          name_ar: name.ar,
-          name_en: name.en,
-        })
-      ),
-    onSuccess: () => mine.refetch(),
-  });
-  if (!record) {
-    return null;
-  }
-  return (
-    <DiwanSection id="title" title={t("title")}>
-      <p className="type-caption">
-        {record.is_pen_name ? t("penNameLede") : t("lede")}
-      </p>
-      <BilingualField
-        label={t("name")}
-        maxLength={200}
-        onChange={setName}
-        value={name}
-      />
-      <BilingualField
-        label={t("bio")}
-        maxLength={600}
-        multiline
-        onChange={setBio}
-        rows={3}
-        value={bio}
-      />
-      <p className="type-caption">
-        {t("words", {
-          ar: journal.wordCount(bio.ar),
-          en: journal.wordCount(bio.en),
-        })}
-      </p>
-      <div>
-        <Button
-          disabled={save.isPending || name.en.trim().length < 2}
-          onClick={() => save.mutate()}
-          size="sm"
-        >
-          {t("save")}
-        </Button>
-      </div>
-      <ErrorLine error={save.error} />
-    </DiwanSection>
-  );
-};
 
 /**
  * The author's view of their accepted piece: the text as the editors have
@@ -246,7 +171,6 @@ export const MyPiece = () => {
       </DiwanSection>
 
       <Thread pieceId={piece.id} />
-      <ContributorForm contributorId={piece.contributor_id} />
     </div>
   );
 };

@@ -13,7 +13,7 @@ import { describe, expect, test } from "vitest";
 const event = {
   starts_at: "2026-10-13T15:00:00.000Z",
   title_ar: "يوم الميثاق",
-  title_en: "Charter Day",
+  title_en: "Writing workshop",
   venue_ar: null,
   venue_en: "Main Hall",
 };
@@ -26,7 +26,7 @@ describe("platform email", () => {
     expect(built.blocks.map((b) => b.lang)).toEqual(["ar"]);
     const html = await render(Notice(built));
     expect(html).toContain("حُجز مكانك");
-    expect(html).not.toContain("booked: Charter Day");
+    expect(html).not.toContain("booked: Writing workshop");
     expect(html).toContain("/brand/sal-lockup-horizontal-ar-email.png");
     expect(html).toContain(`href="${APP}/ar/account/events"`);
     const english = await render(Notice(rsvpConfirmed("en", event, APP)));

@@ -12,6 +12,7 @@ import { hasPermission } from "@/lib/rbac";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
 import { SectionTabs } from "../admin-shell";
+import { CreditedNames } from "../credited-names";
 import {
   AdminHeading,
   BilingualField,
@@ -175,7 +176,7 @@ const NewProduction = ({ onDone }: { onDone: (id: string) => void }) => {
 /**
  * Productions (Diwan admin): staged readings and productions from
  * proposal to the Program Report (Form audition-score-sheet, section B). The President and
- * Vice President propose them; a Production Lead runs one.
+ * Vice President propose them; the Artistic Director runs them.
  */
 export const ProductionsAdmin = () => {
   const t = useTranslations("diwan.admin.productions");
@@ -239,6 +240,7 @@ export const ProductionsAdmin = () => {
         rowKey={(p) => p.id}
         rows={list.data ?? []}
       />
+      {canPropose ? <CreditedNames /> : null}
     </div>
   );
 };

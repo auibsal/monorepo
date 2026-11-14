@@ -1,13 +1,7 @@
 import { env } from "@/env";
 import { corsHeaders, preflight } from "@/lib/api/cors";
 import { createNotion } from "@/lib/api/notion/client";
-import {
-  accessLists,
-  catchUpSentAt,
-  homeUrl,
-  inviteLink,
-  readSyncState,
-} from "@/lib/api/notion/run";
+import { accessLists, homeUrl, readSyncState } from "@/lib/api/notion/run";
 import { hasPermission } from "@/lib/api/permissions";
 import { respond } from "@/lib/api/problem";
 import { authenticateRequest } from "@/lib/auth/verify";
@@ -17,7 +11,8 @@ export const OPTIONS = preflight;
 
 /**
  * The Notion connection for Administration → Settings: whether it is set
- * up, the last sync, and who to invite to or remove from the workspace.
+ * up, the last sync, and who to remove from the workspace (who to invite
+ * is core.notion_to_invite).
  * Settings managers and role assigners only.
  */
 export const POST = async (request: Request) => {
@@ -36,24 +31,16 @@ export const POST = async (request: Request) => {
     return json({ error: "forbidden" }, 403);
   }
 
-  const [state, home, invite, sentAt] = await Promise.all([
-    readSyncState(),
-    homeUrl(),
-    inviteLink(),
-    catchUpSentAt(),
-  ]);
-  const base = { catchUpSentAt: sentAt, home, inviteLink: invite, state };
+  const [state, home] = await Promise.all([readSyncState(), homeUrl()]);
+  const base = { home, state };
   if (!env.NOTION_TOKEN) {
     return json({ ...base, configured: false });
   }
-  // Once the catch-up has gone out, the lists are no longer shown: the
-  // invitation comes with each role from then on.
-  if (sentAt) {
-    return json({ ...base, configured: true });
-  }
+  // Who is in the workspace without a role that opens it, for the
+  // Secretary to remove (decisions.md, Notion: by named invitation).
   try {
-    const lists = await accessLists(createNotion(env.NOTION_TOKEN));
-    return json({ ...base, configured: true, ...lists });
+    const { remove } = await accessLists(createNotion(env.NOTION_TOKEN));
+    return json({ ...base, configured: true, remove });
   } catch (error) {
     return json({
       ...base,

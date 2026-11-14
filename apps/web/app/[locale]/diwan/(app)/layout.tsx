@@ -5,26 +5,23 @@ import {
   RequireMember,
   RequireStaff,
 } from "@/components/diwan/gates";
-import { IdleSignOut } from "@/components/diwan/idle-sign-out";
 
 interface AppLayoutProps {
   readonly children: ReactNode;
 }
 
 /**
- * The Diwan: officers only (anyone holding a role), signed in, verified,
- * with current pledges. The shell paints at once; the gates wait for the
- * session, the membership and the roles inside it. Thirty minutes unused
- * signs the device out (decisions §11).
+ * The Diwan: officers only (anyone holding a role), signed in. The shell
+ * paints at once; the gates wait for the session, the membership and the
+ * roles inside it. A device stays signed in for 30 days; a role that needs
+ * two-step sign-in asks for the second step again after 12 hours
+ * (decisions.md, Members; RequireStaff).
  */
 const AppLayout = ({ children }: AppLayoutProps) => (
   <AppShell>
     <RequireAuth>
       <RequireMember>
-        <RequireStaff>
-          <IdleSignOut />
-          {children}
-        </RequireStaff>
+        <RequireStaff>{children}</RequireStaff>
       </RequireMember>
     </RequireAuth>
   </AppShell>

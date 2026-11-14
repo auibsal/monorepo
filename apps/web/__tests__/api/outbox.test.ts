@@ -2,7 +2,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 const sendEmail = vi.fn();
-const pushToUser = vi.fn();
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/env", () => ({
@@ -12,8 +11,6 @@ vi.mock("@repo/email", () => ({
   EmailQuotaError: class extends Error {},
   sendEmail,
 }));
-
-vi.mock("@/lib/api/push", () => ({ pushToUser }));
 
 const { EmailQuotaError } = await import("@repo/email");
 const { drain, isDeferred, processRow } = await import("@/lib/api/outbox");
@@ -137,7 +134,6 @@ const submissionRow = (id: number): Row => ({
 describe("outbox and the email sending limit", () => {
   beforeEach(() => {
     sendEmail.mockReset();
-    pushToUser.mockReset();
   });
 
   test("each email carries an idempotency key for its row", async () => {
@@ -167,26 +163,6 @@ describe("outbox and the email sending limit", () => {
     expect(await processRow(fakeAdmin(rows), 3)).toBe(false);
     expect(rows.at(0)?.attempts).toBe(1);
     expect(rows.at(0)?.last_error).toBe("invalid address");
-  });
-
-  test("members also get the notice on their devices, after the email", async () => {
-    sendEmail.mockResolvedValue({ id: "e1" });
-    pushToUser.mockResolvedValue(1);
-    await processRow(fakeAdmin([submissionRow(8)]), 8);
-    expect(pushToUser).toHaveBeenCalledTimes(1);
-    const [, userId, notice] = pushToUser.mock.calls[0] ?? [];
-    expect(userId).toBe("u1");
-    expect(notice).toMatchObject({ lang: "en", tag: "outbox-8" });
-    expect(notice.title).toContain("The paper and the pen");
-    expect(notice.url.startsWith("https://auibsal.org/")).toBe(true);
-    expect(notice.url).toContain("/qirtas/submit");
-    expect(notice.url).not.toContain("/en/");
-  });
-
-  test("no push goes out when the email fails, so a retry sends it once", async () => {
-    sendEmail.mockRejectedValue(new Error("invalid address"));
-    await processRow(fakeAdmin([submissionRow(9)]), 9);
-    expect(pushToUser).not.toHaveBeenCalled();
   });
 });
 
