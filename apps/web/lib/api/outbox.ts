@@ -10,6 +10,7 @@ import {
   type ApplicationStep,
   accountDeleted,
   accountDeletionScheduled,
+  addressCode,
   agreementReminder,
   announcement,
   applicationDecided,
@@ -41,6 +42,8 @@ import {
   invitationBroadcast,
   invitationContact,
   membershipRemoved,
+  mergeDecided,
+  mergeRequested,
   newDevice,
   newsletterConfirm,
   parentAccount,
@@ -62,6 +65,7 @@ import {
   rsvpConfirmed,
   serviceLetterWritten,
   shiftReminder,
+  signInMoved,
   staffDigest,
   submissionInReading,
   submissionReceived,
@@ -1100,6 +1104,56 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
+  // The sign-in address moved (an AUIB address added, leaving AUIB, a
+  // merge): to the old address and the new one.
+  "account.sign_in_moved": async (admin, payload) => {
+    const person = await recipient(admin, payload.user_id);
+    const reasons = [
+      "auib_address",
+      "left_auib",
+      "membership",
+      "merge",
+    ] as const;
+    const reason = reasons.find((r) => r === payload.reason) ?? "auib_address";
+    const to = typeof payload.to === "string" ? payload.to : "";
+    const from = typeof payload.from === "string" ? payload.from : "";
+    if (!(person && to)) {
+      return;
+    }
+    const built = signInMoved(person.lang, reason, to, webUrl());
+    await send({ email: to, lang: person.lang }, built);
+    if (from && from !== to) {
+      await send({ email: from, lang: person.lang }, built);
+    }
+  },
+  // A code to an address the person says is theirs (a new AUIB address,
+  // or another account's to merge): to that address only.
+  "address.code": async (admin, payload) => {
+    const purpose = payload.purpose === "merge" ? "merge" : "auib_address";
+    const [{ data: pending }, { data: profile }] = await Promise.all([
+      admin
+        .schema("core")
+        .from("address_codes")
+        .select("email, code")
+        .eq("user_id", String(payload.user_id))
+        .eq("purpose", purpose)
+        .maybeSingle(),
+      admin
+        .schema("core")
+        .from("profiles")
+        .select("locale")
+        .eq("id", String(payload.user_id))
+        .maybeSingle(),
+    ]);
+    if (!pending) {
+      return;
+    }
+    const lang: Lang = profile?.locale === "ar" ? "ar" : "en";
+    await send(
+      { email: pending.email, lang },
+      addressCode(lang, purpose, pending.code)
+    );
+  },
   // The President's notice (decisions.md, Channels and email): one Broadcast per language to
   // the Sunday Paper's readers, each in their own language.
   "announcement.broadcast": async (admin, payload) => {
@@ -1762,6 +1816,26 @@ const handlers: Record<string, Handler> = {
     if (to) {
       await send(to, welcome(to.lang, appUrl()));
     }
+  },
+  // The Director's answer, to the person (the account that stayed).
+  "merge.decided": async (admin, payload) => {
+    const person = await recipient(admin, payload.user_id);
+    if (!person) {
+      return;
+    }
+    await send(
+      person,
+      mergeDecided(person.lang, payload.approved === true, webUrl())
+    );
+  },
+  // Someone proved two accounts are theirs: to the Director of Membership.
+  "merge.requested": async (admin) => {
+    const directors = await holders(admin, "members.manage");
+    await Promise.all(
+      directors.map((d) =>
+        send(d, mergeRequested(d.lang, webUrl()), { category: "officer" })
+      )
+    );
   },
   "newsletter.confirm": async (admin, payload) => {
     const row = await subscriber(admin, payload.subscriber_id);

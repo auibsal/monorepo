@@ -58,8 +58,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   12 months before the voter list's record date: check-ins are the only
   record, `membership.activity_records`)
   and hold office. Staff is a member holding a role (`private.is_staff`).
-  Students join themselves with an AUIB address and confirm they are
-  students; Associate and Honorary Members (Honorary only after the
+  Students join themselves with an AUIB address; the address gives the
+  class (`private.is_student_address`: a number, or a name and a number,
+  is a student's, a Member; any other AUIB address is faculty or staff,
+  an Associate Member); Associate and Honorary Members (Honorary only after the
   Council's resolution, `honorary-membership-invitation`) join by the Director of Membership's
   invitation. One invitation system (`governance.partner_invitations`,
   decisions §10): every invitation is single-use, to a named address,
@@ -68,11 +70,38 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (guests); no shareable links and no invitation ever grants a role.
   Sign-up takes an AUIB address only, unless the account comes from an
   invitation, applies to partner or signs up as a guest
-  (`private.sign_up_allowed`). A student who leaves AUIB is recorded by
-  Membership on their Diwan page (`membership.record_departure`): a
-  graduate becomes an Associate Member; someone who left without
-  graduating becomes a guest, same number and a Guest card, with no vote
-  or role, and Hudhud's week in the members' group starts. Partners'
+  (`private.sign_up_allowed`). A student who leaves AUIB says so in
+  Settings (`core.report_leaving`) or is recorded by Membership on their
+  Diwan page (`membership.record_departure`), whichever comes first:
+  graduated or not, they become an Associate Member with the same number,
+  no vote and no role (`membership.memberships.left_auib_at`). A
+  confirmed personal email becomes the sign-in at once; until there is
+  one, Today asks for it (`private.sign_in_after_leaving`).
+- **Addresses and classes** (decisions.md, Members). The sign-in address
+  changes only through `private.move_sign_in`, which tells the old and
+  the new address. Someone who signed up with another address, or a
+  guest who comes to AUIB, adds the AUIB address in Settings with a
+  six-digit code sent to it (`core.request_auib_address`,
+  `core.confirm_auib_address`; `core.address_codes`, one hour, five
+  tries), or the Director of Membership adds it on their Register page
+  (`membership.set_auib_address`): the AUIB address becomes the sign-in,
+  the old one the confirmed personal email, and the class follows the
+  AUIB address (`private.class_from_sign_in`; a returning student is a
+  Member again). Two accounts of one person become one: from one, the
+  person proves the other's address with a code (`core.request_merge`,
+  `core.prove_merge`), and the Director approves on the Register
+  (`membership.decide_merge`). The account with the older number stays
+  (`private.older_account`); every record of the other that points at
+  the person moves to it, a duplicate (one card, one RSVP) is dropped,
+  and the other account is deleted, its address kept as the sign-in (an
+  AUIB address) or the personal email. Sign-ups never confirmed are
+  deleted after seven days (`private.purge_unconfirmed_sign_ups`), and
+  "Wrong address?" on the inbox screen deletes the one just made at once
+  (`/api/sign-up/wrong-address`, with a key only that browser holds). At
+  sign-up an AUIB student number of an unusual shape gets a warning, never
+  a refusal (`unusualStudentNumber` in `lib/auth/email.ts`: 7 digits
+  beginning with the year of entry, or the English Language Academy's 8
+  beginning with 0). Partners'
   people and advisors from partner organizations hold guest accounts;
   faculty and alumni advisors are Associate Members invited by the
   Director of Membership. `/welcome` asks one question per screen

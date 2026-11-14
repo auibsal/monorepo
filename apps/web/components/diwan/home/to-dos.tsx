@@ -1,11 +1,17 @@
 "use client";
 
 import { Button } from "@repo/brand/components/ui/button";
+import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
 import { names, unwrap } from "@/lib/data";
-import { queryKeys, useEsign, useProfile } from "@/lib/diwan/queries";
+import {
+  queryKeys,
+  useEsign,
+  useMyAddresses,
+  useProfile,
+} from "@/lib/diwan/queries";
 import { ErrorLine } from "../admin/kit";
 import { Section } from "./section";
 
@@ -117,6 +123,30 @@ export const NameToDo = () => {
   return (
     <Section id="official-name" title={t("title")}>
       <p className="type-body max-w-[60ch]">{t("body")}</p>
+    </Section>
+  );
+};
+
+/**
+ * Someone who left AUIB with no confirmed personal email yet (decisions.md,
+ * Members): the AUIB address will stop working, so Today asks until one is
+ * added; once confirmed it becomes the sign-in.
+ */
+export const PersonalEmailToDo = () => {
+  const t = useTranslations("diwan.home.toDos.personalEmail");
+  const { data } = useMyAddresses();
+  if (!(data?.left_auib_at && data.sign_in_auib) || data.personal_verified) {
+    return null;
+  }
+  return (
+    <Section id="personal-email" title={t("title")}>
+      <p className="type-body max-w-[60ch]">{t("body")}</p>
+      <Link
+        className="link justify-self-start"
+        href="/account/settings#account"
+      >
+        {t("action")}
+      </Link>
     </Section>
   );
 };

@@ -138,3 +138,81 @@ export const IncompleteNames = () => {
     </DiwanSection>
   );
 };
+
+/**
+ * Two accounts, one person (decisions.md, Members): someone proved both
+ * addresses with a code; the Director of Membership approves, and the
+ * account with the older number stays, with the other's records and
+ * address. Declined, both stay as they are.
+ */
+export const MergeRequests = () => {
+  const t = useTranslations("diwan.admin.members.merges");
+  const { supabase } = useAuth();
+  const requests = useQuery({
+    queryFn: async () =>
+      unwrap(await supabase.schema("membership").rpc("merge_requests")) ?? [],
+    queryKey: ["admin", "merge-requests"],
+  });
+  const decide = useMutation({
+    mutationFn: async ({ approve, id }: { approve: boolean; id: string }) =>
+      unwrap(
+        await supabase
+          .schema("membership")
+          .rpc("decide_merge", { approve, request: id })
+      ),
+    onSuccess: () => requests.refetch(),
+  });
+  const rows = requests.data ?? [];
+  const side = (email: string, name: string | null, number: number | null) =>
+    [
+      name,
+      email,
+      number ? t("number", { number: String(number).padStart(5, "0") }) : null,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+  return (
+    <DiwanSection description={t("lede")} id="merges" title={t("title")}>
+      {rows.length === 0 ? (
+        <p className="type-caption">{t("none")}</p>
+      ) : (
+        <RowList>
+          {rows.map((row) => (
+            <li className="grid gap-2" key={row.id}>
+              <p className="type-body" dir="auto">
+                {side(row.user_email, row.user_name, row.user_number)}
+              </p>
+              <p className="type-body" dir="auto">
+                {side(row.other_email, row.other_name, row.other_number)}
+              </p>
+              <div className="flex flex-wrap items-center gap-4">
+                <button
+                  className="link"
+                  disabled={decide.isPending}
+                  onClick={() => decide.mutate({ approve: false, id: row.id })}
+                  type="button"
+                >
+                  {t("decline")}
+                </button>
+                <Button
+                  disabled={decide.isPending}
+                  onClick={() => decide.mutate({ approve: true, id: row.id })}
+                  size="sm"
+                  variant="outline"
+                >
+                  {t("approve")}
+                </Button>
+              </div>
+            </li>
+          ))}
+        </RowList>
+      )}
+      {decide.isSuccess ? (
+        <p className="type-body" role="status">
+          {decide.variables?.approve ? t("merged") : t("declined")}
+        </p>
+      ) : null}
+      <ErrorLine error={decide.error} />
+    </DiwanSection>
+  );
+};

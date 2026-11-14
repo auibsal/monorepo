@@ -17,7 +17,12 @@ import { OtherHome } from "./other-home";
 import { MyProgrammes } from "./programmes";
 import { Renewal } from "./renewal";
 import { RoleChecklist, UnsignedRoleAgreements } from "./role-checklist";
-import { ArabicFormToDo, EsignToDo, NameToDo } from "./to-dos";
+import {
+  ArabicFormToDo,
+  EsignToDo,
+  NameToDo,
+  PersonalEmailToDo,
+} from "./to-dos";
 import { VotingEligibility } from "./voting";
 
 type Greeting = "morning" | "afternoon" | "evening" | "late" | "friday";
@@ -96,6 +101,7 @@ export const MemberHome = () => {
       {/* The to-dos: each shows only while there is something to do. */}
       <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
         <EsignToDo />
+        <PersonalEmailToDo />
         <NameToDo />
         <ArabicFormToDo />
         {member ? (

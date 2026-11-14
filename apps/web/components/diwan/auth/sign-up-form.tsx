@@ -5,6 +5,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
+import { apiPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -13,7 +14,9 @@ import { PasswordInput } from "@/components/fields/password-input";
 import {
   AUIB_DOMAIN,
   MIN_PASSWORD_LENGTH,
+  newSignUpKey,
   signUpWithEmail,
+  unusualStudentNumber,
 } from "@/lib/auth/email";
 import { useAuth } from "@/lib/auth/provider";
 import { names as nameParts } from "@/lib/data";
@@ -85,13 +88,90 @@ const minorDetails = (adult: Adult, minorAllowed: boolean, minor: MinorForm) =>
       }
     : undefined;
 
-export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
+/**
+ * Where a partner's application continues (decisions.md, Partners): an
+ * account made on the way there applies for the organization.
+ */
+export const PARTNER_APPLY_PATH = "/partners/apply";
+
+/**
+ * Where the sign-up returns to, and what it brings: signing up on the way
+ * to the memorandum makes a partner's account, never a guest's.
+ */
+const useSignUpContext = ({
+  next: given,
+  outside: givenOutside,
+}: SignUpFormProps) => {
+  const asked = safeNextPath(useSearchParams().get("next"));
+  const next = given ?? asked;
+  const partner = !givenOutside && next === PARTNER_APPLY_PATH;
+  const outside: OutsideSignUp | undefined =
+    givenOutside ??
+    (partner ? { reason: { partnerApplicant: true } } : undefined);
+  return { next, outside, partner };
+};
+
+/**
+ * "Wrong address?" on the inbox screen: the sign-up just made is deleted
+ * (it was never confirmed), and the form comes back with everything typed
+ * so the address can be put right; no second account is left behind.
+ */
+const WrongAddress = ({
+  email,
+  onDropped,
+  signUpKey,
+}: {
+  readonly email: string;
+  readonly onDropped: () => void;
+  readonly signUpKey: string;
+}) => {
+  const t = useTranslations("auth.signUp");
+  const [pending, setPending] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const fix = async () => {
+    setPending(true);
+    setFailed(false);
+    const response = await fetch(apiPath("/sign-up/wrong-address"), {
+      body: JSON.stringify({ email, key: signUpKey }),
+      headers: { "content-type": "application/json" },
+      method: "POST",
+    }).catch(() => null);
+    const body = (await response?.json().catch(() => null)) as {
+      dropped?: boolean;
+    } | null;
+    setPending(false);
+    if (body?.dropped) {
+      onDropped();
+    } else {
+      setFailed(true);
+    }
+  };
+  return (
+    <div className="grid gap-2">
+      <button
+        className="link justify-self-start"
+        disabled={pending}
+        onClick={fix}
+        type="button"
+      >
+        {t("wrongAddress")}
+      </button>
+      {failed ? (
+        <p className="type-caption" role="alert">
+          {t("wrongAddressFailed")}
+        </p>
+      ) : null}
+    </div>
+  );
+};
+
+export const SignUpForm = (props: SignUpFormProps) => {
   const t = useTranslations("auth");
+  const tp = useTranslations("diwan.partnerJoin");
   const errorText = useAuthError();
   const { supabase } = useAuth();
   const locale = useLocale();
-  const asked = safeNextPath(useSearchParams().get("next"));
-  const next = given ?? asked;
+  const { next, outside, partner } = useSignUpContext(props);
   const id = useId();
   const [values, setValues] = useState({
     email: outside?.email ?? "",
@@ -112,7 +192,6 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   // An AUIB address says which it is: a student is a Member; faculty,
   // staff or alumni are Associates. Any other address is a Guest, and
   // "I studied at AUIB" asks for Associate membership.
-  const [klass, setKlass] = useState<"" | "student" | "staff">("");
   const [studied, setStudied] = useState(false);
   const [titleForm, setTitleForm] = useState<"" | "masculine" | "feminine">("");
   // Under 18: the month and year of birth (deleted at 18) and a parent's
@@ -128,6 +207,9 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [sentTo, setSentTo] = useState<string>();
+  // "Wrong address?" (decisions.md, Members): only this browser holds the
+  // key that deletes the sign-up it just made.
+  const [signUpKey] = useState(newSignUpKey);
   useScreenTop(sentTo);
   const human = useHumanCheck("sign-up");
 
@@ -147,7 +229,6 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
     const result = await signUpWithEmail(supabase, {
       adult: adult === "yes",
       captchaToken: human.token,
-      class: auib && klass ? klass : undefined,
       email,
       locale: locale === "ar" ? "ar" : "en",
       mailing: mailingOn,
@@ -157,6 +238,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
       password: values.password,
       // The confirmation link brings the person back to what they started.
       redirectTo: callbackUrl(locale, next),
+      signUpKey,
       studiedAtAuib: !(auib || outside) && studied,
       titleForm: titleForm || undefined,
     });
@@ -179,13 +261,26 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
           email={sentTo}
           redirectTo={callbackUrl(locale, next)}
         />
+        <WrongAddress
+          email={sentTo}
+          onDropped={() => setSentTo(undefined)}
+          signUpKey={signUpKey}
+        />
       </>
     );
   }
 
   return (
     <>
-      {/* Invited or applying, the page around the form says what it is for. */}
+      {/* Invited, the page around the form says what it is for. */}
+      {partner ? (
+        <FormHeader title={tp("title")}>
+          <span className="grid gap-2">
+            <span>{tp("account")}</span>
+            <span>{tp("members")}</span>
+          </span>
+        </FormHeader>
+      ) : null}
       {outside ? null : (
         <FormHeader title={t("signUp.title")}>
           {t("signUp.description")}
@@ -211,6 +306,11 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
           <p className="type-caption" id={`${id}-email-hint`}>
             {t("signUp.emailHint", { domain: AUIB_DOMAIN })}
           </p>
+          {unusualStudentNumber(email) ? (
+            <p className="type-caption text-text" role="status">
+              {t("signUp.numberCheck")}
+            </p>
+          ) : null}
         </div>
         <div className="grid gap-2">
           <Label htmlFor={`${id}-password`}>{t("password")}</Label>
@@ -227,21 +327,6 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
             {t("passwordHint")}
           </p>
         </div>
-        {auib ? (
-          <div className="grid gap-2">
-            <Label htmlFor={`${id}-class`}>{t("signUp.classQuestion")}</Label>
-            <ChoiceInput
-              id={`${id}-class`}
-              onChange={(event) =>
-                setKlass(event.target.value as "student" | "staff")
-              }
-              value={klass}
-            >
-              <option value="student">{t("signUp.classStudent")}</option>
-              <option value="staff">{t("signUp.classStaff")}</option>
-            </ChoiceInput>
-          </div>
-        ) : null}
         {email.includes("@") && !auib && !outside ? (
           <div className="flex items-start gap-3">
             <Checkbox
@@ -412,8 +497,7 @@ export const SignUpForm = ({ next: given, outside }: SignUpFormProps) => {
             !EMAIL_SHAPE.test(email) ||
             !ageAnswered ||
             !named ||
-            !titleForm ||
-            (auib && !klass)
+            !titleForm
           }
           type="submit"
         >

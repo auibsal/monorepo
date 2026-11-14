@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(32);
+select plan(35);
 
 -- ── One sign-up: the class follows the address ──
 create function pg_temp.sign_up(uid uuid, email text, meta jsonb)
@@ -107,15 +107,26 @@ returns void language sql as $$
 $$;
 grant execute on all functions in schema pg_temp to public;
 
-select pg_temp.sign_up('00000000-0000-0000-0000-000000091001', 'student.n9@auib.edu.iq', '{"class":"student"}');
-select pg_temp.sign_up('00000000-0000-0000-0000-000000091002', 'staff.n9@auib.edu.iq', '{"class":"staff"}');
+-- The class comes from the address; whatever the browser sends is ignored.
+select pg_temp.sign_up('00000000-0000-0000-0000-000000091001', 'student.1241095@auib.edu.iq', '{"class":"staff"}');
+select pg_temp.sign_up('00000000-0000-0000-0000-000000091002', 'staff.n9@auib.edu.iq', '{"class":"student"}');
+select pg_temp.sign_up('00000000-0000-0000-0000-0000000910a1', '20261095@auib.edu.iq', '{}');
+select pg_temp.sign_up('00000000-0000-0000-0000-0000000910a2', 'office@auib.edu.iq', '{}');
 select pg_temp.sign_up('00000000-0000-0000-0000-000000091003', 'visitor.n9@example.org', '{}');
 select pg_temp.sign_up('00000000-0000-0000-0000-000000091004', 'alumna.n9@example.org', '{"studied_at_auib":"true"}');
 
 select is((select tier::text from membership.memberships where user_id = '00000000-0000-0000-0000-000000091001'),
-  'member', 'A student''s AUIB address is a Member');
+  'member', 'A student''s AUIB address (a name and a number) is a Member');
+select is((select tier::text from membership.memberships where user_id = '00000000-0000-0000-0000-0000000910a1'),
+  'member', 'and so is a number alone');
+select is((select tier::text from membership.memberships where user_id = '00000000-0000-0000-0000-0000000910a2'),
+  'associate', 'name@auib.edu.iq is faculty or staff');
+select ok(not private.is_student_address('name.number@auib.edu.iq')
+  and private.is_student_address('1241295@auib.edu.iq')
+  and not private.is_student_address('1241295@example.org'),
+  'Only an AUIB address ending in a number is a student''s');
 select is((select tier::text from membership.memberships where user_id = '00000000-0000-0000-0000-000000091002'),
-  'associate', 'Faculty, staff or alumni at an AUIB address are Associates');
+  'associate', 'Faculty and staff (name.name@) are Associates');
 select ok(exists (select 1 from membership.guests where user_id = '00000000-0000-0000-0000-000000091003')
   and not exists (select 1 from membership.memberships where user_id = '00000000-0000-0000-0000-000000091003'),
   'Any other address is a Guest');

@@ -13,6 +13,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { isAuibEmail } from "@/lib/auth/email";
 import { useAuth } from "@/lib/auth/provider";
 import { access, localized, membership, names, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
@@ -683,10 +684,11 @@ const TwoStepReset = ({ name, userId }: { name: string; userId: string }) => {
 };
 
 /**
- * A student Member who left AUIB (decisions §12): graduated, an Associate
- * Member (no vote, no office); left without graduating, a guest account
- * with the same number and a Guest card, no vote, no role, and Hudhud's
- * week in the members' group (`membership.record_departure`).
+ * A student Member who left AUIB (decisions.md, Members): graduated or
+ * not, an Associate Member with the same number (no vote, no office); a
+ * confirmed personal email becomes the sign-in, and until there is one
+ * Today asks for it (`membership.record_departure`). The person can say
+ * so themself in Settings.
  */
 const Departure = ({ name, userId }: { name: string; userId: string }) => {
   const t = useTranslations("diwan.admin.member.departure");
@@ -727,10 +729,84 @@ const Departure = ({ name, userId }: { name: string; userId: string }) => {
       </div>
       {record.data ? (
         <p className="type-body" role="status">
-          {t(record.data === "guest" ? "nowGuest" : "nowAssociate", { name })}
+          {t("nowAssociate", { name })}
         </p>
       ) : null}
       <ErrorLine error={record.error} />
+    </section>
+  );
+};
+
+/**
+ * An AUIB address the person showed the Director of Membership
+ * (decisions.md, Members): it becomes the sign-in, the old address the
+ * personal email, and the class follows it. The person can do the same
+ * from Settings with a code.
+ */
+const AuibAddressSet = ({ userId }: { userId: string }) => {
+  const t = useTranslations("diwan.admin.member.auibAddress");
+  const te = useTranslations("diwan.addresses.errors");
+  const tt = useTranslations("diwan.home.tiers");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const id = useId();
+  const [email, setEmail] = useState("");
+  const save = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("membership")
+          .rpc("set_auib_address", { email: email.trim(), member: userId })
+      ),
+    onSuccess: () => {
+      setEmail("");
+      return queryClient.invalidateQueries({ queryKey: ["admin"] });
+    },
+  });
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (email.trim()) {
+      save.mutate();
+    }
+  };
+  return (
+    <section className="grid gap-3">
+      <h2 className="type-heading">{t("title")}</h2>
+      <p className="type-body text-text-secondary max-w-2xl">{t("body")}</p>
+      <form className="grid max-w-2xl gap-2" onSubmit={submit}>
+        <Label htmlFor={id}>{t("label")}</Label>
+        <div className="flex flex-wrap items-center gap-3">
+          <Input
+            autoComplete="off"
+            className="max-w-sm"
+            dir="ltr"
+            id={id}
+            inputMode="email"
+            onChange={(event) => setEmail(event.target.value)}
+            type="email"
+            value={email}
+          />
+          <Button
+            disabled={save.isPending || !email.trim()}
+            type="submit"
+            variant="outline"
+          >
+            {t("save")}
+          </Button>
+        </div>
+      </form>
+      {save.data ? (
+        <p className="type-body" role="status">
+          {t("done", {
+            tier: tt(save.data as "member" | "associate" | "honorary"),
+          })}
+        </p>
+      ) : null}
+      {save.isError ? (
+        <p className="text-text" role="alert">
+          {te(membership.addressError(save.error))}
+        </p>
+      ) : null}
     </section>
   );
 };
@@ -1027,6 +1103,9 @@ export const MemberDetail = () => {
         <TierForm tier={row.tier} userId={userId} />
       ) : null}
       {canManage ? <NameCorrection userId={userId} /> : null}
+      {canManage && !isAuibEmail(row.email) ? (
+        <AuibAddressSet userId={userId} />
+      ) : null}
       {canManage ? <ActivitySection userId={userId} /> : null}
       {canManage && row.tier === "member" ? (
         <Departure name={name} userId={userId} />
