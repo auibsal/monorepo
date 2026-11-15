@@ -48,6 +48,9 @@ const loadEditionCalls = (slug: string) =>
 
 /** The Edition's own words, from its call while it is not yet published. */
 const fromCall = (call: journal.EditionCall) => ({
+  number: call.edition_number,
+  season_ar: call.edition_season_ar,
+  season_en: call.edition_season_en,
   theme_ar: call.edition_theme_ar,
   theme_en: call.edition_theme_en,
   title_ar: call.edition_title_ar,
@@ -58,29 +61,33 @@ export const generateMetadata = async ({
   params,
 }: EditionProps): Promise<Metadata> => {
   const { locale, slug } = await params;
+  const cite = await getTranslations({
+    locale,
+    namespace: "web.journal.citation",
+  });
   const edition = await load(slug);
   if (!edition) {
     const [call] = await loadEditionCalls(slug);
     return call
       ? localizedMetadata(locale, `/qirtas/editions/${slug}`, {
           description: localized(call, "theme", locale),
-          title: localized(fromCall(call), "title", locale),
+          title: journal.editionCitation(cite, fromCall(call), locale),
         })
       : {};
   }
   return localizedMetadata(locale, `/qirtas/editions/${edition.slug}`, {
     description: localized(edition, "theme", locale),
     image: mediaUrl(edition.cover_path) ?? undefined,
-    title: localized(edition, "title", locale),
+    title: journal.editionCitation(cite, edition, locale),
   });
 };
 
 /**
  * An Edition before it is published (decisions.md, Qirtas: "The Edition
- * page, one address for its whole life"): while its call is open, the
- * title, one line and "Submit to <Edition>", then the poster's words, the
- * terms and dates, and the form buttons; once it closes, "Reading now,
- * published <date>".
+ * page, one address for its whole life"): while its one call is open, its
+ * citation ("Edition 0: Haven"), one line and "Submit to <Edition>", then
+ * the poster's words, the terms and dates, and the form buttons; once it
+ * closes, "Reading now, published <date>".
  */
 const CallView = async ({
   calls,
@@ -98,12 +105,18 @@ const CallView = async ({
     locale,
     namespace: "web.journal.callPage",
   });
-  const [first] = calls;
-  if (!first) {
+  const cite = await getTranslations({
+    locale,
+    namespace: "web.journal.citation",
+  });
+  const [call] = calls;
+  if (!call) {
     notFound();
   }
-  const title = localized(fromCall(first), "title", locale);
-  const open = calls.filter((call) => journal.isOpenAt(call, now));
+  const edition = fromCall(call);
+  const heading = journal.editionCitation(cite, edition, locale, false);
+  const name = localized(edition, "title", locale) || heading;
+  const open = journal.isOpenAt(call, now);
   const haven = slug === "haven";
   const th = await getTranslations({ locale, namespace: "web.journal.haven" });
   const tw = await getTranslations({
@@ -112,60 +125,48 @@ const CallView = async ({
   });
   const line = haven
     ? th("dek")
-    : localized(fromCall(first), "theme", locale) || t("edition");
+    : localized(edition, "theme", locale) || t("edition");
   let reading: string | null = null;
-  if (open.length === 0) {
-    reading = first.edition_publish_at
+  if (!open) {
+    reading = call.edition_publish_at
       ? tc("readingNow", {
-          date: formatLongDate(first.edition_publish_at, locale, true),
+          date: formatLongDate(call.edition_publish_at, locale, true),
         })
       : tc("readingNowUndated");
   }
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
       <header className="grid gap-3">
-        <h1 className="type-display">{title}</h1>
+        <h1 className="type-display">{heading}</h1>
         <p className="type-lede max-w-3xl">{line}</p>
-        {open.length > 0 ? (
+        {open ? (
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-1">
-            <SubmitButton label={tc("submitTo", { edition: title })} />
+            <SubmitButton label={tc("submitTo", { edition: name })} />
           </div>
         ) : null}
         <ManageLinks diwan={`/qirtas/editions/${slug}`} />
       </header>
       {reading ? <p className="type-body max-w-3xl">{reading}</p> : null}
-      {haven && open.length > 0 ? (
+      {haven && open ? (
         <div className="grid max-w-[60ch] gap-4">
           <p className="reading">{tw("memories")}</p>
           <p className="type-lede">{tw("call")}</p>
         </div>
       ) : null}
-      {open.map((call) => (
-        <section
-          aria-labelledby={`call-${call.id}`}
-          className="grid gap-6"
-          key={call.id}
-        >
-          <h2 className="type-title" id={`call-${call.id}`}>
-            {localized(call, "title", locale)}
-          </h2>
+      {open ? (
+        <>
           <CallTerms call={call} locale={locale} />
-        </section>
-      ))}
-      {open.length > 0 ? (
-        <section aria-labelledby="send-title" className="grid gap-4" id="send">
-          <h2 className="type-title" id="send-title">
-            {tc("chooseForm")}
-          </h2>
-          {open.map((call) => (
-            <div className="grid gap-3" key={call.id}>
-              {open.length > 1 ? (
-                <p className="type-label">{localized(call, "title", locale)}</p>
-              ) : null}
-              <SendButtons call={call} locale={locale} />
-            </div>
-          ))}
-        </section>
+          <section
+            aria-labelledby="send-title"
+            className="grid gap-4"
+            id="send"
+          >
+            <h2 className="type-title" id="send-title">
+              {tc("chooseForm")}
+            </h2>
+            <SendButtons call={call} locale={locale} />
+          </section>
+        </>
       ) : null}
     </div>
   );
@@ -194,6 +195,10 @@ const EditionPage = async ({ params }: EditionProps) => {
     );
   }
   const t = await getTranslations({ locale, namespace: "web.journal" });
+  const cite = await getTranslations({
+    locale,
+    namespace: "web.journal.citation",
+  });
   const pieces = journal.inLanguage(
     await readPublished(
       ["journal"],
@@ -230,13 +235,13 @@ const EditionPage = async ({ params }: EditionProps) => {
         </div>
         <div className="grid content-start gap-3">
           <h1 className="type-display">
-            {localized(edition, "title", locale)}
+            {journal.editionCitation(cite, edition, locale, false)}
           </h1>
           <p className="type-caption">
             {localized(edition, "season", locale) || t("edition")}
           </p>
           <ManageLinks diwan={`/qirtas/editions/${edition.slug}`} />
-          <ShareLink title={localized(edition, "title", locale)} />
+          <ShareLink title={journal.editionCitation(cite, edition, locale)} />
           {localized(edition, "theme", locale) ? (
             <p className="type-lede">{localized(edition, "theme", locale)}</p>
           ) : null}
@@ -309,7 +314,7 @@ const EditionPage = async ({ params }: EditionProps) => {
             >
               <span className="type-caption">{t("previousEdition")}</span>
               <span className="type-title group-hover:text-accent">
-                {localized(older, "title", locale)}
+                {journal.editionCitation(cite, older, locale)}
               </span>
             </Link>
           ) : (
@@ -322,7 +327,7 @@ const EditionPage = async ({ params }: EditionProps) => {
             >
               <span className="type-caption">{t("nextEdition")}</span>
               <span className="type-title group-hover:text-accent">
-                {localized(newer, "title", locale)}
+                {journal.editionCitation(cite, newer, locale)}
               </span>
             </Link>
           ) : null}

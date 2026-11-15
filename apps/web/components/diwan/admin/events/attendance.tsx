@@ -13,7 +13,13 @@ import { useDeferredValue, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
 import { SectionSpinner } from "../../states";
-import { type Column, ErrorLine, ExportButton, Field } from "../kit";
+import {
+  AddInPlace,
+  type Column,
+  ErrorLine,
+  ExportButton,
+  Field,
+} from "../kit";
 import { memberName } from "../members/directory";
 import { SelectableTable } from "../selectable-table";
 
@@ -127,6 +133,60 @@ const Staff = ({ eventId }: { eventId: string }) => {
     <section className="grid gap-4">
       <h3 className="type-subheading">{t("staff")}</h3>
       <p className="type-caption">{t("staffHint")}</p>
+      <AddInPlace label={t("addStaff")}>
+        {() => (
+          <div className="grid gap-3">
+            <div className="grid max-w-2xl gap-3 sm:grid-cols-2">
+              <Field hint={t("findHint")} label={t("findPerson")}>
+                {(id) => (
+                  <Input
+                    id={id}
+                    onChange={(e) => setQuery(e.target.value)}
+                    type="search"
+                    value={query}
+                  />
+                )}
+              </Field>
+              <Field label={t("duty")}>
+                {(id) => (
+                  <Input
+                    id={id}
+                    maxLength={120}
+                    onChange={(e) => setDuty(e.target.value)}
+                    value={duty}
+                  />
+                )}
+              </Field>
+            </div>
+            {results.data?.length ? (
+              <ul className="grid gap-2">
+                {results.data.map((person) => (
+                  <li
+                    className="flex flex-wrap items-center gap-3"
+                    key={person.user_id}
+                  >
+                    <span>{memberName(person, locale)}</span>
+                    <span className="type-caption" dir="ltr">
+                      {person.email}
+                    </span>
+                    <Button
+                      disabled={
+                        add.isPending ||
+                        staff.data?.some((s) => s.user_id === person.user_id)
+                      }
+                      onClick={() => add.mutate(person.user_id)}
+                      size="sm"
+                      variant="outline"
+                    >
+                      {t("addStaff")}
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        )}
+      </AddInPlace>
       <ul className="grid gap-2">
         {staff.data?.map((member) => (
           <li
@@ -148,54 +208,6 @@ const Staff = ({ eventId }: { eventId: string }) => {
           </li>
         ))}
       </ul>
-      <div className="grid max-w-2xl gap-3 sm:grid-cols-2">
-        <Field hint={t("findHint")} label={t("findPerson")}>
-          {(id) => (
-            <Input
-              id={id}
-              onChange={(e) => setQuery(e.target.value)}
-              type="search"
-              value={query}
-            />
-          )}
-        </Field>
-        <Field label={t("duty")}>
-          {(id) => (
-            <Input
-              id={id}
-              maxLength={120}
-              onChange={(e) => setDuty(e.target.value)}
-              value={duty}
-            />
-          )}
-        </Field>
-      </div>
-      {results.data?.length ? (
-        <ul className="grid gap-2">
-          {results.data.map((person) => (
-            <li
-              className="flex flex-wrap items-center gap-3"
-              key={person.user_id}
-            >
-              <span>{memberName(person, locale)}</span>
-              <span className="type-caption" dir="ltr">
-                {person.email}
-              </span>
-              <Button
-                disabled={
-                  add.isPending ||
-                  staff.data?.some((s) => s.user_id === person.user_id)
-                }
-                onClick={() => add.mutate(person.user_id)}
-                size="sm"
-                variant="outline"
-              >
-                {t("addStaff")}
-              </Button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
       <ErrorLine error={add.error ?? remove.error} />
     </section>
   );

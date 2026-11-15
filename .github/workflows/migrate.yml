@@ -10,6 +10,12 @@ name: Migrate production database
 #   SUPABASE_DB_PASSWORD   the database password (Project Settings → Database)
 #   VERCEL_DEPLOY_HOOK     a Deploy Hook for main (Vercel → the project →
 #                          Settings → Git → Deploy Hooks)
+#   VERCEL_TOKEN           a read token (vercel.com/account/settings/tokens),
+#                          to wait for the hook's build: a build that is
+#                          canceled or fails is fired once more, then the run
+#                          fails, so production never stays behind unnoticed
+#                          (November 15, 2026: #273's hook build was canceled
+#                          mid-build and production stayed on #272)
 # `supabase db push` applies only migrations not yet recorded in
 # supabase_migrations.schema_migrations, in order, and stops at the first error.
 # CI refuses a pull request whose new migration is older than the newest on
@@ -44,6 +50,10 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT: ${{ vars.VERCEL_PROJECT_ID || 'prj_fifF034f0SEYMfSsJ9z9dptsASuZ' }}
+      VERCEL_TEAM: ${{ vars.VERCEL_TEAM_ID || 'team_ckfxakArLHH4wueW2NBDz82p' }}
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
       PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'fghzahtzgelqnpwdhwjo' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -73,4 +83,5 @@ jobs:
         run: bunx supabase db push --yes --password "$SUPABASE_DB_PASSWORD" --remote
       # Only now, with the database caught up, does main go live.
       - name: Deploy the site
-        run: curl -fsS --retry 3 -X POST "$VERCEL_DEPLOY_HOOK" > /dev/null
+        timeout-minutes: 25
+        run: bash scripts/deploy-production.sh

@@ -20,10 +20,7 @@ import {
   SaveButton,
 } from "../kit";
 
-type CallKind = "general" | "themed";
 const EDITION_DESKS = ["letters", "gallery", "video"] as const;
-/** The general submissions never close: their deadline is far off. */
-const NO_DEADLINE = "2100-01-01T00:00:00Z";
 
 const callsKey = (issueId: string) => ["admin", "edition-calls", issueId];
 
@@ -37,7 +34,6 @@ const useCalls = (issueId: string) => {
           .from("calls")
           .select("*")
           .eq("issue_id", issueId)
-          .order("kind", { ascending: false })
       ) ?? [],
     queryKey: callsKey(issueId),
   });
@@ -46,26 +42,26 @@ const useCalls = (issueId: string) => {
 type CallRow = NonNullable<ReturnType<typeof useCalls>["data"]>[number];
 
 /**
- * One call's dates and terms (decisions.md, Qirtas: "Calls"), set here on
- * the Edition and never typed into another page: its title, what it asks
- * for, who may send, its sections, its dates and how many each person may
- * send, and whether it is published.
+ * The Edition's one call (decisions.md, Qirtas: one Edition, one title,
+ * one call), set here and never typed into another page: its theme line,
+ * who may send, its sections, its dates and how many each person may send,
+ * and whether it is published. Its title is the Edition's, kept by the
+ * site; it can't open until the Edition has its title.
  */
 const CallForm = ({
   call,
   issueId,
-  kind,
 }: {
   readonly call: CallRow | null;
   readonly issueId: string;
-  readonly kind: CallKind;
 }) => {
   const t = useTranslations("diwan.admin.editionCalls");
   const tj = useTranslations("diwan.admin.journal");
+  const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const [form, setForm] = useState(() => ({
-    closes_at: call?.closes_at ?? (kind === "general" ? NO_DEADLINE : null),
+    closes_at: call?.closes_at ?? null,
     decisions_at: call?.decisions_at ?? null,
     desks: (call?.desks ?? [...EDITION_DESKS]) as journal.Desk[],
     eligibility: {
@@ -73,17 +69,14 @@ const CallForm = ({
       en: call?.eligibility_en ?? "",
     },
     is_published: call?.is_published ?? false,
-    max_per_person: String(
-      call?.max_per_person ?? (kind === "general" ? 6 : 2)
-    ),
+    max_per_person: String(call?.max_per_person ?? 2),
     opens_at: call?.opens_at ?? new Date().toISOString(),
     theme: { ar: call?.theme_ar ?? "", en: call?.theme_en ?? "" },
-    title: { ar: call?.title_ar ?? "", en: call?.title_en ?? "" },
   }));
   const save = useMutation({
     mutationFn: async () => {
       const row = {
-        closes_at: form.closes_at ?? NO_DEADLINE,
+        closes_at: form.closes_at ?? "",
         decisions_at: form.decisions_at,
         desks: form.desks,
         eligibility_ar: form.eligibility.ar || null,
@@ -93,14 +86,15 @@ const CallForm = ({
         opens_at: form.opens_at ?? new Date().toISOString(),
         theme_ar: form.theme.ar || null,
         theme_en: form.theme.en || null,
-        title_ar: form.title.ar,
-        title_en: form.title.en,
+        // Kept by the database from the Edition's title.
+        title_ar: call?.title_ar ?? "",
+        title_en: call?.title_en ?? "",
       };
       const calls = supabase.schema("journal").from("calls");
       unwrap(
         call
           ? await calls.update(row).eq("id", call.id)
-          : await calls.insert({ ...row, issue_id: issueId, kind })
+          : await calls.insert({ ...row, issue_id: issueId })
       );
     },
     onSuccess: () =>
@@ -117,13 +111,9 @@ const CallForm = ({
     }));
   return (
     <form className="grid max-w-4xl gap-5" onSubmit={submit}>
-      <BilingualField
-        label={t("titleField")}
-        maxLength={200}
-        onChange={(title) => setForm((f) => ({ ...f, title }))}
-        required
-        value={form.title}
-      />
+      {call ? (
+        <p className="type-subheading">{localized(call, "title", locale)}</p>
+      ) : null}
       <BilingualField
         label={t("theme")}
         maxLength={2000}
@@ -164,25 +154,17 @@ const CallForm = ({
           required
           value={form.opens_at}
         />
-        {kind === "themed" ? (
-          <DateTimeField
-            label={t("closes")}
-            onChange={(closes_at) => setForm((f) => ({ ...f, closes_at }))}
-            required
-            value={form.closes_at}
-          />
-        ) : (
-          <p className="type-caption self-end">{t("anyTime")}</p>
-        )}
-        {kind === "themed" ? (
-          <DateTimeField
-            label={t("decisions")}
-            onChange={(decisions_at) =>
-              setForm((f) => ({ ...f, decisions_at }))
-            }
-            value={form.decisions_at}
-          />
-        ) : null}
+        <DateTimeField
+          label={t("closes")}
+          onChange={(closes_at) => setForm((f) => ({ ...f, closes_at }))}
+          required
+          value={form.closes_at}
+        />
+        <DateTimeField
+          label={t("decisions")}
+          onChange={(decisions_at) => setForm((f) => ({ ...f, decisions_at }))}
+          value={form.decisions_at}
+        />
         <Field label={t("maxPerPerson")}>
           {(id) => (
             <Input
@@ -218,59 +200,34 @@ const CallForm = ({
 };
 
 /**
- * An Edition's Call (decisions.md, The site): its general submissions,
- * always open for it, and any themed call with its own dates and terms.
+ * An Edition's Call (decisions.md, The site): its one call, its reading
+ * period for Letters, Gallery and Video. It opens the day the previous
+ * Edition's closes, so exactly one is always open.
  */
 export const EditionCalls = ({ issueId }: { readonly issueId: string }) => {
   const t = useTranslations("diwan.admin.editionCalls");
   const calls = useCalls(issueId);
-  const [adding, setAdding] = useState<CallKind | null>(null);
+  const [adding, setAdding] = useState(false);
   if (calls.isPending) {
     return <SectionSpinner />;
   }
-  const general = calls.data?.find((c) => c.kind === "general") ?? null;
-  const themed = calls.data?.filter((c) => c.kind === "themed") ?? [];
+  const call = calls.data?.[0] ?? null;
   return (
-    <div className="grid gap-12">
-      <DiwanSection id="general" title={t("general")}>
-        <p className="type-body text-text-secondary max-w-3xl">
-          {t("generalLede")}
-        </p>
-        {general || adding === "general" ? (
-          <CallForm call={general} issueId={issueId} kind="general" />
-        ) : (
-          <Button
-            className="justify-self-start"
-            onClick={() => setAdding("general")}
-            type="button"
-            variant="outline"
-          >
-            {t("addGeneral")}
-          </Button>
-        )}
-      </DiwanSection>
-      <DiwanSection id="themed" title={t("themed")}>
-        <p className="type-body text-text-secondary max-w-3xl">
-          {t("themedLede")}
-        </p>
-        {themed.map((call) => (
-          <CallForm call={call} issueId={issueId} key={call.id} kind="themed" />
-        ))}
-        {themed.length === 0 && adding !== "themed" ? (
-          <Button
-            className="justify-self-start"
-            onClick={() => setAdding("themed")}
-            type="button"
-            variant="outline"
-          >
-            {t("addThemed")}
-          </Button>
-        ) : null}
-        {adding === "themed" ? (
-          <CallForm call={null} issueId={issueId} kind="themed" />
-        ) : null}
-      </DiwanSection>
-    </div>
+    <DiwanSection id="call" title={t("call")}>
+      <p className="type-body text-text-secondary max-w-3xl">{t("callLede")}</p>
+      {call || adding ? (
+        <CallForm call={call} issueId={issueId} />
+      ) : (
+        <Button
+          className="justify-self-start"
+          onClick={() => setAdding(true)}
+          type="button"
+          variant="outline"
+        >
+          {t("addCall")}
+        </Button>
+      )}
+    </DiwanSection>
   );
 };
 

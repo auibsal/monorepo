@@ -8,12 +8,17 @@ import { FileInput } from "@/components/fields/file-input";
 import { useAuth } from "@/lib/auth/provider";
 import { getMediaUrl, uploadMedia } from "@/lib/storage";
 import { StorageError } from "@/lib/storage/files";
+import { logoTallEnough } from "@/lib/storage/image-size";
 
 interface ImageFieldProps {
   /** Folder in the public media bucket, e.g. "events". */
   readonly area: string;
-  /** "pdf" takes a PDF (issue PDFs) and shows a link instead of a preview. */
-  readonly kind?: "image" | "pdf";
+  /**
+   * "pdf" takes a PDF (issue PDFs) and shows a link instead of a preview;
+   * "logo" an organization's logo, at least 600 pixels high (decisions.md,
+   * Partners), with the rule shown under the field.
+   */
+  readonly kind?: "image" | "logo" | "pdf";
   readonly label?: string;
   readonly onChange: (path: string | null) => void;
   /** Object path in the media bucket, or null. */
@@ -55,6 +60,10 @@ export const ImageField = ({
     setBusy(true);
     setProblem(null);
     try {
+      if (kind === "logo" && !(await logoTallEnough(file))) {
+        setProblem(t("uploadFailed", { reason: t("fileReasons.too_short") }));
+        return;
+      }
       const stored = await uploadMedia(supabase, area, file);
       onChange(stored.path);
     } catch (error) {
@@ -110,6 +119,7 @@ export const ImageField = ({
       <p className="type-caption">
         {busy ? t("uploading") : null}
         {!busy && kind === "image" ? t("noImageNote") : null}
+        {!busy && kind === "logo" ? t("logoRule") : null}
       </p>
       {problem ? (
         <p className="text-text text-sm" role="alert">

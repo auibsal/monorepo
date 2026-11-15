@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { localized, unwrap } from "@/lib/data";
+import { journal, unwrap } from "@/lib/data";
 import { SectionSpinner } from "../../states";
 import {
   AdminHeading,
@@ -24,12 +24,10 @@ import {
 import { Board, Decided, Selection } from "./board";
 import {
   type Category,
-  PipelineCall,
   type PipelineIssue,
   pipelineKey,
   type SubmissionStatus,
   useBlindEntries,
-  usePipelineCall,
   usePipelineIssues,
 } from "./data";
 import { EntryLink } from "./entry-link";
@@ -41,7 +39,6 @@ const MyReads = ({ issueId }: { issueId: string }) => {
   const tj = useTranslations("diwan.admin.journal");
   const ts = useTranslations("diwan.journal.status");
   const { supabase, user } = useAuth();
-  const callId = usePipelineCall();
   const reads = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
@@ -50,15 +47,13 @@ const MyReads = ({ issueId }: { issueId: string }) => {
           .schema("journal")
           .from("assignments")
           .select(
-            "id, read_number, entry:blind_entries!inner(id, blind_id, title, category, status, issue_id, call_id), score:scores(total)"
+            "id, read_number, entry:blind_entries!inner(id, blind_id, title, category, status, issue_id), score:scores(total)"
           )
           .eq("reader_id", user?.id ?? "")
           .eq("entry.issue_id", issueId)
           .order("assigned_at")
       ) ?? [],
     queryKey: [...pipelineKey, "reads", issueId, user?.id],
-    select: (rows) =>
-      callId ? rows.filter((r) => r.entry.call_id === callId) : rows,
   });
   type Row = NonNullable<typeof reads.data>[number];
   const columns: Column<Row>[] = [
@@ -199,39 +194,20 @@ const StageBody = ({
   }
 };
 
-/** The Edition's calls, to filter the queue by (all of them, or one). */
-const useIssueCalls = (issueId: string | undefined) => {
-  const { supabase } = useAuth();
-  return useQuery({
-    enabled: Boolean(issueId),
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("journal")
-          .from("calls")
-          .select("id, kind, title_en, title_ar")
-          .eq("issue_id", issueId ?? "")
-          .order("kind", { ascending: false })
-      ) ?? [],
-    queryKey: [...pipelineKey, "calls", issueId],
-  });
-};
-
 /**
  * The one reading queue across every call (decisions.md, The site: Diwan
- * → Qirtas → Editions), filtered by Edition and call; `embedded` on the
+ * → Qirtas → Editions), filtered by Edition; `embedded` on the
  * Editions tab (no heading of its own).
  */
 export const PipelineAdmin = ({ embedded = false }: { embedded?: boolean }) => {
   const t = useTranslations("diwan.admin.pipeline");
   const tj = useTranslations("diwan.admin.journal");
   const locale = useLocale() as Locale;
+  const cite = useTranslations("web.journal.citation");
   const issues = usePipelineIssues();
   const [chosen, setChosen] = useState("");
-  const [callId, setCallId] = useState("");
   const issue =
     issues.data?.find((i) => i.id === chosen) ?? issues.data?.[0] ?? null;
-  const calls = useIssueCalls(issue?.id);
   const stages = issue ? stagesFor(issue) : [];
 
   return (
@@ -253,60 +229,31 @@ export const PipelineAdmin = ({ embedded = false }: { embedded?: boolean }) => {
               <SelectInput
                 className="w-80"
                 id={id}
-                onChange={(e) => {
-                  setChosen(e.target.value);
-                  setCallId("");
-                }}
+                onChange={(e) => setChosen(e.target.value)}
                 value={issue.id}
               >
                 {issues.data?.map((i) => (
                   <option key={i.id} value={i.id}>
-                    {i.number === null
-                      ? localized(i, "title", locale)
-                      : `${tj("volumeNumber", {
-                          number: formatNumber(i.number),
-                          volume: formatNumber(i.volume),
-                        })} · ${localized(i, "title", locale)}`}
+                    {journal.editionCitation(cite, i, locale)}
                   </option>
                 ))}
               </SelectInput>
             )}
           </Field>
-          {(calls.data?.length ?? 0) > 1 ? (
-            <Field label={t("call")}>
-              {(id) => (
-                <SelectInput
-                  className="w-80"
-                  id={id}
-                  onChange={(e) => setCallId(e.target.value)}
-                  value={callId}
-                >
-                  <option value="">{t("allCalls")}</option>
-                  {calls.data?.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {localized(c, "title", locale)}
-                    </option>
-                  ))}
-                </SelectInput>
-              )}
-            </Field>
-          ) : null}
-          <PipelineCall.Provider value={callId}>
-            <Tabs defaultValue={stages[0]} key={issue.id}>
-              <TabsList className="flex-wrap">
-                {stages.map((stage) => (
-                  <TabsTrigger key={stage} value={stage}>
-                    {t(`stages.${stage}`)}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+          <Tabs defaultValue={stages[0]} key={issue.id}>
+            <TabsList className="flex-wrap">
               {stages.map((stage) => (
-                <TabsContent className="pt-4" key={stage} value={stage}>
-                  <StageBody issue={issue} stage={stage} />
-                </TabsContent>
+                <TabsTrigger key={stage} value={stage}>
+                  {t(`stages.${stage}`)}
+                </TabsTrigger>
               ))}
-            </Tabs>
-          </PipelineCall.Provider>
+            </TabsList>
+            {stages.map((stage) => (
+              <TabsContent className="pt-4" key={stage} value={stage}>
+                <StageBody issue={issue} stage={stage} />
+              </TabsContent>
+            ))}
+          </Tabs>
         </>
       ) : null}
     </div>

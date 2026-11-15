@@ -50,6 +50,10 @@ const CoverArt = async ({
   locale: Locale;
 }) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });
+  const cite = await getTranslations({
+    locale,
+    namespace: "web.journal.citation",
+  });
   const cover = mediaUrl(edition.cover_path);
   if (cover) {
     return (
@@ -71,34 +75,39 @@ const CoverArt = async ({
     >
       <span className="text-2xl font-medium tracking-tight">{t("title")}</span>
       <span className="type-title">
-        {edition.number === null
-          ? t("pilotIssue")
-          : t("editionNumber", { number: String(edition.number) })}
+        {journal.editionCitation(cite, edition, locale, false)}
       </span>
     </span>
   );
 };
 
-/** One Edition on the shelf: its cover, title and season, as one link. */
+/**
+ * One Edition on the shelf: its cover and its citation, "Edition 0: Haven,
+ * Fall 2026" (decisions.md, Numbers and codes), as one link.
+ */
 export const EditionShelfItem = async ({
   edition,
   locale,
 }: {
   edition: Edition;
   locale: Locale;
-}) => (
-  <Link className="group grid gap-2" href={`/qirtas/editions/${edition.slug}`}>
-    <EditionCover edition={edition} locale={locale} />
-    <span className="type-heading group-hover:underline">
-      {localized(edition, "title", locale)}
-    </span>
-    {localized(edition, "season", locale) ? (
-      <span className="type-caption text-text-secondary">
-        {localized(edition, "season", locale)}
+}) => {
+  const cite = await getTranslations({
+    locale,
+    namespace: "web.journal.citation",
+  });
+  return (
+    <Link
+      className="group grid gap-2"
+      href={`/qirtas/editions/${edition.slug}`}
+    >
+      <EditionCover edition={edition} locale={locale} />
+      <span className="type-heading group-hover:underline">
+        {journal.editionCitation(cite, edition, locale)}
       </span>
-    ) : null}
-  </Link>
-);
+    </Link>
+  );
+};
 
 /**
  * Before the first Edition is published (design review C11): its launch

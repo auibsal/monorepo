@@ -14,8 +14,12 @@ import { cn } from "../../lib/utils";
  * Only the names (with their logos) follow the line: no qualitative or
  * comparative words, prices or calls to buy (the IRS line between an
  * acknowledgment and advertising), so the components take names and
- * logos, never a sentence. Every logo is the same size, and its name is
- * always written beside it.
+ * logos, never a sentence. Every logo is the same height, its width
+ * following (decisions.md, Events). A logo that shows the name stands
+ * alone, the name its alt text and link label (WCAG 1.1.1, 2.4.4); a
+ * symbol-only logo, or none, has the name in text beside it. A logo is
+ * shown as the organization made it in both languages; only the alt text
+ * and the label follow the page.
  */
 const ACKNOWLEDGMENT_LINES = {
   campus: { ar: "شركاء من الجامعة", en: "Campus partners" },
@@ -27,18 +31,79 @@ export interface Acknowledged {
   /** Where the name links, if anywhere: the organization's own site. */
   readonly href?: string | null;
   /**
-   * Its logo for paper, and for ink if it has one (AUIB's standard set),
-   * with the file's own width and height (shown 48 px high).
+   * Its logo, with the file's own width and height (shown 48 px high, the
+   * width following). AUIB's standard set has a white version for ink
+   * (`onInk`); an uploaded logo has one version and sits on a small
+   * paper-colored tile on ink (`tile`), the same size everywhere.
    */
   readonly logo?: {
     readonly height: number;
-    readonly onInk?: string;
+    readonly onInk?: string | null;
     readonly src: string;
+    readonly tile?: boolean;
     readonly width: number;
   } | null;
   /** Its name in the line's language, exactly as on its own materials. */
   readonly name: string;
+  /**
+   * "The logo shows the name": the logo stands alone, the name its alt
+   * text; otherwise the name is written beside it.
+   */
+  readonly showsName?: boolean;
 }
+
+/**
+ * One organization's logo at the one height: on ink, AUIB's white version,
+ * or an uploaded logo on its paper-colored tile. `alt` is its name when
+ * the logo shows the name.
+ */
+export const OrganizationLogo = ({
+  alt = "",
+  className,
+  logo,
+}: {
+  readonly alt?: string;
+  readonly className?: string;
+  readonly logo: NonNullable<Acknowledged["logo"]>;
+}) =>
+  logo.onInk ? (
+    <span className={cn("inline-flex", className)}>
+      {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
+      <img
+        alt={alt}
+        className="on-ink:hidden h-12 w-auto"
+        height={logo.height}
+        src={logo.src}
+        width={logo.width}
+      />
+      {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
+      <img
+        alt={alt}
+        className="on-ink:block hidden h-12 w-auto"
+        height={logo.height}
+        src={logo.onInk}
+        width={logo.width}
+      />
+    </span>
+  ) : (
+    <span
+      className={cn(
+        "inline-flex",
+        logo.tile &&
+          "on-ink:h-16 on-ink:w-44 on-ink:items-center on-ink:justify-center on-ink:bg-paper on-ink:p-2",
+        className
+      )}
+    >
+      {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
+      <img
+        alt={alt}
+        className="h-12 w-auto max-w-full object-contain"
+        height={logo.height}
+        src={logo.src}
+        width={logo.width}
+      />
+    </span>
+  );
 
 interface AcknowledgmentProps {
   readonly className?: string;
@@ -71,34 +136,17 @@ const Names = ({
     )}
   >
     {items.map((item) => {
+      const alone = Boolean(item.logo && item.showsName !== false);
       const mark = (
         <span className="inline-flex items-center gap-3">
           {item.logo ? (
-            <>
-              {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
-              <img
-                alt=""
-                className={cn(
-                  "h-12 w-auto max-w-40 object-contain",
-                  item.logo.onInk && "on-ink:hidden"
-                )}
-                height={item.logo.height}
-                src={item.logo.src}
-                width={item.logo.width}
-              />
-              {item.logo.onInk ? (
-                /* biome-ignore lint/performance/noImgElement: a supplied logo file */
-                <img
-                  alt=""
-                  className="on-ink:block hidden h-12 w-auto max-w-40 object-contain"
-                  height={item.logo.height}
-                  src={item.logo.onInk}
-                  width={item.logo.width}
-                />
-              ) : null}
-            </>
+            <OrganizationLogo alt={alone ? item.name : ""} logo={item.logo} />
           ) : null}
-          <span className={compact ? undefined : "type-body"}>{item.name}</span>
+          {alone ? null : (
+            <span className={compact ? undefined : "type-body"}>
+              {item.name}
+            </span>
+          )}
         </span>
       );
       return (

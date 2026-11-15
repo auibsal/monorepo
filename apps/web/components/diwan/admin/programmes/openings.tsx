@@ -11,8 +11,9 @@ import { useAuth } from "@/lib/auth/provider";
 import { localized, programmes, unwrap } from "@/lib/data";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
+import { useQueryState } from "@/lib/diwan/use-query-param";
 import { hasPermission, hasPermissionAnywhere } from "@/lib/rbac";
-import { SectionSpinner } from "../../states";
+import { EmptyLine, SectionSpinner } from "../../states";
 import {
   AdminHeading,
   BilingualField,
@@ -21,6 +22,7 @@ import {
   ErrorLine,
   Field,
   NewLink,
+  RecordList,
   RecordPage,
   SaveButton,
   SelectInput,
@@ -243,7 +245,12 @@ export const OpeningsAdmin = () => {
   const th = useTranslations("diwan.admin.hiring");
   const locale = useLocale() as Locale;
   const grants = useGrants();
-  const [kind, setKind] = useState<OpeningKind | "">("");
+  // The filter lives in the query string beside the find line
+  // (decisions.md, The site: "One list").
+  const [kindParam, setKind] = useQueryState("kind");
+  const kind = (openingKinds as readonly string[]).includes(kindParam)
+    ? (kindParam as OpeningKind)
+    : "";
   const list = useOpenings();
   const events = useComingEvents();
   const names = useMemberNames(
@@ -267,40 +274,58 @@ export const OpeningsAdmin = () => {
       >
         {t("listLede")}
       </AdminHeading>
-      <div className="max-w-md">
-        <Field label={t("kind")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) => setKind(e.target.value as OpeningKind | "")}
-              value={kind}
-            >
-              <option value="">{t("allKinds")}</option>
-              {openingKinds.map((k) => (
-                <option key={k} value={k}>
-                  {t(`kinds.${k}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-      </div>
       {list.isPending ? <SectionSpinner /> : null}
-      <ul className="divide-line grid divide-y">
-        {list.data && shown.length === 0 ? (
-          <li className="type-body text-text-secondary py-3">{t("empty")}</li>
-        ) : null}
-        {shown.map((o) => (
-          <OpeningItem
-            canPick={picks(grants.data, o.owner, o.programme_id)}
-            key={o.id}
-            names={names.data ?? []}
-            opening={o}
-            runs={runs}
-            whose={whose(o)}
-          />
-        ))}
-      </ul>
+      {list.data ? (
+        <RecordList
+          empty={
+            <EmptyLine
+              action={{ href: "/membership/openings/new", label: t("new") }}
+            >
+              {t("empty")}
+            </EmptyLine>
+          }
+          filters={
+            <Field label={t("kind")}>
+              {(id) => (
+                <SelectInput
+                  className="w-56"
+                  id={id}
+                  onChange={(e) => setKind(e.target.value)}
+                  value={kind}
+                >
+                  <option value="">{t("allKinds")}</option>
+                  {openingKinds.map((k) => (
+                    <option key={k} value={k}>
+                      {t(`kinds.${k}`)}
+                    </option>
+                  ))}
+                </SelectInput>
+              )}
+            </Field>
+          }
+          items={shown}
+          matches={(o, q) =>
+            [o.title_en, o.title_ar, whose(o)].some((v) =>
+              v?.toLowerCase().includes(q)
+            )
+          }
+        >
+          {(found) => (
+            <ul className="divide-line grid divide-y">
+              {found.map((o) => (
+                <OpeningItem
+                  canPick={picks(grants.data, o.owner, o.programme_id)}
+                  key={o.id}
+                  names={names.data ?? []}
+                  opening={o}
+                  runs={runs}
+                  whose={whose(o)}
+                />
+              ))}
+            </ul>
+          )}
+        </RecordList>
+      ) : null}
     </div>
   );
 };

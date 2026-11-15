@@ -169,6 +169,17 @@ const ParentLinks = ({ students }: { students: Student[] }) => {
     <section className="grid gap-4">
       <h2 className="type-subheading">{t("title")}</h2>
       <p className="type-caption">{t("lede")}</p>
+      <AddInPlace label={t("send")}>
+        {(close) => (
+          <SendLink
+            onDone={() => {
+              close();
+              queryClient.invalidateQueries({ queryKey: [...key, "links"] });
+            }}
+            students={students}
+          />
+        )}
+      </AddInPlace>
       {links.data ? (
         <DataTable
           columns={[
@@ -191,17 +202,6 @@ const ParentLinks = ({ students }: { students: Student[] }) => {
       ) : (
         <SectionSpinner />
       )}
-      <AddInPlace label={t("send")}>
-        {(close) => (
-          <SendLink
-            onDone={() => {
-              close();
-              queryClient.invalidateQueries({ queryKey: [...key, "links"] });
-            }}
-            students={students}
-          />
-        )}
-      </AddInPlace>
     </section>
   );
 };

@@ -207,15 +207,35 @@ const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
   },
 };
 
+/** An Edition, as an email cites it (decisions.md, Numbers and codes). */
+export interface CitedEdition {
+  readonly number: number | null;
+  readonly season_ar: string | null;
+  readonly season_en: string | null;
+  readonly title_ar: string | null;
+  readonly title_en: string | null;
+}
+
+/** "Edition 0: Haven, Fall 2026" («الإصدار 0: ملاذ، خريف 2026»). */
+export const editionCitation = (l: Lang, edition: CitedEdition) => {
+  const named = l === "ar" ? edition.title_ar : edition.title_en;
+  const season = l === "ar" ? edition.season_ar : edition.season_en;
+  const name = `${l === "ar" ? "الإصدار" : "Edition"} ${edition.number ?? 0}`;
+  return [named ? `${name}: ${named}` : name, season]
+    .filter(Boolean)
+    .join(l === "ar" ? "، " : ", ");
+};
+
 export const submissionReceived = (
   lang: Lang,
   work: string,
   app: string,
   desk: DeskKind = "blind",
-  reference: string | null = null
+  reference: string | null = null,
+  edition: CitedEdition | null = null
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/editions?status=open"),
+    action: account(app, l, "/qirtas/editions/open"),
     heading:
       l === "ar" ? `شكرًا، وصلنا ${work}` : `Thank you: we received ${work}`,
     paragraphs: [
@@ -224,6 +244,13 @@ export const submissionReceived = (
             l === "ar"
               ? `رقم السجل: ${reference}.`
               : `Record number: ${reference}.`,
+          ]
+        : []),
+      ...(edition
+        ? [
+            l === "ar"
+              ? `أُرسل إلى ${editionCitation(l, edition)}. ويصلك الرد خلال ستة أسابيع من الموعد النهائي للدعوة.`
+              : `Sent to ${editionCitation(l, edition)}. You hear back within six weeks of the call’s deadline.`,
           ]
         : []),
       ...RECEIVED[desk][l],
@@ -238,7 +265,7 @@ export const submissionInReading = (
   reference: string | null = null
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/editions?status=open"),
+    action: account(app, l, "/qirtas/editions/open"),
     heading: l === "ar" ? `قيد القراءة: ${work}` : `In reading: ${work}`,
     paragraphs: [
       l === "ar"
@@ -261,7 +288,7 @@ export const returnedForFormatting = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/editions?status=open"),
+    action: account(app, l, "/qirtas/editions/open"),
     heading:
       l === "ar"
         ? `تعديل واحد قبل القراءة: ${work}`
@@ -296,7 +323,7 @@ export const decision = (
   build(lang, (l) => {
     if (outcome === "decline") {
       return {
-        action: account(app, l, "/qirtas/editions?status=open"),
+        action: account(app, l, "/qirtas/editions/open"),
         heading:
           l === "ar" ? `شكرًا لإرسالك ${work}` : `Thank you for sending ${work}`,
         paragraphs:
@@ -312,7 +339,7 @@ export const decision = (
       };
     }
     return {
-      action: account(app, l, "/qirtas/editions?status=open"),
+      action: account(app, l, "/qirtas/editions/open"),
       heading:
         l === "ar" ? `قُبل ${work} في قرطاس` : `${work} is accepted for Qirtas`,
       paragraphs: [
@@ -336,7 +363,7 @@ export const revisionRequested = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/editions?status=open"),
+    action: account(app, l, "/qirtas/editions/open"),
     heading:
       l === "ar"
         ? `يطلب المحرر مراجعة ${work}`
@@ -367,7 +394,7 @@ export const revisionResent = (lang: Lang, work: string, app: string) =>
 
 export const agreementReminder = (lang: Lang, work: string, app: string) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/editions?status=open"),
+    action: account(app, l, "/qirtas/editions/open"),
     heading:
       l === "ar"
         ? `بانتظار توقيعك: اتفاقية نشر ${work}`
@@ -406,7 +433,7 @@ const callClosing = (closesAt: string, l: Lang) => {
 /** "Tell me when": a Qirtas call has opened. */
 export const callOpened = (lang: Lang, call: CallInfo, app: string) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/editions?status=open"),
+    action: account(app, l, "/qirtas/editions/open"),
     heading:
       l === "ar"
         ? `فُتحت دعوة قرطاس: ${call.title_ar}`
@@ -1221,6 +1248,25 @@ const partnerDashboard = (
  * For the Partner Lead: someone at the partner's own domain asks to join
  * its team (decisions.md, Partners).
  */
+/**
+ * The Society changed a partner's logo on its listing (decisions.md,
+ * Partners): to the Lead (or the applicant), so the partner knows; a
+ * logo the partner prefers can be sent from the dashboard.
+ */
+export const partnerLogoChanged = (lang: Lang, partner: string, app: string) =>
+  build(lang, (l) => ({
+    action: partnerDashboard(app, l),
+    heading:
+      l === "ar"
+        ? `تغيّر شعار ${partner} في الموقع`
+        : `${partner}’s logo changed on the site`,
+    paragraphs: [
+      l === "ar"
+        ? "غيّر قسم الشراكات في الجمعية الشعار الظاهر في قائمتكم. إن فضّلتم شعارًا آخر، فأرسلوه من لوحة الشريك وسنوافق عليه."
+        : "The Society’s Partnerships changed the logo shown on your listing. If you’d rather use another, send it from the partner dashboard and we’ll approve it.",
+    ],
+  }));
+
 export const joinRequested = (
   lang: Lang,
   partner: string,
@@ -2072,7 +2118,7 @@ export const welcome = (lang: Lang, app: string) =>
                   : "Events: readings, book discussions, writing workshops and more",
             },
             {
-              href: link("/qirtas/editions?status=open"),
+              href: link("/qirtas/editions/open"),
               title:
                 l === "ar"
                   ? "أرسل عملك إلى قرطاس: الدعوات المفتوحة الآن"

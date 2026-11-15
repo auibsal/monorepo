@@ -94,7 +94,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `access.role_ending` | Seven days before a role ends | The holder | Officer |
 | `access.two_step_reset` | An authenticator removed (by an officer or a recovery code) | The person | Service |
 | `access.recovery_attempts` | Five wrong recovery codes within an hour (`/api/two-step/recover`; once an hour) | The person | Service |
-| `qirtas.submission_received` (with the record number, SUB-<year>-<n>), `qirtas.in_reading`, `qirtas.returned_for_formatting`, `qirtas.decision` (revise and resend among them, with the editor's note), `qirtas.agreement_reminder` (weekly, four weeks at most), `qirtas.final_check`, `qirtas.piece_note`, `qirtas.piece_published` | Work sent to Qirtas, through to publication | The author | Service |
+| `qirtas.submission_received` (with the record number, SUB-<year>-<n>, and the Edition it was sent to, "Edition 0: Haven, Fall 2026"), `qirtas.in_reading`, `qirtas.returned_for_formatting`, `qirtas.decision` (revise and resend among them, with the editor's note), `qirtas.agreement_reminder` (weekly, four weeks at most), `qirtas.final_check`, `qirtas.piece_note`, `qirtas.piece_published` | Work sent to Qirtas, through to publication | The author | Service |
 | `qirtas.call_opened` | A Qirtas call opens | Whoever asked "Tell me when" | Service (they stop it on the page) |
 | `membership.certificate_issued` | A certificate signed by both and issued | The holder | Service |
 | `membership.service_letter` | A service letter (`service-letter`) written | The holder | Service |
@@ -105,6 +105,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `governance.candidacy_decided` | The Elections Committee's answer | The nominee | Service |
 | `partners.application_received` | An application to partner | The applicant (Partnerships and the President read it in the next staff digest) | Direct |
 | `partners.join_requested` | Someone at a partner's opened domain asks to join its team | The Partner Lead | Direct |
+| `partners.logo_changed` | The Society changes the logo on a partner's own listing | The Partner Lead (before there is one, the applicant) | Direct |
 | `partners.join_decided` | The Partner Lead approves or declines a request to join | The person who asked | Service |
 | `partners.application_decided` | Signed (active) or not taken forward | The applicant | Direct |
 | `partners.invitation` | A partner's or the Society's email invitation | The invited address | Direct |

@@ -16,13 +16,17 @@ import { localized, partners, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
+import { useQueryState } from "@/lib/diwan/use-query-param";
+import type { Organization } from "@/lib/institutions";
 import { hasPermissionAnywhere } from "@/lib/rbac";
+import { buckets, getMediaUrl } from "@/lib/storage";
 import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
-import { SectionSpinner } from "../../states";
+import { EmptyLine, SectionSpinner } from "../../states";
 import { SectionTabs } from "../admin-shell";
 import { ImageField } from "../image-field";
 import {
+  AddInPlace,
   AdminHeading,
   BilingualField,
   type Column,
@@ -30,6 +34,7 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  RecordList,
   RecordView,
   SaveButton,
   SelectInput,
@@ -39,6 +44,13 @@ import { memberName } from "../members/directory";
 import { VerificationQueue } from "../members/verification";
 import { RecordHistory } from "../record-history";
 import { CouncilVote } from "./council-vote";
+import {
+  PartnerLinking,
+  PartnerPeople,
+  PendingListing,
+  RegisterLogo,
+  usePartnerOwned,
+} from "./listing";
 
 const key = ["admin", "partners"];
 
@@ -92,75 +104,96 @@ const usePartnerNames = () => {
 
 // ── Register ────────────────────────────────────────────────────────────────
 
-const PartnerForm = ({
-  initial,
-  onDone,
+/** The fields only the Society keeps (decisions.md, Partners). */
+const societyFields = (form: PartnerFormState) => ({
+  is_listed: form.is_listed,
+  kind: form.kind,
+  logo_path: form.logo_path,
+  logo_shows_name: form.logo_shows_name,
+  notes: form.notes.trim() || null,
+  reach: form.reach,
+  slug: form.slug,
+  status: form.status,
+});
+
+const initialForm = (initial: PartnerRow) => ({
+  contact_email: String(initial.contact_email ?? ""),
+  contact_name: String(initial.contact_name ?? ""),
+  contact_role: String(initial.contact_role ?? ""),
+  description: {
+    ar: String(initial.description_ar ?? ""),
+    en: String(initial.description_en ?? ""),
+  },
+  is_listed: Boolean(initial.is_listed),
+  kind: initial.kind as (typeof partners.partnerKinds)[number],
+  logo_path: (initial.logo_path as string | null) ?? null,
+  logo_shows_name: initial.logo_shows_name !== false,
+  name: { ar: initial.name_ar ?? "", en: initial.name_en },
+  notes: String(initial.notes ?? ""),
+  reach: initial.reach as (typeof partners.partnerReach)[number],
+  relation: String(initial.relation ?? "partner") as Relation,
+  slug: String(initial.slug ?? ""),
+  status: initial.status as (typeof partners.partnerStatuses)[number],
+  url: String(initial.url ?? ""),
+});
+
+type PartnerFormState = ReturnType<typeof initialForm>;
+type SetPartnerForm = (
+  update: (form: PartnerFormState) => PartnerFormState
+) => void;
+
+/**
+ * Each entry's one logo (decisions.md, Partners; Events), which sits on a
+ * paper-colored tile in dark mode, and "The logo shows the name". On a partner's own
+ * entry a change here is logged and the Lead is told.
+ */
+const LogoFields = ({
+  form,
+  owned,
+  setForm,
 }: {
-  initial: PartnerRow;
-  onDone: () => void;
+  readonly form: PartnerFormState;
+  readonly owned: boolean;
+  readonly setForm: SetPartnerForm;
 }) => {
   const t = useTranslations("diwan.admin.partners.register");
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [form, setForm] = useState(() => ({
-    contact_email: String(initial.contact_email ?? ""),
-    contact_name: String(initial.contact_name ?? ""),
-    contact_role: String(initial.contact_role ?? ""),
-    description: {
-      ar: String(initial.description_ar ?? ""),
-      en: String(initial.description_en ?? ""),
-    },
-    is_listed: Boolean(initial.is_listed),
-    kind: initial.kind as (typeof partners.partnerKinds)[number],
-    logo_path: (initial.logo_path as string | null) ?? null,
-    name: { ar: initial.name_ar ?? "", en: initial.name_en },
-    notes: String(initial.notes ?? ""),
-    reach: initial.reach as (typeof partners.partnerReach)[number],
-    relation: String(initial.relation ?? "partner") as Relation,
-    slug: String(initial.slug ?? ""),
-    status: initial.status as (typeof partners.partnerStatuses)[number],
-    url: String(initial.url ?? ""),
-  }));
-  const save = useMutation({
-    mutationFn: async () => {
-      const row = partners.partnerSchema.parse({
-        contact_email: form.contact_email,
-        contact_name: form.contact_name,
-        contact_role: form.contact_role,
-        description_ar: form.description.ar,
-        description_en: form.description.en,
-        is_listed: form.is_listed,
-        kind: form.kind,
-        logo_path: form.logo_path,
-        name_ar: form.name.ar,
-        name_en: form.name.en,
-        notes: form.notes,
-        reach: form.reach,
-        slug: form.slug,
-        status: form.status,
-        url: form.url,
-      });
-      const table = supabase.schema("governance").from("partners");
-      unwrap(
-        await table
-          .update({ ...row, relation: form.relation })
-          .eq("id", initial.id)
-      );
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
-      onDone();
-    },
-  });
-
   return (
-    <form
-      className="grid max-w-3xl gap-4"
-      onSubmit={(event) => {
-        event.preventDefault();
-        save.mutate();
-      }}
-    >
+    <fieldset className="grid gap-4">
+      <legend className="type-label mb-2">{t("logos")}</legend>
+      {owned ? <p className="type-caption">{t("logoTellsLead")}</p> : null}
+      <ImageField
+        area="partners"
+        kind="logo"
+        label={t("logo")}
+        onChange={(logo_path) => setForm((f) => ({ ...f, logo_path }))}
+        value={form.logo_path}
+      />
+      <div className="flex items-center gap-2">
+        <Checkbox
+          checked={form.logo_shows_name}
+          id="partner-logo-name"
+          onCheckedChange={(checked) =>
+            setForm((f) => ({ ...f, logo_shows_name: checked === true }))
+          }
+        />
+        <Label htmlFor="partner-logo-name">{t("logoShowsName")}</Label>
+      </div>
+      <p className="type-caption">{t("logoShowsNameHint")}</p>
+    </fieldset>
+  );
+};
+
+/** The fields the Society writes on an entry it added: the whole listing. */
+const ListingFields = ({
+  form,
+  setForm,
+}: {
+  readonly form: PartnerFormState;
+  readonly setForm: SetPartnerForm;
+}) => {
+  const t = useTranslations("diwan.admin.partners.register");
+  return (
+    <>
       <BilingualField
         label={t("name")}
         maxLength={200}
@@ -168,113 +201,17 @@ const PartnerForm = ({
         required
         value={form.name}
       />
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field hint={t("slugHint")} label={t("slug")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-              pattern="[a-z0-9]+(-[a-z0-9]+)*"
-              required
-              value={form.slug}
-            />
-          )}
-        </Field>
-        <Field label={t("url")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
-              type="url"
-              value={form.url}
-            />
-          )}
-        </Field>
-        {form.relation === "partner" ? null : (
-          <Field hint={t("relationHint")} label={t("relation")}>
-            {(id) => (
-              <SelectInput
-                id={id}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    relation: e.target.value as Relation,
-                  }))
-                }
-                value={form.relation}
-              >
-                {ADDED_RELATIONS.map((relation) => (
-                  <option key={relation} value={relation}>
-                    {t(`relations.${relation}`)}
-                  </option>
-                ))}
-              </SelectInput>
-            )}
-          </Field>
+      <Field label={t("url")}>
+        {(id) => (
+          <Input
+            dir="ltr"
+            id={id}
+            onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
+            type="url"
+            value={form.url}
+          />
         )}
-        <Field label={t("kind")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  kind: e.target.value as typeof form.kind,
-                }))
-              }
-              value={form.kind}
-            >
-              {partners.partnerKinds.map((kind) => (
-                <option key={kind} value={kind}>
-                  {t(`kinds.${kind}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <Field hint={t("reachHint")} label={t("reach")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  reach: e.target.value as typeof form.reach,
-                }))
-              }
-              value={form.reach}
-            >
-              {partners.partnerReach.map((reach) => (
-                <option key={reach} value={reach}>
-                  {t(`reaches.${reach}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <Field label={t("status")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  status: e.target.value as typeof form.status,
-                }))
-              }
-              value={form.status}
-            >
-              {partners.partnerStatuses.map((status) => (
-                <option key={status} value={status}>
-                  {t(`statuses.${status}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-      </div>
+      </Field>
       <BilingualField
         label={t("description")}
         maxLength={1000}
@@ -282,23 +219,6 @@ const PartnerForm = ({
         onChange={(description) => setForm((f) => ({ ...f, description }))}
         value={form.description}
       />
-      <ImageField
-        area="partners"
-        label={t("logo")}
-        onChange={(logo_path) => setForm((f) => ({ ...f, logo_path }))}
-        value={form.logo_path}
-      />
-      <div className="flex items-center gap-2">
-        <Checkbox
-          checked={form.is_listed}
-          id="partner-listed"
-          onCheckedChange={(checked) =>
-            setForm((f) => ({ ...f, is_listed: checked === true }))
-          }
-        />
-        <Label htmlFor="partner-listed">{t("listed")}</Label>
-      </div>
-      <p className="type-caption">{t("listedHint")}</p>
       <fieldset className="grid gap-4 sm:grid-cols-3">
         <legend className="type-label mb-2">{t("contact")}</legend>
         <Field label={t("contactName")}>
@@ -339,6 +259,158 @@ const PartnerForm = ({
           )}
         </Field>
       </fieldset>
+    </>
+  );
+};
+
+/**
+ * A partner's own listing, as it stands (decisions.md, Partners): its
+ * name, locked to the memorandum, and its description and link, which the
+ * partner changes from its dashboard for the Director of Partnerships to
+ * approve.
+ */
+const OwnedListing = ({ row }: { readonly row: PartnerRow }) => {
+  const t = useTranslations("diwan.admin.partners.register");
+  const locale = useLocale() as Locale;
+  return (
+    <section className="grid gap-3">
+      <p className="type-caption">{t("ownedLede")}</p>
+      <dl className="grid gap-2 sm:grid-cols-[10rem_1fr]">
+        <dt className="type-label">{t("name")}</dt>
+        <dd className="type-body">
+          {row.name_en}
+          {row.name_ar ? (
+            <>
+              {" · "}
+              <span dir="rtl" lang="ar">
+                {row.name_ar}
+              </span>
+            </>
+          ) : null}
+        </dd>
+        <dt className="type-label">{t("url")}</dt>
+        <dd className="type-body break-all" dir="ltr">
+          {String(row.url ?? "") || "—"}
+        </dd>
+        <dt className="type-label">{t("description")}</dt>
+        <dd className="type-body whitespace-pre-line">
+          {localized(
+            {
+              description_ar: row.description_ar as string | null,
+              description_en: row.description_en as string | null,
+            },
+            "description",
+            locale
+          ) || "—"}
+        </dd>
+      </dl>
+      <TypedContact row={row} />
+    </section>
+  );
+};
+
+/**
+ * A contact typed into the entry before the partner had a Lead
+ * (decisions.md, Partners): kept as the Society's internal note, staff
+ * only and never listed, until a Lead signs up, when the database drops it.
+ */
+const TypedContact = ({ row }: { readonly row: PartnerRow }) => {
+  const t = useTranslations("diwan.admin.partners.register");
+  const parts = [row.contact_name, row.contact_role, row.contact_email]
+    .map((part) => String(part ?? "").trim())
+    .filter(Boolean);
+  if (parts.length === 0) {
+    return null;
+  }
+  return (
+    <div className="border-line grid gap-1 border-t pt-3">
+      <p className="type-label">{t("typedContact")}</p>
+      <p className="type-body">
+        <bdi>{parts.join(" · ")}</bdi>
+      </p>
+      <p className="type-caption">{t("typedContactLede")}</p>
+    </div>
+  );
+};
+
+const PartnerForm = ({
+  initial,
+  onDone,
+  owned,
+}: {
+  initial: PartnerRow;
+  onDone: () => void;
+  owned: boolean;
+}) => {
+  const t = useTranslations("diwan.admin.partners.register");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const [form, setForm] = useState(() => initialForm(initial));
+  const save = useMutation({
+    mutationFn: async () => {
+      // A partner's own entry: the Society writes only its own fields.
+      const update = owned
+        ? societyFields(form)
+        : {
+            ...partners.partnerSchema.parse({
+              contact_email: form.contact_email,
+              contact_name: form.contact_name,
+              contact_role: form.contact_role,
+              description_ar: form.description.ar,
+              description_en: form.description.en,
+              is_listed: form.is_listed,
+              kind: form.kind,
+              name_ar: form.name.ar,
+              name_en: form.name.en,
+              notes: form.notes,
+              reach: form.reach,
+              slug: form.slug,
+              status: form.status,
+              url: form.url,
+            }),
+            ...societyFields(form),
+            relation: form.relation,
+          };
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("partners")
+          .update(update)
+          .eq("id", initial.id)
+      );
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onDone();
+    },
+  });
+
+  return (
+    <form
+      className="grid max-w-3xl gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        save.mutate();
+      }}
+    >
+      {owned ? (
+        <OwnedListing row={initial} />
+      ) : (
+        <ListingFields form={form} setForm={setForm} />
+      )}
+      <SocietyFields form={form} owned={owned} setForm={setForm} />
+      <LogoFields form={form} owned={owned} setForm={setForm} />
+      <div className="flex items-center gap-2">
+        <Checkbox
+          checked={form.is_listed}
+          id="partner-listed"
+          onCheckedChange={(checked) =>
+            setForm((f) => ({ ...f, is_listed: checked === true }))
+          }
+        />
+        <Label htmlFor="partner-listed">{t("listed")}</Label>
+      </div>
+      <p className="type-caption">{t("listedHint")}</p>
       <Field hint={t("notesHint")} label={t("notes")}>
         {(id) => (
           <Textarea
@@ -362,12 +434,142 @@ const PartnerForm = ({
   );
 };
 
+/** The address, what it is, its reach and its standing. */
+const SocietyFields = ({
+  form,
+  owned,
+  setForm,
+}: {
+  readonly form: PartnerFormState;
+  readonly owned: boolean;
+  readonly setForm: SetPartnerForm;
+}) => {
+  const t = useTranslations("diwan.admin.partners.register");
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      <Field hint={t("slugHint")} label={t("slug")}>
+        {(id) => (
+          <Input
+            dir="ltr"
+            id={id}
+            onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+            pattern="[a-z0-9]+(-[a-z0-9]+)*"
+            required
+            value={form.slug}
+          />
+        )}
+      </Field>
+      {owned || form.relation === "partner" ? null : (
+        <Field hint={t("relationHint")} label={t("relation")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  relation: e.target.value as Relation,
+                }))
+              }
+              value={form.relation}
+            >
+              {ADDED_RELATIONS.map((relation) => (
+                <option key={relation} value={relation}>
+                  {t(`relations.${relation}`)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+      )}
+      <Field label={t("kind")}>
+        {(id) => (
+          <SelectInput
+            id={id}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                kind: e.target.value as typeof form.kind,
+              }))
+            }
+            value={form.kind}
+          >
+            {partners.partnerKinds.map((kind) => (
+              <option key={kind} value={kind}>
+                {t(`kinds.${kind}`)}
+              </option>
+            ))}
+          </SelectInput>
+        )}
+      </Field>
+      <Field hint={t("reachHint")} label={t("reach")}>
+        {(id) => (
+          <SelectInput
+            id={id}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                reach: e.target.value as typeof form.reach,
+              }))
+            }
+            value={form.reach}
+          >
+            {partners.partnerReach.map((reach) => (
+              <option key={reach} value={reach}>
+                {t(`reaches.${reach}`)}
+              </option>
+            ))}
+          </SelectInput>
+        )}
+      </Field>
+      <Field label={t("status")}>
+        {(id) => (
+          <SelectInput
+            id={id}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                status: e.target.value as typeof form.status,
+              }))
+            }
+            value={form.status}
+          >
+            {partners.partnerStatuses.map((status) => (
+              <option key={status} value={status}>
+                {t(`statuses.${status}`)}
+              </option>
+            ))}
+          </SelectInput>
+        )}
+      </Field>
+    </div>
+  );
+};
+
 const Register = () => {
   const t = useTranslations("diwan.admin.partners.register");
+  const tk = useTranslations("diwan.admin.kit");
   const locale = useLocale() as Locale;
   const register = usePartners();
+  // The filter lives in the query string beside the find line
+  // (decisions.md, The site: "One list").
+  const [statusParam, setStatus] = useQueryState("status");
+  const status = (partners.partnerStatuses as readonly string[]).includes(
+    statusParam
+  )
+    ? statusParam
+    : "";
 
   const columns: Column<PartnerRow>[] = [
+    {
+      // The logo as the public sees it; a missing one is marked.
+      cell: (row) => (
+        <RegisterLogo
+          org={row as unknown as Organization & { name_en: string }}
+        />
+      ),
+      header: t("logo"),
+      key: "logo",
+    },
     {
       cell: (row) => (
         <Link
@@ -414,13 +616,51 @@ const Register = () => {
   return (
     <div className="grid gap-6">
       <p className="type-body">{t("lede")}</p>
-      <DataTable
-        columns={columns}
-        empty={t("empty")}
-        rowKey={(row) => row.id}
-        rows={register.data ?? []}
-      />
       <AddOrganization />
+      <RecordList
+        empty={
+          <EmptyLine action={{ href: "/partnerships", label: tk("showAll") }}>
+            {t("empty")}
+          </EmptyLine>
+        }
+        filters={
+          <Field label={t("status")}>
+            {(id) => (
+              <SelectInput
+                className="w-44"
+                id={id}
+                onChange={(e) => setStatus(e.target.value)}
+                value={status}
+              >
+                <option value="">{tk("all")}</option>
+                {partners.partnerStatuses.map((value) => (
+                  <option key={value} value={value}>
+                    {t(`statuses.${value}`)}
+                  </option>
+                ))}
+              </SelectInput>
+            )}
+          </Field>
+        }
+        items={(register.data ?? []).filter(
+          (row) => !status || row.status === status
+        )}
+        matches={(row, q) =>
+          [row.name_en, row.name_ar, row.slug].some((v) =>
+            String(v ?? "")
+              .toLowerCase()
+              .includes(q)
+          )
+        }
+      >
+        {(found) => (
+          <DataTable
+            columns={columns}
+            rowKey={(row) => row.id}
+            rows={[...found]}
+          />
+        )}
+      </RecordList>
     </div>
   );
 };
@@ -468,41 +708,104 @@ const AddOrganization = () => {
     },
   });
   return (
-    <DiwanSection id="add" title={t("addTitle")}>
-      <form
-        className="grid max-w-2xl gap-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          add.mutate();
-        }}
-      >
-        <Field label={t("relation")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) => setRelation(e.target.value as Relation)}
-              value={relation}
+    <AddInPlace label={t("addTitle")}>
+      {() => (
+        <form
+          className="grid max-w-2xl gap-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            add.mutate();
+          }}
+        >
+          <Field label={t("relation")}>
+            {(id) => (
+              <SelectInput
+                id={id}
+                onChange={(e) => setRelation(e.target.value as Relation)}
+                value={relation}
+              >
+                {ADDED_RELATIONS.map((r) => (
+                  <option key={r} value={r}>
+                    {t(`relations.${r}`)}
+                  </option>
+                ))}
+              </SelectInput>
+            )}
+          </Field>
+          <BilingualField label={t("name")} onChange={setName} value={name} />
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              disabled={!(name.en.trim() && name.ar.trim()) || add.isPending}
+              type="submit"
+              variant="outline"
             >
-              {ADDED_RELATIONS.map((r) => (
-                <option key={r} value={r}>
-                  {t(`relations.${r}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <BilingualField label={t("name")} onChange={setName} value={name} />
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            disabled={!(name.en.trim() && name.ar.trim()) || add.isPending}
-            type="submit"
-            variant="outline"
-          >
-            {t("add")}
-          </Button>
-          <ErrorLine error={add.error} />
-        </div>
-      </form>
+              {t("add")}
+            </Button>
+            <ErrorLine error={add.error} />
+          </div>
+        </form>
+      )}
+    </AddInPlace>
+  );
+};
+
+/**
+ * A logo the partner sent from its dashboard (decisions.md, Partners),
+ * waiting for Partnerships: approved, it is the one shown; declined, the
+ * partner sends another. Partnerships can still upload one below.
+ */
+const PendingLogo = ({
+  partnerId,
+  path,
+}: {
+  readonly partnerId: string;
+  readonly path: string;
+}) => {
+  const t = useTranslations("diwan.admin.partners.register.pendingLogo");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const decide = useMutation({
+    mutationFn: async (approve: boolean) => {
+      const declined = unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("decide_partner_logo", { approve, partner: partnerId })
+      );
+      if (declined) {
+        await supabase.storage.from(buckets.media.id).remove([declined]);
+      }
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
+  return (
+    <DiwanSection description={t("lede")} id="pending-logo" title={t("title")}>
+      {/* biome-ignore lint/performance/noImgElement: a partner logo from the media bucket, any size */}
+      <img
+        alt=""
+        className="h-16 w-auto justify-self-start"
+        height={64}
+        src={getMediaUrl(supabase, path)}
+        width={128}
+      />
+      <div className="flex flex-wrap items-center gap-4">
+        <Button
+          disabled={decide.isPending}
+          onClick={() => decide.mutate(true)}
+          size="sm"
+          variant="outline"
+        >
+          {t("approve")}
+        </Button>
+        <button
+          className="link"
+          disabled={decide.isPending}
+          onClick={() => decide.mutate(false)}
+          type="button"
+        >
+          {t("decline")}
+        </button>
+      </div>
+      <ErrorLine error={decide.error} />
     </DiwanSection>
   );
 };
@@ -516,10 +819,51 @@ const partnerRef = (row: PartnerRow) => String(row.slug || row.id);
  * returns to the register; a listed partner links to the public Partners
  * page.
  */
+/**
+ * The entry's page (decisions.md, The site; Partners): its logo as the
+ * public sees it, what waits for a decision (a logo, a listing change, a
+ * possible match), then the form; on a partner's own entry, its people
+ * from their accounts.
+ */
+const PartnerPageBody = ({ row }: { readonly row: PartnerRow }) => {
+  const router = useRouter();
+  const owned = usePartnerOwned(row.id);
+  if (owned.isPending) {
+    return <SectionSpinner />;
+  }
+  const isOwned = owned.data === true;
+  return (
+    <>
+      <RegisterLogo
+        org={row as unknown as Organization & { name_en: string }}
+      />
+      <PartnerLinking partnerId={row.id} />
+      {row.logo_pending_path ? (
+        <PendingLogo partnerId={row.id} path={String(row.logo_pending_path)} />
+      ) : null}
+      {isOwned ? (
+        <PendingListing
+          current={{
+            description_ar: (row.description_ar as string | null) ?? null,
+            description_en: (row.description_en as string | null) ?? null,
+            url: (row.url as string | null) ?? null,
+          }}
+          partnerId={row.id}
+        />
+      ) : null}
+      <PartnerForm
+        initial={row}
+        onDone={() => router.push("/partnerships")}
+        owned={isOwned}
+      />
+      {isOwned ? <PartnerPeople partnerId={row.id} /> : null}
+    </>
+  );
+};
+
 export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
   const t = useTranslations("diwan.admin.partners.register");
   const locale = useLocale() as Locale;
-  const router = useRouter();
   const register = usePartners();
   if (register.isPending) {
     return <SectionSpinner />;
@@ -549,7 +893,7 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
       narrow
       title={localized(row, "name", locale)}
     >
-      <PartnerForm initial={row} onDone={() => router.push("/partnerships")} />
+      <PartnerPageBody row={row} />
       {row ? (
         <DiwanSection id="guests" title={t("guests")}>
           <Affiliations partnerId={row.id} />

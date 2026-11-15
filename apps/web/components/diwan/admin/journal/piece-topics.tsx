@@ -138,6 +138,20 @@ export const PieceTopics = ({ pieceId }: { readonly pieceId: string }) => {
     <section className="grid gap-4">
       <h2 className="type-subheading">{t("title")}</h2>
       <p className="type-body text-text-secondary">{t("lede")}</p>
+      {publishes ? (
+        <AddInPlace label={t("new")}>
+          {(close) => (
+            <NewTopic
+              onDone={(id) => {
+                close();
+                if (id) {
+                  tag.mutate(id);
+                }
+              }}
+            />
+          )}
+        </AddInPlace>
+      ) : null}
       {chosen.length > 0 ? (
         <ul className="flex flex-wrap gap-x-6 gap-y-2">
           {chosen.map((topic) => (
@@ -177,20 +191,6 @@ export const PieceTopics = ({ pieceId }: { readonly pieceId: string }) => {
           </Field>
           <SaveButton disabled={!choice} pending={tag.isPending} />
         </form>
-      ) : null}
-      {publishes ? (
-        <AddInPlace label={t("new")}>
-          {(close) => (
-            <NewTopic
-              onDone={(id) => {
-                close();
-                if (id) {
-                  tag.mutate(id);
-                }
-              }}
-            />
-          )}
-        </AddInPlace>
       ) : null}
       <ErrorLine error={tag.error ?? untag.error} />
     </section>

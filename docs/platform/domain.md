@@ -84,6 +84,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   under-18 rules still on; sign-up under 18 takes only an AUIB
   student's address or an invitation that isn't to a class
   (`private.refuse_minor_associate_sign_up`).
+- **Alumni** sign up with another address and tick "I studied at AUIB"
+  (shown only to someone 18 or older): the account is a guest's and the
+  Director of Membership approves the request
+  (`membership.associate_requests`); Today shows it while it waits and
+  once if declined (`membership.my_associate_request`).
 - **Addresses and classes** (decisions.md, Members). The sign-in address
   changes only through `private.move_sign_in`, which tells the old and
   the new address. Someone who signed up with another address, or a
@@ -318,8 +323,26 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Membership runs every application, and the role's owner picks the
   person (`private.picks_opening`); whoever is onboarded holds the role.
 - **Partners.** One register, `governance.partners`. `/partners` is the
-  front door; an organization applies at `/partners/apply`, its signatory
-  signing by name, and becomes a partner only when the President
+  front door; an organization applies at `/partners/apply` (its draft
+  saved on the site as it is filled in,
+  `governance.partner_application_drafts`), its signatory signing by name,
+  owns its listing once it applies (`private.partner_owned`): its
+  description and link go to the Director of Partnerships as a change to
+  approve or decline, before and after side by side
+  (`governance.partner_listing_changes`), its name is locked to the
+  memorandum, and its people come from their accounts
+  (`governance.partner_people`); the Society changes only the logo (logged,
+  and the Lead is emailed, `partners.logo_changed`), the kind and the
+  listing. An application the register seems to have already is linked on
+  its Diwan page ("Same organization as…", `governance.link_partner`,
+  keeping the entry's history and events) or kept apart ("New entry").
+  Joining a team by email domain is only for a domain the partner alone
+  uses (`private.is_shared_domain`: universities, schools and governments
+  are named invitations only). It
+  sends its own logo from its dashboard for Partnerships to approve
+  (`/api/partners/logo`, `governance.decide_partner_logo`; the logo that
+  shows is set by Partnerships only, which also uploads the campus
+  partners' and sponsors' logos), and becomes a partner only when the President
   countersigns under the Council's adopted resolution
   (`governance.record_partner_vote`); nobody adds a
   partner or drafts a memorandum in the Diwan. Each partner has one
@@ -341,8 +364,13 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Register) holds every organization the site names, each with its
   `relation`: a partner (by application and memorandum), a campus partner
   (AUIB's own offices, which aren't partners) or a sponsor in kind; its
-  kind, both names, logo (an upload, or AUIB's standard set,
-  `logo_static`), one line and link. Partnerships adds campus partners and
+  kind, both names, one logo (an upload, PNG, JPG or WebP at least 600
+  pixels high and never SVG, kept in the media storage; or AUIB's
+  standard set, `logo_static`, SVG with white versions in
+  `apps/web/public/institutions`), "The logo shows the name", one line and
+  link. In dark mode an uploaded logo sits on a small paper-colored tile.
+  A contact typed before a partner had a Lead stays as the Society's
+  internal note until its Lead signs up (`private.drop_typed_contact`). Partnerships adds campus partners and
   sponsors there and edits every entry. /partners lists the partners by
   kind, then "Campus partners" (`CampusPartners`). An event names who it
   is with from the register only (`events.event_organizations`, edited on
@@ -382,15 +410,23 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **Two lanes.** Qirtas is a student paper (News, Voices, Video) and a
   literary magazine (Letters, Gallery) under one name. **Editions is the one
   door for outside work** (`/qirtas/editions`; Qirtas's "Send your work",
-  `journal.SEND_YOUR_WORK`, opens it at `?status=open`; `/qirtas/submit`,
-  `/qirtas/write` and `/haven` redirect). Every submission belongs to an
-  Edition's call (`journal.calls.issue_id`, `kind`): each Edition's
-  **general submissions** (always open, replies within six weeks, one per
-  Edition) and any **themed call** with its own dates and terms, all set on
-  the Edition's page in the Diwan. The public reads the calls with their
-  Editions through `journal.edition_calls()`, so an Edition's page lives at
-  one address from its call's opening: the call, then "Reading now", then
-  the book. Forms live under the Edition
+  `journal.SEND_YOUR_WORK`, is `/qirtas/editions/open`, which opens the
+  open Edition's page; `/qirtas/submit`, `/qirtas/write` and `/haven`
+  redirect). **One Edition, one title, one call**: every Edition has a
+  number, a season and a title (its theme), and exactly one call
+  (`journal.calls`, unique per `issue_id`) for Letters, Gallery and Video,
+  titled by the site from the Edition ("Edition 0: Haven") and unable to
+  open until the Edition has its title. Each call opens the day the
+  previous one closes; the database sends a submission to the call named
+  while it is open, else to the open Edition's call (work sent after a
+  deadline goes to the next Edition). Haven is Edition 0, the pilot. An
+  Edition is cited "Edition <n>: <title>, <season>" (`editionCitation`).
+  Accepted Letters, Gallery and Video work comes out with its Edition on
+  its date (`private.is_edition_work`, `try_publish`), never piece by
+  piece; the staff lane publishes as pieces are ready. The public reads the
+  calls with their Editions through `journal.edition_calls()`, so an
+  Edition's page lives at one address from its call's opening: the call,
+  then "Reading now", then the book. Forms live under the Edition
   (`/qirtas/editions/<edition>/submit/<type>`, a draft under it); signed
   out, a form goes to sign-in and back.
   - **Letters and Gallery** are read blind; **Video** takes members' films
@@ -401,6 +437,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
     (600–800, with its line about the writer, `about_writer`) at
     `/qirtas/voices/letter` and `/op-ed`, to no call, by name, decided by
     the Voices desk (`private.html_word_count` checks the lengths).
+    The published op-ed ends with its identity line, built on the page
+    from the writer's class (a Member is a student), their year and line
+    and their Arabic form (`journal.op_ed_identity`); none under a pen
+    name or an anonymous byline.
   - **News takes no submissions:** "Send a news tip" (tips@) and "Join the
     staff" (Get involved) are its door (`journal.deskDoors`).
   - The form follows the one form flow: drafts saved as you go

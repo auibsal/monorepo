@@ -113,6 +113,9 @@ export const SessionLinks = ({ eventId }: { readonly eventId: string }) => {
   return (
     <DiwanSection id="links" title={t("title")}>
       <p className="type-body text-text-secondary">{t("lede")}</p>
+      <AddInPlace label={t("new")}>
+        {(close) => <NewLink eventId={eventId} onDone={close} />}
+      </AddInPlace>
       {links.data?.length ? (
         <RowList>
           {links.data.map((link) => (
@@ -149,9 +152,6 @@ export const SessionLinks = ({ eventId }: { readonly eventId: string }) => {
           ))}
         </RowList>
       ) : null}
-      <AddInPlace label={t("new")}>
-        {(close) => <NewLink eventId={eventId} onDone={close} />}
-      </AddInPlace>
       <ErrorLine error={remove.error} />
     </DiwanSection>
   );

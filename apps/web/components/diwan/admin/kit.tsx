@@ -428,6 +428,10 @@ const namedReason = (error: unknown, code: string) => {
   if (error.message.includes("trip_needs_approval")) {
     return "tripNeedsApproval" as const;
   }
+  // An organization's logo is at least 600 pixels high (decisions.md, Partners).
+  if (error.message.includes("logo_too_small")) {
+    return "logoTooSmall" as const;
+  }
   return null;
 };
 

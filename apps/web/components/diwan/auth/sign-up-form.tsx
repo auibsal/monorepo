@@ -374,7 +374,8 @@ export const SignUpForm = (props: SignUpFormProps) => {
       // The confirmation link brings the person back to what they started.
       redirectTo: callbackUrl(locale, next),
       signUpKey,
-      studiedAtAuib: !(auib || outside) && studied,
+      // Associate Members are 18 or older (decisions.md, Members).
+      studiedAtAuib: !(auib || outside) && studied && adult === "yes",
     });
     setPending(false);
     human.reset();
@@ -461,7 +462,7 @@ export const SignUpForm = (props: SignUpFormProps) => {
             {t("passwordHint")}
           </p>
         </div>
-        {email.includes("@") && !auib && !outside ? (
+        {email.includes("@") && !auib && !outside && adult !== "no" ? (
           <div className="flex items-start gap-3">
             <Checkbox
               aria-describedby={`${id}-studied-hint`}

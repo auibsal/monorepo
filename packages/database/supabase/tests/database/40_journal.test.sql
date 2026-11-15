@@ -109,15 +109,18 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000005b1', 'r1@auib.edu.iq
 select pg_temp.make_user('00000000-0000-0000-0000-0000000005b2', 'r2@auib.edu.iq', 'Reader Two');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000005b3', 'r3@auib.edu.iq', 'Reader Three');
 
-insert into journal.issues (id, volume, number, slug, title_en, title_ar)
-values ('1a000000-0000-0000-0000-000000000001', 1, 1, 'issue-1', 'Firsts', 'أوّل مرّة');
+-- One call per Edition (decisions.md, Qirtas): three test Editions.
+insert into journal.issues (id, volume, number, slug, title_en, title_ar) values
+  ('1a000000-0000-0000-0000-000000000001', 90, 1, 'issue-1', 'Firsts', 'أوّل مرّة'),
+  ('1a000000-0000-0000-0000-000000000002', 90, 2, 'issue-2', 'Guests', 'ضيوف'),
+  ('1a000000-0000-0000-0000-000000000003', 90, 3, 'issue-3', 'Closed', 'مغلق');
 insert into journal.calls (id, issue_id, title_en, title_ar, opens_at, closes_at, is_published) values
   ('ca000000-0000-0000-0000-000000000001', '1a000000-0000-0000-0000-000000000001',
-    'Issue 1', 'العدد الأول', now() - interval '1 day', now() + interval '30 days', true),
-  ('ca000000-0000-0000-0000-000000000002', '1a000000-0000-0000-0000-000000000001',
-    'Guest Page', 'صفحة الضيف', now() - interval '1 day', now() + interval '30 days', true),
-  ('ca000000-0000-0000-0000-000000000003', '1a000000-0000-0000-0000-000000000001',
-    'Closed', 'مغلق', now() - interval '10 days', now() - interval '1 day', true);
+    'x', 'x', now() - interval '1 day', now() + interval '30 days', true),
+  ('ca000000-0000-0000-0000-000000000002', '1a000000-0000-0000-0000-000000000002',
+    'x', 'x', now() - interval '1 day', now() + interval '30 days', true),
+  ('ca000000-0000-0000-0000-000000000003', '1a000000-0000-0000-0000-000000000003',
+    'x', 'x', now() - interval '10 days', now() - interval '1 day', true);
 
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000005a1', 'managing_editor', 'issue', '1a000000-0000-0000-0000-000000000001');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000005e1', 'eic', 'issue', '1a000000-0000-0000-0000-000000000001');
@@ -185,10 +188,9 @@ select throws_ok(
   '54000', null,
   'A fourth submission within an hour is rate-limited'
 );
-select throws_ok(
+select lives_ok(
   $$ select pg_temp.submit(2, 'poetry', 'ca000000-0000-0000-0000-000000000003') $$,
-  '22023', null,
-  'A closed call refuses submissions'
+  'Work sent after a call closes goes to the open Edition''s call'
 );
 select throws_ok(
   $$ select pg_temp.submit(8, 'poetry') $$,
@@ -209,7 +211,7 @@ select throws_ok(
   '23514', null,
   'The Human Authorship pledge is reconfirmed per submission'
 );
-select is((select count(*) from journal.submissions)::integer, 1, 'Authors see only their own submissions');
+select is((select count(*) from journal.submissions)::integer, 2, 'Authors see only their own submissions');
 
 -- ── Intake and blind entries ────────────────────────────────────────────────
 

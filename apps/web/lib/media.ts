@@ -1,8 +1,11 @@
-import { env } from "@/env";
+// The public URL only, read directly: this module reaches client components
+// too (the Diwan's register shows logos), and `@/env` would carry the
+// server keys' names into the browser bundle (CI greps for them).
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 const publicObject = (bucket: string, path: string | null | undefined) =>
-  path && env.NEXT_PUBLIC_SUPABASE_URL
-    ? `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${path
+  path && SUPABASE_URL
+    ? `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path
         .split("/")
         .map(encodeURIComponent)
         .join("/")}`

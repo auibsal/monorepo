@@ -94,11 +94,16 @@ as $$
 $$;
 -- </preamble>
 
--- Editions is the one door (decisions.md, Qirtas): general submissions and
--- a themed call per Edition; Video's films with their declarations; Voices'
--- letters and op-eds to no call, by name, within their lengths.
+-- Editions is the one door (decisions.md, Qirtas): one call per Edition;
+-- Video's films with their declarations; Voices' letters and op-eds to no
+-- call, by name, within their lengths.
 
 select plan(14);
+
+-- Edition 1, titled, with its call open for films.
+update journal.issues set title_en = 'Test title', title_ar = 'عنوان الاختبار' where slug = 'edition-1';
+update journal.calls c set is_published = true, opens_at = now() - interval '1 day'
+from journal.issues i where i.id = c.issue_id and i.slug = 'edition-1';
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e1d01', 'writer.ed@auib.edu.iq', 'Ed Writer');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e1d02', 'voices.ed@auib.edu.iq', 'Voices Editor');
@@ -108,10 +113,10 @@ select '00000000-0000-0000-0000-0000000e1d01', t, '1'
 from unnest(enum_range(null::membership.pledge_type)) t;
 
 select throws_ok(
-  $$ insert into journal.calls (issue_id, kind, title_en, title_ar, opens_at, closes_at)
-     select issue_id, 'general', 'Again', 'مجددًا', now(), now() + interval '1 day'
-     from journal.calls where kind = 'general' limit 1 $$,
-  '23505', null, 'An Edition has one general submissions');
+  $$ insert into journal.calls (issue_id, title_en, title_ar, opens_at, closes_at)
+     select issue_id, 'Again', 'مجددًا', now(), now() + interval '1 day'
+     from journal.calls limit 1 $$,
+  '23505', null, 'An Edition has one call');
 select throws_ok(
   $$ insert into journal.calls (title_en, title_ar, opens_at, closes_at)
      values ('Nowhere', 'لا مكان', now(), now() + interval '1 day') $$,
@@ -127,7 +132,7 @@ select lives_ok(
   $$ insert into journal.submissions (category, language, title, video_url, human_authorship_confirmed,
        first_publication_confirmed, running_minutes, captions_confirmed, release_confirmed)
      values ('short_film', 'en', 'A film', 'https://example.org/f', true, true, 12, true, true) $$,
-  'A member sends a film to the general submissions');
+  'A member sends a film to the open Edition''s call');
 select throws_ok(
   $$ insert into journal.submissions (category, language, title, video_url, human_authorship_confirmed,
        first_publication_confirmed, running_minutes, captions_confirmed, release_confirmed)

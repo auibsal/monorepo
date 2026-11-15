@@ -1,7 +1,6 @@
 "use client";
 
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
-import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import {
@@ -10,18 +9,19 @@ import {
 } from "@repo/internationalization/format";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useDeferredValue, useId, useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { membership } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { useQueryState } from "@/lib/diwan/use-query-param";
 import { hasPermission } from "@/lib/rbac";
-import { ErrorState, SectionSpinner } from "../../states";
+import { EmptyLine, ErrorState, SectionSpinner } from "../../states";
 import {
   AdminHeading,
   type Column,
   DataTable,
+  RecordList,
   RowCount,
   SelectInput,
 } from "../kit";
@@ -47,6 +47,34 @@ export const memberName = (
   row.full_name_ar ||
   "";
 
+/**
+ * A person's current short name in English and in Arabic, side by side
+ * (decisions.md, The site: the Register), each in its own direction.
+ */
+export const ShortNames = ({
+  row,
+}: {
+  readonly row: Pick<
+    Row,
+    "full_name_ar" | "full_name_en" | "short_name_ar" | "short_name_en"
+  >;
+}) => {
+  const en = row.short_name_en || row.full_name_en;
+  const ar = row.short_name_ar || row.full_name_ar;
+  return (
+    <span className="inline-flex flex-wrap items-baseline gap-x-3">
+      <span dir="ltr" lang="en">
+        {en}
+      </span>
+      {ar ? (
+        <span dir="rtl" lang="ar">
+          {ar}
+        </span>
+      ) : null}
+    </span>
+  );
+};
+
 export const MembersDirectory = () => {
   const t = useTranslations("diwan.admin.members");
   const tt = useTranslations("diwan.home.tiers");
@@ -55,22 +83,16 @@ export const MembersDirectory = () => {
   const id = useId();
   const grants = useGrants();
   const directory = useDirectory();
-  // The find line and the filters live in the query string (decisions.md,
+  // The filters live in the query string beside the find line (decisions.md,
   // The site: "One list"), so a filtered Register can be shared and reloads.
-  const [q, setQ] = useQueryState("q");
   const [tierParam, setTierParam] = useQueryState("tier");
   const [votingParam, setVotingParam] = useQueryState("voting");
-  const [query, setQueryState] = useState(q);
   const [tier, setTierState] = useState(
     (membership.tiers as readonly string[]).includes(tierParam)
       ? (tierParam as membership.Tier)
       : ""
   );
   const [votingOnly, setVotingState] = useState(votingParam === "1");
-  const setQuery = (value: string) => {
-    setQueryState(value);
-    setQ(value);
-  };
   const setTier = (value: "" | membership.Tier) => {
     setTierState(value);
     setTierParam(value);
@@ -79,20 +101,14 @@ export const MembersDirectory = () => {
     setVotingState(value);
     setVotingParam(value ? "1" : "");
   };
-  const deferred = useDeferredValue(query);
-
-  const rows = useMemo(() => {
-    const needle = deferred.trim().toLowerCase();
-    return (directory.data ?? []).filter(
-      (row) =>
-        (!needle ||
-          row.email.toLowerCase().includes(needle) ||
-          row.full_name_en.toLowerCase().includes(needle) ||
-          (row.full_name_ar ?? "").includes(deferred.trim())) &&
-        (!tier || row.tier === tier) &&
-        (!votingOnly || row.voting_member)
-    );
-  }, [deferred, directory.data, tier, votingOnly]);
+  const rows = useMemo(
+    () =>
+      (directory.data ?? []).filter(
+        (row) =>
+          (!tier || row.tier === tier) && (!votingOnly || row.voting_member)
+      ),
+    [directory.data, tier, votingOnly]
+  );
 
   if (directory.isPending) {
     return <SectionSpinner />;
@@ -108,7 +124,11 @@ export const MembersDirectory = () => {
           className="font-medium underline underline-offset-4"
           href={`/membership/${row.user_id}`}
         >
-          {memberName(row, locale) || t("unnamed")}
+          {row.short_name_en || row.full_name_en ? (
+            <ShortNames row={row} />
+          ) : (
+            t("unnamed")
+          )}
         </Link>
       ),
       header: t("columns.name"),
@@ -128,6 +148,13 @@ export const MembersDirectory = () => {
       cell: (row) => (row.tier ? tt(row.tier) : t("notAMember")),
       header: t("columns.tier"),
       key: "tier",
+    },
+    {
+      cell: (row) =>
+        row.card_number === null ? "—" : formatNumber(row.card_number),
+      className: "tabular-nums",
+      header: t("columns.number"),
+      key: "number",
     },
     {
       cell: (row) =>
@@ -164,51 +191,64 @@ export const MembersDirectory = () => {
       >
         {t("lede")}
       </AdminHeading>
-      <div className="flex flex-wrap items-end gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-q`}>{tk("search")}</Label>
-          <Input
-            className="w-72 max-w-full"
-            id={`${id}-q`}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={tk("searchPlaceholder")}
-            type="search"
-            value={query}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-tier`}>{t("filters.tier")}</Label>
-          <SelectInput
-            className="w-44"
-            id={`${id}-tier`}
-            onChange={(e) => setTier(e.target.value as "" | membership.Tier)}
-            value={tier}
-          >
-            <option value="">{tk("all")}</option>
-            {membership.tiers.map((value) => (
-              <option key={value} value={value}>
-                {tt(value)}
-              </option>
-            ))}
-          </SelectInput>
-        </div>
-        <div className="flex items-center gap-2 pb-2">
-          <Checkbox
-            checked={votingOnly}
-            id={`${id}-voting`}
-            onCheckedChange={(v) => setVotingOnly(v === true)}
-          />
-          <Label htmlFor={`${id}-voting`}>{t("filters.voting")}</Label>
-        </div>
-      </div>
-      <RowCount count={rows.length} />
-      <DataTable
-        caption={t("title")}
-        columns={columns}
-        empty={tk("noMatches")}
-        rowKey={(row) => row.user_id}
-        rows={rows}
-      />
+      <RecordList
+        empty={
+          <EmptyLine action={{ href: "/membership", label: tk("showAll") }}>
+            {tk("noMatches")}
+          </EmptyLine>
+        }
+        filters={
+          <>
+            <div className="grid gap-2">
+              <Label htmlFor={`${id}-tier`}>{t("filters.tier")}</Label>
+              <SelectInput
+                className="w-44"
+                id={`${id}-tier`}
+                onChange={(e) =>
+                  setTier(e.target.value as "" | membership.Tier)
+                }
+                value={tier}
+              >
+                <option value="">{tk("all")}</option>
+                {membership.tiers.map((value) => (
+                  <option key={value} value={value}>
+                    {tt(value)}
+                  </option>
+                ))}
+              </SelectInput>
+            </div>
+            <div className="flex items-center gap-2 pb-2">
+              <Checkbox
+                checked={votingOnly}
+                id={`${id}-voting`}
+                onCheckedChange={(v) => setVotingOnly(v === true)}
+              />
+              <Label htmlFor={`${id}-voting`}>{t("filters.voting")}</Label>
+            </div>
+          </>
+        }
+        items={rows}
+        matches={(row, q) =>
+          row.email.toLowerCase().includes(q) ||
+          row.full_name_en.toLowerCase().includes(q) ||
+          (row.full_name_ar ?? "").includes(q) ||
+          (row.short_name_en ?? "").toLowerCase().includes(q) ||
+          (row.short_name_ar ?? "").includes(q) ||
+          String(row.card_number ?? "") === q
+        }
+      >
+        {(found) => (
+          <>
+            <RowCount count={found.length} />
+            <DataTable
+              caption={t("title")}
+              columns={columns}
+              rowKey={(row) => row.user_id}
+              rows={found}
+            />
+          </>
+        )}
+      </RecordList>
     </div>
   );
 };

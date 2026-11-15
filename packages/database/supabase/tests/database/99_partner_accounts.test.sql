@@ -202,9 +202,10 @@ select is((select array_agg(slug) from governance.my_partners()), array['poetry-
   'Whoever applied becomes the partner''s representative');
 select is((select array_agg(slug) from governance.partners), array['poetry-club'],
   'and reads its own partner only');
-select lives_ok(
+select throws_ok(
   $$ update governance.partners set description_en = 'Poetry in Erbil since 2020.' where slug = 'poetry-club' $$,
-  'edits its profile'
+  '42501', 'kept_by_the_society',
+  'does not change its listing directly (decisions.md, Partners)'
 );
 select throws_ok(
   $$ update governance.partners set is_listed = true where slug = 'poetry-club' $$,

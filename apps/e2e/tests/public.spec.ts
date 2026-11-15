@@ -137,11 +137,14 @@ test.describe("public site", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "Editions"
     );
-    // Open now first: one row per open call, each with its action.
-    const open = page.getByRole("list", { name: "Open now" });
-    await expect(open).toContainText("Haven: dreams and memories");
-    await expect(open).toContainText("Edition 1: general submissions");
-    await expect(open).toContainText("Any time");
+    // The open call first, in the one open-call row (decisions.md, Qirtas).
+    const open = page.getByRole("list", { name: "The open call" });
+    await expect(open).toContainText("Edition 0: Haven");
+    await expect(open).toContainText("Dreams and memories");
+    await expect(open).toContainText("Closes");
+    // "Send your work" opens the open Edition's page at its call.
+    await page.goto(`${urls.web}/qirtas/editions/open`);
+    await expect(page).toHaveURL(/\/qirtas\/editions\/haven/u);
     await expectAccessible(page);
     // The Edition's page holds its call: the action first, then the terms.
     await page.goto(`${urls.web}/qirtas/editions/haven`);
@@ -182,8 +185,8 @@ test("a shared address that changed redirects to its new one, in both languages"
   for (const prefix of ["", "/ar"]) {
     for (const [from, to] of [
       ["/membership", "/account"],
-      ["/qirtas/write", "/qirtas/editions?status=open"],
-      ["/qirtas/submit", "/qirtas/editions?status=open"],
+      ["/qirtas/write", "/qirtas/editions/open"],
+      ["/qirtas/submit", "/qirtas/editions/open"],
       ["/haven", "/qirtas/editions/haven"],
       ["/library/privacy", "/privacy"],
       ["/partners/join", "/partners/apply"],

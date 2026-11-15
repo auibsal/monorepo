@@ -282,6 +282,19 @@ const Shortlist = ({
     <section className="grid gap-4">
       <h2 className="type-heading">{t(`categories.${category}`)}</h2>
       <p className="type-caption">{t(`categoryHint.${category}`)}</p>
+      {locked ? (
+        <p className="type-caption">{t("shortlistClosed")}</p>
+      ) : (
+        <AddInPlace label={t("shortlistAdd")}>
+          {(close) =>
+            category === "qirtas" ? (
+              <AddPiece onDone={close} round={round} />
+            ) : (
+              <AddQalamWork onDone={close} round={round} />
+            )
+          }
+        </AddInPlace>
+      )}
       <DataTable
         columns={[
           {
@@ -358,19 +371,6 @@ const Shortlist = ({
         rows={mine}
       />
       <ErrorLine error={drop.error ?? setNamed.error ?? recuse.error} />
-      {locked ? (
-        <p className="type-caption">{t("shortlistClosed")}</p>
-      ) : (
-        <AddInPlace label={t("shortlistAdd")}>
-          {(close) =>
-            category === "qirtas" ? (
-              <AddPiece onDone={close} round={round} />
-            ) : (
-              <AddQalamWork onDone={close} round={round} />
-            )
-          }
-        </AddInPlace>
-      )}
     </section>
   );
 };

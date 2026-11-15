@@ -12,8 +12,8 @@ import { useAuth } from "@/lib/auth/provider";
 import { type events, localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { DiwanSection } from "../../page";
-import { ErrorState, SectionSpinner } from "../../states";
-import { AdminHeading, type Column, DataTable } from "../kit";
+import { EmptyLine, ErrorState, SectionSpinner } from "../../states";
+import { AdminHeading, type Column, DataTable, RecordList } from "../kit";
 import { adminEventColumns } from "./data";
 
 type Kind = "upcoming" | "past" | "drafts";
@@ -72,6 +72,7 @@ export const EventsList = () => {
   const t = useTranslations("diwan.admin.events");
   const ts = useTranslations("diwan.admin.kit.statuses");
   const te = useTranslations("diwan.admin.event");
+  const tk = useTranslations("diwan.admin.kit");
   const locale = useLocale() as Locale;
   const upcoming = useEventRows("upcoming");
   const drafts = useEventRows("drafts");
@@ -137,41 +138,70 @@ export const EventsList = () => {
     },
   ];
 
-  const table = (
-    query: ReturnType<typeof useEventRows>,
-    caption: string,
-    empty: string
-  ) => (
-    <>
-      {query.isPending ? <SectionSpinner /> : null}
-      {query.isError ? <ErrorState onRetry={() => query.refetch()} /> : null}
-      {query.data ? (
-        <DataTable
-          caption={caption}
-          columns={columns}
-          empty={empty}
-          rowKey={(e) => e.id}
-          rows={query.data}
-        />
-      ) : null}
-    </>
+  const loading = upcoming.isPending || past.isPending;
+  const failed = [upcoming, past, drafts].find((q) => q.isError);
+  const groups: { kind: Kind; rows: readonly Row[] }[] = [
+    { kind: "upcoming", rows: upcoming.data ?? [] },
+    { kind: "drafts", rows: drafts.data ?? [] },
+    { kind: "past", rows: past.data ?? [] },
+  ];
+  const all = groups.flatMap((g) =>
+    g.rows.map((row) => ({ kind: g.kind, row }))
+  );
+  const table = (rows: readonly Row[], caption: string, empty: string) => (
+    <DataTable
+      caption={caption}
+      columns={columns}
+      empty={empty}
+      rowKey={(e) => e.id}
+      rows={[...rows]}
+    />
   );
 
+  // One list (decisions.md, The site): one find line over the coming,
+  // draft and past events, kept in the query string.
   return (
     <div className="grid gap-10">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <div className="grid gap-4">
-        {table(upcoming, t("tabs.upcoming"), t("noUpcoming"))}
-        <p className="type-caption">{t("campusNote")}</p>
-      </div>
-      {drafts.data && drafts.data.length > 0 ? (
-        <DiwanSection id="drafts" title={t("tabs.drafts")}>
-          {table(drafts, t("tabs.drafts"), "")}
-        </DiwanSection>
-      ) : null}
-      <DiwanSection id="past" title={t("tabs.past")}>
-        {table(past, t("tabs.past"), t("noPast"))}
-      </DiwanSection>
+      {loading ? <SectionSpinner /> : null}
+      {failed ? <ErrorState onRetry={() => failed.refetch()} /> : null}
+      {loading || failed ? null : (
+        <RecordList
+          empty={
+            <EmptyLine action={{ href: "/events", label: tk("showAll") }}>
+              {tk("noMatches")}
+            </EmptyLine>
+          }
+          items={all}
+          matches={({ row }, q) =>
+            [row.title_en, row.title_ar, row.slug].some((v) =>
+              v?.toLowerCase().includes(q)
+            )
+          }
+        >
+          {(found) => {
+            const of = (kind: Kind) =>
+              found.filter((f) => f.kind === kind).map((f) => f.row);
+            const draftRows = of("drafts");
+            return (
+              <div className="grid gap-10">
+                <div className="grid gap-4">
+                  {table(of("upcoming"), t("tabs.upcoming"), t("noUpcoming"))}
+                  <p className="type-caption">{t("campusNote")}</p>
+                </div>
+                {draftRows.length > 0 ? (
+                  <DiwanSection id="drafts" title={t("tabs.drafts")}>
+                    {table(draftRows, t("tabs.drafts"), "")}
+                  </DiwanSection>
+                ) : null}
+                <DiwanSection id="past" title={t("tabs.past")}>
+                  {table(of("past"), t("tabs.past"), t("noPast"))}
+                </DiwanSection>
+              </div>
+            );
+          }}
+        </RecordList>
+      )}
     </div>
   );
 };

@@ -95,6 +95,11 @@ $$;
 -- </preamble>
 select plan(14);
 
+-- Edition 1, titled, with its call open for films.
+update journal.issues set title_en = 'Test title', title_ar = 'عنوان الاختبار' where slug = 'edition-1';
+update journal.calls c set is_published = true, opens_at = now() - interval '1 day'
+from journal.issues i where i.id = c.issue_id and i.slug = 'edition-1';
+
 
 
 select is(

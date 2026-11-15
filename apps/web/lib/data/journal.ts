@@ -1,6 +1,6 @@
 import { Constants, type Enums } from "@repo/database";
 import { z } from "zod";
-import { type Client, currentDate, unwrap } from "./client";
+import { type Client, currentDate, localized, unwrap } from "./client";
 import { SEND_YOUR_WORK } from "./qirtas-paths";
 import { sanitizeRichText, toPlainText } from "./sanitize";
 
@@ -355,8 +355,9 @@ export const submissionSchema = z
     about_writer: z.string().trim().min(3).max(160).optional(),
     body_html: z.string().max(200_000).optional(),
     /**
-     * The Edition call it answers (Letters, Gallery, Video); without one,
-     * the next Edition's general submissions. Voices takes none.
+     * The Edition call it answers (Letters, Gallery, Video); the database
+     * keeps it while open and otherwise uses the open Edition's call.
+     * Voices takes none.
      */
     call_id: z.uuid().optional(),
     /** A film is captioned (Video). */
@@ -499,7 +500,7 @@ export const openCalls = async (client: Client, now = currentDate()) =>
 
 /**
  * A call closing in 2100 or later has no deadline yet: the Editor-in-Chief
- * sets the dates (Haven, decisions.md, Qirtas), and the standing call never closes.
+ * sets it on the Edition (decisions.md, Qirtas).
  */
 export const hasDeadline = (call: { readonly closes_at: string }) =>
   new Date(call.closes_at).getUTCFullYear() < 2100;
@@ -519,15 +520,67 @@ export const myCallPathways = async (client: Client) =>
   unwrap(await journal(client).rpc("my_call_pathways")) ?? [];
 
 /**
- * Every published call with its Edition (decisions.md, Qirtas: "Calls"): the
- * themed call first, then the general submissions. For one Edition, by
- * its slug; public, so the Edition's page lives from its call's opening.
+ * Every published call with its Edition (decisions.md, Qirtas: one Edition,
+ * one title, one call), the earliest first. For one Edition, by its slug;
+ * public, so the Edition's page lives from its call's opening.
  */
 export const callsWithEditions = async (client: Client, editionSlug?: string) =>
   unwrap(
     await journal(client).rpc("edition_calls", { edition_slug: editionSlug })
   ) ?? [];
 export type EditionCall = Awaited<ReturnType<typeof callsWithEditions>>[number];
+
+/**
+ * The one call open at that moment (each Edition's opens the day the
+ * previous one closes), or the next to open.
+ */
+export const openCallAt = <
+  T extends { readonly closes_at: string; readonly opens_at: string },
+>(
+  calls: readonly T[],
+  now: Date
+): T | null =>
+  calls.find((call) => isOpenAt(call, now)) ??
+  calls.find((call) => new Date(call.opens_at).getTime() > now.getTime()) ??
+  null;
+
+/** What an Edition is cited by (decisions.md, Numbers and codes). */
+export interface EditionCitable {
+  readonly number: number | null;
+  readonly season_ar?: string | null;
+  readonly season_en?: string | null;
+  readonly title_ar: string | null;
+  readonly title_en: string | null;
+}
+
+/**
+ * "Edition <n>: <title>, <season>" ("Edition 0: Haven, Fall 2026"),
+ * everywhere an Edition is named: the shelf, its page, receipts, the
+ * Sunday Paper and certificates. `t` is web.journal.citation; `withSeason`
+ * false gives "Edition 0: Haven". Until its title is approved, "Edition 1,
+ * Spring 2027".
+ */
+export const editionCitation = (
+  t: (
+    key: "full" | "number" | "titled" | "untitled",
+    values: Record<string, string>
+  ) => string,
+  edition: EditionCitable,
+  locale: string,
+  withSeason = true
+) => {
+  const row = edition as unknown as Record<string, unknown>;
+  const title = localized(row, "title", locale);
+  const season = withSeason ? localized(row, "season", locale) : "";
+  const number = String(edition.number ?? 0);
+  if (title && season) {
+    return t("full", { number, season, title });
+  }
+  if (title) {
+    return t("titled", { number, title });
+  }
+  return season ? t("untitled", { number, season }) : t("number", { number });
+};
 
 /** A call open at that moment. */
 export const isOpenAt = (
@@ -1065,6 +1118,17 @@ export const pieceEvent = async (client: Client, eventId: string | null) =>
           .maybeSingle()
       )
     : null;
+
+/**
+ * A published op-ed's identity line as its writer gave it (decisions.md,
+ * Qirtas), or null: none under a pen name or an anonymous byline.
+ */
+export const opEdIdentity = async (client: Client, pieceId: string) => {
+  const rows = unwrap(
+    await journal(client).rpc("op_ed_identity", { piece: pieceId })
+  );
+  return rows?.[0] ?? null;
+};
 
 /**
  * The clip paired with a piece (design review A12): a published, public

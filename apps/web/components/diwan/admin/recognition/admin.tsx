@@ -16,7 +16,7 @@ import { recognition, unwrap } from "@/lib/data";
 import { useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermissionAnywhere } from "@/lib/rbac";
-import { SectionSpinner } from "../../states";
+import { EmptyLine, SectionSpinner } from "../../states";
 import { SectionTabs } from "../admin-shell";
 import {
   AdminHeading,
@@ -27,6 +27,7 @@ import {
   ErrorLine,
   Field,
   NewLink,
+  RecordList,
   RecordPage,
   SaveButton,
   SelectInput,
@@ -467,6 +468,7 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
 
 const Certificates = () => {
   const t = useTranslations("diwan.admin.recognition.certificates");
+  const tk = useTranslations("diwan.admin.kit");
   const tc = useTranslations("diwan.admin.recognition.certificates.kinds");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
@@ -660,12 +662,33 @@ const Certificates = () => {
         <NewLink href="/qirtas/certificates/new">{t("prepare")}</NewLink>
       ) : null}
       <ErrorLine error={sign.error ?? revoke.error ?? remove.error} />
-      <DataTable
-        columns={columns}
-        empty={t("empty")}
-        rowKey={(row) => row.id}
-        rows={rows}
-      />
+      <RecordList
+        empty={
+          <EmptyLine
+            action={
+              canPrepare
+                ? { href: "/qirtas/certificates/new", label: t("prepare") }
+                : { href: "/qirtas/certificates", label: tk("showAll") }
+            }
+          >
+            {t("empty")}
+          </EmptyLine>
+        }
+        items={rows}
+        matches={(row, q) =>
+          [nameOf(row), row.serial ?? ""].some((v) =>
+            String(v).toLowerCase().includes(q)
+          )
+        }
+      >
+        {(found) => (
+          <DataTable
+            columns={columns}
+            rowKey={(row) => row.id}
+            rows={[...found]}
+          />
+        )}
+      </RecordList>
     </div>
   );
 };

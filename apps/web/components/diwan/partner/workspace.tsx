@@ -17,18 +17,15 @@ import { type FormEvent, type ReactNode, useState } from "react";
 import { Signature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, partners, unwrap } from "@/lib/data";
+import { callApiForm } from "@/lib/diwan/api";
 import { type MyPartner, useMyPartners } from "@/lib/diwan/partners";
+import { getMediaUrl } from "@/lib/storage";
+import { logoTallEnough } from "@/lib/storage/image-size";
 import {
   type InviteeLanguage,
   InviteeLanguageField,
 } from "../admin/invitee-language";
-import {
-  BilingualField,
-  ConfirmAction,
-  ErrorLine,
-  Field,
-  SaveButton,
-} from "../admin/kit";
+import { BilingualField, ConfirmAction, ErrorLine, Field } from "../admin/kit";
 import { JointChecklist } from "../joint/checklist";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { OnTheSite } from "../site-links";
@@ -112,6 +109,8 @@ interface PartnerRow {
   description_ar: string | null;
   description_en: string | null;
   id: string;
+  logo_path: string | null;
+  logo_pending_path: string | null;
   name_ar: string | null;
   name_en: string;
   url: string | null;
@@ -139,35 +138,139 @@ const inLanguage = (signatory: string, locale: Locale) => {
   return (locale === "ar" ? ar || en : en || ar) ?? signatory;
 };
 
+/**
+ * The partner's logo (decisions.md, Partners): the team sends it from
+ * here and Partnerships approves it before it shows (/api/partners/logo).
+ */
+const PartnerLogo = ({ row }: { row: PartnerRow }) => {
+  const t = useTranslations("diwan.partnerDesk.profile.logo");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const [file, setFile] = useState<File | null>(null);
+  const send = useMutation({
+    mutationFn: async () => {
+      if (!file) {
+        return;
+      }
+      if (!(await logoTallEnough(file))) {
+        throw new Error("logo_too_small");
+      }
+      const body = new FormData();
+      body.set("partner", row.id);
+      body.set("logo", file);
+      await callApiForm(supabase, "/partners/logo", body);
+    },
+    onSuccess: async () => {
+      setFile(null);
+      await queryClient.invalidateQueries({ queryKey: KEY });
+    },
+  });
+  return (
+    <div className="grid gap-4">
+      <h3 className="type-subheading">{t("title")}</h3>
+      <p className="type-caption">{t("lede")}</p>
+      <div className="flex flex-wrap items-end gap-8">
+        {row.logo_path ? (
+          <figure className="grid gap-2">
+            {/* biome-ignore lint/performance/noImgElement: a partner logo from the media bucket, any size */}
+            <img
+              alt=""
+              className="h-16 w-auto"
+              height={64}
+              src={getMediaUrl(supabase, row.logo_path)}
+              width={128}
+            />
+            <figcaption className="type-caption">{t("shown")}</figcaption>
+          </figure>
+        ) : null}
+        {row.logo_pending_path ? (
+          <figure className="grid gap-2">
+            {/* biome-ignore lint/performance/noImgElement: a partner logo from the media bucket, any size */}
+            <img
+              alt=""
+              className="h-16 w-auto"
+              height={64}
+              src={getMediaUrl(supabase, row.logo_pending_path)}
+              width={128}
+            />
+            <figcaption className="type-caption">{t("waiting")}</figcaption>
+          </figure>
+        ) : null}
+      </div>
+      <form
+        className="flex flex-wrap items-end gap-4"
+        onSubmit={(event: FormEvent) => {
+          event.preventDefault();
+          send.mutate();
+        }}
+      >
+        <Field hint={t("hint")} label={t("file")}>
+          {(id) => (
+            <Input
+              accept="image/png,image/jpeg,image/webp"
+              id={id}
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              type="file"
+            />
+          )}
+        </Field>
+        <Button
+          disabled={!file || send.isPending}
+          type="submit"
+          variant="outline"
+        >
+          {t("send")}
+        </Button>
+      </form>
+      {send.isSuccess ? (
+        <p className="type-body" role="status">
+          {t("sent")}
+        </p>
+      ) : null}
+      <ErrorLine error={send.error} />
+    </div>
+  );
+};
+
+/**
+ * The partner's listing (decisions.md, Partners): its name, locked to the
+ * memorandum, and its description and link, which are the partner's; a
+ * change waits for the Director of Partnerships.
+ */
 const ProfileForm = ({ row }: { row: PartnerRow }) => {
   const t = useTranslations("diwan.partnerDesk.profile");
   const tr = useTranslations("diwan.admin.partners.register");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
+  const pending = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("partner_listing_changes")
+          .select("description_en, description_ar, url")
+          .eq("partner_id", row.id)
+          .eq("status", "pending")
+          .maybeSingle()
+      ),
+    queryKey: [...KEY, "listing-change", row.id],
+  });
   const [form, setForm] = useState({
     description: { ar: row.description_ar ?? "", en: row.description_en ?? "" },
-    name: { ar: row.name_ar ?? "", en: row.name_en },
     url: row.url ?? "",
   });
   const save = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase
-          .schema("governance")
-          .from("partners")
-          .update({
-            description_ar: form.description.ar.trim() || null,
-            description_en: form.description.en.trim() || null,
-            name_ar: form.name.ar.trim() || null,
-            name_en: form.name.en.trim(),
-            url: form.url.trim() || null,
-          })
-          .eq("id", row.id)
+        await supabase.schema("governance").rpc("propose_partner_listing", {
+          description_ar: form.description.ar,
+          description_en: form.description.en,
+          partner: row.id,
+          url: form.url,
+        })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
   });
-  const set = (key: "url") => (event: { target: { value: string } }) =>
-    setForm((f) => ({ ...f, [key]: event.target.value }));
   return (
     <form
       className="grid gap-6"
@@ -176,18 +279,27 @@ const ProfileForm = ({ row }: { row: PartnerRow }) => {
         save.mutate();
       }}
     >
-      <BilingualField
-        label={tr("name")}
-        maxLength={200}
-        onChange={(name) => setForm((f) => ({ ...f, name }))}
-        value={form.name}
-      />
+      <div className="grid gap-1">
+        <p className="type-label">{tr("name")}</p>
+        <p className="type-body">
+          {row.name_en}
+          {row.name_ar ? (
+            <>
+              {" · "}
+              <span dir="rtl" lang="ar">
+                {row.name_ar}
+              </span>
+            </>
+          ) : null}
+        </p>
+        <p className="type-caption">{t("nameLocked")}</p>
+      </div>
       <Field label={tr("url")}>
         {(id) => (
           <Input
             dir="ltr"
             id={id}
-            onChange={set("url")}
+            onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
             pattern="https://.*"
             type="url"
             value={form.url}
@@ -201,8 +313,19 @@ const ProfileForm = ({ row }: { row: PartnerRow }) => {
         onChange={(description) => setForm((f) => ({ ...f, description }))}
         value={form.description}
       />
-      <p className="type-caption">{t("listing")}</p>
-      <SaveButton pending={save.isPending} success={save.isSuccess} />
+      <p className="type-caption">
+        {pending.data ? t("waiting") : t("listing")}
+      </p>
+      <div className="flex flex-wrap items-center gap-3">
+        <Button disabled={save.isPending} type="submit" variant="outline">
+          {t("send")}
+        </Button>
+      </div>
+      {save.isSuccess ? (
+        <p className="type-body" role="status">
+          {t("sent")}
+        </p>
+      ) : null}
       <ErrorLine error={save.error} />
     </form>
   );
@@ -411,7 +534,9 @@ const ProfileLoader = ({ id }: { id: string }) => {
         await supabase
           .schema("governance")
           .from("partners")
-          .select("id, name_en, name_ar, url, description_en, description_ar")
+          .select(
+            "id, name_en, name_ar, url, description_en, description_ar, logo_path, logo_pending_path"
+          )
           .eq("id", id)
           .single()
       ) as PartnerRow,
@@ -423,7 +548,12 @@ const ProfileLoader = ({ id }: { id: string }) => {
   if (row.isError) {
     return <ErrorState onRetry={() => row.refetch()} />;
   }
-  return <ProfileForm row={row.data} />;
+  return (
+    <div className="grid gap-10">
+      <PartnerLogo row={row.data} />
+      <ProfileForm row={row.data} />
+    </div>
+  );
 };
 
 /**
@@ -910,6 +1040,15 @@ const TeamDomain = ({ partnerId }: { partnerId: string }) => {
   });
   const open = domain.data?.team_domain;
   const mine = domain.data?.lead_domain;
+  // A university's, a school's or a government's domain is shared: named
+  // invitations only (decisions.md, Partners).
+  if (!open && mine && domain.data?.lead_domain_shared) {
+    return (
+      <p className="type-body max-w-[60ch]">
+        {t("domainShared", { domain: `\u2066${mine}\u2069` })}
+      </p>
+    );
+  }
   if (!(open || mine)) {
     return null;
   }

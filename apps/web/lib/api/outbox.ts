@@ -50,6 +50,7 @@ import {
   newsletterConfirm,
   parentAccount,
   partnerInvitation,
+  partnerLogoChanged,
   personalEmailConfirm,
   pieceNote,
   piecePublished,
@@ -524,7 +525,9 @@ const submissionRecord = async (admin: AdminClient, submissionId: unknown) => {
   const { data } = await admin
     .schema("journal")
     .from("submissions")
-    .select("title, reference")
+    .select(
+      "title, reference, call:calls(issue:issues(number, title_en, title_ar, season_en, season_ar))"
+    )
     .eq("id", String(submissionId))
     .maybeSingle();
   return data;
@@ -908,7 +911,7 @@ const paperContents = async (
       title_en: a.title_en,
       url: `${base}${a.link_path ?? "/qirtas/from-the-society"}`,
     })),
-    write: `${base}/qirtas/editions?status=open`,
+    write: `${base}/qirtas/editions/open`,
   };
 };
 
@@ -1969,7 +1972,6 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
-  // Someone at the partner's domain asks to join its team: to the Lead.
   "partners.join_requested": async (admin, payload) => {
     const now = new Date().toISOString();
     const [{ data: partner }, { data: leads }, person, { data: profile }] =
@@ -2027,6 +2029,62 @@ const handlers: Record<string, Handler> = {
             )
           );
         })
+    );
+  },
+  // Someone at the partner's domain asks to join its team: to the Lead.
+  // The Society changed the logo on a partner's own listing: to its Lead,
+  // or before there is one, to whoever applied (decisions.md, Partners).
+  "partners.logo_changed": async (admin, payload) => {
+    const now = new Date().toISOString();
+    const id = String(payload.partner_id);
+    const [{ data: partner }, { data: leads }, { data: applicants }] =
+      await Promise.all([
+        admin
+          .schema("governance")
+          .from("partners")
+          .select("name_en, name_ar")
+          .eq("id", id)
+          .maybeSingle(),
+        admin
+          .schema("access")
+          .from("role_assignments")
+          .select("user_id")
+          .eq("role", "partner_lead")
+          .eq("scope_type", "partner")
+          .eq("scope_id", id)
+          .lte("starts_at", now)
+          .or(`ends_at.is.null,ends_at.gt.${now}`),
+        admin
+          .schema("governance")
+          .from("partner_agreements")
+          .select("applied_by")
+          .eq("partner_id", id)
+          .not("applied_by", "is", null),
+      ]);
+    if (!partner) {
+      return;
+    }
+    const ids = (leads ?? []).length
+      ? (leads ?? []).map((l) => l.user_id)
+      : (applicants ?? []).map((a) => String(a.applied_by));
+    const to = await Promise.all(
+      [...new Set(ids)].map((user) => recipient(admin, user))
+    );
+    await Promise.all(
+      to
+        .filter((r): r is Recipient => r !== null)
+        .map((lead) =>
+          send(
+            lead,
+            partnerLogoChanged(
+              lead.lang,
+              lead.lang === "ar"
+                ? (partner.name_ar ?? partner.name_en)
+                : partner.name_en,
+              webUrl()
+            )
+          )
+        )
     );
   },
   // Only to the new address, never the sign-in one: the link proves the
@@ -2227,7 +2285,14 @@ const handlers: Record<string, Handler> = {
     if (to && work) {
       await send(
         to,
-        submissionReceived(to.lang, work.title, appUrl(), desk, work.reference),
+        submissionReceived(
+          to.lang,
+          work.title,
+          appUrl(),
+          desk,
+          work.reference,
+          work.call?.issue ?? null
+        ),
         { sticker: "sent" }
       );
     }

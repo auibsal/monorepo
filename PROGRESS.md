@@ -14,6 +14,114 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the nineteenth site prompt (Nov 15)
+
+- [x] Mirror replaced (decisions 23, glossary 17): §5 (one logo per
+  organization, a paper tile in dark mode) and §9 (one Edition, one title,
+  one call).
+- [x] Production: #273's hook build was canceled mid-build while a second
+  production build of the same commit, made by Git at 19:43 before the
+  migrations ran, went live first. The migrate workflow now waits for the
+  hook's own build (`scripts/deploy-production.sh`), fires the hook again
+  once if it is canceled or fails, and fails the run if it still isn't
+  live, so a site left behind never goes unnoticed.
+- [x] Logos: one upload per organization (PNG, JPG or WebP, at least 600
+  pixels high, checked in the browser and in `/api/partners/logo`; SVG
+  refused), with the rule under the field; every uploaded logo sits on a
+  small paper-colored tile on ink, the same size everywhere. The "Logo for
+  dark backgrounds" field is gone (`logo_dark_path` dropped from
+  `20261115001200`, still unmerged). AUIB's set keeps its SVGs with white
+  versions; the American Space's are the traced vector files.
+- [x] A contact typed before a partner had a Lead stays as the Society's
+  internal note (staff only) until its Lead signs up, then goes
+  (`private.drop_typed_contact`).
+- [x] Editions (`20261115001300_one_call_per_edition.sql`): one call per
+  Edition, its title the Edition's; Haven is Edition 0; Edition 1's
+  general submissions became its one call (the work in it stays), opening
+  Mon, Dec 7, unpublished until Edition 1 has its title; work sent after a
+  deadline goes to the open Edition's call; accepted Letters, Gallery and
+  Video work comes out with its Edition on its date; cited "Edition <n>:
+  <title>, <season>" on the shelf, the Edition's page, the Diwan, receipts
+  and Hudhud's post. "Send your work" opens `/qirtas/editions/open`, the
+  open Edition's page. The form never asks which call; the reading queue
+  filters by Edition only; the last call goes three days before any
+  Edition's call closes.
+- [ ] TODO(content): Edition 1's title (its theme), proposed by the
+  Editor-in-Chief and approved with the Managing Editor before Mon, Dec 7; the Desk
+  shows it as a to-do. Then set Edition 1's deadline on its Call tab and
+  publish the call.
+- [x] Haven's call takes Letters and Gallery only, as its poster says;
+  films wait for Edition 1's call (decisions 23).
+- [ ] **Owner:** add `VERCEL_TOKEN` (a read token) to the production
+  environment's secrets, so the migrate run follows the hook's build.
+- [ ] **Owner:** upload the Iraqi Independent Film Center's logo (one PNG,
+  transparent, at least 600 pixels high) on its entry in Partnerships.
+
+## Now: the eighteenth site prompt (Nov 15)
+
+- [x] Mirror replaced (decisions 21, glossary 16): §5 (a partner owns its
+  listing; linking; shared domains), §10 (equal-height logos, the name only
+  beside a symbol-only logo) and §13 (the Diwan shows what the public sees).
+- [x] The Diwan shows what the public sees: each register entry's logo in
+  the list and on its page (a missing one marked); the Register and each
+  member's page show the short name in English and Arabic side by side,
+  the class and the card number.
+- [x] A partner owns its listing (`20261115001200_partner_listing.sql`):
+  the Society can't edit a partner's own description, link, people or name;
+  the partner's changes wait for the Director of Partnerships, before and
+  after side by side; contacts come from accounts (the Tabletop Club's
+  typed contact is gone); a Society logo change is logged and emails the
+  Lead. Entries the Society added stay fully editable.
+- [x] Linking: an application suggests register entries by name and email
+  domain; "Same organization as…" or "New entry".
+- [x] Shared domains (universities, schools, governments) never open a team
+  to the domain: named invitations only.
+- [x] Logos: "The logo shows the name" (on by default), a logo for dark
+  backgrounds (or a paper plate on ink), one height everywhere, the alt
+  text and label in the page's language; the American Space joins AUIB's
+  standard set (`american-space.svg`, 777.9 × 325).
+- [x] "Iraqi Independent Film Center", as its logo spells it.
+- [x] The American Space's SVGs are the traced vector files (82458282).
+
+## Now: the seventeenth site prompt (Nov 15)
+
+- [x] Mirror replaced (decisions 20, glossary 15): §10's icon is from the
+  Society's set, and "Who can come" lists everyone, members and invited
+  guests.
+- [x] Production: #273's migrate run (#198) applied `…000400` to `…000800`
+  once CI on main finished, and the deploy hook built ed7cf5d4.
+- [x] The op-ed identity line prints under a published op-ed, in the
+  page's language and the writer's Arabic form
+  (`journal.op_ed_identity`, `20261115000900_op_ed_identity.sql`); none
+  under a pen name or an anonymous byline. A student is a Member (tier
+  `member`), not an Associate.
+- [x] Every page body in order: an action above the list it adds to (the
+  event's links and staff, the partner register, Next Stop's people on
+  camera, Hudhud's exempt list, Qalam's consent links, the Prize's
+  shortlists, a member's roles, a piece's figures and topics, Settings'
+  devices, your hours).
+- [x] One list (`RecordList`) on the Register, events, the partner
+  register, openings, the forms queue, the Company, the Library, the
+  Newsroom's pieces and certificates; filters in the address. The door
+  check-in lookup and the member picker stay searches, not lists.
+- [x] The partner application's draft is saved on the site as it is filled
+  in (`governance.partner_application_drafts`), not in the browser.
+- [x] Alumni sign-up wording follows decisions.md, Members: Associates are
+  18 or older, alumni sign up with another address and the Director of
+  Membership approves; the "I studied at AUIB" tick is hidden under 18;
+  Today shows the request while it waits (`membership.my_associate_request`).
+- [x] Logos follow who added the entry (decisions.md, Partners): an
+  organization that applied sends its own from its dashboard
+  (`/api/partners/logo`, `governance.propose_partner_logo`) and
+  Partnerships approves or declines it on the partner's page
+  (`governance.decide_partner_logo`), and can still upload or fix one; the
+  Desk counts only the campus partners and sponsors in kind still without
+  a logo, and the logos waiting for approval
+  (`20261115001100_partner_logo_approval.sql`). The AUIB Tabletop Club, an
+  applicant not yet approved, is not counted.
+- [x] Logos: the American Space now uses AUIB's standard set; the film
+  center's are in the eighteenth prompt.
+
 ## Now: the sixteenth site prompt (Nov 15)
 
 - [x] Mirror replaced (decisions 18, glossary 12): the partner
@@ -36,12 +144,9 @@ fourth prompts (Nov 12).
 - [x] One record page (`RecordView`) and one list (`RecordList`, `?q=`).
 - [x] The op-ed identity line built from the class and the writer's line
   (`journal.identityLine`, `writer_year`).
-- [ ] "Who can come" has no "the AUIB community" access kind yet: the four
-  access kinds are Open, RSVP, Members and Private (decisions.md, Events),
-  so it reads Everyone, Members or Invited guests.
-- [ ] The identity line shows to the writer as they write and is kept on
-  the submission; the piece page does not print it yet (the Voices editor
-  adds it when making the piece).
+- [x] "Who can come" reads Everyone, Members or Invited guests, as
+  decisions.md now lists them.
+- [x] The identity line prints on the published op-ed (seventeenth prompt).
 
 ## Now: the fourteenth and fifteenth site prompts (Nov 15)
 
@@ -49,8 +154,8 @@ fourth prompts (Nov 12).
   sponsors in kind), "Campus partners" on /partners, "Co-sponsored by" and
   "Thanks to" at the foot of an event, "Hosted by" under its title; the
   Sun Nov 22 screening's organizations.
-- [ ] Logos for The American Space and the Iraqi Independent Film Centre
-  (Partnerships uploads them on each entry; the Desk counts them).
+- [ ] Logos: see the seventeenth prompt (three entries, the Desk counts
+  them).
 - [x] Editions is the one door: every submission on an Edition's call
   (general submissions and themed calls), Edition 1 created with the
   standing call's work, Open now, each Edition's page for its whole life,

@@ -37,7 +37,7 @@ import {
   SelectInput,
 } from "../kit";
 import { NotionManaged } from "../notion-managed";
-import { memberName, useDirectory } from "./directory";
+import { memberName, ShortNames, useDirectory } from "./directory";
 
 // ── Scope options (series, events, Editions, productions) ────────
 
@@ -396,6 +396,11 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
     <section className="grid gap-4">
       <h2 className="type-heading">{t("roles")}</h2>
       <p className="type-body text-text-secondary">{t("rolesLede")}</p>
+      {canAssign ? (
+        <AddInPlace label={t("assign")}>
+          {(close) => <AssignRole name={name} onDone={close} userId={userId} />}
+        </AddInPlace>
+      ) : null}
       {assignments.isPending ? <SectionSpinner /> : null}
       {assignments.data ? (
         <DataTable
@@ -404,11 +409,6 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
           rowKey={(a) => a.id}
           rows={assignments.data}
         />
-      ) : null}
-      {canAssign ? (
-        <AddInPlace label={t("assign")}>
-          {(close) => <AssignRole name={name} onDone={close} userId={userId} />}
-        </AddInPlace>
       ) : null}
       <ErrorLine error={end.error ?? confirm.error ?? seatCheck.error} />
     </section>
@@ -1031,6 +1031,32 @@ const NameCorrection = ({ userId }: { userId: string }) => {
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
+/** The current short name in the page's language (decisions.md, The site). */
+const shortName = (row: membership.DirectoryRow, locale: string) =>
+  (locale === "ar" ? row.short_name_ar : row.short_name_en) ||
+  memberName(row, locale);
+
+/**
+ * Under the member's name: both short names side by side, the class, the
+ * card number and the address (decisions.md, The site: the Register).
+ */
+const MemberLine = ({ row }: { readonly row: membership.DirectoryRow }) => {
+  const tm = useTranslations("diwan.admin.members");
+  const th = useTranslations("diwan.home");
+  return (
+    <span className="inline-flex flex-wrap items-baseline gap-x-4">
+      <ShortNames row={row} />
+      <span>{row.tier ? th(`tiers.${row.tier}`) : tm("notAMember")}</span>
+      {row.card_number === null ? null : (
+        <span className="tabular-nums">
+          {tm("numbered", { number: formatNumber(row.card_number) })}
+        </span>
+      )}
+      <bdi>{row.email}</bdi>
+    </span>
+  );
+};
+
 export const MemberDetail = () => {
   const t = useTranslations("diwan.admin.member");
   const tm = useTranslations("diwan.admin.members");
@@ -1053,7 +1079,7 @@ export const MemberDetail = () => {
   if (!(row && userId)) {
     return <p className="type-body text-text-secondary">{t("notFound")}</p>;
   }
-  const name = memberName(row, locale) || tm("unnamed");
+  const name = shortName(row, locale) || tm("unnamed");
   const canManage = hasPermission(grants.data, "members.manage");
   const canAssign = hasPermission(grants.data, "roles.assign");
 
@@ -1070,7 +1096,7 @@ export const MemberDetail = () => {
         }
         title={name}
       >
-        <span dir="ltr">{row.email}</span>
+        <MemberLine row={row} />
       </AdminHeading>
       <NotionManaged kind="officer" recordId={userId} />
       <SalCard>

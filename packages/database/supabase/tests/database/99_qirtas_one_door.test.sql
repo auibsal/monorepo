@@ -1,6 +1,6 @@
 -- Qirtas, one door, and one name per language (decisions.md):
--- everything sent to an Edition belongs to one of its calls (its general
--- submissions when none is named), bylines and judges are people from the register
+-- everything sent to an Edition belongs to its one call (the open
+-- Edition's when none is named), bylines and judges are people from the register
 -- (under their name or a pen name), and a member's name is one name in
 -- each language.
 begin;
@@ -102,10 +102,10 @@ select plan(13);
 
 select is((select count(*) from journal.calls where issue_id is null)::integer, 0,
   'Every call belongs to an Edition');
-select is((select i.slug || ' ' || c.kind || ' ' || c.desks::text from journal.calls c
-  join journal.issues i on i.id = c.issue_id where c.title_en = 'Edition 1: general submissions'),
-  'edition-1 general {letters,gallery,video}',
-  'The standing call is now Edition 1''s general submissions, with Video');
+select is((select i.slug || ' ' || c.desks::text || ' ' || c.is_published from journal.calls c
+  join journal.issues i on i.id = c.issue_id where i.slug = 'edition-1'),
+  'edition-1 {letters,gallery,video} false',
+  'Edition 1''s one call takes Letters, Gallery and Video, unpublished until its title');
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000099a1', 'door@auib.edu.iq', 'Door Writer');
 insert into membership.pledges (user_id, pledge_type, version)
@@ -116,9 +116,10 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000099a1');
 insert into journal.submissions (category, language, title, body_html, human_authorship_confirmed,
   first_publication_confirmed, pen_name)
 values ('poetry', 'en', 'One door poem', '<p>Lines</p>', true, true, 'Night Owl');
-select ok((select c.kind = 'general' from journal.submissions s join journal.calls c on c.id = s.call_id
-  where s.title = 'One door poem'), 'Work sent without a call goes to the open general submissions');
 select pg_temp.logout();
+select is((select i.slug from journal.submissions s join journal.calls c on c.id = s.call_id
+  join journal.issues i on i.id = c.issue_id where s.title = 'One door poem'), 'haven',
+  'Work sent without a call goes to the open Edition''s call');
 
 select throws_ok(
   $$ insert into journal.contributors (slug, name_en) values ('a-desk', 'A Desk') $$,

@@ -21,7 +21,6 @@ import {
   readTotals,
   type SubmissionStatus,
   useBlindEntries,
-  usePipelineCall,
 } from "./data";
 import { EntryLink } from "./entry-link";
 
@@ -281,26 +280,19 @@ export const Decided = ({ issueId }: { issueId: string }) => {
   const t = useTranslations("diwan.admin.pipeline");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
-  const callId = usePipelineCall();
   const decisions = useQuery({
-    queryFn: async () => {
-      const query = supabase
-        .schema("journal")
-        .from("decisions")
-        .select(
-          "id, decision, decided_at, entry:blind_entries!inner(id, blind_id, title, issue_id, call_id)"
-        )
-        .eq("entry.issue_id", issueId);
-      return (
-        unwrap(
-          await (callId ? query.eq("entry.call_id", callId) : query).order(
-            "decided_at",
-            { ascending: false }
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("decisions")
+          .select(
+            "id, decision, decided_at, entry:blind_entries!inner(id, blind_id, title, issue_id)"
           )
-        ) ?? []
-      );
-    },
-    queryKey: [...pipelineKey, "decisions", issueId, callId],
+          .eq("entry.issue_id", issueId)
+          .order("decided_at", { ascending: false })
+      ) ?? [],
+    queryKey: [...pipelineKey, "decisions", issueId],
   });
   type Row = NonNullable<typeof decisions.data>[number];
   const columns: Column<Row>[] = [

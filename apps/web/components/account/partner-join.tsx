@@ -3,6 +3,7 @@
 import { ReviewStep } from "@repo/brand/components/sal/form-flow";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Label } from "@repo/brand/components/ui/label";
+import type { Json } from "@repo/database";
 import type { Locale } from "@repo/internationalization";
 import {
   formatLongDate,
@@ -11,7 +12,13 @@ import {
 import { Link, useRouter } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, type ReactNode, useEffect, useState } from "react";
+import {
+  type FormEvent,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { ErrorLine, SelectInput } from "@/components/diwan/admin/kit";
 import { PARTNER_APPLY_PATH } from "@/components/diwan/auth/sign-up-form";
 import { DiwanPage } from "@/components/diwan/page";
@@ -39,30 +46,54 @@ interface Application extends Record<string, unknown> {
   reference: string | null;
 }
 
-/** The draft, kept in this browser as you go until it is sent. */
-const DRAFT_KEY = "sal_partner_application";
-
-const readDraft = <T,>(fallback: T): T => {
-  try {
-    const saved = window.localStorage.getItem(DRAFT_KEY);
-    return saved
-      ? { ...fallback, ...(JSON.parse(saved) as Partial<T>) }
-      : fallback;
-  } catch {
-    return fallback;
-  }
-};
-
-const writeDraft = (value: unknown) => {
-  try {
-    if (value === null) {
-      window.localStorage.removeItem(DRAFT_KEY);
-    } else {
-      window.localStorage.setItem(DRAFT_KEY, JSON.stringify(value));
+/**
+ * The draft, saved on the site as you go until it is sent
+ * (governance.partner_application_drafts), so it follows you to another
+ * device. One per person.
+ */
+const usePartnerDraft = () => {
+  const { supabase, user } = useAuth();
+  const draft = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      ((
+        unwrap(
+          await supabase
+            .schema("governance")
+            .from("partner_application_drafts")
+            .select("content")
+            .maybeSingle()
+        ) as { content: unknown } | null
+      )?.content ?? null) as Record<string, unknown> | null,
+    queryKey: ["partner-application-draft", user?.id ?? ""],
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+  const save = useCallback(
+    async (content: Record<string, unknown>) => {
+      if (!user) {
+        return;
+      }
+      await supabase
+        .schema("governance")
+        .from("partner_application_drafts")
+        .upsert({
+          content: content as { [key: string]: Json },
+          user_id: user.id,
+        });
+    },
+    [supabase, user]
+  );
+  const drop = async () => {
+    if (!user) {
+      return;
     }
-  } catch {
-    // Storage may be off; the form still works without a draft.
-  }
+    await supabase
+      .schema("governance")
+      .from("partner_application_drafts")
+      .delete()
+      .eq("user_id", user.id);
+  };
+  return { drop, loaded: draft.isFetched, save, saved: draft.data };
 };
 
 const useMyApplication = () => {
@@ -130,17 +161,30 @@ const ApplicationForm = ({ onSent }: { readonly onSent: () => void }) => {
     reach: "iraq" as (typeof REACHES)[number],
     url: "",
   }));
-  // The draft comes back after the first render (the browser keeps it).
+  // The draft comes back once it has loaded; from then on each change is
+  // saved a moment after the typing stops.
+  const draft = usePartnerDraft();
+  const [restored, setRestored] = useState(false);
   useEffect(() => {
-    setForm((f) => readDraft(f));
-  }, []);
+    if (draft.loaded && !restored) {
+      setRestored(true);
+      if (draft.saved) {
+        setForm((f) => ({ ...f, ...draft.saved, accepted: false }));
+      }
+    }
+  }, [draft.loaded, draft.saved, restored]);
+  const { save: saveDraft } = draft;
   useEffect(() => {
-    const timer = setTimeout(
-      () => writeDraft({ ...form, accepted: false }),
-      800
-    );
+    if (!restored) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      saveDraft({ ...form, accepted: false }).catch(() => {
+        // A draft that fails to save leaves the form as it is.
+      });
+    }, 800);
     return () => clearTimeout(timer);
-  }, [form]);
+  }, [form, restored, saveDraft]);
   // A signature is the signer's name on the platform, dated today (decisions.md);
   // the database signs in that name whatever is sent.
   const signatory = profile.data
@@ -165,7 +209,7 @@ const ApplicationForm = ({ onSent }: { readonly onSent: () => void }) => {
         })
       ),
     onSuccess: async () => {
-      writeDraft(null);
+      await draft.drop();
       onSent();
       await queryClient.invalidateQueries({
         queryKey: ["partner-application", user?.id ?? ""],
