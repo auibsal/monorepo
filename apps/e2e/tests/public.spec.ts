@@ -28,7 +28,25 @@ test.describe("public site", () => {
     await expect(
       page.getByRole("heading", { name: event.title })
     ).toBeVisible();
+    // "Good to know" sits under the date and place, before the main button,
+    // one row per filled field (decisions.md, Events).
+    const good = page.getByRole("region", { name: "Good to know" });
+    await expect(good.getByText("Who can come")).toBeVisible();
+    await expect(
+      good.getByRole("link", { name: /Ask for an accommodation by/u })
+    ).toHaveAttribute("href", "mailto:hello@auibsal.org");
     const book = page.getByRole("link", { name: /rsvp|book/iu }).first();
+    expect(
+      await good.evaluate(
+        (el, button) =>
+          Boolean(
+            button &&
+              el.compareDocumentPosition(button) &
+                Node.DOCUMENT_POSITION_FOLLOWING
+          ),
+        await book.elementHandle()
+      )
+    ).toBe(true);
     await expect(book).toHaveAttribute(
       "href",
       new RegExp(`/account/events#${event.slug}$`, "u")

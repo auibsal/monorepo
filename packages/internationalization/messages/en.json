@@ -1557,14 +1557,14 @@
         },
         "debrief": "The debrief in Notion",
         "servesFood": "Food is served (the booking also asks about diet)",
-        "access": "Access and food",
-        "accessHint": "The event’s page states these plainly, so people know before they come.",
+        "access": "Good to know",
+        "accessHint": "The event’s page shows each field that is filled, under the date and place.",
         "stepFree": "Step-free (no steps on the way in or in the room)",
         "notSaid": "Not said yet",
         "yes": "Yes",
         "no": "No",
         "seating": "Seating",
-        "allergens": "The main allergens in the food",
+        "allergens": "Allergens in what is served",
         "incidents": {
           "title": "Incident reports",
           "lede": "Something happened that the Society should know about: an injury, a safety problem, a complaint at the door. Write it the same day. The Director of Events and the President are told at once, and the report is kept seven years.",
@@ -1578,7 +1578,14 @@
           "reopen": "Reopen the case",
           "open": "Open",
           "closedOn": "Closed {date}"
-        }
+        },
+        "language": "Language",
+        "accommodationBy": "Ask for an accommodation by (empty: three days before)",
+        "served": "What is served",
+        "otherAllergens": "Other allergens, by name (such as corn)",
+        "contentNote": "Content note (for events that show or discuss violence, death, abuse or similar)",
+        "noPhotos": "No photos are taken at this event",
+        "langBoth": "Both"
       },
       "checkIn": {
         "title": "Check-in",
@@ -5271,34 +5278,52 @@
         "reminded": "We’ll remind you the day before.",
         "failed": "That didn’t go through. Try again, or book from your calendar."
       },
-      "access": {
-        "title": "Access",
-        "stepFree": "Step-free: no steps on the way in or in the room.",
-        "notStepFree": "Not step-free: there are steps on the way in or in the room.",
-        "stepUnknown": "Ask us about the way in and the room: {email}.",
-        "seating": {
-          "seated": "Seated.",
-          "standing": "Standing.",
-          "mixed": "Some seats, some standing."
+      "goodToKnow": {
+        "title": "Good to know",
+        "who": {
+          "label": "Who can come",
+          "everyone": "Everyone",
+          "members": "Members",
+          "invite": "Invited guests"
         },
-        "noFood": "No food is served.",
-        "foodWithout": "Food is served, without any of the main allergens.",
-        "foodWith": "Food is served. It contains {allergens}.",
+        "placesLeft": "Places left: {count}",
+        "language": {
+          "label": "Language",
+          "en": "English",
+          "ar": "Arabic",
+          "both": "English and Arabic"
+        },
+        "access": {
+          "label": "Access",
+          "stepFree": "Step-free",
+          "notStepFree": "Not step-free",
+          "seating": {
+            "seated": "Seated",
+            "standing": "Standing",
+            "mixed": "Some seats, some standing"
+          },
+          "accommodation": "Ask for an accommodation by {date}"
+        },
+        "food": {
+          "label": "Food and drink",
+          "served": "Food and drink are served",
+          "contains": "Contains: {allergens}"
+        },
+        "contentNote": "Content note",
+        "photos": {
+          "label": "Photos are taken",
+          "release": "The Society’s media release covers everyone at the event."
+        },
         "allergens": {
-          "gluten": "gluten",
-          "crustaceans": "crustaceans",
+          "milk": "milk",
           "eggs": "eggs",
           "fish": "fish",
-          "peanuts": "peanuts",
-          "soy": "soy",
-          "milk": "milk",
+          "crustacean_shellfish": "crustacean shellfish",
           "tree_nuts": "tree nuts",
-          "celery": "celery",
-          "mustard": "mustard",
-          "sesame": "sesame",
-          "sulphites": "sulfites",
-          "lupin": "lupin",
-          "molluscs": "mollusks"
+          "peanuts": "peanuts",
+          "wheat": "wheat",
+          "soy": "soy",
+          "sesame": "sesame"
         }
       }
     },

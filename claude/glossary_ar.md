@@ -129,6 +129,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Last call (Hudhud, before a deadline) | «آخر فرصة» |
 | The reading queue (Diwan → Qirtas → Editions) / Intake / Reading / Decide / Decided | «المشاركات» / «الاستلام» / «القراءة» / «القرار» / «ما تقرر» |
 | About the writer (op-ed identity line) | «نبذة عن الكاتب» |
+| The op-ed identity line: "[Name] is a [year] studying [subject] at AUIB." (built from the class and the writer's one line) | «[الاسم] طالب في السنة [...] يدرس [...] في الجامعة الأمريكية في بغداد.» (in the writer's Arabic form: طالبة، تدرس) |
 | News / Voices / Letters / Gallery / Video / Games | الأخبار / آراء / آداب / المعرض / فيديو / ألعاب |
 | the Mutanabbi Prize | جائزة المتنبي |
 | six-word page | صفحة الكلمات الست |

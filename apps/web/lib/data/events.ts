@@ -73,12 +73,37 @@ export const pastPublicEvents = async (
   return unwrap(await query);
 };
 
+/**
+ * The nine major US food allergens (decisions.md, Events: "Good to know"),
+ * in FALCPA's order; any other is named in words.
+ */
+export const ALLERGENS = [
+  "milk",
+  "eggs",
+  "fish",
+  "crustacean_shellfish",
+  "tree_nuts",
+  "peanuts",
+  "wheat",
+  "soy",
+  "sesame",
+] as const;
+
+export type Allergen = (typeof ALLERGENS)[number];
+
+export const isAllergen = (value: string): value is Allergen =>
+  (ALLERGENS as readonly string[]).includes(value);
+
+/** The site's own "Good to know" fields, set in the Diwan's editor. */
+export const goodToKnowColumns =
+  "serves_food, step_free, seating, allergens, language, accommodation_by, served_en, served_ar, other_allergens_en, other_allergens_ar, content_note_en, content_note_ar, no_photos";
+
 export const publicEvent = async (client: Client, eventSlug: string) =>
   unwrap(
     await events(client)
       .from("events")
       .select(
-        `${eventColumns}, body_en, body_ar, questions, serves_food, step_free, seating, allergens`
+        `${eventColumns}, body_en, body_ar, questions, ${goodToKnowColumns}`
       )
       .eq("slug", eventSlug)
       .eq("members_only", false)

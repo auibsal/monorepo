@@ -2150,18 +2150,25 @@ export type Database = {
       };
       events: {
         Row: {
+          accommodation_by: string | null;
           allergens: string[];
           body_ar: string | null;
           body_en: string | null;
           capacity: number | null;
+          content_note_ar: string | null;
+          content_note_en: string | null;
           created_at: string;
           created_by: string | null;
           ends_at: string | null;
           entry: string;
           id: string;
           image_path: string | null;
+          language: string | null;
           members_only: boolean;
+          no_photos: boolean;
           off_campus: boolean;
+          other_allergens_ar: string | null;
+          other_allergens_en: string | null;
           partner_id: string | null;
           programme_id: string | null;
           published_at: string | null;
@@ -2169,6 +2176,8 @@ export type Database = {
           rsvp_enabled: boolean;
           search: unknown;
           seating: string | null;
+          served_ar: string | null;
+          served_en: string | null;
           serves_food: boolean;
           slug: string;
           starts_at: string;
@@ -2186,18 +2195,25 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          accommodation_by?: string | null;
           allergens?: string[];
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
+          content_note_ar?: string | null;
+          content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
           ends_at?: string | null;
           entry?: string;
           id?: string;
           image_path?: string | null;
+          language?: string | null;
           members_only?: never;
+          no_photos?: boolean;
           off_campus?: boolean;
+          other_allergens_ar?: string | null;
+          other_allergens_en?: string | null;
           partner_id?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
@@ -2205,6 +2221,8 @@ export type Database = {
           rsvp_enabled?: boolean;
           search?: never;
           seating?: string | null;
+          served_ar?: string | null;
+          served_en?: string | null;
           serves_food?: boolean;
           slug: string;
           starts_at: string;
@@ -2221,18 +2239,25 @@ export type Database = {
           venue_en?: string | null;
         };
         Update: {
+          accommodation_by?: string | null;
           allergens?: string[];
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
+          content_note_ar?: string | null;
+          content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
           ends_at?: string | null;
           entry?: string;
           id?: string;
           image_path?: string | null;
+          language?: string | null;
           members_only?: never;
+          no_photos?: boolean;
           off_campus?: boolean;
+          other_allergens_ar?: string | null;
+          other_allergens_en?: string | null;
           partner_id?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
@@ -2240,6 +2265,8 @@ export type Database = {
           rsvp_enabled?: boolean;
           search?: never;
           seating?: string | null;
+          served_ar?: string | null;
+          served_en?: string | null;
           serves_food?: boolean;
           slug?: string;
           starts_at?: string;

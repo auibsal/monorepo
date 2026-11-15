@@ -11,9 +11,9 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { EventAccess } from "@/components/event-access";
 import { EventBooking } from "@/components/event-booking";
 import { EventParts } from "@/components/event-parts";
+import { GoodToKnow } from "@/components/good-to-know";
 import { ManageLinks } from "@/components/manage-links";
 import { events, localized, sanitizeRichText } from "@/lib/data";
 import { acknowledged } from "@/lib/institutions";
@@ -159,6 +159,7 @@ const EventView = async ({
           </p>
         ) : null}
       </header>
+      {cancelled ? null : <GoodToKnow event={event} locale={locale} />}
       {cancelled || !upcoming ? null : (
         <ActionBar>
           <EventBooking
@@ -201,7 +202,6 @@ const EventView = async ({
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
       ) : null}
-      {cancelled ? null : <EventAccess event={event} locale={locale} />}
       <EventParts event={event} locale={locale} />
       <CoSponsoredBy
         className="border-line pt-space-4 border-t"
