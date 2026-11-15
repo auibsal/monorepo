@@ -192,7 +192,7 @@ const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
     ],
     en: [
       "Your work is read blind: readers and editors never see your name until a decision is made.",
-      "Every author hears by the announced date, either way. You can follow its progress on Write for Qirtas.",
+      "Every author hears by the announced date, either way. You can follow its progress on Submit to Qirtas.",
     ],
   },
   named: {
@@ -202,7 +202,7 @@ const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
     ],
     en: [
       "The desk editor will read it and work with you by name on the edit and the facts.",
-      "You can follow its progress on Write for Qirtas.",
+      "You can follow its progress on Submit to Qirtas.",
     ],
   },
 };
@@ -396,11 +396,11 @@ const callClosing = (closesAt: string, l: Lang) => {
   if (!callHasDeadline(closesAt)) {
     return l === "ar"
       ? "لم يُحدَّد موعد الإغلاق بعد. أرسل عملك من صفحة الكتابة لقرطاس."
-      : "Its closing date is still to be set. Send yours from Write for Qirtas.";
+      : "Its closing date is still to be set. Send yours from Submit to Qirtas.";
   }
   return l === "ar"
     ? `تستقبل الدعوة الأعمال حتى ${formatLongDate(closesAt, l)}. أرسل عملك من صفحة الكتابة لقرطاس.`
-    : `It takes work until ${formatLongDate(closesAt, l)}. Send yours from Write for Qirtas.`;
+    : `It takes work until ${formatLongDate(closesAt, l)}. Send yours from Submit to Qirtas.`;
 };
 
 /** "Tell me when": a Qirtas call has opened. */
@@ -894,7 +894,7 @@ const PAPER_TITLES = {
     places: "أدوار مفتوحة في «شارك معنا»",
     society: "من الجمعية",
     write: "أرسل عملك إلى قرطاس",
-    writeTitle: "اكتب لقرطاس",
+    writeTitle: "أرسل إلى قرطاس",
   },
   en: {
     events: "Events this month",
@@ -905,7 +905,7 @@ const PAPER_TITLES = {
     places: "Open on Get involved",
     society: "From the Society",
     write: "Send your work to Qirtas",
-    writeTitle: "Write for Qirtas",
+    writeTitle: "Submit to Qirtas",
   },
 } as const;
 
@@ -928,7 +928,7 @@ export const sundayPaper = (
     pieces: SundayItem[];
     /** "From the Society": the notices sent this month (decisions §5). */
     society?: SocietyItem[];
-    /** Write for Qirtas. */
+    /** Submit to Qirtas. */
     write?: string;
   }
 ) =>
@@ -1204,6 +1204,76 @@ export const applicationDecided = (
             l === "ar"
               ? "إن أردت الحديث في الأمر، فردّ على هذه الرسالة."
               : "If you'd like to talk about it, reply to this email.",
+          ],
+        }
+  );
+
+const partnerDashboard = (
+  app: string,
+  l: Lang,
+  path = "/partners/dashboard"
+) => ({
+  href: `${app}${localizedPath(l, path)}`,
+  label: l === "ar" ? "افتح لوحة الشريك" : "Open the partner dashboard",
+});
+
+/**
+ * For the Partner Lead: someone at the partner's own domain asks to join
+ * its team (decisions.md, Partners).
+ */
+export const joinRequested = (
+  lang: Lang,
+  partner: string,
+  person: { email: string; name: string | null },
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: partnerDashboard(app, l, "/partners/dashboard/team"),
+    heading:
+      l === "ar"
+        ? `طلب للانضمام إلى فريق ${partner}`
+        : `A request to join ${partner}’s team`,
+    paragraphs: [
+      l === "ar"
+        ? `${person.name ? `${person.name} (⁦${person.email}⁩)` : `⁦${person.email}⁩`} سجّل بعنوان مؤسستكم ويطلب الانضمام إلى فريق ${partner} في لوحة الشريك.`
+        : `${person.name ? `${person.name} (${person.email})` : person.email} signed up with your organization’s address and asks to join ${partner}’s team on the partner dashboard.`,
+      l === "ar"
+        ? "وافق على الطلب أو ارفضه في تبويب «الفريق». لا ينضم أحد إلا بموافقتك."
+        : "Approve or decline on the Team tab. Nobody joins without you.",
+    ],
+  }));
+
+/** The Lead's answer to a request to join the team. */
+export const joinDecided = (
+  lang: Lang,
+  partner: string,
+  approved: boolean,
+  app: string
+) =>
+  build(lang, (l) =>
+    approved
+      ? {
+          action: partnerDashboard(app, l),
+          heading:
+            l === "ar"
+              ? `أنت الآن في فريق ${partner}`
+              : `You’re on ${partner}’s team`,
+          paragraphs: [
+            l === "ar"
+              ? "وافق مسؤول الشريك على طلبك. لوحة الشريك مفتوحة لك الآن: فعاليات الشريك وقائمة مهامه وضيوفه."
+              : "The Partner Lead approved your request. The partner dashboard is open to you: the partner’s events, checklist and guests.",
+          ],
+        }
+      : {
+          action: account(app, l),
+          heading:
+            l === "ar"
+              ? `بشأن طلبك الانضمام إلى فريق ${partner}`
+              : `About your request to join ${partner}’s team`,
+          paragraphs: [
+            l === "ar"
+              ? "لم يوافق مسؤول الشريك على الطلب، فبقي حسابك كما هو. إن ظننت أن في الأمر خطأ، فاسأل مسؤول الشريك في مؤسستك."
+              : "The Partner Lead didn’t approve the request, so your account stays as it is. If you think this is a mistake, ask the Partner Lead at your organization.",
           ],
         }
   );
@@ -2005,8 +2075,8 @@ export const welcome = (lang: Lang, app: string) =>
               href: link("/qirtas/submit"),
               title:
                 l === "ar"
-                  ? "اكتب لقرطاس: أي قسم، في أي وقت"
-                  : "Write for Qirtas: any section, any time",
+                  ? "أرسل إلى قرطاس: أي قسم، في أي وقت"
+                  : "Submit to Qirtas: any section, any time",
             },
             {
               href: link("/get-involved"),

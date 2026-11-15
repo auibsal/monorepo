@@ -21,6 +21,7 @@ import {
   ArabicFormToDo,
   EsignToDo,
   NameToDo,
+  OrganizationToDo,
   PersonalEmailToDo,
 } from "./to-dos";
 import { VotingEligibility } from "./voting";
@@ -104,6 +105,7 @@ export const MemberHome = () => {
         <PersonalEmailToDo />
         <NameToDo />
         <ArabicFormToDo />
+        {member ? null : <OrganizationToDo />}
         {member ? (
           <>
             <Renewal />

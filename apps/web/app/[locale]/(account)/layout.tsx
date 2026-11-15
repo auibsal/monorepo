@@ -64,7 +64,11 @@ const AccountLayout = async ({ children, params }: AccountLayoutProperties) => {
       <AppProviders>
         <div className="flex min-h-svh flex-col">
           <AccountFrame>{children}</AccountFrame>
-          <FooterSwitch full={<Footer />} slim={<SlimFooter />} />
+          <FooterSwitch
+            full={<Footer />}
+            qirtas={<Footer qirtas />}
+            slim={<SlimFooter />}
+          />
         </div>
       </AppProviders>
     </NextIntlClientProvider>

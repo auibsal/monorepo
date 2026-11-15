@@ -2,10 +2,11 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { Link } from "@repo/internationalization/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { names, unwrap } from "@/lib/data";
+import { localized, names, unwrap } from "@/lib/data";
 import {
   queryKeys,
   useEsign,
@@ -147,6 +148,137 @@ export const PersonalEmailToDo = () => {
       >
         {t("action")}
       </Link>
+    </Section>
+  );
+};
+
+interface Organization {
+  applied: boolean;
+  domain: string;
+  partner_id: string | null;
+  partner_name_ar: string | null;
+  partner_name_en: string | null;
+  request_status: string | null;
+}
+
+/** "Not now" on the suggestion to apply, kept in this browser only. */
+const HINT_KEY = "sal_partner_hint_dismissed";
+
+const hintDismissed = (domain: string) => {
+  try {
+    return window.localStorage.getItem(HINT_KEY) === domain;
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * An organization's address (decisions.md, Partners): someone who signed
+ * up at a domain that isn't a personal provider's or AUIB's. Where a
+ * partner opened that domain, they may ask to join its team (the Partner
+ * Lead approves); otherwise Today suggests applying as a partner.
+ */
+export const OrganizationToDo = () => {
+  const t = useTranslations("diwan.home.toDos.organization");
+  const locale = useLocale();
+  const { supabase, user } = useAuth();
+  const queryClient = useQueryClient();
+  const key = ["account", "organization", user?.id];
+  const org = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      ((unwrap(await supabase.schema("core").rpc("my_organization")) ??
+        [])[0] ?? null) as Organization | null,
+    queryKey: key,
+  });
+  const [dismissed, setDismissed] = useState(false);
+  const done = () => queryClient.invalidateQueries({ queryKey: key });
+  const ask = useMutation({
+    mutationFn: async (partner: string) =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("ask_to_join_partner", { partner })
+      ),
+    onSuccess: done,
+  });
+  const withdraw = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase.schema("governance").rpc("withdraw_partner_join_request")
+      ),
+    onSuccess: done,
+  });
+  const { data } = org;
+  if (!data) {
+    return null;
+  }
+  if (data.partner_id) {
+    const name = localized(
+      { name_ar: data.partner_name_ar, name_en: data.partner_name_en },
+      "name",
+      locale
+    );
+    if (data.request_status === "declined") {
+      return null;
+    }
+    if (data.request_status === "pending") {
+      return (
+        <Section id="organization" title={t("askedTitle", { name })}>
+          <p className="type-body max-w-[60ch]">{t("askedBody", { name })}</p>
+          <button
+            className="link justify-self-start"
+            disabled={withdraw.isPending}
+            onClick={() => withdraw.mutate()}
+            type="button"
+          >
+            {t("withdraw")}
+          </button>
+          <ErrorLine error={withdraw.error} />
+        </Section>
+      );
+    }
+    return (
+      <Section id="organization" title={t("joinTitle", { name })}>
+        <p className="type-body max-w-[60ch]">{t("joinBody", { name })}</p>
+        <Button
+          className="justify-self-start"
+          disabled={ask.isPending}
+          onClick={() => ask.mutate(data.partner_id ?? "")}
+          variant="outline"
+        >
+          {t("ask")}
+        </Button>
+        <ErrorLine error={ask.error} />
+      </Section>
+    );
+  }
+  if (data.applied || dismissed || hintDismissed(data.domain)) {
+    return null;
+  }
+  const notNow = () => {
+    try {
+      window.localStorage.setItem(HINT_KEY, data.domain);
+    } catch {
+      // Private browsing: hidden for this visit only.
+    }
+    setDismissed(true);
+  };
+  return (
+    <Section id="organization" title={t("partnerTitle")}>
+      <p className="type-body max-w-[60ch]">{t("partnerBody")}</p>
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+        <Link className="link" href="/partners/apply">
+          {t("apply")}
+        </Link>
+        <button
+          className="link text-text-secondary"
+          onClick={notNow}
+          type="button"
+        >
+          {t("notNow")}
+        </button>
+      </div>
     </Section>
   );
 };

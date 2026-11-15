@@ -13,7 +13,7 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 // English has no prefix; Arabic is under /ar.
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 const MOVED: readonly [from: string, to: string][] = [
-  // Write for Qirtas's door (Qirtas).
+  // Submit to Qirtas's door (Qirtas).
   ["/qirtas/write", "/qirtas/submit"],
   ["/qirtas/write/:path*", "/qirtas/submit/:path*"],
   // The partner dashboard's five tabs (decisions.md, The site).

@@ -104,7 +104,7 @@ export const Section: Story = {
 /** The top of a form, on the site and on the printed backup alike. */
 export const Form: Story = {
   render: () => (
-    <FormHeader code="SAL-EXB-01 · media-release" title="Photo release">
+    <FormHeader code="SAL-EXB-01 · media-release" symbol title="Photo release">
       Labels are nouns, in sentence case; a field that counts says what it
       counts.
     </FormHeader>
@@ -179,7 +179,11 @@ export const PrintedForm: Story = {
       className="text-text grid max-w-2xl gap-6 bg-white p-8"
       data-theme="light"
     >
-      <FormHeader code="SAL-EXB-01 · media-release" title="Photo release" />
+      <FormHeader
+        code="SAL-EXB-01 · media-release"
+        symbol
+        title="Photo release"
+      />
       <div className="grid grid-cols-2 gap-6">
         {["Full name", "Event", "Signature", "Date"].map((field) => (
           <div className="grid gap-2" key={field}>

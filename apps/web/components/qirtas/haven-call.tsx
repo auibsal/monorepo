@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 
 /**
  * Haven's call (decisions.md, Qirtas): Qirtas's pilot Edition, on dreams and
- * memories, taking Letters and Gallery through Write for Qirtas. No
+ * memories, taking Letters and Gallery through Submit to Qirtas. No
  * deadline is given until the Editor-in-Chief sets the dates.
  */
 export const HavenCall = async ({ locale }: { readonly locale: Locale }) => {
@@ -24,7 +24,7 @@ export const HavenCall = async ({ locale }: { readonly locale: Locale }) => {
       <Button asChild className="justify-self-start">
         <Link
           href="/qirtas/submit"
-          // Write for Qirtas carries the editor: fetch it on the click, not
+          // Submit to Qirtas carries the editor: fetch it on the click, not
           // with the front page (the performance budget).
           prefetch={false}
         >

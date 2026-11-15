@@ -21,15 +21,29 @@ export interface SignatureProps {
    * signature block on the site.
    */
   readonly label?: string;
-  /** The signer's name on the platform, in English (a signature is Latin). */
+  /** The signer's name on the platform; the page's language is shown. */
   readonly name: string;
   /** The signer's membership card number, when they have a card. */
   readonly number?: number | null;
 }
 
+const ARABIC = /[\u0600-\u06FF]/u;
+const BOTH = /\s+·\s+/u;
+
+/**
+ * The name in the page's language only (one language per page): a name
+ * held in both ("Sadeq Hayder · صادق حيدر") shows the page's half.
+ */
+export const nameInLanguage = (name: string, locale: string) => {
+  const halves = name.split(BOTH);
+  const arabic = halves.find((h) => ARABIC.test(h));
+  const latin = halves.find((h) => !ARABIC.test(h));
+  return (locale === "ar" ? arabic || latin : latin || arabic) ?? name;
+};
+
 /**
  * A signature on the platform (decisions.md): the signer's name in
- * the signature face, their card number and the date, beside a guilloche
+ * the signature face, in the page's language, their card number and the date, beside a guilloche
  * rosette drawn from the number (or the name) and a short seal, so it
  * reads as a digital signature and no two look alike. Nobody types it:
  * it is always the name the person holds on the platform.
@@ -45,6 +59,8 @@ export const Signature = ({
   const locale = useLocale() as Locale;
   const when = date ?? new Date().toISOString();
   const seed = number ?? seedFromText(name);
+  const shown = nameInLanguage(name, locale);
+  const arabic = ARABIC.test(shown);
   const figure = (
     <figure
       className={cn(
@@ -59,11 +75,14 @@ export const Signature = ({
       />
       <div className="grid min-w-0 gap-1">
         <span
-          className="font-signature text-text truncate text-4xl leading-tight"
-          dir="ltr"
-          lang="en"
+          className={cn(
+            "font-signature text-text truncate leading-tight",
+            arabic ? "text-3xl" : "text-4xl"
+          )}
+          dir={arabic ? "rtl" : "ltr"}
+          lang={arabic ? "ar" : "en"}
         >
-          {name}
+          {shown}
         </span>
         <figcaption className="type-caption text-text-secondary flex flex-wrap gap-x-3">
           {number === null ? null : (

@@ -41,6 +41,8 @@ import {
   incidentReported,
   invitationBroadcast,
   invitationContact,
+  joinDecided,
+  joinRequested,
   membershipRemoved,
   mergeDecided,
   mergeRequested,
@@ -183,7 +185,7 @@ const RECEIPT_KINDS = new Set([
   "governance.candidacy_received",
   "journal.submission_received",
   "partners.application_received",
-  // Write for Qirtas (decisions.md, Qirtas): "received" with its number.
+  // Submit to Qirtas (decisions.md, Qirtas): "received" with its number.
   "qirtas.submission_received",
 ]);
 
@@ -1943,6 +1945,88 @@ const handlers: Record<string, Handler> = {
         kind,
         `${webUrl()}${prefix(lang)}/invite/${invitation.code}`
       )
+    );
+  },
+  // The Lead's answer, to the person who asked (decisions.md, Partners).
+  "partners.join_decided": async (admin, payload) => {
+    const [to, { data: partner }] = await Promise.all([
+      recipient(admin, payload.user_id),
+      admin
+        .schema("governance")
+        .from("partners")
+        .select("name_en, name_ar")
+        .eq("id", String(payload.partner_id))
+        .maybeSingle(),
+    ]);
+    if (to && partner) {
+      const name =
+        to.lang === "ar"
+          ? (partner.name_ar ?? partner.name_en)
+          : partner.name_en;
+      await send(
+        to,
+        joinDecided(to.lang, name, payload.approved === true, webUrl())
+      );
+    }
+  },
+  // Someone at the partner's domain asks to join its team: to the Lead.
+  "partners.join_requested": async (admin, payload) => {
+    const now = new Date().toISOString();
+    const [{ data: partner }, { data: leads }, person, { data: profile }] =
+      await Promise.all([
+        admin
+          .schema("governance")
+          .from("partners")
+          .select("name_en, name_ar")
+          .eq("id", String(payload.partner_id))
+          .maybeSingle(),
+        admin
+          .schema("access")
+          .from("role_assignments")
+          .select("user_id")
+          .eq("role", "partner_lead")
+          .eq("scope_type", "partner")
+          .eq("scope_id", String(payload.partner_id))
+          .lte("starts_at", now)
+          .or(`ends_at.is.null,ends_at.gt.${now}`),
+        recipient(admin, payload.user_id),
+        admin
+          .schema("core")
+          .from("profiles")
+          .select("full_name_en, full_name_ar")
+          .eq("id", String(payload.user_id))
+          .maybeSingle(),
+      ]);
+    if (!(partner && person)) {
+      return;
+    }
+    const to = await Promise.all(
+      [...new Set((leads ?? []).map((l) => l.user_id))].map((id) =>
+        recipient(admin, id)
+      )
+    );
+    await Promise.all(
+      to
+        .filter((r): r is Recipient => r !== null)
+        .map((lead) => {
+          const name =
+            lead.lang === "ar"
+              ? (partner.name_ar ?? partner.name_en)
+              : partner.name_en;
+          const asking =
+            (lead.lang === "ar"
+              ? (profile?.full_name_ar ?? profile?.full_name_en)
+              : profile?.full_name_en) ?? null;
+          return send(
+            lead,
+            joinRequested(
+              lead.lang,
+              name,
+              { email: person.email, name: asking },
+              webUrl()
+            )
+          );
+        })
     );
   },
   // Only to the new address, never the sign-in one: the link proves the

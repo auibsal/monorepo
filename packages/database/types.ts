@@ -1735,6 +1735,17 @@ export type Database = {
           word_tg: boolean;
         }[];
       };
+      my_organization: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          applied: boolean;
+          domain: string;
+          partner_id: string;
+          partner_name_ar: string;
+          partner_name_en: string;
+          request_status: string;
+        }[];
+      };
       my_personal_email: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -3515,6 +3526,45 @@ export type Database = {
           },
         ];
       };
+      partner_join_requests: {
+        Row: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          id: string;
+          partner_id: string;
+          status: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          partner_id: string;
+          status?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          partner_id?: string;
+          status?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "partner_join_requests_partner_id_fkey";
+            columns: ["partner_id"];
+            isOneToOne: false;
+            referencedRelation: "partners";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       partners: {
         Row: {
           contact_email: string | null;
@@ -3535,6 +3585,7 @@ export type Database = {
           reach: string;
           slug: string;
           status: string;
+          team_domain: string | null;
           updated_at: string;
           url: string | null;
         };
@@ -3558,6 +3609,7 @@ export type Database = {
           reach?: string;
           slug: string;
           status?: string;
+          team_domain?: string | null;
           updated_at?: string;
           url?: string | null;
         };
@@ -3580,6 +3632,7 @@ export type Database = {
           reach?: string;
           slug?: string;
           status?: string;
+          team_domain?: string | null;
           updated_at?: string;
           url?: string | null;
         };
@@ -4006,6 +4059,7 @@ export type Database = {
         Args: { agreement_id: string; grants: string[] };
         Returns: undefined;
       };
+      ask_to_join_partner: { Args: { partner: string }; Returns: string };
       cast_ballot: {
         Args: { choices: Json; election_id: string };
         Returns: undefined;
@@ -4043,6 +4097,10 @@ export type Database = {
       };
       decide_candidate: {
         Args: { approve: boolean; candidate_id: string };
+        Returns: undefined;
+      };
+      decide_partner_join_request: {
+        Args: { approve: boolean; request: string };
         Returns: undefined;
       };
       declarable_partners: {
@@ -4220,6 +4278,17 @@ export type Database = {
           usable: boolean;
         }[];
       };
+      partner_join_requests: {
+        Args: { partner: string };
+        Returns: {
+          created_at: string;
+          email: string;
+          full_name_ar: string;
+          full_name_en: string;
+          id: string;
+          user_id: string;
+        }[];
+      };
       partner_names: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4238,6 +4307,13 @@ export type Database = {
           lead: boolean;
           since: string;
           user_id: string;
+        }[];
+      };
+      partner_team_domain: {
+        Args: { partner: string };
+        Returns: {
+          lead_domain: string;
+          team_domain: string;
         }[];
       };
       public_election_results: {
@@ -4307,6 +4383,10 @@ export type Database = {
       set_partner_lead: {
         Args: { lead: boolean; member: string; partner: string };
         Returns: undefined;
+      };
+      set_partner_team_domain: {
+        Args: { open: boolean; partner: string };
+        Returns: string;
       };
       sign_form: {
         Args: {
@@ -4380,6 +4460,10 @@ export type Database = {
         }[];
       };
       withdraw_consent: { Args: { submission_id: string }; Returns: string };
+      withdraw_partner_join_request: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
     };
     Enums: {
       [_ in never]: never;

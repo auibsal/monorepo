@@ -25,18 +25,23 @@ test("one sign-up page: the address, the class, the official name, one line", as
     page.getByRole("radio", { name: "An AUIB student" })
   ).toHaveCount(0);
   // The official name in both languages, four parts, on the same page.
-  // Four names in one line per language, read back before sending.
-  // A name of two words written with a space is joined by a tap.
+  // Four names in one line per language: a fifth is refused, and a name of
+  // two words written with a space is joined by a tap.
   const english = page.getByLabel("Your four names in English");
-  await english.fill("new mohammed ali kareem member");
-  await english.blur();
-  await expect(english).toHaveValue("New Mohammed Ali Kareem Member");
-  await expect(page.getByText(/reads as 5 names/u)).toBeVisible();
+  await english.fill("new mohammed ali kareem");
+  await english.press("End");
+  await english.press("Space");
+  await expect(page.getByText(/Four names only/u)).toBeVisible();
+  await expect(english).toHaveValue("new mohammed ali kareem");
   await page
     .getByRole("button", { name: "Join Mohammed and Ali as one name" })
     .click();
+  await english.press("End");
+  await english.pressSequentially(" member");
+  await english.blur();
+  await expect(english).toHaveValue("New Mohammed Ali Kareem Member");
   await expect(
-    page.getByText("Read as: New · Mohammed Ali · Kareem · Member")
+    page.getByRole("button", { name: "Separate Mohammed and Ali" })
   ).toBeVisible();
   await page.getByLabel("Your four names in Arabic").fill("عضو كريم حسن جديد");
   await page.getByLabel("I’m 18 or older").check();
@@ -168,4 +173,12 @@ test("a name from before the four parts is a to-do on Today, not a block", async
       .update(before ?? {})
       .eq("id", id);
   }
+});
+
+test("signing out goes straight to the home page", async ({ page }) => {
+  await signInWithPassword(page, member.email);
+  await page.goto(`${urls.web}/sign-out`);
+  await expect(page).toHaveURL(`${urls.web}/`);
+  await page.goto(`${urls.web}/account`);
+  await expect(page).toHaveURL(/\/sign-in/u);
 });

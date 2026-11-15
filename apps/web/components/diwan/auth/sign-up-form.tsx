@@ -180,6 +180,7 @@ const tidyName = nameParts.tidyEnglishName;
  * missing, or that the four are ready.
  */
 const NameLine = ({
+  choices,
   describedBy,
   joins,
   language,
@@ -187,6 +188,7 @@ const NameLine = ({
   onJoin,
   value,
 }: {
+  readonly choices: nameParts.JoinChoices;
   readonly describedBy: string;
   readonly joins: nameParts.Joins;
   readonly language: "ar" | "en";
@@ -196,20 +198,28 @@ const NameLine = ({
 }) => {
   const t = useTranslations("auth.signUp");
   const id = useId();
+  // A fifth name was refused: the words show, to join two of one name.
+  const [full, setFull] = useState(false);
+  const [left, setLeft] = useState(false);
   const words = nameParts.wordsInLine(value);
   const problem =
     words.length > 0 ? nameParts.lineProblem(value, language, joins) : null;
   const names = nameParts.namesInLine(value, language, joins);
   let caption: ReactNode = t(language === "en" ? "nameHintEn" : "nameHintAr");
-  if (problem) {
+  if (full) {
+    caption = t("nameFull");
+  } else if (problem && left) {
     caption = t(`nameProblems.${problem}`, { count: String(names.length) });
-  } else if (words.length > 0) {
-    caption = (
-      <bdi dir={language === "en" ? "ltr" : "rtl"}>
-        {t("nameReads", { names: names.join(" · ") })}
-      </bdi>
-    );
   }
+  const type = (raw: string) => {
+    const next = nameParts.typedName(raw, language);
+    if (!nameParts.roomForNames(next, language, choices)) {
+      setFull(true);
+      return;
+    }
+    setFull(false);
+    onChange(next);
+  };
   const dir = language === "en" ? "ltr" : "rtl";
   return (
     <div className="grid gap-2">
@@ -218,18 +228,23 @@ const NameLine = ({
       </Label>
       <Input
         aria-describedby={`${describedBy} ${id}-read`}
-        aria-invalid={problem ? true : undefined}
+        aria-invalid={problem && left ? true : undefined}
         autoCapitalize={language === "en" ? "words" : "none"}
         autoComplete="off"
         dir={dir}
         id={id}
         lang={language}
-        onBlur={() => language === "en" && onChange(tidyName(value))}
-        onChange={(event) => onChange(event.target.value)}
+        onBlur={() => {
+          setLeft(true);
+          if (language === "en") {
+            onChange(tidyName(value));
+          }
+        }}
+        onChange={(event) => type(event.target.value)}
         spellCheck={false}
         value={value}
       />
-      {words.length > 1 ? (
+      {words.length > 1 && (full || joins.size > 0) ? (
         <ol
           aria-label={t("nameWords")}
           className="flex flex-wrap items-center"
@@ -239,7 +254,12 @@ const NameLine = ({
           {words.map((word, i) => (
             <li
               className="flex items-center"
-              key={words.slice(0, i + 1).join(" ")}
+              // The same words whatever the capitals (English is
+              // capitalized when the field is left), so a tap isn't lost.
+              key={words
+                .slice(0, i + 1)
+                .join(" ")
+                .toLowerCase()}
             >
               <span>{word}</span>
               {i < words.length - 1 ? (
@@ -250,9 +270,10 @@ const NameLine = ({
                   })}
                   aria-pressed={joins.has(i)}
                   className="text-text-secondary hover:text-text min-h-11 min-w-11 px-2"
-                  onClick={() =>
-                    onJoin(nameParts.gapKey(words, i), !joins.has(i))
-                  }
+                  onClick={() => {
+                    setFull(false);
+                    onJoin(nameParts.gapKey(words, i), !joins.has(i));
+                  }}
                   type="button"
                 >
                   {joins.has(i) ? "‿" : "·"}
@@ -464,6 +485,7 @@ export const SignUpForm = (props: SignUpFormProps) => {
           </p>
           {(["en", "ar"] as const).map((lang) => (
             <NameLine
+              choices={choices[lang]}
               describedBy={`${id}-names-hint`}
               joins={joins[lang]}
               key={lang}

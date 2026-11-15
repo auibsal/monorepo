@@ -84,7 +84,7 @@ One glossary for every Arabic word the Society uses, kept with the decisions in 
 | the Edition | الإصدار |
 | piece | عمل (the writer's own: عملك) |
 | the Sunday Paper | «جريدة الأحد» |
-| Write for Qirtas | «اكتب لقرطاس» |
+| Submit to Qirtas | «أرسل إلى قرطاس» |
 | the Mutanabbi Prize | جائزة المتنبي |
 | needs list | قائمة الاحتياجات |
 | version · draft | النسخة · مسودة |

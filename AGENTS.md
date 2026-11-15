@@ -53,7 +53,9 @@ media do.
     what you sent at `/requests` and `/requests/<id>`. Also `/company/auditions`,
     `/qirtas/submit` (public; the forms at `/qirtas/submit/<type>`, a draft at
     `/qirtas/submit/<type>/<draft>`) and `/qirtas/read/<slug>` (a
-    members-only piece). The gates are in `components/diwan/gates.tsx`.
+    members-only piece), on Qirtas's paper with its nameplate like every
+    page of Qirtas (`Paper` in `components/qirtas/paper.tsx`). The gates
+    are in `components/diwan/gates.tsx`.
   - `app/[locale]/diwan`: **the Diwan**, auibsal.org/diwan, the staff's
     administration only (anyone holding a role, `RequireStaff`), one
     section per Council seat (decisions.md, The site; `adminSections` in
@@ -190,8 +192,10 @@ any schema change. Integration tests run against a local stack with
   a Show button (`PasswordInput`). Sign-up records the Terms and Privacy
   Notice agreement (`core.profiles.agreed_at`, one line), one tick for 18
   or older ("Under 18?" opens the parent's address), and the official
-  name as one line of four names per language, its words shown back with
-  a tap between each two to join a name of two words ("Mohammed Ali";
+  name as one line of four names per language: each line takes only its
+  own script's letters (and the hyphen), and a fifth name is
+  refused, showing the words with a tap between each two to join a name
+  of two words ("Mohammed Ali"; `typedName`, `roomForNames`,
   `lineProblem`, `joinsFor` in `lib/data/names.ts`; locked at once; the short name is
   a choice in Settings, `core.profiles.short_name`). The mailing box is
   ticked for everyone; the Arabic form is a to-do on Today; the
@@ -281,7 +285,7 @@ any schema change. Integration tests run against a local stack with
 the Council and the first semester, members and classes, names and titles,
 the card, numbers and codes, forms and signatures, events and the
 calendar, the Typewriter Tour, partners, guests, governance, Qirtas
-(Write for Qirtas, the Newsroom, reading, Editions, Games, the Prize,
+(Submit to Qirtas, the Newsroom, reading, Editions, Games, the Prize,
 Qalam, the Sunday Paper), and Notion, documents, Hudhud and email. Read
 the section for the domain you are changing first. Four rules hold
 everywhere:

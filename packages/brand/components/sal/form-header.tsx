@@ -7,19 +7,26 @@ interface FormHeaderProps {
   readonly className?: string;
   /** The form's code in Ubuntu Mono, "SAL-EXB-01 · media-release". */
   readonly code?: string;
+  /**
+   * The symbol at the top end: only on a document (a signed form, the
+   * memorandum), never on a screen such as sign-in or sign-up, where the
+   * site's header already carries the logo.
+   */
+  readonly symbol?: boolean;
   readonly title: string;
 }
 
 /**
  * The brand's Form Header (packages/brand/assets/components/bundle.css `.sal-form`):
  * the form code in Ubuntu Mono and a Light title above an ink hairline, the
- * symbol at the top end. It takes the colors of the page it sits on: on
+ * symbol at the top end on documents. It takes the colors of the page it sits on: on
  * ink, the white symbol (never crimson on ink).
  */
 export const FormHeader = ({
   children,
   className,
   code,
+  symbol = false,
   title,
 }: FormHeaderProps) => (
   <header className={cn("grid gap-3", className)}>
@@ -32,22 +39,26 @@ export const FormHeader = ({
           {title}
         </h1>
       </div>
-      {/* biome-ignore lint/performance/noImgElement: SVG symbol, served as supplied */}
-      <img
-        alt=""
-        className="on-ink:hidden h-11 w-auto flex-none"
-        height={44}
-        src={logos.symbol.onLight}
-        width={Math.round(44 * logos.symbol.aspect)}
-      />
-      {/* biome-ignore lint/performance/noImgElement: SVG symbol, served as supplied */}
-      <img
-        alt=""
-        className="on-ink:block hidden h-11 w-auto flex-none"
-        height={44}
-        src={logos.symbol.onDark}
-        width={Math.round(44 * logos.symbol.aspect)}
-      />
+      {symbol ? (
+        <>
+          {/* biome-ignore lint/performance/noImgElement: SVG symbol, served as supplied */}
+          <img
+            alt=""
+            className="on-ink:hidden h-11 w-auto flex-none"
+            height={44}
+            src={logos.symbol.onLight}
+            width={Math.round(44 * logos.symbol.aspect)}
+          />
+          {/* biome-ignore lint/performance/noImgElement: SVG symbol, served as supplied */}
+          <img
+            alt=""
+            className="on-ink:block hidden h-11 w-auto flex-none"
+            height={44}
+            src={logos.symbol.onDark}
+            width={Math.round(44 * logos.symbol.aspect)}
+          />
+        </>
+      ) : null}
     </div>
     {children ? (
       <div className="type-body text-text-secondary">{children}</div>

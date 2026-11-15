@@ -217,7 +217,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   pages, and each is a signature record like the rest
   (`private.record_signing`): its AGR number, its check at /verify, and
   the signed copy in Your account → Documents. Where the site already
-  does the job (joining, RSVPs, Write for Qirtas, Get involved,
+  does the job (joining, RSVPs, Submit to Qirtas, Get involved,
   elections), the form is that page. Members never see the word "form" or
   a form code; the requests they can start are plain actions where they
   belong (`StartLinks`).
@@ -320,9 +320,17 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (`governance.record_partner_vote`); nobody adds a
   partner or drafts a memorandum in the Diwan. Each partner has one
   dashboard, `/partners/dashboard` (profile and memorandum, events,
-  people), for its Lead and up to two more, who join only by named email
-  invitation and verify their own guests, invited by named email too (no
-  shareable links). Partners never use Notion and see only their own events and
+  people), for its Lead and up to two more, who join by named email
+  invitation or, once the Lead opens the Lead's own organization domain,
+  by asking from Today (`partners.team_domain`,
+  `governance.partner_join_requests`; the Lead approves or declines each,
+  on the Team tab), and verify their own guests, invited by named email
+  (no shareable links). Someone signed up at an organization's domain (not
+  a personal provider's or AUIB's: `private.organization_domain`) sees,
+  on Today, the partner open to that domain, or else a suggestion to
+  apply as a partner. The Society's own guest may apply or be approved
+  onto a team: the account becomes the partner's, and the guest record
+  ends (one membership; `private.guest_joins_partner_team`). Partners never use Notion and see only their own events and
   checklist. No perks or offers anywhere: sponsors in kind are thanked
   with a "Supported by" line (`SupportedBy`), and the card is for the door
   only. AUIB's own offices aren't partners: they are listed under "With
@@ -357,7 +365,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Gallery, Video, Games. Types are the editors' (`type_label`). Voices
   keeps the opinion rule (no party politics, religion, sect or
   ethnicity).
-- **Write for Qirtas** (`/qirtas/submit`) is the one door: public to read,
+- **Submit to Qirtas** (`/qirtas/submit`) is the one door: public to read,
   members send work in every section except Games, at any time, and
   everything is read blind. Drafts (`journal.submission_drafts`) are their
   writer's alone. Every decision carries its reason (`journal.decide`).
