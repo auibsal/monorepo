@@ -27,6 +27,7 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  RecordView,
   SaveButton,
   SelectInput,
 } from "../admin/kit";
@@ -538,12 +539,12 @@ export const MySubmission = () => {
   const fileCount = (data.data?.files.length ?? 0) + adding.length;
 
   return (
-    <div className="grid gap-8">
-      <AdminHeading actions={back} title={row.title}>
-        {tj(`categories.${row.category}`)} ·{" "}
-        {t(`flow.${journal.writerStatus(row.status)}`)}
-      </AdminHeading>
-
+    <RecordView
+      back={back}
+      lede={tj(`categories.${row.category}`)}
+      status={t(`flow.${journal.writerStatus(row.status)}`)}
+      title={row.title}
+    >
       {row.status === "intake_check" && row.intake_returned_at ? (
         <section className="border-line grid gap-2 border-t p-4" role="status">
           <h2 className="font-medium">
@@ -650,7 +651,7 @@ export const MySubmission = () => {
           <ErrorLine error={withdraw.error} />
         </DiwanSection>
       )}
-    </div>
+    </RecordView>
   );
 };
 

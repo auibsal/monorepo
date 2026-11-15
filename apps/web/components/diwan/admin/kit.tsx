@@ -15,7 +15,9 @@ import {
 } from "@repo/brand/components/ui/alert-dialog";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
+import { cn } from "@repo/brand/lib/utils";
 import {
   formatNumber,
   fromZonedInputValue,
@@ -26,6 +28,7 @@ import {
   type ComponentProps,
   type ReactNode,
   useEffect,
+  useId,
   useRef,
   useState,
 } from "react";
@@ -33,6 +36,7 @@ import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
 import { DataError } from "@/lib/data";
 import { ApiError, callApiText } from "@/lib/diwan/api";
+import { useQueryState } from "@/lib/diwan/use-query-param";
 import { useAppLink } from "@/lib/link-context";
 import { ChoiceInput } from "./choice-input";
 
@@ -41,6 +45,8 @@ import { ChoiceInput } from "./choice-input";
 interface AdminHeadingProps {
   readonly actions?: ReactNode;
   readonly children?: ReactNode;
+  /** A record's status, under its title ("Status: Published"). */
+  readonly status?: ReactNode;
   readonly title: string;
 }
 
@@ -52,10 +58,12 @@ interface AdminHeadingProps {
 export const AdminHeading = ({
   actions,
   children,
+  status,
   title,
 }: AdminHeadingProps) => (
   <header className="grid gap-3">
     <h1 className="type-title font-light text-balance">{title}</h1>
+    {status ? <p className="type-label">{status}</p> : null}
     {children ? (
       <div className="type-lede text-text-secondary max-w-[60ch]">
         {children}
@@ -150,8 +158,48 @@ export const AddInPlace = ({
 };
 
 /**
- * A new or edited record's own page: its title, the way back to its list,
- * and the form. Saving returns to the list.
+ * One record page (decisions.md, The site: "One record page") for every
+ * record in Your account and the Diwan: the way back to its list, its
+ * title, status, one main action, the details, then History (passed in
+ * as `history`, last).
+ */
+export const RecordView = ({
+  actions,
+  back,
+  children,
+  history,
+  lede,
+  narrow = false,
+  status,
+  title,
+}: {
+  /** The main action, then any link out ("On the site"). */
+  readonly actions?: ReactNode;
+  /** The way back to its list, a link. */
+  readonly back?: ReactNode;
+  readonly children: ReactNode;
+  /** The record's History, shown last. */
+  readonly history?: ReactNode;
+  readonly lede?: ReactNode;
+  readonly narrow?: boolean;
+  readonly status?: ReactNode;
+  readonly title: string;
+}) => (
+  <div className={cn("grid gap-10", narrow && "max-w-3xl")}>
+    <div className="grid gap-3">
+      {back ? <div className="type-caption">{back}</div> : null}
+      <AdminHeading actions={actions} status={status} title={title}>
+        {lede}
+      </AdminHeading>
+    </div>
+    {children}
+    {history}
+  </div>
+);
+
+/**
+ * A new or edited record's own page: the same record page, with the way
+ * back to its list and the form. Saving returns to the list.
  */
 export const RecordPage = ({
   back,
@@ -168,18 +216,69 @@ export const RecordPage = ({
 }) => {
   const AppLink = useAppLink();
   return (
-    <div className="grid max-w-3xl gap-8">
-      <AdminHeading
-        actions={
-          <AppLink className="link" href={back}>
-            {backLabel}
-          </AppLink>
-        }
-        title={title}
-      >
-        {lede}
-      </AdminHeading>
+    <RecordView
+      back={
+        <AppLink className="link" href={back}>
+          {backLabel}
+        </AppLink>
+      }
+      lede={lede}
+      narrow
+      title={title}
+    >
       {children}
+    </RecordView>
+  );
+};
+
+/**
+ * One list (decisions.md, The site: "One list") for every list of records
+ * in Your account and the Diwan: a find line kept in the query string
+ * (`?q=`), any filters beside it (also query strings), the rows, and the
+ * empty state with one next action.
+ */
+export const RecordList = <T,>({
+  children,
+  empty,
+  filters,
+  items,
+  matches,
+}: {
+  /** The rows found, drawn by the page (a RowList or a DataTable). */
+  readonly children: (found: readonly T[]) => ReactNode;
+  /** What shows when nothing is there or nothing is found. */
+  readonly empty: ReactNode;
+  readonly filters?: ReactNode;
+  readonly items: readonly T[];
+  /** Whether a row matches the find line (already lowercased). */
+  readonly matches: (item: T, query: string) => boolean;
+}) => {
+  const t = useTranslations("diwan.admin.kit");
+  const id = useId();
+  const [query, setQuery] = useQueryState("q");
+  const [typed, setTyped] = useState(query);
+  const needle = typed.trim().toLowerCase();
+  const found = needle ? items.filter((item) => matches(item, needle)) : items;
+  return (
+    <div className="grid gap-5">
+      <div className="flex flex-wrap items-end gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor={`${id}-q`}>{t("find")}</Label>
+          <Input
+            className="w-72 max-w-full"
+            id={`${id}-q`}
+            onChange={(e) => {
+              setTyped(e.target.value);
+              setQuery(e.target.value);
+            }}
+            placeholder={t("findPlaceholder")}
+            type="search"
+            value={typed}
+          />
+        </div>
+        {filters}
+      </div>
+      {found.length === 0 ? empty : children(found)}
     </div>
   );
 };

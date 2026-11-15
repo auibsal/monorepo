@@ -1101,7 +1101,9 @@
           "en": "English",
           "ar": "Arabic"
         },
-        "exportAsked": "Asked. Download the list once a second officer approves it on the Desk."
+        "exportAsked": "Asked. Download the list once a second officer approves it on the Desk.",
+        "find": "Find",
+        "findPlaceholder": "Find a title, a name or a number"
       },
       "overview": {
         "title": "Desk",

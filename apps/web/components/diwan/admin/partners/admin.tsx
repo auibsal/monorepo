@@ -30,6 +30,7 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  RecordView,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -535,26 +536,26 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
     );
   }
   return (
-    <div className="grid max-w-3xl gap-8">
-      <AdminHeading
-        actions={
-          <>
-            <Link className="link" href="/partnerships">
-              {t("back")}
-            </Link>
-            {row?.is_listed ? <OnTheSite href="/partners" /> : null}
-          </>
-        }
-        title={localized(row, "name", locale)}
-      />
+    <RecordView
+      actions={row?.is_listed ? <OnTheSite href="/partners" /> : undefined}
+      back={
+        <Link className="link" href="/partnerships">
+          {t("back")}
+        </Link>
+      }
+      history={
+        row ? <RecordHistory id={row.id} table="governance.partners" /> : null
+      }
+      narrow
+      title={localized(row, "name", locale)}
+    >
       <PartnerForm initial={row} onDone={() => router.push("/partnerships")} />
       {row ? (
         <DiwanSection id="guests" title={t("guests")}>
           <Affiliations partnerId={row.id} />
         </DiwanSection>
       ) : null}
-      {row ? <RecordHistory id={row.id} table="governance.partners" /> : null}
-    </div>
+    </RecordView>
   );
 };
 
