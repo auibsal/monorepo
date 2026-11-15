@@ -33,6 +33,55 @@ const ensureUser = async (email: string, name: string) => {
   return created.data.user.id;
 };
 
+/**
+ * The test Edition and its call, opening after Haven's so Haven, Edition 0,
+ * stays the open call the Editions page shows (decisions.md, Qirtas).
+ */
+const seedEdition = async (db: ReturnType<typeof admin>) => {
+  const issue = await db
+    .schema("journal")
+    .from("issues")
+    .upsert(
+      {
+        number: 1,
+        slug: "e2e-issue",
+        title_ar: "عدد الاختبار",
+        title_en: "E2E Issue",
+        volume: 99,
+      },
+      { onConflict: "slug" }
+    )
+    .select("id")
+    .single();
+  const issueId = issue.data?.id;
+  const existing = await db
+    .schema("journal")
+    .from("calls")
+    .select("id")
+    .eq("issue_id", issueId ?? "");
+  if (issueId && (existing.data ?? []).length > 0) {
+    await db
+      .schema("journal")
+      .from("calls")
+      .update({ opens_at: new Date().toISOString() })
+      .eq("issue_id", issueId);
+  }
+  if (issueId && (existing.data ?? []).length === 0) {
+    await db
+      .schema("journal")
+      .from("calls")
+      .insert({
+        closes_at: new Date(Date.now() + 30 * 86_400_000).toISOString(),
+        is_published: true,
+        issue_id: issueId,
+        max_per_person: 10,
+        opens_at: new Date().toISOString(),
+        title_ar: "دعوة الاختبار",
+        title_en: "E2E call",
+      });
+  }
+};
+
 export default async function globalSetup() {
   const db = admin();
   const memberId = await ensureUser(member.email, member.name);
@@ -181,48 +230,5 @@ export default async function globalSetup() {
     .update({ published_at: new Date().toISOString(), status: "published" })
     .eq("slug", "qirtas-launches-as-one-paper");
 
-  const issue = await db
-    .schema("journal")
-    .from("issues")
-    .upsert(
-      {
-        number: 1,
-        slug: "e2e-issue",
-        title_ar: "عدد الاختبار",
-        title_en: "E2E Issue",
-        volume: 99,
-      },
-      { onConflict: "slug" }
-    )
-    .select("id")
-    .single();
-  const issueId = issue.data?.id;
-  const existing = await db
-    .schema("journal")
-    .from("calls")
-    .select("id")
-    .eq("issue_id", issueId ?? "");
-  // Its call opens after Haven's, so Haven, Edition 0, stays the open
-  // call the Editions page shows (decisions.md, Qirtas: one call open).
-  if (issueId && (existing.data ?? []).length > 0) {
-    await db
-      .schema("journal")
-      .from("calls")
-      .update({ opens_at: new Date().toISOString() })
-      .eq("issue_id", issueId);
-  }
-  if (issueId && (existing.data ?? []).length === 0) {
-    await db
-      .schema("journal")
-      .from("calls")
-      .insert({
-        closes_at: new Date(Date.now() + 30 * 86_400_000).toISOString(),
-        is_published: true,
-        issue_id: issueId,
-        max_per_person: 10,
-        opens_at: new Date().toISOString(),
-        title_ar: "دعوة الاختبار",
-        title_en: "E2E call",
-      });
-  }
+  await seedEdition(db);
 }
