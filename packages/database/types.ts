@@ -2620,7 +2620,9 @@ export type Database = {
         Args: { event_slug: string };
         Returns: {
           line: string;
+          logo_dark_path: string;
           logo_path: string;
+          logo_shows_name: boolean;
           logo_static: string;
           logo_width: number;
           name_ar: string;
@@ -3650,6 +3652,54 @@ export type Database = {
           },
         ];
       };
+      partner_listing_changes: {
+        Row: {
+          decided_at: string | null;
+          decided_by: string | null;
+          description_ar: string | null;
+          description_en: string | null;
+          id: string;
+          partner_id: string;
+          proposed_at: string;
+          proposed_by: string | null;
+          status: string;
+          url: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          decided_at?: string | null;
+          decided_by?: string | null;
+          description_ar?: string | null;
+          description_en?: string | null;
+          id?: string;
+          partner_id: string;
+          proposed_at?: string;
+          proposed_by?: string | null;
+          status?: string;
+          url?: string | null;
+        };
+        Update: {
+          decided_at?: string | null;
+          decided_by?: string | null;
+          description_ar?: string | null;
+          description_en?: string | null;
+          id?: string;
+          partner_id?: string;
+          proposed_at?: string;
+          proposed_by?: string | null;
+          status?: string;
+          url?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "partner_listing_changes_partner_id_fkey";
+            columns: ["partner_id"];
+            isOneToOne: false;
+            referencedRelation: "partners";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       partners: {
         Row: {
           contact_email: string | null;
@@ -3663,9 +3713,12 @@ export type Database = {
           kind: string;
           kind_other: string | null;
           lead_id: string | null;
+          link_decided_at: string | null;
+          logo_dark_path: string | null;
           logo_path: string | null;
           logo_pending_at: string | null;
           logo_pending_path: string | null;
+          logo_shows_name: boolean;
           logo_static: string | null;
           logo_width: number | null;
           name_ar: string | null;
@@ -3692,9 +3745,12 @@ export type Database = {
           kind: string;
           kind_other?: string | null;
           lead_id?: string | null;
+          link_decided_at?: string | null;
+          logo_dark_path?: string | null;
           logo_path?: string | null;
           logo_pending_at?: string | null;
           logo_pending_path?: string | null;
+          logo_shows_name?: boolean;
           logo_static?: string | null;
           logo_width?: number | null;
           name_ar?: string | null;
@@ -3720,9 +3776,12 @@ export type Database = {
           kind?: string;
           kind_other?: string | null;
           lead_id?: string | null;
+          link_decided_at?: string | null;
+          logo_dark_path?: string | null;
           logo_path?: string | null;
           logo_pending_at?: string | null;
           logo_pending_path?: string | null;
+          logo_shows_name?: boolean;
           logo_static?: string | null;
           logo_width?: number | null;
           name_ar?: string | null;
@@ -4163,6 +4222,10 @@ export type Database = {
         Args: { approve: boolean; request: string };
         Returns: undefined;
       };
+      decide_partner_listing: {
+        Args: { approve: boolean; change: string };
+        Returns: undefined;
+      };
       decide_partner_logo: {
         Args: { approve: boolean; partner: string };
         Returns: string;
@@ -4221,6 +4284,11 @@ export type Database = {
       };
       issue_form_link: {
         Args: { form_key: string; note?: string; sent_to: string };
+        Returns: string;
+      };
+      keep_partner_entry: { Args: { application: string }; Returns: undefined };
+      link_partner: {
+        Args: { application: string; existing: string };
         Returns: string;
       };
       make_parent: {
@@ -4354,6 +4422,17 @@ export type Database = {
           user_id: string;
         }[];
       };
+      partner_matches: {
+        Args: { partner: string };
+        Returns: {
+          by_domain: boolean;
+          id: string;
+          name_ar: string;
+          name_en: string;
+          relation: string;
+          slug: string;
+        }[];
+      };
       partner_names: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4362,6 +4441,17 @@ export type Database = {
           name_ar: string;
           name_en: string;
           relation: string;
+        }[];
+      };
+      partner_owned: { Args: { partner: string }; Returns: boolean };
+      partner_people: {
+        Args: { partner: string };
+        Returns: {
+          email: string;
+          full_name_ar: string;
+          full_name_en: string;
+          role: string;
+          user_id: string;
         }[];
       };
       partner_team: {
@@ -4379,8 +4469,18 @@ export type Database = {
         Args: { partner: string };
         Returns: {
           lead_domain: string;
+          lead_domain_shared: boolean;
           team_domain: string;
         }[];
+      };
+      propose_partner_listing: {
+        Args: {
+          description_ar: string;
+          description_en: string;
+          partner: string;
+          url: string;
+        };
+        Returns: string;
       };
       propose_partner_logo: {
         Args: { partner: string; path: string };
@@ -4409,7 +4509,9 @@ export type Database = {
           description_ar: string;
           description_en: string;
           kind: string;
+          logo_dark_path: string;
           logo_path: string;
+          logo_shows_name: boolean;
           logo_static: string;
           logo_width: number;
           name_ar: string;
@@ -7274,11 +7376,14 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: {
           activities: number;
+          card_number: number;
           created_at: string;
           email: string;
           full_name_ar: string;
           full_name_en: string;
           member_since: string;
+          short_name_ar: string;
+          short_name_en: string;
           tier: Database["membership"]["Enums"]["tier"];
           user_id: string;
           verified_at: string;

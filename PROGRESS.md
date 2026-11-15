@@ -14,6 +14,36 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the eighteenth site prompt (Nov 15)
+
+- [x] Mirror replaced (decisions 21, glossary 16): §5 (a partner owns its
+  listing; linking; shared domains), §10 (equal-height logos, the name only
+  beside a symbol-only logo) and §13 (the Diwan shows what the public sees).
+- [x] The Diwan shows what the public sees: each register entry's logo in
+  the list and on its page (a missing one marked); the Register and each
+  member's page show the short name in English and Arabic side by side,
+  the class and the card number.
+- [x] A partner owns its listing (`20261115001200_partner_listing.sql`):
+  the Society can't edit a partner's own description, link, people or name;
+  the partner's changes wait for the Director of Partnerships, before and
+  after side by side; contacts come from accounts (the Tabletop Club's
+  typed contact is gone); a Society logo change is logged and emails the
+  Lead. Entries the Society added stay fully editable.
+- [x] Linking: an application suggests register entries by name and email
+  domain; "Same organization as…" or "New entry".
+- [x] Shared domains (universities, schools, governments) never open a team
+  to the domain: named invitations only.
+- [x] Logos: "The logo shows the name" (on by default), a logo for dark
+  backgrounds (or a paper plate on ink), one height everywhere, the alt
+  text and label in the page's language; the American Space joins AUIB's
+  standard set (`american-space.svg`, 777.9 × 325).
+- [x] "Iraqi Independent Film Center", as its logo spells it.
+- [ ] **Owner:** upload the Iraqi Independent Film Center's two logos (the
+  paper one and the one for dark backgrounds) on its entry in
+  Partnerships; the American Space needs nothing.
+- [ ] The two American Space SVGs wrap the supplied PNG artwork (the vector
+  files weren't attached); swap in vector versions when there are some.
+
 ## Now: the seventeenth site prompt (Nov 15)
 
 - [x] Mirror replaced (decisions 20, glossary 15): §10's icon is from the
@@ -50,8 +80,8 @@ fourth prompts (Nov 12).
   a logo, and the logos waiting for approval
   (`20261115001100_partner_logo_approval.sql`). The AUIB Tabletop Club, an
   applicant not yet approved, is not counted.
-- [ ] **Owner:** upload the logos for The American Space and the Iraqi
-  Independent Film Centre (Partnerships, on each entry).
+- [x] Logos: the American Space now uses AUIB's standard set; the film
+  center's are in the eighteenth prompt.
 
 ## Now: the sixteenth site prompt (Nov 15)
 

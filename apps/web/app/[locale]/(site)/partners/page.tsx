@@ -1,3 +1,4 @@
+import { OrganizationLogo } from "@repo/brand/components/sal/acknowledgment";
 import { Button } from "@repo/brand/components/ui/button";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -5,7 +6,7 @@ import { CampusPartners } from "@/components/institutions";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { localized, partners } from "@/lib/data";
-import { mediaUrl } from "@/lib/media";
+import { acknowledged } from "@/lib/institutions";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
 
@@ -127,24 +128,26 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           <Section id={group} key={group} title={t(`groups.${group}`)}>
             <ul className="grid gap-4 sm:grid-cols-2">
               {members.map((partner) => {
-                const logo = mediaUrl(partner.logo_path);
+                // One height, the width following; a logo that shows the
+                // name stands alone (decisions.md, Partners and sponsors).
+                const entry = acknowledged(partner, locale);
                 const name = partner.shown;
+                const alone = Boolean(entry.logo && entry.showsName);
                 return (
                   <li
                     className="border-line py-space-4 grid content-start gap-3 border-t"
                     key={partner.slug}
                   >
-                    {logo ? (
-                      // biome-ignore lint/performance/noImgElement: a partner logo from the media bucket
-                      <img
-                        alt=""
-                        className="h-16 w-40 object-contain"
-                        height={64}
-                        src={logo}
-                        width={160}
+                    {entry.logo ? (
+                      <OrganizationLogo
+                        alt={alone ? name : ""}
+                        className="justify-self-start"
+                        logo={entry.logo}
                       />
                     ) : null}
-                    <h3 className="type-subheading">{name}</h3>
+                    <h3 className={alone ? "sr-only" : "type-subheading"}>
+                      {name}
+                    </h3>
                     {localized(partner, "description", locale) ? (
                       <p className="type-body">
                         {localized(partner, "description", locale)}

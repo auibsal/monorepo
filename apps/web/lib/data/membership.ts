@@ -241,11 +241,16 @@ export type Tier = (typeof tiers)[number];
 
 export interface DirectoryRow {
   activities: number;
+  /** The membership card's number, once there is a card. */
+  card_number: number | null;
   created_at: string;
   email: string;
   full_name_ar: string | null;
   full_name_en: string;
   member_since: string | null;
+  /** The short name the site builds from the official name, per language. */
+  short_name_ar: string | null;
+  short_name_en: string | null;
   tier: Tier | null;
   user_id: string;
   verified_at: string | null;

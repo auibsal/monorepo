@@ -1221,6 +1221,25 @@ const partnerDashboard = (
  * For the Partner Lead: someone at the partner's own domain asks to join
  * its team (decisions.md, Partners).
  */
+/**
+ * The Society changed a partner's logo on its listing (decisions.md,
+ * Partners): to the Lead (or the applicant), so the partner knows; a
+ * logo the partner prefers can be sent from the dashboard.
+ */
+export const partnerLogoChanged = (lang: Lang, partner: string, app: string) =>
+  build(lang, (l) => ({
+    action: partnerDashboard(app, l),
+    heading:
+      l === "ar"
+        ? `تغيّر شعار ${partner} في الموقع`
+        : `${partner}’s logo changed on the site`,
+    paragraphs: [
+      l === "ar"
+        ? "غيّر قسم الشراكات في الجمعية الشعار الظاهر في قائمتكم. إن فضّلتم شعارًا آخر، فأرسلوه من لوحة الشريك وسنوافق عليه."
+        : "The Society’s Partnerships changed the logo shown on your listing. If you’d rather use another, send it from the partner dashboard and we’ll approve it.",
+    ],
+  }));
+
 export const joinRequested = (
   lang: Lang,
   partner: string,

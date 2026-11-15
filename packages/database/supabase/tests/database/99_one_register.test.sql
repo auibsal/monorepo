@@ -103,8 +103,8 @@ select pg_temp.grant_role('00000000-0000-0000-0000-00000000f5a1', 'partnerships_
 
 select is((select count(*)::integer from governance.partners where relation = 'campus'), 6,
   'The five offices and the American Space are campus partners');
-select is((select relation from governance.partners where slug = 'iraqi-independent-film-centre'), 'sponsor',
-  'The Iraqi Independent Film Centre is a sponsor in kind');
+select is((select relation from governance.partners where slug = 'iraqi-independent-film-center'), 'sponsor',
+  'The Iraqi Independent Film Center is a sponsor in kind');
 
 select pg_temp.login_anon();
 select is((select count(*)::integer from governance.public_partners() where relation = 'campus'), 6,
@@ -133,7 +133,7 @@ values ('00000000-0000-0000-0000-00000000f5e1', 'register-test-event', 'Test', '
 insert into events.event_organizations (event_id, partner_id, line)
 select '00000000-0000-0000-0000-00000000f5e1', id, 'cosponsor' from governance.partners where slug = 'office-of-student-life';
 insert into events.event_organizations (event_id, partner_id, line)
-select '00000000-0000-0000-0000-00000000f5e1', id, 'thanks' from governance.partners where slug = 'iraqi-independent-film-centre';
+select '00000000-0000-0000-0000-00000000f5e1', id, 'thanks' from governance.partners where slug = 'iraqi-independent-film-center';
 
 select throws_ok(
   $$ insert into events.event_organizations (event_id, partner_id, line)
@@ -143,7 +143,7 @@ select throws_ok(
 select pg_temp.login_anon();
 select results_eq(
   $$ select line, slug from events.event_organizations('register-test-event') $$,
-  $$ values ('cosponsor', 'office-of-student-life'), ('thanks', 'iraqi-independent-film-centre') $$,
+  $$ values ('cosponsor', 'office-of-student-life'), ('thanks', 'iraqi-independent-film-center') $$,
   'The event page shows its co-sponsors and its sponsors in kind');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000f5a2');

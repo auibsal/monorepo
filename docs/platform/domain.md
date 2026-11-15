@@ -326,6 +326,19 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   front door; an organization applies at `/partners/apply` (its draft
   saved on the site as it is filled in,
   `governance.partner_application_drafts`), its signatory signing by name,
+  owns its listing once it applies (`private.partner_owned`): its
+  description and link go to the Director of Partnerships as a change to
+  approve or decline, before and after side by side
+  (`governance.partner_listing_changes`), its name is locked to the
+  memorandum, and its people come from their accounts
+  (`governance.partner_people`); the Society changes only the logo (logged,
+  and the Lead is emailed, `partners.logo_changed`), the kind and the
+  listing. An application the register seems to have already is linked on
+  its Diwan page ("Same organization as…", `governance.link_partner`,
+  keeping the entry's history and events) or kept apart ("New entry").
+  Joining a team by email domain is only for a domain the partner alone
+  uses (`private.is_shared_domain`: universities, schools and governments
+  are named invitations only). It
   sends its own logo from its dashboard for Partnerships to approve
   (`/api/partners/logo`, `governance.decide_partner_logo`; the logo that
   shows is set by Partnerships only, which also uploads the campus

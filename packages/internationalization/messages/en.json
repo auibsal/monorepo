@@ -1222,7 +1222,8 @@
           "since": "Member since",
           "activities": "Activities",
           "voting": "Voting",
-          "status": "Status"
+          "status": "Status",
+          "number": "Number"
         },
         "filters": {
           "tier": "Tier",
@@ -1307,7 +1308,8 @@
           "merged": "Merged.",
           "declined": "Declined; both accounts stay as they are.",
           "number": "No. {number}"
-        }
+        },
+        "numbered": "No. {number}"
       },
       "member": {
         "title": "Member",
@@ -2541,6 +2543,41 @@
             "lede": "The partner sent this logo from its dashboard. Approved, it replaces the one shown; declined, the partner can send another.",
             "approve": "Approve the logo",
             "decline": "Decline"
+          },
+          "logos": "Logos",
+          "logoTellsLead": "The partner’s own listing: a logo change here is logged and its Lead is told. The partner can send its own from its dashboard.",
+          "logoDark": "Logo for dark backgrounds",
+          "logoDarkHint": "White or reversed, shown on ink. Without one, the logo sits on a small paper-colored plate there.",
+          "logoShowsName": "The logo shows the name",
+          "logoShowsNameHint": "On: the logo stands alone, with the name as its alt text and link label. Off, or with no logo, the name shows in text.",
+          "ownedLede": "This is the partner’s own listing. Its name is locked to the memorandum, and its description and link are the partner’s: it changes them from its dashboard, and the Director of Partnerships approves.",
+          "noLogo": "No logo",
+          "people": "The partner’s people",
+          "peopleLede": "From their accounts on the site. The Lead invites the team from the partner dashboard.",
+          "noPeople": "No one yet.",
+          "peopleRoles": {
+            "applicant": "Applied",
+            "partner_lead": "Partner Lead",
+            "partner_rep": "Team"
+          },
+          "pendingListing": {
+            "title": "A listing change to approve",
+            "lede": "The partner sent this on {date}. Approved, it replaces what the Partners page shows; declined, the listing stays as it is.",
+            "description": "Description",
+            "url": "Website",
+            "approve": "Approve the change",
+            "decline": "Decline",
+            "field": "Field",
+            "before": "Now",
+            "after": "Proposed"
+          },
+          "linking": {
+            "title": "Is this an organization already in the register?",
+            "lede": "The application matches an entry by name or email domain. Linking keeps that entry’s history and events, and the partner then owns its listing.",
+            "byDomain": "Same email domain",
+            "byName": "Similar name",
+            "same": "Same organization as {name}",
+            "newEntry": "New entry"
           }
         },
         "agreements": {
@@ -4852,7 +4889,7 @@
       "open": "Open the dashboard of {name}",
       "profile": {
         "title": "Profile",
-        "listing": "The Partners page shows the name, website and description once the partnership is signed and the Society lists it.",
+        "listing": "The Partners page shows your name, website and description once the partnership is signed and the Society lists it. A change waits for the Director of Partnerships.",
         "logo": {
           "title": "Your logo",
           "lede": "Shown on the Partners page and beside your events once the Society approves it.",
@@ -4862,7 +4899,11 @@
           "hint": "PNG, JPEG or WebP, on a light background.",
           "send": "Send the logo",
           "sent": "Sent. You’ll see it here once it is approved."
-        }
+        },
+        "nameLocked": "Your name is the one on the memorandum.",
+        "waiting": "A change you sent is waiting for the Director of Partnerships.",
+        "send": "Send for approval",
+        "sent": "Sent. The Director of Partnerships will approve it."
       },
       "memorandum": {
         "title": "Memorandum",
@@ -4913,7 +4954,8 @@
         "closeDomain": "Stop requests",
         "requests": "Asking to join",
         "approve": "Approve",
-        "decline": "Decline"
+        "decline": "Decline",
+        "domainShared": "{domain} is shared by many organizations (a university’s, a school’s or a government’s), so your team joins by named invitation only."
       },
       "invite": {
         "teamHint": "They get an email with a link to join. Invitations last fourteen days.",

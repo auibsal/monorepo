@@ -538,7 +538,7 @@ export const WhoItsWithStory: Story = {
           { name: "The American Space" },
         ]}
       />
-      <ThanksTo items={[{ name: "Iraqi Independent Film Centre" }]} />
+      <ThanksTo items={[{ name: "Iraqi Independent Film Center" }]} />
       <CoSponsoredBy
         items={[{ name: "مكتب شؤون الطلبة" }, { name: "المساحة الأمريكية" }]}
         lang="ar"

@@ -47,6 +47,34 @@ export const memberName = (
   row.full_name_ar ||
   "";
 
+/**
+ * A person's current short name in English and in Arabic, side by side
+ * (decisions.md, The site: the Register), each in its own direction.
+ */
+export const ShortNames = ({
+  row,
+}: {
+  readonly row: Pick<
+    Row,
+    "full_name_ar" | "full_name_en" | "short_name_ar" | "short_name_en"
+  >;
+}) => {
+  const en = row.short_name_en || row.full_name_en;
+  const ar = row.short_name_ar || row.full_name_ar;
+  return (
+    <span className="inline-flex flex-wrap items-baseline gap-x-3">
+      <span dir="ltr" lang="en">
+        {en}
+      </span>
+      {ar ? (
+        <span dir="rtl" lang="ar">
+          {ar}
+        </span>
+      ) : null}
+    </span>
+  );
+};
+
 export const MembersDirectory = () => {
   const t = useTranslations("diwan.admin.members");
   const tt = useTranslations("diwan.home.tiers");
@@ -96,7 +124,11 @@ export const MembersDirectory = () => {
           className="font-medium underline underline-offset-4"
           href={`/membership/${row.user_id}`}
         >
-          {memberName(row, locale) || t("unnamed")}
+          {row.short_name_en || row.full_name_en ? (
+            <ShortNames row={row} />
+          ) : (
+            t("unnamed")
+          )}
         </Link>
       ),
       header: t("columns.name"),
@@ -116,6 +148,13 @@ export const MembersDirectory = () => {
       cell: (row) => (row.tier ? tt(row.tier) : t("notAMember")),
       header: t("columns.tier"),
       key: "tier",
+    },
+    {
+      cell: (row) =>
+        row.card_number === null ? "—" : formatNumber(row.card_number),
+      className: "tabular-nums",
+      header: t("columns.number"),
+      key: "number",
     },
     {
       cell: (row) =>
@@ -192,7 +231,10 @@ export const MembersDirectory = () => {
         matches={(row, q) =>
           row.email.toLowerCase().includes(q) ||
           row.full_name_en.toLowerCase().includes(q) ||
-          (row.full_name_ar ?? "").includes(q)
+          (row.full_name_ar ?? "").includes(q) ||
+          (row.short_name_en ?? "").toLowerCase().includes(q) ||
+          (row.short_name_ar ?? "").includes(q) ||
+          String(row.card_number ?? "") === q
         }
       >
         {(found) => (

@@ -24,13 +24,7 @@ import {
   type InviteeLanguage,
   InviteeLanguageField,
 } from "../admin/invitee-language";
-import {
-  BilingualField,
-  ConfirmAction,
-  ErrorLine,
-  Field,
-  SaveButton,
-} from "../admin/kit";
+import { BilingualField, ConfirmAction, ErrorLine, Field } from "../admin/kit";
 import { JointChecklist } from "../joint/checklist";
 import { DiwanPage, DiwanSection, RowList } from "../page";
 import { OnTheSite } from "../site-links";
@@ -234,35 +228,45 @@ const PartnerLogo = ({ row }: { row: PartnerRow }) => {
   );
 };
 
+/**
+ * The partner's listing (decisions.md, Partners): its name, locked to the
+ * memorandum, and its description and link, which are the partner's; a
+ * change waits for the Director of Partnerships.
+ */
 const ProfileForm = ({ row }: { row: PartnerRow }) => {
   const t = useTranslations("diwan.partnerDesk.profile");
   const tr = useTranslations("diwan.admin.partners.register");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
+  const pending = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("partner_listing_changes")
+          .select("description_en, description_ar, url")
+          .eq("partner_id", row.id)
+          .eq("status", "pending")
+          .maybeSingle()
+      ),
+    queryKey: [...KEY, "listing-change", row.id],
+  });
   const [form, setForm] = useState({
     description: { ar: row.description_ar ?? "", en: row.description_en ?? "" },
-    name: { ar: row.name_ar ?? "", en: row.name_en },
     url: row.url ?? "",
   });
   const save = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase
-          .schema("governance")
-          .from("partners")
-          .update({
-            description_ar: form.description.ar.trim() || null,
-            description_en: form.description.en.trim() || null,
-            name_ar: form.name.ar.trim() || null,
-            name_en: form.name.en.trim(),
-            url: form.url.trim() || null,
-          })
-          .eq("id", row.id)
+        await supabase.schema("governance").rpc("propose_partner_listing", {
+          description_ar: form.description.ar,
+          description_en: form.description.en,
+          partner: row.id,
+          url: form.url,
+        })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
   });
-  const set = (key: "url") => (event: { target: { value: string } }) =>
-    setForm((f) => ({ ...f, [key]: event.target.value }));
   return (
     <form
       className="grid gap-6"
@@ -271,18 +275,27 @@ const ProfileForm = ({ row }: { row: PartnerRow }) => {
         save.mutate();
       }}
     >
-      <BilingualField
-        label={tr("name")}
-        maxLength={200}
-        onChange={(name) => setForm((f) => ({ ...f, name }))}
-        value={form.name}
-      />
+      <div className="grid gap-1">
+        <p className="type-label">{tr("name")}</p>
+        <p className="type-body">
+          {row.name_en}
+          {row.name_ar ? (
+            <>
+              {" · "}
+              <span dir="rtl" lang="ar">
+                {row.name_ar}
+              </span>
+            </>
+          ) : null}
+        </p>
+        <p className="type-caption">{t("nameLocked")}</p>
+      </div>
       <Field label={tr("url")}>
         {(id) => (
           <Input
             dir="ltr"
             id={id}
-            onChange={set("url")}
+            onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
             pattern="https://.*"
             type="url"
             value={form.url}
@@ -296,8 +309,19 @@ const ProfileForm = ({ row }: { row: PartnerRow }) => {
         onChange={(description) => setForm((f) => ({ ...f, description }))}
         value={form.description}
       />
-      <p className="type-caption">{t("listing")}</p>
-      <SaveButton pending={save.isPending} success={save.isSuccess} />
+      <p className="type-caption">
+        {pending.data ? t("waiting") : t("listing")}
+      </p>
+      <div className="flex flex-wrap items-center gap-3">
+        <Button disabled={save.isPending} type="submit" variant="outline">
+          {t("send")}
+        </Button>
+      </div>
+      {save.isSuccess ? (
+        <p className="type-body" role="status">
+          {t("sent")}
+        </p>
+      ) : null}
       <ErrorLine error={save.error} />
     </form>
   );
@@ -1012,6 +1036,15 @@ const TeamDomain = ({ partnerId }: { partnerId: string }) => {
   });
   const open = domain.data?.team_domain;
   const mine = domain.data?.lead_domain;
+  // A university's, a school's or a government's domain is shared: named
+  // invitations only (decisions.md, Partners).
+  if (!open && mine && domain.data?.lead_domain_shared) {
+    return (
+      <p className="type-body max-w-[60ch]">
+        {t("domainShared", { domain: `\u2066${mine}\u2069` })}
+      </p>
+    );
+  }
   if (!(open || mine)) {
     return null;
   }
