@@ -886,7 +886,7 @@
           "about": "About the writer",
           "ownName": "Opinion runs under your own name, as US papers require.",
           "identity": {
-            "student": "{name} is a {year} studying {line} at AUIB.",
+            "student": "{form, select, other {{name} is a {year} studying {line} at AUIB.}}",
             "other": "{name} {line}.",
             "years": {
               "first": "first-year",
