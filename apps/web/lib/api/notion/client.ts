@@ -61,6 +61,7 @@ export interface NotionProperty {
   relation?: { id: string }[];
   rich_text?: RichText[];
   select?: { name: string } | null;
+  status?: { name: string } | null;
   title?: RichText[];
   type: string;
   url?: string | null;
@@ -202,6 +203,10 @@ export const createNotion = (
 
     trashPage: (pageId: string) =>
       request<NotionPage>("PATCH", `/pages/${pageId}`, { in_trash: true }),
+
+    /** A data source's title, description and properties (null removes one). */
+    updateDataSource: (dataSourceId: string, body: object) =>
+      request("PATCH", `/data_sources/${dataSourceId}`, body),
 
     updatePage: (pageId: string, properties: object) =>
       request<NotionPage>("PATCH", `/pages/${pageId}`, { properties }),

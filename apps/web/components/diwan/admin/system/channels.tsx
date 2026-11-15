@@ -36,6 +36,7 @@ const PURPOSES = [
   "media",
   "membership",
   "partnerships",
+  "web",
 ] as const;
 type Purpose = (typeof PURPOSES)[number];
 

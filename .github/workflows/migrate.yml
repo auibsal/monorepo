@@ -16,6 +16,9 @@ name: Migrate production database
 #                          fails, so production never stays behind unnoticed
 #                          (November 15, 2026: #273's hook build was canceled
 #                          mid-build and production stayed on #272)
+#   CRON_SECRET            the site's own (as on Vercel): a failed run posts
+#                          an urgent alert to the Diwan group's web topic and
+#                          the Desk (scripts/alert-workflow.sh)
 # `supabase db push` applies only migrations not yet recorded in
 # supabase_migrations.schema_migrations, in order, and stops at the first error.
 # CI refuses a pull request whose new migration is older than the newest on
@@ -78,6 +81,7 @@ jobs:
         working-directory: packages/database
         run: bunx supabase migration list --password "$SUPABASE_DB_PASSWORD" --remote
       - name: Apply
+        id: apply
         working-directory: packages/database
         # A hosted change: CLI 3 asks first, and --yes is the answer in CI.
         run: bunx supabase db push --yes --password "$SUPABASE_DB_PASSWORD" --remote
@@ -85,3 +89,11 @@ jobs:
       - name: Deploy the site
         timeout-minutes: 25
         run: bash scripts/deploy-production.sh
+      # A failed migration or deploy is never silent (decisions.md, The site).
+      - name: Tell the Diwan
+        if: failure()
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          WHICH: ${{ steps.apply.outcome == 'success' && 'deploy' || 'migrate' }}
+        run: bash scripts/alert-workflow.sh "$WHICH"

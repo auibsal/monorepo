@@ -100,10 +100,12 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000e7001', 'host.e7@auib.e
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e7002', 'gs.e7@auib.edu.iq', 'Secretary');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000e7002', 'general_secretary');
 
-insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
+-- An event is published only with a lead and a confirmed place.
+insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry, lead_id, venue_en)
 values ('00000000-0000-0000-0000-0000000e7101', 'bc-e7-trip',
   'Book Circle on al-Mutanabbi Street', 'حلقة الكتاب في شارع المتنبي',
-  now() + interval '30 days', 'draft', 'rsvp');
+  now() + interval '30 days', 'draft', 'rsvp', '00000000-0000-0000-0000-0000000e7001',
+  'Al-Mutanabbi Street');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000e7001', 'programme_lead', 'event',
   '00000000-0000-0000-0000-0000000e7101');
 

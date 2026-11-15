@@ -11,8 +11,54 @@ migrated on Nov 11) and against decisions.md of Nov 12. The owner's steps
 from the earlier "SAL V1 launch steps" pages are folded in below; those
 pages are deleted.
 
-Branch: `claude/new-session-qosn60`, one pull request for the third and
-fourth prompts (Nov 12).
+Branch: `claude/new-session-qosn60`, one pull request per prompt.
+
+## Now: the twentieth site prompt (Nov 16)
+
+- [x] The mirror is the co-pilot's: its `claude/mirror` PR (decisions of
+  Nov 16) is this branch's base; AGENTS.md says so.
+- [x] The site is the system of record (`20261116000100_site_is_the_record.sql`,
+  `lib/api/notion/events.ts`, `needs.ts`): events are made and edited only
+  in the Diwan (New event; every field, with the lead from the register;
+  published only with a lead and a place); Notion's Events and Needs are
+  read-only copies, imported once and then written by the site; "Ready to
+  publish" and "Cancel on the site" are gone for events.
+- [x] Hudhud announces each new event once, three weeks ahead at most, in
+  the Events topic (`announced_at`); the screening posts at the first run
+  after this ships.
+- [x] No silent failures: the web team's topic and the Desk
+  (`private.platform_health()` hourly, `/api/hooks/workflow`, the Vercel
+  hook).
+- [x] The promo kit on each Diwan event page (canvas in the browser,
+  pdf-lib for the PDFs), built in the Haven poster's style until the
+  owner's reference design arrives.
+- [x] Student Life's weekly email (Wednesdays, `sal-student-life-week`,
+  `/student-life/week`), and its answers on the Desk.
+- [x] Default shifts on each new event, and on the events ahead now.
+- [x] The weekly scan of Notion's documents (`scan.ts`,
+  `docs/platform/terms-to-check.md`), findings on the Desk.
+- [x] Dependabot only: security fixes grouped as advisories appear,
+  version updates monthly and grouped. No Renovate leftovers were found.
+- [ ] **Owner:** the nightly backup has failed since Nov 13 because
+  `BACKUP_PASSPHRASE` is not set in GitHub's production environment (nor
+  the R2 secrets `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`,
+  `R2_SECRET_ACCESS_KEY`, nor `RESEND_TOKEN`, so no email went). Add them,
+  and `CRON_SECRET` (the same value as on Vercel) so a failed backup,
+  migration or deploy posts to the web topic; `VERCEL_TOKEN` is still owed
+  for the deploy wait.
+- [ ] **Owner:** in the Diwan group, give the new **web** topic a thread
+  (Media → Channels) so the web alerts have their own topic; until then
+  they go to the brief's or Announcements.
+- [ ] **Owner:** Settings → Code security: turn on Dependabot security
+  updates (the config groups them).
+- [ ] **Owner:** the promo kit's reference design (it replaces the
+  interim layout in `components/diwan/admin/events/promo/draw.ts`).
+- [ ] Events have no short address of their own (decisions.md lists
+  /haven, /tour and /join); the kit prints and encodes the event's own
+  address, auibsal.org/events/<slug>, until one is decided.
+- [ ] Still in two places: Notion's Meetings rows hold a meeting's date
+  (When) beside its event's; the event's day now wins when a row links its
+  event, but a meeting with no event row is dated from Notion.
 
 ## Now: the nineteenth site prompt (Nov 15)
 

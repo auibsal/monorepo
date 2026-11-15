@@ -7,8 +7,9 @@ name: Back up production database
 # (decisions.md, The platform). The repository is public and anyone
 # signed in to GitHub can download its artifacts, so an artifact is made
 # only when the R2 copy can't be (no R2 secrets yet, or the copy failed),
-# for one day, long enough to retry it. A failed run emails
-# hello@auibsal.org. Restore steps: docs/platform/backups.md.
+# for one day, long enough to retry it. A failed run posts an urgent alert
+# to the Diwan group's web topic and the Desk (scripts/alert-workflow.sh,
+# CRON_SECRET) and emails hello@auibsal.org (RESEND_TOKEN). Restore steps: docs/platform/backups.md.
 
 on:
   schedule:
@@ -119,6 +120,12 @@ jobs:
       - name: A failed R2 copy fails the run
         if: env.R2_FAILED == '1'
         run: exit 1
+      - name: Tell the Diwan
+        if: failure()
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: bash scripts/alert-workflow.sh backup
       - name: Email on failure
         if: failure()
         env:

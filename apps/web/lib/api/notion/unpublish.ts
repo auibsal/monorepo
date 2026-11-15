@@ -3,7 +3,6 @@ import "server-only";
 import { bareId, type NotionPage } from "./client";
 import {
   count,
-  type LinkKind,
   linksOf,
   outOfTime,
   problem,
@@ -13,11 +12,11 @@ import { prop, read } from "./props";
 import { stamp } from "./publish";
 
 /**
- * Statuses that mean "not on the site". A published event or document set
- * back to one of them in Notion, or trashed there, comes off the site
- * (audit A3): the event becomes a draft, the document is hidden, the row's
- * "Public page" is cleared and its Platform note says so, for the English
- * row and its Arabic edition alike.
+ * Statuses that mean "not on the site". A published document set back to
+ * one of them in Notion, or trashed there, comes off the Library (audit
+ * A3): it is hidden, the row's "Public page" is cleared and its Platform
+ * note says so. Events are the site's (decisions.md, Events): Notion's
+ * Events rows are a copy, and nothing there takes one off the site.
  */
 const OFF_SITE = new Set([
   "Idea",
@@ -58,34 +57,20 @@ const markRow = async (
     .catch(() => undefined);
 };
 
-/** Hides one record: an event becomes a draft, a document leaves the Library. */
-const hide = (
-  ctx: SyncContext,
-  kind: Extract<LinkKind, "event" | "document">,
-  id: string
-) =>
-  kind === "event"
-    ? ctx.admin
-        .schema("events")
-        .from("events")
-        .update({ status: "draft" })
-        .eq("id", id)
-    : ctx.admin
-        .schema("governance")
-        .from("society_documents")
-        .update({ on_site: false })
-        .eq("id", id);
+/** Takes a document off the Library. */
+const hide = (ctx: SyncContext, id: string) =>
+  ctx.admin
+    .schema("governance")
+    .from("society_documents")
+    .update({ on_site: false })
+    .eq("id", id);
 
 const takeOff = async (
   ctx: SyncContext,
-  kind: Extract<LinkKind, "event" | "document">,
   live: Set<string>,
   rows: Map<string, NotionPage>
 ) => {
-  const [links, editions] = await Promise.all([
-    linksOf(ctx, kind),
-    linksOf(ctx, kind === "event" ? "event_ar" : "document"),
-  ]);
+  const links = await linksOf(ctx, "document");
   for (const [recordId, link] of links) {
     if (outOfTime(ctx)) {
       return;
@@ -99,35 +84,32 @@ const takeOff = async (
     }
     try {
       // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
-      const { error } = await hide(ctx, kind, recordId);
+      const { error } = await hide(ctx, recordId);
       if (error) {
         throw error;
       }
-      const why = reasonOf(page);
-      await markRow(ctx, page ? link.notion_page_id : undefined, why);
-      if (kind === "event") {
-        await markRow(ctx, editions.get(recordId)?.notion_page_id, why);
-      }
-      count(ctx, `${kind}.taken_off`);
+      await markRow(
+        ctx,
+        page ? link.notion_page_id : undefined,
+        reasonOf(page)
+      );
+      count(ctx, "document.taken_off");
     } catch (error) {
-      problem(ctx, `take off ${kind} ${recordId}: ${(error as Error).message}`);
+      problem(
+        ctx,
+        `take off document ${recordId}: ${(error as Error).message}`
+      );
     }
   }
 };
 
 /**
- * Brings the site in line with Notion's statuses: whatever is live on the
- * site but no longer Published there (or gone from Notion) comes off.
+ * Brings the Library in line with Notion's statuses: a document live on
+ * the site but no longer Published there (or gone from Notion) comes off.
  */
 export const unpublishFromNotion = async (ctx: SyncContext) => {
-  const [eventRows, documentRows, events, documents] = await Promise.all([
-    ctx.notion.query(ctx.sources.events),
+  const [documentRows, documents] = await Promise.all([
     ctx.notion.query(ctx.sources.documents),
-    ctx.admin
-      .schema("events")
-      .from("events")
-      .select("id")
-      .eq("status", "published"),
     ctx.admin
       .schema("governance")
       .from("society_documents")
@@ -136,13 +118,6 @@ export const unpublishFromNotion = async (ctx: SyncContext) => {
   ]);
   await takeOff(
     ctx,
-    "event",
-    new Set((events.data ?? []).map((e) => e.id)),
-    rowsById(eventRows)
-  );
-  await takeOff(
-    ctx,
-    "document",
     new Set((documents.data ?? []).map((d) => d.id)),
     rowsById(documentRows)
   );

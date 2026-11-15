@@ -86,13 +86,24 @@ And without commands:
   Hudhud's Sunday note, one post each Sunday from 10:00 a.m. listing the
   week's events and the open calls with their closing dates (to `events`,
   else `announcements`; no note in a week with neither, so none outside
-  the semester), a reminder for each event two days before, "doors open"
+  the semester), each new event once, when it is published or three weeks
+  before it if it was published earlier (Nov 16, 2026; `events`, with
+  *RSVP*; `events.events.announced_at`), a reminder for each event two
+  days before, "doors open"
   an hour before it starts (answering the event's post, with *My ticket*),
   "voting is open" and, in its last day, "closes tomorrow" for each
   members' election (`announcements`, with *Vote*), and
   new Qirtas pieces of the last three days
   (`qirtas`, else `announcements`). The daily word goes only to members'
   own chats, never to a group. A purpose without a topic gets no posts.
+  In the Diwan group, the **web** topic takes the website's alerts at once
+  (decisions.md, The site: no silent failures): a failed or canceled
+  deploy (`/api/hooks/vercel`, and the migrate workflow), a failed backup,
+  migration or deploy run (`/api/hooks/workflow`, CRON_SECRET), a failed
+  or late scheduled job, a Notion sync with no run in an hour and an email
+  waiting over an hour (`private.platform_health()`, hourly). They show on
+  the Desk only for those who hold `settings.manage` (the web lead and the
+  President).
   Each post goes out once (`core.telegram_posts`).
 - **Announcements** (decisions.md, Channels and email): a notice the President sends from the
   Diwan (The Council → Announcements) is posted once to the members' group

@@ -13,7 +13,7 @@ const status = (name: string) =>
     properties: { Status: { select: { name }, type: "select" } },
   }) as unknown as Page;
 
-describe("taking things off the site (audit A3)", () => {
+describe("taking documents off the Library (audit A3)", () => {
   test("a row set back from Published, or trashed, comes off", () => {
     expect(offSite(status("Planning"))).toBe(true);
     expect(offSite(status("Draft"))).toBe(true);

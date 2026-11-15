@@ -17,15 +17,20 @@ import {
 import { prop } from "./props";
 
 /**
- * Read-only copies in Notion ("From the site (read-only)"): the officers
- * and Qirtas's counts. Each row is written only when it changed (by hash)
+ * Read-only copies in Notion ("From the site (read-only)"): the officers,
+ * Qirtas's counts, and the events and needs (events.ts). Each row is written only when it changed (by hash)
  * and removed from Notion when its record is gone. Nothing here is read
  * back: the Diwan stays the source. Programs and documents are written in
  * Notion since Nov 4, 2026 (programs.ts, documents.ts).
  */
-interface Row {
+export interface Row {
   key: string;
   props: Record<string, object>;
+}
+
+interface MirrorOptions {
+  /** Whether the database has a Synced date (the officers' and Qirtas's). */
+  synced?: boolean;
 }
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -36,13 +41,16 @@ const writeRow = async (
   kind: LinkKind,
   dataSourceId: string,
   row: Row,
-  link: Link | undefined
+  link: Link | undefined,
+  { synced = true }: MirrorOptions
 ) => {
   const contentHash = hashOf(row.props);
   if (link?.content_hash === contentHash) {
     return;
   }
-  const props = { ...row.props, Synced: prop.date(today()) };
+  const props = synced
+    ? { ...row.props, Synced: prop.date(today()) }
+    : row.props;
   if (link) {
     try {
       await ctx.notion.updatePage(link.notion_page_id, props);
@@ -80,11 +88,12 @@ const removeRow = async (
   count(ctx, `${kind}.removed`);
 };
 
-const mirror = async (
+export const mirror = async (
   ctx: SyncContext,
   kind: LinkKind,
   dataSourceId: string,
-  rows: Row[]
+  rows: Row[],
+  options: MirrorOptions = {}
 ) => {
   const links = await linksOf(ctx, kind);
   const keep = new Set(rows.map((r) => r.key));
@@ -96,7 +105,7 @@ const mirror = async (
     }
     try {
       // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
-      await writeRow(ctx, kind, dataSourceId, row, links.get(row.key));
+      await writeRow(ctx, kind, dataSourceId, row, links.get(row.key), options);
     } catch (error) {
       problem(ctx, `${kind} ${row.key}: ${(error as Error).message}`);
     }

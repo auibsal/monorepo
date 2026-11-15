@@ -1201,7 +1201,8 @@
             "media": "Media",
             "events": "Events",
             "membership": "Membership",
-            "partnerships": "Partnerships"
+            "partnerships": "Partnerships",
+            "web": "Website"
           }
         },
         "noLogo": "Without a logo",
@@ -1213,7 +1214,22 @@
         "editionTitle": "Edition {number} needs its title",
         "editionTitleDetail": "The Editor-in-Chief proposes it and approves it with the Managing Editor. Its call can’t open until then; it is due {date}.",
         "editionTitleUndated": "The Editor-in-Chief proposes it and approves it with the Managing Editor. Its call can’t open until then.",
-        "setEditionTitle": "Set the title"
+        "setEditionTitle": "Set the title",
+        "studentLife": {
+          "title": "Student Life’s weekly email",
+          "sent": "Sent for the week of {week}. What Student Life marked:",
+          "included": "Included",
+          "notIncluded": "Not included",
+          "waiting": "Not marked yet"
+        },
+        "scan": {
+          "lede": "The weekly scan of Notion’s documents found these. Fix each in Notion; it goes at the next scan.",
+          "kinds": {
+            "retired_name": "A retired name",
+            "term": "A term to check",
+            "personal_data": "Personal data"
+          }
+        }
       },
       "members": {
         "title": "Members",
@@ -1454,7 +1470,7 @@
       },
       "events": {
         "title": "Events",
-        "lede": "Every event on the semester calendar: what’s coming, drafts and what’s past. Events are made in Notion’s Events database; open one here to see who booked, run its check-in and keep its parts.",
+        "lede": "Every event on the semester calendar: what’s coming, drafts and what’s past. Events are made and edited here, and published to Events on the site; Notion keeps a read-only copy for plans to link to.",
         "tabs": {
           "upcoming": "Upcoming",
           "past": "Past",
@@ -1473,7 +1489,8 @@
         "checkIn": "Check-in",
         "campusNote": "AUIB’s own dates come in every hour from the University’s public calendar.",
         "noUpcoming": "Nothing coming is published.",
-        "noPast": "No past events yet."
+        "noPast": "No past events yet.",
+        "new": "New event"
       },
       "event": {
         "notFound": "No event with this link, or your roles don’t cover it.",
@@ -1609,7 +1626,41 @@
         "otherAllergens": "Other allergens, by name (such as corn)",
         "contentNote": "Content note (for events that show or discuss violence, death, abuse or similar)",
         "noPhotos": "No photos are taken at this event",
-        "langBoth": "Both"
+        "langBoth": "Both",
+        "facts": {
+          "heading": "The event",
+          "title": "Title",
+          "summary": "Summary (one or two sentences, for lists and the link preview)",
+          "descriptionEn": "Description (English)",
+          "descriptionAr": "Description (Arabic)",
+          "descriptionHint": "Only about the event itself: the date, place, access, food and the rest are fields of their own.",
+          "lead": "Lead",
+          "leadHint": "An event is published only with a lead and a confirmed place.",
+          "host": "Hosted by",
+          "hostHint": "The Society, or the partner from the register that owns the event; a partner shows as “Hosted by” under the title.",
+          "theSociety": "The Society",
+          "image": "Image",
+          "slug": "Web address",
+          "slugHint": "Latin letters, digits and hyphens. Left empty, it is made from the title and the date.",
+          "slugFixed": "Fixed once the event is published, since the address has been shared.",
+          "slugInvalid": "The web address takes only Latin letters, digits and hyphens.",
+          "debrief": "Debrief (its page in Notion)",
+          "debriefHint": "Kept in Notion, without names; linked here for the event’s staff only.",
+          "publish": "Publish",
+          "cancel": "Cancel the event",
+          "cancelConfirm": "The event stays on the site, marked canceled. Members who booked are not told automatically: post an announcement.",
+          "backToDraft": "Make it a draft again",
+          "needsLead": "An event is published only with a lead and a confirmed place: pick the lead and set the venue, then publish.",
+          "newTitle": "New event",
+          "newLede": "Saved as a draft with the standard volunteer shifts (check-in, the membership table, and refreshments when food is served). Finish it on its page, then publish."
+        },
+        "promo": {
+          "title": "Promo kit",
+          "lede": "Built from this event’s fields and image, in English and Arabic: the A3 poster and the A4 two-sided handout (PDF), the Instagram carousel and story, the Telegram image, the page and link-preview image, and the captions. Save each file you need; Media posts them.",
+          "build": "Build the promo kit",
+          "building": "Building…",
+          "failed": "The kit could not be built. Check the event’s image, then try again."
+        }
       },
       "checkIn": {
         "title": "Check-in",
@@ -2103,7 +2154,7 @@
       "settings": {
         "notion": {
           "title": "Notion",
-          "lede": "The team’s workspace: projects, tasks, meetings and the handbook live there, and events and news are written and published from there. Every fifteen minutes the platform copies officers, event series, documents and Qirtas counts into it and publishes what is marked Ready to publish.",
+          "lede": "The team’s workspace: documents, meetings and minutes, plans, projects, tasks, event plans, the inventory and debriefs live there. Every fifteen minutes the platform publishes the documents marked Ready to publish and writes read-only copies of the officers, events, needs and Qirtas counts.",
           "notConfigured": "Not connected. Add the SAL Platform connection’s token as NOTION_TOKEN on the auibsal project in Vercel, then redeploy.",
           "lastSync": "Last sync {date}, {time}.",
           "counts": "{created} added, {updated} updated, {published} published, {refused} sent back for changes.",
@@ -3028,7 +3079,7 @@
         "textFromNotion": "Written in Notion and shown here as published. To change it, edit the page in Notion and set Ready to publish."
       },
       "notion": {
-        "event": "This event is written in the team’s Notion workspace: its date, place, access and text come from there. The site’s own parts are below.",
+        "event": "The team’s Notion workspace keeps a read-only copy of this event (title, dates, venue, status, access and lead), for plans and projects to link to. Edit it here.",
         "news": "This post is written in the team’s Notion workspace. Publishing it from Notion again replaces changes made here.",
         "open": "Open in Notion",
         "mirror": "The team’s Notion workspace keeps a read-only copy of this, where projects, tasks and meetings link to it.",
@@ -3861,7 +3912,8 @@
           "council": "Council alerts (Diwan group)",
           "media": "Media alerts (Diwan group)",
           "membership": "Membership alerts (Diwan group)",
-          "partnerships": "Partnerships alerts (Diwan group)"
+          "partnerships": "Partnerships alerts (Diwan group)",
+          "web": "Website alerts (Diwan group)"
         },
         "exempt": "Stays without an account",
         "exemptLede": "Student Life’s staff and the Faculty Advisor stay in the members’ group without a member’s account. The group’s admins and anyone holding a Society role stay too.",
@@ -6670,6 +6722,14 @@
       "icons": "Icons",
       "software": "Software",
       "rights": "The site’s own code and design are the AUIB Society of Arts and Letters’; all rights reserved."
+    },
+    "studentLifeWeek": {
+      "title": "Next week’s events",
+      "lede": "For the Office of Student Life: mark each event you included in your announcements. Each answer is saved at once.",
+      "included": "Included",
+      "notIncluded": "Not included",
+      "invalid": "This link has expired or isn’t right. Reply to the email and the Secretary will send a new one.",
+      "failed": "That didn’t go through. Try again in a moment."
     }
   }
 }

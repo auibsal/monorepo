@@ -1,9 +1,10 @@
 // @vitest-environment node
 /**
  * The Notion sync end to end against a local stack, with an in-memory
- * stand-in for Notion: the officers' copy, programs, events and their
- * Arabic editions published with the permission check, refusals, RSVP
- * counts and canceling.
+ * stand-in for Notion: the officers' copy, a document refused without the
+ * permission, the one-time import of Notion's events (Nov 16, 2026) and
+ * the read-only copy of the site's events, which nothing typed in Notion
+ * changes.
  * Needs: SUPABASE_INTEGRATION=1 API_URL=… PUBLISHABLE_KEY=… SECRET_KEY=…
  */
 import { randomUUID } from "node:crypto";
@@ -153,6 +154,7 @@ const fakeNotion = (users: { email: string; id: string }[]) => {
         page.in_trash = true;
         return page;
       },
+      updateDataSource: () => ({}),
       updatePage: (id: string, props: Record<string, never>) => {
         const page = find(id);
         Object.assign(page.properties, asRead(props));
@@ -299,115 +301,105 @@ describe.skipIf(!enabled)("Notion sync", () => {
     expect(page.comments[0]).toContain("does not hold governance.manage");
   });
 
-  // Decisions §10: an event is published only with a lead and a place.
-  const eventProps = (title: string) => ({
-    Language: { select: { name: "English" } },
-    Owner: { people: [{ id: `n-lead-${stamp}`, object: "user" }] },
-    Status: { select: { name: "Ready to publish" } },
-    Summary: { rich_text: [{ text: { content: "An evening of poems." } }] },
-    Title: { title: [{ text: { content: title } }] },
-    Venue: { rich_text: [{ text: { content: "Room 101" } }] },
-    "Way in": { select: { name: "RSVP" } },
-    When: { date: { end: null, start: "2031-03-04T18:00:00.000+03:00" } },
-  });
-  const arabicEdition = (of: string, title: string) => ({
-    "Edition of": { relation: [{ id: of }] },
-    Language: { select: { name: "Arabic" } },
-    Status: { select: { name: "Ready to publish" } },
-    Summary: { rich_text: [{ text: { content: "أمسية شعر." } }] },
-    Title: { title: [{ text: { content: title } }] },
-  });
-  test("publishes an event's English row, then its Arabic edition", async () => {
-    const page = fake.make(
-      sources.events,
-      eventProps(`Writing workshop ${stamp}`),
-      `n-lead-${stamp}`
-    );
-    const edition = fake.make(
-      sources.events,
-      arabicEdition(page.id, "صفحات مفتوحة"),
-      `n-lead-${stamp}`
-    );
+  const titleOf = (page: FakePage) =>
+    (getProp(page, "Title").title as { plain_text: string }[])[0]?.plain_text;
+
+  test("brings over what only Notion held, once, as drafts with their lead", async () => {
+    const english = fake.make(sources.events, {
+      Access: { select: { name: "Members" } },
+      Language: { select: { name: "English" } },
+      Lead: { people: [{ id: `n-lead-${stamp}`, object: "user" }] },
+      Status: { select: { name: "Planning" } },
+      Summary: { rich_text: [{ text: { content: "The semester's plans." } }] },
+      Title: { title: [{ text: { content: `General meeting ${stamp}` } }] },
+      Venue: { rich_text: [{ text: { content: "Room 101" } }] },
+      When: { date: { end: null, start: "2031-03-04T16:00:00.000+03:00" } },
+    });
+    fake.make(sources.events, {
+      "Edition of": { relation: [{ id: english.id }] },
+      Language: { select: { name: "Arabic" } },
+      Title: { title: [{ text: { content: "الاجتماع العام" } }] },
+    });
+    // The import runs until it has finished once.
+    await admin
+      .schema("core")
+      .from("settings")
+      .delete()
+      .eq("key", "notion.imported");
     await sync();
-    expect(statusOf(page)).toBe("Published");
-    expect(statusOf(edition)).toBe("Published");
-    expect(diwanId(edition)).toBe(diwanId(page));
+    const { data: link } = await admin
+      .schema("core")
+      .from("notion_links")
+      .select("record_key")
+      .eq("kind", "event")
+      .eq("notion_page_id", english.id.replaceAll("-", ""))
+      .single();
     const { data: event } = await admin
       .schema("events")
       .from("events")
-      .select(
-        "status, title_ar, summary_ar, body_en, body_ar, created_by, starts_at"
-      )
-      .eq("id", diwanId(page) ?? "")
+      .select("status, entry, lead_id, title_ar, body_en, body_ar, starts_at")
+      .eq("id", link?.record_key ?? "")
       .single();
     expect(event).toMatchObject({
       body_ar: "<p>نص الصفحة.</p>",
       body_en: "<p>Bring a poem.</p>",
-      created_by: leadId,
-      status: "published",
-      summary_ar: "أمسية شعر.",
-      title_ar: "صفحات مفتوحة",
+      entry: "members",
+      lead_id: leadId,
+      status: "draft",
+      title_ar: "الاجتماع العام",
     });
     expect(new Date(event?.starts_at ?? "").toISOString()).toBe(
-      "2031-03-04T15:00:00.000Z"
+      "2031-03-04T13:00:00.000Z"
     );
   });
 
-  test("refuses an Arabic edition whose English row is not published", async () => {
-    const english = fake.make(sources.events, {
-      Language: { select: { name: "English" } },
-      Status: { select: { name: "Planning" } },
-      Title: { title: [{ text: { content: `Draft ${stamp}` } }] },
-    });
-    const edition = fake.make(
-      sources.events,
-      arabicEdition(english.id, "مسودة"),
-      `n-lead-${stamp}`
-    );
-    await sync();
-    expect(statusOf(edition)).toBe("Needs changes");
-    expect(edition.comments[0]).toContain("Publish the English row");
-  });
-
-  test("refuses a page edited by someone without the permission, and says why", async () => {
-    const page = fake.make(
-      sources.events,
-      eventProps(`Not mine ${stamp}`),
-      `n-member-${stamp}`
-    );
-    await sync();
-    expect(statusOf(page)).toBe("Needs changes");
-    expect(page.comments[0]).toContain("does not hold events.manage");
-  });
-
-  test("writes the RSVP count back and cancels on request", async () => {
-    const page = [...fake.pages.values()].find(
-      (p) =>
-        p.dataSource === sources.events &&
-        statusOf(p) === "Published" &&
-        (getProp(p, "Title").title as { plain_text: string }[])[0]
-          ?.plain_text === `Writing workshop ${stamp}`
-    ) as FakePage;
-    const eventId = diwanId(page) as string;
-    await admin
-      .schema("events")
-      .from("rsvps")
-      .insert({ event_id: eventId, user_id: memberId });
-    await sync();
-    expect(getProp(page, "RSVPs").number).toBe(1);
-
-    Object.assign(page.properties, {
-      Status: { select: { name: "Cancel on the site" }, type: "select" },
-    });
-    page.last_edited_by = { id: `n-lead-${stamp}` };
-    await sync();
-    expect(statusOf(page)).toBe("Canceled");
-    const { data: event } = await admin
+  test("copies the site's events to Notion, and nothing typed there is read", async () => {
+    const { data: made, error } = await admin
       .schema("events")
       .from("events")
-      .select("status")
-      .eq("id", eventId)
+      .insert({
+        entry: "rsvp",
+        lead_id: leadId,
+        slug: `reading-${stamp}`,
+        starts_at: "2031-04-01T15:00:00.000Z",
+        status: "published",
+        title_ar: "قراءة",
+        title_en: `A reading ${stamp}`,
+        venue_en: "Library 47",
+      })
+      .select("id")
       .single();
-    expect(event?.status).toBe("canceled");
+    expect(error).toBeNull();
+    await sync();
+    const copies = [...fake.pages.values()].filter(
+      (p) => p.dataSource === sources.events && diwanId(p) === made?.id
+    );
+    expect(copies).toHaveLength(2);
+    const english = copies.find((p) => titleOf(p) === `A reading ${stamp}`);
+    expect(english).toBeDefined();
+    expect(statusOf(english as FakePage)).toBe("Published");
+    expect(getProp(english as FakePage, "Lead").people).toEqual([
+      { id: `n-lead-${stamp}`, object: "user" },
+    ]);
+    // Someone edits the copy in Notion: the site keeps its own, and the
+    // next change on the site writes the row again.
+    Object.assign((english as FakePage).properties, {
+      Title: { title: [{ plain_text: "Typed in Notion" }], type: "title" },
+    });
+    await sync();
+    const { data: still } = await admin
+      .schema("events")
+      .from("events")
+      .select("title_en")
+      .eq("id", made?.id ?? "")
+      .single();
+    expect(still?.title_en).toBe(`A reading ${stamp}`);
+    await admin
+      .schema("events")
+      .from("events")
+      .update({ venue_en: "Library 48" })
+      .eq("id", made?.id ?? "");
+    await sync();
+    expect(titleOf(english as FakePage)).toBe(`A reading ${stamp}`);
   });
 });

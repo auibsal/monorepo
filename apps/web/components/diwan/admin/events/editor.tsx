@@ -1,11 +1,6 @@
 "use client";
 
 import type { Locale } from "@repo/internationalization";
-import {
-  formatClock,
-  formatLongDate,
-  formatNumber,
-} from "@repo/internationalization/format";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -20,10 +15,12 @@ import { NotionManaged } from "../notion-managed";
 import { RecordHistory } from "../record-history";
 import { AccessForm } from "./access-form";
 import { Attendance } from "./attendance";
+import { EventFacts } from "./facts";
 import { GuestInvitations } from "./guest-invitations";
 import { Incidents } from "./incidents";
 import { Invitations } from "./invitations";
 import { EventPartsAdmin } from "./parts";
+import { PromoKit } from "./promo/kit";
 
 interface Question {
   id: string;
@@ -49,40 +46,11 @@ const PublicPage = ({
   ) : null;
 
 /**
- * An event in the Diwan (decisions §8): what Notion holds (the date, the
- * place, the access and the text) is shown, not edited; the site's own
- * parts are kept here: whether food is served (the booking's questions),
- * invitations, bookings and
- * check-in, and the standard parts.
+ * An event in the Diwan (decisions.md, Events): made and edited only
+ * here, every field (EventFacts), with the site's own parts below: Good to
+ * know, invitations, bookings and check-in, and the standard parts.
+ * Notion's Events database keeps a read-only copy.
  */
-/** The event's debrief (event-debrief) in Notion, for its staff (decisions §13). */
-const DebriefLink = ({ eventId }: { eventId: string }) => {
-  const t = useTranslations("diwan.admin.event");
-  const { supabase } = useAuth();
-  const debrief = useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("events")
-          .from("debriefs")
-          .select("url")
-          .eq("event_id", eventId)
-          .maybeSingle()
-      ),
-    queryKey: ["admin", "event-debrief", eventId],
-  });
-  return debrief.data?.url ? (
-    <a
-      className="link justify-self-start"
-      href={debrief.data.url}
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      {t("debrief")}
-    </a>
-  ) : null;
-};
-
 export const EventEditor = () => {
   const t = useTranslations("diwan.admin.event");
   const tk = useTranslations("diwan.admin.kit");
@@ -116,18 +84,6 @@ export const EventEditor = () => {
   }
 
   const entry = event.entry as events.Entry;
-  const when = [
-    `${formatLongDate(event.starts_at, locale, true)}, ${formatClock(event.starts_at, locale)}`,
-    event.ends_at ? formatClock(event.ends_at, locale) : null,
-  ]
-    .filter(Boolean)
-    .join("–");
-  const facts: [string, string][] = [
-    [t("when"), when],
-    [t("venue"), localized(event, "venue", locale) || t("noVenue")],
-    [t("entry"), `${t(`entries.${entry}`)}. ${t(`entryHint.${entry}`)}`],
-    [t("seats"), event.capacity ? formatNumber(event.capacity) : t("noLimit")],
-  ];
 
   return (
     <RecordView
@@ -141,16 +97,8 @@ export const EventEditor = () => {
       status={`${tk("status")}: ${tk(`statuses.${event.status as "draft"}`)}`}
       title={localized(event, "title", locale)}
     >
+      <EventFacts event={event} key={`facts-${event.updated_at}`} />
       <NotionManaged kind="event" recordId={eventId} />
-      <DebriefLink eventId={eventId} />
-      <dl className="grid max-w-4xl gap-x-6 gap-y-3 sm:grid-cols-[10rem_1fr]">
-        {facts.map(([term, value]) => (
-          <div className="contents" key={term}>
-            <dt className="type-label">{term}</dt>
-            <dd className="type-body">{value}</dd>
-          </div>
-        ))}
-      </dl>
 
       <AccessForm
         event={event}
@@ -168,6 +116,7 @@ export const EventEditor = () => {
         slug={event.slug}
       />
       <EventPartsAdmin event={event} />
+      <PromoKit event={event} />
       <Incidents eventId={eventId} />
     </RecordView>
   );

@@ -23,29 +23,27 @@ read-only view.
 planning: **Officers** and **Qirtas pipeline** (counts only; review is
 blind). Edit them on the site; each row links there.
 
-**Events** (decisions §10). Each English row sets **Way in** (Open, RSVP,
-Members or Private; Members for a Council meeting, which members may
-observe, with the closed session held apart), which alone decides who
-sees and books it, and, for an event away from campus, **Off campus**.
-Events are made here only: the Diwan shows them and keeps the site's own
-parts (bookings, check-in, registration questions, shifts, the partner
-checklist, approvals). Until the **Members only** checkbox is removed from
-the database, a ticked row with Way in Open or RSVP counts as Members. An off-campus event is kept
-as a draft in the Diwan until the Secretary records Student Life's
-written approval on its page there; the row then goes back to Planning with
-a note, and Ready to publish again publishes it. Notion never brings an
-event back on campus. There is no Program link: no event belongs to a
-series. A meeting's row in **Meetings** links its event in **Event**, and
-its minutes point at that event in the Diwan (the event's day is their
-date). **Needs** link the event they are for (For: Event); **Projects** are
-of a Kind (Event, Qirtas edition, Company production, Campaign,
-Partnership, Membership, Internal) and no longer link Programs.
+**Events are the site's** (decisions.md, Events; Where things live, Nov
+16, 2026). They are made and edited only in the Diwan (Events, New event),
+every field: title, summary and description in both languages, the dates,
+venue, access, capacity, lead (from the register), host, image, off campus
+and Student Life's approval, links and the debrief's link. The Events
+database is a **read-only copy** the site writes, "Events (from the site,
+read-only)": one row per language with the title, dates, venue, status,
+access, lead, the public link and the Diwan link, for plans and projects to
+link to. Anything typed in it is replaced at the next sync; nothing there
+is read. **Needs** are the site's too (listed on the event, production,
+Edition or standing activity, sent to Student Life by the Secretary); the
+Needs database is a read-only copy in the same way.
 
-**One language per piece.** In Events and Programs an English row
-publishes the record and an **Arabic edition** is its own row (Language
-Arabic, **Edition of** the English row): its title, summary, venue (or
-rhythm) and page text become the record's Arabic. An empty field never
-blanks what the site already has.
+Once (Nov 16, 2026), before the copies started, the sync imported what only
+Notion held (`events.ts`, `needs.ts`; `core.settings` `notion.imported`):
+rows never on the site became drafts in the Diwan with their text, image,
+lead (matched by address), host and debrief; each Arabic row filled its
+event's Arabic; and the Needs rows became needs on the site. Then the
+columns the copy no longer writes (Summary, Capacity, Off campus, Host,
+Debrief, Image, RSVPs, Platform note; Requested by in Needs) were removed
+and each database was retitled as a copy.
 
 ## How the sync works
 
@@ -69,13 +67,7 @@ Notion to verify, and set it as `NOTION_WEBHOOK_SECRET` in Vercel
 3. **Programs:** retired (owner, Nov 5, 2026: every event is a standard
    event, none in a series). The sync no longer reads the Programs
    database, which Notion keeps for history.
-4. **Events** (`publish.ts`): **Ready to publish** checks the row
-   (`rules.ts`: title, start time, lengths, slug; a link to a former series is ignored) and publishes
-   the event; the Arabic edition then fills its Arabic. **Cancel on the
-   site** cancels it. Needs `events.manage`. Content calendar rows of kind
-   **News post** or **Qirtas** are imported into the Qirtas newsroom, in
-   Editing (`journal.edit.<desk>` or `journal.approve`).
-5. **Documents** (`documents.ts`): **Ready to publish** renders the page
+4. **Documents** (`documents.ts`): **Ready to publish** renders the page
    (headings, lists, tables, quotes, links) to auibsal.org/library/<slug>
    for public documents; internal ones stay in Notion (**Audience** is the
    publish switch). **For** (Everyone, Members or Staff) sets the group it
@@ -84,15 +76,23 @@ Notion to verify, and set it as `NOTION_WEBHOOK_SECRET` in Vercel
    Secretary). The site keeps only the adoption record, kept in the Diwan's
    Library, and writes **Adopted on** and **Vote** back to the row whenever
    they change there.
-6. **Minutes** (`minutes.ts`): a meeting (Council, general, Annual, special or Founding) in
+5. **Minutes** (`minutes.ts`): a meeting (Council, general, Annual, special or Founding) in
    Work, Meetings with Status **Minutes in the Diwan** goes to the Diwan as
    that meeting's draft minutes (and is updated while it changes). Once the
    Council adopts them there, the official copy is locked (the database
    refuses any change) and the page says so. Needs `governance.manage`.
-7. **RSVP counts** go back to each event's row. Nothing goes the other way:
-   no event or minutes are made in the Diwan.
+6. **The one-time import** (`events.ts`, `needs.ts`), until it has
+   finished once.
+7. **Events and needs** (`events.ts`, `needs.ts`): the read-only copies,
+   written only when a record changed, removed when it is gone.
+8. **The weekly scan** (`scan.ts`), in whatever time is left: from each
+   Monday, every document page is read for the retired names, the terms in
+   `terms-to-check.md` and personal data; each finding is listed on the
+   Desk for the document's keeper (the seat in its Owner) and the web lead
+   (`core.document_scan_hits`, masked). The quarterly sweep is now a check
+   that the list is empty.
 
-Every published row gets back **Status**, **Public page**, **Diwan**,
+Every published document gets back **Status**, **Public page**, **Diwan**,
 **Diwan ID** and a **Platform note**; a refusal sets **Needs changes**, a
 note and a comment saying what to fix. The person who set the status is
 matched by email and must hold the permission on the site (roles that need

@@ -32,6 +32,7 @@ const purposes = [
   "media",
   "membership",
   "partnerships",
+  "web",
 ] as const;
 export type Purpose = (typeof purposes)[number];
 
@@ -175,6 +176,7 @@ const en = {
   postDoors: (time: string) =>
     `<b>Today</b>: doors open at ${time}. Your ticket is on Today in Your account, and in your chat with me.`,
   postEdition: "<b>Out now from Qirtas</b>",
+  postEventNew: (date: string) => `<b>New event</b>: ${date}`,
   postEventSoon: (date: string) => `<b>In two days</b>: ${date}`,
   postLastCall: (date: string) => `<b>Last call</b>: it closes ${date}.`,
   postPiece: "<b>New in Qirtas</b>",
@@ -193,6 +195,7 @@ const en = {
     membership: "Membership's alerts",
     partnerships: "Partnerships' alerts",
     qirtas: "Qirtas",
+    web: "the website's alerts",
     word: "the daily word",
   } satisfies Record<Purpose, string>,
   qirtasNone:
@@ -389,6 +392,7 @@ const ar: Copy = {
   postDoors: (time: string) =>
     `<b>اليوم</b>: الأبواب تفتح ${time}. تذكرتك في «اليوم» بحسابك، وبالمحادثة وياي.`,
   postEdition: "<b>طلع جديد من قرطاس</b>",
+  postEventNew: (date: string) => `<b>فعالية جديدة</b>: ${date}`,
   postEventSoon: (date: string) => `<b>بعد يومين</b>: ${date}`,
   postLastCall: (date: string) => `<b>آخر فرصة</b>: تسكّر ${date}.`,
   postPiece: "<b>جديد بقرطاس</b>",
@@ -407,6 +411,7 @@ const ar: Copy = {
     membership: "تنبيهات العضوية",
     partnerships: "تنبيهات الشراكات",
     qirtas: "قرطاس",
+    web: "تنبيهات الموقع",
     word: "كلمة اليوم",
   },
   qirtasNone: "ماكو شي جديد بقرطاس هسه. النصوص الجاية بالطريق.",

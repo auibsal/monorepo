@@ -385,7 +385,8 @@ type Team =
   | "media"
   | "membership"
   | "partnerships"
-  | "qirtas";
+  | "qirtas"
+  | "web";
 
 interface Alert {
   id: string;

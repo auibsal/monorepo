@@ -29,6 +29,7 @@ export const prop = {
     relation: ids.map((id) => ({ id })),
   }),
   select: (name: string | null) => ({ select: name ? { name } : null }),
+  status: (name: string) => ({ status: { name } }),
   text: (value: string | null | undefined) => ({
     rich_text: pieces(value ?? ""),
   }),
@@ -46,14 +47,6 @@ const joined = (parts: RichText[] | undefined) =>
 
 const get = (page: NotionPage, name: string): NotionProperty | undefined =>
   page.properties[name];
-
-/**
- * The first of these property names the page has: a property renamed in
- * Notion (decisions §13: "Way in" became "Access", "Owner" became "Lead")
- * is read by its new name and, until the rename, by its old one.
- */
-export const named = (page: NotionPage, ...names: string[]) =>
-  names.find((name) => name in page.properties) ?? names[0] ?? "";
 
 export const read = {
   checkbox: (page: NotionPage, name: string) =>
@@ -78,8 +71,9 @@ export const read = {
     ).map((p) => p.id),
   relation: (page: NotionPage, name: string) =>
     (get(page, name)?.relation ?? []).map((r) => r.id),
+  /** A select's option, or a status property's (Needs uses one). */
   select: (page: NotionPage, name: string) =>
-    get(page, name)?.select?.name ?? null,
+    get(page, name)?.select?.name ?? get(page, name)?.status?.name ?? null,
   /** Title or rich text, as plain text. */
   text: (page: NotionPage, name: string) => {
     const p = get(page, name);
