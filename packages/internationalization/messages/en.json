@@ -208,14 +208,7 @@
     "auibEmail": "Your AUIB email",
     "auibEmailHint": "What comes before @auib.edu.iq: usually your ID number, or your name and ID number.",
     "showPassword": "Show",
-    "hidePassword": "Hide",
-    "signedOut": {
-      "title": "Sign out",
-      "pending": "Signing you out on this device…",
-      "body": "You’re signed out on this device. Your other devices stay signed in; sign them out in Settings → Security.",
-      "home": "Go to the home page",
-      "signIn": "Sign in again"
-    }
+    "hidePassword": "Hide"
   },
   "diwan": {
     "nav": {

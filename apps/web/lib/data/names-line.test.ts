@@ -64,9 +64,9 @@ describe("typing a name line", () => {
     expect(typedName("شاهين Ali ٣ كرم،", "ar")).toBe("شاهين كرم");
   });
 
-  test("keeps the hyphen in English only", () => {
+  test("keeps one hyphen in both languages", () => {
     expect(typedName("Abdul--Rahman", "en")).toBe("Abdul-Rahman");
-    expect(typedName("عبد-الله", "ar")).toBe("عبدالله");
+    expect(typedName("عبد--الله", "ar")).toBe("عبد-الله");
   });
 
   test("refuses a fifth name, unless two words are joined", () => {
@@ -88,4 +88,8 @@ test("a join survives the capitals added when the field is left", () => {
   const typed = wordsInLine("new mohammed ali kareem");
   const choices = new Map([[gapKey(typed, 1), true]]);
   expect(roomForNames("New Mohammed Ali Kareem ", "en", choices)).toBe(true);
+});
+
+test("an Arabic name joined by a hyphen is one name", () => {
+  expect(lineProblem("شاهين كرم عبد-الرحمن فرجو", "ar")).toBeNull();
 });

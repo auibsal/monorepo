@@ -174,3 +174,11 @@ test("a name from before the four parts is a to-do on Today, not a block", async
       .eq("id", id);
   }
 });
+
+test("signing out goes straight to the home page", async ({ page }) => {
+  await signInWithPassword(page, member.email);
+  await page.goto(`${urls.web}/sign-out`);
+  await expect(page).toHaveURL(`${urls.web}/`);
+  await page.goto(`${urls.web}/account`);
+  await expect(page).toHaveURL(/\/sign-in/u);
+});

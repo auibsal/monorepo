@@ -1,50 +1,30 @@
 "use client";
 
-import { FormHeader } from "@repo/brand/components/sal/form-header";
-import { Link } from "@repo/internationalization/navigation";
+import { useRouter } from "@repo/internationalization/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { FullPageSpinner } from "@/components/diwan/states";
 import { useAuth } from "@/lib/auth/provider";
 import { rememberWays } from "@/lib/staff";
 
-/** Ends the session on this device (only this one) and says so. */
+/**
+ * Signing out (decisions.md, The site): ends the session on this device
+ * only, then goes straight to the home page; no page in between. Other
+ * devices stay signed in, listed in Settings.
+ */
 export const SignOut = () => {
-  const t = useTranslations("auth.signedOut");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [done, setDone] = useState(false);
+  const router = useRouter();
   useEffect(() => {
-    let live = true;
     supabase.auth
       .signOut({ scope: "local" })
       .catch(() => undefined)
       .finally(() => {
         rememberWays(null);
         queryClient.clear();
-        if (live) {
-          setDone(true);
-        }
+        router.replace("/");
       });
-    return () => {
-      live = false;
-    };
-  }, [queryClient, supabase]);
-  return (
-    <div className="mx-auto grid w-full max-w-md gap-6 px-4 py-16">
-      <FormHeader title={t("title")}>
-        {done ? t("body") : t("pending")}
-      </FormHeader>
-      {done ? (
-        <div className="flex flex-wrap gap-x-6 gap-y-3">
-          <Link className="link" href="/">
-            {t("home")}
-          </Link>
-          <Link className="link" href="/sign-in">
-            {t("signIn")}
-          </Link>
-        </div>
-      ) : null}
-    </div>
-  );
+  }, [queryClient, router, supabase]);
+  return <FullPageSpinner />;
 };

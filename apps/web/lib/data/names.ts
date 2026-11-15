@@ -146,18 +146,21 @@ const LATIN_WORD = new RegExp(
   `^[${LATIN_LETTERS}]+(?:-[${LATIN_LETTERS}]+)*$`,
   "u"
 );
-const ARABIC_WORD =
-  /^[\u0621-\u063A\u0641-\u064A\u064B-\u0652\u0670\u0671-\u06D3]+$/u;
+const ARABIC_LETTERS =
+  "\\u0621-\\u063A\\u0641-\\u064A\\u064B-\\u0652\\u0670\\u0671-\\u06D3";
+const ARABIC_WORD = new RegExp(
+  `^[${ARABIC_LETTERS}]+(?:-[${ARABIC_LETTERS}]+)*$`,
+  "u"
+);
 const AROUND_HYPHEN = /\s*-\s*/gu;
 const SPACES = /\s+/u;
 
 const ARABIC_JOINS = new Set(["أبو", "ابو", "أبي", "ابي", "عبد"]);
 
 // What each line takes as it is typed: its own script's letters and
-// spaces, and in English the hyphen of a joined name (Abdul-Rahman).
+// spaces, and the hyphen of a joined name (Abdul-Rahman, «عبد-الرحمن»).
 const NOT_ENGLISH = new RegExp(`[^${LATIN_LETTERS}\\s-]`, "gu");
-const NOT_ARABIC =
-  /[^\u0621-\u063A\u0641-\u064A\u064B-\u0652\u0670\u0671-\u06D3\s]/gu;
+const NOT_ARABIC = new RegExp(`[^${ARABIC_LETTERS}\\s-]`, "gu");
 const RUNS_OF_SPACES = /\s+/gu;
 const RUNS_OF_HYPHENS = /-{2,}/gu;
 const LEADING = /^[\s-]+/u;
@@ -165,7 +168,7 @@ const TRAILING_SPACE = /\s$/u;
 
 /**
  * A line as typed, kept to its language: letters of the other script,
- * digits and symbols never reach it (only the hyphen, in English).
+ * digits and symbols never reach it (only the hyphen).
  */
 export const typedName = (value: string, language: NameLanguage) =>
   value
