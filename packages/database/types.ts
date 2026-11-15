@@ -4748,7 +4748,8 @@ export type Database = {
           eligibility_en: string | null;
           id: string;
           is_published: boolean;
-          issue_id: string | null;
+          issue_id: string;
+          kind: string;
           max_per_person: number;
           opens_at: string;
           theme_ar: string | null;
@@ -4767,7 +4768,8 @@ export type Database = {
           eligibility_en?: string | null;
           id?: string;
           is_published?: boolean;
-          issue_id?: string | null;
+          issue_id: string;
+          kind?: string;
           max_per_person?: number;
           opens_at: string;
           theme_ar?: string | null;
@@ -4785,7 +4787,8 @@ export type Database = {
           eligibility_en?: string | null;
           id?: string;
           is_published?: boolean;
-          issue_id?: string | null;
+          issue_id?: string;
+          kind?: string;
           max_per_person?: number;
           opens_at?: string;
           theme_ar?: string | null;
@@ -5867,10 +5870,12 @@ export type Database = {
       };
       submissions: {
         Row: {
+          about_writer: string | null;
           anonymous: boolean;
           author_id: string;
           body_html: string | null;
           call_id: string | null;
+          captions_confirmed: boolean | null;
           category: Database["journal"]["Enums"]["category"];
           consent_confirmed: boolean;
           cover_note: string | null;
@@ -5886,10 +5891,12 @@ export type Database = {
           partner_id: string | null;
           pen_name: string | null;
           reference: string | null;
+          release_confirmed: boolean | null;
           revised_at: string | null;
           revision_editor: string | null;
           revision_requested_at: string | null;
           rights_note: string | null;
+          running_minutes: number | null;
           source_author: string | null;
           source_text: string | null;
           status: Database["journal"]["Enums"]["submission_status"];
@@ -5900,10 +5907,12 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          about_writer?: string | null;
           anonymous?: boolean;
           author_id?: string;
           body_html?: string | null;
           call_id?: string | null;
+          captions_confirmed?: boolean | null;
           category: Database["journal"]["Enums"]["category"];
           consent_confirmed?: boolean;
           cover_note?: string | null;
@@ -5919,10 +5928,12 @@ export type Database = {
           partner_id?: string | null;
           pen_name?: string | null;
           reference?: string | null;
+          release_confirmed?: boolean | null;
           revised_at?: string | null;
           revision_editor?: string | null;
           revision_requested_at?: string | null;
           rights_note?: string | null;
+          running_minutes?: number | null;
           source_author?: string | null;
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
@@ -5932,10 +5943,12 @@ export type Database = {
           video_url?: string | null;
         };
         Update: {
+          about_writer?: string | null;
           anonymous?: boolean;
           author_id?: string;
           body_html?: string | null;
           call_id?: string | null;
+          captions_confirmed?: boolean | null;
           category?: Database["journal"]["Enums"]["category"];
           consent_confirmed?: boolean;
           cover_note?: string | null;
@@ -5951,10 +5964,12 @@ export type Database = {
           partner_id?: string | null;
           pen_name?: string | null;
           reference?: string | null;
+          release_confirmed?: boolean | null;
           revised_at?: string | null;
           revision_editor?: string | null;
           revision_requested_at?: string | null;
           rights_note?: string | null;
+          running_minutes?: number | null;
           source_author?: string | null;
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
@@ -6097,6 +6112,34 @@ export type Database = {
           title: string;
         }[];
       };
+      edition_calls: {
+        Args: { edition_slug?: string };
+        Returns: {
+          closes_at: string;
+          decisions_at: string;
+          desks: Database["journal"]["Enums"]["desk"][];
+          edition_id: string;
+          edition_number: number;
+          edition_pilot: boolean;
+          edition_publish_at: string;
+          edition_slug: string;
+          edition_status: string;
+          edition_theme_ar: string;
+          edition_theme_en: string;
+          edition_title_ar: string;
+          edition_title_en: string;
+          eligibility_ar: string;
+          eligibility_en: string;
+          id: string;
+          kind: string;
+          max_per_person: number;
+          opens_at: string;
+          theme_ar: string;
+          theme_en: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       edition_launch: { Args: { issue_id: string }; Returns: string };
       entry_author: {
         Args: { blind_entry_id: string };
@@ -6126,6 +6169,7 @@ export type Database = {
           author_name_ar: string;
           author_name_en: string;
           blind_entry_id: string;
+          call_id: string;
           category: Database["journal"]["Enums"]["category"];
           created_at: string;
           file_count: number;

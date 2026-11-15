@@ -58,7 +58,32 @@ const PartnersPage = async ({ params }: LocaleParams) => {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
-      <PageHeader lede={t("lede")} title={t("title")}>
+      <PageHeader
+        actions={
+          <>
+            {/* The page's one action, first (decisions.md, The site). */}
+            <Button asChild>
+              {/* Not fetched ahead: your account's code would weigh on the
+                  page (the performance budget). */}
+              <Link href="/partners/apply" prefetch={false}>
+                {t("apply")}
+              </Link>
+            </Button>
+            <Link
+              className="link"
+              href={{
+                pathname: "/sign-in",
+                query: { next: "/partners/dashboard" },
+              }}
+              prefetch={false}
+            >
+              {t("teamSignIn")}
+            </Link>
+          </>
+        }
+        lede={t("lede")}
+        title={t("title")}
+      >
         <ManageLinks diwan="/partnerships" partner />
       </PageHeader>
       {(["gets", "gives"] as const).map((side) => (
@@ -150,21 +175,6 @@ const PartnersPage = async ({ params }: LocaleParams) => {
       />
       <Section id="work-with-us" title={t("workTitle")}>
         <p className="type-body">{t("work")}</p>
-        <p className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          {/* The page's one action (the third prompt, §7). */}
-          <Button asChild>
-            <Link href="/partners/apply">{t("apply")}</Link>
-          </Button>
-          <Link
-            className="link"
-            href={{
-              pathname: "/sign-in",
-              query: { next: "/partners/dashboard" },
-            }}
-          >
-            {t("teamSignIn")}
-          </Link>
-        </p>
       </Section>
       {/* Second Chapter (decisions.md): kept by the Director of
           Partnerships; its collection's record is a Notion page. */}

@@ -1,6 +1,6 @@
 -- Qirtas, one door, and one name per language (decisions.md):
--- everything members send is read blind through a call (the standing call
--- when none is named), bylines and judges are people from the register
+-- everything sent to an Edition belongs to one of its calls (its general
+-- submissions when none is named), bylines and judges are people from the register
 -- (under their name or a pen name), and a member's name is one name in
 -- each language.
 begin;
@@ -100,14 +100,12 @@ $$;
 
 select plan(13);
 
-select is((select count(*) from journal.calls where issue_id is null)::integer, 1,
-  'There is one standing call, which belongs to no Edition');
-select is((select desks from journal.calls where issue_id is null), '{letters,gallery}'::journal.desk[],
-  'and it takes Letters and Gallery for now');
-
--- The standing call takes only Letters and Gallery for now (decisions.md,
--- Qirtas); these checks exercise every section, so they reopen it.
-update journal.calls set desks = enum_range(null::journal.desk) where issue_id is null;
+select is((select count(*) from journal.calls where issue_id is null)::integer, 0,
+  'Every call belongs to an Edition');
+select is((select i.slug || ' ' || c.kind || ' ' || c.desks::text from journal.calls c
+  join journal.issues i on i.id = c.issue_id where c.title_en = 'Edition 1: general submissions'),
+  'edition-1 general {letters,gallery,video}',
+  'The standing call is now Edition 1''s general submissions, with Video');
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000099a1', 'door@auib.edu.iq', 'Door Writer');
 insert into membership.pledges (user_id, pledge_type, version)
@@ -115,10 +113,11 @@ select '00000000-0000-0000-0000-0000000099a1', t, '1'
 from unnest(enum_range(null::membership.pledge_type)) t;
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000099a1');
-insert into journal.submissions (category, language, title, deck, body_html, human_authorship_confirmed, pen_name)
-values ('report', 'en', 'One door story', 'A deck.', '<p>Story</p>', true, 'Night Owl');
-select ok((select c.issue_id is null from journal.submissions s join journal.calls c on c.id = s.call_id
-  where s.title = 'One door story'), 'News sent without a call goes to the standing call, to be read blind');
+insert into journal.submissions (category, language, title, body_html, human_authorship_confirmed,
+  first_publication_confirmed, pen_name)
+values ('poetry', 'en', 'One door poem', '<p>Lines</p>', true, true, 'Night Owl');
+select ok((select c.kind = 'general' from journal.submissions s join journal.calls c on c.id = s.call_id
+  where s.title = 'One door poem'), 'Work sent without a call goes to the open general submissions');
 select pg_temp.logout();
 
 select throws_ok(

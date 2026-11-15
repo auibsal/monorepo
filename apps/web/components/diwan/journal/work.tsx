@@ -70,7 +70,7 @@ export const MyPiece = () => {
   const back = (
     <Link
       className="text-sm underline underline-offset-4"
-      href="/qirtas/submit"
+      href={journal.SEND_YOUR_WORK}
     >
       {t("back")}
     </Link>

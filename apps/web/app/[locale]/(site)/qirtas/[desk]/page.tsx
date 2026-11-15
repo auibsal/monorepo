@@ -1,4 +1,5 @@
-import { Button } from "@repo/brand/components/ui/button";
+import { SectionFront } from "@repo/brand/components/sal/section-front";
+import { project } from "@repo/config";
 import type { Locale } from "@repo/internationalization";
 import { localizedPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
@@ -6,6 +7,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PieceCardView } from "@/components/qirtas/cards";
+import { DoorLink } from "@/components/qirtas/doors";
 import { SelectionBar } from "@/components/qirtas/gallery-selection";
 import { journal, localized } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
@@ -90,7 +92,7 @@ const DeskPage = async ({ params }: DeskProps) => {
   );
   const pictures = desk === "gallery" || desk === "video";
   const editor = await deskEditor(desk, locale);
-  const takesWork = journal.sendableCategories(desk).length > 0;
+  const doors = journal.deskDoors(desk, project.mailboxes.tips);
   let editorLine: string | null = null;
   if (editor?.name) {
     editorLine = t("deskEditor", { name: editor.name });
@@ -103,18 +105,15 @@ const DeskPage = async ({ params }: DeskProps) => {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
-      <header className="grid gap-3">
-        <h1 className="type-display">{t(`desks.${desk}`)}</h1>
-        <p className="type-lede max-w-3xl">{t(`deskLedes.${desk}`)}</p>
-        {takesWork ? (
-          <Button asChild className="justify-self-start">
-            <Link href={`/qirtas/submit#${desk}`} prefetch={false}>
-              {t("sendTo", { desk: t(`desks.${desk}`) })}
-            </Link>
-          </Button>
-        ) : null}
-        {editorLine ? <p className="type-caption">{editorLine}</p> : null}
-        <p className="type-caption flex flex-wrap gap-x-5">
+      <SectionFront
+        actions={doors.map((door, i) => (
+          <DoorLink door={door} key={door.key} main={i === 0} />
+        ))}
+        line={t(`deskLedes.${desk}`)}
+        note={editorLine}
+        title={t(`desks.${desk}`)}
+      >
+        <p className="type-caption -mt-6 flex flex-wrap gap-x-5">
           <Link className="link" href="/qirtas/archive">
             {t("archive.open")}
           </Link>
@@ -126,7 +125,7 @@ const DeskPage = async ({ params }: DeskProps) => {
           </a>
         </p>
         {desk === "gallery" ? <SelectionBar /> : null}
-      </header>
+      </SectionFront>
       {pieces.length === 0 ? (
         <p className="type-body text-text-secondary">{t("noPieces")}</p>
       ) : (

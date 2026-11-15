@@ -6,6 +6,7 @@ import { Link } from "@repo/internationalization/navigation";
 import NextLink from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { NewsletterSignup } from "@/components/newsletter/signup";
+import { journal } from "@/lib/data";
 import { thisYear } from "@/lib/this-year";
 import { version as VERSION } from "../package.json";
 
@@ -52,7 +53,7 @@ export const Footer = async ({
         ["/join", t("join")],
         ["/get-involved", t("involved")],
         ["/events", t("events")],
-        ["/qirtas/submit", t("write")],
+        [journal.SEND_YOUR_WORK, t("write")],
       ],
     },
     {

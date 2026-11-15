@@ -1,7 +1,16 @@
 import { Constants, type Enums } from "@repo/database";
 import { z } from "zod";
 import { type Client, currentDate, unwrap } from "./client";
+import { SEND_YOUR_WORK } from "./qirtas-paths";
 import { sanitizeRichText, toPlainText } from "./sanitize";
+
+export {
+  draftPath,
+  isVoicesForm,
+  SEND_YOUR_WORK,
+  type VoicesForm,
+  voicesForms,
+} from "./qirtas-paths";
 
 export type Category = Enums<{ schema: "journal" }, "category">;
 
@@ -100,10 +109,41 @@ export const deskCategories = (desk: Desk): readonly Category[] =>
 export const closedCategories: readonly Category[] = [...sectionTypes.games];
 
 /**
- * The sections taking work for now (decisions.md, Qirtas): Letters and Gallery
- * only. The other sections reopen by adding them back here.
+ * The sections an Edition's calls take (decisions.md, Qirtas: "Two lanes"):
+ * Letters and Gallery, read blind, and Video, members' films. Voices takes
+ * letters and op-eds at its own door; News takes no submissions.
  */
-const openDesks: readonly Desk[] = ["letters", "gallery"];
+const openDesks: readonly Desk[] = ["letters", "gallery", "video"];
+
+/**
+ * The status a writer sees (decisions.md, The site: "One form flow"): the
+ * same words everywhere in Your account (Received, In review, Decision,
+ * Withdrawn), the decision named plainly; the staff's own steps stay theirs.
+ */
+export const writerStatus = (status: SubmissionStatus) => {
+  switch (status) {
+    case "received":
+    case "intake_check":
+      return "received" as const;
+    case "accepted":
+      return "accepted" as const;
+    case "declined":
+      return "notChosen" as const;
+    case "withdrawn":
+      return "withdrawn" as const;
+    default:
+      return "inReview" as const;
+  }
+};
+
+/** A letter to the editor runs to 300 words; an op-ed 600 to 800. */
+export const VOICES_WORDS = {
+  letter_to_editor: { max: 300, min: 1 },
+  opinion_essay: { max: 800, min: 600 },
+} as const;
+
+/** A film runs at most 15 minutes (decisions.md, Qirtas). */
+export const MAX_FILM_MINUTES = 15;
 
 /** The types a member sends in each section. */
 export const sendableCategories = (desk: Desk) =>
@@ -111,7 +151,35 @@ export const sendableCategories = (desk: Desk) =>
     ? deskCategories(desk).filter((c) => !closedCategories.includes(c))
     : [];
 
-/** Every type a member can send, at /qirtas/submit/<type>. */
+/**
+ * Each section's own door (decisions.md, Qirtas: "Each section's own
+ * door"), its front page's action: News, a tip by email and the staff on
+ * Get involved; Voices, its two forms; Letters, Gallery and Video, the open
+ * calls; Games, none.
+ */
+export const deskDoors = (
+  desk: Desk,
+  tips: string
+): readonly { href: string; key: string }[] => {
+  switch (desk) {
+    case "news":
+      return [
+        { href: `mailto:${tips}`, key: "tip" },
+        { href: "/get-involved", key: "joinStaff" },
+      ];
+    case "voices":
+      return [
+        { href: "/qirtas/voices/letter", key: "letter" },
+        { href: "/qirtas/voices/op-ed", key: "opEd" },
+      ];
+    case "games":
+      return [];
+    default:
+      return [{ href: SEND_YOUR_WORK, key: "send" }];
+  }
+};
+
+/** Every type a member can send, under an Edition's call. */
 const writableTypes = desks.flatMap(sendableCategories);
 
 export const isWritableType = (value: string): value is Category =>
@@ -231,14 +299,55 @@ export const submissionFileTypes = {
 
 export const MAX_FILE_BYTES = 25 * 1024 * 1024;
 
+/**
+ * What Video and Voices ask beyond the rest (decisions.md, Qirtas: "Two
+ * lanes"): a film's length, captions and releases; opinion by name, within
+ * its length, an op-ed with its line about the writer.
+ */
+const laneIssues = (value: {
+  about_writer?: string;
+  body_html?: string;
+  captions_confirmed?: boolean;
+  category: Category;
+  pen_name?: string;
+  release_confirmed?: boolean;
+  running_minutes?: number;
+}) => {
+  const desk = deskOf(value.category);
+  const issues: { message: string; path: string[] }[] = [];
+  const film =
+    Boolean(value.running_minutes) &&
+    value.captions_confirmed === true &&
+    value.release_confirmed === true;
+  if (desk === "video" && !film) {
+    issues.push({ message: "video_declarations", path: ["release_confirmed"] });
+  }
+  if (desk === "voices" && value.pen_name) {
+    issues.push({ message: "own_name_required", path: ["pen_name"] });
+  }
+  if (value.category === "opinion_essay" && !value.about_writer) {
+    issues.push({ message: "about_writer_required", path: ["about_writer"] });
+  }
+  const words = VOICES_WORDS[value.category as keyof typeof VOICES_WORDS];
+  const n = words ? wordCount(value.body_html ?? "") : 0;
+  if (words && (n < words.min || n > words.max)) {
+    issues.push({ message: "voices_length", path: ["body_html"] });
+  }
+  return issues;
+};
+
 export const submissionSchema = z
   .object({
+    /** An op-ed's line about its writer, after their name (Voices). */
+    about_writer: z.string().trim().min(3).max(160).optional(),
     body_html: z.string().max(200_000).optional(),
     /**
-     * An Edition call (Letters, Gallery); without one the work goes to the
-     * standing call. Either way it is read blind (decisions.md).
+     * The Edition call it answers (Letters, Gallery, Video); without one,
+     * the next Edition's general submissions. Voices takes none.
      */
     call_id: z.uuid().optional(),
+    /** A film is captioned (Video). */
+    captions_confirmed: z.boolean().optional(),
     category: z.enum(categories as [Category, ...Category[]]),
     /** Every identifiable person in an image consented (Gallery: required). */
     consent_confirmed: z.boolean().optional(),
@@ -253,7 +362,11 @@ export const submissionSchema = z
     partner_id: z.uuid().optional(),
     /** Only the Editor-in-Chief and the Managing Editor keep the real name. */
     pen_name: z.string().trim().min(2).max(80).optional(),
+    /** Everyone on screen signed a media release (Video). */
+    release_confirmed: z.boolean().optional(),
     rights_note: z.string().max(2000).optional(),
+    /** A film's length, in minutes (Video: at most 15). */
+    running_minutes: z.number().int().min(1).max(MAX_FILM_MINUTES).optional(),
     source_author: z.string().max(300).optional(),
     source_text: z.string().max(200_000).optional(),
     title: z.string().trim().min(1).max(300),
@@ -284,6 +397,9 @@ export const submissionSchema = z
         message: "video_required",
         path: ["video_url"],
       });
+    }
+    for (const issue of laneIssues(value)) {
+      context.addIssue({ code: "custom", ...issue });
     }
     if (value.category === "translation") {
       if (!value.source_text?.trim()) {
@@ -342,7 +458,7 @@ export const createSubmission = async (
         ...input,
         body_html: input.body_html ? sanitizeRichText(input.body_html) : null,
       })
-      .select("id")
+      .select("id, reference")
       .single()
   );
 
@@ -386,6 +502,25 @@ export const editionCalls = async (client: Client, now = currentDate()) =>
  */
 export const myCallPathways = async (client: Client) =>
   unwrap(await journal(client).rpc("my_call_pathways")) ?? [];
+
+/**
+ * Every published call with its Edition (decisions.md, Qirtas: "Calls"): the
+ * themed call first, then the general submissions. For one Edition, by
+ * its slug; public, so the Edition's page lives from its call's opening.
+ */
+export const callsWithEditions = async (client: Client, editionSlug?: string) =>
+  unwrap(
+    await journal(client).rpc("edition_calls", { edition_slug: editionSlug })
+  ) ?? [];
+export type EditionCall = Awaited<ReturnType<typeof callsWithEditions>>[number];
+
+/** A call open at that moment. */
+export const isOpenAt = (
+  call: { readonly closes_at: string; readonly opens_at: string },
+  now: Date
+) =>
+  new Date(call.opens_at).getTime() <= now.getTime() &&
+  now.getTime() <= new Date(call.closes_at).getTime();
 
 export const publishedIssues = async (client: Client) =>
   unwrap(

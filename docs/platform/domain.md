@@ -375,16 +375,45 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Gallery, Video, Games. Types are the editors' (`type_label`). Voices
   keeps the opinion rule (no party politics, religion, sect or
   ethnicity).
-- **Submit to Qirtas** (`/qirtas/submit`) is the one door: public to read,
-  members send work in every section except Games, at any time, and
-  everything is read blind. Drafts (`journal.submission_drafts`) are their
-  writer's alone. Every decision carries its reason (`journal.decide`).
-  Bylines are a Register name, a pen name or "Anonymous" (the
-  Editor-in-Chief knows the writer). Unpublished submissions are deleted
-  twelve months after the decision (the retention job, `docs/platform/retention.md`).
+- **Two lanes.** Qirtas is a student paper (News, Voices, Video) and a
+  literary magazine (Letters, Gallery) under one name. **Editions is the one
+  door for outside work** (`/qirtas/editions`; Qirtas's "Send your work",
+  `journal.SEND_YOUR_WORK`, opens it at `?status=open`; `/qirtas/submit`,
+  `/qirtas/write` and `/haven` redirect). Every submission belongs to an
+  Edition's call (`journal.calls.issue_id`, `kind`): each Edition's
+  **general submissions** (always open, replies within six weeks, one per
+  Edition) and any **themed call** with its own dates and terms, all set on
+  the Edition's page in the Diwan. The public reads the calls with their
+  Editions through `journal.edition_calls()`, so an Edition's page lives at
+  one address from its call's opening: the call, then "Reading now", then
+  the book. Forms live under the Edition
+  (`/qirtas/editions/<edition>/submit/<type>`, a draft under it); signed
+  out, a form goes to sign-in and back.
+  - **Letters and Gallery** are read blind; **Video** takes members' films
+    (up to 15 minutes, captioned, every person on screen released:
+    `running_minutes`, `captions_confirmed`, `release_confirmed`), not
+    blind.
+  - **Voices** takes a letter to the editor (up to 300 words) and an op-ed
+    (600–800, with its line about the writer, `about_writer`) at
+    `/qirtas/voices/letter` and `/op-ed`, to no call, by name, decided by
+    the Voices desk (`private.html_word_count` checks the lengths).
+  - **News takes no submissions:** "Send a news tip" (tips@) and "Join the
+    staff" (Get involved) are its door (`journal.deskDoors`).
+  - The form follows the one form flow: drafts saved as you go
+    (`journal.submission_drafts`, the writer's alone), a review step, a
+    receipt on the page with the number and the reply time, the "received"
+    email, and the shared status words in Your account
+    (`journal.writerStatus`). Every decision carries its reason
+    (`journal.decide`). Bylines are a Register name, a pen name or
+    "Anonymous" (the Editor-in-Chief knows the writer); opinion and news run
+    under the writer's own name. Unpublished submissions are deleted twelve
+    months after the decision (`docs/platform/retention.md`).
 - **The Newsroom** is the Diwan's Qirtas section: staff write and publish
-  directly, and read what members send on the same pages
-  (`/diwan/qirtas/submissions/<id>`).
+  directly, and each section's desk reads what comes to it by name (the
+  Voices desk takes letters and op-eds; accepted work arrives as a piece).
+  **Editions** opens on the one reading queue across every call (Intake,
+  Reading, Decide, Decided; filtered by Edition and call), then each
+  Edition's page: Call, Contents and Publish.
 - **Intake and blind review.** The Managing Editor handles intake and
   holds writers' names (`journal.identity.view`), and never reads a
   blind entry: whoever holds the names is never an Edition's editor
@@ -427,8 +456,8 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   on a Baghdad day (`lib/data/games`): the word, the word search,
   the crossword and the anagrams at `/qirtas/games/...`, checked ahead by
   the Games editors in the Newsroom's queue (`journal.game_checks`). No
-  hand-made puzzles and no Edition calls (decisions §5): the standing call
-  is the one door. Members send no games (`private.games_by_editors`).
+  hand-made puzzles and no Edition calls (decisions.md, Qirtas). Members
+  send no games (`private.games_by_editors`).
   Progress stays in the browser.
 - **The Mutanabbi Prize** (`/qirtas/prize`; the Diwan's
   `/diwan/qirtas/prize`): Qirtas and Qalam categories, the outside judge's

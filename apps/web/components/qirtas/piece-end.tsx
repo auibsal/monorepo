@@ -1,7 +1,8 @@
+import { project } from "@repo/config";
 import type { Locale } from "@repo/internationalization";
-import { Link } from "@repo/internationalization/navigation";
 import { getTranslations } from "next-intl/server";
 import { NewsletterSignup } from "@/components/newsletter/signup";
+import { DoorLink } from "@/components/qirtas/doors";
 import { journal } from "@/lib/data";
 
 /**
@@ -18,25 +19,25 @@ export const PieceEnd = async ({
   locale: Locale;
 }) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  const sends = journal.sendableCategories(desk).length > 0;
+  const doors = journal.deskDoors(desk, project.mailboxes.tips);
   return (
     <aside
       aria-label={t("end.label")}
       className="border-line mx-auto grid w-full max-w-3xl gap-8 border-t px-4 pt-8 md:grid-cols-2 print:hidden"
     >
-      {sends ? (
+      {doors.length > 0 ? (
         <div className="grid content-start gap-2">
-          <h2 className="type-heading">{t("sendNews")}</h2>
+          <h2 className="type-heading">
+            {t(`end.title.${desk as Exclude<typeof desk, "games">}`)}
+          </h2>
           <p className="type-body">
-            {t("end.write", { desk: t(`desks.${desk}`) })}
+            {t(`end.line.${desk as Exclude<typeof desk, "games">}`)}
           </p>
-          <Link
-            className="link justify-self-start"
-            href={`/qirtas/submit#${desk}`}
-            prefetch={false}
-          >
-            {t("end.writeLink")}
-          </Link>
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            {doors.map((door) => (
+              <DoorLink door={door} key={door.key} main={false} />
+            ))}
+          </div>
         </div>
       ) : null}
       <div className="grid content-start gap-2">

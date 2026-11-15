@@ -141,7 +141,9 @@ describe("the email journeys", () => {
     const items = built.blocks[0]?.lists?.[0]?.items ?? [];
     expect(items.map((i) => i.href)).toContain("https://auibsal.org/ar/events");
     const html = await render(Notice(built));
-    expect(html).toContain('href="https://auibsal.org/ar/qirtas/submit"');
+    expect(html).toContain(
+      'href="https://auibsal.org/ar/qirtas/editions?status=open"'
+    );
   });
 
   test("confirmations repeat their link under the button, in HTML and text", async () => {

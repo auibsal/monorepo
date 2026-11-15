@@ -56,6 +56,7 @@ const projectSchema = z
         privacy: z.email(),
         qirtas: z.email(),
         security: z.email(),
+        tips: z.email(),
       })
       .strict(),
     motto: z.object({ ar: z.string().min(1), en: z.string().min(1) }),

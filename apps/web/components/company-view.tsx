@@ -46,6 +46,15 @@ export const CompanyView = async ({ locale }: { locale: Locale }) => {
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-16 sm:py-24">
       <PageHeader
+        actions={
+          // The page's one action, first (decisions.md, The site): auditions
+          // and performances are the Company's dates on Events.
+          <Button asChild>
+            <Link href={whatsOnPath(monthFrom(undefined, now), "company")}>
+              {t("dates")}
+            </Link>
+          </Button>
+        }
         lede={localized(company, "summary", locale)}
         title={localized(company, "name", locale)}
       >
@@ -112,15 +121,6 @@ export const CompanyView = async ({ locale }: { locale: Locale }) => {
       <Section id="auditions" title={t("auditions")}>
         <p className="type-body max-w-prose">{t("auditionsLede")}</p>
       </Section>
-      {/* The page's one action (the third prompt, §7): auditions and
-          performances are the Company's dates on Events. */}
-      <p>
-        <Button asChild>
-          <Link href={whatsOnPath(monthFrom(undefined, now), "company")}>
-            {t("dates")}
-          </Link>
-        </Button>
-      </p>
     </div>
   );
 };

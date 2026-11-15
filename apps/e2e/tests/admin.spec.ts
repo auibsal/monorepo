@@ -129,7 +129,9 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
     .schema("journal")
     .from("calls")
     .select("id")
-    .is("issue_id", null)
+    // Edition 1's general submissions (decisions.md, Qirtas: "Calls").
+    .eq("kind", "general")
+    .limit(1)
     .single();
   const { data: entry, error } = await db
     .schema("journal")

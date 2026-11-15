@@ -14,6 +14,34 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the fourteenth and fifteenth site prompts (Nov 15)
+
+- [x] One register for every organization (partners, campus partners,
+  sponsors in kind), "Campus partners" on /partners, "Co-sponsored by" and
+  "Thanks to" at the foot of an event, "Hosted by" under its title; the
+  Sun Nov 22 screening's organizations.
+- [ ] Logos for The American Space and the Iraqi Independent Film Centre
+  (Partnerships uploads them on each entry; the Desk counts them).
+- [x] Editions is the one door: every submission on an Edition's call
+  (general submissions and themed calls), Edition 1 created with the
+  standing call's work, Open now, each Edition's page for its whole life,
+  forms under the Edition, "Send your work", the redirects.
+- [x] The lanes: Video's films with their declarations; Voices' letter to
+  the editor and op-ed, by name, within their lengths; News's tip and
+  staff doors.
+- [x] The Diwan: the reading queue on Editions, by stage, Edition and call;
+  each Edition's Call, Contents and Publish.
+- [x] Hudhud: the Sunday note's lines link to their pages; a last call
+  three days before a themed call closes; a post for a published Edition.
+- [x] One pattern for each kind of thing: the section front (`SectionFront`)
+  and the open-call row (`OpenCallRow`) in `@repo/brand`; the one form flow
+  on Qirtas's forms (drafts saved as you go, review, receipt, shared
+  status words).
+- [ ] The one form flow on the other application forms (openings,
+  auditions, the partner application, nominations) and one record page and
+  list across Your account and the Diwan: the patterns exist; each form
+  still keeps its own steps.
+
 ## Now: the ninth to twelfth site prompts (Nov 14)
 
 All in PR #269.

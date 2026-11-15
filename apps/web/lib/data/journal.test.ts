@@ -187,7 +187,7 @@ describe("submission form", () => {
     ).toBe(true);
   });
 
-  test("Gallery work needs consent; video needs its link", () => {
+  test("Gallery work needs consent; a film its link, length, captions and releases", () => {
     expect(
       submissionSchema.safeParse({ ...base, category: "comic" }).success
     ).toBe(false);
@@ -207,6 +207,55 @@ describe("submission form", () => {
         ...noCall,
         category: "short_film",
         video_url: "https://youtu.be/x",
+      }).success
+    ).toBe(false);
+    expect(
+      submissionSchema.safeParse({
+        ...noCall,
+        captions_confirmed: true,
+        category: "short_film",
+        release_confirmed: true,
+        running_minutes: 12,
+        video_url: "https://youtu.be/x",
+      }).success
+    ).toBe(true);
+    expect(
+      submissionSchema.safeParse({
+        ...noCall,
+        captions_confirmed: true,
+        category: "short_film",
+        release_confirmed: true,
+        running_minutes: 16,
+        video_url: "https://youtu.be/x",
+      }).success
+    ).toBe(false);
+  });
+
+  test("Voices runs by name, within its length; an op-ed has its line", () => {
+    const words = (n: number) => `<p>${"word ".repeat(n)}</p>`;
+    const letter = { ...base, category: "letter_to_editor" as const };
+    expect(
+      submissionSchema.safeParse({ ...letter, body_html: words(120) }).success
+    ).toBe(true);
+    expect(
+      submissionSchema.safeParse({ ...letter, body_html: words(301) }).success
+    ).toBe(false);
+    expect(
+      submissionSchema.safeParse({
+        ...letter,
+        body_html: words(120),
+        pen_name: "Owl",
+      }).success
+    ).toBe(false);
+    const opEd = { ...base, category: "opinion_essay" as const };
+    expect(
+      submissionSchema.safeParse({ ...opEd, body_html: words(700) }).success
+    ).toBe(false);
+    expect(
+      submissionSchema.safeParse({
+        ...opEd,
+        about_writer: "is a junior studying business at AUIB",
+        body_html: words(700),
       }).success
     ).toBe(true);
   });

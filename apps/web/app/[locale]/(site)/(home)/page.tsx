@@ -111,7 +111,10 @@ const Home = async ({ params }: HomeProps) => {
           {call ? (
             <div className="grid gap-2">
               <p className="type-subheading">
-                <Link className="hover:text-accent" href="/qirtas/submit">
+                <Link
+                  className="hover:text-accent"
+                  href={journal.SEND_YOUR_WORK}
+                >
                   {localized(call, "title", locale)}
                 </Link>
               </p>

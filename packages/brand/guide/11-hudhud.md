@@ -41,4 +41,4 @@ Eleven Telegram stickers, 512 × 512, each with a white die-cut edge so it sits 
 - Hudhud has no hands: props sit in the beak or on the ground.
 - The head is never turned; the whole bird leans.
 - Stickers are for chat only, never posters, posts or documents.
-- The set is "Hudhud · SAL", short name `hudhud_sal`, each filed under one emoji. No. 09 ("Submissions open") is retired, since Submit to Qirtas is always open; its number is not reused.
+- The set is "Hudhud · SAL", short name `hudhud_sal`, each filed under one emoji. No. 09 ("Submissions open") is retired, since each Edition's general submissions are always open (Hudhud posts a last call before a themed call closes); its number is not reused.

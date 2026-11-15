@@ -4,21 +4,23 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
+import { loadCalls, OpenNow } from "@/components/qirtas/calls";
 import {
   EditionComing,
   EditionShelfItem,
   loadEditions,
 } from "@/components/qirtas/editions";
-import { HavenCall } from "@/components/qirtas/haven-call";
+import { RecentDrafts } from "@/components/qirtas/recent-drafts";
 import { localized } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
+import { roughlyNow } from "@/lib/this-year";
 
 // Its query string decides what it shows, so it renders per request.
 export const instant = false;
 
 interface EditionsProps {
   readonly params: Promise<{ locale: Locale }>;
-  readonly searchParams: Promise<{ view?: string }>;
+  readonly searchParams: Promise<{ status?: string; view?: string }>;
 }
 
 export const generateMetadata = async ({
@@ -33,17 +35,24 @@ export const generateMetadata = async ({
 };
 
 /**
- * The Editions on a shelf (decisions.md; design review C11): each
- * printed Edition's cover, newest first, with the same Editions as a plain
- * list (a view, ?view=list, decisions §6). Before the first is published:
- * its call and its launch event.
+ * Editions, the one door for outside work (decisions.md, Qirtas): the title
+ * and one line, then Open now (one row per open call), then the shelf of
+ * Editions, newest first, with the same Editions as a plain list
+ * (?view=list). Qirtas's "Send your work" opens it at ?status=open: the
+ * open calls alone.
  */
 const EditionsPage = async ({ params, searchParams }: EditionsProps) => {
   const { locale } = await params;
-  const asList = (await searchParams).view === "list";
+  const query = await searchParams;
+  const asList = query.view === "list";
+  const onlyOpen = query.status === "open";
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.journal" });
-  const editions = await loadEditions();
+  const [editions, calls, now] = await Promise.all([
+    loadEditions(),
+    loadCalls(),
+    roughlyNow(),
+  ]);
   let body: ReactNode = <EditionComing locale={locale} />;
   if (editions.length > 0 && asList) {
     body = (
@@ -101,8 +110,15 @@ const EditionsPage = async ({ params, searchParams }: EditionsProps) => {
         <h1 className="type-display">{t("editions")}</h1>
         <p className="type-lede max-w-3xl">{t("editionsLede")}</p>
       </header>
-      <HavenCall locale={locale} />
-      {body}
+      <OpenNow calls={calls} locale={locale} now={new Date(now)} />
+      <RecentDrafts />
+      {onlyOpen ? (
+        <Link className="link justify-self-start" href="/qirtas/editions">
+          {t("allEditions")}
+        </Link>
+      ) : (
+        body
+      )}
     </div>
   );
 };
