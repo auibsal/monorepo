@@ -103,7 +103,7 @@ export const FormPage = ({
     noValidate
     onSubmit={onSubmit}
   >
-    <FormHeader code={code} title={title}>
+    <FormHeader code={code} symbol title={title}>
       {purpose}
     </FormHeader>
     {notice ? (

@@ -17,6 +17,17 @@ import { memberName } from "../members/directory";
 
 const ARABIC = /[؀-ۿ]/u;
 const MAX = 400;
+const WORDS = /\S+/gu;
+const ENDS_IN_SPACE = /\s$/u;
+
+/**
+ * Six words and no more (decisions.md, Members: the Typewriter Tour): a
+ * seventh word can't be started.
+ */
+const withinSixWords = (value: string) => {
+  const words = value.match(WORDS)?.length ?? 0;
+  return words < 6 || (words === 6 && !ENDS_IN_SPACE.test(value));
+};
 const queryKey = ["admin", "programmes", "six-words"];
 
 /** The message for a card the database refused. */
@@ -49,7 +60,7 @@ export const TourCards = () => {
   const [problem, setProblem] = useState<
     "notLive" | "unknownCard" | "notCard" | null
   >(null);
-  const count = text.trim().length;
+  const count = text.match(WORDS)?.length ?? 0;
 
   const recent = useQuery({
     queryFn: async () =>
@@ -164,7 +175,9 @@ export const TourCards = () => {
           dir="auto"
           id={fieldId}
           maxLength={MAX}
-          onChange={(event) => setText(event.target.value)}
+          onChange={(event) =>
+            withinSixWords(event.target.value) && setText(event.target.value)
+          }
           rows={3}
           value={text}
         />
@@ -326,7 +339,9 @@ const Transcribe = ({ id, onDone }: { id: string; onDone: () => void }) => {
         dir="auto"
         id={fieldId}
         maxLength={MAX}
-        onChange={(event) => setWords(event.target.value)}
+        onChange={(event) =>
+          withinSixWords(event.target.value) && setWords(event.target.value)
+        }
         rows={2}
         value={words}
       />

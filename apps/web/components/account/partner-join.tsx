@@ -19,6 +19,7 @@ import { PageSpinner } from "@/components/diwan/states";
 import { MySignature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, partners, unwrap } from "@/lib/data";
+import { useGuestOf } from "@/lib/diwan/partners";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 
 /**
@@ -401,8 +402,10 @@ export const PartnerJoin = () => {
   const { loading, user } = useAuth();
   const application = useMyApplication();
   const mine = useMyMembership();
+  const guestOf = useGuestOf();
+  const pending = [application, mine, guestOf].some((q) => q.isPending);
 
-  if (loading || (user && (application.isPending || mine.isPending))) {
+  if (loading || (user && pending)) {
     return <PageSpinner />;
   }
   if (!user) {
@@ -411,9 +414,12 @@ export const PartnerJoin = () => {
     // or signed in to.
     return <ToSignUp />;
   }
-  // A member may lead their club's partnership (decisions.md); a
-  // guest may not, and applies with the organization's own address.
-  if (mine.data?.kind === "guest") {
+  // A member may lead their club's partnership (decisions.md). The
+  // Society's own guest may apply too, and the account becomes the
+  // partner's on the Council's vote (one membership); a partner's guest
+  // applies with the organization's own address.
+  const guest = mine.data?.kind === "guest";
+  if (guest && guestOf.data?.length) {
     return (
       <DiwanPage lede={t("lede")} narrow title={t("title")}>
         <p className="type-body">{t("oneMembership")}</p>
@@ -451,6 +457,9 @@ export const PartnerJoin = () => {
     <DiwanPage lede={t("lede")} title={t("title")}>
       <p className="type-label">{t("stepTwo")}</p>
       {current ? <p className="type-body">{t("declined")}</p> : null}
+      {guest ? (
+        <p className="type-body max-w-[60ch]">{t("guestNote")}</p>
+      ) : null}
       <div className="max-w-4xl">
         <ApplicationForm />
       </div>

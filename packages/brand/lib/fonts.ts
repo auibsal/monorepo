@@ -1,5 +1,6 @@
 import { cn } from "@repo/brand/lib/utils";
 import {
+  Aref_Ruqaa,
   Markazi_Text,
   Mrs_Saint_Delafield,
   Ubuntu,
@@ -75,8 +76,19 @@ const signature = Mrs_Saint_Delafield({
   weight: "400",
 });
 
+// An Arabic signature, in Ruqʿah, the hand Arabic is signed in: only on a
+// signature, so it is never preloaded.
+const signatureArabic = Aref_Ruqaa({
+  display: "swap",
+  preload: false,
+  subsets: ["arabic"],
+  variable: "--font-ruqaa",
+  weight: "400",
+});
+
 export const fonts = cn(
   signature.variable,
+  signatureArabic.variable,
   ubuntu.variable,
   ubuntuArabic.variable,
   ubuntuMono.variable,

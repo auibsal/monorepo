@@ -190,8 +190,10 @@ any schema change. Integration tests run against a local stack with
   a Show button (`PasswordInput`). Sign-up records the Terms and Privacy
   Notice agreement (`core.profiles.agreed_at`, one line), one tick for 18
   or older ("Under 18?" opens the parent's address), and the official
-  name as one line of four names per language, its words shown back with
-  a tap between each two to join a name of two words ("Mohammed Ali";
+  name as one line of four names per language: each line takes only its
+  own script's letters (and the hyphen, in English), and a fifth name is
+  refused, showing the words with a tap between each two to join a name
+  of two words ("Mohammed Ali"; `typedName`, `roomForNames`,
   `lineProblem`, `joinsFor` in `lib/data/names.ts`; locked at once; the short name is
   a choice in Settings, `core.profiles.short_name`). The mailing box is
   ticked for everyone; the Arabic form is a to-do on Today; the

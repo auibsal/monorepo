@@ -143,7 +143,6 @@
       "numberCheck": "AUIB student numbers usually have 7 digits and start with the year you joined. Check your address; you can still go on.",
       "nameHintEn": "Letters only, each name with a capital, as on your papers. If one of your names is two words (Mohammed Ali), tap between them below to join them.",
       "nameHintAr": "Arabic letters only, as on your papers. If one of your names is two words («محمد علي»), tap between them below to join them; «أبو» and «عبد» come joined.",
-      "nameReads": "Read as: {names}",
       "nameProblems": {
         "count": "Four names, please: this reads as {count}.",
         "letters": "Letters only, with no numbers or symbols.",
@@ -153,7 +152,8 @@
       "under18": "Under 18?",
       "nameWords": "The words of your name: tap between two words to join or separate them",
       "nameJoin": "Join {first} and {second} as one name",
-      "nameSeparate": "Separate {first} and {second}"
+      "nameSeparate": "Separate {first} and {second}",
+      "nameFull": "Four names only. If one of them is two words, like Mohammed Ali, tap · between the two to make them one, then go on."
     },
     "forgot": {
       "title": "Reset your password",
@@ -469,6 +469,18 @@
           "title": "Add a personal email",
           "body": "You have left AUIB, and your AUIB address will stop working. Add a personal email and confirm it; you will then sign in with it.",
           "action": "Add it in Settings"
+        },
+        "organization": {
+          "partnerTitle": "Here for an organization?",
+          "partnerBody": "Your address is an organization’s. If it works with the Society, it can apply to be a partner: you sign the memorandum, and the Council votes.",
+          "apply": "Apply as a partner",
+          "notNow": "Not now",
+          "joinTitle": "Are you with {name}?",
+          "joinBody": "{name} is a partner of the Society, and its team is open to people at your organization’s address. Ask to join, and its Partner Lead approves or declines.",
+          "ask": "Ask to join the team",
+          "askedTitle": "Waiting for {name}",
+          "askedBody": "You asked to join {name}’s team. Its Partner Lead will approve or decline, and you’ll hear by email.",
+          "withdraw": "Withdraw the request"
         }
       }
     },
@@ -1846,7 +1858,7 @@
           "lede": "Pages from the Typewriter Tour are typed on the Tour, never on the site. Type each page as written. Scan the writer’s membership card to make it theirs, or save it unsigned and attach it later. Every page is private until its writer chooses their profile or the Tour’s page.",
           "transcribe": "Type a page",
           "hint": "The words, as typed on the page.",
-          "count": "{count} of 400 characters",
+          "count": "{count} of 6 words",
           "scanToSave": "Scan the writer’s card to save",
           "saveUnsigned": "Save unsigned",
           "recent": "Pages",
@@ -4767,7 +4779,8 @@
       "oneMembership": "You are the Society’s guest, and a guest is never on a partner’s team. Apply with your organization’s own address: sign out, then come back here.",
       "members": "Leading an AUIB club and already a member? Apply signed in as yourself: you stay a member, and the club’s dashboard opens beside Membership.",
       "kindOther": "What kind of organization",
-      "stepTwo": "Step 2 of 2: the memorandum"
+      "stepTwo": "Step 2 of 2: the memorandum",
+      "guestNote": "You’re the Society’s guest now. Once the Council approves the partnership, this account becomes your organization’s, with the partner dashboard, and is no longer a guest’s."
     },
     "partnerDesk": {
       "none": "You are not on a partner’s team.",
@@ -4827,7 +4840,14 @@
         "lead": "Lead",
         "member": "Team",
         "makeLead": "Make lead",
-        "makeMember": "Make team"
+        "makeMember": "Make team",
+        "domainOpen": "People at {domain} can ask to join the team. You approve or decline each one.",
+        "domainClosed": "Let people at {domain} ask to join the team? You approve or decline each one.",
+        "openDomain": "Let them ask",
+        "closeDomain": "Stop requests",
+        "requests": "Asking to join",
+        "approve": "Approve",
+        "decline": "Decline"
       },
       "invite": {
         "teamHint": "They get an email with a link to join. Invitations last fourteen days.",

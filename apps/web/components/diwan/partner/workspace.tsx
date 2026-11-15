@@ -869,6 +869,142 @@ const TeamMate = ({
   );
 };
 
+/** The Lead and two more (decisions.md, Partners). */
+const TEAM_SIZE = 3;
+
+interface JoinRequest {
+  created_at: string;
+  email: string;
+  full_name_ar: string | null;
+  full_name_en: string | null;
+  id: string;
+  user_id: string;
+}
+
+/**
+ * The Lead's own organization domain (decisions.md, Partners): opened, its
+ * people may ask to join the team from Today; the Lead decides each.
+ */
+const TeamDomain = ({ partnerId }: { partnerId: string }) => {
+  const t = useTranslations("diwan.partnerDesk.team");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const domain = useQuery({
+    queryFn: async () =>
+      (unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("partner_team_domain", { partner: partnerId })
+      ) ?? [])[0] ?? null,
+    queryKey: [...KEY, "domain", partnerId],
+  });
+  const set = useMutation({
+    mutationFn: async (opening: boolean) =>
+      unwrap(
+        await supabase.schema("governance").rpc("set_partner_team_domain", {
+          open: opening,
+          partner: partnerId,
+        })
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
+  });
+  const open = domain.data?.team_domain;
+  const mine = domain.data?.lead_domain;
+  if (!(open || mine)) {
+    return null;
+  }
+  return (
+    <div className="grid gap-2">
+      <p className="type-body max-w-[60ch]">
+        {open
+          ? t("domainOpen", { domain: open })
+          : t("domainClosed", { domain: mine ?? "" })}
+      </p>
+      <Button
+        className="justify-self-start"
+        disabled={set.isPending}
+        onClick={() => set.mutate(!open)}
+        size="sm"
+        type="button"
+        variant="outline"
+      >
+        {open ? t("closeDomain") : t("openDomain")}
+      </Button>
+      <ErrorLine error={set.error} />
+    </div>
+  );
+};
+
+/** Who asks to join from the partner's domain, for the Lead to decide. */
+const JoinRequests = ({ partnerId }: { partnerId: string }) => {
+  const t = useTranslations("diwan.partnerDesk.team");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const requests = useQuery({
+    queryFn: async () =>
+      (unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("partner_join_requests", { partner: partnerId })
+      ) ?? []) as JoinRequest[],
+    queryKey: [...KEY, "join-requests", partnerId],
+  });
+  const decide = useMutation({
+    mutationFn: async ({ approve, id }: { approve: boolean; id: string }) =>
+      unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("decide_partner_join_request", { approve, request: id })
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
+  });
+  if (!requests.data?.length) {
+    return null;
+  }
+  return (
+    <div className="grid gap-2">
+      <p className="type-label">{t("requests")}</p>
+      <RowList>
+        {requests.data.map((r) => (
+          <li
+            className="flex flex-wrap items-baseline justify-between gap-2 py-4"
+            key={r.id}
+          >
+            <span>
+              <span className="font-medium">{personName(r, locale)}</span>{" "}
+              <span className="text-text-secondary text-sm break-all" dir="ltr">
+                {r.email}
+              </span>
+            </span>
+            <span className="flex flex-wrap gap-2">
+              <Button
+                disabled={decide.isPending}
+                onClick={() => decide.mutate({ approve: true, id: r.id })}
+                size="sm"
+                type="button"
+                variant="outline"
+              >
+                {t("approve")}
+              </Button>
+              <Button
+                disabled={decide.isPending}
+                onClick={() => decide.mutate({ approve: false, id: r.id })}
+                size="sm"
+                type="button"
+                variant="link"
+              >
+                {t("decline")}
+              </Button>
+            </span>
+          </li>
+        ))}
+      </RowList>
+      <ErrorLine error={decide.error} />
+    </div>
+  );
+};
+
 const Team = ({ partnerId }: { partnerId: string }) => {
   const t = useTranslations("diwan.partnerDesk.team");
   const { supabase, user } = useAuth();
@@ -922,13 +1058,15 @@ const Team = ({ partnerId }: { partnerId: string }) => {
         ))}
       </RowList>
       <ErrorLine error={remove.error ?? lead.error} />
-      {iLead && (team.data?.length ?? 0) < 6 ? (
+      {iLead ? <JoinRequests partnerId={partnerId} /> : null}
+      {iLead && (team.data?.length ?? 0) < TEAM_SIZE ? (
         <>
           <InviteByEmail kind="team" partnerId={partnerId} />
           <OpenInvitations kind="team" partnerId={partnerId} />
+          <TeamDomain partnerId={partnerId} />
         </>
       ) : null}
-      {(team.data?.length ?? 0) >= 6 ? (
+      {(team.data?.length ?? 0) >= TEAM_SIZE ? (
         <p className="type-caption">{t("full")}</p>
       ) : null}
     </>

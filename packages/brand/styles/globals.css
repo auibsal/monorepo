@@ -124,7 +124,7 @@
   /* The body of Qirtas's pieces only, in both languages. */
   --font-read: var(--font-markazi), Georgia, serif;
   /* A signed name only (the Signature component). */
-  --font-signature: var(--font-mrs-saint), cursive;
+  --font-signature: var(--font-mrs-saint), var(--font-ruqaa), cursive;
 
   /* Role tokens as Tailwind colors: bg-surface, text-accent, border-line… */
   --color-surface: var(--surface);

@@ -46,6 +46,7 @@ This is SAL-MED-02, Brand and Identity, Version 1, proposed until the Council ad
 - **Text is Regular**, 1.6 leading, 60–70 characters a line. **Labels are Medium**, small, tracked capitals, and only name fields, columns and metadata: never a line above a headline. **Bold** is for the logo and for emphasis inside a sentence, never for headlines.
 - Arabic is set in Ubuntu Regular, about 10% larger than the English beside it, with 1.3 leading for display and 1.6–2.0 for text. It has no Light and no italic: Arabic display is Regular. Never tracked. Set `dir="rtl"` and `lang="ar"` on the page or post, and mirror the layout. Use Western digits in both languages.
 - The body of Qirtas's pieces is set in Markazi Text (Google Fonts, Open Font License) for reading, in English and Arabic; it runs small, so it is set about a fifth larger than Ubuntu text. Qirtas's nameplate, headlines and interface stay Ubuntu.
+- A signature (`Signature`) is the only handwriting: the signer's name in the page's language only, in Mrs Saint Delafield for English and Aref Ruqaa (Ruqʿah, the hand Arabic is signed in) for Arabic, both from Google Fonts under the Open Font License.
 - Codes, form numbers and six-word typewriter lines are Ubuntu Mono: `SAL-GOV-01`, `F-14`.
 - Use the styles in tokens: `display-xl`, `display`, `title`, `heading`, `lede`, `body`, `label`, `caption` on screens; `print-*` for A4; `post-*` for 1080 × 1350 posts; `ar-*` for Arabic; `read-*` for Qirtas.
 

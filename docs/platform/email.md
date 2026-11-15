@@ -104,6 +104,8 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `governance.election` | The notice; voting open; the results | Every member; then everyone on the register | Service |
 | `governance.candidacy_decided` | The Elections Committee's answer | The nominee | Service |
 | `partners.application_received` | An application to partner | The applicant (Partnerships and the President read it in the next staff digest) | Direct |
+| `partners.join_requested` | Someone at a partner's opened domain asks to join its team | The Partner Lead | Direct |
+| `partners.join_decided` | The Partner Lead approves or declines a request to join | The person who asked | Service |
 | `partners.application_decided` | Signed (active) or not taken forward | The applicant | Direct |
 | `partners.invitation` | A partner's or the Society's email invitation | The invited address | Direct |
 | `sunday_paper.broadcast` (a Resend Broadcast, from qirtas@auibsal.org, replies to it) | The Managing Editor's send, from the Diwan, after a preview and a test to the Editor-in-Chief (decisions.md, Qirtas) | "The Sunday Paper" topic (`core.mailing_recipients('paper')`), one Broadcast per language | Optional (each person's own preferences page) |

@@ -6,12 +6,9 @@ import { journal } from "@/lib/data";
 import { roughlyNow } from "@/lib/this-year";
 import { DeskNav } from "./desk-nav";
 
-/** The paper's name in both languages: the page's own first. */
-const NAMES = { ar: "قرطاس", en: "Qirtas" } as const;
-
 /**
- * The paper's nameplate (decisions.md, Qirtas): "Qirtas" with «قرطاس», in
- * Ubuntu Light, a dateline between two ink
+ * The paper's nameplate (decisions.md, Qirtas): its name in the page's
+ * language only (one language per page), in Ubuntu Light, a dateline between two ink
  * rules ending in the Masthead, the Editions, Topics and the Prize (decisions.md), and the sections. One nameplate on every page of the paper
  * (decisions.md): it belongs to the Qirtas layout, so it never
  * changes or reloads between the front page, a section and a piece.
@@ -27,13 +24,6 @@ export const Nameplate = async ({ locale }: { locale: Locale }) => {
         >
           {t("title")}
         </Link>
-        <span
-          className="text-text-secondary text-[clamp(1.5rem,3vw,2.25rem)] font-light"
-          dir={locale === "ar" ? "ltr" : "rtl"}
-          lang={locale === "ar" ? "en" : "ar"}
-        >
-          {locale === "ar" ? NAMES.en : NAMES.ar}
-        </span>
       </div>
       <p className="border-text grid gap-1 border-y py-2.5 text-[0.8125rem] font-medium sm:grid-cols-3 sm:items-center">
         <span>

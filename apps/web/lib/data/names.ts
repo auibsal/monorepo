@@ -153,6 +153,27 @@ const SPACES = /\s+/u;
 
 const ARABIC_JOINS = new Set(["أبو", "ابو", "أبي", "ابي", "عبد"]);
 
+// What each line takes as it is typed: its own script's letters and
+// spaces, and in English the hyphen of a joined name (Abdul-Rahman).
+const NOT_ENGLISH = new RegExp(`[^${LATIN_LETTERS}\\s-]`, "gu");
+const NOT_ARABIC =
+  /[^\u0621-\u063A\u0641-\u064A\u064B-\u0652\u0670\u0671-\u06D3\s]/gu;
+const RUNS_OF_SPACES = /\s+/gu;
+const RUNS_OF_HYPHENS = /-{2,}/gu;
+const LEADING = /^[\s-]+/u;
+const TRAILING_SPACE = /\s$/u;
+
+/**
+ * A line as typed, kept to its language: letters of the other script,
+ * digits and symbols never reach it (only the hyphen, in English).
+ */
+export const typedName = (value: string, language: NameLanguage) =>
+  value
+    .replace(language === "en" ? NOT_ENGLISH : NOT_ARABIC, "")
+    .replace(RUNS_OF_SPACES, " ")
+    .replace(RUNS_OF_HYPHENS, "-")
+    .replace(LEADING, "");
+
 /** "ali abdul - rahman" → "Ali Abdul-Rahman": hyphens closed up, each word capitalized. */
 export const tidyEnglishName = (value: string) =>
   wordsInLine(value)
@@ -264,7 +285,8 @@ export const partsFromLine = (
 export type JoinChoices = ReadonlyMap<string, boolean>;
 
 export const gapKey = (words: readonly string[], gap: number) =>
-  `${gap}:${words[gap]}|${words[gap + 1]}`;
+  // Whatever the capitals: English is capitalized when the field is left.
+  `${gap}:${words[gap]?.toLowerCase()}|${words[gap + 1]?.toLowerCase()}`;
 
 /** The joins in effect: the person's taps over the defaults. */
 export const joinsFor = (
@@ -283,4 +305,31 @@ export const joinsFor = (
     }
   }
   return joins;
+};
+
+/**
+ * Whether a line still fits four names: a fifth can't be started, except
+ * after «أبو» or «عبد», which join the word that follows.
+ */
+export const roomForNames = (
+  value: string,
+  language: NameLanguage,
+  choices: JoinChoices
+) => {
+  const count = namesInLine(
+    value,
+    language,
+    joinsFor(value, language, choices)
+  ).length;
+  if (count < 4) {
+    return true;
+  }
+  if (count > 4) {
+    return false;
+  }
+  const words = wordsInLine(value);
+  const last = words.at(-1) ?? "";
+  return (
+    !TRAILING_SPACE.test(value) || (language === "ar" && ARABIC_JOINS.has(last))
+  );
 };

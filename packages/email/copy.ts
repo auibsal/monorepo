@@ -1208,6 +1208,76 @@ export const applicationDecided = (
         }
   );
 
+const partnerDashboard = (
+  app: string,
+  l: Lang,
+  path = "/partners/dashboard"
+) => ({
+  href: `${app}${localizedPath(l, path)}`,
+  label: l === "ar" ? "افتح لوحة الشريك" : "Open the partner dashboard",
+});
+
+/**
+ * For the Partner Lead: someone at the partner's own domain asks to join
+ * its team (decisions.md, Partners).
+ */
+export const joinRequested = (
+  lang: Lang,
+  partner: string,
+  person: { email: string; name: string | null },
+  app: string
+) =>
+  build(lang, (l) => ({
+    action: partnerDashboard(app, l, "/partners/dashboard/team"),
+    heading:
+      l === "ar"
+        ? `طلب للانضمام إلى فريق ${partner}`
+        : `A request to join ${partner}’s team`,
+    paragraphs: [
+      l === "ar"
+        ? `${person.name ? `${person.name} (⁦${person.email}⁩)` : `⁦${person.email}⁩`} سجّل بعنوان مؤسستكم ويطلب الانضمام إلى فريق ${partner} في لوحة الشريك.`
+        : `${person.name ? `${person.name} (${person.email})` : person.email} signed up with your organization’s address and asks to join ${partner}’s team on the partner dashboard.`,
+      l === "ar"
+        ? "وافق على الطلب أو ارفضه في تبويب «الفريق». لا ينضم أحد إلا بموافقتك."
+        : "Approve or decline on the Team tab. Nobody joins without you.",
+    ],
+  }));
+
+/** The Lead's answer to a request to join the team. */
+export const joinDecided = (
+  lang: Lang,
+  partner: string,
+  approved: boolean,
+  app: string
+) =>
+  build(lang, (l) =>
+    approved
+      ? {
+          action: partnerDashboard(app, l),
+          heading:
+            l === "ar"
+              ? `أنت الآن في فريق ${partner}`
+              : `You’re on ${partner}’s team`,
+          paragraphs: [
+            l === "ar"
+              ? "وافق مسؤول الشريك على طلبك. لوحة الشريك مفتوحة لك الآن: فعاليات الشريك وقائمة مهامه وضيوفه."
+              : "The Partner Lead approved your request. The partner dashboard is open to you: the partner’s events, checklist and guests.",
+          ],
+        }
+      : {
+          action: account(app, l),
+          heading:
+            l === "ar"
+              ? `بشأن طلبك الانضمام إلى فريق ${partner}`
+              : `About your request to join ${partner}’s team`,
+          paragraphs: [
+            l === "ar"
+              ? "لم يوافق مسؤول الشريك على الطلب، فبقي حسابك كما هو. إن ظننت أن في الأمر خطأ، فاسأل مسؤول الشريك في مؤسستك."
+              : "The Partner Lead didn’t approve the request, so your account stays as it is. If you think this is a mistake, ask the Partner Lead at your organization.",
+          ],
+        }
+  );
+
 export interface ElectionInfo {
   nominations_close_at: string;
   nominations_open_at: string;

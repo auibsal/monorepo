@@ -201,9 +201,14 @@ select lives_ok(
   'A member may also be on their club''s team'
 );
 select is(private.membership_kind('00000000-0000-0000-0000-0000000000a2'), 'member', 'and stays a member');
-select throws_ok(
-  $$ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000b1', 'partner_rep', 'partner', '00000000-0000-0000-0000-00000000d001') $$,
-  '42501', 'one_membership', 'A guest is never on a partner''s team'
+-- The Society's own guest who joins a partner's team becomes the
+-- partner's person: the guest record ends (decisions.md, Partners).
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000b9', 'joiner@example.org', 'Joiner');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000b9', 'partner_rep', 'partner', '00000000-0000-0000-0000-00000000d001');
+select ok(
+  private.is_partner_team('00000000-0000-0000-0000-0000000000b9')
+    and not private.is_guest('00000000-0000-0000-0000-0000000000b9'),
+  'A guest who joins a partner''s team is a guest no longer'
 );
 select throws_ok(
   $$ insert into governance.partner_affiliations (partner_id, user_id, status)

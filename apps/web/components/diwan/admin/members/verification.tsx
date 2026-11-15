@@ -7,7 +7,7 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { Signature } from "@/components/signature";
+import { nameInLanguage, Signature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, membership, type partners, unwrap } from "@/lib/data";
 import { useGrants } from "@/lib/diwan/queries";
@@ -145,7 +145,7 @@ const ApplicationCard = ({
         {application.applied_at
           ? t("appliedBy", {
               date: formatLongDate(application.applied_at, locale),
-              name: application.partner_signatory ?? "",
+              name: nameInLanguage(application.partner_signatory ?? "", locale),
             })
           : null}
       </p>
