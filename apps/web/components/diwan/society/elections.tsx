@@ -11,6 +11,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import {
   FlowReceipt,
+  FlowTerms,
   StatusLine,
   useReviewWords,
 } from "@/components/account/flow";
@@ -308,6 +309,7 @@ export const StandForOffice = ({
         onSent={() => setJustSent(true)}
         position={position}
       />
+      <FlowTerms closesAt={election.nominations_close_at} kind="nomination" />
     </DiwanPage>
   );
 };

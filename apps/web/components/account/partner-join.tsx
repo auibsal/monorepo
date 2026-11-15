@@ -21,7 +21,7 @@ import { useAuth } from "@/lib/auth/provider";
 import { localized, partners, unwrap } from "@/lib/data";
 import { useGuestOf } from "@/lib/diwan/partners";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
-import { FlowReceipt, StatusLine, useReviewWords } from "./flow";
+import { FlowReceipt, FlowTerms, StatusLine, useReviewWords } from "./flow";
 
 /**
  * Where an organization outside AUIB works; an AUIB club or department is
@@ -547,6 +547,7 @@ export const PartnerJoin = () => {
       <div className="max-w-4xl">
         <ApplicationForm onSent={() => setJustSent(true)} />
       </div>
+      <FlowTerms kind="partner" />
     </DiwanPage>
   );
 };

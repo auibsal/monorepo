@@ -44,24 +44,26 @@ interface AdminHeadingProps {
   readonly title: string;
 }
 
-/** The top of an admin page: title, optional lede and actions at the end. */
+/**
+ * The top of an admin page, in the one page order (decisions.md, The site:
+ * "Pages and actions"): its title, one sentence, its main action, then
+ * everything else.
+ */
 export const AdminHeading = ({
   actions,
   children,
   title,
 }: AdminHeadingProps) => (
   <header className="grid gap-3">
-    <div className="gap-x-space-4 flex flex-wrap items-end justify-between gap-y-3">
-      <h1 className="type-title font-light text-balance">{title}</h1>
-      {actions ? (
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-          {actions}
-        </div>
-      ) : null}
-    </div>
+    <h1 className="type-title font-light text-balance">{title}</h1>
     {children ? (
       <div className="type-lede text-text-secondary max-w-[60ch]">
         {children}
+      </div>
+    ) : null}
+    {actions ? (
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        {actions}
       </div>
     ) : null}
   </header>

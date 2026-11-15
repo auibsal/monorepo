@@ -106,10 +106,13 @@ export const FormPage = ({
     <FormHeader code={code} symbol title={title}>
       {purpose}
     </FormHeader>
+    <div className="gap-space-5 grid">{children}</div>
+    {/* What is agreed sits with the signature, after the fields, so the
+        page opens with its title, one line and the form (decisions.md,
+        The site: "Pages and actions"). */}
     {notice ? (
       <div className="bg-surface-reading p-space-5 text-text">{notice}</div>
     ) : null}
-    <div className="gap-space-5 grid">{children}</div>
     {signature.omit ? null : (
       <fieldset className="gap-space-3 border-line pt-space-5 grid border-t">
         <legend className="sr-only">{signature.label}</legend>

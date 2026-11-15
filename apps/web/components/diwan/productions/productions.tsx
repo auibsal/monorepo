@@ -11,6 +11,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
 import {
   FlowReceipt,
+  FlowTerms,
   StatusLine,
   useReviewWords,
 } from "@/components/account/flow";
@@ -142,6 +143,52 @@ export const Productions = () => {
 
   return (
     <DiwanPage lede={t("lede")} narrow title={t("title")}>
+      <DiwanSection id="auditionstitle" title={t("auditionsTitle")}>
+        {auditioning.length === 0 ? (
+          <EmptyLine action={{ href: "/get-involved", label: t("findShift") }}>
+            {t("noAuditions")}
+          </EmptyLine>
+        ) : null}
+        {auditioning.map((p) => (
+          <SalCard key={p.id}>
+            <div className="grid gap-3">
+              <h3 className="type-heading">{localized(p, "title", locale)}</h3>
+              <p className="type-caption">{t(`kinds.${p.kind as Kind}`)}</p>
+              {p.playwright ? (
+                <p className="type-caption" dir="auto">
+                  {t("by", { name: p.playwright })}
+                </p>
+              ) : null}
+              {localized(p, "summary", locale) ? (
+                <p className="type-body" dir="auto">
+                  {localized(p, "summary", locale)}
+                </p>
+              ) : null}
+              <ul className="grid gap-3">
+                {auditions
+                  .filter((a) => a.production_id === p.id)
+                  .map((a) => (
+                    <AuditionSlot
+                      audition={a}
+                      busy={signUp.isPending || cancel.isPending}
+                      key={a.id}
+                      notice={notice?.id === a.id ? notice.key : null}
+                      onCancel={() => cancel.mutate(a.id)}
+                      onSignUp={(interest) =>
+                        signUp.mutate({ id: a.id, interest })
+                      }
+                      reference={signupFor(a.id)?.reference ?? null}
+                      status={
+                        signupFor(a.id)?.status as SignupStatus | undefined
+                      }
+                    />
+                  ))}
+              </ul>
+            </div>
+          </SalCard>
+        ))}
+      </DiwanSection>
+      <FlowTerms kind="audition" />
       {credits.length > 0 ? (
         <DiwanSection id="companytitle" title={t("companyTitle")}>
           <ul className="grid gap-3">
@@ -193,52 +240,6 @@ export const Productions = () => {
           )}
         </DiwanSection>
       ) : null}
-
-      <DiwanSection id="auditionstitle" title={t("auditionsTitle")}>
-        {auditioning.length === 0 ? (
-          <EmptyLine action={{ href: "/get-involved", label: t("findShift") }}>
-            {t("noAuditions")}
-          </EmptyLine>
-        ) : null}
-        {auditioning.map((p) => (
-          <SalCard key={p.id}>
-            <div className="grid gap-3">
-              <h3 className="type-heading">{localized(p, "title", locale)}</h3>
-              <p className="type-caption">{t(`kinds.${p.kind as Kind}`)}</p>
-              {p.playwright ? (
-                <p className="type-caption" dir="auto">
-                  {t("by", { name: p.playwright })}
-                </p>
-              ) : null}
-              {localized(p, "summary", locale) ? (
-                <p className="type-body" dir="auto">
-                  {localized(p, "summary", locale)}
-                </p>
-              ) : null}
-              <ul className="grid gap-3">
-                {auditions
-                  .filter((a) => a.production_id === p.id)
-                  .map((a) => (
-                    <AuditionSlot
-                      audition={a}
-                      busy={signUp.isPending || cancel.isPending}
-                      key={a.id}
-                      notice={notice?.id === a.id ? notice.key : null}
-                      onCancel={() => cancel.mutate(a.id)}
-                      onSignUp={(interest) =>
-                        signUp.mutate({ id: a.id, interest })
-                      }
-                      reference={signupFor(a.id)?.reference ?? null}
-                      status={
-                        signupFor(a.id)?.status as SignupStatus | undefined
-                      }
-                    />
-                  ))}
-              </ul>
-            </div>
-          </SalCard>
-        ))}
-      </DiwanSection>
     </DiwanPage>
   );
 };

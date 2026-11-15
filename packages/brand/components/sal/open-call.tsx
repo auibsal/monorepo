@@ -67,3 +67,28 @@ export const OpenCallList = ({
     <p className={cn("type-body text-text-secondary", className)}>{empty}</p>
   ) : null;
 };
+
+/**
+ * A call's terms, after its action (decisions.md, The site: "One call
+ * page"): who may apply, what to send, the dates, how it's decided and the
+ * reply time, each term with its words.
+ */
+export const CallDetails = ({
+  className,
+  rows,
+}: {
+  readonly className?: string;
+  readonly rows: readonly (readonly [string, ReactNode])[];
+}) => (
+  <dl className={cn("border-line grid max-w-3xl border-t", className)}>
+    {rows.map(([term, value]) => (
+      <div
+        className="border-line grid gap-1 border-b py-3 sm:grid-cols-[12rem_1fr]"
+        key={term}
+      >
+        <dt className="type-label">{term}</dt>
+        <dd className="type-body min-w-0">{value}</dd>
+      </div>
+    ))}
+  </dl>
+);

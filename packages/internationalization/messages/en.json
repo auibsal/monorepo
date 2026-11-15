@@ -5146,6 +5146,32 @@
         "audition": "The cast list is posted on the site after callbacks; you hear back by email the same day.",
         "nomination": "The Elections Committee confirms the candidates once nominations close, {date}.",
         "partner": "A decision at the Council’s next meeting, within 30 days."
+      },
+      "terms": {
+        "title": "How it works",
+        "who": "Who may apply",
+        "what": "What to send",
+        "dates": "The dates",
+        "decided": "How it’s decided",
+        "reply": "Reply time",
+        "fees": "Fees",
+        "audition": {
+          "who": "Every member; there is no pre-casting.",
+          "what": "The sides, posted two weeks ahead; each audition says what to prepare. Accommodations on request, in the note or to hello@auibsal.org.",
+          "decided": "The director and the Artistic Director cast together, after callbacks."
+        },
+        "partner": {
+          "who": "Other AUIB clubs, charities, partner schools and organizations outside AUIB. AUIB’s own offices are campus partners, not partners.",
+          "what": "The partnership memorandum above, filled in and signed on the site.",
+          "decided": "The Council votes by resolution; the President then signs for the Society and the memorandum takes its MOU number.",
+          "fees": "None: each side gives items and help, never payments."
+        },
+        "nomination": {
+          "who": "A voting member for at least one semester, in good standing and enrolled, with a cumulative GPA of at least 2.0, which Student Life checks. Elections Committee members don’t run.",
+          "what": "A statement of up to 200 words, in English and, if you like, in Arabic.",
+          "dates": "Nominations close {date}.",
+          "decided": "The Elections Committee confirms the candidates; members then vote by secret ballot."
+        }
       }
     }
   },

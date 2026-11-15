@@ -1,4 +1,5 @@
 import {
+  CallDetails,
   type OpenCall,
   OpenCallList,
 } from "@repo/brand/components/sal/open-call";
@@ -142,8 +143,8 @@ export const CallTerms = async ({
             : t("themed.afterClose"),
         });
   return (
-    <dl className="border-line grid max-w-3xl border-t">
-      {[
+    <CallDetails
+      rows={[
         ...rows,
         [
           t("terms.dates"),
@@ -153,20 +154,12 @@ export const CallTerms = async ({
                 time: formatClock(call.closes_at, locale),
               })
             : t("anyTime"),
-        ] as [string, string],
-        [t("terms.decided"), decided] as [string, string],
-        [t("terms.reply"), reply] as [string, string],
-        [t("terms.fees"), t("noFees")] as [string, string],
-      ].map(([term, value]) => (
-        <div
-          className="border-line grid gap-1 border-b py-3 sm:grid-cols-[12rem_1fr]"
-          key={term}
-        >
-          <dt className="type-label">{term}</dt>
-          <dd className="type-body">{value}</dd>
-        </div>
-      ))}
-    </dl>
+        ],
+        [t("terms.decided"), decided],
+        [t("terms.reply"), reply],
+        [t("terms.fees"), t("noFees")],
+      ]}
+    />
   );
 };
 
