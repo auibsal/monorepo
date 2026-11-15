@@ -16,7 +16,7 @@ fourth prompts (Nov 12).
 
 ## Now: the nineteenth site prompt (Nov 15)
 
-- [x] Mirror replaced (decisions 22, glossary 17): §5 (one logo per
+- [x] Mirror replaced (decisions 23, glossary 17): §5 (one logo per
   organization, a paper tile in dark mode) and §9 (one Edition, one title,
   one call).
 - [x] Production: #273's hook build was canceled mid-build while a second
@@ -47,12 +47,11 @@ fourth prompts (Nov 12).
   filters by Edition only; the last call goes three days before any
   Edition's call closes.
 - [ ] TODO(content): Edition 1's title (its theme), proposed by the
-  Editor-in-Chief and approved by the owner before Mon, Dec 7; the Desk
+  Editor-in-Chief and approved with the Managing Editor before Mon, Dec 7; the Desk
   shows it as a to-do. Then set Edition 1's deadline on its Call tab and
   publish the call.
-- [ ] **Owner:** Haven's call takes Letters and Gallery, as its poster
-  says, so films have no open call until Dec 7. Say if Haven should take
-  Video too.
+- [x] Haven's call takes Letters and Gallery only, as its poster says;
+  films wait for Edition 1's call (decisions 23).
 - [ ] **Owner:** add `VERCEL_TOKEN` (a read token) to the production
   environment's secrets, so the migrate run follows the hook's build.
 - [ ] **Owner:** upload the Iraqi Independent Film Center's logo (one PNG,

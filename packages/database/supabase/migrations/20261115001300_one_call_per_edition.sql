@@ -8,7 +8,8 @@
 --    is always open: Haven's closes Sun, Dec 6, and Edition 1's opens Mon,
 --    Dec 7. Work sent after a deadline goes to the next Edition's call.
 -- 3. An Edition's call can't open without its title (Edition 1's is
---    proposed by the Editor-in-Chief and approved by the owner; until then
+--    proposed by the Editor-in-Chief and approved with the Managing Editor;
+--    until then
 --    the Desk shows it as a to-do). Edition 1's general submissions become
 --    its one call, with the work already in it.
 -- 4. Accepted Letters, Gallery and Video work is published with its
@@ -34,7 +35,7 @@ alter table journal.issues
   alter column title_ar drop not null;
 
 comment on column journal.issues.title_en is
-  'The Edition''s title, which is its theme («عنوان الإصدار»), proposed by the Editor-in-Chief and approved by the owner before its call opens. Cited "Edition <n>: <title>, <season>".';
+  'The Edition''s title, which is its theme («عنوان الإصدار»), proposed by the Editor-in-Chief and approved with the Managing Editor before its call opens. Cited "Edition <n>: <title>, <season>".';
 
 update journal.issues
 set title_en = null, title_ar = null,

@@ -1211,8 +1211,8 @@
         "logosWaitingDetail": "Partners sent these from their dashboards; each shows once approved.",
         "reviewLogos": "Review logos",
         "editionTitle": "Edition {number} needs its title",
-        "editionTitleDetail": "The Editor-in-Chief proposes it for approval. Its call can’t open until then; it is due {date}.",
-        "editionTitleUndated": "The Editor-in-Chief proposes it for approval. Its call can’t open until then.",
+        "editionTitleDetail": "The Editor-in-Chief proposes it and approves it with the Managing Editor. Its call can’t open until then; it is due {date}.",
+        "editionTitleUndated": "The Editor-in-Chief proposes it and approves it with the Managing Editor. Its call can’t open until then.",
         "setEditionTitle": "Set the title"
       },
       "members": {
