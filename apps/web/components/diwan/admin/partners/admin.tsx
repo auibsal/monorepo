@@ -16,13 +16,15 @@ import { localized, partners, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
+import { useQueryState } from "@/lib/diwan/use-query-param";
 import { hasPermissionAnywhere } from "@/lib/rbac";
 import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
-import { SectionSpinner } from "../../states";
+import { EmptyLine, SectionSpinner } from "../../states";
 import { SectionTabs } from "../admin-shell";
 import { ImageField } from "../image-field";
 import {
+  AddInPlace,
   AdminHeading,
   BilingualField,
   type Column,
@@ -30,6 +32,7 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  RecordList,
   RecordView,
   SaveButton,
   SelectInput,
@@ -364,8 +367,17 @@ const PartnerForm = ({
 
 const Register = () => {
   const t = useTranslations("diwan.admin.partners.register");
+  const tk = useTranslations("diwan.admin.kit");
   const locale = useLocale() as Locale;
   const register = usePartners();
+  // The filter lives in the query string beside the find line
+  // (decisions.md, The site: "One list").
+  const [statusParam, setStatus] = useQueryState("status");
+  const status = (partners.partnerStatuses as readonly string[]).includes(
+    statusParam
+  )
+    ? statusParam
+    : "";
 
   const columns: Column<PartnerRow>[] = [
     {
@@ -414,13 +426,51 @@ const Register = () => {
   return (
     <div className="grid gap-6">
       <p className="type-body">{t("lede")}</p>
-      <DataTable
-        columns={columns}
-        empty={t("empty")}
-        rowKey={(row) => row.id}
-        rows={register.data ?? []}
-      />
       <AddOrganization />
+      <RecordList
+        empty={
+          <EmptyLine action={{ href: "/partnerships", label: tk("showAll") }}>
+            {t("empty")}
+          </EmptyLine>
+        }
+        filters={
+          <Field label={t("status")}>
+            {(id) => (
+              <SelectInput
+                className="w-44"
+                id={id}
+                onChange={(e) => setStatus(e.target.value)}
+                value={status}
+              >
+                <option value="">{tk("all")}</option>
+                {partners.partnerStatuses.map((value) => (
+                  <option key={value} value={value}>
+                    {t(`statuses.${value}`)}
+                  </option>
+                ))}
+              </SelectInput>
+            )}
+          </Field>
+        }
+        items={(register.data ?? []).filter(
+          (row) => !status || row.status === status
+        )}
+        matches={(row, q) =>
+          [row.name_en, row.name_ar, row.slug].some((v) =>
+            String(v ?? "")
+              .toLowerCase()
+              .includes(q)
+          )
+        }
+      >
+        {(found) => (
+          <DataTable
+            columns={columns}
+            rowKey={(row) => row.id}
+            rows={[...found]}
+          />
+        )}
+      </RecordList>
     </div>
   );
 };
@@ -468,42 +518,44 @@ const AddOrganization = () => {
     },
   });
   return (
-    <DiwanSection id="add" title={t("addTitle")}>
-      <form
-        className="grid max-w-2xl gap-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          add.mutate();
-        }}
-      >
-        <Field label={t("relation")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) => setRelation(e.target.value as Relation)}
-              value={relation}
+    <AddInPlace label={t("addTitle")}>
+      {() => (
+        <form
+          className="grid max-w-2xl gap-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            add.mutate();
+          }}
+        >
+          <Field label={t("relation")}>
+            {(id) => (
+              <SelectInput
+                id={id}
+                onChange={(e) => setRelation(e.target.value as Relation)}
+                value={relation}
+              >
+                {ADDED_RELATIONS.map((r) => (
+                  <option key={r} value={r}>
+                    {t(`relations.${r}`)}
+                  </option>
+                ))}
+              </SelectInput>
+            )}
+          </Field>
+          <BilingualField label={t("name")} onChange={setName} value={name} />
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              disabled={!(name.en.trim() && name.ar.trim()) || add.isPending}
+              type="submit"
+              variant="outline"
             >
-              {ADDED_RELATIONS.map((r) => (
-                <option key={r} value={r}>
-                  {t(`relations.${r}`)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <BilingualField label={t("name")} onChange={setName} value={name} />
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            disabled={!(name.en.trim() && name.ar.trim()) || add.isPending}
-            type="submit"
-            variant="outline"
-          >
-            {t("add")}
-          </Button>
-          <ErrorLine error={add.error} />
-        </div>
-      </form>
-    </DiwanSection>
+              {t("add")}
+            </Button>
+            <ErrorLine error={add.error} />
+          </div>
+        </form>
+      )}
+    </AddInPlace>
   );
 };
 

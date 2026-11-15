@@ -20,6 +20,7 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  RecordList,
   RecordView,
   SaveButton,
   SelectInput,
@@ -181,6 +182,7 @@ const NewProduction = ({ onDone }: { onDone: (id: string) => void }) => {
  */
 export const ProductionsAdmin = () => {
   const t = useTranslations("diwan.admin.productions");
+  const tk = useTranslations("diwan.admin.kit");
   const locale = useLocale();
   const grants = useGrants();
   const list = useProductionList();
@@ -234,13 +236,38 @@ export const ProductionsAdmin = () => {
         {t("lede")}
       </AdminHeading>
       {list.isPending ? <SectionSpinner /> : null}
-      <DataTable
-        caption={t("title")}
-        columns={columns}
-        empty={t("empty")}
-        rowKey={(p) => p.id}
-        rows={list.data ?? []}
-      />
+      {list.data ? (
+        <RecordList
+          empty={
+            <EmptyLine
+              action={
+                canPropose
+                  ? { href: "/company/new", label: t("new") }
+                  : { href: "/company", label: tk("showAll") }
+              }
+            >
+              {t("empty")}
+            </EmptyLine>
+          }
+          items={list.data}
+          matches={(p, q) =>
+            [p.title_en, p.title_ar, p.slug].some((v) =>
+              String(v ?? "")
+                .toLowerCase()
+                .includes(q)
+            )
+          }
+        >
+          {(found) => (
+            <DataTable
+              caption={t("title")}
+              columns={columns}
+              rowKey={(p) => p.id}
+              rows={[...found]}
+            />
+          )}
+        </RecordList>
+      ) : null}
       {canPropose ? <CreditedNames /> : null}
     </div>
   );

@@ -135,7 +135,7 @@
       "mailing": "Send me the Sunday Paper and Society news and events. You can stop either at any time.",
       "emailHint": "Your @{domain} address if you have one.",
       "studied": "I studied at AUIB",
-      "studiedHint": "We send the Director of Membership a request for Associate membership. Until it is answered, your account is a guest’s.",
+      "studiedHint": "For alumni 18 or older: we send the Director of Membership your request for Associate membership, and they approve it. Until then, your account is a guest’s.",
       "adultOnly": "Under 18, you sign up with your AUIB student address, or through the invitation your school or parent was sent. Associate Members are 18 or older.",
       "line": "By creating an account, you agree to the <terms>Terms</terms>, the <privacy>Privacy Notice</privacy>, and the <conduct>Code of Conduct</conduct> and to signing electronically.",
       "wrongAddress": "Wrong address? Fix it",
@@ -474,6 +474,12 @@
           "askedTitle": "Waiting for {name}",
           "askedBody": "You asked to join {name}’s team. Its Partner Lead will approve or decline, and you’ll hear by email.",
           "withdraw": "Withdraw the request"
+        },
+        "associate": {
+          "pendingTitle": "Your request for Associate membership",
+          "pendingBody": "You told us you studied at AUIB. The Director of Membership approves Associate membership for alumni 18 or older, and you’ll hear by email. Until then, your account is a guest’s.",
+          "declinedTitle": "Your request for Associate membership was declined",
+          "declinedBody": "The Director of Membership could not confirm that you studied at AUIB, and your account stays a guest’s. If you think this is a mistake, write to <email>{address}</email>."
         }
       }
     },
@@ -1112,7 +1118,8 @@
         },
         "exportAsked": "Asked. Download the list once a second officer approves it on the Desk.",
         "find": "Find",
-        "findPlaceholder": "Find a title, a name or a number"
+        "findPlaceholder": "Find a title, a name or a number",
+        "showAll": "Show everything"
       },
       "overview": {
         "title": "Desk",
@@ -5917,7 +5924,7 @@
       },
       "associateRequest": {
         "title": "Faculty, staff and alumni",
-        "lede": "Associate membership is for AUIB faculty, staff and alumni. Sign up with your AUIB address and say which you are; alumni without one sign up with any address and tick “I studied at AUIB”, and the Director of Membership answers."
+        "lede": "Associate membership is for AUIB faculty, staff and alumni, anyone who studied at AUIB for at least a semester, 18 or older. Faculty and staff sign up with their AUIB address and are Associates at once. Alumni, who don’t keep an AUIB address, sign up with another address and tick “I studied at AUIB”; the Director of Membership approves the request."
       }
     },
     "contact": {

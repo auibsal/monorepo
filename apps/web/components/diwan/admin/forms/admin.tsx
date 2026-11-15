@@ -13,6 +13,7 @@ import { useAuth } from "@/lib/auth/provider";
 import { forms, localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
+import { useQueryState } from "@/lib/diwan/use-query-param";
 import { hasPermission, type Permission } from "@/lib/rbac";
 import { FormFieldInput, useFormLabels } from "../../forms/field";
 import { useFormTypes } from "../../forms/forms";
@@ -23,6 +24,7 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  RecordList,
   RecordPage,
   SelectInput,
 } from "../kit";
@@ -58,8 +60,13 @@ export const RequestQueue = ({
   const { supabase, user } = useAuth();
   const grants = useGrants();
   const types = useFormTypes();
-  const [form, setForm] = useState("");
-  const [show, setShow] = useState<Show>("open");
+  const tk = useTranslations("diwan.admin.kit");
+  // The filters live in the query string beside the find line
+  // (decisions.md, The site: "One list").
+  const [form, setForm] = useQueryState("form");
+  const [showParam, setShow] = useQueryState("show");
+  const show: Show =
+    showParam === "closed" || showParam === "all" ? showParam : "open";
 
   const handled = (types.data ?? []).filter(
     (ty) =>
@@ -91,6 +98,10 @@ export const RequestQueue = ({
   const nameOf = (id: string | null) => {
     const row = names.data?.find((p) => p.id === id);
     return row ? memberName(row, locale) : tf("anonymousSender");
+  };
+  const titleOf = (formKey: string) => {
+    const type = handled.find((ty) => ty.key === formKey);
+    return type ? localized(type, "title", locale) : "";
   };
 
   const rows = (list.data ?? []).filter(
@@ -161,45 +172,66 @@ export const RequestQueue = ({
           </li>
         ))}
       </ul>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label={t("filterForm")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) => setForm(e.target.value)}
-              value={form}
-            >
-              <option value="">{t("allForms")}</option>
-              {handled.map((ty) => (
-                <option key={ty.key} value={ty.key}>
-                  {localized(ty, "title", locale)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <Field label={t("filterShow")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) => setShow(e.target.value as Show)}
-              value={show}
-            >
-              <option value="open">{t("show.open")}</option>
-              <option value="closed">{t("show.closed")}</option>
-              <option value="all">{t("show.all")}</option>
-            </SelectInput>
-          )}
-        </Field>
-      </div>
       {list.isPending ? <SectionSpinner /> : null}
-      <DataTable
-        caption={t("tabs.submissions")}
-        columns={columns}
-        empty={t("empty")}
-        rowKey={(s) => s.id}
-        rows={rows}
-      />
+      <RecordList
+        empty={
+          <EmptyLine
+            action={{ href: `${base}?show=all`, label: tk("showAll") }}
+          >
+            {t("empty")}
+          </EmptyLine>
+        }
+        filters={
+          <>
+            <Field label={t("filterForm")}>
+              {(id) => (
+                <SelectInput
+                  className="w-56"
+                  id={id}
+                  onChange={(e) => setForm(e.target.value)}
+                  value={form}
+                >
+                  <option value="">{t("allForms")}</option>
+                  {handled.map((ty) => (
+                    <option key={ty.key} value={ty.key}>
+                      {localized(ty, "title", locale)}
+                    </option>
+                  ))}
+                </SelectInput>
+              )}
+            </Field>
+            <Field label={t("filterShow")}>
+              {(id) => (
+                <SelectInput
+                  className="w-44"
+                  id={id}
+                  onChange={(e) => setShow(e.target.value)}
+                  value={show}
+                >
+                  <option value="open">{t("show.open")}</option>
+                  <option value="closed">{t("show.closed")}</option>
+                  <option value="all">{t("show.all")}</option>
+                </SelectInput>
+              )}
+            </Field>
+          </>
+        }
+        items={rows}
+        matches={(s, q) =>
+          [nameOf(s.submitted_by), titleOf(s.form_key)].some((v) =>
+            v.toLowerCase().includes(q)
+          )
+        }
+      >
+        {(found) => (
+          <DataTable
+            caption={t("tabs.submissions")}
+            columns={columns}
+            rowKey={(s) => s.id}
+            rows={found}
+          />
+        )}
+      </RecordList>
     </div>
   );
 };

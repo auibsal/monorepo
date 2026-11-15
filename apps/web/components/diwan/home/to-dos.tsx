@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@repo/brand/components/ui/button";
+import { project } from "@repo/config";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -281,4 +282,51 @@ export const OrganizationToDo = () => {
       </div>
     </Section>
   );
+};
+
+/**
+ * An alum's request for Associate membership (decisions.md, Members: alumni
+ * sign up with another address and ask for Associate, which the Director
+ * of Membership approves; Associates are 18 or older): on Today while it
+ * waits, and once if it is declined. An approved request needs no line:
+ * the account is an Associate's.
+ */
+export const AssociateRequestToDo = () => {
+  const t = useTranslations("diwan.home.toDos.associate");
+  const { supabase, user } = useAuth();
+  const request = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      (unwrap(
+        await supabase.schema("membership").rpc("my_associate_request")
+      ) ?? [])[0] ?? null,
+    queryKey: ["account", "associate-request", user?.id],
+  });
+  const status = request.data?.status;
+  if (status === "pending") {
+    return (
+      <Section id="associate-request" title={t("pendingTitle")}>
+        <p className="type-body max-w-[60ch]">{t("pendingBody")}</p>
+      </Section>
+    );
+  }
+  if (status === "declined") {
+    return (
+      <Section id="associate-request" title={t("declinedTitle")}>
+        <p className="type-body max-w-[60ch]">
+          {t.rich("declinedBody", {
+            address: project.mailboxes.hello,
+            email: (chunks) => (
+              <bdi>
+                <a className="link" href={`mailto:${project.mailboxes.hello}`}>
+                  {chunks}
+                </a>
+              </bdi>
+            ),
+          })}
+        </p>
+      </Section>
+    );
+  }
+  return null;
 };

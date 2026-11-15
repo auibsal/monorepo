@@ -3525,6 +3525,25 @@ export type Database = {
           },
         ];
       };
+      partner_application_drafts: {
+        Row: {
+          content: NonNullable<Json>;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          content?: NonNullable<Json>;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          content?: NonNullable<Json>;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       partner_invitations: {
         Row: {
           accepted_at: string | null;
@@ -6274,6 +6293,15 @@ export type Database = {
           title_en: string;
         }[];
       };
+      op_ed_identity: {
+        Args: { piece: string };
+        Returns: {
+          about_writer: string;
+          feminine: boolean;
+          student: boolean;
+          writer_year: string;
+        }[];
+      };
       open_original: { Args: { file: string }; Returns: string };
       open_prize_round: { Args: Record<PropertyKey, never>; Returns: string };
       piece_from_entry: { Args: { blind_entry_id: string }; Returns: string };
@@ -7163,6 +7191,14 @@ export type Database = {
           user_id: string;
           user_name: string;
           user_number: number;
+        }[];
+      };
+      my_associate_request: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          created_at: string;
+          decided_at: string;
+          status: string;
         }[];
       };
       my_card: {

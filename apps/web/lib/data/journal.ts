@@ -1067,6 +1067,17 @@ export const pieceEvent = async (client: Client, eventId: string | null) =>
     : null;
 
 /**
+ * A published op-ed's identity line as its writer gave it (decisions.md,
+ * Qirtas), or null: none under a pen name or an anonymous byline.
+ */
+export const opEdIdentity = async (client: Client, pieceId: string) => {
+  const rows = unwrap(
+    await journal(client).rpc("op_ed_identity", { piece: pieceId })
+  );
+  return rows?.[0] ?? null;
+};
+
+/**
  * The clip paired with a piece (design review A12): a published, public
  * piece from the Video section, or null.
  */

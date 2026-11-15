@@ -11,13 +11,14 @@ import { useAuth } from "@/lib/auth/provider";
 import { documents, sanitizeRichText, unwrap } from "@/lib/data";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { OnTheSite } from "../../site-links";
-import { SectionSpinner } from "../../states";
+import { EmptyLine, SectionSpinner } from "../../states";
 import {
   AdminHeading,
   type Column,
   DataTable,
   ErrorLine,
   Field,
+  RecordList,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -47,6 +48,7 @@ const useDocumentList = () => {
  */
 export const LibraryAdmin = () => {
   const t = useTranslations("diwan.admin.documents");
+  const tk = useTranslations("diwan.admin.kit");
   const locale = useLocale() as Locale;
   const list = useDocumentList();
 
@@ -80,18 +82,38 @@ export const LibraryAdmin = () => {
         {t("lede")}
       </AdminHeading>
       {list.isPending ? <SectionSpinner /> : null}
-      {(["society", "policies"] as const).map((shelf) => (
-        <DataTable
-          caption={t(`shelves.${shelf}`)}
-          columns={columns}
-          empty={t("empty")}
-          key={shelf}
-          rowKey={(d) => d.id}
-          rows={(list.data ?? []).filter(
-            (d) => documents.isWebsitePolicy(d) === (shelf === "policies")
-          )}
-        />
-      ))}
+      {list.data ? (
+        <RecordList
+          empty={
+            <EmptyLine action={{ href: LIBRARY, label: tk("showAll") }}>
+              {tk("noMatches")}
+            </EmptyLine>
+          }
+          items={list.data}
+          matches={(d, q) =>
+            [d.title_en, d.title_ar, d.code].some((v) =>
+              String(v ?? "")
+                .toLowerCase()
+                .includes(q)
+            )
+          }
+        >
+          {(found) =>
+            (["society", "policies"] as const).map((shelf) => (
+              <DataTable
+                caption={t(`shelves.${shelf}`)}
+                columns={columns}
+                empty={t("empty")}
+                key={shelf}
+                rowKey={(d) => d.id}
+                rows={found.filter(
+                  (d) => documents.isWebsitePolicy(d) === (shelf === "policies")
+                )}
+              />
+            ))
+          }
+        </RecordList>
+      ) : null}
     </div>
   );
 };

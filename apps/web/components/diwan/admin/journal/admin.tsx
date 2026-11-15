@@ -15,9 +15,16 @@ import { journal, localized, sanitizeRichText, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermissionAnywhere, type Permission } from "@/lib/rbac";
-import { SectionSpinner } from "../../states";
+import { EmptyLine, SectionSpinner } from "../../states";
 import { type SectionTab, SectionTabs } from "../admin-shell";
-import { AdminHeading, type Column, DataTable, ErrorLine, Field } from "../kit";
+import {
+  AdminHeading,
+  type Column,
+  DataTable,
+  ErrorLine,
+  Field,
+  RecordList,
+} from "../kit";
 import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
@@ -197,13 +204,31 @@ const Newsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
         {t("newPiece")}
       </Link>
       {pieces.data ? (
-        <DataTable
-          caption={t("sortedBy")}
-          columns={columns}
-          empty={t("noPieces")}
-          rowKey={(p) => p.id}
-          rows={pieces.data}
-        />
+        <RecordList
+          empty={
+            <EmptyLine
+              action={{ href: "/qirtas/pieces/new", label: t("newPiece") }}
+            >
+              {t("noPieces")}
+            </EmptyLine>
+          }
+          items={pieces.data}
+          matches={(p, q) =>
+            [
+              localized(p, "title", locale),
+              p.contributor ? localized(p.contributor, "name", locale) : "",
+            ].some((v) => v.toLowerCase().includes(q))
+          }
+        >
+          {(found) => (
+            <DataTable
+              caption={t("sortedBy")}
+              columns={columns}
+              rowKey={(p) => p.id}
+              rows={[...found]}
+            />
+          )}
+        </RecordList>
       ) : (
         <SectionSpinner />
       )}

@@ -314,6 +314,16 @@ const Exempt = () => {
   return (
     <DiwanSection id="exempt" title={t("exempt")}>
       <p className="type-body text-text-secondary">{t("exemptLede")}</p>
+      <AddInPlace label={t("add")}>
+        {(close) => (
+          <NewExempt
+            onDone={() => {
+              queryClient.invalidateQueries({ queryKey: exemptKey });
+              close();
+            }}
+          />
+        )}
+      </AddInPlace>
       <RowList>
         {(list.data ?? []).map((row) => (
           <li
@@ -336,16 +346,6 @@ const Exempt = () => {
         ))}
       </RowList>
       <ErrorLine error={remove.error} />
-      <AddInPlace label={t("add")}>
-        {(close) => (
-          <NewExempt
-            onDone={() => {
-              queryClient.invalidateQueries({ queryKey: exemptKey });
-              close();
-            }}
-          />
-        )}
-      </AddInPlace>
     </DiwanSection>
   );
 };

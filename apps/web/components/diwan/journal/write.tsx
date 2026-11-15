@@ -28,7 +28,7 @@ import { useAuth } from "@/lib/auth/provider";
 import { journal, localized, toPlainText, unwrap } from "@/lib/data";
 import {
   queryKeys,
-  useMyMembership,
+  useMemberStatus,
   useOpenCalls,
   useProfile,
 } from "@/lib/diwan/queries";
@@ -1342,9 +1342,11 @@ const IdentityFields = ({
   const t = useTranslations("diwan.journal.write.voices");
   const ti = useTranslations("diwan.journal.write.voices.identity");
   const locale = useLocale() as Locale;
-  const mine = useMyMembership();
+  const status = useMemberStatus();
   const profile = useProfile();
-  const student = mine.data?.kind === "member";
+  // A student is a Member; Associates (faculty, staff, alumni) and
+  // Honorary Members write the line after their name (decisions.md, Members).
+  const student = status.data?.tier === "member";
   const name = profile.data ? localized(profile.data, "full_name", locale) : "";
   const built = journal.identityLine(ti, {
     feminine: profile.data?.title_form === "feminine",

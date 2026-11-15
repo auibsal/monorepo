@@ -241,6 +241,7 @@ export const PieceArticle = async ({
         ) : (
           <PieceBody locale={locale} piece={piece} />
         )}
+        <IdentityLine locale={locale} piece={piece} />
         <PairedClip clipId={piece.clip_id} locale={locale} />
         <CorrectionNotes locale={locale} piece={piece} />
         <p className="type-caption mx-auto w-full max-w-3xl px-4">
@@ -262,6 +263,49 @@ export const PieceArticle = async ({
       <PieceEnd desk={desk} locale={locale} />
     </div>
   );
+};
+
+/**
+ * The op-ed's identity line under its text (decisions.md, Qirtas), in the
+ * page's language (one language per page) and in the writer's own Arabic
+ * form: "[Name] is a junior studying business at AUIB."
+ */
+const IdentityLine = async ({
+  locale,
+  piece,
+}: {
+  locale: Locale;
+  piece: NonNullable<Piece>;
+}) => {
+  // Only under an op-ed's text, and not where the text is for members only.
+  if (
+    piece.category !== "opinion_essay" ||
+    (piece.members_only && texts(piece).length === 0)
+  ) {
+    return null;
+  }
+  const identity = await readPublished(
+    ["journal"],
+    (c) => journal.opEdIdentity(c, piece.id),
+    null
+  );
+  if (!(identity && piece.contributor)) {
+    return null;
+  }
+  const t = await getTranslations({
+    locale,
+    namespace: "diwan.journal.write.voices.identity",
+  });
+  const line = journal.identityLine(t, {
+    feminine: identity.feminine,
+    line: identity.about_writer ?? "",
+    name: localized(piece.contributor, "name", locale),
+    student: identity.student,
+    year: identity.writer_year ?? "",
+  });
+  return line ? (
+    <p className="type-body mx-auto w-full max-w-3xl px-4">{line}</p>
+  ) : null;
 };
 
 /** After the article: the next piece in its section, and its Edition (C15). */

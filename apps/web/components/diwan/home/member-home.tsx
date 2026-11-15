@@ -19,6 +19,7 @@ import { Renewal } from "./renewal";
 import { RoleChecklist, UnsignedRoleAgreements } from "./role-checklist";
 import {
   ArabicFormToDo,
+  AssociateRequestToDo,
   EsignToDo,
   NameToDo,
   OrganizationToDo,
@@ -105,6 +106,7 @@ export const MemberHome = () => {
         <PersonalEmailToDo />
         <NameToDo />
         <ArabicFormToDo />
+        {member ? null : <AssociateRequestToDo />}
         {member ? null : <OrganizationToDo />}
         {member ? (
           <>

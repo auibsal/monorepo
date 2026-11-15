@@ -102,6 +102,13 @@ export const Service = () => {
         </div>
       </SalCard>
 
+      <DiwanSection id="logtitle" title={t("logTitle")}>
+        <p className="type-body">{t("logLede")}</p>
+        <AddInPlace label={t("log")}>
+          {(close) => <LogHours onDone={close} />}
+        </AddInPlace>
+      </DiwanSection>
+
       <DiwanSection id="recordstitle" title={t("recordsTitle")}>
         {records.isPending ? <SectionSpinner /> : null}
         {records.data?.length === 0 ? (
@@ -145,13 +152,6 @@ export const Service = () => {
             </li>
           ))}
         </ul>
-      </DiwanSection>
-
-      <DiwanSection id="logtitle" title={t("logTitle")}>
-        <p className="type-body">{t("logLede")}</p>
-        <AddInPlace label={t("log")}>
-          {(close) => <LogHours onDone={close} />}
-        </AddInPlace>
       </DiwanSection>
 
       {(letters.data ?? []).length > 0 ? (

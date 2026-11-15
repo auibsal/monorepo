@@ -39,21 +39,6 @@ export const Sessions = () => {
   const rows = sessions.data ?? [];
   return (
     <DiwanSection description={t("lede")} id="sessions" title={t("title")}>
-      <RowList>
-        {rows.map((session) => (
-          <li className="grid gap-1" key={session.id}>
-            <p className="font-medium">
-              {deviceName(session.user_agent)}
-              {session.current ? ` · ${t("this")}` : ""}
-            </p>
-            <p className="type-caption">
-              {t("lastSeen", {
-                when: formatDateTime(session.last_seen, locale),
-              })}
-            </p>
-          </li>
-        ))}
-      </RowList>
       {rows.length > 1 ? (
         <Button
           className="justify-self-start"
@@ -74,6 +59,21 @@ export const Sessions = () => {
           {t("failed")}
         </p>
       ) : null}
+      <RowList>
+        {rows.map((session) => (
+          <li className="grid gap-1" key={session.id}>
+            <p className="font-medium">
+              {deviceName(session.user_agent)}
+              {session.current ? ` · ${t("this")}` : ""}
+            </p>
+            <p className="type-caption">
+              {t("lastSeen", {
+                when: formatDateTime(session.last_seen, locale),
+              })}
+            </p>
+          </li>
+        ))}
+      </RowList>
     </DiwanSection>
   );
 };

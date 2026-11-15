@@ -14,6 +14,37 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the seventeenth site prompt (Nov 15)
+
+- [x] Mirror replaced (decisions 20, glossary 15): §10's icon is from the
+  Society's set, and "Who can come" lists everyone, members and invited
+  guests.
+- [x] Production: #273's migrate run (#198) applied `…000400` to `…000800`
+  once CI on main finished, and the deploy hook built ed7cf5d4.
+- [x] The op-ed identity line prints under a published op-ed, in the
+  page's language and the writer's Arabic form
+  (`journal.op_ed_identity`, `20261115000900_op_ed_identity.sql`); none
+  under a pen name or an anonymous byline. A student is a Member (tier
+  `member`), not an Associate.
+- [x] Every page body in order: an action above the list it adds to (the
+  event's links and staff, the partner register, Next Stop's people on
+  camera, Hudhud's exempt list, Qalam's consent links, the Prize's
+  shortlists, a member's roles, a piece's figures and topics, Settings'
+  devices, your hours).
+- [x] One list (`RecordList`) on the Register, events, the partner
+  register, openings, the forms queue, the Company, the Library, the
+  Newsroom's pieces and certificates; filters in the address. The door
+  check-in lookup and the member picker stay searches, not lists.
+- [x] The partner application's draft is saved on the site as it is filled
+  in (`governance.partner_application_drafts`), not in the browser.
+- [x] Alumni sign-up wording follows decisions.md, Members: Associates are
+  18 or older, alumni sign up with another address and the Director of
+  Membership approves; the "I studied at AUIB" tick is hidden under 18;
+  Today shows the request while it waits (`membership.my_associate_request`).
+- [ ] **Owner:** upload the three logos (The American Space, the Iraqi
+  Independent Film Centre, the AUIB Tabletop Club); the Desk counts every
+  register entry still without one.
+
 ## Now: the sixteenth site prompt (Nov 15)
 
 - [x] Mirror replaced (decisions 18, glossary 12): the partner
@@ -36,12 +67,9 @@ fourth prompts (Nov 12).
 - [x] One record page (`RecordView`) and one list (`RecordList`, `?q=`).
 - [x] The op-ed identity line built from the class and the writer's line
   (`journal.identityLine`, `writer_year`).
-- [ ] "Who can come" has no "the AUIB community" access kind yet: the four
-  access kinds are Open, RSVP, Members and Private (decisions.md, Events),
-  so it reads Everyone, Members or Invited guests.
-- [ ] The identity line shows to the writer as they write and is kept on
-  the submission; the piece page does not print it yet (the Voices editor
-  adds it when making the piece).
+- [x] "Who can come" reads Everyone, Members or Invited guests, as
+  decisions.md now lists them.
+- [x] The identity line prints on the published op-ed (seventeenth prompt).
 
 ## Now: the fourteenth and fifteenth site prompts (Nov 15)
 
@@ -49,8 +77,8 @@ fourth prompts (Nov 12).
   sponsors in kind), "Campus partners" on /partners, "Co-sponsored by" and
   "Thanks to" at the foot of an event, "Hosted by" under its title; the
   Sun Nov 22 screening's organizations.
-- [ ] Logos for The American Space and the Iraqi Independent Film Centre
-  (Partnerships uploads them on each entry; the Desk counts them).
+- [ ] Logos: see the seventeenth prompt (three entries, the Desk counts
+  them).
 - [x] Editions is the one door: every submission on an Edition's call
   (general submissions and themed calls), Edition 1 created with the
   standing call's work, Open now, each Edition's page for its whole life,

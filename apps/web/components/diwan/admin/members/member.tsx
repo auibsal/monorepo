@@ -396,6 +396,11 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
     <section className="grid gap-4">
       <h2 className="type-heading">{t("roles")}</h2>
       <p className="type-body text-text-secondary">{t("rolesLede")}</p>
+      {canAssign ? (
+        <AddInPlace label={t("assign")}>
+          {(close) => <AssignRole name={name} onDone={close} userId={userId} />}
+        </AddInPlace>
+      ) : null}
       {assignments.isPending ? <SectionSpinner /> : null}
       {assignments.data ? (
         <DataTable
@@ -404,11 +409,6 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
           rowKey={(a) => a.id}
           rows={assignments.data}
         />
-      ) : null}
-      {canAssign ? (
-        <AddInPlace label={t("assign")}>
-          {(close) => <AssignRole name={name} onDone={close} userId={userId} />}
-        </AddInPlace>
       ) : null}
       <ErrorLine error={end.error ?? confirm.error ?? seatCheck.error} />
     </section>

@@ -330,8 +330,8 @@ export const AdminOverview = () => {
     queryKey: ["admin", "overview", "editing", writes],
   });
 
-  // Register entries shown with their name alone (decisions.md, Partners):
-  // Partnerships adds the logo.
+  // Register entries without a logo (decisions.md, Partners), applying or
+  // active, listed or not: Partnerships adds the logo before it is needed.
   const managesPartners = hasPermissionAnywhere(grants.data, "partners.manage");
   const noLogo = useQuery({
     enabled: grants.isSuccess && managesPartners,
@@ -340,8 +340,7 @@ export const AdminOverview = () => {
         .schema("governance")
         .from("partners")
         .select("id", { count: "exact", head: true })
-        .eq("status", "active")
-        .eq("is_listed", true)
+        .neq("status", "ended")
         .is("logo_path", null)
         .is("logo_static", null);
       return count ?? 0;

@@ -648,6 +648,17 @@ const OnCamera = ({ episodeId }: { readonly episodeId: string }) => {
   return (
     <DiwanSection id="on-camera" title={t("title")}>
       <p className="type-body text-text-secondary max-w-2xl">{t("body")}</p>
+      <AddInPlace label={t("add")}>
+        {(close) => (
+          <AddOnCamera
+            episodeId={episodeId}
+            onDone={() => {
+              close();
+              refresh();
+            }}
+          />
+        )}
+      </AddInPlace>
       <ul className="border-line grid border-b">
         {(people.data ?? []).map((p) => (
           <OnCameraRow
@@ -666,17 +677,6 @@ const OnCamera = ({ episodeId }: { readonly episodeId: string }) => {
         ))}
       </ul>
       <ErrorLine error={send.error ?? remove.error} />
-      <AddInPlace label={t("add")}>
-        {(close) => (
-          <AddOnCamera
-            episodeId={episodeId}
-            onDone={() => {
-              close();
-              refresh();
-            }}
-          />
-        )}
-      </AddInPlace>
     </DiwanSection>
   );
 };
@@ -1043,6 +1043,16 @@ const GuestIdeas = () => {
   return (
     <DiwanSection id="guest-ideas" title={t("title")}>
       <p className="type-body text-text-secondary max-w-2xl">{t("body")}</p>
+      <AddInPlace label={t("add")}>
+        {(close) => (
+          <AddGuestIdea
+            onDone={() => {
+              close();
+              refresh();
+            }}
+          />
+        )}
+      </AddInPlace>
       <ul className="border-line grid border-b">
         {(ideas.data ?? []).map((idea) => (
           <li
@@ -1084,16 +1094,6 @@ const GuestIdeas = () => {
         ))}
       </ul>
       <ErrorLine error={setStatus.error ?? remove.error} />
-      <AddInPlace label={t("add")}>
-        {(close) => (
-          <AddGuestIdea
-            onDone={() => {
-              close();
-              refresh();
-            }}
-          />
-        )}
-      </AddInPlace>
     </DiwanSection>
   );
 };

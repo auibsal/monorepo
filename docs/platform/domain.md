@@ -84,6 +84,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   under-18 rules still on; sign-up under 18 takes only an AUIB
   student's address or an invitation that isn't to a class
   (`private.refuse_minor_associate_sign_up`).
+- **Alumni** sign up with another address and tick "I studied at AUIB"
+  (shown only to someone 18 or older): the account is a guest's and the
+  Director of Membership approves the request
+  (`membership.associate_requests`); Today shows it while it waits and
+  once if declined (`membership.my_associate_request`).
 - **Addresses and classes** (decisions.md, Members). The sign-in address
   changes only through `private.move_sign_in`, which tells the old and
   the new address. Someone who signed up with another address, or a
@@ -318,8 +323,9 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Membership runs every application, and the role's owner picks the
   person (`private.picks_opening`); whoever is onboarded holds the role.
 - **Partners.** One register, `governance.partners`. `/partners` is the
-  front door; an organization applies at `/partners/apply`, its signatory
-  signing by name, and becomes a partner only when the President
+  front door; an organization applies at `/partners/apply` (its draft
+  saved on the site as it is filled in,
+  `governance.partner_application_drafts`), its signatory signing by name, and becomes a partner only when the President
   countersigns under the Council's adopted resolution
   (`governance.record_partner_vote`); nobody adds a
   partner or drafts a memorandum in the Diwan. Each partner has one
@@ -401,6 +407,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
     (600–800, with its line about the writer, `about_writer`) at
     `/qirtas/voices/letter` and `/op-ed`, to no call, by name, decided by
     the Voices desk (`private.html_word_count` checks the lengths).
+    The published op-ed ends with its identity line, built on the page
+    from the writer's class (a Member is a student), their year and line
+    and their Arabic form (`journal.op_ed_identity`); none under a pen
+    name or an anonymous byline.
   - **News takes no submissions:** "Send a news tip" (tips@) and "Join the
     staff" (Get involved) are its door (`journal.deskDoors`).
   - The form follows the one form flow: drafts saved as you go

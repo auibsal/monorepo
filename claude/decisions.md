@@ -490,8 +490,8 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 ## 10. Events
 - **One events manager, one standard event.** Every event (Council and general meetings, the Tour's days, Second Chapter, Qalam sessions, each Edition's launch) is made in Notion's Events database and copied to the site, where Events (auibsal.org/events) shows it and takes RSVPs and check-in. Nothing is built for one event or one kind of event anywhere.
 - **The standard page:** title, date and time, place, description, image, lead, host and links. The host is the Society unless a partner owns the event; then a **"Hosted by"** line («باستضافة») under the title names that partner, as US campus event systems show the host organization. The Society's own events have no host line. The description is only about the event itself; everything practical is a fixed field, never typed into it.
-  - **"Good to know"** («معلومات مفيدة»), right under the date and place and before the main button: one row per field, each a Lucide icon with its words, shown only when filled. They are the site's own fields, set in the Diwan's event editor (Access), not in Notion:
-    - **Who can come** (from the access kind: everyone, the AUIB community, members, invited guests) and **places left** once fewer than 20 remain;
+  - **"Good to know"** («معلومات مفيدة»), right under the date and place and before the main button: one row per field, each an icon from the Society's set (§15) with its words, shown only when filled. They are the site's own fields, set in the Diwan's event editor (Access), not in Notion:
+    - **Who can come** (from the access kind: everyone, members, invited guests) and **places left** once fewer than 20 remain;
     - **Language** the event is held in (English, Arabic or both);
     - **Access:** step-free or not, and the seating, with **"Ask for an accommodation by <date>"** linking to hello@ (the date defaults to three days before);
     - **Food and drink**, with **"Contains:"** and its allergens: the nine major US food allergens (milk, eggs, fish, crustacean shellfish, tree nuts, peanuts, wheat, soy, sesame) plus any other named, such as corn;
