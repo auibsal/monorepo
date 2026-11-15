@@ -202,6 +202,15 @@ export default async function globalSetup() {
     .from("calls")
     .select("id")
     .eq("issue_id", issueId ?? "");
+  // Its call opens after Haven's, so Haven, Edition 0, stays the open
+  // call the Editions page shows (decisions.md, Qirtas: one call open).
+  if (issueId && (existing.data ?? []).length > 0) {
+    await db
+      .schema("journal")
+      .from("calls")
+      .update({ opens_at: new Date().toISOString() })
+      .eq("issue_id", issueId);
+  }
   if (issueId && (existing.data ?? []).length === 0) {
     await db
       .schema("journal")
@@ -211,7 +220,7 @@ export default async function globalSetup() {
         is_published: true,
         issue_id: issueId,
         max_per_person: 10,
-        opens_at: new Date(Date.now() - 86_400_000).toISOString(),
+        opens_at: new Date().toISOString(),
         title_ar: "دعوة الاختبار",
         title_en: "E2E call",
       });
