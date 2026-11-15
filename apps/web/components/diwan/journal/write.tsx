@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  ReviewStep,
+  Receipt as SharedReceipt,
+} from "@repo/brand/components/sal/form-flow";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Textarea } from "@repo/brand/components/ui/textarea";
@@ -19,6 +23,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useReviewWords } from "@/components/account/flow";
 import { useAuth } from "@/lib/auth/provider";
 import { journal, localized, toPlainText, unwrap } from "@/lib/data";
 import { queryKeys, useOpenCalls } from "@/lib/diwan/queries";
@@ -61,51 +66,14 @@ const SendRow = ({
   readonly sending: boolean;
 }) => {
   const t = useTranslations("diwan.journal.write");
-  const [reviewing, setReviewing] = useState(false);
-  if (!reviewing) {
-    return (
-      <>
-        {missing ? <p className="type-caption">{t(missing)}</p> : null}
-        <Button
-          className="justify-self-start"
-          disabled={missing !== null}
-          onClick={() => setReviewing(true)}
-          type="button"
-        >
-          {t("review.open")}
-        </Button>
-      </>
-    );
-  }
+  const words = useReviewWords();
   return (
-    <section
-      aria-labelledby="review"
-      className="border-line grid gap-4 border-y py-5"
-    >
-      <h2 className="type-heading" id="review">
-        {t("review.title")}
-      </h2>
-      <dl className="grid gap-2 sm:grid-cols-[12rem_1fr]">
-        {review.map(([term, value]) => (
-          <div className="contents" key={term}>
-            <dt className="type-label">{term}</dt>
-            <dd className="type-body">{value}</dd>
-          </div>
-        ))}
-      </dl>
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-        <Button disabled={missing !== null || sending} type="submit">
-          {sending ? t("sending") : t("send")}
-        </Button>
-        <button
-          className="link text-sm"
-          onClick={() => setReviewing(false)}
-          type="button"
-        >
-          {t("review.back")}
-        </button>
-      </div>
-    </section>
+    <ReviewStep
+      missing={missing ? t(missing) : null}
+      rows={review}
+      sending={sending}
+      words={{ ...words, send: t("send"), sending: t("sending") }}
+    />
   );
 };
 
@@ -121,29 +89,25 @@ const Receipt = ({
 }) => {
   const t = useTranslations("diwan.journal.write.receipt");
   return (
-    <section
-      aria-labelledby="receipt"
-      className="grid max-w-3xl gap-4"
-      role="status"
-    >
-      <h1 className="type-display" id="receipt">
-        {t("title")}
-      </h1>
-      <p className="type-lede">{t("number", { number: receipt.reference })}</p>
-      <p className="type-body">{receipt.reply}</p>
-      <p className="type-body">{t("email")}</p>
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-        <Link
-          className="link font-medium"
-          href={`/account/work/submissions/${receipt.id}`}
-        >
-          {t("open")}
-        </Link>
-        <Link className="link" href={journal.SEND_YOUR_WORK}>
-          {t("more")}
-        </Link>
-      </div>
-    </section>
+    <SharedReceipt
+      actions={
+        <>
+          <Link
+            className="link font-medium"
+            href={`/account/work/submissions/${receipt.id}`}
+          >
+            {t("open")}
+          </Link>
+          <Link className="link" href={journal.SEND_YOUR_WORK}>
+            {t("more")}
+          </Link>
+        </>
+      }
+      email={t("email")}
+      number={t("number", { number: receipt.reference })}
+      reply={receipt.reply}
+      title={t("title")}
+    />
   );
 };
 

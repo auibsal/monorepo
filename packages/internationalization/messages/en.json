@@ -575,7 +575,6 @@
         "stand": "Stand for this seat",
         "statementEn": "Your statement (English)",
         "statementAr": "Your statement in Arabic (optional)",
-        "submitNomination": "Submit my nomination",
         "noCandidates": "No approved candidates yet.",
         "yourNomination": {
           "nominated": "Your nomination is with the Elections Committee.",
@@ -613,7 +612,8 @@
         "byLot": "{name} (decided by lot)",
         "votingPoint": "In person: {place}.",
         "votingPointAt": "In person: {place}, {when}.",
-        "forum": "Candidates’ forum on {when}:"
+        "forum": "Candidates’ forum on {when}:",
+        "incomplete": "Write the statement in English and give the consent first."
       },
       "takePart": {
         "title": "Take part",
@@ -888,9 +888,6 @@
           "ownName": "Opinion runs under your own name, as US papers require."
         },
         "review": {
-          "open": "Review and send",
-          "title": "Check what you’re sending",
-          "back": "Back to editing",
           "call": "Call",
           "noCall": "Voices, to no call",
           "type": "Type",
@@ -4060,7 +4057,8 @@
         "closed": "Sign-ups for this audition have closed.",
         "notVerified": "Auditions open once your membership is verified.",
         "failed": "That didn’t work. Try again in a moment."
-      }
+      },
+      "slot": "The audition"
     },
     "forms": {
       "title": "Requests and reports",
@@ -4724,7 +4722,6 @@
         "membersOnly": "Applying is for members.",
         "join": "Join",
         "yours": "See your applications",
-        "sent": "Your application is in; we sent you a receipt by email.",
         "optional": "(optional)",
         "availability": "Your availability",
         "availabilityHint": "The days and times you could usually give, this semester.",
@@ -4737,10 +4734,8 @@
         "accommodation": "Anything we should arrange for you (optional)",
         "accommodationHint": "For an interview or audition: access, timing or anything else. Only the people reviewing your application see it.",
         "gpaConsent": "A director seat needs a GPA of at least 2.0, which Student Life checks. Student Life tells us only whether you are eligible.",
-        "send": "Send the application",
-        "saveDraft": "Save as a draft",
-        "draftSaved": "Draft saved. You can finish it any time before the role closes.",
-        "gpaSignAs": "I consent to Student Life checking my GPA. Sign as {name}."
+        "gpaSignAs": "I consent to Student Life checking my GPA. Sign as {name}.",
+        "incomplete": "Answer the required questions first."
       },
       "applications": {
         "title": "Your applications",
@@ -4754,20 +4749,14 @@
         "talkOn": "interview {date} at {time}",
         "answerBy": "answer by {date}",
         "status": {
-          "draft": "Draft, not sent",
-          "new": "Received",
-          "talking": "Interview",
-          "picked": "Shortlisted",
-          "not_picked": "Not chosen this time",
-          "offered": "Offer made",
-          "accepted": "Accepted; waiting for the Executive Board and Student Life",
-          "onboarded": "Appointed",
-          "declined": "Declined",
-          "withdrawn": "Withdrawn"
+          "draft": "Draft, not sent"
         }
       },
       "anyTime": "Any time",
-      "applyLink": "Apply"
+      "applyLink": "Apply",
+      "auditions": {
+        "title": "Your auditions"
+      }
     },
     "partnerJoin": {
       "title": "Partner with the Society",
@@ -4782,7 +4771,6 @@
       "signatory": "Signed by",
       "contactRole": "Your role at the organization",
       "accept": "I sign this memorandum for {name}, and I may sign for it.",
-      "submit": "Apply and sign",
       "receivedTitle": "Application received",
       "waiting": "{name}’s application, signed on {date}, is with the Society. Once the Council approves it, {name}’s dashboard opens for you.",
       "partneredTitle": "You are a partner",
@@ -4820,7 +4808,8 @@
       "members": "Leading an AUIB club and already a member? Apply signed in as yourself: you stay a member, and the club’s dashboard opens beside Membership.",
       "kindOther": "What kind of organization",
       "stepTwo": "Step 2 of 2: the memorandum",
-      "guestNote": "You’re the Society’s guest now. Once the Council approves the partnership, this account becomes your organization’s, with the partner dashboard, and is no longer a guest’s."
+      "guestNote": "You’re the Society’s guest now. Once the Council approves the partnership, this account becomes your organization’s, with the partner dashboard, and is no longer a guest’s.",
+      "acceptFirst": "Agree to the memorandum above first."
     },
     "partnerDesk": {
       "none": "You are not on a partner’s team.",
@@ -5106,6 +5095,57 @@
         "cancel": "Cancel",
         "confirm": "Become an Associate Member",
         "done": "Done. You are an Associate Member now."
+      }
+    },
+    "flow": {
+      "label": "Where it stands",
+      "steps": {
+        "received": "Received",
+        "inReview": "In review",
+        "interview": "Interview",
+        "offer": "Offer",
+        "callback": "Callback",
+        "councilVote": "The Council’s vote",
+        "decision": "Decision",
+        "withdrawn": "Withdrawn",
+        "draft": "Draft, not sent"
+      },
+      "decisions": {
+        "accepted": "Decision: accepted, waiting for the Executive Board and Student Life",
+        "appointed": "Decision: appointed",
+        "approved": "Decision: approved",
+        "cast": "Decision: cast",
+        "declinedOffer": "Decision: you declined the offer",
+        "notApproved": "Decision: not approved",
+        "notCast": "Decision: not cast this time",
+        "notChosen": "Decision: not chosen this time",
+        "notOnBallot": "Decision: not on the ballot",
+        "onBallot": "Decision: on the ballot"
+      },
+      "review": {
+        "open": "Review and send",
+        "title": "Check what you’re sending",
+        "back": "Back to editing",
+        "send": "Send",
+        "sending": "Sending…"
+      },
+      "receipt": {
+        "title": "Received",
+        "number": "Your number is {number}.",
+        "email": "A confirmation is on its way to your email.",
+        "open": "See it in Your account"
+      },
+      "draft": {
+        "saving": "Saving the draft…",
+        "saved": "Draft saved {time}.",
+        "resume": "Your draft is kept here until you send it."
+      },
+      "reply": {
+        "opening": "You hear back within 14 days of the closing date, {date}.",
+        "openingAnyTime": "You hear back within 14 days.",
+        "audition": "The cast list is posted on the site after callbacks; you hear back by email the same day.",
+        "nomination": "The Elections Committee confirms the candidates once nominations close, {date}.",
+        "partner": "A decision at the Council’s next meeting, within 30 days."
       }
     }
   },

@@ -36,17 +36,9 @@ test.describe("public site", () => {
       good.getByRole("link", { name: /Ask for an accommodation by/u })
     ).toHaveAttribute("href", "mailto:hello@auibsal.org");
     const book = page.getByRole("link", { name: /rsvp|book/iu }).first();
-    expect(
-      await good.evaluate(
-        (el, button) =>
-          Boolean(
-            button &&
-              el.compareDocumentPosition(button) &
-                Node.DOCUMENT_POSITION_FOLLOWING
-          ),
-        await book.elementHandle()
-      )
-    ).toBe(true);
+    const goodBox = await good.boundingBox();
+    const bookBox = await book.boundingBox();
+    expect(goodBox && bookBox && goodBox.y < bookBox.y).toBe(true);
     await expect(book).toHaveAttribute(
       "href",
       new RegExp(`/account/events#${event.slug}$`, "u")

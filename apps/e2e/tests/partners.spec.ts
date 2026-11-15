@@ -55,7 +55,12 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await applicant
     .getByRole("checkbox", { name: /I sign this memorandum/u })
     .click();
-  await applicant.getByRole("button", { name: "Apply and sign" }).click();
+  // One form flow: review, then send; the receipt has its number.
+  await applicant.getByRole("button", { name: "Review and send" }).click();
+  await applicant.getByRole("button", { exact: true, name: "Send" }).click();
+  await expect(
+    applicant.getByText(/Your number is SUB-\d{4}-\d{4}/u)
+  ).toBeVisible();
   await expect(
     applicant.getByRole("heading", { name: "Application received" })
   ).toBeVisible();
@@ -209,7 +214,10 @@ test("a member who leads their club's partnership stays a member", async ({
     .getByLabel(/What the partnership is for/u)
     .fill("Readings with the club.");
   await page.getByRole("checkbox", { name: /I sign this memorandum/u }).click();
-  await page.getByRole("button", { name: "Apply and sign" }).click();
+  // One form flow: review, then send; the receipt has its number.
+  await page.getByRole("button", { name: "Review and send" }).click();
+  await page.getByRole("button", { exact: true, name: "Send" }).click();
+  await expect(page.getByText(/Your number is SUB-\d{4}-\d{4}/u)).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Application received" })
   ).toBeVisible();

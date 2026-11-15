@@ -59,6 +59,7 @@ const OpeningPage = async ({ params }: PageProps) => {
       ) : null}
       <ApplyForm
         askFiles={place.asks_files}
+        closesAt={place.closes_at}
         director={place.director}
         openingId={place.id}
         questions={programmes.questionsOf(place.questions)}

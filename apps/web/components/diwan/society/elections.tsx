@@ -1,13 +1,19 @@
 "use client";
 
+import { ReviewStep } from "@repo/brand/components/sal/form-flow";
 import { Button } from "@repo/brand/components/ui/button";
 import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
-import { Link, useRouter } from "@repo/internationalization/navigation";
+import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import {
+  FlowReceipt,
+  StatusLine,
+  useReviewWords,
+} from "@/components/account/flow";
 import { ChoiceInput } from "@/components/diwan/admin/choice-input";
 import { isAuibEmail } from "@/lib/auth/email";
 import { useAuth } from "@/lib/auth/provider";
@@ -37,7 +43,7 @@ const useElections = () => {
             .schema("governance")
             .from("elections")
             .select(
-              "id, title_en, title_ar, status, nominations_open_at, nominations_close_at, voting_opens_at, voting_closes_at, voting_point_en, voting_point_ar, voting_point_at, runoff_of, forum_event_id, positions!positions_election_id_fkey(id, title_en, title_ar, sort, candidates(id, user_id, status, statement_en, statement_ar))"
+              "id, title_en, title_ar, status, nominations_open_at, nominations_close_at, voting_opens_at, voting_closes_at, voting_point_en, voting_point_ar, voting_point_at, runoff_of, forum_event_id, positions!positions_election_id_fkey(id, title_en, title_ar, sort, candidates(id, user_id, status, statement_en, statement_ar, reference))"
             )
             .neq("status", "draft")
             .order("voting_opens_at", { ascending: false })
@@ -127,45 +133,44 @@ const errorKey = (error: unknown) => {
  * record opens its own page): the statement in each language, then back
  * to Society, where the nomination shows as the member's own.
  */
-const Nominate = ({ position }: { readonly position: Position }) => {
+const Nominate = ({
+  closesAt,
+  onSent,
+  position,
+}: {
+  readonly closesAt: string;
+  readonly onSent: () => void;
+  readonly position: Position;
+}) => {
   const t = useTranslations("diwan.society.elections");
+  const tr = useTranslations("diwan.flow.reply");
+  const locale = useLocale();
+  const words = useReviewWords();
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [notice, setNotice] = useState<string | null>(null);
+  const [form, setForm] = useState({ ar: "", consent: false, en: "" });
   const nominate = useMutation({
-    mutationFn: async ({
-      ar,
-      consent,
-      en,
-    }: {
-      ar: string;
-      consent: boolean;
-      en: string;
-    }) =>
+    mutationFn: async () =>
       unwrap(
         await supabase.schema("governance").rpc("nominate", {
-          gpa_consent: consent,
+          gpa_consent: form.consent,
           position_id: position.id,
-          statement_ar: ar || undefined,
-          statement_en: en,
+          statement_ar: form.ar.trim() || undefined,
+          statement_en: form.en.trim(),
         })
       ),
     onError: (error) => setNotice(errorKey(error)),
     onSuccess: async () => {
+      onSent();
       await queryClient.invalidateQueries({ queryKey: ["elections"] });
-      router.push("/account");
     },
   });
+  const reply = tr("nomination", { date: formatLongDate(closesAt, locale) });
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    nominate.mutate({
-      ar: String(data.get("ar") ?? "").trim(),
-      consent: data.get("gpa_consent") === "on",
-      en: String(data.get("en") ?? "").trim(),
-    });
+    nominate.mutate();
   };
 
   return (
@@ -175,9 +180,10 @@ const Nominate = ({ position }: { readonly position: Position }) => {
         <Textarea
           id={`en-${position.id}`}
           maxLength={4000}
-          name="en"
+          onChange={(e) => setForm((f) => ({ ...f, en: e.target.value }))}
           required
           rows={6}
+          value={form.en}
         />
       </div>
       <div className="grid gap-2">
@@ -187,18 +193,22 @@ const Nominate = ({ position }: { readonly position: Position }) => {
           id={`ar-${position.id}`}
           lang="ar"
           maxLength={4000}
-          name="ar"
+          onChange={(e) => setForm((f) => ({ ...f, ar: e.target.value }))}
           rows={6}
+          value={form.ar}
         />
       </div>
-      {/* Owner, Nov 7, 2026: Student Life confirms a GPA of 2.0 or more,
-          answering only "eligible" or "not eligible"; grades are never
-          stored. */}
+      {/* Student Life confirms a GPA of 2.0 or more, answering only
+          "eligible" or "not eligible"; grades are never stored
+          (decisions.md, Elections). */}
       <div className="flex items-start gap-2">
         <input
+          checked={form.consent}
           className="accent-accent mt-1 size-4"
           id={`gpa-${position.id}`}
-          name="gpa_consent"
+          onChange={(e) =>
+            setForm((f) => ({ ...f, consent: e.target.checked }))
+          }
           required
           type="checkbox"
         />
@@ -206,13 +216,16 @@ const Nominate = ({ position }: { readonly position: Position }) => {
           {t("gpaConsent")}
         </Label>
       </div>
-      <Button
-        className="justify-self-start"
-        disabled={nominate.isPending}
-        type="submit"
-      >
-        {t("submitNomination")}
-      </Button>
+      <p className="type-caption">{reply}</p>
+      <ReviewStep
+        missing={form.en.trim() && form.consent ? null : t("incomplete")}
+        rows={[
+          [t("statementEn"), form.en],
+          [t("statementAr"), form.ar || "—"],
+        ]}
+        sending={nominate.isPending}
+        words={words}
+      />
       {notice ? (
         <p className="type-body font-medium" role="alert">
           {t(`notice.${notice as "nominated"}`)}
@@ -229,8 +242,10 @@ export const StandForOffice = ({
   readonly positionId: string;
 }) => {
   const t = useTranslations("diwan.society.elections");
+  const tr = useTranslations("diwan.flow.reply");
   const locale = useLocale() as Lang;
   const data = useElections();
+  const [justSent, setJustSent] = useState(false);
   if (data.isPending) {
     return <SectionSpinner />;
   }
@@ -241,7 +256,7 @@ export const StandForOffice = ({
     e.positions.some((p) => p.id === positionId)
   );
   const position = election?.positions.find((p) => p.id === positionId);
-  const mine = position?.candidates.some((c) => c.user_id === data.data.me);
+  const mine = position?.candidates.find((c) => c.user_id === data.data.me);
   const open =
     election &&
     between(election.nominations_open_at, election.nominations_close_at);
@@ -250,10 +265,34 @@ export const StandForOffice = ({
       {t("backToSociety")}
     </Link>
   );
-  if (!(election && position && open) || mine) {
+  if (election && mine) {
+    const reply = tr("nomination", {
+      date: formatLongDate(election.nominations_close_at, locale),
+    });
     return (
       <DiwanPage actions={back} narrow title={t("stand")}>
-        <p className="type-body">{t(mine ? "alreadyStanding" : "notOpen")}</p>
+        {justSent ? (
+          <FlowReceipt
+            href="/account"
+            reference={mine.reference}
+            reply={reply}
+          />
+        ) : (
+          <div className="grid gap-2">
+            <p className="type-body">{t("alreadyStanding")}</p>
+            <StatusLine kind="nomination" status={mine.status} />
+            <p className="type-caption">
+              {[mine.reference, reply].filter(Boolean).join(" · ")}
+            </p>
+          </div>
+        )}
+      </DiwanPage>
+    );
+  }
+  if (!(election && position && open)) {
+    return (
+      <DiwanPage actions={back} narrow title={t("stand")}>
+        <p className="type-body">{t("notOpen")}</p>
       </DiwanPage>
     );
   }
@@ -264,7 +303,11 @@ export const StandForOffice = ({
       narrow
       title={t("standFor", { position: localized(position, "title", locale) })}
     >
-      <Nominate position={position} />
+      <Nominate
+        closesAt={election.nominations_close_at}
+        onSent={() => setJustSent(true)}
+        position={position}
+      />
     </DiwanPage>
   );
 };

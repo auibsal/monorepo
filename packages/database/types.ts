@@ -2729,6 +2729,7 @@ export type Database = {
           gpa_consent: boolean;
           id: string;
           position_id: string;
+          reference: string | null;
           statement_ar: string | null;
           statement_en: string | null;
           status: string;
@@ -2744,6 +2745,7 @@ export type Database = {
           gpa_consent?: boolean;
           id?: string;
           position_id: string;
+          reference?: string | null;
           statement_ar?: string | null;
           statement_en?: string | null;
           status?: string;
@@ -2758,6 +2760,7 @@ export type Database = {
           gpa_consent?: boolean;
           id?: string;
           position_id?: string;
+          reference?: string | null;
           statement_ar?: string | null;
           statement_en?: string | null;
           status?: string;
@@ -3400,6 +3403,7 @@ export type Database = {
       };
       partner_agreements: {
         Row: {
+          application_reference: string | null;
           applied_by: string | null;
           asked_grants: string[] | null;
           branding: string | null;
@@ -3435,6 +3439,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          application_reference?: string | null;
           applied_by?: string | null;
           asked_grants?: string[] | null;
           branding?: string | null;
@@ -3469,6 +3474,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          application_reference?: string | null;
           applied_by?: string | null;
           asked_grants?: string[] | null;
           branding?: string | null;
@@ -4213,6 +4219,7 @@ export type Database = {
           name_en: string;
           partner_id: string;
           partner_status: string;
+          reference: string;
           slug: string;
         }[];
       };
@@ -7467,6 +7474,7 @@ export type Database = {
           audition_id: string;
           created_at: string;
           interest: string | null;
+          reference: string | null;
           status: string;
           updated_at: string;
           user_id: string;
@@ -7476,6 +7484,7 @@ export type Database = {
           audition_id: string;
           created_at?: string;
           interest?: string | null;
+          reference?: string | null;
           status?: string;
           updated_at?: string;
           user_id?: string;
@@ -7484,6 +7493,7 @@ export type Database = {
           audition_id?: string;
           created_at?: string;
           interest?: string | null;
+          reference?: string | null;
           status?: string;
           updated_at?: string;
           user_id?: string;
@@ -7824,6 +7834,7 @@ export type Database = {
           opening_id: string;
           picked_at: string | null;
           picked_by: string | null;
+          reference: string | null;
           status: string;
           student_life_eligible_at: string | null;
           submitted_at: string | null;
@@ -7849,6 +7860,7 @@ export type Database = {
           opening_id: string;
           picked_at?: string | null;
           picked_by?: string | null;
+          reference?: string | null;
           status?: string;
           student_life_eligible_at?: string | null;
           submitted_at?: string | null;
@@ -7873,6 +7885,7 @@ export type Database = {
           opening_id?: string;
           picked_at?: string | null;
           picked_by?: string | null;
+          reference?: string | null;
           status?: string;
           student_life_eligible_at?: string | null;
           submitted_at?: string | null;

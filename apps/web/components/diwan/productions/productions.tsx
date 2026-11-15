@@ -1,6 +1,7 @@
 "use client";
 
 import { SalCard } from "@repo/brand/components/sal/card";
+import { ReviewStep } from "@repo/brand/components/sal/form-flow";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
@@ -8,6 +9,11 @@ import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
+import {
+  FlowReceipt,
+  StatusLine,
+  useReviewWords,
+} from "@/components/account/flow";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, productions, unwrap } from "@/lib/data";
 import { DiwanPage, DiwanSection } from "../page";
@@ -53,7 +59,7 @@ const useProductionsData = () => {
           supabase
             .schema("programmes")
             .from("audition_signups")
-            .select("audition_id, status, interest")
+            .select("audition_id, status, interest, reference")
             .eq("user_id", user?.id ?? ""),
           supabase
             .schema("programmes")
@@ -222,6 +228,7 @@ export const Productions = () => {
                       onSignUp={(interest) =>
                         signUp.mutate({ id: a.id, interest })
                       }
+                      reference={signupFor(a.id)?.reference ?? null}
                       status={
                         signupFor(a.id)?.status as SignupStatus | undefined
                       }
@@ -250,6 +257,7 @@ interface SlotProps {
   readonly notice: Notice | null;
   readonly onCancel: () => void;
   readonly onSignUp: (interest: string) => void;
+  readonly reference: string | null;
   readonly status: SignupStatus | undefined;
 }
 
@@ -259,15 +267,19 @@ const AuditionSlot = ({
   notice,
   onCancel,
   onSignUp,
+  reference,
   status,
 }: SlotProps) => {
   const t = useTranslations("diwan.productions");
+  const tr = useTranslations("diwan.flow.reply");
+  const words = useReviewWords();
   const locale = useLocale();
   const id = useId();
   const [interest, setInterest] = useState("");
   const where = localized(audition, "location", locale);
   const prepare = localized(audition, "prepare", locale);
-  const active = status && status !== "canceled";
+  // A canceled sign-up can sign up again (the database says "cancelled").
+  const active = status && !["canceled", "cancelled"].includes(status);
 
   return (
     <li className="border-line grid gap-2 border-t pt-3">
@@ -282,23 +294,34 @@ const AuditionSlot = ({
           {t("prepare", { what: prepare })}
         </p>
       ) : null}
-      {active ? (
-        <div className="flex flex-wrap items-center gap-3">
-          <p className="type-body font-medium">{t(`statuses.${status}`)}</p>
-          {status === "signed_up" ? (
-            <Button
-              disabled={busy}
-              onClick={onCancel}
-              size="sm"
-              variant="ghost"
-            >
-              {t("cancel")}
-            </Button>
-          ) : null}
+      {active && notice === "signedUp" ? (
+        <FlowReceipt
+          href="/account/roles"
+          reference={reference}
+          reply={tr("audition")}
+        />
+      ) : null}
+      {active && notice !== "signedUp" ? (
+        <div className="grid gap-2">
+          <StatusLine kind="audition" status={status} />
+          <div className="flex flex-wrap items-center gap-3">
+            {reference ? <p className="type-caption">{reference}</p> : null}
+            {status === "signed_up" ? (
+              <Button
+                disabled={busy}
+                onClick={onCancel}
+                size="sm"
+                variant="ghost"
+              >
+                {t("cancel")}
+              </Button>
+            ) : null}
+          </div>
         </div>
-      ) : (
+      ) : null}
+      {active ? null : (
         <form
-          className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end"
+          className="grid gap-3"
           onSubmit={(event) => {
             event.preventDefault();
             onSignUp(interest);
@@ -314,16 +337,21 @@ const AuditionSlot = ({
               value={interest}
             />
           </div>
-          <Button disabled={busy} type="submit">
-            {t("signUp")}
-          </Button>
+          <ReviewStep
+            rows={[
+              [
+                t("slot"),
+                `${formatLongDate(audition.starts_at, locale)}, ${formatClock(audition.starts_at, locale)}`,
+              ],
+              [t("interest"), interest || "—"],
+            ]}
+            sending={busy}
+            words={words}
+          />
         </form>
       )}
-      {notice ? (
-        <p
-          className="type-body font-medium"
-          role={notice === "signedUp" ? "status" : "alert"}
-        >
+      {notice && notice !== "signedUp" ? (
+        <p className="type-body font-medium" role="alert">
           {t(`notice.${notice}`)}
         </p>
       ) : null}
