@@ -332,11 +332,22 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   onto a team: the account becomes the partner's, and the guest record
   ends (one membership; `private.guest_joins_partner_team`). Partners never use Notion and see only their own events and
   checklist. No perks or offers anywhere: sponsors in kind are thanked
-  with a "Supported by" line (`SupportedBy`), and the card is for the door
-  only. AUIB's own offices aren't partners: they are listed under "With
-  the support of" (`WithTheSupportOf`) on /partners only, each linking
-  to its page on AUIB's site, from
-  the fixed list in `apps/web/lib/institutions.ts`.
+  with a "Thanks to" line, and the card is for the door only.
+- **The one register** (`governance.partners`, Diwan → Partnerships →
+  Register) holds every organization the site names, each with its
+  `relation`: a partner (by application and memorandum), a campus partner
+  (AUIB's own offices, which aren't partners) or a sponsor in kind; its
+  kind, both names, logo (an upload, or AUIB's standard set,
+  `logo_static`), one line and link. Partnerships adds campus partners and
+  sponsors there and edits every entry. /partners lists the partners by
+  kind, then "Campus partners" (`CampusPartners`). An event names who it
+  is with from the register only (`events.event_organizations`, edited on
+  the event's Diwan page): "Co-sponsored by" (`CoSponsoredBy`; partners
+  and campus partners) and "Thanks to" (`ThanksTo`; sponsors in kind), at
+  the foot of its page; a partner Host is named under the title, "Hosted by". Logos are drawn
+  through `acknowledged` (`apps/web/lib/institutions.ts`); an entry with
+  no logo shows its name alone and is counted on the Desk for
+  Partnerships.
 - **Guests** sign up at `/sign-up/guest`, or are invited by named email
   by a partner or by an event's lead on the event's Diwan page (`partner_invitations.event_id`); never members. Each
   has a number from the one series and a Guest card from the start, books
@@ -348,9 +359,8 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (`programmes.needs`: item, quantity, date needed, purpose), and the
   Secretary sends each request to Student Life and logs what was
   provided (Council → Requests), and by whom: Student Life, or a partner
-  in kind (`needs.given_by`, picked from the register), whom the event's
-  page then thanks under "Supported by" (`events.event_sponsors`: listed,
-  active partners only). Charity collections are a Notion record,
+  in kind (`needs.given_by`, picked from the register); whom the event's
+  page thanks is picked on the event ("Thanks to", above). Charity collections are a Notion record,
   not a site feature.
 - **Governance.** Meetings by body (Council, general, Annual, special,
   Founding; `meetingBodies`); elections by secret ballot online over a set

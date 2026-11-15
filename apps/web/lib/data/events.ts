@@ -87,12 +87,13 @@ export const publicEvent = async (client: Client, eventSlug: string) =>
   );
 
 /**
- * The partners that gave a public event's needs in kind, thanked on its
- * page with "Supported by" (decisions §2): active, listed partners only.
+ * Who a public event is with (decisions.md, Events), from the one register:
+ * "Co-sponsored by" its partners and campus partners (`cosponsor`), "Thanks
+ * to" its sponsors in kind (`thanks`); active, listed entries only.
  */
-export const eventSponsors = async (client: Client, eventSlug: string) =>
+export const eventOrganizations = async (client: Client, eventSlug: string) =>
   unwrap(
-    await events(client).rpc("event_sponsors", { event_slug: eventSlug })
+    await events(client).rpc("event_organizations", { event_slug: eventSlug })
   ) ?? [];
 
 /** The partner a public event is held with (decisions §13), or null. */

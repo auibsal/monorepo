@@ -70,11 +70,13 @@ const PartnerForm = ({ event }: { readonly event: JointEvent }) => {
               value={choice}
             >
               <option value={NONE}>{t("noPartner")}</option>
-              {(partners.data ?? []).map((p) => (
-                <option key={p.id} value={p.id}>
-                  {localized(p, "name", locale) || p.name_en}
-                </option>
-              ))}
+              {(partners.data ?? [])
+                .filter((p) => p.relation === "partner")
+                .map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {localized(p, "name", locale) || p.name_en}
+                  </option>
+                ))}
             </SelectInput>
           )}
         </Field>
@@ -85,6 +87,132 @@ const PartnerForm = ({ event }: { readonly event: JointEvent }) => {
         <ErrorLine error={save.error} />
       </form>
       {event.partner_id ? <JointChecklist eventId={event.id} society /> : null}
+    </DiwanSection>
+  );
+};
+
+type Line = "cosponsor" | "thanks";
+const LINES: readonly Line[] = ["cosponsor", "thanks"];
+/** What each line takes from the register (decisions.md, Events). */
+const TAKES: Record<Line, readonly string[]> = {
+  cosponsor: ["partner", "campus"],
+  thanks: ["sponsor"],
+};
+
+/**
+ * Who the event is with (decisions.md, Events), picked from the one
+ * register, never typed: "Co-sponsored by" its partners and campus
+ * partners, "Thanks to" its sponsors in kind, at the foot of its page.
+ */
+export const EventOrganizations = ({
+  eventId,
+}: {
+  readonly eventId: string;
+}) => {
+  const t = useTranslations("diwan.joint.organizations");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const queryKey = ["admin", "event", eventId, "organizations"];
+  const register = useQuery({
+    queryFn: async () =>
+      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
+    queryKey: ["admin", "partner-names"],
+  });
+  const chosen = useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .from("event_organizations")
+          .select("partner_id, line")
+          .eq("event_id", eventId)
+      ) ?? [],
+    queryKey,
+  });
+  const done = () => queryClient.invalidateQueries({ queryKey });
+  const add = useMutation({
+    mutationFn: async ({ line, partner }: { line: Line; partner: string }) =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .from("event_organizations")
+          .insert({ event_id: eventId, line, partner_id: partner })
+      ),
+    onSuccess: done,
+  });
+  const remove = useMutation({
+    mutationFn: async (partner: string) =>
+      unwrap(
+        await supabase
+          .schema("events")
+          .from("event_organizations")
+          .delete()
+          .eq("event_id", eventId)
+          .eq("partner_id", partner)
+      ),
+    onSuccess: done,
+  });
+  const nameOf = (id: string) => {
+    const row = register.data?.find((p) => p.id === id);
+    return row ? localized(row, "name", locale) || row.name_en : "";
+  };
+  const taken = new Set((chosen.data ?? []).map((c) => c.partner_id));
+  return (
+    <DiwanSection id="organizations" title={t("title")}>
+      <p className="type-body text-text-secondary">{t("lede")}</p>
+      {LINES.map((line) => {
+        const here = (chosen.data ?? []).filter((c) => c.line === line);
+        const options = (register.data ?? []).filter(
+          (p) => TAKES[line].includes(p.relation) && !taken.has(p.id)
+        );
+        return (
+          <div className="grid gap-3" key={line}>
+            <p className="type-label">{t(`lines.${line}`)}</p>
+            {here.length === 0 ? (
+              <p className="type-body text-text-secondary">{t("none")}</p>
+            ) : (
+              <ul className="flex flex-wrap gap-x-6 gap-y-2">
+                {here.map((c) => (
+                  <li className="flex items-baseline gap-2" key={c.partner_id}>
+                    <span>{nameOf(c.partner_id)}</span>
+                    <button
+                      className="link text-sm"
+                      disabled={remove.isPending}
+                      onClick={() => remove.mutate(c.partner_id)}
+                      type="button"
+                    >
+                      {t("remove")}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {options.length > 0 ? (
+              <Field label={t(`add.${line}`)}>
+                {(id) => (
+                  <SelectInput
+                    id={id}
+                    onChange={(e) =>
+                      e.target.value !== NONE &&
+                      add.mutate({ line, partner: e.target.value })
+                    }
+                    value={NONE}
+                  >
+                    <option value={NONE}>{t("choose")}</option>
+                    {options.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {localized(p, "name", locale) || p.name_en}
+                      </option>
+                    ))}
+                  </SelectInput>
+                )}
+              </Field>
+            ) : null}
+          </div>
+        );
+      })}
+      <ErrorLine error={add.error ?? remove.error} />
     </DiwanSection>
   );
 };

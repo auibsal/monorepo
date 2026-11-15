@@ -1,61 +1,38 @@
-import type { Acknowledged } from "@repo/brand/components/sal/acknowledgment";
-import { WithTheSupportOf } from "@repo/brand/components/sal/acknowledgment";
+import { CampusPartners as CampusLine } from "@repo/brand/components/sal/acknowledgment";
 import { getDirection, type Locale } from "@repo/internationalization";
 import { getTranslations } from "next-intl/server";
-import { Suspense } from "react";
-import { shownSupporters } from "@/lib/institutions";
+import { partners } from "@/lib/data";
+import { acknowledged } from "@/lib/institutions";
 import { readPublished } from "@/lib/supabase";
 
-interface SupportProps {
-  readonly className?: string;
-  readonly locale: Locale;
-  readonly logos?: boolean;
-}
-
 /**
- * "With the support of" and AUIB's own offices (decisions §2), as
- * Partnerships keeps them in the Diwan, on the partners page only: their logos
- * (or, with `logos` off, their names), each linking to its page on AUIB's
- * site.
+ * "Campus partners" (decisions.md, Partners): AUIB's own offices, from the
+ * one register, on the partners page after the partners, each linking to
+ * its page on AUIB's site.
  */
-export const Support = (props: SupportProps) => (
-  // A read the cache can't keep (an error, or a table not yet migrated when
-  // a preview builds against production) streams in, not blocks the page.
-  <Suspense fallback={null}>
-    <SupportList {...props} />
-  </Suspense>
-);
-
-const SupportList = async ({
+export const CampusPartners = async ({
   className,
   locale,
-  logos = false,
-}: SupportProps) => {
+}: {
+  readonly className?: string;
+  readonly locale: Locale;
+}) => {
   const t = await getTranslations({ locale, namespace: "web.institutions" });
-  const supporters = await readPublished(["partners"], shownSupporters, []);
-  if (supporters.length === 0) {
-    return null;
-  }
-  const items: Acknowledged[] = supporters.map((item) => ({
-    href: item.url,
-    logo:
-      logos && item.logo && item.logo_width
-        ? {
-            height: 325,
-            onInk: `/institutions/${item.logo}-white.svg`,
-            src: `/institutions/${item.logo}.svg`,
-            width: item.logo_width,
-          }
-        : null,
-    name: (locale === "ar" ? item.name_ar : item.name_en) ?? item.name_en,
-  }));
+  const list = await readPublished(
+    ["partners"],
+    (c) => partners.publicPartners(c),
+    []
+  );
+  const campus = list
+    .filter((p) => p.relation === "campus")
+    .map((p) => acknowledged(p, locale))
+    .sort((a, b) => a.name.localeCompare(b.name, locale));
   return (
-    <WithTheSupportOf
+    <CampusLine
       className={className}
-      compact={!logos}
       dir={getDirection(locale)}
-      items={items}
-      label={t("withTheSupportOf")}
+      items={campus}
+      label={t("campusPartners")}
       lang={locale}
     />
   );

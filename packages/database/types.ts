@@ -2088,6 +2088,36 @@ export type Database = {
           },
         ];
       };
+      event_organizations: {
+        Row: {
+          created_at: string;
+          event_id: string;
+          line: string;
+          partner_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          event_id: string;
+          line: string;
+          partner_id: string;
+        };
+        Update: {
+          created_at?: string;
+          event_id?: string;
+          line?: string;
+          partner_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "event_organizations_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       event_staff: {
         Row: {
           added_by: string | null;
@@ -2559,10 +2589,13 @@ export type Database = {
           slug: string;
         }[];
       };
-      event_sponsors: {
+      event_organizations: {
         Args: { event_slug: string };
         Returns: {
+          line: string;
           logo_path: string;
+          logo_static: string;
+          logo_width: number;
           name_ar: string;
           name_en: string;
           slug: string;
@@ -3579,10 +3612,13 @@ export type Database = {
           kind_other: string | null;
           lead_id: string | null;
           logo_path: string | null;
+          logo_static: string | null;
+          logo_width: number | null;
           name_ar: string | null;
           name_en: string;
           notes: string | null;
           reach: string;
+          relation: string;
           slug: string;
           status: string;
           team_domain: string | null;
@@ -3603,10 +3639,13 @@ export type Database = {
           kind_other?: string | null;
           lead_id?: string | null;
           logo_path?: string | null;
+          logo_static?: string | null;
+          logo_width?: number | null;
           name_ar?: string | null;
           name_en: string;
           notes?: string | null;
           reach?: string;
+          relation?: string;
           slug: string;
           status?: string;
           team_domain?: string | null;
@@ -3626,10 +3665,13 @@ export type Database = {
           kind_other?: string | null;
           lead_id?: string | null;
           logo_path?: string | null;
+          logo_static?: string | null;
+          logo_width?: number | null;
           name_ar?: string | null;
           name_en?: string;
           notes?: string | null;
           reach?: string;
+          relation?: string;
           slug?: string;
           status?: string;
           team_domain?: string | null;
@@ -3968,46 +4010,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      supporters: {
-        Row: {
-          created_at: string;
-          id: string;
-          logo: string | null;
-          logo_width: number | null;
-          name_ar: string;
-          name_en: string;
-          shown: boolean;
-          sort: number;
-          updated_at: string;
-          url: string | null;
-        };
-        ComputedFields: never;
-        Insert: {
-          created_at?: string;
-          id?: string;
-          logo?: string | null;
-          logo_width?: number | null;
-          name_ar: string;
-          name_en: string;
-          shown?: boolean;
-          sort?: number;
-          updated_at?: string;
-          url?: string | null;
-        };
-        Update: {
-          created_at?: string;
-          id?: string;
-          logo?: string | null;
-          logo_width?: number | null;
-          name_ar?: string;
-          name_en?: string;
-          shown?: boolean;
-          sort?: number;
-          updated_at?: string;
-          url?: string | null;
-        };
-        Relationships: [];
-      };
       voters: {
         Row: {
           election_id: string;
@@ -4296,6 +4298,7 @@ export type Database = {
           kind: string;
           name_ar: string;
           name_en: string;
+          relation: string;
         }[];
       };
       partner_team: {
@@ -4340,9 +4343,12 @@ export type Database = {
           description_en: string;
           kind: string;
           logo_path: string;
+          logo_static: string;
+          logo_width: number;
           name_ar: string;
           name_en: string;
           reach: string;
+          relation: string;
           slug: string;
           url: string;
         }[];

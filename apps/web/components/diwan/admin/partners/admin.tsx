@@ -38,7 +38,6 @@ import { memberName } from "../members/directory";
 import { VerificationQueue } from "../members/verification";
 import { RecordHistory } from "../record-history";
 import { CouncilVote } from "./council-vote";
-import { Supporters } from "./supporters";
 
 const key = ["admin", "partners"];
 
@@ -46,6 +45,13 @@ type PartnerKind = (typeof partners.partnerKinds)[number];
 type PartnerReach = (typeof partners.partnerReach)[number];
 type PartnerStatus = (typeof partners.partnerStatuses)[number];
 type AgreementStatus = "draft" | "signed" | "ended";
+/**
+ * What an entry in the one register is (decisions.md, Partners): a partner
+ * comes only from an application; campus partners and sponsors in kind are
+ * added here by Partnerships.
+ */
+type Relation = "partner" | "campus" | "sponsor";
+const ADDED_RELATIONS = ["campus", "sponsor"] as const;
 type AffiliationStatus = "pending" | "verified" | "declined" | "ended";
 type ConflictKind = (typeof partners.conflictKinds)[number];
 
@@ -109,6 +115,7 @@ const PartnerForm = ({
     name: { ar: initial.name_ar ?? "", en: initial.name_en },
     notes: String(initial.notes ?? ""),
     reach: initial.reach as (typeof partners.partnerReach)[number],
+    relation: String(initial.relation ?? "partner") as Relation,
     slug: String(initial.slug ?? ""),
     status: initial.status as (typeof partners.partnerStatuses)[number],
     url: String(initial.url ?? ""),
@@ -133,7 +140,11 @@ const PartnerForm = ({
         url: form.url,
       });
       const table = supabase.schema("governance").from("partners");
-      unwrap(await table.update(row).eq("id", initial.id));
+      unwrap(
+        await table
+          .update({ ...row, relation: form.relation })
+          .eq("id", initial.id)
+      );
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
@@ -180,6 +191,28 @@ const PartnerForm = ({
             />
           )}
         </Field>
+        {form.relation === "partner" ? null : (
+          <Field hint={t("relationHint")} label={t("relation")}>
+            {(id) => (
+              <SelectInput
+                id={id}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    relation: e.target.value as Relation,
+                  }))
+                }
+                value={form.relation}
+              >
+                {ADDED_RELATIONS.map((relation) => (
+                  <option key={relation} value={relation}>
+                    {t(`relations.${relation}`)}
+                  </option>
+                ))}
+              </SelectInput>
+            )}
+          </Field>
+        )}
         <Field label={t("kind")}>
           {(id) => (
             <SelectInput
@@ -347,6 +380,11 @@ const Register = () => {
       key: "name",
     },
     {
+      cell: (row) => t(`relations.${(row.relation ?? "partner") as Relation}`),
+      header: t("relation"),
+      key: "relation",
+    },
+    {
       cell: (row) => t(`kinds.${row.kind as PartnerKind}`),
       header: t("kind"),
       key: "kind",
@@ -381,7 +419,90 @@ const Register = () => {
         rowKey={(row) => row.id}
         rows={register.data ?? []}
       />
+      <AddOrganization />
     </div>
+  );
+};
+
+const SLUG_RUNS = /[^a-z0-9]+/gu;
+const SLUG_ENDS = /^-+|-+$/gu;
+
+/**
+ * A campus partner or a sponsor in kind, added in place (decisions.md,
+ * Partners): its two names here, the rest (logo, line, link) on its page.
+ */
+const AddOrganization = () => {
+  const t = useTranslations("diwan.admin.partners.register");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [relation, setRelation] = useState<Relation>("campus");
+  const [name, setName] = useState({ ar: "", en: "" });
+  const add = useMutation({
+    mutationFn: async () => {
+      const slug = name.en
+        .toLowerCase()
+        .replace(SLUG_RUNS, "-")
+        .replace(SLUG_ENDS, "");
+      unwrap(
+        await supabase
+          .schema("governance")
+          .from("partners")
+          .insert({
+            is_listed: true,
+            kind: relation === "campus" ? "department" : "other",
+            name_ar: name.ar.trim(),
+            name_en: name.en.trim(),
+            reach: relation === "campus" ? "auib" : "iraq",
+            relation,
+            slug,
+            status: "active",
+          })
+      );
+      return slug;
+    },
+    onSuccess: async (slug) => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      router.push(`/partnerships/${slug}`);
+    },
+  });
+  return (
+    <DiwanSection id="add" title={t("addTitle")}>
+      <form
+        className="grid max-w-2xl gap-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          add.mutate();
+        }}
+      >
+        <Field label={t("relation")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) => setRelation(e.target.value as Relation)}
+              value={relation}
+            >
+              {ADDED_RELATIONS.map((r) => (
+                <option key={r} value={r}>
+                  {t(`relations.${r}`)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+        <BilingualField label={t("name")} onChange={setName} value={name} />
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            disabled={!(name.en.trim() && name.ar.trim()) || add.isPending}
+            type="submit"
+            variant="outline"
+          >
+            {t("add")}
+          </Button>
+          <ErrorLine error={add.error} />
+        </div>
+      </form>
+    </DiwanSection>
   );
 };
 
@@ -1028,12 +1149,7 @@ export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
       {here === "applications" && (canManage || canSign) ? (
         <VerificationQueue />
       ) : null}
-      {here === "register" && canManage ? (
-        <>
-          <Register />
-          <Supporters />
-        </>
-      ) : null}
+      {here === "register" && canManage ? <Register /> : null}
       {here === "agreements" ? <Agreements /> : null}
     </div>
   );

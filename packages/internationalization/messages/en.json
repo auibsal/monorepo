@@ -1168,7 +1168,10 @@
             "membership": "Membership",
             "partnerships": "Partnerships"
           }
-        }
+        },
+        "noLogo": "Without a logo",
+        "noLogoDetail": "Shown with their name alone until a logo is added.",
+        "addLogos": "Add logos"
       },
       "members": {
         "title": "Members",
@@ -2427,7 +2430,7 @@
           "applications": "Applications"
         },
         "register": {
-          "lede": "Clubs, departments and organizations the Society works with or is talking to. Contacts and notes stay internal.",
+          "lede": "Every organization the Society works with, in one register: partners, campus partners and sponsors in kind. Contacts and notes stay internal.",
           "edit": "Edit",
           "cancel": "Cancel",
           "empty": "No partners in the register yet.",
@@ -2478,7 +2481,16 @@
           },
           "back": "The register",
           "missing": "This partner is not in the register",
-          "guests": "Guests"
+          "guests": "Guests",
+          "relation": "What it is",
+          "relationHint": "A partner comes only from an application; campus partners and sponsors in kind are added here.",
+          "relations": {
+            "partner": "Partner",
+            "campus": "Campus partner",
+            "sponsor": "Sponsor in kind"
+          },
+          "addTitle": "Add a campus partner or a sponsor in kind",
+          "add": "Add and open"
         },
         "agreements": {
           "lede": "Partnership memoranda. Each comes from an application signed by the partner’s signatory and takes effect once the Council’s adopted resolution is recorded. Nothing is uploaded. Someone who has declared a conflict with the partner cannot record the vote (P8.3).",
@@ -2563,28 +2575,6 @@
           "closed": "closed",
           "receive": "Mark received",
           "notReceived": "Not yet received"
-        },
-        "supporters": {
-          "title": "With the support of",
-          "lede": "AUIB’s own offices, shown under “With the support of” on the partners page. They support the Society but aren’t partners.",
-          "hidden": "hidden",
-          "hide": "Hide",
-          "show": "Show",
-          "remove": "Remove",
-          "removeConfirm": "The office comes off the partners page and off this list.",
-          "add": "Add an office",
-          "name": "Name",
-          "url": "Link",
-          "urlHint": "The office’s page on AUIB’s site.",
-          "logo": "Logo",
-          "noLogo": "No logo: the name is shown",
-          "logos": {
-            "auib": "AUIB",
-            "student-life": "Student Life",
-            "cas": "College of Arts and Sciences",
-            "press": "AUIB Press",
-            "library": "AUIB Library"
-          }
         }
       },
       "recognition": {
@@ -3473,6 +3463,7 @@
           "governance_partner_invitations": "an invitation",
           "membership_guests": "a guest of the Society",
           "events_session_links": "an event’s link",
+          "events_event_organizations": "who an event is with",
           "events_joint_tasks": "a joint event’s checklist item",
           "core_profiles": "a member’s name"
         },
@@ -4928,7 +4919,22 @@
       "new": "Add an item",
       "remove": "Remove",
       "noEvents": "No events with the Society yet. When the Society plans one with you, it shows here with its checklist.",
-      "planned": "Being planned"
+      "planned": "Being planned",
+      "organizations": {
+        "title": "Who it’s with",
+        "lede": "Organizations from the register, shown at the foot of the event’s page. Add a missing one in Partnerships → Register.",
+        "lines": {
+          "cosponsor": "Co-sponsored by",
+          "thanks": "Thanks to"
+        },
+        "add": {
+          "cosponsor": "Add a partner or a campus partner",
+          "thanks": "Add a sponsor in kind"
+        },
+        "choose": "Choose…",
+        "none": "None yet.",
+        "remove": "Remove"
+      }
     },
     "serviceLetter": {
       "title": "Service letter",
@@ -5200,7 +5206,7 @@
       },
       "allEvents": "All events",
       "auibCalendar": "AUIB’s calendar (opens auib.edu.iq)",
-      "heldWith": "Held with {partner}",
+      "hostedBy": "Hosted by {partner}",
       "forget": "Don’t remind me",
       "cancelBooking": "Give my place back",
       "leaveWaitlist": "Leave the waitlist",
@@ -5959,8 +5965,9 @@
       "asList": "See the productions as a list"
     },
     "institutions": {
-      "withTheSupportOf": "With the support of",
-      "supportedBy": "Supported by"
+      "campusPartners": "Campus partners",
+      "coSponsoredBy": "Co-sponsored by",
+      "thanksTo": "Thanks to"
     },
     "notFound": {
       "title": "A page unwritten",

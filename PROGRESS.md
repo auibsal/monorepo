@@ -607,8 +607,9 @@ First the second prompt's part 2 (7j), then the rest in place.
   credits the web team.
 - [x] Partners: alphabetical, equal-size logos, grouped by kind (clubs;
   culture and the press; charities; schools and universities; others),
-  then "With the support of", then Become a partner; sponsors in kind only
-  on their event ("Supported by").
+  then "Campus partners", then Become a partner; an event's co-sponsors and
+  sponsors in kind at its foot ("Co-sponsored by", "Thanks to"), from the
+  one register.
 - [x] /verify: long random codes (new certificates and letters: 96 bits;
   printed codes keep working), at most 30 checks in ten minutes from one
   visitor (`VERIFY_LIMIT`), read live, `X-Robots-Tag: noindex` on every

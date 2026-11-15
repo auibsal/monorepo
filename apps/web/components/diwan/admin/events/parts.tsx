@@ -11,7 +11,7 @@ import { DiwanSection, RowList } from "../../page";
 import { EmptyLine } from "../../states";
 import { Needs } from "../needs";
 import { Shifts } from "../programmes/admin";
-import { EventPartner } from "./joint";
+import { EventOrganizations, EventPartner } from "./joint";
 import { EventOffCampus } from "./off-campus";
 import { SessionLinks } from "./session-links";
 
@@ -40,6 +40,7 @@ export const EventPartsAdmin = ({ event }: { readonly event: PartsEvent }) => {
     <>
       <EventOffCampus event={event} />
       <EventPartner event={event} />
+      <EventOrganizations eventId={event.id} />
       <DiwanSection id="needs" title={t("needs")}>
         <Needs eventId={event.id} />
       </DiwanSection>

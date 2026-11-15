@@ -28,6 +28,7 @@ const THINGS = {
   "access.two_step_resets": "membership",
   "core.profiles": "membership",
   "events.check_ins": "events",
+  "events.event_organizations": "events",
   "events.events": "events",
   "events.joint_tasks": "events",
   "events.session_links": "events",

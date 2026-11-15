@@ -1,7 +1,7 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Support } from "@/components/institutions";
+import { CampusPartners } from "@/components/institutions";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { localized, partners } from "@/lib/data";
@@ -84,11 +84,15 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           </ul>
         </Section>
       ))}
-      {list.length === 0 ? <p className="type-body">{t("empty")}</p> : null}
+      {list.some((p) => p.relation === "partner") ? null : (
+        <p className="type-body">{t("empty")}</p>
+      )}
       {GROUP_ORDER.map((group) => {
         const kinds: readonly string[] = GROUPS[group];
         const members = list
-          .filter((p) => kinds.includes(p.kind ?? "other"))
+          .filter(
+            (p) => p.relation === "partner" && kinds.includes(p.kind ?? "other")
+          )
           .map((p) => ({ ...p, shown: localized(p, "name", locale) }))
           .sort((a, b) => a.shown.localeCompare(b.shown, locale));
         if (members.length === 0) {
@@ -138,12 +142,11 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           </Section>
         );
       })}
-      {/* AUIB's own offices aren't partners (decisions §2): they support
-          the Society, listed here and nowhere else. */}
-      <Support
+      {/* AUIB's own offices aren't partners (decisions.md, Partners): they
+          are its campus partners, after the partners. */}
+      <CampusPartners
         className="border-line pt-space-4 border-t"
         locale={locale}
-        logos
       />
       <Section id="work-with-us" title={t("workTitle")}>
         <p className="type-body">{t("work")}</p>

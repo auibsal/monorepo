@@ -66,8 +66,8 @@ const usePartnerNames = () => {
 
 /**
  * The Secretary records the request and what was given: by
- * Student Life, or in kind by a partner, who is then thanked on the event's
- * page ("Supported by", decisions §2).
+ * Student Life, or in kind by an entry in the register. Who the event's
+ * page thanks is picked on the event ("Thanks to", decisions.md, Events).
  */
 const RequestActions = ({ need }: { readonly need: Need }) => {
   const t = useTranslations("diwan.admin.needs");

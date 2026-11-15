@@ -156,7 +156,7 @@ select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 
 -- Before signing, nothing is public.
 select pg_temp.login_anon();
-select is((select count(*)::int from governance.public_partners()), 0,
+select is((select count(*)::int from governance.public_partners() where relation = 'partner'), 0,
   'An unsigned partner is not listed publicly');
 
 -- The President has declared a conflict with this partner (P8.3).
@@ -204,7 +204,7 @@ select hasnt_table('governance', 'member_offers',
   'Partners list no perks or offers for members (decisions §2)');
 
 select pg_temp.login_anon();
-select is((select array_agg(slug) from governance.public_partners()), array['poetry-hub'],
+select is((select array_agg(slug) from governance.public_partners() where relation = 'partner'), array['poetry-hub'],
   'A signed, active, listed partner appears publicly');
 select throws_ok(
   $$ select count(*) from governance.partners $$,

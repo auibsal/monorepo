@@ -1,5 +1,6 @@
--- Sponsors in kind (decisions §2, §3): a need given by a partner, and the
--- "Supported by" line on the event's public page.
+-- Needs given in kind (decisions.md, Money): a need given by an entry in the
+-- register, recorded on the need and kept private. Who an event thanks
+-- publicly is picked on the event (99_one_register).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -95,7 +96,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(7);
+select plan(3);
 
 insert into governance.partners (id, slug, name_en, name_ar, kind, is_listed, status) values
   ('00000000-0000-0000-0000-00000005d001', 'books-sp', 'The Bookshop', 'المكتبة', 'business', true, 'active'),
@@ -119,20 +120,8 @@ insert into programmes.needs (event_id, item, quantity, needed_by, purpose, stat
   ('00000000-0000-0000-0000-00000005e002', 'Pens', 10, current_date + 5, 'Writing', 'provided', current_date, current_date, '00000000-0000-0000-0000-00000005d001');
 
 select pg_temp.login_anon();
-select is((select count(*)::int from events.event_sponsors('reading-sp')), 1,
-  'The public sees each listed sponsor of a published event once');
-select is((select name_en from events.event_sponsors('reading-sp')), 'The Bookshop',
-  'by name');
-select is((select count(*)::int from events.event_sponsors('draft-sp')), 0,
-  'and nothing for an event that is not published');
 select throws_ok($$ select count(*) from programmes.needs $$, '42501', null,
   'The needs themselves stay private');
-
-select pg_temp.logout();
-update governance.partners set is_listed = false where id = '00000000-0000-0000-0000-00000005d001';
-select pg_temp.login_anon();
-select is((select count(*)::int from events.event_sponsors('reading-sp')), 0,
-  'A partner that leaves the listing is no longer thanked publicly');
 
 select pg_temp.logout();
 select has_index('programmes', 'needs', 'needs_given_by_idx', 'The sponsor link is indexed');
