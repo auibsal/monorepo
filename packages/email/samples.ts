@@ -45,6 +45,7 @@ import {
   serviceLetterWritten,
   shiftReminder,
   staffDigest,
+  studentLifeWeek,
   submissionInReading,
   submissionReceived,
   sundayPaper,
@@ -276,6 +277,25 @@ export const samples = {
         },
       ],
       APP
+    ),
+  StudentLifeWeek: (l) =>
+    studentLifeWeek(
+      l,
+      [
+        {
+          image: null,
+          starts_at: "2026-11-24T15:00:00Z",
+          summary_ar: "اكتب قصيدة واحدة في ساعة.",
+          summary_en: "Write one poem in an hour.",
+          title_ar: "ورشة الكتابة",
+          title_en: "Writing workshop",
+          url_ar: `${APP}/ar/events/writing-workshop`,
+          url_en: `${APP}/events/writing-workshop`,
+          venue_ar: "المكتبة، القاعة 2",
+          venue_en: "Library, room 2",
+        },
+      ],
+      `${APP}/student-life/week?token=sample`
     ),
   SubmissionInReading: (l) => submissionInReading(l, WORK, APP, "SUB-2026-001"),
   SubmissionReceived: (l) =>

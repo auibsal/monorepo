@@ -129,6 +129,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `removal.done` | The request removed, declined or closed | The requester, in their language (the receipt promises it) | Direct |
 | `staff.digest` | Daily: what came in since yesterday that the officer can act on: Get involved replies counted by role (no names), partner applications, actions waiting for a second officer, problem reports. Urgent alerts (a removal request, a concern, an incident report, a failed job) still go at once (decisions.md, Channels and email) | Each officer holding `members.manage`, `partners.manage` or `partners.sign`, a pending action's permission, or `settings.manage` | Officer |
 | `membership.verification_decided` | An account from outside AUIB decided (requests from before partners verified their own) | The account | Service |
+| `events.student_life_week` | Wednesdays (`sal-student-life-week`): next week's public events, each with its paragraph in both languages, its image and its link, and the secure link to mark which were included (decisions.md, Events); replies go to secretary@ | Student Life (the role) | Officer |
 | `platform.cron_failed` | A database job failed in the last day | Administrators | Officer |
 | `account.deleted` | An account deleted | The address it had (the last email) | Direct |
 
