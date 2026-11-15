@@ -47,13 +47,10 @@ grant execute on function private.partner_owned(uuid) to authenticated;
 -- ── 4. Logo columns (before the guard reads them) ───────────────────────
 alter table governance.partners
   add column logo_shows_name boolean not null default true,
-  add column logo_dark_path text,
   add column link_decided_at timestamptz;
 
 comment on column governance.partners.logo_shows_name is
   '"The logo shows the name": the logo stands alone, the name its alt text and link label; off, or with no logo, the name shows in text (decisions.md, Events).';
-comment on column governance.partners.logo_dark_path is
-  'The logo for dark backgrounds (white or reversed), shown on ink; without one, the paper logo sits on a small paper-colored plate.';
 comment on column governance.partners.link_decided_at is
   'When the Director of Partnerships chose "New entry" for an application the register seemed to have already (decisions.md, Partners: Linking).';
 
@@ -102,9 +99,46 @@ end;
 $$;
 
 -- The contacts on a partner's own entry come from its people's accounts.
+-- A contact typed before the partner had a Lead stays as the Society's
+-- internal note (staff only, never listed) until a Lead signs up; then it
+-- is dropped (private.drop_typed_contact, below).
+create function private.partner_has_lead(partner uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (select 1 from access.role_assignments r
+               where r.role = 'partner_lead' and r.scope_type = 'partner' and r.scope_id = partner);
+$$;
+revoke all on function private.partner_has_lead(uuid) from public, anon;
+grant execute on function private.partner_has_lead(uuid) to authenticated;
+
 update governance.partners p
 set contact_name = null, contact_role = null, contact_email = null
-where private.partner_owned(p.id);
+where private.partner_owned(p.id) and private.partner_has_lead(p.id);
+
+create function private.drop_typed_contact()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.role = 'partner_lead' and new.scope_type = 'partner' then
+    update governance.partners
+    set contact_name = null, contact_role = null, contact_email = null
+    where id = new.scope_id
+      and (contact_name is not null or contact_role is not null or contact_email is not null);
+  end if;
+  return new;
+end;
+$$;
+revoke all on function private.drop_typed_contact() from public, anon, authenticated;
+
+create trigger drop_typed_contact after insert on access.role_assignments
+  for each row execute function private.drop_typed_contact();
 
 -- The partner's people, from their accounts: the applicant and the team.
 create function private.partner_people(partner uuid)
@@ -303,7 +337,6 @@ begin
     and private.has_permission('partners.manage')
     and coalesce(current_setting('sal.partner_logo_approval', true), '') <> 'on'
     and (new.logo_path is distinct from old.logo_path
-      or new.logo_dark_path is distinct from old.logo_dark_path
       or new.logo_shows_name is distinct from old.logo_shows_name)
     and private.partner_owned(new.id) then
     perform private.enqueue('partners.logo_changed',
@@ -630,7 +663,7 @@ create function private.public_partners()
 returns table (
   slug text, name_en text, name_ar text, kind text, reach text, url text,
   description_en text, description_ar text, logo_path text, relation text,
-  logo_static text, logo_width numeric, logo_dark_path text, logo_shows_name boolean
+  logo_static text, logo_width numeric, logo_shows_name boolean
 )
 language sql
 stable
@@ -639,7 +672,7 @@ set search_path = ''
 as $$
   select p.slug, p.name_en, p.name_ar, p.kind, p.reach, p.url,
     p.description_en, p.description_ar, p.logo_path, p.relation,
-    p.logo_static, p.logo_width, p.logo_dark_path, p.logo_shows_name
+    p.logo_static, p.logo_width, p.logo_shows_name
   from governance.partners p
   where p.status = 'active'
     and p.is_listed
@@ -662,7 +695,7 @@ create function governance.public_partners()
 returns table (
   slug text, name_en text, name_ar text, kind text, reach text, url text,
   description_en text, description_ar text, logo_path text, relation text,
-  logo_static text, logo_width numeric, logo_dark_path text, logo_shows_name boolean
+  logo_static text, logo_width numeric, logo_shows_name boolean
 )
 language sql
 stable
@@ -680,7 +713,7 @@ create function private.event_organizations(event_slug text)
 returns table (
   line text, name_en text, name_ar text, slug text, url text,
   logo_path text, logo_static text, logo_width numeric,
-  logo_dark_path text, logo_shows_name boolean
+  logo_shows_name boolean
 )
 language sql
 stable
@@ -688,7 +721,7 @@ security definer
 set search_path = ''
 as $$
   select o.line, p.name_en, p.name_ar, p.slug, p.url, p.logo_path,
-    p.logo_static, p.logo_width, p.logo_dark_path, p.logo_shows_name
+    p.logo_static, p.logo_width, p.logo_shows_name
   from events.events e
   join events.event_organizations o on o.event_id = e.id
   join governance.partners p on p.id = o.partner_id
@@ -706,7 +739,7 @@ create function events.event_organizations(event_slug text)
 returns table (
   line text, name_en text, name_ar text, slug text, url text,
   logo_path text, logo_static text, logo_width numeric,
-  logo_dark_path text, logo_shows_name boolean
+  logo_shows_name boolean
 )
 language sql
 stable

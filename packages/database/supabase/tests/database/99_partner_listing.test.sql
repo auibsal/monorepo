@@ -94,7 +94,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(19);
+select plan(21);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f4001', 'lead@iifc.org', 'Applicant Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000f4002', 'pres.f4@auib.edu.iq', 'President');
@@ -184,6 +184,20 @@ select ok(private.is_shared_domain('uni.edu.iq') and private.is_shared_domain('m
   and private.is_shared_domain('ox.ac.uk') and private.is_shared_domain('harvard.edu'),
   'universities, schools and governments share their domains');
 select ok(not private.is_shared_domain('iifc.org'), 'an organization''s own domain does not');
+
+-- A contact typed before the partner had a Lead stays as the Society's
+-- note, until a Lead signs up.
+select pg_temp.logout();
+insert into governance.partners (id, slug, name_en, kind, status, relation, contact_name, contact_email)
+values ('00000000-0000-0000-0000-0000000f4d05', 'f4-typed', 'F4 Typed', 'club', 'active', 'partner',
+  'A Contact', 'contact@f4typed.org');
+insert into governance.partner_agreements (partner_id, purpose_en, starts_on, applied_by)
+values ('00000000-0000-0000-0000-0000000f4d05', 'Talks.', current_date, '00000000-0000-0000-0000-0000000f4001');
+select is((select contact_email from governance.partners where id = '00000000-0000-0000-0000-0000000f4d05'),
+  'contact@f4typed.org', 'a typed contact stays while the partner has no Lead');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000f4001', 'partner_lead', 'partner', '00000000-0000-0000-0000-0000000f4d05');
+select is((select contact_email from governance.partners where id = '00000000-0000-0000-0000-0000000f4d05'),
+  null, 'and goes once its Lead signs up');
 
 select * from finish();
 rollback;

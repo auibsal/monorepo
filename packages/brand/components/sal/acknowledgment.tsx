@@ -31,15 +31,16 @@ export interface Acknowledged {
   /** Where the name links, if anywhere: the organization's own site. */
   readonly href?: string | null;
   /**
-   * Its logo for paper, and for ink if it has one (white or reversed),
-   * with the file's own width and height (shown 48 px high, the width
-   * following). Without an ink logo, the paper logo sits on a small
-   * paper-colored plate on ink.
+   * Its logo, with the file's own width and height (shown 48 px high, the
+   * width following). AUIB's standard set has a white version for ink
+   * (`onInk`); an uploaded logo has one version and sits on a small
+   * paper-colored tile on ink (`tile`), the same size everywhere.
    */
   readonly logo?: {
     readonly height: number;
     readonly onInk?: string | null;
     readonly src: string;
+    readonly tile?: boolean;
     readonly width: number;
   } | null;
   /** Its name in the line's language, exactly as on its own materials. */
@@ -52,8 +53,9 @@ export interface Acknowledged {
 }
 
 /**
- * One organization's logo at the one height, with its ink version or a
- * paper plate on ink. `alt` is its name when the logo shows the name.
+ * One organization's logo at the one height: on ink, AUIB's white version,
+ * or an uploaded logo on its paper-colored tile. `alt` is its name when
+ * the logo shows the name.
  */
 export const OrganizationLogo = ({
   alt = "",
@@ -86,14 +88,16 @@ export const OrganizationLogo = ({
   ) : (
     <span
       className={cn(
-        "on-ink:bg-paper on-ink:px-2 on-ink:py-1 inline-flex",
+        "inline-flex",
+        logo.tile &&
+          "on-ink:h-16 on-ink:w-44 on-ink:items-center on-ink:justify-center on-ink:bg-paper on-ink:p-2",
         className
       )}
     >
       {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
       <img
         alt={alt}
-        className="h-12 w-auto"
+        className="h-12 w-auto max-w-full object-contain"
         height={logo.height}
         src={logo.src}
         width={logo.width}

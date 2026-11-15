@@ -3,7 +3,6 @@ import { mediaUrl } from "@/lib/media";
 
 /** An organization from the register, as the public pages read it. */
 export interface Organization {
-  readonly logo_dark_path?: string | null;
   readonly logo_path: string | null;
   readonly logo_shows_name?: boolean | null;
   readonly logo_static: string | null;
@@ -15,12 +14,14 @@ export interface Organization {
 
 /**
  * An organization's line entry (decisions.md, Partners; Events): its name
- * in the page's language, its link, and its logo, the uploaded one first
- * (with its logo for dark backgrounds, if any), then AUIB's standard set
+ * in the page's language, its link, and its logo, the uploaded one first,
+ * then AUIB's standard set
  * for the campus partners that use it (apps/web/public/institutions:
  * `<logo>.svg` for paper, `<logo>-white.svg` for ink, each 325 high). The
  * logo is the organization's own in both languages; only its alt text and
- * label follow the page. With no logo, the name stands alone.
+ * label follow the page. An uploaded logo has one version: on ink it sits
+ * on a small paper-colored tile, the same size everywhere. With no logo,
+ * the name stands alone.
  */
 export const acknowledged = (
   org: Organization,
@@ -31,8 +32,8 @@ export const acknowledged = (
   if (uploaded) {
     logo = {
       height: 48,
-      onInk: mediaUrl(org.logo_dark_path ?? null),
       src: uploaded,
+      tile: true,
       width: 160,
     };
   } else if (org.logo_static && org.logo_width) {

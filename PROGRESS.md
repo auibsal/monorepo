@@ -14,6 +14,50 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the nineteenth site prompt (Nov 15)
+
+- [x] Mirror replaced (decisions 22, glossary 17): §5 (one logo per
+  organization, a paper tile in dark mode) and §9 (one Edition, one title,
+  one call).
+- [x] Production: #273's hook build was canceled mid-build while a second
+  production build of the same commit, made by Git at 19:43 before the
+  migrations ran, went live first. The migrate workflow now waits for the
+  hook's own build (`scripts/deploy-production.sh`), fires the hook again
+  once if it is canceled or fails, and fails the run if it still isn't
+  live, so a site left behind never goes unnoticed.
+- [x] Logos: one upload per organization (PNG, JPG or WebP, at least 600
+  pixels high, checked in the browser and in `/api/partners/logo`; SVG
+  refused), with the rule under the field; every uploaded logo sits on a
+  small paper-colored tile on ink, the same size everywhere. The "Logo for
+  dark backgrounds" field is gone (`logo_dark_path` dropped from
+  `20261115001200`, still unmerged). AUIB's set keeps its SVGs with white
+  versions; the American Space's are the traced vector files.
+- [x] A contact typed before a partner had a Lead stays as the Society's
+  internal note (staff only) until its Lead signs up, then goes
+  (`private.drop_typed_contact`).
+- [x] Editions (`20261115001300_one_call_per_edition.sql`): one call per
+  Edition, its title the Edition's; Haven is Edition 0; Edition 1's
+  general submissions became its one call (the work in it stays), opening
+  Mon, Dec 7, unpublished until Edition 1 has its title; work sent after a
+  deadline goes to the open Edition's call; accepted Letters, Gallery and
+  Video work comes out with its Edition on its date; cited "Edition <n>:
+  <title>, <season>" on the shelf, the Edition's page, the Diwan, receipts
+  and Hudhud's post. "Send your work" opens `/qirtas/editions/open`, the
+  open Edition's page. The form never asks which call; the reading queue
+  filters by Edition only; the last call goes three days before any
+  Edition's call closes.
+- [ ] TODO(content): Edition 1's title (its theme), proposed by the
+  Editor-in-Chief and approved by the owner before Mon, Dec 7; the Desk
+  shows it as a to-do. Then set Edition 1's deadline on its Call tab and
+  publish the call.
+- [ ] **Owner:** Haven's call takes Letters and Gallery, as its poster
+  says, so films have no open call until Dec 7. Say if Haven should take
+  Video too.
+- [ ] **Owner:** add `VERCEL_TOKEN` (a read token) to the production
+  environment's secrets, so the migrate run follows the hook's build.
+- [ ] **Owner:** upload the Iraqi Independent Film Center's logo (one PNG,
+  transparent, at least 600 pixels high) on its entry in Partnerships.
+
 ## Now: the eighteenth site prompt (Nov 15)
 
 - [x] Mirror replaced (decisions 21, glossary 16): §5 (a partner owns its
@@ -38,11 +82,7 @@ fourth prompts (Nov 12).
   text and label in the page's language; the American Space joins AUIB's
   standard set (`american-space.svg`, 777.9 × 325).
 - [x] "Iraqi Independent Film Center", as its logo spells it.
-- [ ] **Owner:** upload the Iraqi Independent Film Center's two logos (the
-  paper one and the one for dark backgrounds) on its entry in
-  Partnerships; the American Space needs nothing.
-- [ ] The two American Space SVGs wrap the supplied PNG artwork (the vector
-  files weren't attached); swap in vector versions when there are some.
+- [x] The American Space's SVGs are the traced vector files (82458282).
 
 ## Now: the seventeenth site prompt (Nov 15)
 

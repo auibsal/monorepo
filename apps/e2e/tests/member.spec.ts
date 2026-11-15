@@ -96,7 +96,7 @@ test("a member saves a draft, comes back to it and sends it", async ({
   await expect(page.getByRole("heading", { name: "Received" })).toBeVisible();
   // Sent, it is a submission; the draft is gone from Editions.
   await page.goto(`${urls.web}/qirtas/editions`);
-  await expect(page.getByRole("heading", { name: "Open now" })).toBeVisible();
+  await expect(page.getByRole("list", { name: "The open call" })).toBeVisible();
   await expect(page.getByRole("link", { name: title })).toHaveCount(0);
 });
 

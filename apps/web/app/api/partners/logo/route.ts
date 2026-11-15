@@ -6,6 +6,7 @@ import { authenticateRequest } from "@/lib/auth/verify";
 import { parseError } from "@/lib/observability/error";
 import { log } from "@/lib/observability/log";
 import { buckets, checkFile } from "@/lib/storage";
+import { logoTallEnough } from "@/lib/storage/image-size";
 
 export const OPTIONS = preflight;
 
@@ -46,6 +47,11 @@ export const POST = async (request: Request) => {
   const problem = checkFile("media", logo);
   if (problem || !EXTENSIONS[logo.type]) {
     return json({ error: problem ?? "file_type" }, 400);
+  }
+  // At least 600 pixels high, read from the file itself (decisions.md,
+  // Partners); SVG never reaches here (XSS), as the media bucket refuses it.
+  if (!(await logoTallEnough(logo))) {
+    return json({ error: "logo_too_small" }, 400);
   }
   if (!(await hasPermission(session, "partners.own", "partner", partner))) {
     return json({ error: "forbidden" }, 403);

@@ -128,9 +128,9 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
   const { data: call } = await db
     .schema("journal")
     .from("calls")
-    .select("id")
-    // Edition 1's general submissions (decisions.md, Qirtas: "Calls").
-    .eq("kind", "general")
+    .select("id, issue:issues!inner(slug)")
+    // Haven's call, Edition 0 (decisions.md, Qirtas: one Edition, one call).
+    .eq("issue.slug", "haven")
     .limit(1)
     .single();
   const { data: entry, error } = await db

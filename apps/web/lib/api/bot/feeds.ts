@@ -1,3 +1,4 @@
+import { editionCitation } from "@repo/email/copy";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { type Api, GrammyError, InlineKeyboard } from "grammy";
 import { publicEvents } from "@/lib/data/events";
@@ -35,7 +36,7 @@ const HOUR = 60 * 60 * 1000;
 const SOON = 48 * HOUR;
 const NOT_ON_THE_DAY = 24 * HOUR;
 const NEW_PIECE_WINDOW = 72 * HOUR;
-// "Last call" three days before a themed call closes (decisions.md, Hudhud).
+// "Last call" three days before an Edition's call closes (decisions.md, Hudhud).
 const LAST_CALL = 72 * HOUR;
 // The Sunday note: from 10:00 a.m. Baghdad time, the coming seven days.
 const SUNDAY_HOUR = 10;
@@ -316,13 +317,7 @@ const electionPosts = (run: Run, elections: Election[]) =>
 
 type OpenCall = Pick<
   EditionCall,
-  | "closes_at"
-  | "edition_slug"
-  | "id"
-  | "kind"
-  | "opens_at"
-  | "title_ar"
-  | "title_en"
+  "closes_at" | "edition_slug" | "id" | "opens_at" | "title_ar" | "title_en"
 >;
 
 /** A call's Edition page, where its form buttons are. */
@@ -415,7 +410,7 @@ const sundayNote = (run: Run, events: PublicEvent[], calls: OpenCall[]) => {
 };
 
 /**
- * "Last call" (decisions.md, Hudhud): once, three days before a themed
+ * "Last call" (decisions.md, Hudhud): once, three days before an Edition's
  * call closes, linking to its Edition's page.
  */
 const lastCalls = (run: Run, calls: OpenCall[]) =>
@@ -423,12 +418,7 @@ const lastCalls = (run: Run, calls: OpenCall[]) =>
     calls
       .filter((call) => {
         const left = Date.parse(call.closes_at) - run.now.getTime();
-        return (
-          call.kind === "themed" &&
-          hasDeadline(call) &&
-          left > 0 &&
-          left <= LAST_CALL
-        );
+        return hasDeadline(call) && left > 0 && left <= LAST_CALL;
       })
       .map((call) => () => {
         const url = callPage(linkLang(run.group), call);
@@ -483,7 +473,7 @@ const newEditions = (run: Run, editions: PublishedEdition[]) =>
             copyFor(run.group, (lang) =>
               [
                 copy[lang].postEdition,
-                `<b>${escapeHtml(pick(lang, edition.title_en, edition.title_ar))}</b>`,
+                `<b>${escapeHtml(editionCitation(lang, edition))}</b>`,
               ].join("\n")
             ),
             {

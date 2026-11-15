@@ -212,26 +212,21 @@ const reviewRows = ({
 ];
 
 /**
- * When the writer hears back (decisions.md, Qirtas: "Calls"): within six
- * weeks for general submissions, by the call's decision date for a themed
- * call, and from the Voices desk once it decides.
+ * When the writer hears back (decisions.md, Qirtas: one Edition, one call):
+ * within six weeks of the call's deadline, by its decision date when the
+ * Edition sets one, and from the Voices desk once it decides.
  */
 const replyLine = (
-  call:
-    | { closes_at: string; decisions_at: string | null; kind: string }
-    | undefined,
+  call: { closes_at: string; decisions_at: string | null } | undefined,
   locale: Locale,
   t: ReturnType<typeof useTranslations<"diwan.journal.write">>
 ) => {
   if (!call) {
     return t("receipt.replyVoices");
   }
-  if (call.kind === "general") {
-    return t("receipt.replyGeneral");
-  }
   return call.decisions_at
     ? t("receipt.replyBy", { date: formatLongDate(call.decisions_at, locale) })
-    : t("receipt.replyThemed");
+    : t("receipt.replySixWeeks");
 };
 
 const WriteForm = ({
@@ -253,8 +248,10 @@ const WriteForm = ({
   const desk = journal.deskOf(type);
   const needs = journal.typeNeeds(type);
   const kinds = kindsFor(type);
-  const { call, loading, pathway, sendable, setCallId, setPartnerId } =
-    useWriteCall(desk, initial, place.edition);
+  const { call, loading, pathway, sendable, setPartnerId } = useWriteCall(
+    desk,
+    initial
+  );
   const [language, setLanguage] = useState(initial.language);
   const [title, setTitle] = useState(initial.title);
   const [deck, setDeck] = useState(initial.deck);
@@ -374,7 +371,6 @@ const WriteForm = ({
         <form className="grid max-w-3xl gap-6" onSubmit={submit}>
           <CallFields
             callId={call?.id}
-            onCall={setCallId}
             onPartner={setPartnerId}
             pathway={pathway}
           />
@@ -572,40 +568,6 @@ const PenNameField = ({
           onChange={(e) => onChange(e.target.value)}
           value={value}
         />
-      )}
-    </Field>
-  );
-};
-
-/** The printed Edition or Qirtas online, when both take this type. */
-const WhereField = ({
-  calls,
-  onChange,
-  value,
-}: {
-  readonly calls: readonly { id: string; title_ar: string; title_en: string }[];
-  readonly onChange: (callId: string) => void;
-  readonly value: string;
-}) => {
-  const t = useTranslations("diwan.journal.write");
-  const locale = useLocale() as Locale;
-  if (calls.length < 2) {
-    return null;
-  }
-  return (
-    <Field hint={t("whereHint")} label={t("where")}>
-      {(id) => (
-        <SelectInput
-          id={id}
-          onChange={(e) => onChange(e.target.value)}
-          value={value}
-        >
-          {calls.map((c) => (
-            <option key={c.id} value={c.id}>
-              {localized(c, "title", locale)}
-            </option>
-          ))}
-        </SelectInput>
       )}
     </Field>
   );
@@ -1069,72 +1031,53 @@ const MissingDraft = ({
   );
 };
 
-/** Which call, and through which partner, when there is a call to answer. */
+/**
+ * Through which partner, when there is a call to answer. The call is the
+ * open Edition's (decisions.md, Qirtas): the form never asks which.
+ */
 const CallFields = ({
   callId,
-  onCall,
   onPartner,
   pathway,
 }: {
   readonly callId: string | undefined;
-  readonly onCall: (id: string) => void;
   readonly onPartner: (id: string) => void;
   readonly pathway: ReturnType<typeof useSubmitPathway>;
 }) =>
   callId ? (
-    <>
-      <WhereField calls={pathway.callable} onChange={onCall} value={callId} />
-      <PartnerPathway
-        isMember={pathway.isMember}
-        onChange={onPartner}
-        pathways={pathway.callPathways}
-        value={pathway.throughPartner}
-      />
-    </>
+    <PartnerPathway
+      isMember={pathway.isMember}
+      onChange={onPartner}
+      pathways={pathway.callPathways}
+      value={pathway.throughPartner}
+    />
   ) : null;
 
-/** The themed call before the general submissions (decisions.md, Qirtas). */
-const themedFirst = (a: { kind: string }, b: { kind: string }) =>
-  Number(a.kind !== "themed") - Number(b.kind !== "themed");
-
 /**
- * Which call the work answers: the form asks, with the open themed call
- * first; under an Edition, that Edition's call is chosen to begin with.
+ * The call the work answers: the open Edition's (decisions.md, Qirtas: one
+ * Edition, one call). Exactly one is open at a time; work sent after a
+ * deadline goes to the next Edition's, so a draft started for one Edition
+ * goes to whichever call is open when it is sent.
  */
 const useWriteCall = (
   desk: journal.Desk,
-  initial: { readonly callId: string; readonly partnerId: string },
-  edition: string | undefined
+  initial: { readonly callId: string; readonly partnerId: string }
 ) => {
-  const { supabase } = useAuth();
   const calls = useOpenCalls();
-  const ofEdition = useQuery({
-    enabled: Boolean(edition),
-    queryFn: () => journal.callsWithEditions(supabase, edition),
-    queryKey: ["journal", "edition-calls", edition],
-  });
   const open = (calls.data ?? [])
     .filter((c) => c.desks.includes(desk))
-    .sort(themedFirst);
-  const [callId, setCallId] = useState(initial.callId);
+    .sort((a, b) => a.opens_at.localeCompare(b.opens_at));
   const [partnerId, setPartnerId] = useState(initial.partnerId);
-  const pathway = useSubmitPathway(open, callId, partnerId);
-  const mine = new Set((ofEdition.data ?? []).map((c) => c.id));
-  const call =
-    pathway.callable.find((c) => c.id === callId) ??
-    pathway.callable.find((c) => mine.has(c.id)) ??
-    pathway.callable[0];
+  const first = open[0]?.id ?? "";
+  const pathway = useSubmitPathway(open, first, partnerId);
+  const [call] = pathway.callable;
   return {
     call,
-    loading:
-      !calls.data ||
-      pathway.pending ||
-      (Boolean(edition) && ofEdition.isPending),
+    loading: !calls.data || pathway.pending,
     pathway,
     // Voices takes letters and op-eds to no call, by name (decisions.md,
-    // Qirtas); everything else answers an open call.
+    // Qirtas); everything else answers the open Edition's call.
     sendable: desk === "voices" || Boolean(call),
-    setCallId,
     setPartnerId,
   };
 };

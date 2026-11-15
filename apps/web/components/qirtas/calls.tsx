@@ -27,7 +27,7 @@ const deskPhrase = async (desks: readonly journal.Desk[], locale: Locale) => {
   }).format(desks.map((desk) => t(`desks.${desk}`)));
 };
 
-/** "Closes Sunday, December 6" or "Any time" (the general submissions). */
+/** "Closes Sunday, December 6", or "Any time" until the Edition sets its deadline. */
 const closesLine = async (call: journal.EditionCall, locale: Locale) => {
   const t = await getTranslations({
     locale,
@@ -43,11 +43,12 @@ const callHref = (call: journal.EditionCall) =>
   `/qirtas/editions/${call.edition_slug}`;
 
 /**
- * Open now (decisions.md, Qirtas: the Editions page), one row per open call
- * in the one open-call pattern: the call · its sections · when it closes ·
- * Send your work.
+ * The open call (decisions.md, Qirtas: the Editions page), in the one
+ * open-call row: "Edition 0: Haven · Dreams and memories · Closes Sun,
+ * Dec 6 · Send your work". Each Edition's call opens the day the previous
+ * one closes, so there is one; between calls, the next to open.
  */
-export const OpenNow = async ({
+export const OpenCallLine = async ({
   calls,
   locale,
   now,
@@ -60,43 +61,50 @@ export const OpenNow = async ({
     locale,
     namespace: "web.journal.callPage",
   });
-  const open = calls.filter((call) => journal.isOpenAt(call, now));
-  const rows: OpenCall[] = await Promise.all(
-    open.map(async (call) => ({
-      action: (
-        <Link
-          className="link text-sm font-medium"
-          href={`${callHref(call)}#send`}
-          prefetch={false}
-        >
-          {t("send")}
-        </Link>
-      ),
-      closes: await closesLine(call, locale),
-      key: call.id,
-      purpose: await deskPhrase(call.desks, locale),
-      title: (
-        <Link className="hover:underline" href={callHref(call)}>
-          {localized(call, "title", locale)}
-        </Link>
-      ),
-    }))
-  );
+  const call = journal.openCallAt(calls, now);
+  const rows: OpenCall[] = call
+    ? [
+        {
+          action: (
+            <Link
+              className="link text-sm font-medium"
+              href={`${callHref(call)}#send`}
+              prefetch={false}
+            >
+              {t("send")}
+            </Link>
+          ),
+          closes: await closesLine(call, locale),
+          key: call.id,
+          purpose:
+            localized(
+              {
+                theme_ar: call.edition_theme_ar,
+                theme_en: call.edition_theme_en,
+              },
+              "theme",
+              locale
+            ) || (await deskPhrase(call.desks, locale)),
+          title: (
+            <Link className="hover:underline" href={callHref(call)}>
+              {localized(call, "title", locale)}
+            </Link>
+          ),
+        },
+      ]
+    : [];
   return (
-    <section aria-labelledby="open-now" className="grid gap-4">
-      <h2 className="type-title" id="open-now">
-        {t("openNow")}
-      </h2>
-      <OpenCallList calls={rows} empty={t("noneOpen")} label={t("openNow")} />
+    <section aria-label={t("theCall")} className="grid gap-4">
+      <OpenCallList calls={rows} empty={t("noneOpen")} label={t("theCall")} />
     </section>
   );
 };
 
 /**
  * A call's terms, after its action (decisions.md, The site: "One call
- * page"): who may send, what to send, the dates, how it's decided and the
- * reply time. Haven, the pilot, keeps the words of its poster; every
- * Edition's general submissions share theirs.
+ * page"): what to send (the theme is an invitation, not a rule), who may
+ * send, the dates, how it's decided and the reply time. Haven keeps the
+ * words of its poster.
  */
 export const CallTerms = async ({
   call,
@@ -110,38 +118,26 @@ export const CallTerms = async ({
     namespace: "web.journal.callPage",
   });
   const desks = await deskPhrase(call.desks, locale);
-  const haven = call.edition_slug === "haven" && call.kind === "themed";
+  const haven = call.edition_slug === "haven";
   const tw = await getTranslations({
     locale,
     namespace: "diwan.journal.write.haven",
   });
+  const theme = localized(call, "theme", locale);
   const rows: [string, string][] = haven
     ? [
-        [t("terms.what"), tw("rules.length")],
+        [t("terms.what"), `${tw("rules.length")} ${t("themeNote")}`],
         [t("terms.entries"), tw("rules.entries")],
         [t("terms.new"), tw("rules.new")],
         [t("terms.who"), tw("rules.who")],
         [t("terms.own"), tw("rules.own")],
       ]
     : [
-        [t("terms.what"), localized(call, "theme", locale) || desks],
-        [
-          t("terms.who"),
-          localized(call, "eligibility", locale) || t("general.who"),
-        ],
-        [t("terms.new"), t("general.simultaneous")],
-        [t("terms.own"), t("general.own")],
+        [t("terms.what"), theme ? `${theme} ${t("themeNote")}` : desks],
+        [t("terms.who"), localized(call, "eligibility", locale) || t("who")],
+        [t("terms.new"), t("simultaneous")],
+        [t("terms.own"), t("own")],
       ];
-  const decided =
-    call.kind === "general" ? t("general.decided") : t("themed.decided");
-  const reply =
-    call.kind === "general"
-      ? t("general.reply")
-      : t("themed.reply", {
-          date: call.decisions_at
-            ? formatLongDate(call.decisions_at, locale)
-            : t("themed.afterClose"),
-        });
   return (
     <CallDetails
       rows={[
@@ -149,14 +145,19 @@ export const CallTerms = async ({
         [
           t("terms.dates"),
           journal.hasDeadline(call)
-            ? t("dates", {
+            ? `${t("dates", {
                 date: formatLongDate(call.closes_at, locale),
                 time: formatClock(call.closes_at, locale),
-              })
+              })} ${t("late")}`
             : t("anyTime"),
         ],
-        [t("terms.decided"), decided],
-        [t("terms.reply"), reply],
+        [t("terms.decided"), t("decided")],
+        [
+          t("terms.reply"),
+          call.decisions_at
+            ? t("replyBy", { date: formatLongDate(call.decisions_at, locale) })
+            : t("reply"),
+        ],
         [t("terms.fees"), t("noFees")],
       ]}
     />

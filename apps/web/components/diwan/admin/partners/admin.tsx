@@ -108,7 +108,6 @@ const usePartnerNames = () => {
 const societyFields = (form: PartnerFormState) => ({
   is_listed: form.is_listed,
   kind: form.kind,
-  logo_dark_path: form.logo_dark_path,
   logo_path: form.logo_path,
   logo_shows_name: form.logo_shows_name,
   notes: form.notes.trim() || null,
@@ -127,7 +126,6 @@ const initialForm = (initial: PartnerRow) => ({
   },
   is_listed: Boolean(initial.is_listed),
   kind: initial.kind as (typeof partners.partnerKinds)[number],
-  logo_dark_path: (initial.logo_dark_path as string | null) ?? null,
   logo_path: (initial.logo_path as string | null) ?? null,
   logo_shows_name: initial.logo_shows_name !== false,
   name: { ar: initial.name_ar ?? "", en: initial.name_en },
@@ -145,8 +143,8 @@ type SetPartnerForm = (
 ) => void;
 
 /**
- * Each entry's logos (decisions.md, Partners; Events): for paper and for
- * dark backgrounds, and "The logo shows the name". On a partner's own
+ * Each entry's one logo (decisions.md, Partners; Events), which sits on a
+ * paper-colored tile in dark mode, and "The logo shows the name". On a partner's own
  * entry a change here is logged and the Lead is told.
  */
 const LogoFields = ({
@@ -163,23 +161,13 @@ const LogoFields = ({
     <fieldset className="grid gap-4">
       <legend className="type-label mb-2">{t("logos")}</legend>
       {owned ? <p className="type-caption">{t("logoTellsLead")}</p> : null}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <ImageField
-          area="partners"
-          label={t("logo")}
-          onChange={(logo_path) => setForm((f) => ({ ...f, logo_path }))}
-          value={form.logo_path}
-        />
-        <ImageField
-          area="partners"
-          label={t("logoDark")}
-          onChange={(logo_dark_path) =>
-            setForm((f) => ({ ...f, logo_dark_path }))
-          }
-          value={form.logo_dark_path}
-        />
-      </div>
-      <p className="type-caption">{t("logoDarkHint")}</p>
+      <ImageField
+        area="partners"
+        kind="logo"
+        label={t("logo")}
+        onChange={(logo_path) => setForm((f) => ({ ...f, logo_path }))}
+        value={form.logo_path}
+      />
       <div className="flex items-center gap-2">
         <Checkbox
           checked={form.logo_shows_name}
@@ -316,7 +304,32 @@ const OwnedListing = ({ row }: { readonly row: PartnerRow }) => {
           ) || "—"}
         </dd>
       </dl>
+      <TypedContact row={row} />
     </section>
+  );
+};
+
+/**
+ * A contact typed into the entry before the partner had a Lead
+ * (decisions.md, Partners): kept as the Society's internal note, staff
+ * only and never listed, until a Lead signs up, when the database drops it.
+ */
+const TypedContact = ({ row }: { readonly row: PartnerRow }) => {
+  const t = useTranslations("diwan.admin.partners.register");
+  const parts = [row.contact_name, row.contact_role, row.contact_email]
+    .map((part) => String(part ?? "").trim())
+    .filter(Boolean);
+  if (parts.length === 0) {
+    return null;
+  }
+  return (
+    <div className="border-line grid gap-1 border-t pt-3">
+      <p className="type-label">{t("typedContact")}</p>
+      <p className="type-body">
+        <bdi>{parts.join(" · ")}</bdi>
+      </p>
+      <p className="type-caption">{t("typedContactLede")}</p>
+    </div>
   );
 };
 

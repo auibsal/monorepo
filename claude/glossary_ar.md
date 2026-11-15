@@ -100,7 +100,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Get involved | «شارك معنا» |
 | needs list | قائمة الاحتياجات |
 | charity collection | جمع التبرعات لجهة خيرية |
-| Edition / Edition 1 / the pilot (Haven) | الإصدار / الإصدار 1 / الإصدار التجريبي |
+| Edition / Edition 1 / the pilot (Haven, Edition 0) | الإصدار / الإصدار 1 / الإصدار التجريبي (الإصدار 0) |
 | the standing flow / table of contents / contributors' notes / cover artist | التدفق المستمر / المحتويات / نبذة عن المساهمين / فنان الغلاف |
 | Submit (Qirtas's button) | «أرسل إلى قرطاس» |
 | Your account's tabs: Today / Events / Work / Roles / Documents / Settings; Settings' sections: Account / Notifications / Security / Your data | «اليوم» / «الفعاليات» / «أعمالك» / «الأدوار» / «المستندات» / «الإعدادات»؛ أقسام الإعدادات: «الحساب» / «الإشعارات» / «الأمان» / «بياناتك» |
@@ -120,12 +120,12 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | the masthead | هيئة التحرير |
 | the Sunday Paper | «جريدة الأحد» |
 | Submit to Qirtas (writing and art alike) | «أرسل إلى قرطاس» |
-| General submissions (an Edition's, always open) / a themed call | «المشاركات العامة» / «دعوة بموضوع» |
-| Send your work (Qirtas's button) / Open now (Editions) / Closes <date> / Any time | «أرسل عملك» / «مفتوحة الآن» / «تُغلق في <التاريخ>» / «في أي وقت» |
+| An Edition's title (its theme) / its call / Edition 0 (the pilot) | «عنوان الإصدار» / «دعوة الإصدار» / «الإصدار 0» |
+| Send your work (Qirtas's button) / Closes <date> / Any time (a call with no deadline) | «أرسل عملك» / «تُغلق في <التاريخ>» / «في أي وقت» |
+| Reading now, published <date> | «القراءة جارية، ويُنشر في <التاريخ>» |
 | Received / In review / Decision / Withdrawn (one status list) | «استُلم» / «قيد المراجعة» / «القرار» / «سُحب» |
 | Letter to the editor / Op-ed (guest) | «رسالة إلى المحرر» / «مقال رأي» |
 | Send a news tip / Join the staff | «أرسل معلومة لخبر» / «انضم إلى الفريق» |
-| Reading now, published <date> | «القراءة جارية، ويُنشر في <التاريخ>» |
 | Last call (Hudhud, before a deadline) | «آخر فرصة» |
 | The reading queue (Diwan → Qirtas → Editions) / Intake / Reading / Decide / Decided | «المشاركات» / «الاستلام» / «القراءة» / «القرار» / «ما تقرر» |
 | About the writer (op-ed identity line) | «نبذة عن الكاتب» |

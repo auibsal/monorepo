@@ -157,7 +157,7 @@ export const IssueEditor = () => {
         season: { ar: i.season_ar ?? "", en: i.season_en ?? "" },
         slug: i.slug,
         theme: { ar: i.theme_ar ?? "", en: i.theme_en ?? "" },
-        title: { ar: i.title_ar, en: i.title_en },
+        title: { ar: i.title_ar ?? "", en: i.title_en ?? "" },
         volume: String(i.volume),
       });
     }
@@ -208,8 +208,8 @@ export const IssueEditor = () => {
         status: next,
         theme_ar: form.theme.ar || null,
         theme_en: form.theme.en || null,
-        title_ar: form.title.ar,
-        title_en: form.title.en,
+        title_ar: form.title.ar.trim() || null,
+        title_en: form.title.en.trim() || null,
         volume: Number(form.volume),
       };
       const table = supabase.schema("journal").from("issues");
@@ -298,7 +298,6 @@ export const IssueEditor = () => {
         label={t("issue.titleField")}
         maxLength={200}
         onChange={(title) => setForm((f) => ({ ...f, title }))}
-        required
         value={form.title}
       />
       <BilingualField

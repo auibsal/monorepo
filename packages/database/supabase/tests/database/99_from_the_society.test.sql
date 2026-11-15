@@ -143,8 +143,8 @@ select pg_temp.logout();
 
 -- ── Haven, the pilot Edition ──────────────────────────────────────────────────
 
-select is((select number from journal.issues where slug = 'haven'), null,
-  'Haven, the pilot Edition, carries no number');
+select is((select number from journal.issues where slug = 'haven'), 0,
+  'Haven, the pilot, is Edition 0');
 select ok((select c.closes_at = timestamptz '2026-12-06 23:59:59+03' and c.max_per_person = 2
   from journal.calls c join journal.issues i on i.id = c.issue_id where i.slug = 'haven'),
   'Its call closes Sun Dec 6 at 11:59 p.m. Baghdad time, two entries each');

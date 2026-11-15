@@ -300,6 +300,26 @@ const PaperLinks = () => {
   );
 };
 
+/**
+ * The newsroom's own queue: pieces still being edited, on the desks the
+ * officer's roles reach (RLS scopes the count).
+ */
+const editingFigures = (
+  t: ReturnType<typeof useTranslations<"diwan.admin.overview">>,
+  count: number | null | undefined
+): FigureProps[] =>
+  count === undefined || count === null
+    ? []
+    : [
+        {
+          action: count ? t("openNewsroom") : undefined,
+          detail: count ? t("editingDetail") : t("editingNone"),
+          href: "/qirtas",
+          label: t("editing"),
+          value: count,
+        },
+      ];
+
 /** The Desk's logo figures: missing in-house logos and logos to approve. */
 const logoFigures = (
   t: ReturnType<typeof useTranslations<"diwan.admin.overview">>,
@@ -360,6 +380,53 @@ const useLogoCounts = (enabled: boolean) => {
   });
 };
 
+/**
+ * Editions waiting for their title (decisions.md, Qirtas): the Editor-in-
+ * Chief proposes it and the owner approves it; until then the Edition's
+ * call can't open. Each with the day its call is due to open.
+ */
+const useUntitledEditions = (enabled: boolean) => {
+  const { supabase } = useAuth();
+  return useQuery({
+    enabled,
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("issues")
+          .select("id, number, calls(opens_at)")
+          .is("title_en", null)
+          .neq("status", "published")
+          .order("number")
+      ) ?? [],
+    queryKey: ["admin", "overview", "untitled-editions"],
+  });
+};
+
+/** The Desk's to-do for each Edition still without its title. */
+const untitledFigures = (
+  t: ReturnType<typeof useTranslations<"diwan.admin.overview">>,
+  locale: Locale,
+  editions:
+    | readonly {
+        id: string;
+        number: number | null;
+        calls: readonly { opens_at: string }[];
+      }[]
+    | undefined
+) =>
+  (editions ?? []).map((edition) => ({
+    action: t("setEditionTitle"),
+    detail: edition.calls[0]
+      ? t("editionTitleDetail", {
+          date: formatLongDate(edition.calls[0].opens_at, locale),
+        })
+      : t("editionTitleUndated"),
+    href: `/qirtas/editions/${edition.id}`,
+    label: t("editionTitle", { number: formatNumber(edition.number ?? 0) }),
+    value: 1,
+  }));
+
 export const AdminOverview = () => {
   const t = useTranslations("diwan.admin.overview");
   const locale = useLocale() as Locale;
@@ -392,6 +459,8 @@ export const AdminOverview = () => {
 
   const managesPartners = hasPermissionAnywhere(grants.data, "partners.manage");
   const noLogo = useLogoCounts(grants.isSuccess && managesPartners);
+  const managesQirtas = hasPermissionAnywhere(grants.data, "journal.manage");
+  const untitled = useUntitledEditions(grants.isSuccess && managesQirtas);
 
   if (overview.isPending || editing.isPending) {
     return <SectionSpinner />;
@@ -401,19 +470,12 @@ export const AdminOverview = () => {
   }
 
   const o = overview.data;
-  const figures = buildFigures(o, t, locale);
-  // The newsroom's own queue: pieces still being edited, on the desks the
-  // officer's roles reach (RLS scopes the count).
-  if (editing.data !== undefined && editing.data !== null) {
-    figures.push({
-      action: editing.data ? t("openNewsroom") : undefined,
-      detail: editing.data ? t("editingDetail") : t("editingNone"),
-      href: "/qirtas",
-      label: t("editing"),
-      value: editing.data,
-    });
-  }
-  figures.push(...logoFigures(t, managesPartners ? noLogo.data : undefined));
+  const figures = [
+    ...buildFigures(o, t, locale),
+    ...editingFigures(t, editing.data),
+    ...logoFigures(t, managesPartners ? noLogo.data : undefined),
+    ...untitledFigures(t, locale, managesQirtas ? untitled.data : undefined),
+  ];
   const can = (permission: Permission) =>
     hasPermissionAnywhere(grants.data, permission);
 

@@ -142,7 +142,7 @@ describe("the email journeys", () => {
     expect(items.map((i) => i.href)).toContain("https://auibsal.org/ar/events");
     const html = await render(Notice(built));
     expect(html).toContain(
-      'href="https://auibsal.org/ar/qirtas/editions?status=open"'
+      'href="https://auibsal.org/ar/qirtas/editions/open"'
     );
   });
 

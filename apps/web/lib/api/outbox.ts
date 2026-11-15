@@ -525,7 +525,9 @@ const submissionRecord = async (admin: AdminClient, submissionId: unknown) => {
   const { data } = await admin
     .schema("journal")
     .from("submissions")
-    .select("title, reference")
+    .select(
+      "title, reference, call:calls(issue:issues(number, title_en, title_ar, season_en, season_ar))"
+    )
     .eq("id", String(submissionId))
     .maybeSingle();
   return data;
@@ -909,7 +911,7 @@ const paperContents = async (
       title_en: a.title_en,
       url: `${base}${a.link_path ?? "/qirtas/from-the-society"}`,
     })),
-    write: `${base}/qirtas/editions?status=open`,
+    write: `${base}/qirtas/editions/open`,
   };
 };
 
@@ -2283,7 +2285,14 @@ const handlers: Record<string, Handler> = {
     if (to && work) {
       await send(
         to,
-        submissionReceived(to.lang, work.title, appUrl(), desk, work.reference),
+        submissionReceived(
+          to.lang,
+          work.title,
+          appUrl(),
+          desk,
+          work.reference,
+          work.call?.issue ?? null
+        ),
         { sticker: "sent" }
       );
     }

@@ -2620,7 +2620,6 @@ export type Database = {
         Args: { event_slug: string };
         Returns: {
           line: string;
-          logo_dark_path: string;
           logo_path: string;
           logo_shows_name: boolean;
           logo_static: string;
@@ -3714,7 +3713,6 @@ export type Database = {
           kind_other: string | null;
           lead_id: string | null;
           link_decided_at: string | null;
-          logo_dark_path: string | null;
           logo_path: string | null;
           logo_pending_at: string | null;
           logo_pending_path: string | null;
@@ -3746,7 +3744,6 @@ export type Database = {
           kind_other?: string | null;
           lead_id?: string | null;
           link_decided_at?: string | null;
-          logo_dark_path?: string | null;
           logo_path?: string | null;
           logo_pending_at?: string | null;
           logo_pending_path?: string | null;
@@ -3777,7 +3774,6 @@ export type Database = {
           kind_other?: string | null;
           lead_id?: string | null;
           link_decided_at?: string | null;
-          logo_dark_path?: string | null;
           logo_path?: string | null;
           logo_pending_at?: string | null;
           logo_pending_path?: string | null;
@@ -4509,7 +4505,6 @@ export type Database = {
           description_ar: string;
           description_en: string;
           kind: string;
-          logo_dark_path: string;
           logo_path: string;
           logo_shows_name: boolean;
           logo_static: string;
@@ -4918,7 +4913,6 @@ export type Database = {
           id: string;
           is_published: boolean;
           issue_id: string;
-          kind: string;
           max_per_person: number;
           opens_at: string;
           theme_ar: string | null;
@@ -4938,7 +4932,6 @@ export type Database = {
           id?: string;
           is_published?: boolean;
           issue_id: string;
-          kind?: string;
           max_per_person?: number;
           opens_at: string;
           theme_ar?: string | null;
@@ -4957,7 +4950,6 @@ export type Database = {
           id?: string;
           is_published?: boolean;
           issue_id?: string;
-          kind?: string;
           max_per_person?: number;
           opens_at?: string;
           theme_ar?: string | null;
@@ -5146,8 +5138,8 @@ export type Database = {
           status: string;
           theme_ar: string | null;
           theme_en: string | null;
-          title_ar: string;
-          title_en: string;
+          title_ar: string | null;
+          title_en: string | null;
           updated_at: string;
           volume: number;
         };
@@ -5174,8 +5166,8 @@ export type Database = {
           status?: string;
           theme_ar?: string | null;
           theme_en?: string | null;
-          title_ar: string;
-          title_en: string;
+          title_ar?: string | null;
+          title_en?: string | null;
           updated_at?: string;
           volume: number;
         };
@@ -5201,8 +5193,8 @@ export type Database = {
           status?: string;
           theme_ar?: string | null;
           theme_en?: string | null;
-          title_ar?: string;
-          title_en?: string;
+          title_ar?: string | null;
+          title_en?: string | null;
           updated_at?: string;
           volume?: number;
         };
@@ -6294,6 +6286,8 @@ export type Database = {
           edition_number: number;
           edition_pilot: boolean;
           edition_publish_at: string;
+          edition_season_ar: string;
+          edition_season_en: string;
           edition_slug: string;
           edition_status: string;
           edition_theme_ar: string;
@@ -6303,7 +6297,6 @@ export type Database = {
           eligibility_ar: string;
           eligibility_en: string;
           id: string;
-          kind: string;
           max_per_person: number;
           opens_at: string;
           theme_ar: string;

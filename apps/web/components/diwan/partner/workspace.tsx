@@ -20,6 +20,7 @@ import { localized, partners, unwrap } from "@/lib/data";
 import { callApiForm } from "@/lib/diwan/api";
 import { type MyPartner, useMyPartners } from "@/lib/diwan/partners";
 import { getMediaUrl } from "@/lib/storage";
+import { logoTallEnough } from "@/lib/storage/image-size";
 import {
   type InviteeLanguage,
   InviteeLanguageField,
@@ -150,6 +151,9 @@ const PartnerLogo = ({ row }: { row: PartnerRow }) => {
     mutationFn: async () => {
       if (!file) {
         return;
+      }
+      if (!(await logoTallEnough(file))) {
+        throw new Error("logo_too_small");
       }
       const body = new FormData();
       body.set("partner", row.id);

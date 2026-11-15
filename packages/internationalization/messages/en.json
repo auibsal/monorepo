@@ -829,8 +829,6 @@
         "filesFailed": "Your work was sent, but a file didn’t upload. Open the submission to add it again.",
         "openSubmission": "Open the submission",
         "closed": "Qirtas is not taking this type of work right now.",
-        "where": "Where",
-        "whereHint": "An Edition, while its call is open, or Qirtas online.",
         "send": "Send to Qirtas",
         "manuscript": {
           "reading": "Reading your file…",
@@ -855,7 +853,7 @@
         "draftTitle": "Your draft",
         "haven": {
           "title": "Haven",
-          "dek": "Dreams and memories · the pilot Edition of Qirtas",
+          "dek": "Dreams and memories · Edition 0, Qirtas’s pilot",
           "memories": "Our memories and dreams are the most intimate parts of ourselves. Each of us holds a memory from childhood, or a dream close to the heart, that refuses to die.",
           "call": "A poem, a short story, a creative essay or an artwork about a memory, a dream or both.",
           "rulesTitle": "What to send",
@@ -924,10 +922,9 @@
           "email": "A confirmation is on its way to your email.",
           "open": "Open your submission",
           "more": "Send more work",
-          "replyGeneral": "You hear back within six weeks; work sent during finals or the summer is read when the semester starts.",
           "replyBy": "You hear back by {date}.",
-          "replyThemed": "You hear back within the week after the call closes.",
-          "replyVoices": "You hear back by email once the Voices editor decides."
+          "replyVoices": "You hear back by email once the Voices editor decides.",
+          "replySixWeeks": "You hear back within six weeks of the call’s deadline."
         }
       },
       "revising": "Revise and resend",
@@ -1079,10 +1076,12 @@
         "fileReasons": {
           "too_large": "the file is too large.",
           "wrong_type": "this kind of file isn’t accepted here.",
-          "other": "try again."
+          "other": "try again.",
+          "too_short": "the logo is under 600 pixels high."
         },
         "imageAlt": "Current image",
         "noImageNote": "Use our own photos, taken with consent. No identifiable children, no stock images.",
+        "logoRule": "PNG with a transparent background, at least 600 pixels high.",
         "slug": "Web address (slug)",
         "slugHint": "Lowercase letters, numbers and hyphens, for example the-return.",
         "programme": "Part of",
@@ -1103,6 +1102,7 @@
           "none": "Nothing matches."
         },
         "tripNeedsApproval": "An event off campus is published only once the Secretary records Student Life’s written approval, under Occasion.",
+        "logoTooSmall": "The logo is under 600 pixels high. Send a larger PNG, with a transparent background.",
         "selection": {
           "choose": "Choose",
           "all": "Choose every row",
@@ -1209,7 +1209,11 @@
         "addLogos": "Add logos",
         "logosWaiting": "Logos to approve",
         "logosWaitingDetail": "Partners sent these from their dashboards; each shows once approved.",
-        "reviewLogos": "Review logos"
+        "reviewLogos": "Review logos",
+        "editionTitle": "Edition {number} needs its title",
+        "editionTitleDetail": "The Editor-in-Chief proposes it for approval. Its call can’t open until then; it is due {date}.",
+        "editionTitleUndated": "The Editor-in-Chief proposes it for approval. Its call can’t open until then.",
+        "setEditionTitle": "Set the title"
       },
       "members": {
         "title": "Members",
@@ -2544,10 +2548,8 @@
             "approve": "Approve the logo",
             "decline": "Decline"
           },
-          "logos": "Logos",
+          "logos": "Logo",
           "logoTellsLead": "The partner’s own listing: a logo change here is logged and its Lead is told. The partner can send its own from its dashboard.",
-          "logoDark": "Logo for dark backgrounds",
-          "logoDarkHint": "White or reversed, shown on ink. Without one, the logo sits on a small paper-colored plate there.",
           "logoShowsName": "The logo shows the name",
           "logoShowsNameHint": "On: the logo stands alone, with the name as its alt text and link label. Off, or with no logo, the name shows in text.",
           "ownedLede": "This is the partner’s own listing. Its name is locked to the memorandum, and its description and link are the partner’s: it changes them from its dashboard, and the Director of Partnerships approves.",
@@ -2578,7 +2580,9 @@
             "byName": "Similar name",
             "same": "Same organization as {name}",
             "newEntry": "New entry"
-          }
+          },
+          "typedContact": "Contact typed before the partner had a Lead",
+          "typedContactLede": "The Society’s internal note, seen only by staff. It goes once the partner’s Lead signs up; from then on the partner’s people come from their accounts."
         },
         "agreements": {
           "lede": "Partnership memoranda. Each comes from an application signed by the partner’s signatory and takes effect once the Council’s adopted resolution is recorded. Nothing is uploaded. Someone who has declared a conflict with the partner cannot record the vote (P8.3).",
@@ -3041,7 +3045,7 @@
         "edition": "Edition",
         "launch": "Launch",
         "launchNotSet": "Launch not set",
-        "editionsLede": "An Edition is a themed online collection: Haven is the pilot, and Edition 1 comes in spring 2027. Its launch is when every piece tagged to it goes out.",
+        "editionsLede": "An Edition has a number, a season and a title, its theme, and one call. Edition 0, Haven, is the pilot; Edition 1 comes in spring 2027. Its accepted work comes out together on its date.",
         "newEdition": "New Edition",
         "season": "Season",
         "launchHint": "Every piece in this Edition without its own time publishes at the launch. Leave it empty until the time is known.",
@@ -3901,26 +3905,21 @@
           "contents": "Contents",
           "publish": "Publish"
         },
-        "general": "General submissions",
-        "generalLede": "Always open for this Edition: replies within six weeks, accepted work runs online when ready and is considered for the Edition.",
-        "addGeneral": "Open general submissions",
-        "themed": "A themed call",
-        "themedLede": "Its own theme, rules and deadline; its pieces come out together on the Edition’s date.",
-        "addThemed": "Add a themed call",
-        "titleField": "Title, as Open now lists it",
-        "theme": "What to send",
+        "theme": "Its theme, in one line",
         "eligibility": "Who may send",
         "desks": "Sections it takes",
         "opens": "Opens",
         "closes": "Closes",
         "decisions": "Decisions by",
-        "anyTime": "General submissions are open any time.",
         "maxPerPerson": "Each person may send",
-        "published": "Published: listed under Open now and on the Edition’s page",
+        "published": "Published: shown on Editions and on the Edition’s page",
         "contents": "Contents",
         "contentsLede": "The Edition’s pieces by section ({count}), each with its approvals: the section editor, then the Editor-in-Chief or the Managing Editor, and the copy edit.",
         "noContents": "No piece is in this Edition yet. Accepted work joins it from the reading queue.",
-        "approvals": "{count} of 3 approvals"
+        "approvals": "{count} of 3 approvals",
+        "call": "Call",
+        "callLede": "This Edition’s one call, its reading period for Letters, Gallery and Video. It opens the day the previous Edition’s call closes, so one call is always open; work sent after its deadline goes to the next Edition. Its title is the Edition’s, and it can’t be published until the Edition has its title.",
+        "addCall": "Open this Edition’s call"
       }
     },
     "editor": {
@@ -4896,7 +4895,7 @@
           "shown": "Shown now",
           "waiting": "Waiting for the Society’s approval",
           "file": "Logo file",
-          "hint": "PNG, JPEG or WebP, on a light background.",
+          "hint": "PNG with a transparent background, at least 600 pixels high. In dark mode it sits on a small paper-colored tile.",
           "send": "Send the logo",
           "sent": "Sent. You’ll see it here once it is approved."
         },
@@ -5574,7 +5573,7 @@
       "readingTime": "{minutes} min read",
       "firstPublished": "First published in Qirtas. The author keeps the copyright.",
       "moreFrom": "More from {desk}",
-      "editionsLede": "Qirtas’s themed online collections: Haven is the pilot, and Edition 1 comes in spring 2027.",
+      "editionsLede": "Qirtas’s journal, two a year: each Edition has a title, its theme, and one call for Letters, Gallery and Video. Edition 0, Haven, is the pilot; Edition 1 comes in spring 2027.",
       "noEditions": "No Edition has been published yet.",
       "edition": "Edition",
       "games": "Games",
@@ -5624,7 +5623,6 @@
       "nothingYet": "Nothing published yet.",
       "editionsAsList": "See the Editions as a list",
       "editionsOnShelf": "See the Editions on the shelf",
-      "editionNumber": "Edition {number}",
       "launchTitle": "The Edition’s launch",
       "shelfPrevious": "Previous Edition",
       "shelfNext": "Next Edition",
@@ -5731,11 +5729,10 @@
       "correctionsPolicy": "How Qirtas corrects its errors",
       "haven": {
         "title": "Haven",
-        "dek": "Dreams and memories · the pilot Edition of Qirtas",
+        "dek": "Dreams and memories · Edition 0, Qirtas’s pilot",
         "call": "Send a poem, a short story, a creative essay or an artwork, about a memory, a dream or both. Everything is read blind.",
         "submit": "Submit your work now."
       },
-      "pilotIssue": "The pilot",
       "fromTheSocietyLede": "The Society’s notices, newest first: calls, openings, elections and results, and what changes.",
       "fromTheSocietyEmpty": "No notices yet.",
       "fromTheSocietyAll": "All notices",
@@ -5743,8 +5740,7 @@
       "deskEditor": "Edited by {name}",
       "submitLink": "Send your work",
       "callPage": {
-        "openNow": "Open now",
-        "noneOpen": "No call is open at the moment. The next Edition’s general submissions open soon.",
+        "noneOpen": "No call is open at the moment. The next Edition’s call opens soon.",
         "send": "Send your work",
         "closes": "Closes {date}",
         "anyTime": "Any time",
@@ -5765,18 +5761,15 @@
           "reply": "When you hear back",
           "fees": "Fees"
         },
-        "general": {
-          "who": "Members of every class and the Society’s guests. Members under 18 may send work, and nothing shows or names them without a parent’s consent.",
-          "simultaneous": "Work not published before, except on your own social media. You may send it elsewhere too; withdraw it here if it is taken.",
-          "own": "Your own work: no text or images generated with AI.",
-          "decided": "Letters and Gallery are read blind by two readers, and the section editor decides; films are watched by the Video editor. Accepted work runs online when ready and is considered for the Edition.",
-          "reply": "Within six weeks. Work sent during finals or the summer is read when the semester starts."
-        },
-        "themed": {
-          "decided": "Read blind by two readers; the section editor decides, and the pieces come out together on the Edition’s date.",
-          "reply": "By {date}",
-          "afterClose": "within the week after the call closes"
-        }
+        "themeNote": "Work need not address the theme directly.",
+        "who": "Members of every class and the Society’s guests. Members under 18 may send work, and nothing shows or names them without a parent’s consent.",
+        "simultaneous": "Work not published before, except on your own social media. You may send it elsewhere too; withdraw it here if it is taken.",
+        "own": "Your own work: no text or images generated with AI.",
+        "decided": "Letters and Gallery are read blind by two readers, and the section editor decides; films are watched by the Video editor. Accepted work comes out with the Edition, online and in print together, on its date.",
+        "reply": "Within six weeks of the deadline.",
+        "replyBy": "By {date}",
+        "late": "Work sent after the deadline goes to the next Edition.",
+        "theCall": "The open call"
       },
       "doors": {
         "send": "Send your work",
@@ -5791,6 +5784,12 @@
         "all": "All your work",
         "line": "{type} · {date}",
         "untitled": "Untitled draft"
+      },
+      "citation": {
+        "full": "Edition {number}: {title}, {season}",
+        "titled": "Edition {number}: {title}",
+        "untitled": "Edition {number}, {season}",
+        "number": "Edition {number}"
       }
     },
     "about": {

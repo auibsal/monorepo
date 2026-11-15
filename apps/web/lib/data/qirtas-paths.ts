@@ -3,8 +3,12 @@
  * so the public pages' own code stays small.
  */
 
-/** "Send your work": Editions filtered to its open calls, the one door. */
-export const SEND_YOUR_WORK = "/qirtas/editions?status=open";
+/**
+ * "Send your work" (decisions.md, Qirtas): the open Edition's page, at
+ * its call. The address finds whichever Edition's call is open
+ * (app/[locale]/(site)/qirtas/editions/open), so links never go stale.
+ */
+export const SEND_YOUR_WORK = "/qirtas/editions/open";
 
 /** Voices' two forms, at /qirtas/voices/letter and /qirtas/voices/op-ed. */
 export const voicesForms = {
@@ -17,9 +21,9 @@ export const isVoicesForm = (value: string): value is VoicesForm =>
 
 /**
  * A form's address: Voices' letters and op-eds at their own door, Edition
- * work under the Edition (the general submissions' when it isn't known).
+ * work under the Edition (the open Edition's when it isn't known).
  */
-export const draftPath = (category: string, edition = "edition-1") => {
+export const draftPath = (category: string, edition = "open") => {
   const voices = Object.entries(voicesForms).find(([, c]) => c === category);
   return voices
     ? `/qirtas/voices/${voices[0]}`
