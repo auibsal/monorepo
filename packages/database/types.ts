@@ -1738,6 +1738,7 @@ export type Database = {
       my_organization: {
         Args: Record<PropertyKey, never>;
         Returns: {
+          applied: boolean;
           domain: string;
           partner_id: string;
           partner_name_ar: string;
