@@ -1,6 +1,12 @@
 "use client";
 
 import { Input } from "@repo/brand/components/ui/input";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@repo/brand/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -24,6 +30,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { EditionCalls, EditionContents } from "./edition-calls";
 
 type Status = "draft" | "scheduled" | "published";
 
@@ -96,6 +103,7 @@ const PublishControls = ({
 const optionalNumber = (value: string) => (value ? Number(value) : null);
 
 export const IssueEditor = () => {
+  const te = useTranslations("diwan.admin.editionCalls");
   const t = useTranslations("diwan.admin.journal");
   const tw = useTranslations("diwan.admin.qirtas");
   const tk = useTranslations("diwan.admin.kit");
@@ -240,6 +248,164 @@ export const IssueEditor = () => {
     save.mutate(status);
   };
 
+  const publishForm = (
+    <form className="grid max-w-4xl gap-6" onSubmit={submit}>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Field label={t("issue.volume")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              min={1}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, volume: e.target.value }))
+              }
+              required
+              type="number"
+              value={form.volume}
+            />
+          )}
+        </Field>
+        <Field label={t("issue.number")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              min={1}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, number: e.target.value }))
+              }
+              required
+              type="number"
+              value={form.number}
+            />
+          )}
+        </Field>
+        <Field hint={tk("slugHint")} label={tk("slug")}>
+          {(id) => (
+            <Input
+              dir="ltr"
+              id={id}
+              maxLength={80}
+              onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+              placeholder={`issue-${form.number || "1"}`}
+              value={form.slug}
+            />
+          )}
+        </Field>
+      </div>
+      <BilingualField
+        label={t("issue.titleField")}
+        maxLength={200}
+        onChange={(title) => setForm((f) => ({ ...f, title }))}
+        required
+        value={form.title}
+      />
+      <BilingualField
+        label={tw("season")}
+        maxLength={60}
+        onChange={(season) => setForm((f) => ({ ...f, season }))}
+        value={form.season}
+      />
+      <BilingualField
+        label={t("issue.theme")}
+        maxLength={200}
+        onChange={(theme) => setForm((f) => ({ ...f, theme }))}
+        value={form.theme}
+      />
+      <BilingualField
+        label={t("issue.editorsNote")}
+        multiline
+        onChange={(note) => setForm((f) => ({ ...f, note }))}
+        rows={6}
+        value={form.note}
+      />
+      <ImageField
+        area="issues"
+        label={t("issue.cover")}
+        onChange={(cover_path) => setForm((f) => ({ ...f, cover_path }))}
+        value={form.cover_path}
+      />
+      <ImageField
+        area="issues"
+        kind="pdf"
+        label={t("issue.pdf")}
+        onChange={(pdf_path) => setForm((f) => ({ ...f, pdf_path }))}
+        value={form.pdf_path}
+      />
+      <fieldset className="grid gap-4">
+        <legend className="type-label pb-2">{t("issue.printed")}</legend>
+        <p className="type-caption">{t("issue.printedHint")}</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={t("issue.printRun")}>
+            {(id) => (
+              <Input
+                dir="ltr"
+                id={id}
+                min={1}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, print_run: e.target.value }))
+                }
+                type="number"
+                value={form.print_run}
+              />
+            )}
+          </Field>
+          <Field label={t("issue.printedOn")}>
+            {(id) => (
+              <DateInput
+                id={id}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, printed_on: e.target.value }))
+                }
+                value={form.printed_on}
+              />
+            )}
+          </Field>
+        </div>
+        <BilingualField
+          label={t("issue.printer")}
+          maxLength={200}
+          onChange={(printer) => setForm((f) => ({ ...f, printer }))}
+          value={form.printer}
+        />
+      </fieldset>
+      <Field hint={t("issue.launchNightHint")} label={t("issue.launchNight")}>
+        {(id) => (
+          <SelectInput
+            id={id}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, launch_event_id: e.target.value }))
+            }
+            value={form.launch_event_id}
+          >
+            <option value="">{t("issue.noLaunchNight")}</option>
+            {(launchEvents.data ?? []).map((event) => (
+              <option key={event.id} value={event.id}>
+                {`${localized(event, "title", locale)} · ${formatLongDate(event.starts_at, locale)}`}
+              </option>
+            ))}
+          </SelectInput>
+        )}
+      </Field>
+      <DateTimeField
+        label={tw("launch")}
+        onChange={(publish_at) => setForm((f) => ({ ...f, publish_at }))}
+        value={form.publish_at}
+      />
+      <p className="type-caption">{tw("launchHint")}</p>
+      <PublishControls
+        confirm={t("issue.publishConfirm")}
+        onSave={(s) => save.mutate(s)}
+        pending={save.isPending}
+        publishAt={form.publish_at}
+        saved={save.isSuccess}
+        status={status}
+      />
+      <ErrorLine error={save.error} />
+    </form>
+  );
+
   return (
     <div className="grid gap-8">
       <AdminHeading
@@ -259,163 +425,28 @@ export const IssueEditor = () => {
       >
         {`${tk("status")}: ${tk(`statuses.${status}`)}`}
       </AdminHeading>
-      <form className="grid max-w-4xl gap-6" onSubmit={submit}>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Field label={t("issue.volume")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                id={id}
-                min={1}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, volume: e.target.value }))
-                }
-                required
-                type="number"
-                value={form.volume}
-              />
-            )}
-          </Field>
-          <Field label={t("issue.number")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                id={id}
-                min={1}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, number: e.target.value }))
-                }
-                required
-                type="number"
-                value={form.number}
-              />
-            )}
-          </Field>
-          <Field hint={tk("slugHint")} label={tk("slug")}>
-            {(id) => (
-              <Input
-                dir="ltr"
-                id={id}
-                maxLength={80}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, slug: e.target.value }))
-                }
-                placeholder={`issue-${form.number || "1"}`}
-                value={form.slug}
-              />
-            )}
-          </Field>
-        </div>
-        <BilingualField
-          label={t("issue.titleField")}
-          maxLength={200}
-          onChange={(title) => setForm((f) => ({ ...f, title }))}
-          required
-          value={form.title}
-        />
-        <BilingualField
-          label={tw("season")}
-          maxLength={60}
-          onChange={(season) => setForm((f) => ({ ...f, season }))}
-          value={form.season}
-        />
-        <BilingualField
-          label={t("issue.theme")}
-          maxLength={200}
-          onChange={(theme) => setForm((f) => ({ ...f, theme }))}
-          value={form.theme}
-        />
-        <BilingualField
-          label={t("issue.editorsNote")}
-          multiline
-          onChange={(note) => setForm((f) => ({ ...f, note }))}
-          rows={6}
-          value={form.note}
-        />
-        <ImageField
-          area="issues"
-          label={t("issue.cover")}
-          onChange={(cover_path) => setForm((f) => ({ ...f, cover_path }))}
-          value={form.cover_path}
-        />
-        <ImageField
-          area="issues"
-          kind="pdf"
-          label={t("issue.pdf")}
-          onChange={(pdf_path) => setForm((f) => ({ ...f, pdf_path }))}
-          value={form.pdf_path}
-        />
-        <fieldset className="grid gap-4">
-          <legend className="type-label pb-2">{t("issue.printed")}</legend>
-          <p className="type-caption">{t("issue.printedHint")}</p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label={t("issue.printRun")}>
-              {(id) => (
-                <Input
-                  dir="ltr"
-                  id={id}
-                  min={1}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, print_run: e.target.value }))
-                  }
-                  type="number"
-                  value={form.print_run}
-                />
-              )}
-            </Field>
-            <Field label={t("issue.printedOn")}>
-              {(id) => (
-                <DateInput
-                  id={id}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, printed_on: e.target.value }))
-                  }
-                  value={form.printed_on}
-                />
-              )}
-            </Field>
-          </div>
-          <BilingualField
-            label={t("issue.printer")}
-            maxLength={200}
-            onChange={(printer) => setForm((f) => ({ ...f, printer }))}
-            value={form.printer}
-          />
-        </fieldset>
-        <Field hint={t("issue.launchNightHint")} label={t("issue.launchNight")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, launch_event_id: e.target.value }))
-              }
-              value={form.launch_event_id}
-            >
-              <option value="">{t("issue.noLaunchNight")}</option>
-              {(launchEvents.data ?? []).map((event) => (
-                <option key={event.id} value={event.id}>
-                  {`${localized(event, "title", locale)} · ${formatLongDate(event.starts_at, locale)}`}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-        <DateTimeField
-          label={tw("launch")}
-          onChange={(publish_at) => setForm((f) => ({ ...f, publish_at }))}
-          value={form.publish_at}
-        />
-        <p className="type-caption">{tw("launchHint")}</p>
-        <PublishControls
-          confirm={t("issue.publishConfirm")}
-          onSave={(s) => save.mutate(s)}
-          pending={save.isPending}
-          publishAt={form.publish_at}
-          saved={save.isSuccess}
-          status={status}
-        />
-        <ErrorLine error={save.error} />
-      </form>
+      {issueId ? (
+        <Tabs defaultValue="call">
+          <TabsList className="flex-wrap">
+            {(["call", "contents", "publish"] as const).map((tab) => (
+              <TabsTrigger key={tab} value={tab}>
+                {te(`tabs.${tab}`)}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <TabsContent className="pt-6" value="call">
+            <EditionCalls issueId={issueId} />
+          </TabsContent>
+          <TabsContent className="pt-6" value="contents">
+            <EditionContents issueId={issueId} />
+          </TabsContent>
+          <TabsContent className="pt-6" value="publish">
+            {publishForm}
+          </TabsContent>
+        </Tabs>
+      ) : (
+        publishForm
+      )}
     </div>
   );
 };

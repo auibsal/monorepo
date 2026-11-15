@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/brand/components/ui/button";
+import { ReviewStep } from "@repo/brand/components/sal/form-flow";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
@@ -21,6 +21,7 @@ import { useAuth } from "@/lib/auth/provider";
 import { localized, partners, unwrap } from "@/lib/data";
 import { useGuestOf } from "@/lib/diwan/partners";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
+import { FlowReceipt, FlowTerms, StatusLine, useReviewWords } from "./flow";
 
 /**
  * Where an organization outside AUIB works; an AUIB club or department is
@@ -35,7 +36,34 @@ interface Application extends Record<string, unknown> {
   name_ar: string | null;
   name_en: string;
   partner_status: string;
+  reference: string | null;
 }
+
+/** The draft, kept in this browser as you go until it is sent. */
+const DRAFT_KEY = "sal_partner_application";
+
+const readDraft = <T,>(fallback: T): T => {
+  try {
+    const saved = window.localStorage.getItem(DRAFT_KEY);
+    return saved
+      ? { ...fallback, ...(JSON.parse(saved) as Partial<T>) }
+      : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const writeDraft = (value: unknown) => {
+  try {
+    if (value === null) {
+      window.localStorage.removeItem(DRAFT_KEY);
+    } else {
+      window.localStorage.setItem(DRAFT_KEY, JSON.stringify(value));
+    }
+  } catch {
+    // Storage may be off; the form still works without a draft.
+  }
+};
 
 const useMyApplication = () => {
   const { supabase, user } = useAuth();
@@ -81,15 +109,16 @@ const Clause = ({
  * face, with their card number and today's date). The President signs
  * for the Society in the Diwan.
  */
-const ApplicationForm = () => {
+const ApplicationForm = ({ onSent }: { readonly onSent: () => void }) => {
   const t = useTranslations("diwan.partnerJoin");
+  const words = useReviewWords();
   const tm = useTranslations("diwan.partnerJoin.memorandum");
   const tr = useTranslations("diwan.admin.partners.register");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
   const profile = useProfile();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState(() => ({
     accepted: false,
     contactRole: "",
     description: "",
@@ -100,7 +129,18 @@ const ApplicationForm = () => {
     purpose: "",
     reach: "iraq" as (typeof REACHES)[number],
     url: "",
-  });
+  }));
+  // The draft comes back after the first render (the browser keeps it).
+  useEffect(() => {
+    setForm((f) => readDraft(f));
+  }, []);
+  useEffect(() => {
+    const timer = setTimeout(
+      () => writeDraft({ ...form, accepted: false }),
+      800
+    );
+    return () => clearTimeout(timer);
+  }, [form]);
   // A signature is the signer's name on the platform, dated today (decisions.md);
   // the database signs in that name whatever is sent.
   const signatory = profile.data
@@ -124,10 +164,13 @@ const ApplicationForm = () => {
           url: form.url,
         })
       ),
-    onSuccess: () =>
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      writeDraft(null);
+      onSent();
+      await queryClient.invalidateQueries({
         queryKey: ["partner-application", user?.id ?? ""],
-      }),
+      });
+    },
   });
   const set =
     (
@@ -365,13 +408,18 @@ const ApplicationForm = () => {
             {t("accept", { name: partner })}
           </Label>
         </div>
-        <Button
-          className="justify-self-start"
-          disabled={apply.isPending || !form.accepted || !signatory}
-          type="submit"
-        >
-          {t("submit")}
-        </Button>
+        <ReviewStep
+          missing={form.accepted && signatory ? null : t("acceptFirst")}
+          rows={[
+            [t("nameEn"), form.nameEn],
+            [t("nameAr"), form.nameAr],
+            [tr("kind"), tr(`kinds.${form.kind}`)],
+            [t("purpose"), form.purpose],
+            [t("signatory"), signatory],
+          ]}
+          sending={apply.isPending}
+          words={words}
+        />
         <ErrorLine error={apply.error} />
       </div>
     </form>
@@ -391,6 +439,65 @@ const ToSignUp = () => {
 };
 
 /**
+ * The application once sent: the receipt the first time, then where it
+ * stands (decisions.md, Partners: a decision at the Council's next
+ * meeting, within 30 days), or the partner's dashboard once approved.
+ */
+const ApplicationStanding = ({
+  current,
+  justSent,
+}: {
+  readonly current: Application;
+  readonly justSent: boolean;
+}) => {
+  const t = useTranslations("diwan.partnerJoin");
+  const tr = useTranslations("diwan.flow.reply");
+  const locale = useLocale() as Locale;
+  const name = localized(current, "name", locale);
+  const waiting = current.partner_status === "prospect";
+  if (waiting && justSent) {
+    return (
+      <DiwanPage narrow title={t("receivedTitle")}>
+        <FlowReceipt
+          href="/partners/apply"
+          reference={current.reference}
+          reply={tr("partner")}
+        />
+      </DiwanPage>
+    );
+  }
+  return (
+    <DiwanPage
+      lede={
+        waiting
+          ? t("waiting", {
+              date: current.applied_at
+                ? formatLongDate(current.applied_at, locale)
+                : "",
+              name,
+            })
+          : t("partnered", { name })
+      }
+      narrow
+      title={waiting ? t("receivedTitle") : t("partneredTitle")}
+    >
+      {waiting ? (
+        <div className="grid gap-2">
+          <StatusLine kind="partner" status={current.partner_status} />
+          <p className="type-caption">
+            {[current.reference, tr("partner")].filter(Boolean).join(" · ")}
+          </p>
+        </div>
+      ) : (
+        <Link className="link justify-self-start" href="/partners/dashboard">
+          {t("openDesk")}
+        </Link>
+      )}
+    </DiwanPage>
+  );
+};
+
+/**
  * Partner with the Society (decisions.md): an organization signs up,
  * proposes the partnership and signs the memorandum by name; the President
  * signs for the Society in the Diwan. Whoever applied then leads the
@@ -398,9 +505,9 @@ const ToSignUp = () => {
  */
 export const PartnerJoin = () => {
   const t = useTranslations("diwan.partnerJoin");
-  const locale = useLocale() as Locale;
   const { loading, user } = useAuth();
   const application = useMyApplication();
+  const [justSent, setJustSent] = useState(false);
   const mine = useMyMembership();
   const guestOf = useGuestOf();
   const pending = [application, mine, guestOf].some((q) => q.isPending);
@@ -428,30 +535,7 @@ export const PartnerJoin = () => {
   }
   const current = application.data;
   if (current && current.partner_status !== "ended") {
-    const name = localized(current, "name", locale);
-    const waiting = current.partner_status === "prospect";
-    return (
-      <DiwanPage
-        lede={
-          waiting
-            ? t("waiting", {
-                date: current.applied_at
-                  ? formatLongDate(current.applied_at, locale)
-                  : "",
-                name,
-              })
-            : t("partnered", { name })
-        }
-        narrow
-        title={waiting ? t("receivedTitle") : t("partneredTitle")}
-      >
-        {waiting ? null : (
-          <Link className="link justify-self-start" href="/partners/dashboard">
-            {t("openDesk")}
-          </Link>
-        )}
-      </DiwanPage>
-    );
+    return <ApplicationStanding current={current} justSent={justSent} />;
   }
   return (
     <DiwanPage lede={t("lede")} title={t("title")}>
@@ -461,8 +545,9 @@ export const PartnerJoin = () => {
         <p className="type-body max-w-[60ch]">{t("guestNote")}</p>
       ) : null}
       <div className="max-w-4xl">
-        <ApplicationForm />
+        <ApplicationForm onSent={() => setJustSent(true)} />
       </div>
+      <FlowTerms kind="partner" />
     </DiwanPage>
   );
 };

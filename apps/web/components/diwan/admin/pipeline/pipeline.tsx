@@ -24,10 +24,12 @@ import {
 import { Board, Decided, Selection } from "./board";
 import {
   type Category,
+  PipelineCall,
   type PipelineIssue,
   pipelineKey,
   type SubmissionStatus,
   useBlindEntries,
+  usePipelineCall,
   usePipelineIssues,
 } from "./data";
 import { EntryLink } from "./entry-link";
@@ -39,6 +41,7 @@ const MyReads = ({ issueId }: { issueId: string }) => {
   const tj = useTranslations("diwan.admin.journal");
   const ts = useTranslations("diwan.journal.status");
   const { supabase, user } = useAuth();
+  const callId = usePipelineCall();
   const reads = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
@@ -47,13 +50,15 @@ const MyReads = ({ issueId }: { issueId: string }) => {
           .schema("journal")
           .from("assignments")
           .select(
-            "id, read_number, entry:blind_entries!inner(id, blind_id, title, category, status, issue_id), score:scores(total)"
+            "id, read_number, entry:blind_entries!inner(id, blind_id, title, category, status, issue_id, call_id), score:scores(total)"
           )
           .eq("reader_id", user?.id ?? "")
           .eq("entry.issue_id", issueId)
           .order("assigned_at")
       ) ?? [],
     queryKey: [...pipelineKey, "reads", issueId, user?.id],
+    select: (rows) =>
+      callId ? rows.filter((r) => r.entry.call_id === callId) : rows,
   });
   type Row = NonNullable<typeof reads.data>[number];
   const columns: Column<Row>[] = [
@@ -142,40 +147,50 @@ const Flagged = ({ issueId }: { issueId: string }) => {
   );
 };
 
-type TabKey =
-  | "reading"
-  | "intake"
-  | "readers"
-  | "board"
-  | "selection"
-  | "decided"
-  | "flagged";
+/**
+ * The reading queue's stages (decisions.md, The site: Diwan → Qirtas →
+ * Editions): Intake, Reading, Decide and Decided, each shown to whoever
+ * has a part in it; the Advisory Board's flagged pieces after them. Blind
+ * reading and who sees names are unchanged: each part reads only its own.
+ */
+type Stage = "intake" | "reading" | "decide" | "decided" | "flagged";
 
-const tabsFor = (issue: PipelineIssue): TabKey[] => {
+const stagesFor = (issue: PipelineIssue): Stage[] => {
   const editor = issue.can_manage || issue.can_decide;
-  const tabs: [TabKey, boolean][] = [
-    ["reading", issue.can_review],
+  const stages: [Stage, boolean][] = [
     ["intake", issue.can_identity],
-    ["readers", issue.can_identity],
-    ["board", editor],
-    ["selection", editor],
+    ["reading", issue.can_review || editor],
+    ["decide", editor],
     ["decided", editor || issue.can_identity],
     ["flagged", issue.can_advise],
   ];
-  return tabs.filter(([, shown]) => shown).map(([key]) => key);
+  return stages.filter(([, shown]) => shown).map(([key]) => key);
 };
 
-const TabBody = ({ issue, tab }: { issue: PipelineIssue; tab: TabKey }) => {
-  switch (tab) {
-    case "reading":
-      return <MyReads issueId={issue.id} />;
+const StageBody = ({
+  issue,
+  stage,
+}: {
+  issue: PipelineIssue;
+  stage: Stage;
+}) => {
+  const editor = issue.can_manage || issue.can_decide;
+  switch (stage) {
     case "intake":
-      return <IntakeQueue issueId={issue.id} />;
-    case "readers":
-      return <Readers issueId={issue.id} />;
-    case "board":
-      return <Board issueId={issue.id} />;
-    case "selection":
+      return (
+        <div className="grid gap-10">
+          <IntakeQueue issueId={issue.id} />
+          <Readers issueId={issue.id} />
+        </div>
+      );
+    case "reading":
+      return (
+        <div className="grid gap-10">
+          {issue.can_review ? <MyReads issueId={issue.id} /> : null}
+          {editor ? <Board issueId={issue.id} /> : null}
+        </div>
+      );
+    case "decide":
       return <Selection canDecide={issue.can_decide} issueId={issue.id} />;
     case "decided":
       return <Decided issueId={issue.id} />;
@@ -184,21 +199,48 @@ const TabBody = ({ issue, tab }: { issue: PipelineIssue; tab: TabKey }) => {
   }
 };
 
-/** The blind review; `embedded` inside the Qirtas section (no heading). */
+/** The Edition's calls, to filter the queue by (all of them, or one). */
+const useIssueCalls = (issueId: string | undefined) => {
+  const { supabase } = useAuth();
+  return useQuery({
+    enabled: Boolean(issueId),
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("journal")
+          .from("calls")
+          .select("id, kind, title_en, title_ar")
+          .eq("issue_id", issueId ?? "")
+          .order("kind", { ascending: false })
+      ) ?? [],
+    queryKey: [...pipelineKey, "calls", issueId],
+  });
+};
+
+/**
+ * The one reading queue across every call (decisions.md, The site: Diwan
+ * → Qirtas → Editions), filtered by Edition and call; `embedded` on the
+ * Editions tab (no heading of its own).
+ */
 export const PipelineAdmin = ({ embedded = false }: { embedded?: boolean }) => {
   const t = useTranslations("diwan.admin.pipeline");
   const tj = useTranslations("diwan.admin.journal");
   const locale = useLocale() as Locale;
   const issues = usePipelineIssues();
   const [chosen, setChosen] = useState("");
+  const [callId, setCallId] = useState("");
   const issue =
     issues.data?.find((i) => i.id === chosen) ?? issues.data?.[0] ?? null;
-  const tabs = issue ? tabsFor(issue) : [];
+  const calls = useIssueCalls(issue?.id);
+  const stages = issue ? stagesFor(issue) : [];
 
   return (
     <div className="grid gap-6">
       {embedded ? (
-        <p className="type-body text-text-secondary max-w-3xl">{t("lede")}</p>
+        <div className="grid gap-2">
+          <h2 className="type-heading font-light">{t("title")}</h2>
+          <p className="type-body text-text-secondary max-w-3xl">{t("lede")}</p>
+        </div>
       ) : (
         <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
       )}
@@ -211,7 +253,10 @@ export const PipelineAdmin = ({ embedded = false }: { embedded?: boolean }) => {
               <SelectInput
                 className="w-80"
                 id={id}
-                onChange={(e) => setChosen(e.target.value)}
+                onChange={(e) => {
+                  setChosen(e.target.value);
+                  setCallId("");
+                }}
                 value={issue.id}
               >
                 {issues.data?.map((i) => (
@@ -227,20 +272,41 @@ export const PipelineAdmin = ({ embedded = false }: { embedded?: boolean }) => {
               </SelectInput>
             )}
           </Field>
-          <Tabs defaultValue={tabs[0]} key={issue.id}>
-            <TabsList className="flex-wrap">
-              {tabs.map((tab) => (
-                <TabsTrigger key={tab} value={tab}>
-                  {t(`tabs.${tab}`)}
-                </TabsTrigger>
+          {(calls.data?.length ?? 0) > 1 ? (
+            <Field label={t("call")}>
+              {(id) => (
+                <SelectInput
+                  className="w-80"
+                  id={id}
+                  onChange={(e) => setCallId(e.target.value)}
+                  value={callId}
+                >
+                  <option value="">{t("allCalls")}</option>
+                  {calls.data?.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {localized(c, "title", locale)}
+                    </option>
+                  ))}
+                </SelectInput>
+              )}
+            </Field>
+          ) : null}
+          <PipelineCall.Provider value={callId}>
+            <Tabs defaultValue={stages[0]} key={issue.id}>
+              <TabsList className="flex-wrap">
+                {stages.map((stage) => (
+                  <TabsTrigger key={stage} value={stage}>
+                    {t(`stages.${stage}`)}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {stages.map((stage) => (
+                <TabsContent className="pt-4" key={stage} value={stage}>
+                  <StageBody issue={issue} stage={stage} />
+                </TabsContent>
               ))}
-            </TabsList>
-            {tabs.map((tab) => (
-              <TabsContent className="pt-4" key={tab} value={tab}>
-                <TabBody issue={issue} tab={tab} />
-              </TabsContent>
-            ))}
-          </Tabs>
+            </Tabs>
+          </PipelineCall.Provider>
         </>
       ) : null}
     </div>

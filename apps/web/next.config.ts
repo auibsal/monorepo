@@ -14,8 +14,13 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;
 const MOVED: readonly [from: string, to: string][] = [
   // Submit to Qirtas's door (Qirtas).
-  ["/qirtas/write", "/qirtas/submit"],
-  ["/qirtas/write/:path*", "/qirtas/submit/:path*"],
+  // Editions is the one door (decisions.md, Qirtas): every old address of
+  // Submit to Qirtas opens its open calls; /haven is Haven's own page.
+  ["/qirtas/write", "/qirtas/editions?status=open"],
+  ["/qirtas/write/:path*", "/qirtas/editions?status=open"],
+  ["/qirtas/submit", "/qirtas/editions?status=open"],
+  ["/qirtas/submit/:path*", "/qirtas/editions?status=open"],
+  ["/haven", "/qirtas/editions/haven"],
   // The partner dashboard's five tabs (decisions.md, The site).
   ["/partners/dashboard/people", "/partners/dashboard/guests"],
   ["/partners/dashboard/events", "/partners/dashboard"],

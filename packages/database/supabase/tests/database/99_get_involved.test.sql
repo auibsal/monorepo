@@ -94,7 +94,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(18);
+select plan(20);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a1', 'volunteer@auib.edu.iq', 'Volunteer');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a2', 'stage.lead@auib.edu.iq', 'Stage Lead');
@@ -165,6 +165,14 @@ select is(
   programmes.save_application('0be00000-0000-0000-0000-0000000070b1', '{"why": "I keep lists."}',
     'Evenings', 'en', '{}', 'A seat near the door', null, true),
   'new', 'and then it is sent'
+);
+select matches(
+  (select reference from programmes.opening_replies where opening_id = '0be00000-0000-0000-0000-0000000070b1'),
+  '^SUB-[0-9]{4}-[0-9]{4}$', 'Sent, it takes its record number (decisions.md, The site: one form flow)'
+);
+select is(
+  (select count(*)::integer from programmes.opening_replies where reference is null and status <> 'draft'),
+  0, 'and no sent application is without one'
 );
 select pg_temp.logout();
 select ok(

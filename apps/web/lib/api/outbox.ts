@@ -908,7 +908,7 @@ const paperContents = async (
       title_en: a.title_en,
       url: `${base}${a.link_path ?? "/qirtas/from-the-society"}`,
     })),
-    write: `${base}/qirtas/submit`,
+    write: `${base}/qirtas/editions?status=open`,
   };
 };
 

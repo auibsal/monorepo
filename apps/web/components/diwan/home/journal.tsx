@@ -23,7 +23,9 @@ export const JournalSection = () => {
   return (
     <Section id="journal" title={t("title")}>
       {calls.data?.length === 0 ? (
-        <EmptyLine action={{ href: "/qirtas/submit", label: t("submit") }}>
+        <EmptyLine
+          action={{ href: journal.SEND_YOUR_WORK, label: t("submit") }}
+        >
           {t("none")}
         </EmptyLine>
       ) : null}
@@ -54,7 +56,7 @@ export const JournalSection = () => {
             )}
             <Link
               className="link type-caption justify-self-start"
-              href="/qirtas/submit"
+              href={journal.SEND_YOUR_WORK}
             >
               {t("submit")}
             </Link>

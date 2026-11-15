@@ -15,7 +15,7 @@ import { Link } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
-import { AdminHeading } from "../kit";
+import { RecordView } from "../kit";
 import { NotionManaged } from "../notion-managed";
 import { RecordHistory } from "../record-history";
 import { AccessForm } from "./access-form";
@@ -130,23 +130,17 @@ export const EventEditor = () => {
   ];
 
   return (
-    <div className="grid gap-10">
-      <AdminHeading
-        actions={
-          <>
-            <Link
-              className="text-sm underline underline-offset-4"
-              href="/events"
-            >
-              {tk("back")}
-            </Link>
-            <PublicPage slug={event.slug} status={event.status} />
-          </>
-        }
-        title={localized(event, "title", locale)}
-      >
-        {`${tk("status")}: ${tk(`statuses.${event.status as "draft"}`)}`}
-      </AdminHeading>
+    <RecordView
+      actions={<PublicPage slug={event.slug} status={event.status} />}
+      back={
+        <Link className="link" href="/events">
+          {tk("back")}
+        </Link>
+      }
+      history={<RecordHistory id={eventId} table="events.events" />}
+      status={`${tk("status")}: ${tk(`statuses.${event.status as "draft"}`)}`}
+      title={localized(event, "title", locale)}
+    >
       <NotionManaged kind="event" recordId={eventId} />
       <DebriefLink eventId={eventId} />
       <dl className="grid max-w-4xl gap-x-6 gap-y-3 sm:grid-cols-[10rem_1fr]">
@@ -175,7 +169,6 @@ export const EventEditor = () => {
       />
       <EventPartsAdmin event={event} />
       <Incidents eventId={eventId} />
-      <RecordHistory id={eventId} table="events.events" />
-    </div>
+    </RecordView>
   );
 };

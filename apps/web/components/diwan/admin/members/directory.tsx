@@ -15,6 +15,7 @@ import { useAuth } from "@/lib/auth/provider";
 import { membership } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
+import { useQueryState } from "@/lib/diwan/use-query-param";
 import { hasPermission } from "@/lib/rbac";
 import { ErrorState, SectionSpinner } from "../../states";
 import {
@@ -54,9 +55,30 @@ export const MembersDirectory = () => {
   const id = useId();
   const grants = useGrants();
   const directory = useDirectory();
-  const [query, setQuery] = useState("");
-  const [tier, setTier] = useState<"" | membership.Tier>("");
-  const [votingOnly, setVotingOnly] = useState(false);
+  // The find line and the filters live in the query string (decisions.md,
+  // The site: "One list"), so a filtered Register can be shared and reloads.
+  const [q, setQ] = useQueryState("q");
+  const [tierParam, setTierParam] = useQueryState("tier");
+  const [votingParam, setVotingParam] = useQueryState("voting");
+  const [query, setQueryState] = useState(q);
+  const [tier, setTierState] = useState(
+    (membership.tiers as readonly string[]).includes(tierParam)
+      ? (tierParam as membership.Tier)
+      : ""
+  );
+  const [votingOnly, setVotingState] = useState(votingParam === "1");
+  const setQuery = (value: string) => {
+    setQueryState(value);
+    setQ(value);
+  };
+  const setTier = (value: "" | membership.Tier) => {
+    setTierState(value);
+    setTierParam(value);
+  };
+  const setVotingOnly = (value: boolean) => {
+    setVotingState(value);
+    setVotingParam(value ? "1" : "");
+  };
   const deferred = useDeferredValue(query);
 
   const rows = useMemo(() => {

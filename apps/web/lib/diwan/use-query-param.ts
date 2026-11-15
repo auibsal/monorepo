@@ -19,3 +19,28 @@ export const useQueryParam = (name: string) => {
   const fromQuery = useSearchParams().get(name);
   return fromPath ?? fromQuery ?? null;
 };
+
+/**
+ * A list's find line or filter, kept in the query string (decisions.md,
+ * The site: "Lasting addresses"), so a filtered list can be shared and
+ * comes back on reload. Setting an empty value removes it.
+ */
+export const useQueryState = (name: string) => {
+  const params = useSearchParams();
+  const value = params.get(name) ?? "";
+  const set = (next: string) => {
+    const query = new URLSearchParams(params.toString());
+    if (next) {
+      query.set(name, next);
+    } else {
+      query.delete(name);
+    }
+    const search = query.toString();
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}${search ? `?${search}` : ""}`
+    );
+  };
+  return [value, set] as const;
+};

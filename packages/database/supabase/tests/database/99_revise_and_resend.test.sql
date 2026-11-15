@@ -99,14 +99,12 @@ $$;
 
 select plan(19);
 
-update journal.calls set desks = enum_range(null::journal.desk) where issue_id is null;
-
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ae11', 'news@auib.edu.iq', 'News Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ae12', 'letters@auib.edu.iq', 'Letters Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'reporter@auib.edu.iq', 'Sara Reporter');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'poet@auib.edu.iq', 'Omar Poet');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'other@auib.edu.iq', 'Other Member');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000ae11', 'news_editor');
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000ae11', 'voices_editor');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000ae12', 'letters_editor');
 
 insert into membership.pledges (user_id, pledge_type, version)
@@ -123,17 +121,17 @@ insert into journal.calls (id, issue_id, title_en, title_ar, opens_at, closes_at
   ('ca000000-0000-0000-0000-0000000000f7', '1a000000-0000-0000-0000-0000000000f7',
     'Edition', 'الإصدار', now() - interval '1 day', now() + interval '30 days', true);
 
--- ── Named work: the News desk ───────────────────────────────────────────────
+-- ── Named work: a letter to the editor, on the Voices desk ──────────────────
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-insert into journal.submissions (category, language, title, deck, body_html, human_authorship_confirmed)
-values ('report', 'en', 'Book drive', 'Second Chapter collected books.', '<p>First draft</p>', true);
+insert into journal.submissions (category, language, title, body_html, human_authorship_confirmed,
+  first_publication_confirmed)
+values ('letter_to_editor', 'en', 'Book drive', '<p>First draft</p>', true, true);
 select pg_temp.logout();
 create function pg_temp.news_sub() returns uuid language sql security definer as $$
   select id from journal.submissions where title like 'Book drive%';
 $$;
 grant execute on function pg_temp.news_sub() to public;
-update journal.submissions set call_id = null where id = pg_temp.news_sub();
 create function pg_temp.news_number() returns text language sql security definer as $$
   select reference from journal.submissions where id = pg_temp.news_sub();
 $$;

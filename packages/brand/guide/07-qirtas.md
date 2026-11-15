@@ -26,7 +26,7 @@ One nameplate on every page of the paper, the same on the front page, a section 
 
 Six Words and Next Stop are not part of Qirtas: six-word pages belong to the Typewriter Tour, and Next Stop is the Society's video show, made by the Director of Media's team.
 
-**Submit to Qirtas** (auibsal.org/qirtas/submit) is always open: members send work in every section but Games, at any time, and everything is read blind. **The Sunday Paper** is the members' newsletter, monthly, on the first Sunday.
+**Editions** (auibsal.org/qirtas/editions) is the one door for outside work: each Edition's general submissions are always open, and a themed call has its own dates. Letters and Gallery are read blind; Video takes members' films; Voices takes letters to the editor and op-eds by name; News takes tips and staff. **The Sunday Paper** is the members' newsletter, monthly, on the first Sunday.
 
 ## Reading Qirtas
 

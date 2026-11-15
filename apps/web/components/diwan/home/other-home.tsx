@@ -5,7 +5,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
-import { localized, unwrap } from "@/lib/data";
+import { journal, localized, unwrap } from "@/lib/data";
 import { useGuestOf, useMyPartners } from "@/lib/diwan/partners";
 import { useMyMembership } from "@/lib/diwan/queries";
 import { DiwanSection, RowList } from "../page";
@@ -151,7 +151,10 @@ export const OtherHome = () => {
                 <p className="type-caption">{t("bookLine")}</p>
               </li>
               <li className="grid gap-1">
-                <Link className="link font-medium" href="/qirtas/submit">
+                <Link
+                  className="link font-medium"
+                  href={journal.SEND_YOUR_WORK}
+                >
                   {t("write")}
                 </Link>
                 <p className="type-caption">{t("writeLine")}</p>

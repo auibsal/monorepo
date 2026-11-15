@@ -69,7 +69,7 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Copy Chief / Managing Editor | رئيس التدقيق / مدير التحرير |
 | Anonymous (byline) / corrections log / editor's note | مجهول الاسم / سجل التصحيحات / ملاحظة المحرر |
 | From the Society (Qirtas front-page stream) | من الجمعية |
-| Supported by (sponsors in kind) / With the support of (AUIB offices) | بدعم من / بمساندة |
+| Campus partners (AUIB offices, on /partners) / Co-sponsored by (an event's partners and campus partners) / Thanks to (sponsors in kind) | «شركاء من الجامعة» / «برعاية مشتركة مع» / «شكر وتقدير» |
 | event access: Open / RSVP / Members / Private | مفتوحة / بحجز مسبق / للأعضاء / خاصة |
 | Request Associate membership | طلب العضوية المنتسبة |
 | "In Arabic, address me as" (the Arabic form) | «خاطبني بالعربية بصيغة»: «عضو» / «عضوة» |
@@ -102,10 +102,13 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | charity collection | جمع التبرعات لجهة خيرية |
 | Edition / Edition 1 / the pilot (Haven) | الإصدار / الإصدار 1 / الإصدار التجريبي |
 | the standing flow / table of contents / contributors' notes / cover artist | التدفق المستمر / المحتويات / نبذة عن المساهمين / فنان الغلاف |
-| Submit (Qirtas's button) | «أرسل عملك» |
+| Submit (Qirtas's button) | «أرسل إلى قرطاس» |
 | Your account's tabs: Today / Events / Work / Roles / Documents / Settings; Settings' sections: Account / Notifications / Security / Your data | «اليوم» / «الفعاليات» / «أعمالك» / «الأدوار» / «المستندات» / «الإعدادات»؛ أقسام الإعدادات: «الحساب» / «الإشعارات» / «الأمان» / «بياناتك» |
 | Sign out | تسجيل الخروج |
 | "Doors open" (Hudhud's post an hour before) | «الأبواب مفتوحة الآن» |
+| Event page fields: Good to know / Who can come / Places left / Language / Step-free / Not step-free / Ask for an accommodation by <date> / Food and drink / Contains / Content note / Photos are taken | «معلومات مفيدة» / «من يمكنه الحضور» / «الأماكن المتبقية» / «اللغة» / «بلا درج» / «فيه درج» / «اطلب تسهيلات قبل <التاريخ>» / «الطعام والشراب» / «يحتوي على» / «تنبيه حول المحتوى» / «يُصوَّر الحدث» |
+| Hosted by (a partner that owns an event, under the title) | «باستضافة» |
+| The nine major allergens, and corn: milk, eggs, fish, crustacean shellfish, tree nuts, peanuts, wheat, soy, sesame; corn | الحليب، البيض، السمك، القشريات، المكسرات، الفول السوداني، القمح، الصويا، السمسم؛ الذرة |
 | agreements and consents / Raise a concern / Pitch an event | الاتفاقيات والموافقات / «أبلِغ عن مخاوف» / «اقترح فعالية» |
 | Haven (the pilot) | «ملاذ» |
 | topic (Qirtas) | موضوع |
@@ -116,7 +119,17 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | reader (blind reading) | قارئ |
 | the masthead | هيئة التحرير |
 | the Sunday Paper | «جريدة الأحد» |
-| Write for Qirtas | «اكتب لقرطاس» |
+| Submit to Qirtas (writing and art alike) | «أرسل إلى قرطاس» |
+| General submissions (an Edition's, always open) / a themed call | «المشاركات العامة» / «دعوة بموضوع» |
+| Send your work (Qirtas's button) / Open now (Editions) / Closes <date> / Any time | «أرسل عملك» / «مفتوحة الآن» / «تُغلق في <التاريخ>» / «في أي وقت» |
+| Received / In review / Decision / Withdrawn (one status list) | «استُلم» / «قيد المراجعة» / «القرار» / «سُحب» |
+| Letter to the editor / Op-ed (guest) | «رسالة إلى المحرر» / «مقال رأي» |
+| Send a news tip / Join the staff | «أرسل معلومة لخبر» / «انضم إلى الفريق» |
+| Reading now, published <date> | «القراءة جارية، ويُنشر في <التاريخ>» |
+| Last call (Hudhud, before a deadline) | «آخر فرصة» |
+| The reading queue (Diwan → Qirtas → Editions) / Intake / Reading / Decide / Decided | «المشاركات» / «الاستلام» / «القراءة» / «القرار» / «ما تقرر» |
+| About the writer (op-ed identity line) | «نبذة عن الكاتب» |
+| The op-ed identity line: "[Name] is a [year] studying [subject] at AUIB." (built from the class and the writer's one line) | «[الاسم] طالب في السنة [...] يدرس [...] في الجامعة الأمريكية في بغداد.» (in the writer's Arabic form: طالبة، تدرس) |
 | News / Voices / Letters / Gallery / Video / Games | الأخبار / آراء / آداب / المعرض / فيديو / ألعاب |
 | the Mutanabbi Prize | جائزة المتنبي |
 | six-word page | صفحة الكلمات الست |

@@ -1,7 +1,7 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Support } from "@/components/institutions";
+import { CampusPartners } from "@/components/institutions";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
 import { localized, partners } from "@/lib/data";
@@ -58,7 +58,32 @@ const PartnersPage = async ({ params }: LocaleParams) => {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
-      <PageHeader lede={t("lede")} title={t("title")}>
+      <PageHeader
+        actions={
+          <>
+            {/* The page's one action, first (decisions.md, The site). */}
+            <Button asChild>
+              {/* Not fetched ahead: your account's code would weigh on the
+                  page (the performance budget). */}
+              <Link href="/partners/apply" prefetch={false}>
+                {t("apply")}
+              </Link>
+            </Button>
+            <Link
+              className="link"
+              href={{
+                pathname: "/sign-in",
+                query: { next: "/partners/dashboard" },
+              }}
+              prefetch={false}
+            >
+              {t("teamSignIn")}
+            </Link>
+          </>
+        }
+        lede={t("lede")}
+        title={t("title")}
+      >
         <ManageLinks diwan="/partnerships" partner />
       </PageHeader>
       {(["gets", "gives"] as const).map((side) => (
@@ -84,11 +109,15 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           </ul>
         </Section>
       ))}
-      {list.length === 0 ? <p className="type-body">{t("empty")}</p> : null}
+      {list.some((p) => p.relation === "partner") ? null : (
+        <p className="type-body">{t("empty")}</p>
+      )}
       {GROUP_ORDER.map((group) => {
         const kinds: readonly string[] = GROUPS[group];
         const members = list
-          .filter((p) => kinds.includes(p.kind ?? "other"))
+          .filter(
+            (p) => p.relation === "partner" && kinds.includes(p.kind ?? "other")
+          )
           .map((p) => ({ ...p, shown: localized(p, "name", locale) }))
           .sort((a, b) => a.shown.localeCompare(b.shown, locale));
         if (members.length === 0) {
@@ -138,30 +167,14 @@ const PartnersPage = async ({ params }: LocaleParams) => {
           </Section>
         );
       })}
-      {/* AUIB's own offices aren't partners (decisions §2): they support
-          the Society, listed here and nowhere else. */}
-      <Support
+      {/* AUIB's own offices aren't partners (decisions.md, Partners): they
+          are its campus partners, after the partners. */}
+      <CampusPartners
         className="border-line pt-space-4 border-t"
         locale={locale}
-        logos
       />
       <Section id="work-with-us" title={t("workTitle")}>
         <p className="type-body">{t("work")}</p>
-        <p className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          {/* The page's one action (the third prompt, §7). */}
-          <Button asChild>
-            <Link href="/partners/apply">{t("apply")}</Link>
-          </Button>
-          <Link
-            className="link"
-            href={{
-              pathname: "/sign-in",
-              query: { next: "/partners/dashboard" },
-            }}
-          >
-            {t("teamSignIn")}
-          </Link>
-        </p>
       </Section>
       {/* Second Chapter (decisions.md): kept by the Director of
           Partnerships; its collection's record is a Notion page. */}

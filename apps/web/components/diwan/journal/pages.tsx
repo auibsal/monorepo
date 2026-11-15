@@ -27,6 +27,7 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  RecordView,
   SaveButton,
   SelectInput,
 } from "../admin/kit";
@@ -107,7 +108,7 @@ interface Sent {
  * where it stands and its own page.
  */
 /** The member's drafts in Submit to Qirtas, newest first. */
-export const useMyDrafts = () => {
+const useMyDrafts = () => {
   const { supabase, user } = useAuth();
   return useQuery({
     enabled: Boolean(user),
@@ -116,7 +117,7 @@ export const useMyDrafts = () => {
         await supabase
           .schema("journal")
           .from("submission_drafts")
-          .select("id, category, title, updated_at")
+          .select("id, category, title, updated_at, path:content->>path")
           .order("updated_at", { ascending: false })
       ) ?? [],
     queryKey: queryKeys.drafts,
@@ -133,7 +134,7 @@ export const YourWork = () => {
     if (s.status === "intake_check" && s.intake_returned_at) {
       return t(s.revision_requested_at ? "revising" : "returned");
     }
-    return t(`status.${s.status}`);
+    return t(`flow.${journal.writerStatus(s.status)}`);
   };
   const tw = useTranslations("diwan.journal.write");
   const tn = useTranslations("diwan.qirtas");
@@ -149,7 +150,7 @@ export const YourWork = () => {
     ...(drafts.data ?? []).map(
       (d): Sent => ({
         date: d.updated_at,
-        href: `/qirtas/submit/${d.category}/${d.id}`,
+        href: `${d.path ?? journal.draftPath(d.category)}/${d.id}`,
         id: `d-${d.id}`,
         status: tw("draftStatus"),
         title: d.title || tw("untitledDraft"),
@@ -515,7 +516,7 @@ export const MySubmission = () => {
   const back = (
     <Link
       className="text-sm underline underline-offset-4"
-      href="/qirtas/submit"
+      href={journal.SEND_YOUR_WORK}
     >
       {t("back")}
     </Link>
@@ -538,11 +539,12 @@ export const MySubmission = () => {
   const fileCount = (data.data?.files.length ?? 0) + adding.length;
 
   return (
-    <div className="grid gap-8">
-      <AdminHeading actions={back} title={row.title}>
-        {tj(`categories.${row.category}`)} · {t(`status.${row.status}`)}
-      </AdminHeading>
-
+    <RecordView
+      back={back}
+      lede={tj(`categories.${row.category}`)}
+      status={t(`flow.${journal.writerStatus(row.status)}`)}
+      title={row.title}
+    >
       {row.status === "intake_check" && row.intake_returned_at ? (
         <section className="border-line grid gap-2 border-t p-4" role="status">
           <h2 className="font-medium">
@@ -649,7 +651,7 @@ export const MySubmission = () => {
           <ErrorLine error={withdraw.error} />
         </DiwanSection>
       )}
-    </div>
+    </RecordView>
   );
 };
 
@@ -729,7 +731,9 @@ const ReadingTimeline = ({
                   }
                 >
                   {stage === "decision" && index <= current
-                    ? t(`status.${status as "accepted"}`)
+                    ? t(
+                        `flow.${journal.writerStatus(status as journal.SubmissionStatus)}`
+                      )
                     : t(`timeline.${stage}.title`)}
                   {at ? (
                     <span className="type-caption ms-2 font-normal">

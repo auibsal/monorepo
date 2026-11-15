@@ -51,8 +51,9 @@ media do.
     account menu. Nothing blocks after sign-in but two-step sign-in; the
     rest are to-dos on Today. With
     what you sent at `/requests` and `/requests/<id>`. Also `/company/auditions`,
-    `/qirtas/submit` (public; the forms at `/qirtas/submit/<type>`, a draft at
-    `/qirtas/submit/<type>/<draft>`) and `/qirtas/read/<slug>` (a
+    the forms under each Edition at `/qirtas/editions/<edition>/submit/<type>`
+    (a draft under it; Editions itself is public), Voices' two forms at
+    `/qirtas/voices/letter` and `/op-ed`, and `/qirtas/read/<slug>` (a
     members-only piece), on Qirtas's paper with its nameplate like every
     page of Qirtas (`Paper` in `components/qirtas/paper.tsx`). The gates
     are in `components/diwan/gates.tsx`.

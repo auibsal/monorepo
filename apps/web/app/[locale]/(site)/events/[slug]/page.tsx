@@ -1,4 +1,7 @@
-import { SupportedBy } from "@repo/brand/components/sal/acknowledgment";
+import {
+  CoSponsoredBy,
+  ThanksTo,
+} from "@repo/brand/components/sal/acknowledgment";
 import { ActionBar } from "@repo/brand/components/sal/action-bar";
 import { Icon } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
@@ -8,11 +11,12 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { EventAccess } from "@/components/event-access";
 import { EventBooking } from "@/components/event-booking";
 import { EventParts } from "@/components/event-parts";
+import { GoodToKnow } from "@/components/good-to-know";
 import { ManageLinks } from "@/components/manage-links";
 import { events, localized, sanitizeRichText } from "@/lib/data";
+import { acknowledged } from "@/lib/institutions";
 import { eventLd, JsonLd } from "@/lib/json-ld";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
@@ -83,18 +87,23 @@ const EventView = async ({
   const body = localized(event, "body", locale);
   const image = mediaUrl(event.image_path);
   const cancelled = event.status === "canceled";
-  // Held for a partner (Notion's Host, decisions §13).
+  // A partner that owns the event (Notion's Host) is named under the title,
+  // "Hosted by"; the Society's own events have no host line (decisions.md,
+  // Events).
   const host = await readPublished(
     ["events", "partners"],
     (c) => events.eventHost(c, event.slug),
     null
   );
-  // Sponsors in kind (decisions §2): names or logos only.
-  const sponsors = await readPublished(
+  // Who it's with, from the one register (decisions.md, Events): the
+  // co-sponsors, then the sponsors in kind, names with logos only.
+  const withOrgs = await readPublished(
     ["events", "partners"],
-    (c) => events.eventSponsors(c, event.slug),
+    (c) => events.eventOrganizations(c, event.slug),
     []
   );
+  const rowOf = (line: string) =>
+    withOrgs.filter((o) => o.line === line).map((o) => acknowledged(o, locale));
   const upcoming = new Date(event.starts_at).getTime() > (await roughlyNow());
 
   return (
@@ -119,6 +128,11 @@ const EventView = async ({
       </Link>
       <header className="grid gap-3">
         <h1 className="type-display">{localized(event, "title", locale)}</h1>
+        {host ? (
+          <p className="type-body">
+            {t("hostedBy", { partner: localized(host, "name", locale) })}
+          </p>
+        ) : null}
         <p className="type-caption flex flex-wrap gap-x-4 gap-y-1">
           <span className="inline-flex items-center gap-1.5">
             <Icon name="calendar" />
@@ -138,11 +152,6 @@ const EventView = async ({
           membership="/account/events"
           membershipLabel="booking"
         />
-        {host ? (
-          <p className="type-body">
-            {t("heldWith", { partner: localized(host, "name", locale) })}
-          </p>
-        ) : null}
         {localized(event, "venue", locale) ? (
           <p className="type-body inline-flex items-center gap-1.5">
             <Icon name="map-pin" />
@@ -150,6 +159,7 @@ const EventView = async ({
           </p>
         ) : null}
       </header>
+      {cancelled ? null : <GoodToKnow event={event} locale={locale} />}
       {cancelled || !upcoming ? null : (
         <ActionBar>
           <EventBooking
@@ -192,20 +202,18 @@ const EventView = async ({
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
       ) : null}
-      {cancelled ? null : <EventAccess event={event} locale={locale} />}
       <EventParts event={event} locale={locale} />
-      <SupportedBy
+      <CoSponsoredBy
         className="border-line pt-space-4 border-t"
         dir={getDirection(locale)}
-        items={sponsors.map((sponsor) => {
-          const logo = mediaUrl(sponsor.logo_path);
-          return {
-            href: sponsor.url,
-            logo: logo ? { height: 48, src: logo, width: 160 } : null,
-            name: localized(sponsor, "name", locale) || sponsor.name_en,
-          };
-        })}
-        label={ti("supportedBy")}
+        items={rowOf("cosponsor")}
+        label={ti("coSponsoredBy")}
+        lang={locale}
+      />
+      <ThanksTo
+        dir={getDirection(locale)}
+        items={rowOf("thanks")}
+        label={ti("thanksTo")}
         lang={locale}
       />
     </article>

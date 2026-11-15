@@ -103,10 +103,6 @@ delete from journal.pieces;
 
 select plan(57);
 
--- The standing call takes only Letters and Gallery for now (decisions.md,
--- Qirtas); these checks exercise every section, so they reopen it.
-update journal.calls set desks = enum_range(null::journal.desk) where issue_id is null;
-
 
 -- People.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
@@ -155,21 +151,28 @@ select is(journal.desk_of('letter_to_editor'), 'voices'::journal.desk, 'A letter
 -- ── Submitting ──────────────────────────────────────────────────────────────
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select lives_ok(
+select throws_ok(
   $$ insert into journal.submissions (category, language, title, deck, body_html, human_authorship_confirmed)
-     values ('report', 'en', 'Book drive results', 'Second Chapter collected books.', '<p>Story</p>', true) $$,
-  'A member sends news, naming no call'
+     values ('report', 'en', 'A tip', 'A deck.', '<p>Story</p>', true) $$,
+  '22023', 'news_takes_tips', 'News takes no submissions: tips go to tips@'
 );
 select throws_ok(
   $$ insert into journal.submissions (call_id, category, language, title, body_html, human_authorship_confirmed)
      values ('ca000000-0000-0000-0000-000000000001', 'report', 'en', 'News to a call', '<p>x</p>', true) $$,
   '22023', null, 'News is not sent to an Edition call'
 );
-select is(
-  (select c.issue_id is null from journal.submissions s join journal.calls c on c.id = s.call_id
-   where s.title = 'Book drive results'),
-  true, 'Work that names no call goes to the standing call, read blind like the rest'
-);
+-- A story a section editor took up before the one door (Oct 31, 2026)
+-- finishes on the old route: by name, with its section editor.
+select pg_temp.logout();
+alter table journal.submissions disable trigger before_submission_insert;
+insert into journal.submissions (author_id, category, language, title, deck, body_html,
+  human_authorship_confirmed, status)
+values ('00000000-0000-0000-0000-0000000000a1', 'report', 'en', 'Book drive results',
+  'Second Chapter collected books.', '<p>Story</p>', true, 'received');
+alter table journal.submissions enable trigger before_submission_insert;
+select ok((select call_id is null from journal.submissions where title = 'Book drive results'),
+  'A story taken up before the one door keeps its route, by name');
+select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
   $$ insert into journal.submissions (call_id, category, language, title, human_authorship_confirmed, first_publication_confirmed)
      values ('ca000000-0000-0000-0000-000000000001', 'art', 'en', 'A photo', true, true) $$,
@@ -207,9 +210,6 @@ create function pg_temp.poem_sub() returns uuid language sql as $$
 $$;
 grant execute on function pg_temp.news_sub(), pg_temp.poem_sub() to public;
 
--- A story a section editor took up before the one door (Oct 31, 2026)
--- finishes on the old route: by name, with its section editor.
-update journal.submissions set call_id = null where title = 'Book drive results';
 
 -- ── The News desk ───────────────────────────────────────────────────────────
 

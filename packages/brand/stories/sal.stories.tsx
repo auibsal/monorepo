@@ -1,7 +1,8 @@
 import { BrandLogo } from "@repo/brand/components/brand-logo";
 import {
-  SupportedBy,
-  WithTheSupportOf,
+  CampusPartners,
+  CoSponsoredBy,
+  ThanksTo,
 } from "@repo/brand/components/sal/acknowledgment";
 import { SalCard } from "@repo/brand/components/sal/card";
 import { Certificate } from "@repo/brand/components/sal/certificate";
@@ -496,22 +497,21 @@ export const EmailSignatureStory: Story = {
 };
 
 /**
- * "With the support of": AUIB's own offices, on the partners page only
- * (decisions §2). They are not partners.
+ * "Campus partners": AUIB's own offices, on the partners page after the
+ * partners (decisions.md, Partners).
  */
-export const WithTheSupportOfStory: Story = {
-  name: "With the support of",
+export const CampusPartnersStory: Story = {
+  name: "Campus partners",
   render: () => (
     <div className="grid gap-12">
-      <WithTheSupportOf
+      <CampusPartners
         items={[
           { name: "The American University of Iraq – Baghdad" },
           { name: "Office of Student Life" },
-          { name: "AUIB Press" },
-          { name: "AUIB Library" },
+          { name: "The American Space" },
         ]}
       />
-      <WithTheSupportOf
+      <CampusPartners
         items={[
           { name: "الجامعة الأمريكية في بغداد" },
           { name: "مكتب شؤون الطلبة" },
@@ -523,15 +523,27 @@ export const WithTheSupportOfStory: Story = {
 };
 
 /**
- * "Supported by": a sponsor in kind, by name or logo alone, with no
- * qualitative words, prices or calls to buy (decisions §2).
+ * Who an event is with, at the foot of its page (decisions.md, Events):
+ * "Co-sponsored by" its partners and campus partners, "Thanks to" its
+ * sponsors in kind; names with logos, no qualitative words, prices or
+ * calls to buy.
  */
-export const SupportedByStory: Story = {
-  name: "Supported by",
+export const WhoItsWithStory: Story = {
+  name: "Co-sponsored by and Thanks to",
   render: () => (
     <div className="grid gap-12">
-      <SupportedBy items={[{ name: "The sponsor’s name" }]} />
-      <SupportedBy items={[{ name: "اسم الداعم" }]} lang="ar" />
+      <CoSponsoredBy
+        items={[
+          { name: "Office of Student Life" },
+          { name: "The American Space" },
+        ]}
+      />
+      <ThanksTo items={[{ name: "Iraqi Independent Film Centre" }]} />
+      <CoSponsoredBy
+        items={[{ name: "مكتب شؤون الطلبة" }, { name: "المساحة الأمريكية" }]}
+        lang="ar"
+      />
+      <ThanksTo items={[{ name: "المركز العراقي للفيلم المستقل" }]} lang="ar" />
     </div>
   ),
 };

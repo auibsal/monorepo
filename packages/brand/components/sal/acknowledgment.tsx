@@ -1,22 +1,26 @@
 import { cn } from "../../lib/utils";
 
 /**
- * The two acknowledgment lines (decisions §2), fixed in both languages
- * (claude/glossary_ar.md):
+ * Who it's with (decisions.md, Partners; Events), fixed in both languages
+ * (claude/glossary_ar.md), every organization from the one register:
  *
- * - "With the support of" («بمساندة»): AUIB's own offices (AUIB, the Office
- *   of Student Life, AUIB Press, the Library, the colleges), on the partners
- *   page only, from the site's code. They are not partners.
- * - "Supported by" («بدعم من»): a sponsor in kind, on the event page, the
- *   partner's listing, printed programs and the thank-you (thank-you-letter).
+ * - "Co-sponsored by" («برعاية مشتركة مع»): the partners and campus
+ *   partners an event is run with, at the foot of its page.
+ * - "Thanks to" («شكر وتقدير»): the sponsors in kind, on the event page, the
+ *   listing, printed programs and the thank-you.
+ * - "Campus partners" («شركاء من الجامعة»): AUIB's own offices, on the
+ *   partners page after the partners.
  *
- * Only the names (or logos) follow the line: no qualitative or comparative
- * words, prices or calls to buy (the IRS line between an acknowledgment and
- * advertising), so the components take names and logos, never a sentence.
+ * Only the names (with their logos) follow the line: no qualitative or
+ * comparative words, prices or calls to buy (the IRS line between an
+ * acknowledgment and advertising), so the components take names and
+ * logos, never a sentence. Every logo is the same size, and its name is
+ * always written beside it.
  */
 const ACKNOWLEDGMENT_LINES = {
-  sponsor: { ar: "بدعم من", en: "Supported by" },
-  support: { ar: "بمساندة", en: "With the support of" },
+  campus: { ar: "شركاء من الجامعة", en: "Campus partners" },
+  cosponsor: { ar: "برعاية مشتركة مع", en: "Co-sponsored by" },
+  thanks: { ar: "شكر وتقدير", en: "Thanks to" },
 } as const;
 
 export interface Acknowledged {
@@ -67,29 +71,35 @@ const Names = ({
     )}
   >
     {items.map((item) => {
-      const mark = item.logo ? (
-        <>
-          {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
-          <img
-            alt={item.name}
-            className={cn("h-12 w-auto", item.logo.onInk && "on-ink:hidden")}
-            height={item.logo.height}
-            src={item.logo.src}
-            width={item.logo.width}
-          />
-          {item.logo.onInk ? (
-            /* biome-ignore lint/performance/noImgElement: a supplied logo file */
-            <img
-              alt={item.name}
-              className="on-ink:block hidden h-12 w-auto"
-              height={item.logo.height}
-              src={item.logo.onInk}
-              width={item.logo.width}
-            />
+      const mark = (
+        <span className="inline-flex items-center gap-3">
+          {item.logo ? (
+            <>
+              {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
+              <img
+                alt=""
+                className={cn(
+                  "h-12 w-auto max-w-40 object-contain",
+                  item.logo.onInk && "on-ink:hidden"
+                )}
+                height={item.logo.height}
+                src={item.logo.src}
+                width={item.logo.width}
+              />
+              {item.logo.onInk ? (
+                /* biome-ignore lint/performance/noImgElement: a supplied logo file */
+                <img
+                  alt=""
+                  className="on-ink:block hidden h-12 w-auto max-w-40 object-contain"
+                  height={item.logo.height}
+                  src={item.logo.onInk}
+                  width={item.logo.width}
+                />
+              ) : null}
+            </>
           ) : null}
-        </>
-      ) : (
-        <span className={compact ? undefined : "type-body"}>{item.name}</span>
+          <span className={compact ? undefined : "type-body"}>{item.name}</span>
+        </span>
       );
       return (
         <li key={item.name} lang={lang}>
@@ -133,12 +143,17 @@ const Line = ({
     </section>
   );
 
-/** "With the support of" and AUIB's own offices: About and the footer. */
-export const WithTheSupportOf = (props: AcknowledgmentProps) => (
-  <Line {...props} kind="support" />
+/** "Co-sponsored by": the partners and campus partners an event is run with. */
+export const CoSponsoredBy = (props: AcknowledgmentProps) => (
+  <Line {...props} kind="cosponsor" />
 );
 
-/** "Supported by" and a sponsor in kind: the names or logos alone. */
-export const SupportedBy = (props: AcknowledgmentProps) => (
-  <Line {...props} kind="sponsor" />
+/** "Thanks to": the sponsors in kind, their names (and logos) alone. */
+export const ThanksTo = (props: AcknowledgmentProps) => (
+  <Line {...props} kind="thanks" />
+);
+
+/** "Campus partners": AUIB's own offices, on the partners page. */
+export const CampusPartners = (props: AcknowledgmentProps) => (
+  <Line {...props} kind="campus" />
 );

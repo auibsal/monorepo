@@ -28,7 +28,17 @@ test.describe("public site", () => {
     await expect(
       page.getByRole("heading", { name: event.title })
     ).toBeVisible();
+    // "Good to know" sits under the date and place, before the main button,
+    // one row per filled field (decisions.md, Events).
+    const good = page.getByRole("region", { name: "Good to know" });
+    await expect(good.getByText("Who can come")).toBeVisible();
+    await expect(
+      good.getByRole("link", { name: /Ask for an accommodation by/u })
+    ).toHaveAttribute("href", "mailto:hello@auibsal.org");
     const book = page.getByRole("link", { name: /rsvp|book/iu }).first();
+    const goodBox = await good.boundingBox();
+    const bookBox = await book.boundingBox();
+    expect(goodBox && bookBox && goodBox.y < bookBox.y).toBe(true);
     await expect(book).toHaveAttribute(
       "href",
       new RegExp(`/account/events#${event.slug}$`, "u")
@@ -127,6 +137,18 @@ test.describe("public site", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "Editions"
     );
+    // Open now first: one row per open call, each with its action.
+    const open = page.getByRole("list", { name: "Open now" });
+    await expect(open).toContainText("Haven: dreams and memories");
+    await expect(open).toContainText("Edition 1: general submissions");
+    await expect(open).toContainText("Any time");
+    await expectAccessible(page);
+    // The Edition's page holds its call: the action first, then the terms.
+    await page.goto(`${urls.web}/qirtas/editions/haven`);
+    await expect(
+      page.getByRole("link", { name: "Submit to Haven" })
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Poetry" })).toBeVisible();
     await expectAccessible(page);
     await page.goto(`${urls.web}/qirtas/editions?view=list`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
@@ -160,7 +182,9 @@ test("a shared address that changed redirects to its new one, in both languages"
   for (const prefix of ["", "/ar"]) {
     for (const [from, to] of [
       ["/membership", "/account"],
-      ["/qirtas/write", "/qirtas/submit"],
+      ["/qirtas/write", "/qirtas/editions?status=open"],
+      ["/qirtas/submit", "/qirtas/editions?status=open"],
+      ["/haven", "/qirtas/editions/haven"],
       ["/library/privacy", "/privacy"],
       ["/partners/join", "/partners/apply"],
       ["/qirtas/issues", "/qirtas/editions"],

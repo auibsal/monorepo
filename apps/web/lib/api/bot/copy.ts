@@ -84,6 +84,7 @@ const en = {
     remindersOn: "Reminders here: on",
     rsvp: "RSVP",
     rules: "Code of Conduct",
+    send: "Send your work",
     site: "auibsal.org",
     ticket: "My ticket",
     unlink: "Unlink Telegram",
@@ -173,10 +174,12 @@ const en = {
   // Group posts
   postDoors: (time: string) =>
     `<b>Today</b>: doors open at ${time}. Your ticket is on Today in Your account, and in your chat with me.`,
+  postEdition: "<b>Out now from Qirtas</b>",
   postEventSoon: (date: string) => `<b>In two days</b>: ${date}`,
+  postLastCall: (date: string) => `<b>Last call</b>: it closes ${date}.`,
   postPiece: "<b>New in Qirtas</b>",
   postWeek: "<b>This week at SAL</b>",
-  postWeekCalls: "Submit to Qirtas",
+  postWeekCalls: "Open calls",
   postWeekCloses: (date: string) => `closes ${date}`,
   postWeekEvents: "Events",
   postWord: (n: string) => `<b>Word No. ${n}</b> is ready.`,
@@ -300,6 +303,7 @@ const ar: Copy = {
     remindersOn: "التذكيرات هنا: شغّالة",
     rsvp: "احجزلي مقعد",
     rules: "مدونة السلوك",
+    send: "أرسل عملك",
     site: "auibsal.org",
     ticket: "تذكرتي",
     unlink: "افصل تيليغرام",
@@ -384,7 +388,9 @@ const ar: Copy = {
 
   postDoors: (time: string) =>
     `<b>اليوم</b>: الأبواب تفتح ${time}. تذكرتك في «اليوم» بحسابك، وبالمحادثة وياي.`,
+  postEdition: "<b>طلع جديد من قرطاس</b>",
   postEventSoon: (date: string) => `<b>بعد يومين</b>: ${date}`,
+  postLastCall: (date: string) => `<b>آخر فرصة</b>: تسكّر ${date}.`,
   postPiece: "<b>جديد بقرطاس</b>",
   postWeek: "<b>شنو عدنا هالأسبوع</b>",
   postWeekCalls: "اكتبوا لقرطاس",

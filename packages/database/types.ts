@@ -2088,6 +2088,36 @@ export type Database = {
           },
         ];
       };
+      event_organizations: {
+        Row: {
+          created_at: string;
+          event_id: string;
+          line: string;
+          partner_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          event_id: string;
+          line: string;
+          partner_id: string;
+        };
+        Update: {
+          created_at?: string;
+          event_id?: string;
+          line?: string;
+          partner_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "event_organizations_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       event_staff: {
         Row: {
           added_by: string | null;
@@ -2120,18 +2150,25 @@ export type Database = {
       };
       events: {
         Row: {
+          accommodation_by: string | null;
           allergens: string[];
           body_ar: string | null;
           body_en: string | null;
           capacity: number | null;
+          content_note_ar: string | null;
+          content_note_en: string | null;
           created_at: string;
           created_by: string | null;
           ends_at: string | null;
           entry: string;
           id: string;
           image_path: string | null;
+          language: string | null;
           members_only: boolean;
+          no_photos: boolean;
           off_campus: boolean;
+          other_allergens_ar: string | null;
+          other_allergens_en: string | null;
           partner_id: string | null;
           programme_id: string | null;
           published_at: string | null;
@@ -2139,6 +2176,8 @@ export type Database = {
           rsvp_enabled: boolean;
           search: unknown;
           seating: string | null;
+          served_ar: string | null;
+          served_en: string | null;
           serves_food: boolean;
           slug: string;
           starts_at: string;
@@ -2156,18 +2195,25 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          accommodation_by?: string | null;
           allergens?: string[];
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
+          content_note_ar?: string | null;
+          content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
           ends_at?: string | null;
           entry?: string;
           id?: string;
           image_path?: string | null;
+          language?: string | null;
           members_only?: never;
+          no_photos?: boolean;
           off_campus?: boolean;
+          other_allergens_ar?: string | null;
+          other_allergens_en?: string | null;
           partner_id?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
@@ -2175,6 +2221,8 @@ export type Database = {
           rsvp_enabled?: boolean;
           search?: never;
           seating?: string | null;
+          served_ar?: string | null;
+          served_en?: string | null;
           serves_food?: boolean;
           slug: string;
           starts_at: string;
@@ -2191,18 +2239,25 @@ export type Database = {
           venue_en?: string | null;
         };
         Update: {
+          accommodation_by?: string | null;
           allergens?: string[];
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
+          content_note_ar?: string | null;
+          content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
           ends_at?: string | null;
           entry?: string;
           id?: string;
           image_path?: string | null;
+          language?: string | null;
           members_only?: never;
+          no_photos?: boolean;
           off_campus?: boolean;
+          other_allergens_ar?: string | null;
+          other_allergens_en?: string | null;
           partner_id?: string | null;
           programme_id?: string | null;
           published_at?: string | null;
@@ -2210,6 +2265,8 @@ export type Database = {
           rsvp_enabled?: boolean;
           search?: never;
           seating?: string | null;
+          served_ar?: string | null;
+          served_en?: string | null;
           serves_food?: boolean;
           slug?: string;
           starts_at?: string;
@@ -2559,10 +2616,13 @@ export type Database = {
           slug: string;
         }[];
       };
-      event_sponsors: {
+      event_organizations: {
         Args: { event_slug: string };
         Returns: {
+          line: string;
           logo_path: string;
+          logo_static: string;
+          logo_width: number;
           name_ar: string;
           name_en: string;
           slug: string;
@@ -2669,6 +2729,7 @@ export type Database = {
           gpa_consent: boolean;
           id: string;
           position_id: string;
+          reference: string | null;
           statement_ar: string | null;
           statement_en: string | null;
           status: string;
@@ -2684,6 +2745,7 @@ export type Database = {
           gpa_consent?: boolean;
           id?: string;
           position_id: string;
+          reference?: string | null;
           statement_ar?: string | null;
           statement_en?: string | null;
           status?: string;
@@ -2698,6 +2760,7 @@ export type Database = {
           gpa_consent?: boolean;
           id?: string;
           position_id?: string;
+          reference?: string | null;
           statement_ar?: string | null;
           statement_en?: string | null;
           status?: string;
@@ -3340,6 +3403,7 @@ export type Database = {
       };
       partner_agreements: {
         Row: {
+          application_reference: string | null;
           applied_by: string | null;
           asked_grants: string[] | null;
           branding: string | null;
@@ -3375,6 +3439,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          application_reference?: string | null;
           applied_by?: string | null;
           asked_grants?: string[] | null;
           branding?: string | null;
@@ -3409,6 +3474,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          application_reference?: string | null;
           applied_by?: string | null;
           asked_grants?: string[] | null;
           branding?: string | null;
@@ -3579,10 +3645,13 @@ export type Database = {
           kind_other: string | null;
           lead_id: string | null;
           logo_path: string | null;
+          logo_static: string | null;
+          logo_width: number | null;
           name_ar: string | null;
           name_en: string;
           notes: string | null;
           reach: string;
+          relation: string;
           slug: string;
           status: string;
           team_domain: string | null;
@@ -3603,10 +3672,13 @@ export type Database = {
           kind_other?: string | null;
           lead_id?: string | null;
           logo_path?: string | null;
+          logo_static?: string | null;
+          logo_width?: number | null;
           name_ar?: string | null;
           name_en: string;
           notes?: string | null;
           reach?: string;
+          relation?: string;
           slug: string;
           status?: string;
           team_domain?: string | null;
@@ -3626,10 +3698,13 @@ export type Database = {
           kind_other?: string | null;
           lead_id?: string | null;
           logo_path?: string | null;
+          logo_static?: string | null;
+          logo_width?: number | null;
           name_ar?: string | null;
           name_en?: string;
           notes?: string | null;
           reach?: string;
+          relation?: string;
           slug?: string;
           status?: string;
           team_domain?: string | null;
@@ -3968,46 +4043,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      supporters: {
-        Row: {
-          created_at: string;
-          id: string;
-          logo: string | null;
-          logo_width: number | null;
-          name_ar: string;
-          name_en: string;
-          shown: boolean;
-          sort: number;
-          updated_at: string;
-          url: string | null;
-        };
-        ComputedFields: never;
-        Insert: {
-          created_at?: string;
-          id?: string;
-          logo?: string | null;
-          logo_width?: number | null;
-          name_ar: string;
-          name_en: string;
-          shown?: boolean;
-          sort?: number;
-          updated_at?: string;
-          url?: string | null;
-        };
-        Update: {
-          created_at?: string;
-          id?: string;
-          logo?: string | null;
-          logo_width?: number | null;
-          name_ar?: string;
-          name_en?: string;
-          shown?: boolean;
-          sort?: number;
-          updated_at?: string;
-          url?: string | null;
-        };
-        Relationships: [];
-      };
       voters: {
         Row: {
           election_id: string;
@@ -4184,6 +4219,7 @@ export type Database = {
           name_en: string;
           partner_id: string;
           partner_status: string;
+          reference: string;
           slug: string;
         }[];
       };
@@ -4296,6 +4332,7 @@ export type Database = {
           kind: string;
           name_ar: string;
           name_en: string;
+          relation: string;
         }[];
       };
       partner_team: {
@@ -4340,9 +4377,12 @@ export type Database = {
           description_en: string;
           kind: string;
           logo_path: string;
+          logo_static: string;
+          logo_width: number;
           name_ar: string;
           name_en: string;
           reach: string;
+          relation: string;
           slug: string;
           url: string;
         }[];
@@ -4742,7 +4782,8 @@ export type Database = {
           eligibility_en: string | null;
           id: string;
           is_published: boolean;
-          issue_id: string | null;
+          issue_id: string;
+          kind: string;
           max_per_person: number;
           opens_at: string;
           theme_ar: string | null;
@@ -4761,7 +4802,8 @@ export type Database = {
           eligibility_en?: string | null;
           id?: string;
           is_published?: boolean;
-          issue_id?: string | null;
+          issue_id: string;
+          kind?: string;
           max_per_person?: number;
           opens_at: string;
           theme_ar?: string | null;
@@ -4779,7 +4821,8 @@ export type Database = {
           eligibility_en?: string | null;
           id?: string;
           is_published?: boolean;
-          issue_id?: string | null;
+          issue_id?: string;
+          kind?: string;
           max_per_person?: number;
           opens_at?: string;
           theme_ar?: string | null;
@@ -5861,10 +5904,12 @@ export type Database = {
       };
       submissions: {
         Row: {
+          about_writer: string | null;
           anonymous: boolean;
           author_id: string;
           body_html: string | null;
           call_id: string | null;
+          captions_confirmed: boolean | null;
           category: Database["journal"]["Enums"]["category"];
           consent_confirmed: boolean;
           cover_note: string | null;
@@ -5880,10 +5925,12 @@ export type Database = {
           partner_id: string | null;
           pen_name: string | null;
           reference: string | null;
+          release_confirmed: boolean | null;
           revised_at: string | null;
           revision_editor: string | null;
           revision_requested_at: string | null;
           rights_note: string | null;
+          running_minutes: number | null;
           source_author: string | null;
           source_text: string | null;
           status: Database["journal"]["Enums"]["submission_status"];
@@ -5891,13 +5938,16 @@ export type Database = {
           type_label: string | null;
           updated_at: string;
           video_url: string | null;
+          writer_year: string | null;
         };
         ComputedFields: never;
         Insert: {
+          about_writer?: string | null;
           anonymous?: boolean;
           author_id?: string;
           body_html?: string | null;
           call_id?: string | null;
+          captions_confirmed?: boolean | null;
           category: Database["journal"]["Enums"]["category"];
           consent_confirmed?: boolean;
           cover_note?: string | null;
@@ -5913,10 +5963,12 @@ export type Database = {
           partner_id?: string | null;
           pen_name?: string | null;
           reference?: string | null;
+          release_confirmed?: boolean | null;
           revised_at?: string | null;
           revision_editor?: string | null;
           revision_requested_at?: string | null;
           rights_note?: string | null;
+          running_minutes?: number | null;
           source_author?: string | null;
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
@@ -5924,12 +5976,15 @@ export type Database = {
           type_label?: string | null;
           updated_at?: string;
           video_url?: string | null;
+          writer_year?: string | null;
         };
         Update: {
+          about_writer?: string | null;
           anonymous?: boolean;
           author_id?: string;
           body_html?: string | null;
           call_id?: string | null;
+          captions_confirmed?: boolean | null;
           category?: Database["journal"]["Enums"]["category"];
           consent_confirmed?: boolean;
           cover_note?: string | null;
@@ -5945,10 +6000,12 @@ export type Database = {
           partner_id?: string | null;
           pen_name?: string | null;
           reference?: string | null;
+          release_confirmed?: boolean | null;
           revised_at?: string | null;
           revision_editor?: string | null;
           revision_requested_at?: string | null;
           rights_note?: string | null;
+          running_minutes?: number | null;
           source_author?: string | null;
           source_text?: string | null;
           status?: Database["journal"]["Enums"]["submission_status"];
@@ -5956,6 +6013,7 @@ export type Database = {
           type_label?: string | null;
           updated_at?: string;
           video_url?: string | null;
+          writer_year?: string | null;
         };
         Relationships: [
           {
@@ -6091,6 +6149,34 @@ export type Database = {
           title: string;
         }[];
       };
+      edition_calls: {
+        Args: { edition_slug?: string };
+        Returns: {
+          closes_at: string;
+          decisions_at: string;
+          desks: Database["journal"]["Enums"]["desk"][];
+          edition_id: string;
+          edition_number: number;
+          edition_pilot: boolean;
+          edition_publish_at: string;
+          edition_slug: string;
+          edition_status: string;
+          edition_theme_ar: string;
+          edition_theme_en: string;
+          edition_title_ar: string;
+          edition_title_en: string;
+          eligibility_ar: string;
+          eligibility_en: string;
+          id: string;
+          kind: string;
+          max_per_person: number;
+          opens_at: string;
+          theme_ar: string;
+          theme_en: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       edition_launch: { Args: { issue_id: string }; Returns: string };
       entry_author: {
         Args: { blind_entry_id: string };
@@ -6120,6 +6206,7 @@ export type Database = {
           author_name_ar: string;
           author_name_en: string;
           blind_entry_id: string;
+          call_id: string;
           category: Database["journal"]["Enums"]["category"];
           created_at: string;
           file_count: number;
@@ -7390,6 +7477,7 @@ export type Database = {
           audition_id: string;
           created_at: string;
           interest: string | null;
+          reference: string | null;
           status: string;
           updated_at: string;
           user_id: string;
@@ -7399,6 +7487,7 @@ export type Database = {
           audition_id: string;
           created_at?: string;
           interest?: string | null;
+          reference?: string | null;
           status?: string;
           updated_at?: string;
           user_id?: string;
@@ -7407,6 +7496,7 @@ export type Database = {
           audition_id?: string;
           created_at?: string;
           interest?: string | null;
+          reference?: string | null;
           status?: string;
           updated_at?: string;
           user_id?: string;
@@ -7747,6 +7837,7 @@ export type Database = {
           opening_id: string;
           picked_at: string | null;
           picked_by: string | null;
+          reference: string | null;
           status: string;
           student_life_eligible_at: string | null;
           submitted_at: string | null;
@@ -7772,6 +7863,7 @@ export type Database = {
           opening_id: string;
           picked_at?: string | null;
           picked_by?: string | null;
+          reference?: string | null;
           status?: string;
           student_life_eligible_at?: string | null;
           submitted_at?: string | null;
@@ -7796,6 +7888,7 @@ export type Database = {
           opening_id?: string;
           picked_at?: string | null;
           picked_by?: string | null;
+          reference?: string | null;
           status?: string;
           student_life_eligible_at?: string | null;
           submitted_at?: string | null;

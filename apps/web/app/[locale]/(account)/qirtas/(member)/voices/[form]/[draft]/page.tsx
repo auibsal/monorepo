@@ -8,16 +8,16 @@ export const generateMetadata = titleFrom((t) =>
 );
 
 interface PageProps {
-  readonly params: Promise<{ draft: string; type: string }>;
+  readonly params: Promise<{ draft: string; form: string }>;
 }
 
-/** /qirtas/submit/<type>/<draft>: a saved draft, back in its form. */
+/** /qirtas/voices/<form>/<draft>: a saved letter or op-ed. */
 const Page = async ({ params }: PageProps) => {
-  const { draft, type } = await params;
-  if (!journal.isWritableType(type)) {
+  const { draft, form } = await params;
+  if (!journal.isVoicesForm(form)) {
     notFound();
   }
-  return <WriteType draftId={draft} type={type} />;
+  return <WriteType draftId={draft} type={journal.voicesForms[form]} />;
 };
 
 export default Page;

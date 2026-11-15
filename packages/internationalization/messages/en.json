@@ -575,7 +575,6 @@
         "stand": "Stand for this seat",
         "statementEn": "Your statement (English)",
         "statementAr": "Your statement in Arabic (optional)",
-        "submitNomination": "Submit my nomination",
         "noCandidates": "No approved candidates yet.",
         "yourNomination": {
           "nominated": "Your nomination is with the Elections Committee.",
@@ -613,7 +612,8 @@
         "byLot": "{name} (decided by lot)",
         "votingPoint": "In person: {place}.",
         "votingPointAt": "In person: {place}, {when}.",
-        "forum": "Candidates’ forum on {when}:"
+        "forum": "Candidates’ forum on {when}:",
+        "incomplete": "Write the statement in English and give the consent first."
       },
       "takePart": {
         "title": "Take part",
@@ -819,18 +819,9 @@
           "letters": "Your own work, not published anywhere else. Translations need the right to translate.",
           "gallery": "Everyone identifiable in an image agreed to appear; a parent or guardian agrees for anyone under 18."
         },
-        "sections": {
-          "news": "Reports, features, interviews, profiles, event coverage and explainers. Pitch a story or send it.",
-          "video": "Reels, short films, video reports, recorded performances and animation. Send a link.",
-          "voices": "Reviews, columns, opinion essays, letters to the editor, debates and recommendations. No party politics, religion, sect or ethnicity.",
-          "letters": "Poetry, fiction, creative nonfiction, drama and translation.",
-          "gallery": "Art, photography, illustration, comics, calligraphy and photo essays."
-        },
         "limits": "Up to {max} submissions to this call, and no more than {hour} in an hour.",
         "filesFailed": "Your work was sent, but a file didn’t upload. Open the submission to add it again.",
         "openSubmission": "Open the submission",
-        "sectionsTitle": "What do you want to send?",
-        "blind": "Read without your name first, then edited with you by the {section} editor.",
         "closed": "Qirtas is not taking this type of work right now.",
         "where": "Where",
         "whereHint": "An Edition, while its call is open, or Qirtas online.",
@@ -856,26 +847,6 @@
         "draftStatus": "Draft, not sent",
         "untitledDraft": "Untitled draft",
         "draftTitle": "Your draft",
-        "door": {
-          "who": "Members and the Society’s guests send work after signing in. Pick a type below and you come back to it once you are in.",
-          "signIn": "Sign in to send",
-          "join": "Not a member yet? Join the Society"
-        },
-        "how": {
-          "title": "How it works",
-          "choose": {
-            "title": "Choose a type and write",
-            "body": "Write in the form, or upload a Word or PDF file and its text fills the form. Save a draft and come back to it. You may publish under a pen name."
-          },
-          "read": {
-            "title": "Read without your name",
-            "body": "The section’s readers see your work without your name, so it is judged on the page alone."
-          },
-          "edit": {
-            "title": "Edited with you",
-            "body": "If an editor takes it up, they work on it with you before it is published. Every decision comes with its reason, in your work’s history."
-          }
-        },
         "haven": {
           "title": "Haven",
           "dek": "Dreams and memories · the pilot Edition of Qirtas",
@@ -896,18 +867,77 @@
           "title": "Your drafts",
           "all": "All your work",
           "line": "{type} · {date}"
+        },
+        "lead": {
+          "blind": "Read without your name first, then edited with you by the {section} editor.",
+          "video": "Watched by the {section} editor, who sees who made it: a film shows its makers.",
+          "voices": "Read by the {section} editor under your name, and run online when it’s ready."
+        },
+        "film": {
+          "title": "Your film",
+          "minutes": "Running time, in minutes",
+          "minutesHint": "Up to {max} minutes.",
+          "captions": "It is captioned (subtitles in its language, or a translation).",
+          "release": "Everyone on screen signed a media release."
+        },
+        "voices": {
+          "letterWords": "{n} words of {max} at most.",
+          "opEdWords": "{n} words; an op-ed runs {min} to {max}.",
+          "about": "About the writer",
+          "ownName": "Opinion runs under your own name, as US papers require.",
+          "identity": {
+            "student": "{form, select, other {{name} is a {year} studying {line} at AUIB.}}",
+            "other": "{name} {line}.",
+            "years": {
+              "first": "first-year",
+              "second": "sophomore",
+              "third": "junior",
+              "fourth": "senior",
+              "graduate": "graduate student"
+            },
+            "year": "Your year",
+            "subject": "What you study",
+            "subjectHint": "In the language you write in: “business”, “computer science”.",
+            "line": "About you, after your name",
+            "lineHint": "For example: “teaches history at AUIB”.",
+            "preview": "Your op-ed ends: {line}"
+          }
+        },
+        "review": {
+          "call": "Call",
+          "noCall": "Voices, to no call",
+          "type": "Type",
+          "workTitle": "Title",
+          "byline": "Byline",
+          "ownName": "Your own name",
+          "files": "Files"
+        },
+        "receipt": {
+          "title": "Received",
+          "number": "Your number is {number}.",
+          "email": "A confirmation is on its way to your email.",
+          "open": "Open your submission",
+          "more": "Send more work",
+          "replyGeneral": "You hear back within six weeks; work sent during finals or the summer is read when the semester starts.",
+          "replyBy": "You hear back by {date}.",
+          "replyThemed": "You hear back within the week after the call closes.",
+          "replyVoices": "You hear back by email once the Voices editor decides."
         }
       },
       "revising": "Revise and resend",
       "revisionTitle": "The editor asks for a revision",
       "revisionHint": "Revise it below and save, then send the revision. It keeps its number and goes back to the same editor, without a second reading. Whether to revise is your choice.",
       "sendRevision": "Send the revision",
-      "sendRevisionConfirm": "It goes back to the editor as it is saved now, and can’t be changed after."
+      "sendRevisionConfirm": "It goes back to the editor as it is saved now, and can’t be changed after.",
+      "flow": {
+        "received": "Received",
+        "inReview": "In review",
+        "accepted": "Decision: accepted",
+        "notChosen": "Decision: not chosen",
+        "withdrawn": "Withdrawn"
+      }
     },
     "profile": {
-      "title": "Profile",
-      "bio": "Bio",
-      "bioCount": "{count} of 50 words",
       "download": {
         "title": "Download your data",
         "description": "Everything the site keeps about you, as one file (JSON): your profile, membership, card number, bookings, check-ins, roles, letters, certificates, Qirtas submissions and drafts, and your settings.",
@@ -984,10 +1014,6 @@
         "joinMembers": "Join the members’ group",
         "joinStaff": "Join the Diwan group"
       },
-      "lede": "Your details, how the Society reaches you, and what you have shared.",
-      "aboutYou": "About you",
-      "photos": "Photos of me at the Society’s events may be shared",
-      "photosHint": "On the Society’s website, its channels and in Qirtas. Change your mind at any time; photos already shared stay up unless you ask us to take them down.",
       "titleForm": "The Arabic form of your title",
       "titleFormHint": "Optional. Where an Arabic title names you (the Council page, Qirtas’s masthead, your card, letters), it takes this form, as in «نائبة الرئيس».",
       "titleForms": {
@@ -1084,7 +1110,9 @@
           "en": "English",
           "ar": "Arabic"
         },
-        "exportAsked": "Asked. Download the list once a second officer approves it on the Desk."
+        "exportAsked": "Asked. Download the list once a second officer approves it on the Desk.",
+        "find": "Find",
+        "findPlaceholder": "Find a title, a name or a number"
       },
       "overview": {
         "title": "Desk",
@@ -1168,7 +1196,10 @@
             "membership": "Membership",
             "partnerships": "Partnerships"
           }
-        }
+        },
+        "noLogo": "Without a logo",
+        "noLogoDetail": "Shown with their name alone until a logo is added.",
+        "addLogos": "Add logos"
       },
       "members": {
         "title": "Members",
@@ -1534,14 +1565,14 @@
         },
         "debrief": "The debrief in Notion",
         "servesFood": "Food is served (the booking also asks about diet)",
-        "access": "Access and food",
-        "accessHint": "The event’s page states these plainly, so people know before they come.",
+        "access": "Good to know",
+        "accessHint": "The event’s page shows each field that is filled, under the date and place.",
         "stepFree": "Step-free (no steps on the way in or in the room)",
         "notSaid": "Not said yet",
         "yes": "Yes",
         "no": "No",
         "seating": "Seating",
-        "allergens": "The main allergens in the food",
+        "allergens": "Allergens in what is served",
         "incidents": {
           "title": "Incident reports",
           "lede": "Something happened that the Society should know about: an injury, a safety problem, a complaint at the door. Write it the same day. The Director of Events and the President are told at once, and the report is kept seven years.",
@@ -1555,7 +1586,14 @@
           "reopen": "Reopen the case",
           "open": "Open",
           "closedOn": "Closed {date}"
-        }
+        },
+        "language": "Language",
+        "accommodationBy": "Ask for an accommodation by (empty: three days before)",
+        "served": "What is served",
+        "otherAllergens": "Other allergens, by name (such as corn)",
+        "contentNote": "Content note (for events that show or discuss violence, death, abuse or similar)",
+        "noPhotos": "No photos are taken at this event",
+        "langBoth": "Both"
       },
       "checkIn": {
         "title": "Check-in",
@@ -2233,18 +2271,9 @@
         }
       },
       "pipeline": {
-        "title": "Qirtas: blind reading",
-        "lede": "The blind review of submissions, from intake to decision. Each person sees only their part: the Managing Editor holds the key and never reads or scores; readers and editors work from blind ids; author names appear only after a decision.",
+        "title": "The reading queue",
+        "lede": "Every submission to every call, from intake to decision. Each person sees only their part: the Managing Editor holds the key and never reads or scores; readers and editors work from blind ids; author names appear only after a decision.",
         "noIssues": "No Edition has you in its review team yet.",
-        "tabs": {
-          "reading": "My reading",
-          "intake": "Intake",
-          "readers": "Readers",
-          "board": "Board",
-          "selection": "Selection",
-          "decided": "Decided",
-          "flagged": "Flagged"
-        },
         "columns": {
           "blindId": "Blind id",
           "title": "Title",
@@ -2416,6 +2445,15 @@
         "openings": {
           "line": "{date}: {name} opened the original ({file})",
           "note": "Originals open for the Managing Editor during intake, and for the section’s editor or the Editor-in-Chief once the work is accepted. Each opening is recorded here."
+        },
+        "call": "Call",
+        "allCalls": "Every call",
+        "stages": {
+          "intake": "Intake",
+          "reading": "Reading",
+          "decide": "Decide",
+          "decided": "Decided",
+          "flagged": "Flagged"
         }
       },
       "partners": {
@@ -2427,7 +2465,7 @@
           "applications": "Applications"
         },
         "register": {
-          "lede": "Clubs, departments and organizations the Society works with or is talking to. Contacts and notes stay internal.",
+          "lede": "Every organization the Society works with, in one register: partners, campus partners and sponsors in kind. Contacts and notes stay internal.",
           "edit": "Edit",
           "cancel": "Cancel",
           "empty": "No partners in the register yet.",
@@ -2478,7 +2516,16 @@
           },
           "back": "The register",
           "missing": "This partner is not in the register",
-          "guests": "Guests"
+          "guests": "Guests",
+          "relation": "What it is",
+          "relationHint": "A partner comes only from an application; campus partners and sponsors in kind are added here.",
+          "relations": {
+            "partner": "Partner",
+            "campus": "Campus partner",
+            "sponsor": "Sponsor in kind"
+          },
+          "addTitle": "Add a campus partner or a sponsor in kind",
+          "add": "Add and open"
         },
         "agreements": {
           "lede": "Partnership memoranda. Each comes from an application signed by the partner’s signatory and takes effect once the Council’s adopted resolution is recorded. Nothing is uploaded. Someone who has declared a conflict with the partner cannot record the vote (P8.3).",
@@ -2563,28 +2610,6 @@
           "closed": "closed",
           "receive": "Mark received",
           "notReceived": "Not yet received"
-        },
-        "supporters": {
-          "title": "With the support of",
-          "lede": "AUIB’s own offices, shown under “With the support of” on the partners page. They support the Society but aren’t partners.",
-          "hidden": "hidden",
-          "hide": "Hide",
-          "show": "Show",
-          "remove": "Remove",
-          "removeConfirm": "The office comes off the partners page and off this list.",
-          "add": "Add an office",
-          "name": "Name",
-          "url": "Link",
-          "urlHint": "The office’s page on AUIB’s site.",
-          "logo": "Logo",
-          "noLogo": "No logo: the name is shown",
-          "logos": {
-            "auib": "AUIB",
-            "student-life": "Student Life",
-            "cas": "College of Arts and Sciences",
-            "press": "AUIB Press",
-            "library": "AUIB Library"
-          }
         }
       },
       "recognition": {
@@ -3473,6 +3498,7 @@
           "governance_partner_invitations": "an invitation",
           "membership_guests": "a guest of the Society",
           "events_session_links": "an event’s link",
+          "events_event_organizations": "who an event is with",
           "events_joint_tasks": "a joint event’s checklist item",
           "core_profiles": "a member’s name"
         },
@@ -3815,6 +3841,33 @@
         "ar": "Credited name in Arabic",
         "save": "Save",
         "remove": "Remove"
+      },
+      "editionCalls": {
+        "tabs": {
+          "call": "Call",
+          "contents": "Contents",
+          "publish": "Publish"
+        },
+        "general": "General submissions",
+        "generalLede": "Always open for this Edition: replies within six weeks, accepted work runs online when ready and is considered for the Edition.",
+        "addGeneral": "Open general submissions",
+        "themed": "A themed call",
+        "themedLede": "Its own theme, rules and deadline; its pieces come out together on the Edition’s date.",
+        "addThemed": "Add a themed call",
+        "titleField": "Title, as Open now lists it",
+        "theme": "What to send",
+        "eligibility": "Who may send",
+        "desks": "Sections it takes",
+        "opens": "Opens",
+        "closes": "Closes",
+        "decisions": "Decisions by",
+        "anyTime": "General submissions are open any time.",
+        "maxPerPerson": "Each person may send",
+        "published": "Published: listed under Open now and on the Edition’s page",
+        "contents": "Contents",
+        "contentsLede": "The Edition’s pieces by section ({count}), each with its approvals: the section editor, then the Editor-in-Chief or the Managing Editor, and the copy edit.",
+        "noContents": "No piece is in this Edition yet. Accepted work joins it from the reading queue.",
+        "approvals": "{count} of 3 approvals"
       }
     },
     "editor": {
@@ -4015,7 +4068,8 @@
         "closed": "Sign-ups for this audition have closed.",
         "notVerified": "Auditions open once your membership is verified.",
         "failed": "That didn’t work. Try again in a moment."
-      }
+      },
+      "slot": "The audition"
     },
     "forms": {
       "title": "Requests and reports",
@@ -4660,7 +4714,7 @@
       "join": "Not a member yet? Join",
       "none": "Nothing open right now.",
       "society": "The Society",
-      "closes": "closes {date}",
+      "closes": "Closes {date}",
       "on": "{date}, {time}",
       "audition": "Auditions for {title}",
       "places": "{count, plural, one {One place} other {{n} places}}",
@@ -4679,7 +4733,6 @@
         "membersOnly": "Applying is for members.",
         "join": "Join",
         "yours": "See your applications",
-        "sent": "Your application is in; we sent you a receipt by email.",
         "optional": "(optional)",
         "availability": "Your availability",
         "availabilityHint": "The days and times you could usually give, this semester.",
@@ -4692,10 +4745,8 @@
         "accommodation": "Anything we should arrange for you (optional)",
         "accommodationHint": "For an interview or audition: access, timing or anything else. Only the people reviewing your application see it.",
         "gpaConsent": "A director seat needs a GPA of at least 2.0, which Student Life checks. Student Life tells us only whether you are eligible.",
-        "send": "Send the application",
-        "saveDraft": "Save as a draft",
-        "draftSaved": "Draft saved. You can finish it any time before the role closes.",
-        "gpaSignAs": "I consent to Student Life checking my GPA. Sign as {name}."
+        "gpaSignAs": "I consent to Student Life checking my GPA. Sign as {name}.",
+        "incomplete": "Answer the required questions first."
       },
       "applications": {
         "title": "Your applications",
@@ -4709,17 +4760,13 @@
         "talkOn": "interview {date} at {time}",
         "answerBy": "answer by {date}",
         "status": {
-          "draft": "Draft, not sent",
-          "new": "Received",
-          "talking": "Interview",
-          "picked": "Shortlisted",
-          "not_picked": "Not chosen this time",
-          "offered": "Offer made",
-          "accepted": "Accepted; waiting for the Executive Board and Student Life",
-          "onboarded": "Appointed",
-          "declined": "Declined",
-          "withdrawn": "Withdrawn"
+          "draft": "Draft, not sent"
         }
+      },
+      "anyTime": "Any time",
+      "applyLink": "Apply",
+      "auditions": {
+        "title": "Your auditions"
       }
     },
     "partnerJoin": {
@@ -4735,7 +4782,6 @@
       "signatory": "Signed by",
       "contactRole": "Your role at the organization",
       "accept": "I sign this memorandum for {name}, and I may sign for it.",
-      "submit": "Apply and sign",
       "receivedTitle": "Application received",
       "waiting": "{name}’s application, signed on {date}, is with the Society. Once the Council approves it, {name}’s dashboard opens for you.",
       "partneredTitle": "You are a partner",
@@ -4773,7 +4819,8 @@
       "members": "Leading an AUIB club and already a member? Apply signed in as yourself: you stay a member, and the club’s dashboard opens beside Membership.",
       "kindOther": "What kind of organization",
       "stepTwo": "Step 2 of 2: the memorandum",
-      "guestNote": "You’re the Society’s guest now. Once the Council approves the partnership, this account becomes your organization’s, with the partner dashboard, and is no longer a guest’s."
+      "guestNote": "You’re the Society’s guest now. Once the Council approves the partnership, this account becomes your organization’s, with the partner dashboard, and is no longer a guest’s.",
+      "acceptFirst": "Agree to the memorandum above first."
     },
     "partnerDesk": {
       "none": "You are not on a partner’s team.",
@@ -4928,7 +4975,22 @@
       "new": "Add an item",
       "remove": "Remove",
       "noEvents": "No events with the Society yet. When the Society plans one with you, it shows here with its checklist.",
-      "planned": "Being planned"
+      "planned": "Being planned",
+      "organizations": {
+        "title": "Who it’s with",
+        "lede": "Organizations from the register, shown at the foot of the event’s page. Add a missing one in Partnerships → Register.",
+        "lines": {
+          "cosponsor": "Co-sponsored by",
+          "thanks": "Thanks to"
+        },
+        "add": {
+          "cosponsor": "Add a partner or a campus partner",
+          "thanks": "Add a sponsor in kind"
+        },
+        "choose": "Choose…",
+        "none": "None yet.",
+        "remove": "Remove"
+      }
     },
     "serviceLetter": {
       "title": "Service letter",
@@ -5044,6 +5106,83 @@
         "cancel": "Cancel",
         "confirm": "Become an Associate Member",
         "done": "Done. You are an Associate Member now."
+      }
+    },
+    "flow": {
+      "label": "Where it stands",
+      "steps": {
+        "received": "Received",
+        "inReview": "In review",
+        "interview": "Interview",
+        "offer": "Offer",
+        "callback": "Callback",
+        "councilVote": "The Council’s vote",
+        "decision": "Decision",
+        "withdrawn": "Withdrawn",
+        "draft": "Draft, not sent"
+      },
+      "decisions": {
+        "accepted": "Decision: accepted, waiting for the Executive Board and Student Life",
+        "appointed": "Decision: appointed",
+        "approved": "Decision: approved",
+        "cast": "Decision: cast",
+        "declinedOffer": "Decision: you declined the offer",
+        "notApproved": "Decision: not approved",
+        "notCast": "Decision: not cast this time",
+        "notChosen": "Decision: not chosen this time",
+        "notOnBallot": "Decision: not on the ballot",
+        "onBallot": "Decision: on the ballot"
+      },
+      "review": {
+        "open": "Review and send",
+        "title": "Check what you’re sending",
+        "back": "Back to editing",
+        "send": "Send",
+        "sending": "Sending…"
+      },
+      "receipt": {
+        "title": "Received",
+        "number": "Your number is {number}.",
+        "email": "A confirmation is on its way to your email.",
+        "open": "See it in Your account"
+      },
+      "draft": {
+        "saving": "Saving the draft…",
+        "saved": "Draft saved {time}.",
+        "resume": "Your draft is kept here until you send it."
+      },
+      "reply": {
+        "opening": "You hear back within 14 days of the closing date, {date}.",
+        "openingAnyTime": "You hear back within 14 days.",
+        "audition": "The cast list is posted on the site after callbacks; you hear back by email the same day.",
+        "nomination": "The Elections Committee confirms the candidates once nominations close, {date}.",
+        "partner": "A decision at the Council’s next meeting, within 30 days."
+      },
+      "terms": {
+        "title": "How it works",
+        "who": "Who may apply",
+        "what": "What to send",
+        "dates": "The dates",
+        "decided": "How it’s decided",
+        "reply": "Reply time",
+        "fees": "Fees",
+        "audition": {
+          "who": "Every member; there is no pre-casting.",
+          "what": "The sides, posted two weeks ahead; each audition says what to prepare. Accommodations on request, in the note or to hello@auibsal.org.",
+          "decided": "The director and the Artistic Director cast together, after callbacks."
+        },
+        "partner": {
+          "who": "Other AUIB clubs, charities, partner schools and organizations outside AUIB. AUIB’s own offices are campus partners, not partners.",
+          "what": "The partnership memorandum above, filled in and signed on the site.",
+          "decided": "The Council votes by resolution; the President then signs for the Society and the memorandum takes its MOU number.",
+          "fees": "None: each side gives items and help, never payments."
+        },
+        "nomination": {
+          "who": "A voting member for at least one semester, in good standing and enrolled, with a cumulative GPA of at least 2.0, which Student Life checks. Elections Committee members don’t run.",
+          "what": "A statement of up to 200 words, in English and, if you like, in Arabic.",
+          "dates": "Nominations close {date}.",
+          "decided": "The Elections Committee confirms the candidates; members then vote by secret ballot."
+        }
       }
     }
   },
@@ -5200,7 +5339,7 @@
       },
       "allEvents": "All events",
       "auibCalendar": "AUIB’s calendar (opens auib.edu.iq)",
-      "heldWith": "Held with {partner}",
+      "hostedBy": "Hosted by {partner}",
       "forget": "Don’t remind me",
       "cancelBooking": "Give my place back",
       "leaveWaitlist": "Leave the waitlist",
@@ -5216,34 +5355,52 @@
         "reminded": "We’ll remind you the day before.",
         "failed": "That didn’t go through. Try again, or book from your calendar."
       },
-      "access": {
-        "title": "Access",
-        "stepFree": "Step-free: no steps on the way in or in the room.",
-        "notStepFree": "Not step-free: there are steps on the way in or in the room.",
-        "stepUnknown": "Ask us about the way in and the room: {email}.",
-        "seating": {
-          "seated": "Seated.",
-          "standing": "Standing.",
-          "mixed": "Some seats, some standing."
+      "goodToKnow": {
+        "title": "Good to know",
+        "who": {
+          "label": "Who can come",
+          "everyone": "Everyone",
+          "members": "Members",
+          "invite": "Invited guests"
         },
-        "noFood": "No food is served.",
-        "foodWithout": "Food is served, without any of the main allergens.",
-        "foodWith": "Food is served. It contains {allergens}.",
+        "placesLeft": "Places left: {count}",
+        "language": {
+          "label": "Language",
+          "en": "English",
+          "ar": "Arabic",
+          "both": "English and Arabic"
+        },
+        "access": {
+          "label": "Access",
+          "stepFree": "Step-free",
+          "notStepFree": "Not step-free",
+          "seating": {
+            "seated": "Seated",
+            "standing": "Standing",
+            "mixed": "Some seats, some standing"
+          },
+          "accommodation": "Ask for an accommodation by {date}"
+        },
+        "food": {
+          "label": "Food and drink",
+          "served": "Food and drink are served",
+          "contains": "Contains: {allergens}"
+        },
+        "contentNote": "Content note",
+        "photos": {
+          "label": "Photos are taken",
+          "release": "The Society’s media release covers everyone at the event."
+        },
         "allergens": {
-          "gluten": "gluten",
-          "crustaceans": "crustaceans",
+          "milk": "milk",
           "eggs": "eggs",
           "fish": "fish",
-          "peanuts": "peanuts",
-          "soy": "soy",
-          "milk": "milk",
+          "crustacean_shellfish": "crustacean shellfish",
           "tree_nuts": "tree nuts",
-          "celery": "celery",
-          "mustard": "mustard",
-          "sesame": "sesame",
-          "sulphites": "sulfites",
-          "lupin": "lupin",
-          "molluscs": "mollusks"
+          "peanuts": "peanuts",
+          "wheat": "wheat",
+          "soy": "soy",
+          "sesame": "sesame"
         }
       }
     },
@@ -5387,7 +5544,8 @@
         },
         "closing": "Filmed on location at the American University of Iraq – Baghdad with the support of the Office of Student Life. A production of the AUIB Society of Arts and Letters.",
         "captions": "Captions",
-        "captionsFile": "{language} captions (WebVTT)"
+        "captionsFile": "{language} captions (WebVTT)",
+        "watchLatest": "Watch the latest"
       },
       "printed": "Printed by {printer}, {date}: {copies} copies.",
       "authorKinds": {
@@ -5468,8 +5626,20 @@
       "sendTo": "Send your work to {desk}",
       "end": {
         "label": "What next",
-        "write": "{desk} takes work all year from members and the Society’s guests, read without your name.",
-        "writeLink": "Send your work"
+        "title": {
+          "news": "Know something we should report?",
+          "voices": "Have your say",
+          "letters": "Send your work",
+          "gallery": "Send your work",
+          "video": "Send your film"
+        },
+        "line": {
+          "news": "Qirtas’s reporters are on its staff. Send a tip, or join them.",
+          "voices": "Write a letter to the editor (up to 300 words) or an op-ed (600–800 words), under your own name.",
+          "letters": "Letters takes poems, stories, essays and translations through each Edition’s calls, read without your name.",
+          "gallery": "Gallery takes art and photography through each Edition’s calls, read without your name.",
+          "video": "Video takes members’ films of up to 15 minutes, captioned, through each Edition’s calls."
+        }
       },
       "topics": "Topics",
       "topicsLede": "What Qirtas has written about, by topic, chosen by its editors.",
@@ -5503,7 +5673,57 @@
       "fromTheSocietyAll": "All notices",
       "colophon": "Set in Ubuntu and Markazi Text. Written in Baghdad.",
       "deskEditor": "Edited by {name}",
-      "submitLink": "Submit"
+      "submitLink": "Send your work",
+      "callPage": {
+        "openNow": "Open now",
+        "noneOpen": "No call is open at the moment. The next Edition’s general submissions open soon.",
+        "send": "Send your work",
+        "closes": "Closes {date}",
+        "anyTime": "Any time",
+        "dates": "Closes {date}, at {time} Baghdad time.",
+        "submitTo": "Submit to {edition}",
+        "chooseForm": "What are you sending?",
+        "readingNow": "Reading now, published {date}",
+        "readingNowUndated": "Reading now",
+        "noFees": "No fees, ever.",
+        "terms": {
+          "what": "What to send",
+          "entries": "How many",
+          "new": "Published before",
+          "who": "Who may send",
+          "own": "Your own work",
+          "dates": "Dates",
+          "decided": "How it’s decided",
+          "reply": "When you hear back",
+          "fees": "Fees"
+        },
+        "general": {
+          "who": "Members of every class and the Society’s guests. Members under 18 may send work, and nothing shows or names them without a parent’s consent.",
+          "simultaneous": "Work not published before, except on your own social media. You may send it elsewhere too; withdraw it here if it is taken.",
+          "own": "Your own work: no text or images generated with AI.",
+          "decided": "Letters and Gallery are read blind by two readers, and the section editor decides; films are watched by the Video editor. Accepted work runs online when ready and is considered for the Edition.",
+          "reply": "Within six weeks. Work sent during finals or the summer is read when the semester starts."
+        },
+        "themed": {
+          "decided": "Read blind by two readers; the section editor decides, and the pieces come out together on the Edition’s date.",
+          "reply": "By {date}",
+          "afterClose": "within the week after the call closes"
+        }
+      },
+      "doors": {
+        "send": "Send your work",
+        "tip": "Send a news tip",
+        "joinStaff": "Join the staff",
+        "letter": "Write to the editor",
+        "opEd": "Write an op-ed"
+      },
+      "allEditions": "All Editions",
+      "drafts": {
+        "title": "Your drafts",
+        "all": "All your work",
+        "line": "{type} · {date}",
+        "untitled": "Untitled draft"
+      }
     },
     "about": {
       "title": "About the Society",
@@ -5959,8 +6179,9 @@
       "asList": "See the productions as a list"
     },
     "institutions": {
-      "withTheSupportOf": "With the support of",
-      "supportedBy": "Supported by"
+      "campusPartners": "Campus partners",
+      "coSponsoredBy": "Co-sponsored by",
+      "thanksTo": "Thanks to"
     },
     "notFound": {
       "title": "A page unwritten",

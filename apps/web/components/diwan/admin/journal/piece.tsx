@@ -26,6 +26,7 @@ import {
   BilingualField,
   ErrorLine,
   Field,
+  RecordView,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -753,20 +754,17 @@ export const QirtasPieceEditor = () => {
   const category = piece.category as journal.Category;
   const needs = journal.typeNeeds(category);
   return (
-    <div className="grid gap-10">
-      <AdminHeading
-        actions={
-          <>
-            {back(tk("back"))}
-            {piece.status === "published" && piece.slug ? (
-              <OnTheSite href={journal.piecePath(piece)} />
-            ) : null}
-          </>
-        }
-        title={localized(piece, "title", locale) || t("untitled")}
-      >
-        {`${tj(`desks.${piece.desk as journal.Desk}`)} · ${tj(`categories.${category}`)}`}
-      </AdminHeading>
+    <RecordView
+      actions={
+        piece.status === "published" && piece.slug ? (
+          <OnTheSite href={journal.piecePath(piece)} />
+        ) : undefined
+      }
+      back={back(tk("back"))}
+      history={<RecordHistory id={piece.id} table="journal.pieces" />}
+      lede={`${tj(`desks.${piece.desk as journal.Desk}`)} · ${tj(`categories.${category}`)}`}
+      title={localized(piece, "title", locale) || t("untitled")}
+    >
       <Workflow record={record.data} />
       <PieceForm record={record.data} />
       {needs.media || piece.desk === "news" ? (
@@ -786,7 +784,6 @@ export const QirtasPieceEditor = () => {
         <Corrections record={record.data} />
       ) : null}
       <Thread pieceId={piece.id} />
-      <RecordHistory id={piece.id} table="journal.pieces" />
-    </div>
+    </RecordView>
   );
 };

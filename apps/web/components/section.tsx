@@ -1,3 +1,4 @@
+import { SectionFront } from "@repo/brand/components/sal/section-front";
 import { SectionHead } from "@repo/brand/components/sal/section-head";
 import type { ReactNode } from "react";
 
@@ -22,21 +23,23 @@ export const Section = ({
   </section>
 );
 
-/** A page header: a Light display title in ink and one sentence. */
+/**
+ * A page header, the one section front (decisions.md, The site: "One
+ * pattern for each kind of thing"): the title, one sentence, the page's
+ * main action, then the rest; never rules or a poster before the action.
+ */
 export const PageHeader = ({
+  actions,
   children,
   lede,
   title,
 }: {
+  actions?: ReactNode;
   children?: ReactNode;
   lede: string;
   title: ReactNode;
 }) => (
-  <header className="grid gap-6">
-    <h1 className="type-display max-w-4xl text-balance">{title}</h1>
-    <p className="type-lede text-text-secondary max-w-[34ch]">{lede}</p>
-    {children}
-  </header>
+  <SectionFront actions={actions} line={lede} note={children} title={title} />
 );
 
 /**

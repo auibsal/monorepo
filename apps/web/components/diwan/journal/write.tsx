@@ -1,22 +1,37 @@
 "use client";
 
+import {
+  ReviewStep,
+  Receipt as SharedReceipt,
+} from "@repo/brand/components/sal/form-flow";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Json } from "@repo/database";
 import { type Locale, localizedPath } from "@repo/internationalization";
 import {
-  formatClock,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
 import { Link, useRouter } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, type ReactNode, useState } from "react";
+import {
+  type FormEvent,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useReviewWords } from "@/components/account/flow";
 import { useAuth } from "@/lib/auth/provider";
 import { journal, localized, toPlainText, unwrap } from "@/lib/data";
-import { queryKeys, useOpenCalls } from "@/lib/diwan/queries";
+import {
+  queryKeys,
+  useMyMembership,
+  useOpenCalls,
+  useProfile,
+} from "@/lib/diwan/queries";
 import { manuscriptHtml } from "@/lib/manuscript";
 import {
   AdminHeading,
@@ -26,7 +41,6 @@ import {
   SelectInput,
 } from "../admin/kit";
 import { RichTextEditor } from "../editor/rich-text";
-import { DiwanSection, RowList } from "../page";
 import { SectionSpinner } from "../states";
 import {
   attachFile,
@@ -36,266 +50,69 @@ import {
   PendingList,
 } from "./files";
 import { AuthorshipPledge, Declarations } from "./form";
-import { PartnerPathway, useMyDrafts, useSubmitPathway } from "./pages";
+import { PartnerPathway, useSubmitPathway } from "./pages";
 
 const LANGUAGES = ["en", "ar", "bilingual"] as const;
-
-/** The sections that take work from members (Games come from the editors). */
-const sendingDesks = journal.desks.filter(
-  (desk) => journal.sendableCategories(desk).length > 0
-);
-
-/**
- * The door for visitors: Qirtas takes work from members and guests, so the
- * way in is to sign in (and back here) or to join. One solid button.
- */
-const VisitorDoor = () => {
-  const tw = useTranslations("diwan.journal.write");
-  return (
-    <div className="border-line grid gap-3 border-y py-5">
-      <p className="type-body">{tw("door.who")}</p>
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-        <Link
-          className="bg-accent text-on-accent hover:bg-accent/90 inline-flex h-12 items-center px-6 text-[0.9375rem] font-medium"
-          href={{ pathname: "/sign-in", query: { next: "/qirtas/submit" } }}
-        >
-          {tw("door.signIn")}
-        </Link>
-        <Link className="link" href="/join">
-          {tw("door.join")}
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-/** How a piece goes from the writer to the paper, in three steps. */
-const HowItWorks = () => {
-  const tw = useTranslations("diwan.journal.write");
-  return (
-    <DiwanSection id="how" title={tw("how.title")}>
-      <ol className="grid gap-4 md:grid-cols-3">
-        {(["choose", "read", "edit"] as const).map((step, i) => (
-          <li className="border-line grid gap-1 border-t pt-3" key={step}>
-            <span className="type-caption">{formatNumber(i + 1)}</span>
-            <span className="type-heading">{tw(`how.${step}.title`)}</span>
-            <span className="type-body text-text-secondary">
-              {tw(`how.${step}.body`)}
-            </span>
-          </li>
-        ))}
-      </ol>
-    </DiwanSection>
-  );
-};
-
-/**
- * /qirtas/submit (decisions.md; the gateway revised Nov 5, 2026):
- * one door, readable by anyone. Visitors learn what Qirtas takes and how it
- * is read, then sign in (and come back here) or join; members and guests
- * see their current drafts. The current issue's call (Haven) leads; work
- * is read blind before an editor takes it up with the author.
- */
-export const WriteHome = () => {
-  const tw = useTranslations("diwan.journal.write");
-  const tj = useTranslations("diwan.admin.journal");
-  const { loading, user } = useAuth();
-  let door: ReactNode = null;
-  if (!loading) {
-    door = user ? <CurrentDrafts /> : <VisitorDoor />;
-  }
-  return (
-    <div className="grid gap-8">
-      <AdminHeading title={tw("title")}>{tw("lede")}</AdminHeading>
-      <Haven />
-      {door}
-      <DiwanSection id="sections" title={tw("sectionsTitle")}>
-        <ul className="divide-line border-line grid divide-y border-y">
-          {sendingDesks.map((desk) => (
-            <li
-              className="grid gap-3 py-5 md:grid-cols-[12rem_1fr]"
-              id={desk}
-              key={desk}
-            >
-              <h3 className="type-heading">{tj(`desks.${desk}`)}</h3>
-              <div className="grid gap-2">
-                <p className="type-body">
-                  {tw(`sections.${desk as Exclude<typeof desk, "games">}`)}
-                </p>
-                <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-1">
-                  {journal.sendableCategories(desk).map((category) => (
-                    <li key={category}>
-                      <Link
-                        className="link text-sm font-medium"
-                        href={`/qirtas/submit/${category}`}
-                      >
-                        {tj(`categories.${category}`)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </DiwanSection>
-      <HowItWorks />
-    </div>
-  );
-};
-
-/** Haven's call with its issue's date, for the call's own terms. */
-const useHavenCall = () => {
-  const { supabase } = useAuth();
-  return useQuery({
-    queryFn: async () =>
-      unwrap(
-        await supabase
-          .schema("journal")
-          .from("calls")
-          .select("closes_at, issue:issues!inner(slug, publish_at)")
-          .eq("issue.slug", "haven")
-          .maybeSingle()
-      ),
-    queryKey: ["journal", "haven-call"],
-  });
-};
-
-/**
- * The call's closing line as the owner wrote it (decisions.md, Qirtas):
- * "Sunday, December 6" and "11:59 p.m."; in Arabic «الأحد 6 كانون الأول»
- * and «11:59 مساءً».
- */
-const closingDate = (value: string, locale: string) => {
-  const date = formatLongDate(value, locale as "en");
-  return locale === "ar" ? date.replace("،", "") : date;
-};
-const closingTime = (value: string, locale: string) => {
-  const time = formatClock(value, locale as "en");
-  return locale === "ar"
-    ? time.replace(EVENING_AR, " مساءً").replace(MORNING_AR, " صباحًا")
-    : time;
-};
-const EVENING_AR = / م$/u;
-const MORNING_AR = / ص$/u;
-
-const HAVEN_RULES = ["length", "entries", "new", "who", "own"] as const;
-
-/**
- * Haven, Qirtas's pilot Edition (decisions.md, Qirtas): the poster's words,
- * the call's terms and its dates, read from the call itself. Work for it
- * goes through Letters and Gallery below.
- */
-const Haven = () => {
-  const tw = useTranslations("diwan.journal.write.haven");
-  const locale = useLocale() as Locale;
-  const call = useHavenCall().data;
-  const closes = call && journal.hasDeadline(call) ? call.closes_at : null;
-  const published = call?.issue?.publish_at ?? null;
-  return (
-    <section
-      aria-labelledby="haven"
-      className="border-line grid gap-4 border-y py-8"
-    >
-      <div className="grid gap-2">
-        <h2 className="type-display" id="haven">
-          {tw("title")}
-        </h2>
-        <p className="type-body text-text-secondary">{tw("dek")}</p>
-      </div>
-      <p className="reading max-w-[60ch]">{tw("memories")}</p>
-      <p className="type-lede max-w-[60ch]">{tw("call")}</p>
-      <div className="grid max-w-[60ch] gap-2">
-        <h3 className="type-heading">{tw("rulesTitle")}</h3>
-        <ul className="type-body grid list-disc gap-1 ps-5">
-          {HAVEN_RULES.map((rule) => (
-            <li key={rule}>{tw(`rules.${rule}`)}</li>
-          ))}
-        </ul>
-      </div>
-      {closes ? (
-        <p className="type-body max-w-[60ch] font-medium">
-          {tw("closes", {
-            date: closingDate(closes, locale),
-            time: closingTime(closes, locale),
-          })}
-        </p>
-      ) : null}
-      {published ? (
-        <p className="type-body max-w-[60ch]">
-          {tw("published", {
-            date: formatLongDate(published, locale, true),
-          })}
-        </p>
-      ) : null}
-    </section>
-  );
-};
-
-/**
- * The member's current drafts, the two most recent (decisions.md, Qirtas): what
- * they have sent lives in Your account → Work, so it isn't repeated here.
- */
-const CurrentDrafts = () => {
-  const tw = useTranslations("diwan.journal.write");
-  const tj = useTranslations("diwan.admin.journal");
-  const locale = useLocale() as Locale;
-  const drafts = useMyDrafts();
-  if (!drafts.data?.length) {
-    return null;
-  }
-  return (
-    <DiwanSection
-      action={
-        <Link className="link text-sm" href="/account/work">
-          {tw("drafts.all")}
-        </Link>
-      }
-      id="drafts"
-      title={tw("drafts.title")}
-    >
-      <RowList>
-        {drafts.data.slice(0, 2).map((d) => (
-          <li className="grid gap-1" key={d.id}>
-            <Link
-              className="font-medium underline underline-offset-4"
-              href={`/qirtas/submit/${d.category}/${d.id}`}
-            >
-              {d.title || tw("untitledDraft")}
-            </Link>
-            <span className="type-caption">
-              {tw("drafts.line", {
-                date: formatLongDate(d.updated_at, locale),
-                type: tj(`categories.${d.category}`),
-              })}
-            </span>
-          </li>
-        ))}
-      </RowList>
-    </DiwanSection>
-  );
-};
+/** A draft saves itself this long after the last change. */
+const AUTOSAVE_MS = 4000;
 
 /** Send, and what it waits for when it can't yet. */
+/**
+ * Send, with the review step first (decisions.md, The site: "One form
+ * flow"): the first press shows what goes, the second sends it.
+ */
 const SendRow = ({
   missing,
+  review,
   sending,
 }: {
   readonly missing: ReturnType<typeof missingReason> | null;
+  readonly review: readonly [string, string][];
   readonly sending: boolean;
 }) => {
   const t = useTranslations("diwan.journal.write");
+  const words = useReviewWords();
   return (
-    <>
-      {missing ? <p className="type-caption">{t(missing)}</p> : null}
-      <Button
-        className="justify-self-start"
-        disabled={missing !== null || sending}
-        type="submit"
-      >
-        {sending ? t("sending") : t("send")}
-      </Button>
-    </>
+    <ReviewStep
+      missing={missing ? t(missing) : null}
+      rows={review}
+      sending={sending}
+      words={{ ...words, send: t("send"), sending: t("sending") }}
+    />
+  );
+};
+
+/**
+ * The receipt on the page (decisions.md, The site: "One form flow"): the
+ * record number, when the writer hears back, and the work's own page; the
+ * "received" email goes out at the same time.
+ */
+const Receipt = ({
+  receipt,
+}: {
+  readonly receipt: { id: string; reference: string; reply: string };
+}) => {
+  const t = useTranslations("diwan.journal.write.receipt");
+  return (
+    <SharedReceipt
+      actions={
+        <>
+          <Link
+            className="link font-medium"
+            href={`/account/work/submissions/${receipt.id}`}
+          >
+            {t("open")}
+          </Link>
+          <Link className="link" href={journal.SEND_YOUR_WORK}>
+            {t("more")}
+          </Link>
+        </>
+      }
+      email={t("email")}
+      number={t("number", { number: receipt.reference })}
+      reply={receipt.reply}
+      title={t("title")}
+    />
   );
 };
 
@@ -307,56 +124,137 @@ const missingReason = (pledged: boolean, work: boolean) => {
   return work ? ("missingDetails" as const) : ("missingWork" as const);
 };
 
+/** Where a form lives and where it leads back to. */
+interface Place {
+  /** The Edition whose call it answers; none for Voices. */
+  readonly edition?: string;
+  /** The form's own address, a draft's under it. */
+  readonly form: string;
+  /** The page it came from: the Edition, or Voices. */
+  readonly home: string;
+}
+
+const placeOf = (type: journal.Category, edition?: string): Place =>
+  edition
+    ? {
+        edition,
+        form: `/qirtas/editions/${edition}/submit/${type}`,
+        home: `/qirtas/editions/${edition}`,
+      }
+    : { form: journal.draftPath(type), home: "/qirtas/voices" };
+
 /**
- * The form for one type, at /qirtas/submit/<type>; a saved draft opens at
- * /qirtas/submit/<type>/<draft> (decisions.md: drafts in their work).
+ * The form for one type, under its Edition at
+ * /qirtas/editions/:edition/submit/:type (decisions.md, Qirtas), or
+ * Voices' own at /qirtas/voices/letter and /op-ed; a saved draft opens at
+ * the form's address plus its id.
  */
 export const WriteType = ({
   draftId,
+  edition,
   type,
 }: {
   readonly draftId?: string;
+  readonly edition?: string;
   readonly type: journal.Category;
 }) => {
   const saved = useSavedDraft(draftId);
+  const place = placeOf(type, edition);
+  // Once the draft is open, sending it (which deletes it) keeps the form
+  // and its receipt on the page.
+  const opened = useRef(false);
+  if (saved.data?.category === type) {
+    opened.current = true;
+  }
   if (saved.isPending && draftId) {
     return <SectionSpinner />;
   }
   // A draft opens under its own type only.
-  if (draftId && saved.data?.category !== type) {
-    return <MissingDraft type={type} />;
+  if (draftId && !opened.current && saved.data?.category !== type) {
+    return <MissingDraft place={place} type={type} />;
   }
   return (
     <WriteForm
       draftId={draftId}
       initial={fromDraft((saved.data?.content ?? {}) as DraftContent)}
+      place={place}
       type={type}
     />
   );
 };
 
+/** What the review step shows before the work goes. */
+const reviewRows = ({
+  call,
+  files,
+  locale,
+  penName,
+  t,
+  title,
+  typeName,
+}: {
+  readonly call: { title_ar: string; title_en: string } | undefined;
+  readonly files: number;
+  readonly locale: Locale;
+  readonly penName: string;
+  readonly t: ReturnType<typeof useTranslations<"diwan.journal.write">>;
+  readonly title: string;
+  readonly typeName: string;
+}): [string, string][] => [
+  [
+    t("review.call"),
+    call ? localized(call, "title", locale) : t("review.noCall"),
+  ],
+  [t("review.type"), typeName],
+  [t("review.workTitle"), title || t("untitledDraft")],
+  [t("review.byline"), penName.trim() || t("review.ownName")],
+  [t("review.files"), formatNumber(files)],
+];
+
+/**
+ * When the writer hears back (decisions.md, Qirtas: "Calls"): within six
+ * weeks for general submissions, by the call's decision date for a themed
+ * call, and from the Voices desk once it decides.
+ */
+const replyLine = (
+  call:
+    | { closes_at: string; decisions_at: string | null; kind: string }
+    | undefined,
+  locale: Locale,
+  t: ReturnType<typeof useTranslations<"diwan.journal.write">>
+) => {
+  if (!call) {
+    return t("receipt.replyVoices");
+  }
+  if (call.kind === "general") {
+    return t("receipt.replyGeneral");
+  }
+  return call.decisions_at
+    ? t("receipt.replyBy", { date: formatLongDate(call.decisions_at, locale) })
+    : t("receipt.replyThemed");
+};
+
 const WriteForm = ({
   draftId,
   initial,
+  place,
   type,
 }: {
   readonly draftId?: string;
   readonly initial: ReturnType<typeof fromDraft>;
+  readonly place: Place;
   readonly type: journal.Category;
 }) => {
   const t = useTranslations("diwan.journal.write");
   const tf = useTranslations("diwan.journal.form");
   const tj = useTranslations("diwan.admin.journal");
-  const router = useRouter();
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const desk = journal.deskOf(type);
   const needs = journal.typeNeeds(type);
   const kinds = kindsFor(type);
-  const { call, loading, pathway, setCallId, setPartnerId } = useWriteCall(
-    desk,
-    initial
-  );
+  const { call, loading, pathway, sendable, setCallId, setPartnerId } =
+    useWriteCall(desk, initial, place.edition);
   const [language, setLanguage] = useState(initial.language);
   const [title, setTitle] = useState(initial.title);
   const [deck, setDeck] = useState(initial.deck);
@@ -365,30 +263,45 @@ const WriteForm = ({
   const [source, setSource] = useState<Source>(initial.source);
   const [note, setNote] = useState(initial.note);
   const [penName, setPenName] = useState(initial.penName);
+  const [aboutWriter, setAboutWriter] = useState(initial.aboutWriter);
+  const [writerYear, setWriterYear] = useState(initial.writerYear);
+  const [film, setFilm] = useState<Film>(initial.film);
   const [files, setFiles] = useState<PendingFile[]>([]);
   const [pledged, setPledged] = useState(false);
   const [firstPublication, setFirstPublication] = useState(false);
   const [consent, setConsent] = useState(false);
   const [partial, setPartial] = useState<string | null>(null);
-  const draft = useDraft(type, draftId);
+  const [receipt, setReceipt] = useState<{
+    id: string;
+    reference: string;
+    reply: string;
+  } | null>(null);
+  const locale = useLocale() as Locale;
+  const draft = useDraft(type, draftId, place.form);
   const draftContent: DraftContent = {
+    aboutWriter,
     body,
     callId: call?.id,
     deck,
+    film,
     language,
     note,
     partnerId: pathway.throughPartner,
+    path: place.form,
     penName,
     source,
     title,
     videoUrl,
+    writerYear,
   };
 
   const input = submissionInput({
+    aboutWriter,
     body,
     callId: call?.id,
     consent,
     deck,
+    film,
     firstPublication,
     language,
     note,
@@ -398,13 +311,14 @@ const WriteForm = ({
     title,
     type,
     videoUrl,
+    writerYear,
   });
   const missing = missingReason(
     pledged,
     hasWork({ body, files, kinds, video: needs.video })
   );
   const ready =
-    Boolean(call) &&
+    sendable &&
     pledged &&
     journal.submissionSchema.safeParse(input).success &&
     hasWork({ body, files, kinds, video: needs.video });
@@ -424,19 +338,27 @@ const WriteForm = ({
         setPartial(created.id);
         return null;
       }
-      return created.id;
+      return created;
     },
-    onSuccess: async (id) => {
+    onSuccess: async (created) => {
       await draft.discard();
       await queryClient.invalidateQueries({
         queryKey: queryKeys.submissions(user?.id ?? ""),
       });
-      if (id) {
-        router.push(`/account/work/submissions/${id}`);
+      if (created) {
+        setReceipt({
+          id: created.id,
+          reference: created.reference ?? "",
+          reply: replyLine(call, locale, t),
+        });
+        window.scrollTo({ top: 0 });
       }
     },
   });
 
+  if (receipt) {
+    return <Receipt receipt={receipt} />;
+  }
   if (loading) {
     return <SectionSpinner />;
   }
@@ -447,19 +369,14 @@ const WriteForm = ({
 
   return (
     <div className="grid gap-8">
-      <WriteHeading type={type} />
-      {call ? (
+      <WriteHeading place={place} type={type} />
+      {sendable ? (
         <form className="grid max-w-3xl gap-6" onSubmit={submit}>
-          <WhereField
-            calls={pathway.callable}
-            onChange={setCallId}
-            value={call.id}
-          />
-          <PartnerPathway
-            isMember={pathway.isMember}
-            onChange={setPartnerId}
-            pathways={pathway.callPathways}
-            value={pathway.throughPartner}
+          <CallFields
+            callId={call?.id}
+            onCall={setCallId}
+            onPartner={setPartnerId}
+            pathway={pathway}
           />
           <Field label={tf("language")}>
             {(id) => (
@@ -496,6 +413,7 @@ const WriteForm = ({
             onVideo={setVideoUrl}
             video={needs.video ? videoUrl : null}
           />
+          <FilmFields onChange={setFilm} shown={needs.video} value={film} />
           {needs.video ? null : (
             <FilesField
               body={body}
@@ -511,6 +429,7 @@ const WriteForm = ({
             onChange={setBody}
             value={body}
           />
+          <WordsLine body={body} type={type} />
           <p className="type-caption">{t(`standards.${desk}`)}</p>
           {type === "translation" ? (
             <TranslationFields onChange={setSource} value={source} />
@@ -526,7 +445,15 @@ const WriteForm = ({
               />
             )}
           </Field>
-          <PenNameField onChange={setPenName} value={penName} />
+          <BylineFields
+            aboutWriter={aboutWriter}
+            onAboutWriter={setAboutWriter}
+            onPenName={setPenName}
+            onWriterYear={setWriterYear}
+            penName={penName}
+            type={type}
+            writerYear={writerYear}
+          />
           {desk === "news" ? null : (
             <Declarations
               category={type}
@@ -537,16 +464,24 @@ const WriteForm = ({
             />
           )}
           <AuthorshipPledge checked={pledged} onChange={setPledged} />
-          <p className="type-caption">
-            {t("limits", {
-              hour: formatNumber(journal.MAX_SUBMISSIONS_PER_HOUR),
-              max: formatNumber(call.max_per_person),
+          <LimitsLine max={call?.max_per_person} />
+          <SendRow
+            missing={ready ? null : missing}
+            review={reviewRows({
+              call,
+              files: files.filter((f) => kinds.includes(f.kind)).length,
+              locale,
+              penName,
+              t,
+              title,
+              typeName: tj(`categories.${type}`),
             })}
-          </p>
-          <SendRow missing={ready ? null : missing} sending={send.isPending} />
+            sending={send.isPending}
+          />
           <DraftRow
             content={draftContent}
             draft={draft}
+            home={place.home}
             saved={draft.savedId !== undefined}
           />
           <ErrorLine error={send.error} />
@@ -677,10 +612,12 @@ const WhereField = ({
 };
 
 interface InputState {
+  aboutWriter: string;
   body: string;
   callId: string | undefined;
   consent: boolean;
   deck: string;
+  film: Film;
   firstPublication: boolean;
   language: (typeof LANGUAGES)[number];
   note: string;
@@ -690,6 +627,7 @@ interface InputState {
   title: string;
   type: journal.Category;
   videoUrl: string;
+  writerYear: string;
 }
 
 const orNothing = (value: string) => value.trim() || undefined;
@@ -698,9 +636,13 @@ const orNothing = (value: string) => value.trim() || undefined;
 const submissionInput = (state: InputState) => {
   const desk = journal.deskOf(state.type);
   const needs = journal.typeNeeds(state.type);
+  const { video } = needs;
   return {
+    about_writer:
+      state.type === "opinion_essay" ? orNothing(state.aboutWriter) : undefined,
     body_html: state.body || undefined,
     call_id: state.callId,
+    captions_confirmed: video ? state.film.captions : undefined,
     category: state.type,
     consent_confirmed: desk === "gallery" ? state.consent : undefined,
     cover_note: orNothing(state.note),
@@ -710,12 +652,21 @@ const submissionInput = (state: InputState) => {
     human_authorship_confirmed: true as const,
     language: state.language,
     partner_id: state.partnerId,
-    pen_name: orNothing(state.penName),
+    pen_name: desk === "voices" ? undefined : orNothing(state.penName),
+    release_confirmed: video ? state.film.release : undefined,
     rights_note: orNothing(state.source.rights),
+    running_minutes:
+      video && Number(state.film.minutes) > 0
+        ? Math.round(Number(state.film.minutes))
+        : undefined,
     source_author: orNothing(state.source.author),
     source_text: orNothing(state.source.text),
     title: state.title.trim(),
     video_url: needs.video ? orNothing(state.videoUrl) : undefined,
+    writer_year:
+      state.type === "opinion_essay" && journal.isWriterYear(state.writerYear)
+        ? state.writerYear
+        : undefined,
   };
 };
 
@@ -903,16 +854,21 @@ const PartialSend = ({ id }: { readonly id: string | null }) => {
 
 /** What a draft keeps: the form as the member left it (files go on sending). */
 interface DraftContent {
+  readonly aboutWriter?: string;
   readonly body?: string;
   readonly callId?: string;
   readonly deck?: string;
+  readonly film?: Film;
   readonly language?: (typeof LANGUAGES)[number];
   readonly note?: string;
   readonly partnerId?: string;
+  /** The form's address, for the draft's link in Your account → Work. */
+  readonly path?: string;
   readonly penName?: string;
   readonly source?: Source;
   readonly title?: string;
   readonly videoUrl?: string;
+  readonly writerYear?: string;
 }
 
 /** A saved draft, read under the member's own rights (RLS: theirs only). */
@@ -938,7 +894,11 @@ const useSavedDraft = (draftId: string | undefined) => {
  * first save gives it its own address without leaving the form, so files
  * already chosen stay; sending the work drops the draft.
  */
-const useDraft = (type: journal.Category, draftId: string | undefined) => {
+const useDraft = (
+  type: journal.Category,
+  draftId: string | undefined,
+  form: string
+) => {
   const { supabase } = useAuth();
   const locale = useLocale() as Locale;
   const queryClient = useQueryClient();
@@ -976,7 +936,7 @@ const useDraft = (type: journal.Category, draftId: string | undefined) => {
         window.history.replaceState(
           null,
           "",
-          localizedPath(locale, `/qirtas/submit/${type}/${id}`)
+          localizedPath(locale, `${form}/${id}`)
         );
       }
       await queryClient.invalidateQueries({ queryKey: queryKeys.drafts });
@@ -1002,10 +962,12 @@ type Draft = ReturnType<typeof useDraft>;
 
 /** A saved draft's fields, with the form's own defaults for what it lacks. */
 const fromDraft = (saved: DraftContent) => ({
+  aboutWriter: saved.aboutWriter ?? "",
   body: saved.body ?? "",
   // Empty: the Edition's open call (Haven's, for now).
   callId: saved.callId ?? "",
   deck: saved.deck ?? "",
+  film: saved.film ?? { captions: false, minutes: "", release: false },
   language: saved.language ?? "en",
   note: saved.note ?? "",
   partnerId: saved.partnerId ?? "",
@@ -1013,24 +975,45 @@ const fromDraft = (saved: DraftContent) => ({
   source: saved.source ?? { author: "", rights: "", text: "" },
   title: saved.title ?? "",
   videoUrl: saved.videoUrl ?? "",
+  writerYear: saved.writerYear ?? "",
 });
 
 /** Save draft beside Send, and Delete draft once it has one. */
 const DraftRow = ({
   content,
   draft,
+  home,
   saved,
 }: {
   readonly content: DraftContent;
   readonly draft: Draft;
+  readonly home: string;
   readonly saved: boolean;
 }) => {
   const t = useTranslations("diwan.journal.write");
   const router = useRouter();
   const remove = useMutation({
     mutationFn: draft.discard,
-    onSuccess: () => router.push("/qirtas/submit"),
+    onSuccess: () => router.push(home),
   });
+  // Saved as you go (decisions.md, The site: "One form flow"): a few
+  // seconds after the last change, once there is a title or a word.
+  const snapshot = JSON.stringify(content);
+  const lastSaved = useRef(snapshot);
+  const { mutate } = draft.save;
+  useEffect(() => {
+    if (
+      snapshot === lastSaved.current ||
+      !(content.title?.trim() || toPlainText(content.body ?? "").trim())
+    ) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      lastSaved.current = snapshot;
+      mutate(content);
+    }, AUTOSAVE_MS);
+    return () => window.clearTimeout(timer);
+  }, [content, mutate, snapshot]);
   let label = t("saveDraft");
   if (draft.save.isPending) {
     label = t("savingDraft");
@@ -1067,58 +1050,347 @@ const DraftRow = ({
 };
 
 /** A draft address that isn't the member's (or was sent or deleted). */
-const MissingDraft = ({ type }: { readonly type: journal.Category }) => {
+const MissingDraft = ({
+  place,
+  type,
+}: {
+  readonly place: Place;
+  readonly type: journal.Category;
+}) => {
   const t = useTranslations("diwan.journal.write");
   return (
     <div className="grid gap-4">
-      <WriteHeading type={type} />
+      <WriteHeading place={place} type={type} />
       <p className="type-body">{t("draftMissing")}</p>
-      <Link className="link justify-self-start" href="/qirtas/submit">
+      <Link className="link justify-self-start" href={place.home}>
         {t("back")}
       </Link>
     </div>
   );
 };
 
+/** Which call, and through which partner, when there is a call to answer. */
+const CallFields = ({
+  callId,
+  onCall,
+  onPartner,
+  pathway,
+}: {
+  readonly callId: string | undefined;
+  readonly onCall: (id: string) => void;
+  readonly onPartner: (id: string) => void;
+  readonly pathway: ReturnType<typeof useSubmitPathway>;
+}) =>
+  callId ? (
+    <>
+      <WhereField calls={pathway.callable} onChange={onCall} value={callId} />
+      <PartnerPathway
+        isMember={pathway.isMember}
+        onChange={onPartner}
+        pathways={pathway.callPathways}
+        value={pathway.throughPartner}
+      />
+    </>
+  ) : null;
+
+/** The themed call before the general submissions (decisions.md, Qirtas). */
+const themedFirst = (a: { kind: string }, b: { kind: string }) =>
+  Number(a.kind !== "themed") - Number(b.kind !== "themed");
+
+/**
+ * Which call the work answers: the form asks, with the open themed call
+ * first; under an Edition, that Edition's call is chosen to begin with.
+ */
 const useWriteCall = (
   desk: journal.Desk,
-  initial: { readonly callId: string; readonly partnerId: string }
+  initial: { readonly callId: string; readonly partnerId: string },
+  edition: string | undefined
 ) => {
+  const { supabase } = useAuth();
   const calls = useOpenCalls();
-  const open = (calls.data ?? []).filter((c) => c.desks.includes(desk));
+  const ofEdition = useQuery({
+    enabled: Boolean(edition),
+    queryFn: () => journal.callsWithEditions(supabase, edition),
+    queryKey: ["journal", "edition-calls", edition],
+  });
+  const open = (calls.data ?? [])
+    .filter((c) => c.desks.includes(desk))
+    .sort(themedFirst);
   const [callId, setCallId] = useState(initial.callId);
   const [partnerId, setPartnerId] = useState(initial.partnerId);
   const pathway = useSubmitPathway(open, callId, partnerId);
+  const mine = new Set((ofEdition.data ?? []).map((c) => c.id));
   const call =
     pathway.callable.find((c) => c.id === callId) ??
-    // An Edition's call first: Haven's, for now (decisions.md, Qirtas).
-    pathway.callable.find((c) => c.issue_id) ??
+    pathway.callable.find((c) => mine.has(c.id)) ??
     pathway.callable[0];
   return {
     call,
-    loading: !calls.data || pathway.pending,
+    loading:
+      !calls.data ||
+      pathway.pending ||
+      (Boolean(edition) && ofEdition.isPending),
     pathway,
+    // Voices takes letters and op-eds to no call, by name (decisions.md,
+    // Qirtas); everything else answers an open call.
+    sendable: desk === "voices" || Boolean(call),
     setCallId,
     setPartnerId,
   };
 };
 
-const WriteHeading = ({ type }: { readonly type: journal.Category }) => {
+const WriteHeading = ({
+  place,
+  type,
+}: {
+  readonly place: Place;
+  readonly type: journal.Category;
+}) => {
   const t = useTranslations("diwan.journal.write");
   const tj = useTranslations("diwan.admin.journal");
+  const desk = journal.deskOf(type);
   return (
     <AdminHeading
       actions={
         <Link
           className="text-sm underline underline-offset-4"
-          href="/qirtas/submit"
+          href={place.home}
         >
           {t("back")}
         </Link>
       }
       title={tj(`categories.${type}`)}
     >
-      {t("blind", { section: tj(`desks.${journal.deskOf(type)}`) })}
+      {t(`lead.${desk === "voices" || desk === "video" ? desk : "blind"}`, {
+        section: tj(`desks.${desk}`),
+      })}
     </AdminHeading>
+  );
+};
+
+// ── Video and Voices ────────────────────────────────────────────────────────
+
+/**
+ * The byline: a pen name for Edition work; Voices runs under the writer's
+ * own name, and an op-ed ends with its line about the writer.
+ */
+const BylineFields = ({
+  aboutWriter,
+  onAboutWriter,
+  onPenName,
+  onWriterYear,
+  penName,
+  type,
+  writerYear,
+}: {
+  readonly aboutWriter: string;
+  readonly onAboutWriter: (value: string) => void;
+  readonly onPenName: (value: string) => void;
+  readonly onWriterYear: (value: string) => void;
+  readonly penName: string;
+  readonly type: journal.Category;
+  readonly writerYear: string;
+}) => {
+  const t = useTranslations("diwan.journal.write.voices");
+  if (journal.deskOf(type) !== "voices") {
+    return <PenNameField onChange={onPenName} value={penName} />;
+  }
+  return (
+    <>
+      {type === "opinion_essay" ? (
+        <IdentityFields
+          line={aboutWriter}
+          onLine={onAboutWriter}
+          onYear={onWriterYear}
+          year={writerYear}
+        />
+      ) : null}
+      <p className="type-caption">{t("ownName")}</p>
+    </>
+  );
+};
+
+/** How many a call takes from one person, and the hourly limit. */
+const LimitsLine = ({ max }: { readonly max: number | undefined }) => {
+  const t = useTranslations("diwan.journal.write");
+  if (max === undefined) {
+    return null;
+  }
+  return (
+    <p className="type-caption">
+      {t("limits", {
+        hour: formatNumber(journal.MAX_SUBMISSIONS_PER_HOUR),
+        max: formatNumber(max),
+      })}
+    </p>
+  );
+};
+
+/** A film's length and its two declarations (decisions.md, Qirtas). */
+interface Film {
+  readonly captions: boolean;
+  readonly minutes: string;
+  readonly release: boolean;
+}
+
+const FilmFields = ({
+  onChange,
+  shown,
+  value,
+}: {
+  readonly onChange: (value: Film) => void;
+  readonly shown: boolean;
+  readonly value: Film;
+}) => {
+  const t = useTranslations("diwan.journal.write.film");
+  if (!shown) {
+    return null;
+  }
+  return (
+    <fieldset className="grid gap-4">
+      <legend className="mb-2 font-medium">{t("title")}</legend>
+      <Field
+        hint={t("minutesHint", {
+          max: formatNumber(journal.MAX_FILM_MINUTES),
+        })}
+        label={t("minutes")}
+      >
+        {(id) => (
+          <Input
+            className="max-w-32"
+            id={id}
+            inputMode="numeric"
+            max={journal.MAX_FILM_MINUTES}
+            min={1}
+            onChange={(e) => onChange({ ...value, minutes: e.target.value })}
+            required
+            type="number"
+            value={value.minutes}
+          />
+        )}
+      </Field>
+      <label className="flex items-start gap-3">
+        <input
+          checked={value.captions}
+          className="mt-1"
+          onChange={(e) => onChange({ ...value, captions: e.target.checked })}
+          type="checkbox"
+        />
+        <span className="type-body">{t("captions")}</span>
+      </label>
+      <label className="flex items-start gap-3">
+        <input
+          checked={value.release}
+          className="mt-1"
+          onChange={(e) => onChange({ ...value, release: e.target.checked })}
+          type="checkbox"
+        />
+        <span className="type-body">{t("release")}</span>
+      </label>
+    </fieldset>
+  );
+};
+
+/** The words so far against the limit: 300 for a letter, 600–800 an op-ed. */
+const WordsLine = ({
+  body,
+  type,
+}: {
+  readonly body: string;
+  readonly type: journal.Category;
+}) => {
+  const t = useTranslations("diwan.journal.write.voices");
+  const limits =
+    journal.VOICES_WORDS[type as keyof typeof journal.VOICES_WORDS];
+  if (!limits) {
+    return null;
+  }
+  const n = journal.wordCount(body);
+  return (
+    <p aria-live="polite" className="type-caption">
+      {type === "letter_to_editor"
+        ? t("letterWords", {
+            max: formatNumber(limits.max),
+            n: formatNumber(n),
+          })
+        : t("opEdWords", {
+            max: formatNumber(limits.max),
+            min: formatNumber(limits.min),
+            n: formatNumber(n),
+          })}
+    </p>
+  );
+};
+
+/**
+ * An op-ed's identity line (decisions.md, Qirtas), built from the writer's
+ * class and the one line they give: a student gives their year and what
+ * they study ("is a junior studying business at AUIB"); anyone else, the
+ * line after their name. The line as it will run shows under the fields.
+ */
+const IdentityFields = ({
+  line,
+  onLine,
+  onYear,
+  year,
+}: {
+  readonly line: string;
+  readonly onLine: (value: string) => void;
+  readonly onYear: (value: string) => void;
+  readonly year: string;
+}) => {
+  const t = useTranslations("diwan.journal.write.voices");
+  const ti = useTranslations("diwan.journal.write.voices.identity");
+  const locale = useLocale() as Locale;
+  const mine = useMyMembership();
+  const profile = useProfile();
+  const student = mine.data?.kind === "member";
+  const name = profile.data ? localized(profile.data, "full_name", locale) : "";
+  const built = journal.identityLine(ti, {
+    feminine: profile.data?.title_form === "feminine",
+    line,
+    name,
+    student,
+    year,
+  });
+  return (
+    <fieldset className="grid gap-4">
+      <legend className="type-label mb-2">{t("about")}</legend>
+      {student ? (
+        <Field label={ti("year")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) => onYear(e.target.value)}
+              value={year}
+            >
+              <option value="" />
+              {journal.WRITER_YEARS.map((y) => (
+                <option key={y} value={y}>
+                  {ti(`years.${y}`)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+      ) : null}
+      <Field
+        hint={student ? ti("subjectHint") : ti("lineHint")}
+        label={student ? ti("subject") : ti("line")}
+      >
+        {(id) => (
+          <Input
+            id={id}
+            maxLength={160}
+            onChange={(e) => onLine(e.target.value)}
+            required
+            value={line}
+          />
+        )}
+      </Field>
+      {built ? (
+        <p className="type-caption">{ti("preview", { line: built })}</p>
+      ) : null}
+    </fieldset>
   );
 };

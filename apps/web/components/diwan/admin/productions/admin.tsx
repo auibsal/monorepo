@@ -20,6 +20,7 @@ import {
   DataTable,
   ErrorLine,
   Field,
+  RecordView,
   SaveButton,
   SelectInput,
 } from "../kit";
@@ -291,18 +292,20 @@ export const ProductionPage = ({
   }
   const base = `/company/${production.slug ?? production.id}`;
   return (
-    <div className="grid gap-8">
-      <AdminHeading
-        actions={
-          <>
-            <Link className="link" href="/company">
-              {t("back")}
-            </Link>
-            {production.is_public ? <OnTheSite href={base} /> : null}
-          </>
-        }
-        title={localized(production, "title", locale)}
-      />
+    <RecordView
+      actions={production.is_public ? <OnTheSite href={base} /> : undefined}
+      back={
+        <Link className="link" href="/company">
+          {t("back")}
+        </Link>
+      }
+      history={
+        tab === "details" ? (
+          <RecordHistory id={production.id} table="programmes.productions" />
+        ) : null
+      }
+      title={localized(production, "title", locale)}
+    >
       <SectionTabs
         label={localized(production, "title", locale)}
         tabs={productionTabs.map((key) => ({
@@ -319,9 +322,6 @@ export const ProductionPage = ({
         <PerformancesTab production={production} />
       ) : null}
       {tab === "report" ? <ReportTab production={production} /> : null}
-      {tab === "details" ? (
-        <RecordHistory id={production.id} table="programmes.productions" />
-      ) : null}
-    </div>
+    </RecordView>
   );
 };

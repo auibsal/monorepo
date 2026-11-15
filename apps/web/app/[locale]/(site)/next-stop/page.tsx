@@ -1,4 +1,6 @@
+import { SectionFront } from "@repo/brand/components/sal/section-front";
 import { Shelf } from "@repo/brand/components/sal/shelf";
+import { buttonVariants } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
@@ -42,10 +44,21 @@ const NextStopPage = async ({ params }: NextStopProps) => {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-10">
-      <header className="grid gap-2">
-        <h1 className="type-display">{t("nextStop.title")}</h1>
-        <p className="type-lede max-w-3xl">{t("nextStop.lede")}</p>
-      </header>
+      <SectionFront
+        actions={
+          latest ? (
+            // Next Stop's one action (decisions.md, The site): the latest.
+            <Link
+              className={buttonVariants()}
+              href={`/next-stop/episodes/${latest.slug}`}
+            >
+              {t("nextStop.watchLatest")}
+            </Link>
+          ) : null
+        }
+        line={t("nextStop.lede")}
+        title={t("nextStop.title")}
+      />
 
       {latest ? (
         <section aria-labelledby="latest" className="grid max-w-3xl gap-4">

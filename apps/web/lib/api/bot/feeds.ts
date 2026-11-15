@@ -2,7 +2,13 @@ import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { type Api, GrammyError, InlineKeyboard } from "grammy";
 import { publicEvents } from "@/lib/data/events";
 import { gameDay, gameNumber } from "@/lib/data/games";
-import { hasDeadline, openCalls } from "@/lib/data/journal";
+import {
+  callsWithEditions,
+  type EditionCall,
+  hasDeadline,
+  isOpenAt,
+  publishedIssues,
+} from "@/lib/data/journal";
 import { escapeHtml } from "@/lib/telegram";
 import { copy, type Lang } from "./copy";
 import { anon, db, type Group, groups } from "./db";
@@ -29,6 +35,8 @@ const HOUR = 60 * 60 * 1000;
 const SOON = 48 * HOUR;
 const NOT_ON_THE_DAY = 24 * HOUR;
 const NEW_PIECE_WINDOW = 72 * HOUR;
+// "Last call" three days before a themed call closes (decisions.md, Hudhud).
+const LAST_CALL = 72 * HOUR;
 // The Sunday note: from 10:00 a.m. Baghdad time, the coming seven days.
 const SUNDAY_HOUR = 10;
 const WEEK = 7 * 24 * HOUR;
@@ -50,7 +58,9 @@ export type Kind =
   | "stream"
   | "doors"
   | "vote_open"
-  | "vote_closing";
+  | "vote_closing"
+  | "last_call"
+  | "edition";
 
 const posts = () => db().schema("core").from("telegram_posts");
 
@@ -304,8 +314,28 @@ const electionPosts = (run: Run, elections: Election[]) =>
     MAX_PER_RUN
   );
 
-type OpenCall = NonNullable<Awaited<ReturnType<typeof openCalls>>>[number];
+type OpenCall = Pick<
+  EditionCall,
+  | "closes_at"
+  | "edition_slug"
+  | "id"
+  | "kind"
+  | "opens_at"
+  | "title_ar"
+  | "title_en"
+>;
 
+/** A call's Edition page, where its form buttons are. */
+export const callPage = (lang: Lang, call: Pick<OpenCall, "edition_slug">) =>
+  web(lang, `/qirtas/editions/${call.edition_slug}`);
+
+const anchor = (href: string, text: string) =>
+  `<a href="${escapeHtml(href)}">${escapeHtml(text)}</a>`;
+
+/**
+ * The note's lines, each linking to its own page (decisions.md, Hudhud):
+ * an event to its page, a call to its Edition's page.
+ */
 export const sundayText = (
   lang: Lang,
   week: PublicEvent[],
@@ -317,7 +347,7 @@ export const sundayText = (
     lines.push("", `<b>${t.postWeekEvents}</b>`);
     for (const event of week) {
       lines.push(
-        `• ${escapeHtml(pick(lang, event.title_en, event.title_ar))}, ${when(lang, event.starts_at)}`
+        `• ${anchor(eventPage(lang, event.slug), pick(lang, event.title_en, event.title_ar))}, ${when(lang, event.starts_at)}`
       );
     }
   }
@@ -325,7 +355,7 @@ export const sundayText = (
     lines.push("", `<b>${t.postWeekCalls}</b>`);
     for (const call of calls) {
       lines.push(
-        `• ${escapeHtml(pick(lang, call.title_en, call.title_ar))}, ${t.postWeekCloses(formatLongDate(call.closes_at, lang))}`
+        `• ${anchor(callPage(lang, call), pick(lang, call.title_en, call.title_ar))}, ${t.postWeekCloses(formatLongDate(call.closes_at, lang))}`
       );
     }
   }
@@ -364,20 +394,112 @@ const sundayNote = (run: Run, events: PublicEvent[], calls: OpenCall[]) => {
             run.group,
             ["events", "announcements"],
             copyFor(run.group, (lang) => sundayText(lang, week, open)),
-            {
-              reply_markup: new InlineKeyboard()
-                .url(
-                  label(run.group.lang, (t) => t.buttons.details),
-                  web(linkLang(run.group), "/events")
-                )
-                .url(copy.ar.buttons.arabic, web("ar", "/events")),
-            }
+            // The Events button only when the note lists events; each line
+            // links to its own page.
+            week.length > 0
+              ? {
+                  link_preview_options: { is_disabled: true },
+                  reply_markup: new InlineKeyboard()
+                    .url(
+                      label(run.group.lang, (t) => t.buttons.events),
+                      web(linkLang(run.group), "/events")
+                    )
+                    .url(copy.ar.buttons.arabic, web("ar", "/events")),
+                }
+              : { link_preview_options: { is_disabled: true } }
           )
         ),
     ],
     1
   );
 };
+
+/**
+ * "Last call" (decisions.md, Hudhud): once, three days before a themed
+ * call closes, linking to its Edition's page.
+ */
+const lastCalls = (run: Run, calls: OpenCall[]) =>
+  sequence(
+    calls
+      .filter((call) => {
+        const left = Date.parse(call.closes_at) - run.now.getTime();
+        return (
+          call.kind === "themed" &&
+          hasDeadline(call) &&
+          left > 0 &&
+          left <= LAST_CALL
+        );
+      })
+      .map((call) => () => {
+        const url = callPage(linkLang(run.group), call);
+        return once(run.group, "last_call", call.id, () =>
+          postTo(
+            run.api,
+            run.group,
+            ["qirtas", "announcements"],
+            copyFor(run.group, (lang) =>
+              [
+                copy[lang].postLastCall(formatLongDate(call.closes_at, lang)),
+                `<b>${escapeHtml(pick(lang, call.title_en, call.title_ar))}</b>`,
+              ].join("\n")
+            ),
+            {
+              link_preview_options: { url },
+              reply_markup: new InlineKeyboard()
+                .url(
+                  label(run.group.lang, (t) => t.buttons.send),
+                  url
+                )
+                .url(copy.ar.buttons.arabic, callPage("ar", call)),
+            }
+          )
+        );
+      }),
+    MAX_PER_RUN
+  );
+
+type PublishedEdition = NonNullable<
+  Awaited<ReturnType<typeof publishedIssues>>
+>[number];
+
+/** An Edition published in the last three days, once, linking to it. */
+const newEditions = (run: Run, editions: PublishedEdition[]) =>
+  sequence(
+    editions
+      .filter(
+        (edition) =>
+          edition.status === "published" &&
+          run.now.getTime() - Date.parse(edition.published_at ?? "") <=
+            NEW_PIECE_WINDOW
+      )
+      .map((edition) => () => {
+        const path = `/qirtas/editions/${edition.slug}`;
+        const url = web(linkLang(run.group), path);
+        return once(run.group, "edition", edition.id, () =>
+          postTo(
+            run.api,
+            run.group,
+            ["qirtas", "announcements"],
+            copyFor(run.group, (lang) =>
+              [
+                copy[lang].postEdition,
+                `<b>${escapeHtml(pick(lang, edition.title_en, edition.title_ar))}</b>`,
+              ].join("\n")
+            ),
+            {
+              link_preview_options: { url },
+              reply_markup: new InlineKeyboard()
+                .url(
+                  label(run.group.lang, (t) => t.buttons.read),
+                  url
+                )
+                .url(copy.ar.buttons.arabic, web("ar", path)),
+            }
+          )
+        );
+      }),
+    MAX_PER_RUN
+  );
 
 type PublicPiece = Awaited<ReturnType<typeof publicPieces>>[number];
 
@@ -745,12 +867,14 @@ export const runFeeds = async (
   if (!connected.length) {
     return { groups: 0, posted: direct };
   }
-  const [upcoming, pieces, calls, elections] = await Promise.all([
+  const [upcoming, pieces, allCalls, editions, elections] = await Promise.all([
     publicEvents(anon(), { from: now, limit: 20 }),
     publicPieces(10),
-    openCalls(anon(), now),
+    callsWithEditions(anon()),
+    publishedIssues(anon()),
     votingElections(now),
   ]);
+  const calls = allCalls.filter((call) => isOpenAt(call, now));
   const events = upcoming ?? [];
   // Groups in parallel; each group's posts in order.
   const counts = await Promise.all(
@@ -774,9 +898,13 @@ export const runFeeds = async (
       const voting = await electionPosts(run, elections);
       const doors = await doorsOpen(run, events);
       const soon = await soonEvents(run, events);
-      const week = await sundayNote(run, events, calls ?? []);
+      const week = await sundayNote(run, events, calls);
+      const last = await lastCalls(run, calls);
+      const edition = await newEditions(run, editions ?? []);
       const written = await newPieces(run, pieces);
-      return announced + voting + doors + soon + week + written;
+      return (
+        announced + voting + doors + soon + week + last + edition + written
+      );
     })
   );
   return {

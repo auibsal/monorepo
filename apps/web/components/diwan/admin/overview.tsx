@@ -330,6 +330,25 @@ export const AdminOverview = () => {
     queryKey: ["admin", "overview", "editing", writes],
   });
 
+  // Register entries shown with their name alone (decisions.md, Partners):
+  // Partnerships adds the logo.
+  const managesPartners = hasPermissionAnywhere(grants.data, "partners.manage");
+  const noLogo = useQuery({
+    enabled: grants.isSuccess && managesPartners,
+    queryFn: async () => {
+      const { count } = await supabase
+        .schema("governance")
+        .from("partners")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "active")
+        .eq("is_listed", true)
+        .is("logo_path", null)
+        .is("logo_static", null);
+      return count ?? 0;
+    },
+    queryKey: ["admin", "overview", "no-logo"],
+  });
+
   if (overview.isPending || editing.isPending) {
     return <SectionSpinner />;
   }
@@ -348,6 +367,15 @@ export const AdminOverview = () => {
       href: "/qirtas",
       label: t("editing"),
       value: editing.data,
+    });
+  }
+  if (managesPartners && noLogo.data) {
+    figures.push({
+      action: t("addLogos"),
+      detail: t("noLogoDetail"),
+      href: "/partnerships",
+      label: t("noLogo"),
+      value: noLogo.data,
     });
   }
   const can = (permission: Permission) =>

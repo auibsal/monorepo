@@ -14,6 +14,62 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the sixteenth site prompt (Nov 15)
+
+- [x] Mirror replaced (decisions 18, glossary 12): the partner
+  application's reply time, the launch story's link, the op-ed identity
+  line in Arabic.
+- [x] "Good to know" under an event's date and place, with the nine major
+  US food allergens (gluten maps to wheat, crustaceans to crustacean
+  shellfish; no event used the EU-only ones). The access fields were never
+  granted to the editor, so the Diwan's Access form could not save; it can
+  now (`20261115000600_good_to_know.sql`).
+- [ ] **Owner:** fill the Sun Nov 22 screening's "Good to know" in the
+  Diwan's event page once this is live.
+- [x] One form flow on openings, auditions, nominations and the partner
+  application (`@repo/brand/components/sal/form-flow`: `ReviewStep`,
+  `Receipt`, `FlowSteps`); each takes its SUB number when sent
+  (`20261115000700_one_form_flow.sql`); the shared status words, with
+  shortlisting kept internal; auditions in Your account, Roles.
+- [x] Every page in one order (AdminHeading: title, one line, the
+  actions); the call terms after the action (`CallDetails`).
+- [x] One record page (`RecordView`) and one list (`RecordList`, `?q=`).
+- [x] The op-ed identity line built from the class and the writer's line
+  (`journal.identityLine`, `writer_year`).
+- [ ] "Who can come" has no "the AUIB community" access kind yet: the four
+  access kinds are Open, RSVP, Members and Private (decisions.md, Events),
+  so it reads Everyone, Members or Invited guests.
+- [ ] The identity line shows to the writer as they write and is kept on
+  the submission; the piece page does not print it yet (the Voices editor
+  adds it when making the piece).
+
+## Now: the fourteenth and fifteenth site prompts (Nov 15)
+
+- [x] One register for every organization (partners, campus partners,
+  sponsors in kind), "Campus partners" on /partners, "Co-sponsored by" and
+  "Thanks to" at the foot of an event, "Hosted by" under its title; the
+  Sun Nov 22 screening's organizations.
+- [ ] Logos for The American Space and the Iraqi Independent Film Centre
+  (Partnerships uploads them on each entry; the Desk counts them).
+- [x] Editions is the one door: every submission on an Edition's call
+  (general submissions and themed calls), Edition 1 created with the
+  standing call's work, Open now, each Edition's page for its whole life,
+  forms under the Edition, "Send your work", the redirects.
+- [x] The lanes: Video's films with their declarations; Voices' letter to
+  the editor and op-ed, by name, within their lengths; News's tip and
+  staff doors.
+- [x] The Diwan: the reading queue on Editions, by stage, Edition and call;
+  each Edition's Call, Contents and Publish.
+- [x] Hudhud: the Sunday note's lines link to their pages; a last call
+  three days before a themed call closes; a post for a published Edition.
+- [x] One pattern for each kind of thing: the section front (`SectionFront`)
+  and the open-call row (`OpenCallRow`) in `@repo/brand`; the one form flow
+  on Qirtas's forms (drafts saved as you go, review, receipt, shared
+  status words).
+- [x] The one form flow on the other application forms (openings,
+  auditions, the partner application, nominations) and one record page and
+  list across Your account and the Diwan (the sixteenth prompt, below).
+
 ## Now: the ninth to twelfth site prompts (Nov 14)
 
 All in PR #269.
@@ -83,7 +139,7 @@ All in PR #269.
 - [x] **Members' chats:** the ticket's QR code on the event's day, and the
   weekly handover and role-agreement reminders
   (`20261113004800_hudhud_reminders.sql`).
-- [ ] **Owner, decisions.md (proposed), Channels and email:** Hudhud's
+- [x] **Owner, decisions.md (proposed), Channels and email:** in decisions.md §14 now. Hudhud's
   rights include Add New Admins (it makes the four officers admins of
   both groups and the Council admins of the Diwan group, never with Add
   New Admins); "a reminder two days before and a 'doors open' post an hour
@@ -115,7 +171,7 @@ All in PR #269.
 - [ ] **Owner:** in Media → Channels, set the Diwan group's topics for the
   teams (Council, Qirtas, Media, Events, Membership, Partnerships); a team
   without one posts to the brief's topic.
-- [ ] **Owner, decisions.md (proposed):** "one notices model" in Channels
+- [x] **Owner, decisions.md (proposed):** in decisions.md §14 now. "one notices model" in Channels
   and email (each topic on each channel; reminders by Hudhud replace the
   email; the Paper and news go to both); and that bots cannot post
   stories or run streams, so those stay with the admins.
@@ -607,8 +663,9 @@ First the second prompt's part 2 (7j), then the rest in place.
   credits the web team.
 - [x] Partners: alphabetical, equal-size logos, grouped by kind (clubs;
   culture and the press; charities; schools and universities; others),
-  then "With the support of", then Become a partner; sponsors in kind only
-  on their event ("Supported by").
+  then "Campus partners", then Become a partner; an event's co-sponsors and
+  sponsors in kind at its foot ("Co-sponsored by", "Thanks to"), from the
+  one register.
 - [x] /verify: long random codes (new certificates and letters: 96 bits;
   printed codes keep working), at most 30 checks in ten minutes from one
   visitor (`VERIFY_LIMIT`), read live, `X-Robots-Tag: noindex` on every

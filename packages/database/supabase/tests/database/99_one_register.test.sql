@@ -1,5 +1,5 @@
--- Sponsors in kind (decisions §2, §3): a need given by a partner, and the
--- "Supported by" line on the event's public page.
+-- One register for every organization, and who an event is with:
+-- co-sponsors and sponsors in kind picked from it.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -95,47 +95,65 @@ as $$
 $$;
 -- </preamble>
 
-select plan(7);
+select plan(11);
 
-insert into governance.partners (id, slug, name_en, name_ar, kind, is_listed, status) values
-  ('00000000-0000-0000-0000-00000005d001', 'books-sp', 'The Bookshop', 'المكتبة', 'business', true, 'active'),
-  ('00000000-0000-0000-0000-00000005d002', 'quiet-sp', 'Quiet Partner', 'شريك', 'business', false, 'active');
+select pg_temp.make_user('00000000-0000-0000-0000-00000000f5a1', 'partners-s@auib.edu.iq', 'Partners');
+select pg_temp.make_user('00000000-0000-0000-0000-00000000f5a2', 'member-s@auib.edu.iq', 'Member');
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000f5a1', 'partnerships_director');
 
-insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry) values
-  ('00000000-0000-0000-0000-00000005e001', 'reading-sp', 'A Reading', 'قراءة', now() + interval '10 days', 'published', 'open'),
-  ('00000000-0000-0000-0000-00000005e002', 'draft-sp', 'A Draft', 'مسودة', now() + interval '10 days', 'draft', 'open');
+select is((select count(*)::integer from governance.partners where relation = 'campus'), 6,
+  'The five offices and the American Space are campus partners');
+select is((select relation from governance.partners where slug = 'iraqi-independent-film-centre'), 'sponsor',
+  'The Iraqi Independent Film Centre is a sponsor in kind');
+
+select pg_temp.login_anon();
+select is((select count(*)::integer from governance.public_partners() where relation = 'campus'), 6,
+  'Visitors see the campus partners on the partners page');
+select is((select count(*)::integer from governance.public_partners() where relation = 'sponsor'), 0,
+  'but not sponsors in kind, who appear on their events only');
+
+select pg_temp.login_as('00000000-0000-0000-0000-00000000f5a2');
+select is_empty(
+  $$ update governance.partners set name_en = 'Changed' where slug = 'auib-library' returning 1 $$,
+  'Members do not edit the register');
+select pg_temp.logout();
+select is((select name_en from governance.partners where slug = 'auib-library'), 'AUIB Library',
+  'and the entry stays as it was');
+
+select pg_temp.login_as('00000000-0000-0000-0000-00000000f5a1');
+select lives_ok(
+  $$ update governance.partners set name_en = 'AUIB Library and Archives', description_en = 'Books.'
+     where slug = 'auib-library' $$,
+  'Partnerships edits any entry');
+
+-- An event, and who it is with.
+select pg_temp.logout();
+insert into events.events (id, slug, title_en, title_ar, starts_at, status)
+values ('00000000-0000-0000-0000-00000000f5e1', 'register-test-event', 'Test', 'تجربة', now() + interval '3 days', 'published');
+insert into events.event_organizations (event_id, partner_id, line)
+select '00000000-0000-0000-0000-00000000f5e1', id, 'cosponsor' from governance.partners where slug = 'office-of-student-life';
+insert into events.event_organizations (event_id, partner_id, line)
+select '00000000-0000-0000-0000-00000000f5e1', id, 'thanks' from governance.partners where slug = 'iraqi-independent-film-centre';
 
 select throws_ok(
-  $$ insert into programmes.needs (event_id, item, quantity, needed_by, purpose, status, given_by)
-     values ('00000000-0000-0000-0000-00000005e001', 'Chairs', 20, current_date + 5, 'Seating', 'listed',
-       '00000000-0000-0000-0000-00000005d001') $$,
-  '23514', 'new row for relation "needs" violates check constraint "needs_given_by_when_provided"',
-  'A need is given by a partner only once it is provided');
-
-insert into programmes.needs (event_id, item, quantity, needed_by, purpose, status, requested_on, provided_on, given_by) values
-  ('00000000-0000-0000-0000-00000005e001', 'Books', 30, current_date + 5, 'Prizes', 'provided', current_date, current_date, '00000000-0000-0000-0000-00000005d001'),
-  ('00000000-0000-0000-0000-00000005e001', 'Tea', 1, current_date + 5, 'Refreshments', 'partly_provided', current_date, current_date, '00000000-0000-0000-0000-00000005d001'),
-  ('00000000-0000-0000-0000-00000005e001', 'Room', 1, current_date + 5, 'Venue', 'provided', current_date, current_date, '00000000-0000-0000-0000-00000005d002'),
-  ('00000000-0000-0000-0000-00000005e002', 'Pens', 10, current_date + 5, 'Writing', 'provided', current_date, current_date, '00000000-0000-0000-0000-00000005d001');
+  $$ insert into events.event_organizations (event_id, partner_id, line)
+     select '00000000-0000-0000-0000-00000000f5e1', id, 'thanks' from governance.partners where slug = 'auib' $$,
+  '22023', 'wrong_line', 'A campus partner is a co-sponsor, never thanked as a sponsor in kind');
 
 select pg_temp.login_anon();
-select is((select count(*)::int from events.event_sponsors('reading-sp')), 1,
-  'The public sees each listed sponsor of a published event once');
-select is((select name_en from events.event_sponsors('reading-sp')), 'The Bookshop',
-  'by name');
-select is((select count(*)::int from events.event_sponsors('draft-sp')), 0,
-  'and nothing for an event that is not published');
-select throws_ok($$ select count(*) from programmes.needs $$, '42501', null,
-  'The needs themselves stay private');
+select results_eq(
+  $$ select line, slug from events.event_organizations('register-test-event') $$,
+  $$ values ('cosponsor', 'office-of-student-life'), ('thanks', 'iraqi-independent-film-centre') $$,
+  'The event page shows its co-sponsors and its sponsors in kind');
+
+select pg_temp.login_as('00000000-0000-0000-0000-00000000f5a2');
+select is_empty(
+  $$ delete from events.event_organizations where event_id = '00000000-0000-0000-0000-00000000f5e1' returning 1 $$,
+  'Only the event''s managers change who it is with');
 
 select pg_temp.logout();
-update governance.partners set is_listed = false where id = '00000000-0000-0000-0000-00000005d001';
-select pg_temp.login_anon();
-select is((select count(*)::int from events.event_sponsors('reading-sp')), 0,
-  'A partner that leaves the listing is no longer thanked publicly');
-
-select pg_temp.logout();
-select has_index('programmes', 'needs', 'needs_given_by_idx', 'The sponsor link is indexed');
+select is((select count(*)::integer from events.event_organizations where event_id = '00000000-0000-0000-0000-00000000f5e1'), 2,
+  'and nothing was removed');
 
 select * from finish();
 rollback;

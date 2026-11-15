@@ -695,7 +695,6 @@ export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
       <SectionsNav />
       {reads ? <Desks desk={desk} /> : null}
       {writes ? <Newsroom desk={desk} /> : null}
-      {desk === undefined && reads ? <PipelineAdmin embedded /> : null}
       {desk === "games" && puzzles ? <GameChecks /> : null}
       {desk === undefined && has("journal.frontpage") ? <FrontPage /> : null}
       {desk === undefined && has("journal.manage") ? <QirtasNeeds /> : null}
@@ -717,5 +716,17 @@ const SectionsNav = () => {
   return <SectionTabs label={t("sections")} tabs={tabs} />;
 };
 
-/** The printed Editions. */
-export const QirtasEditions = () => <Editions />;
+/**
+ * Editions (decisions.md, The site): it opens on the one reading queue
+ * across every call, then each Edition, whose page holds its Call,
+ * Contents and Publish.
+ */
+export const QirtasEditions = () => {
+  const reads = useAnyOf(reviewKeys);
+  return (
+    <div className="grid gap-14">
+      {reads ? <PipelineAdmin embedded /> : null}
+      <Editions />
+    </div>
+  );
+};

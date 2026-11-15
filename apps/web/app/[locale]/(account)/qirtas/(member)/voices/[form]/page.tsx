@@ -6,16 +6,20 @@ import { titleFrom } from "@/lib/diwan/metadata";
 export const generateMetadata = titleFrom((t) => t("diwan.journal.title"));
 
 interface PageProps {
-  readonly params: Promise<{ type: string }>;
+  readonly params: Promise<{ form: string }>;
 }
 
-/** /qirtas/submit/<type>: the form for one type. */
+/**
+ * Voices' own door (decisions.md, Qirtas): a letter to the editor at
+ * /qirtas/voices/letter and an op-ed at /qirtas/voices/op-ed, for members
+ * and guests, by name, to no call.
+ */
 const Page = async ({ params }: PageProps) => {
-  const { type } = await params;
-  if (!journal.isWritableType(type)) {
+  const { form } = await params;
+  if (!journal.isVoicesForm(form)) {
     notFound();
   }
-  return <WriteType type={type} />;
+  return <WriteType type={journal.voicesForms[form]} />;
 };
 
 export default Page;

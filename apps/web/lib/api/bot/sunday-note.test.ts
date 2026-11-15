@@ -3,12 +3,18 @@ import { sundayText } from "./feeds";
 
 vi.mock("server-only", () => ({}));
 
+const EVENT_LINE =
+  /• <a href="[^"]*\/events\/writing-workshop">Writing workshop<\/a>, /u;
+const CALL_LINE =
+  /• <a href="[^"]*\/qirtas\/editions\/haven">Haven: dreams and memories<\/a>, closes Sunday, December 6/u;
+
 describe("Hudhud's Sunday note", () => {
-  it("lists the week's events and the open calls", () => {
+  it("lists the week's events and the open calls, each linking to its own page", () => {
     const text = sundayText(
       "en",
       [
         {
+          slug: "writing-workshop",
           starts_at: "2026-11-17T15:00:00Z",
           title_ar: null,
           title_en: "Writing workshop",
@@ -17,20 +23,26 @@ describe("Hudhud's Sunday note", () => {
       [
         {
           closes_at: "2026-12-06T20:59:00Z",
+          edition_slug: "haven",
           title_ar: null,
-          title_en: "Haven",
+          title_en: "Haven: dreams and memories",
         },
       ] as never
     );
     expect(text).toContain("<b>This week at SAL</b>");
-    expect(text).toContain("• Writing workshop, ");
-    expect(text).toContain("<b>Submit to Qirtas</b>");
-    expect(text).toContain("• Haven, closes Sunday, December 6");
+    expect(text).toMatch(EVENT_LINE);
+    expect(text).toContain("<b>Open calls</b>");
+    expect(text).toMatch(CALL_LINE);
   });
 
   it("leaves out a part with nothing in it", () => {
     const text = sundayText("en", [], [
-      { closes_at: "2026-12-06T20:59:00Z", title_ar: null, title_en: "Haven" },
+      {
+        closes_at: "2026-12-06T20:59:00Z",
+        edition_slug: "haven",
+        title_ar: null,
+        title_en: "Haven",
+      },
     ] as never);
     expect(text).not.toContain("Events");
   });

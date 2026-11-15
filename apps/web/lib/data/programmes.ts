@@ -147,7 +147,7 @@ export const myApplications = async (client: Client, userId: string) =>
       .schema("programmes")
       .from("opening_replies")
       .select(
-        "opening_id, status, answers, availability, lang, files, accommodation, gpa_consent_name, submitted_at, talk_at, offer_expires_at, updated_at, opening:openings(title_en, title_ar, role)"
+        "opening_id, status, reference, answers, availability, lang, files, accommodation, gpa_consent_name, submitted_at, talk_at, offer_expires_at, updated_at, opening:openings(title_en, title_ar, role, closes_at)"
       )
       .eq("user_id", userId)
       .order("updated_at", { ascending: false })

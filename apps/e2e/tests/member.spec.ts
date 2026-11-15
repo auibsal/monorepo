@@ -40,13 +40,21 @@ test("a member sends work to Qirtas and sees the reading timeline", async ({
   page,
 }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/qirtas/submit/poetry`);
+  await page.goto(`${urls.web}/qirtas/editions/haven/submit/poetry`);
   await page.getByLabel("Title").fill(`A small poem ${Date.now()}`);
   await page.locator('[contenteditable="true"]').first().click();
   await page.keyboard.type("The paper and the pen, and the hour between them.");
   await page.getByLabel(/has not appeared in another journal/iu).check();
   await page.getByRole("checkbox", { name: /human authorship/iu }).check();
+  // The one form flow: a review step, then the receipt on the page.
+  await page.getByRole("button", { name: "Review and send" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Check what you’re sending" })
+  ).toBeVisible();
   await page.getByRole("button", { name: "Send to Qirtas" }).click();
+  await expect(page.getByRole("heading", { name: "Received" })).toBeVisible();
+  await expect(page.getByText(/Your number is /u)).toBeVisible();
+  await page.getByRole("link", { name: "Open your submission" }).click();
   await expect(page).toHaveURL(/\/account\/work\/submissions\//u);
   await expect(page.getByRole("heading", { name: "Progress" })).toBeVisible();
   await expect(page.locator('[aria-current="step"]')).toContainText("Received");
@@ -58,17 +66,19 @@ test("a member saves a draft, comes back to it and sends it", async ({
 }) => {
   const title = `A draft poem ${Date.now()}`;
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/qirtas/submit/poetry`);
+  await page.goto(`${urls.web}/qirtas/editions/haven/submit/poetry`);
   await page.getByLabel("Title").fill(title);
   await page.locator('[contenteditable="true"]').first().click();
   await page.keyboard.type("Half a line, kept for later.");
   await page.getByRole("button", { name: "Save draft" }).click();
   // The first save gives the draft its own address.
-  await expect(page).toHaveURL(/\/qirtas\/submit\/poetry\/[0-9a-f-]{36}$/u);
+  await expect(page).toHaveURL(
+    /\/qirtas\/editions\/haven\/submit\/poetry\/[0-9a-f-]{36}$/u
+  );
   await expect(page.getByRole("button", { name: "Draft saved" })).toBeVisible();
 
-  // Submit to Qirtas lists the current drafts (decisions.md, Qirtas).
-  await page.goto(`${urls.web}/qirtas/submit`);
+  // Editions lists the current drafts (decisions.md, Qirtas).
+  await page.goto(`${urls.web}/qirtas/editions`);
   const drafts = page.getByRole("region", { name: "Your drafts" });
   const item = drafts.getByRole("listitem").filter({ hasText: title });
   await expect(item).toContainText("Poetry");
@@ -81,11 +91,12 @@ test("a member saves a draft, comes back to it and sends it", async ({
 
   await page.getByLabel(/has not appeared in another journal/iu).check();
   await page.getByRole("checkbox", { name: /human authorship/iu }).check();
+  await page.getByRole("button", { name: "Review and send" }).click();
   await page.getByRole("button", { name: "Send to Qirtas" }).click();
-  await expect(page).toHaveURL(/\/account\/work\/submissions\//u);
-  // Sent, it is a submission; the draft is gone from Submit to Qirtas.
-  await page.goto(`${urls.web}/qirtas/submit`);
-  await expect(page.getByRole("heading", { name: "Haven" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Received" })).toBeVisible();
+  // Sent, it is a submission; the draft is gone from Editions.
+  await page.goto(`${urls.web}/qirtas/editions`);
+  await expect(page.getByRole("heading", { name: "Open now" })).toBeVisible();
   await expect(page.getByRole("link", { name: title })).toHaveCount(0);
 });
 
@@ -93,7 +104,7 @@ test("a manuscript's text fills the editor, and the file goes with the work", as
   page,
 }) => {
   await signInWithPassword(page, member.email);
-  await page.goto(`${urls.web}/qirtas/submit/poetry`);
+  await page.goto(`${urls.web}/qirtas/editions/haven/submit/poetry`);
   const editor = page.locator('[contenteditable="true"]').first();
   await page
     .getByLabel("Manuscript (PDF or Word)")

@@ -32,6 +32,7 @@ import {
   pipelineKey,
   type SubmissionStatus,
   useBlindEntries,
+  usePipelineCall,
 } from "./data";
 import { TextView } from "./text-view";
 
@@ -58,10 +59,14 @@ export const IntakeQueue = ({ issueId }: { issueId: string }) => {
   const ts = useTranslations("diwan.journal.status");
   const locale = useLocale() as Locale;
   const queue = useIntakeQueue(issueId);
+  const callId = usePipelineCall();
   const [scope, setScope] = useState<"intake" | "all">("intake");
   const rows =
-    queue.data?.filter((s) => scope === "all" || INTAKE.includes(s.status)) ??
-    [];
+    queue.data?.filter(
+      (s) =>
+        (scope === "all" || INTAKE.includes(s.status)) &&
+        (!callId || s.call_id === callId)
+    ) ?? [];
   type Row = (typeof rows)[number];
   const columns: Column<Row>[] = [
     {

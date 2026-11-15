@@ -16,7 +16,7 @@ both languages.
 | [Email](?path=/story/emails-platform--rsvp-confirmed) | Every email the platform sends, one template, both languages; send yourself a test from each | The outbox; Resend | Director of Media |
 | [Sign-in emails](?path=/story/emails-sign-in--confirmation) | Supabase's own emails, in the Society's template | Sign-up, password, two-step | Web lead |
 | [Email signature](?path=/story/components-brand--email-signature-story) | Each seat's signature in Gmail | Every role mailbox | Director of Media |
-| [With the support of](?path=/story/components-brand--with-the-support-of-story) and [Supported by](?path=/story/components-brand--supported-by-story) | AUIB's offices on /partners; a sponsor in kind on its event | `/partners`; an event's page | Director of Partnerships |
+| [Campus partners](?path=/story/components-brand--campus-partners-story) and [Who it's with](?path=/story/components-brand--who-its-with-story) | AUIB's offices on /partners; an event's co-sponsors and sponsors in kind | `/partners`; an event's page | Director of Partnerships |
 | [Social posts](?path=/story/social-templates--posts-english) ([Arabic](?path=/story/social-templates--posts-arabic)) | Instagram posts and carousels | Media; the content calendar in Notion | Director of Media |
 | [Stories](?path=/story/social-templates--story-english) ([Arabic](?path=/story/social-templates--story-arabic)) and [highlights](?path=/story/social-templates--highlights) | Instagram stories and highlight covers | Media | Director of Media |
 | [Posters and printables](?path=/story/print--printables) | Posters, stickers and the sizes they print at | Events; the Typewriter Tour | Director of Media |

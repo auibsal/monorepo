@@ -1,4 +1,3 @@
--- "With the support of": AUIB's offices, kept by Partnerships (decisions.md, Partners).
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -94,40 +93,36 @@ as $$
 $$;
 -- </preamble>
 
-select plan(6);
+-- "Good to know" (decisions.md, Events): the editor's fields, the US list
+-- of allergens, and the grants the Access form needs.
+select plan(8);
 
-select pg_temp.make_user('00000000-0000-0000-0000-00000000f5a1', 'partners-s@auib.edu.iq', 'Partners');
-select pg_temp.make_user('00000000-0000-0000-0000-00000000f5a2', 'member-s@auib.edu.iq', 'Member');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000f5a1', 'partnerships_director');
+insert into events.events (slug, title_en, title_ar, starts_at)
+values ('good-to-know', 'A screening', 'عرض', now() + interval '3 days');
 
-select pg_temp.login_anon();
-select is((select count(*)::integer from governance.supporters), 5,
-  'Visitors read the five offices the partners page lists');
-
-select pg_temp.login_as('00000000-0000-0000-0000-00000000f5a2');
-select throws_ok(
-  $$ insert into governance.supporters (name_en, name_ar) values ('Office', 'مكتب') $$,
-  '42501', null, 'Members do not add to the list'
-);
-
-select pg_temp.login_as('00000000-0000-0000-0000-00000000f5a1');
+select ok(has_column_privilege('authenticated', 'events.events', 'step_free', 'UPDATE'),
+  'The editor can save step-free access');
+select ok(has_column_privilege('authenticated', 'events.events', 'allergens', 'UPDATE'),
+  'and the allergens');
+select ok(has_column_privilege('authenticated', 'events.events', 'content_note_en', 'UPDATE')
+  and has_column_privilege('authenticated', 'events.events', 'no_photos', 'UPDATE'),
+  'and the new fields');
 select lives_ok(
-  $$ insert into governance.supporters (id, name_en, name_ar, url)
-     values ('00000000-0000-0000-0000-00000000f5b1', 'Writing Center', 'مركز الكتابة', 'https://auib.edu.iq/') $$,
-  'Partnerships adds an office'
-);
-select lives_ok(
-  $$ update governance.supporters set shown = false where id = '00000000-0000-0000-0000-00000000f5b1' $$,
-  'and hides it'
-);
+  $$ update events.events set serves_food = true,
+       allergens = array['milk', 'crustacean_shellfish', 'wheat'],
+       other_allergens_en = 'corn' where slug = 'good-to-know' $$,
+  'The nine US allergens, and others by name');
 select throws_ok(
-  $$ insert into governance.supporters (name_en, name_ar, logo) values ('Office', 'مكتب', 'other') $$,
-  '23514', null, 'A logo comes from AUIB''s standard set'
-);
-
-select pg_temp.login_anon();
-select is((select count(*)::integer from governance.supporters where id = '00000000-0000-0000-0000-00000000f5b1'), 0,
-  'A hidden office is not on the partners page');
+  $$ update events.events set allergens = array['lupin'] where slug = 'good-to-know' $$,
+  '23514', null, 'The EU-only allergens are gone');
+select throws_ok(
+  $$ update events.events set allergens = array['gluten'] where slug = 'good-to-know' $$,
+  '23514', null, 'Gluten is now wheat');
+select throws_ok(
+  $$ update events.events set language = 'fr' where slug = 'good-to-know' $$,
+  '23514', null, 'The language is English, Arabic or both');
+select is((select no_photos from events.events where slug = 'good-to-know'), false,
+  'Photos are taken unless the event says none');
 
 select * from finish();
 rollback;

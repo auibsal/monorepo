@@ -44,12 +44,11 @@ export const Nameplate = async ({ locale }: { locale: Locale }) => {
           <Link className="hover:text-accent" href="/qirtas/prize">
             {t("prize")}
           </Link>
-          {/* Not fetched ahead: the submission pages run on your account's
-              code, which would weigh on every page of the paper. */}
+          {/* Qirtas's one solid button (decisions.md, The site): Editions
+              filtered to its open calls. */}
           <Link
-            className="hover:text-accent"
-            href="/qirtas/submit"
-            prefetch={false}
+            className="bg-accent text-on-accent hover:bg-accent/90 px-3 py-1"
+            href={journal.SEND_YOUR_WORK}
           >
             {t("submitLink")}
           </Link>

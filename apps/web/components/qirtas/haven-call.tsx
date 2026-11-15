@@ -23,7 +23,7 @@ export const HavenCall = async ({ locale }: { readonly locale: Locale }) => {
       {/* Qirtas's one action (the third prompt, §7): Submit. */}
       <Button asChild className="justify-self-start">
         <Link
-          href="/qirtas/submit"
+          href="/qirtas/editions/haven"
           // Submit to Qirtas carries the editor: fetch it on the click, not
           // with the front page (the performance budget).
           prefetch={false}

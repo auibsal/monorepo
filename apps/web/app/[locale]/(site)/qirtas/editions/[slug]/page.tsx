@@ -9,6 +9,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
+import {
+  CallTerms,
+  loadCalls,
+  SendButtons,
+  SubmitButton,
+} from "@/components/qirtas/calls";
 import { pieceHref } from "@/components/qirtas/cards";
 import { EditionCover, loadEditions } from "@/components/qirtas/editions";
 import { ShareLink } from "@/components/share";
@@ -17,6 +23,7 @@ import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
 import { PLACEHOLDER_SLUG } from "@/lib/placeholder";
 import { readPublished } from "@/lib/supabase";
+import { roughlyNow } from "@/lib/this-year";
 
 interface EditionProps {
   readonly params: Promise<{ locale: Locale; slug: string }>;
@@ -36,13 +43,30 @@ const load = (slug: string): Promise<Edition | null> =>
     ? readPublished(["journal"], (c) => journal.issueBySlug(c, slug), null)
     : Promise.resolve(null);
 
+const loadEditionCalls = (slug: string) =>
+  SLUG.test(slug) ? loadCalls(slug) : Promise.resolve([]);
+
+/** The Edition's own words, from its call while it is not yet published. */
+const fromCall = (call: journal.EditionCall) => ({
+  theme_ar: call.edition_theme_ar,
+  theme_en: call.edition_theme_en,
+  title_ar: call.edition_title_ar,
+  title_en: call.edition_title_en,
+});
+
 export const generateMetadata = async ({
   params,
 }: EditionProps): Promise<Metadata> => {
   const { locale, slug } = await params;
   const edition = await load(slug);
   if (!edition) {
-    return {};
+    const [call] = await loadEditionCalls(slug);
+    return call
+      ? localizedMetadata(locale, `/qirtas/editions/${slug}`, {
+          description: localized(call, "theme", locale),
+          title: localized(fromCall(call), "title", locale),
+        })
+      : {};
   }
   return localizedMetadata(locale, `/qirtas/editions/${edition.slug}`, {
     description: localized(edition, "theme", locale),
@@ -52,16 +76,122 @@ export const generateMetadata = async ({
 };
 
 /**
+ * An Edition before it is published (decisions.md, Qirtas: "The Edition
+ * page, one address for its whole life"): while its call is open, the
+ * title, one line and "Submit to <Edition>", then the poster's words, the
+ * terms and dates, and the form buttons; once it closes, "Reading now,
+ * published <date>".
+ */
+const CallView = async ({
+  calls,
+  locale,
+  now,
+  slug,
+}: {
+  readonly calls: readonly journal.EditionCall[];
+  readonly locale: Locale;
+  readonly now: Date;
+  readonly slug: string;
+}) => {
+  const t = await getTranslations({ locale, namespace: "web.journal" });
+  const tc = await getTranslations({
+    locale,
+    namespace: "web.journal.callPage",
+  });
+  const [first] = calls;
+  if (!first) {
+    notFound();
+  }
+  const title = localized(fromCall(first), "title", locale);
+  const open = calls.filter((call) => journal.isOpenAt(call, now));
+  const haven = slug === "haven";
+  const th = await getTranslations({ locale, namespace: "web.journal.haven" });
+  const tw = await getTranslations({
+    locale,
+    namespace: "diwan.journal.write.haven",
+  });
+  const line = haven
+    ? th("dek")
+    : localized(fromCall(first), "theme", locale) || t("edition");
+  let reading: string | null = null;
+  if (open.length === 0) {
+    reading = first.edition_publish_at
+      ? tc("readingNow", {
+          date: formatLongDate(first.edition_publish_at, locale, true),
+        })
+      : tc("readingNowUndated");
+  }
+  return (
+    <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10">
+      <header className="grid gap-3">
+        <h1 className="type-display">{title}</h1>
+        <p className="type-lede max-w-3xl">{line}</p>
+        {open.length > 0 ? (
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-1">
+            <SubmitButton label={tc("submitTo", { edition: title })} />
+          </div>
+        ) : null}
+        <ManageLinks diwan={`/qirtas/editions/${slug}`} />
+      </header>
+      {reading ? <p className="type-body max-w-3xl">{reading}</p> : null}
+      {haven && open.length > 0 ? (
+        <div className="grid max-w-[60ch] gap-4">
+          <p className="reading">{tw("memories")}</p>
+          <p className="type-lede">{tw("call")}</p>
+        </div>
+      ) : null}
+      {open.map((call) => (
+        <section
+          aria-labelledby={`call-${call.id}`}
+          className="grid gap-6"
+          key={call.id}
+        >
+          <h2 className="type-title" id={`call-${call.id}`}>
+            {localized(call, "title", locale)}
+          </h2>
+          <CallTerms call={call} locale={locale} />
+        </section>
+      ))}
+      {open.length > 0 ? (
+        <section aria-labelledby="send-title" className="grid gap-4" id="send">
+          <h2 className="type-title" id="send-title">
+            {tc("chooseForm")}
+          </h2>
+          {open.map((call) => (
+            <div className="grid gap-3" key={call.id}>
+              {open.length > 1 ? (
+                <p className="type-label">{localized(call, "title", locale)}</p>
+              ) : null}
+              <SendButtons call={call} locale={locale} />
+            </div>
+          ))}
+        </section>
+      ) : null}
+    </div>
+  );
+};
+
+/**
  * An Edition as a book (design review C12): the cover (the scan, or the
  * typographic cover), its print line, the editor's letter, a contents page
- * by section, and the Editions before and after it.
+ * by section, and the Editions before and after it. Before it is
+ * published, its call (CallView).
  */
 const EditionPage = async ({ params }: EditionProps) => {
   const { locale, slug } = await params;
   setRequestLocale(locale);
   const edition = await load(slug);
   if (!edition) {
-    notFound();
+    const [calls, now] = await Promise.all([
+      loadEditionCalls(slug),
+      roughlyNow(),
+    ]);
+    if (calls.length === 0) {
+      notFound();
+    }
+    return (
+      <CallView calls={calls} locale={locale} now={new Date(now)} slug={slug} />
+    );
   }
   const t = await getTranslations({ locale, namespace: "web.journal" });
   const pieces = journal.inLanguage(

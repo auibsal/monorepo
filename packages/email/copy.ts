@@ -215,7 +215,7 @@ export const submissionReceived = (
   reference: string | null = null
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/submit"),
+    action: account(app, l, "/qirtas/editions?status=open"),
     heading:
       l === "ar" ? `شكرًا، وصلنا ${work}` : `Thank you: we received ${work}`,
     paragraphs: [
@@ -238,7 +238,7 @@ export const submissionInReading = (
   reference: string | null = null
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/submit"),
+    action: account(app, l, "/qirtas/editions?status=open"),
     heading: l === "ar" ? `قيد القراءة: ${work}` : `In reading: ${work}`,
     paragraphs: [
       l === "ar"
@@ -261,7 +261,7 @@ export const returnedForFormatting = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/submit"),
+    action: account(app, l, "/qirtas/editions?status=open"),
     heading:
       l === "ar"
         ? `تعديل واحد قبل القراءة: ${work}`
@@ -296,7 +296,7 @@ export const decision = (
   build(lang, (l) => {
     if (outcome === "decline") {
       return {
-        action: account(app, l, "/qirtas/submit"),
+        action: account(app, l, "/qirtas/editions?status=open"),
         heading:
           l === "ar" ? `شكرًا لإرسالك ${work}` : `Thank you for sending ${work}`,
         paragraphs:
@@ -312,7 +312,7 @@ export const decision = (
       };
     }
     return {
-      action: account(app, l, "/qirtas/submit"),
+      action: account(app, l, "/qirtas/editions?status=open"),
       heading:
         l === "ar" ? `قُبل ${work} في قرطاس` : `${work} is accepted for Qirtas`,
       paragraphs: [
@@ -336,7 +336,7 @@ export const revisionRequested = (
   app: string
 ) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/submit"),
+    action: account(app, l, "/qirtas/editions?status=open"),
     heading:
       l === "ar"
         ? `يطلب المحرر مراجعة ${work}`
@@ -367,7 +367,7 @@ export const revisionResent = (lang: Lang, work: string, app: string) =>
 
 export const agreementReminder = (lang: Lang, work: string, app: string) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/submit"),
+    action: account(app, l, "/qirtas/editions?status=open"),
     heading:
       l === "ar"
         ? `بانتظار توقيعك: اتفاقية نشر ${work}`
@@ -406,7 +406,7 @@ const callClosing = (closesAt: string, l: Lang) => {
 /** "Tell me when": a Qirtas call has opened. */
 export const callOpened = (lang: Lang, call: CallInfo, app: string) =>
   build(lang, (l) => ({
-    action: account(app, l, "/qirtas/submit"),
+    action: account(app, l, "/qirtas/editions?status=open"),
     heading:
       l === "ar"
         ? `فُتحت دعوة قرطاس: ${call.title_ar}`
@@ -2072,11 +2072,11 @@ export const welcome = (lang: Lang, app: string) =>
                   : "Events: readings, book discussions, writing workshops and more",
             },
             {
-              href: link("/qirtas/submit"),
+              href: link("/qirtas/editions?status=open"),
               title:
                 l === "ar"
-                  ? "أرسل إلى قرطاس: أي قسم، في أي وقت"
-                  : "Submit to Qirtas: any section, any time",
+                  ? "أرسل عملك إلى قرطاس: الدعوات المفتوحة الآن"
+                  : "Send your work to Qirtas: the calls open now",
             },
             {
               href: link("/get-involved"),
