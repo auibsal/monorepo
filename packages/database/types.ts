@@ -3664,6 +3664,8 @@ export type Database = {
           kind_other: string | null;
           lead_id: string | null;
           logo_path: string | null;
+          logo_pending_at: string | null;
+          logo_pending_path: string | null;
           logo_static: string | null;
           logo_width: number | null;
           name_ar: string | null;
@@ -3691,6 +3693,8 @@ export type Database = {
           kind_other?: string | null;
           lead_id?: string | null;
           logo_path?: string | null;
+          logo_pending_at?: string | null;
+          logo_pending_path?: string | null;
           logo_static?: string | null;
           logo_width?: number | null;
           name_ar?: string | null;
@@ -3717,6 +3721,8 @@ export type Database = {
           kind_other?: string | null;
           lead_id?: string | null;
           logo_path?: string | null;
+          logo_pending_at?: string | null;
+          logo_pending_path?: string | null;
           logo_static?: string | null;
           logo_width?: number | null;
           name_ar?: string | null;
@@ -4157,6 +4163,10 @@ export type Database = {
         Args: { approve: boolean; request: string };
         Returns: undefined;
       };
+      decide_partner_logo: {
+        Args: { approve: boolean; partner: string };
+        Returns: string;
+      };
       declarable_partners: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4371,6 +4381,10 @@ export type Database = {
           lead_domain: string;
           team_domain: string;
         }[];
+      };
+      propose_partner_logo: {
+        Args: { partner: string; path: string };
+        Returns: undefined;
       };
       public_election_results: {
         Args: Record<PropertyKey, never>;

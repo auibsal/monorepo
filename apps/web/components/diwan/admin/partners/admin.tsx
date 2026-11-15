@@ -18,6 +18,7 @@ import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { useQueryState } from "@/lib/diwan/use-query-param";
 import { hasPermissionAnywhere } from "@/lib/rbac";
+import { buckets, getMediaUrl } from "@/lib/storage";
 import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
@@ -559,6 +560,67 @@ const AddOrganization = () => {
   );
 };
 
+/**
+ * A logo the partner sent from its dashboard (decisions.md, Partners),
+ * waiting for Partnerships: approved, it is the one shown; declined, the
+ * partner sends another. Partnerships can still upload one below.
+ */
+const PendingLogo = ({
+  partnerId,
+  path,
+}: {
+  readonly partnerId: string;
+  readonly path: string;
+}) => {
+  const t = useTranslations("diwan.admin.partners.register.pendingLogo");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const decide = useMutation({
+    mutationFn: async (approve: boolean) => {
+      const declined = unwrap(
+        await supabase
+          .schema("governance")
+          .rpc("decide_partner_logo", { approve, partner: partnerId })
+      );
+      if (declined) {
+        await supabase.storage.from(buckets.media.id).remove([declined]);
+      }
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
+  return (
+    <DiwanSection description={t("lede")} id="pending-logo" title={t("title")}>
+      {/* biome-ignore lint/performance/noImgElement: a partner logo from the media bucket, any size */}
+      <img
+        alt=""
+        className="h-16 w-auto justify-self-start"
+        height={64}
+        src={getMediaUrl(supabase, path)}
+        width={128}
+      />
+      <div className="flex flex-wrap items-center gap-4">
+        <Button
+          disabled={decide.isPending}
+          onClick={() => decide.mutate(true)}
+          size="sm"
+          variant="outline"
+        >
+          {t("approve")}
+        </Button>
+        <button
+          className="link"
+          disabled={decide.isPending}
+          onClick={() => decide.mutate(false)}
+          type="button"
+        >
+          {t("decline")}
+        </button>
+      </div>
+      <ErrorLine error={decide.error} />
+    </DiwanSection>
+  );
+};
+
 /** A partner's address in the Diwan: its slug, or its id before it has one. */
 const partnerRef = (row: PartnerRow) => String(row.slug || row.id);
 
@@ -601,6 +663,9 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
       narrow
       title={localized(row, "name", locale)}
     >
+      {row.logo_pending_path ? (
+        <PendingLogo partnerId={row.id} path={String(row.logo_pending_path)} />
+      ) : null}
       <PartnerForm initial={row} onDone={() => router.push("/partnerships")} />
       {row ? (
         <DiwanSection id="guests" title={t("guests")}>

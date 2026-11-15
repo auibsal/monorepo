@@ -325,7 +325,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **Partners.** One register, `governance.partners`. `/partners` is the
   front door; an organization applies at `/partners/apply` (its draft
   saved on the site as it is filled in,
-  `governance.partner_application_drafts`), its signatory signing by name, and becomes a partner only when the President
+  `governance.partner_application_drafts`), its signatory signing by name,
+  sends its own logo from its dashboard for Partnerships to approve
+  (`/api/partners/logo`, `governance.decide_partner_logo`; the logo that
+  shows is set by Partnerships only, which also uploads the campus
+  partners' and sponsors' logos), and becomes a partner only when the President
   countersigns under the Council's adopted resolution
   (`governance.record_partner_vote`); nobody adds a
   partner or drafts a memorandum in the Diwan. Each partner has one

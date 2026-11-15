@@ -300,6 +300,66 @@ const PaperLinks = () => {
   );
 };
 
+/** The Desk's logo figures: missing in-house logos and logos to approve. */
+const logoFigures = (
+  t: ReturnType<typeof useTranslations<"diwan.admin.overview">>,
+  counts: { missing: number; waiting: number } | undefined
+) => [
+  ...(counts?.missing
+    ? [
+        {
+          action: t("addLogos"),
+          detail: t("noLogoDetail"),
+          href: "/partnerships",
+          label: t("noLogo"),
+          value: counts.missing,
+        },
+      ]
+    : []),
+  ...(counts?.waiting
+    ? [
+        {
+          action: t("reviewLogos"),
+          detail: t("logosWaitingDetail"),
+          href: "/partnerships",
+          label: t("logosWaiting"),
+          value: counts.waiting,
+        },
+      ]
+    : []),
+];
+
+/**
+ * Logos (decisions.md, Partners): the entries the Society adds itself
+ * (campus partners, sponsors in kind) still without one, which
+ * Partnerships uploads; and partners' own logos waiting for approval. An
+ * organization that applied supplies its own from its dashboard, so it is
+ * never counted as missing.
+ */
+const useLogoCounts = (enabled: boolean) => {
+  const { supabase } = useAuth();
+  return useQuery({
+    enabled,
+    queryFn: async () => {
+      const partnersTable = () =>
+        supabase.schema("governance").from("partners");
+      const [missing, waiting] = await Promise.all([
+        partnersTable()
+          .select("id", { count: "exact", head: true })
+          .in("relation", ["campus", "sponsor"])
+          .neq("status", "ended")
+          .is("logo_path", null)
+          .is("logo_static", null),
+        partnersTable()
+          .select("id", { count: "exact", head: true })
+          .not("logo_pending_path", "is", null),
+      ]);
+      return { missing: missing.count ?? 0, waiting: waiting.count ?? 0 };
+    },
+    queryKey: ["admin", "overview", "no-logo"],
+  });
+};
+
 export const AdminOverview = () => {
   const t = useTranslations("diwan.admin.overview");
   const locale = useLocale() as Locale;
@@ -330,23 +390,8 @@ export const AdminOverview = () => {
     queryKey: ["admin", "overview", "editing", writes],
   });
 
-  // Register entries without a logo (decisions.md, Partners), applying or
-  // active, listed or not: Partnerships adds the logo before it is needed.
   const managesPartners = hasPermissionAnywhere(grants.data, "partners.manage");
-  const noLogo = useQuery({
-    enabled: grants.isSuccess && managesPartners,
-    queryFn: async () => {
-      const { count } = await supabase
-        .schema("governance")
-        .from("partners")
-        .select("id", { count: "exact", head: true })
-        .neq("status", "ended")
-        .is("logo_path", null)
-        .is("logo_static", null);
-      return count ?? 0;
-    },
-    queryKey: ["admin", "overview", "no-logo"],
-  });
+  const noLogo = useLogoCounts(grants.isSuccess && managesPartners);
 
   if (overview.isPending || editing.isPending) {
     return <SectionSpinner />;
@@ -368,15 +413,7 @@ export const AdminOverview = () => {
       value: editing.data,
     });
   }
-  if (managesPartners && noLogo.data) {
-    figures.push({
-      action: t("addLogos"),
-      detail: t("noLogoDetail"),
-      href: "/partnerships",
-      label: t("noLogo"),
-      value: noLogo.data,
-    });
-  }
+  figures.push(...logoFigures(t, managesPartners ? noLogo.data : undefined));
   const can = (permission: Permission) =>
     hasPermissionAnywhere(grants.data, permission);
 

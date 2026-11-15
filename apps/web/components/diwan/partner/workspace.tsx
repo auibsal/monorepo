@@ -17,7 +17,9 @@ import { type FormEvent, type ReactNode, useState } from "react";
 import { Signature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, partners, unwrap } from "@/lib/data";
+import { callApiForm } from "@/lib/diwan/api";
 import { type MyPartner, useMyPartners } from "@/lib/diwan/partners";
+import { getMediaUrl } from "@/lib/storage";
 import {
   type InviteeLanguage,
   InviteeLanguageField,
@@ -112,6 +114,8 @@ interface PartnerRow {
   description_ar: string | null;
   description_en: string | null;
   id: string;
+  logo_path: string | null;
+  logo_pending_path: string | null;
   name_ar: string | null;
   name_en: string;
   url: string | null;
@@ -137,6 +141,97 @@ interface AgreementRow {
 const inLanguage = (signatory: string, locale: Locale) => {
   const [en, ar] = signatory.split(" · ");
   return (locale === "ar" ? ar || en : en || ar) ?? signatory;
+};
+
+/**
+ * The partner's logo (decisions.md, Partners): the team sends it from
+ * here and Partnerships approves it before it shows (/api/partners/logo).
+ */
+const PartnerLogo = ({ row }: { row: PartnerRow }) => {
+  const t = useTranslations("diwan.partnerDesk.profile.logo");
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const [file, setFile] = useState<File | null>(null);
+  const send = useMutation({
+    mutationFn: async () => {
+      if (!file) {
+        return;
+      }
+      const body = new FormData();
+      body.set("partner", row.id);
+      body.set("logo", file);
+      await callApiForm(supabase, "/partners/logo", body);
+    },
+    onSuccess: async () => {
+      setFile(null);
+      await queryClient.invalidateQueries({ queryKey: KEY });
+    },
+  });
+  return (
+    <div className="grid gap-4">
+      <h3 className="type-subheading">{t("title")}</h3>
+      <p className="type-caption">{t("lede")}</p>
+      <div className="flex flex-wrap items-end gap-8">
+        {row.logo_path ? (
+          <figure className="grid gap-2">
+            {/* biome-ignore lint/performance/noImgElement: a partner logo from the media bucket, any size */}
+            <img
+              alt=""
+              className="h-16 w-auto"
+              height={64}
+              src={getMediaUrl(supabase, row.logo_path)}
+              width={128}
+            />
+            <figcaption className="type-caption">{t("shown")}</figcaption>
+          </figure>
+        ) : null}
+        {row.logo_pending_path ? (
+          <figure className="grid gap-2">
+            {/* biome-ignore lint/performance/noImgElement: a partner logo from the media bucket, any size */}
+            <img
+              alt=""
+              className="h-16 w-auto"
+              height={64}
+              src={getMediaUrl(supabase, row.logo_pending_path)}
+              width={128}
+            />
+            <figcaption className="type-caption">{t("waiting")}</figcaption>
+          </figure>
+        ) : null}
+      </div>
+      <form
+        className="flex flex-wrap items-end gap-4"
+        onSubmit={(event: FormEvent) => {
+          event.preventDefault();
+          send.mutate();
+        }}
+      >
+        <Field hint={t("hint")} label={t("file")}>
+          {(id) => (
+            <Input
+              accept="image/png,image/jpeg,image/webp"
+              id={id}
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              type="file"
+            />
+          )}
+        </Field>
+        <Button
+          disabled={!file || send.isPending}
+          type="submit"
+          variant="outline"
+        >
+          {t("send")}
+        </Button>
+      </form>
+      {send.isSuccess ? (
+        <p className="type-body" role="status">
+          {t("sent")}
+        </p>
+      ) : null}
+      <ErrorLine error={send.error} />
+    </div>
+  );
 };
 
 const ProfileForm = ({ row }: { row: PartnerRow }) => {
@@ -411,7 +506,9 @@ const ProfileLoader = ({ id }: { id: string }) => {
         await supabase
           .schema("governance")
           .from("partners")
-          .select("id, name_en, name_ar, url, description_en, description_ar")
+          .select(
+            "id, name_en, name_ar, url, description_en, description_ar, logo_path, logo_pending_path"
+          )
           .eq("id", id)
           .single()
       ) as PartnerRow,
@@ -423,7 +520,12 @@ const ProfileLoader = ({ id }: { id: string }) => {
   if (row.isError) {
     return <ErrorState onRetry={() => row.refetch()} />;
   }
-  return <ProfileForm row={row.data} />;
+  return (
+    <div className="grid gap-10">
+      <PartnerLogo row={row.data} />
+      <ProfileForm row={row.data} />
+    </div>
+  );
 };
 
 /**

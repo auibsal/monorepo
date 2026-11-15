@@ -1205,8 +1205,11 @@
           }
         },
         "noLogo": "Without a logo",
-        "noLogoDetail": "Shown with their name alone until a logo is added.",
-        "addLogos": "Add logos"
+        "noLogoDetail": "Campus partners and sponsors in kind show with their name alone until the Director of Partnerships adds a logo.",
+        "addLogos": "Add logos",
+        "logosWaiting": "Logos to approve",
+        "logosWaitingDetail": "Partners sent these from their dashboards; each shows once approved.",
+        "reviewLogos": "Review logos"
       },
       "members": {
         "title": "Members",
@@ -2532,7 +2535,13 @@
             "sponsor": "Sponsor in kind"
           },
           "addTitle": "Add a campus partner or a sponsor in kind",
-          "add": "Add and open"
+          "add": "Add and open",
+          "pendingLogo": {
+            "title": "A logo to approve",
+            "lede": "The partner sent this logo from its dashboard. Approved, it replaces the one shown; declined, the partner can send another.",
+            "approve": "Approve the logo",
+            "decline": "Decline"
+          }
         },
         "agreements": {
           "lede": "Partnership memoranda. Each comes from an application signed by the partner’s signatory and takes effect once the Council’s adopted resolution is recorded. Nothing is uploaded. Someone who has declared a conflict with the partner cannot record the vote (P8.3).",
@@ -4843,7 +4852,17 @@
       "open": "Open the dashboard of {name}",
       "profile": {
         "title": "Profile",
-        "listing": "The Partners page shows the name, website and description once the partnership is signed and the Society lists it."
+        "listing": "The Partners page shows the name, website and description once the partnership is signed and the Society lists it.",
+        "logo": {
+          "title": "Your logo",
+          "lede": "Shown on the Partners page and beside your events once the Society approves it.",
+          "shown": "Shown now",
+          "waiting": "Waiting for the Society’s approval",
+          "file": "Logo file",
+          "hint": "PNG, JPEG or WebP, on a light background.",
+          "send": "Send the logo",
+          "sent": "Sent. You’ll see it here once it is approved."
+        }
       },
       "memorandum": {
         "title": "Memorandum",

@@ -41,9 +41,17 @@ fourth prompts (Nov 12).
   18 or older, alumni sign up with another address and the Director of
   Membership approves; the "I studied at AUIB" tick is hidden under 18;
   Today shows the request while it waits (`membership.my_associate_request`).
-- [ ] **Owner:** upload the three logos (The American Space, the Iraqi
-  Independent Film Centre, the AUIB Tabletop Club); the Desk counts every
-  register entry still without one.
+- [x] Logos follow who added the entry (decisions.md, Partners): an
+  organization that applied sends its own from its dashboard
+  (`/api/partners/logo`, `governance.propose_partner_logo`) and
+  Partnerships approves or declines it on the partner's page
+  (`governance.decide_partner_logo`), and can still upload or fix one; the
+  Desk counts only the campus partners and sponsors in kind still without
+  a logo, and the logos waiting for approval
+  (`20261115001100_partner_logo_approval.sql`). The AUIB Tabletop Club, an
+  applicant not yet approved, is not counted.
+- [ ] **Owner:** upload the logos for The American Space and the Iraqi
+  Independent Film Centre (Partnerships, on each entry).
 
 ## Now: the sixteenth site prompt (Nov 15)
 
