@@ -5,18 +5,20 @@ import { logos } from "@repo/brand/lib/logos";
 import { siteUrl } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useTranslations } from "next-intl";
-import { PDFDocument } from "pdf-lib";
 import { useEffect, useState } from "react";
 import { mediaUrl } from "@/lib/media";
 import { DiwanSection, RowList } from "../../../page";
-import {
-  type Art,
-  type Content,
-  drawCard,
-  type Faces,
-  type Lang,
-  type Layout,
-} from "./draw";
+import type { Art, Content, Faces, Lang, Layout } from "./draw";
+
+/** The drawing code, the QR and the PDF writer load only when a kit is built. */
+type Tools = Awaited<ReturnType<typeof loadTools>>;
+const loadTools = async () => {
+  const [{ drawCard }, { PDFDocument }] = await Promise.all([
+    import("./draw"),
+    import("pdf-lib"),
+  ]);
+  return { drawCard, PDFDocument };
+};
 
 /**
  * The promo kit (decisions.md, Events): one button on the event's page in
@@ -176,7 +178,13 @@ const facesOf = async (): Promise<Faces> => {
   return faces;
 };
 
-const paint = (layout: Layout, content: Content, art: Art, lang: Lang) => {
+const paint = (
+  tools: Tools,
+  layout: Layout,
+  content: Content,
+  art: Art,
+  lang: Lang
+) => {
   const canvas = document.createElement("canvas");
   canvas.width = layout.width;
   canvas.height = layout.height;
@@ -184,7 +192,7 @@ const paint = (layout: Layout, content: Content, art: Art, lang: Lang) => {
   if (!ctx) {
     throw new Error("canvas");
   }
-  drawCard(ctx, layout, content, art, lang);
+  tools.drawCard(ctx, layout, content, art, lang);
   return canvas;
 };
 
@@ -197,8 +205,13 @@ const png = (canvas: HTMLCanvasElement) =>
   });
 
 /** A PDF of one or more pages, each an image at its size in millimeters. */
-const pdf = async (pages: HTMLCanvasElement[], wmm: number, hmm: number) => {
-  const doc = await PDFDocument.create();
+const pdf = async (
+  tools: Tools,
+  pages: HTMLCanvasElement[],
+  wmm: number,
+  hmm: number
+) => {
+  const doc = await tools.PDFDocument.create();
   for (const canvas of pages) {
     // biome-ignore lint/performance/noAwaitInLoops: pages in order
     const image = await doc.embedPng(await (await png(canvas)).arrayBuffer());
@@ -218,6 +231,7 @@ const LANG_TAG = { ar: "AR", en: "EN" } as const;
 
 /** Every file of the kit for one language. */
 const filesFor = async (
+  tools: Tools,
   event: PromoEvent,
   lang: Lang,
   art: Art
@@ -231,21 +245,27 @@ const filesFor = async (
   const noImage = { ...art, image: null };
   const items = listItems(lang === "ar" ? event.body_ar : event.body_en);
   const slides = [
-    paint(LAYOUTS.carousel, c, art, lang),
+    paint(tools, LAYOUTS.carousel, c, art, lang),
     ...items.map((item) =>
-      paint(LAYOUTS.carousel, { ...c, item }, noImage, lang)
+      paint(tools, LAYOUTS.carousel, { ...c, item }, noImage, lang)
     ),
   ];
   return [
     {
-      blob: await pdf([paint(LAYOUTS.poster, c, art, lang)], 297, 420),
+      blob: await pdf(
+        tools,
+        [paint(tools, LAYOUTS.poster, c, art, lang)],
+        297,
+        420
+      ),
       name: `${base}-poster-A3.pdf`,
     },
     {
       blob: await pdf(
+        tools,
         [
-          paint(LAYOUTS.handout, c, art, lang),
-          paint(LAYOUTS.handout, detail, noImage, lang),
+          paint(tools, LAYOUTS.handout, c, art, lang),
+          paint(tools, LAYOUTS.handout, detail, noImage, lang),
         ],
         210,
         297
@@ -259,30 +279,38 @@ const filesFor = async (
       }))
     )),
     {
-      blob: await png(paint(LAYOUTS.story, c, art, lang)),
+      blob: await png(paint(tools, LAYOUTS.story, c, art, lang)),
       name: `${base}-story.png`,
     },
     {
-      blob: await png(paint(LAYOUTS.telegram, c, art, lang)),
+      blob: await png(paint(tools, LAYOUTS.telegram, c, art, lang)),
       name: `${base}-telegram.png`,
     },
     {
-      blob: await png(paint(LAYOUTS.preview, c, art, lang)),
+      blob: await png(paint(tools, LAYOUTS.preview, c, art, lang)),
       name: `${base}-preview.png`,
     },
   ];
 };
 
 const buildKit = async (event: PromoEvent): Promise<KitFile[]> => {
-  const faces = await facesOf();
+  const [faces, tools] = await Promise.all([facesOf(), loadTools()]);
   const imageUrl = mediaUrl(event.image_path);
   const [image, lockupEn, lockupAr] = await Promise.all([
     imageUrl ? loadImage(imageUrl).catch(() => null) : Promise.resolve(null),
     loadImage(logos.horizontal.onLight),
     loadImage(logos["horizontal-ar"].onLight),
   ]);
-  const en = await filesFor(event, "en", { faces, image, lockup: lockupEn });
-  const ar = await filesFor(event, "ar", { faces, image, lockup: lockupAr });
+  const en = await filesFor(tools, event, "en", {
+    faces,
+    image,
+    lockup: lockupEn,
+  });
+  const ar = await filesFor(tools, event, "ar", {
+    faces,
+    image,
+    lockup: lockupAr,
+  });
   return [
     ...en,
     ...ar,

@@ -37,10 +37,17 @@ grant insert (lead_id, entry, partner_id, off_campus, serves_food),
   on events.events to authenticated;
 
 -- The debrief's link is set on the event's page in the Diwan now.
-create policy "The event's staff keep its debrief link" on events.debriefs
-  for all to authenticated
+-- One policy per action: the read policy of Nov 8 already covers select.
+create policy "The event's staff add its debrief link" on events.debriefs
+  for insert to authenticated
+  with check ((select private.has_permission('events.manage')) or (select private.leads_event_id(event_id)));
+create policy "The event's staff change its debrief link" on events.debriefs
+  for update to authenticated
   using ((select private.has_permission('events.manage')) or (select private.leads_event_id(event_id)))
   with check ((select private.has_permission('events.manage')) or (select private.leads_event_id(event_id)));
+create policy "The event's staff remove its debrief link" on events.debriefs
+  for delete to authenticated
+  using ((select private.has_permission('events.manage')) or (select private.leads_event_id(event_id)));
 grant insert, update, delete on events.debriefs to authenticated;
 
 -- An event is published only with a lead and a confirmed place, as the
