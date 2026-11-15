@@ -884,8 +884,24 @@
           "letterWords": "{n} words of {max} at most.",
           "opEdWords": "{n} words; an op-ed runs {min} to {max}.",
           "about": "About the writer",
-          "aboutHint": "After your name, as it ends the op-ed: “is a junior studying business at AUIB.”",
-          "ownName": "Opinion runs under your own name, as US papers require."
+          "ownName": "Opinion runs under your own name, as US papers require.",
+          "identity": {
+            "student": "{name} is a {year} studying {line} at AUIB.",
+            "other": "{name} {line}.",
+            "years": {
+              "first": "first-year",
+              "second": "sophomore",
+              "third": "junior",
+              "fourth": "senior",
+              "graduate": "graduate student"
+            },
+            "year": "Your year",
+            "subject": "What you study",
+            "subjectHint": "In the language you write in: “business”, “computer science”.",
+            "line": "About you, after your name",
+            "lineHint": "For example: “teaches history at AUIB”.",
+            "preview": "Your op-ed ends: {line}"
+          }
         },
         "review": {
           "call": "Call",
@@ -922,9 +938,6 @@
       }
     },
     "profile": {
-      "title": "Profile",
-      "bio": "Bio",
-      "bioCount": "{count} of 50 words",
       "download": {
         "title": "Download your data",
         "description": "Everything the site keeps about you, as one file (JSON): your profile, membership, card number, bookings, check-ins, roles, letters, certificates, Qirtas submissions and drafts, and your settings.",
@@ -1001,10 +1014,6 @@
         "joinMembers": "Join the members’ group",
         "joinStaff": "Join the Diwan group"
       },
-      "lede": "Your details, how the Society reaches you, and what you have shared.",
-      "aboutYou": "About you",
-      "photos": "Photos of me at the Society’s events may be shared",
-      "photosHint": "On the Society’s website, its channels and in Qirtas. Change your mind at any time; photos already shared stay up unless you ask us to take them down.",
       "titleForm": "The Arabic form of your title",
       "titleFormHint": "Optional. Where an Arabic title names you (the Council page, Qirtas’s masthead, your card, letters), it takes this form, as in «نائبة الرئيس».",
       "titleForms": {

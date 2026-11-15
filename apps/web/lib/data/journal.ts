@@ -335,6 +335,20 @@ const laneIssues = (value: {
   return issues;
 };
 
+/** A student writer's year, for an op-ed's identity line. */
+export const WRITER_YEARS = [
+  "first",
+  "second",
+  "third",
+  "fourth",
+  "graduate",
+] as const;
+
+export type WriterYear = (typeof WRITER_YEARS)[number];
+
+export const isWriterYear = (value: string): value is WriterYear =>
+  (WRITER_YEARS as readonly string[]).includes(value);
+
 export const submissionSchema = z
   .object({
     /** An op-ed's line about its writer, after their name (Voices). */
@@ -373,6 +387,8 @@ export const submissionSchema = z
       .url({ protocol: /^https$/u })
       .max(500)
       .optional(),
+    /** A student op-ed writer's year, for the identity line. */
+    writer_year: z.enum(WRITER_YEARS).optional(),
   })
   .superRefine((value, context) => {
     const desk = deskOf(value.category);
@@ -1228,4 +1244,53 @@ export const editionLaunch = async (client: Client, issueId: string) => {
       .eq("members_only", false)
       .maybeSingle()
   );
+};
+
+/** A line's closing period, dropped: the identity line adds its own. */
+const TRAILING_STOP = /[.]+$/u;
+
+/** The words the identity line is built from (diwan.journal.write.voices.identity). */
+type IdentityWords = (
+  key: "other" | "student" | `years.${WriterYear}`,
+  values?: Record<string, string>
+) => string;
+
+/**
+ * An op-ed's identity line (decisions.md, Qirtas), from the writer's class
+ * and their one line: "[Name] is a junior studying business at AUIB." for
+ * a student; "[Name] teaches history at AUIB." for anyone else. In Arabic
+ * it takes the writer's own form (طالب / طالبة, يدرس / تدرس). Empty until
+ * the line (and a student's year) is given.
+ */
+export const identityLine = (
+  words: IdentityWords,
+  {
+    feminine,
+    line,
+    name,
+    student,
+    year,
+  }: {
+    readonly feminine: boolean;
+    readonly line: string;
+    readonly name: string;
+    readonly student: boolean;
+    readonly year: string;
+  }
+) => {
+  const own = line.trim().replace(TRAILING_STOP, "");
+  if (!(own && name)) {
+    return "";
+  }
+  if (!student) {
+    return words("other", { line: own, name });
+  }
+  return isWriterYear(year)
+    ? words("student", {
+        form: feminine ? "f" : "m",
+        line: own,
+        name,
+        year: words(`years.${year}`),
+      })
+    : "";
 };

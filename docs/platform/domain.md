@@ -252,9 +252,13 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `offered`, `offered_until`; `private.expire_offers` every five minutes);
   from two hours before, the door fills places; places not claimed 10
   minutes before are released; check-in keeps working without a
-  connection, `lib/diwan/door-queue.ts`), the access statement on the
-  page (`step_free`, `seating`, and the food's `allergens`, set on the
-  event's Diwan page), one reminder the day before with "Can't come?
+  connection, `lib/diwan/door-queue.ts`), "Good to know" under
+  the date and place (`components/good-to-know.tsx`: who can come and
+  places left once under 20, read live; the `language`; step-free access
+  and `seating` with "Ask for an accommodation by", `accommodation_by` or
+  three days before, to hello@; food and drink, `served_*`, with the nine
+  major US `allergens` and `other_allergens_*`; a `content_note_*`; and
+  photos taken unless `no_photos`; set on the event's Diwan page), one reminder the day before with "Can't come?
   Cancel", a trip's emergency contact deleted a week after it
   (`private.purge_trip_contacts`), a needs list,
   volunteer shifts (on the event only, logging no hours), a partner

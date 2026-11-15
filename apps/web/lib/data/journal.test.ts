@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, test } from "vitest";
+import { describe, expect, it, test } from "vitest";
 import {
   averageTotal,
   band,
@@ -13,6 +13,7 @@ import {
   desks,
   editionDesks,
   editorMoves,
+  identityLine,
   isSixWords,
   needsThirdRead,
   newsroomDesks,
@@ -362,5 +363,53 @@ describe("Qirtas helpers", () => {
       "dQw4w9WgXcQ"
     );
     expect(youtubeId("https://vimeo.com/1")).toBeNull();
+  });
+});
+
+describe("identityLine", () => {
+  const words = (key: string, values?: Record<string, string>) => {
+    if (key === "student") {
+      return `${values?.name} is a ${values?.year} studying ${values?.line} at AUIB.`;
+    }
+    if (key === "other") {
+      return `${values?.name} ${values?.line}.`;
+    }
+    return key === "years.third" ? "junior" : key;
+  };
+
+  it("builds a student's line from the class, the year and the subject", () => {
+    expect(
+      identityLine(words, {
+        feminine: false,
+        line: "business.",
+        name: "Sara Ali",
+        student: true,
+        year: "third",
+      })
+    ).toBe("Sara Ali is a junior studying business at AUIB.");
+  });
+
+  it("takes anyone else's line after their name", () => {
+    expect(
+      identityLine(words, {
+        feminine: false,
+        line: "teaches history at AUIB",
+        name: "Omar Hadi",
+        student: false,
+        year: "",
+      })
+    ).toBe("Omar Hadi teaches history at AUIB.");
+  });
+
+  it("waits for a student's year", () => {
+    expect(
+      identityLine(words, {
+        feminine: true,
+        line: "business",
+        name: "Sara Ali",
+        student: true,
+        year: "",
+      })
+    ).toBe("");
   });
 });

@@ -5938,6 +5938,7 @@ export type Database = {
           type_label: string | null;
           updated_at: string;
           video_url: string | null;
+          writer_year: string | null;
         };
         ComputedFields: never;
         Insert: {
@@ -5975,6 +5976,7 @@ export type Database = {
           type_label?: string | null;
           updated_at?: string;
           video_url?: string | null;
+          writer_year?: string | null;
         };
         Update: {
           about_writer?: string | null;
@@ -6011,6 +6013,7 @@ export type Database = {
           type_label?: string | null;
           updated_at?: string;
           video_url?: string | null;
+          writer_year?: string | null;
         };
         Relationships: [
           {

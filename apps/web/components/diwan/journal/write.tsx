@@ -26,7 +26,12 @@ import {
 import { useReviewWords } from "@/components/account/flow";
 import { useAuth } from "@/lib/auth/provider";
 import { journal, localized, toPlainText, unwrap } from "@/lib/data";
-import { queryKeys, useOpenCalls } from "@/lib/diwan/queries";
+import {
+  queryKeys,
+  useMyMembership,
+  useOpenCalls,
+  useProfile,
+} from "@/lib/diwan/queries";
 import { manuscriptHtml } from "@/lib/manuscript";
 import {
   AdminHeading,
@@ -259,6 +264,7 @@ const WriteForm = ({
   const [note, setNote] = useState(initial.note);
   const [penName, setPenName] = useState(initial.penName);
   const [aboutWriter, setAboutWriter] = useState(initial.aboutWriter);
+  const [writerYear, setWriterYear] = useState(initial.writerYear);
   const [film, setFilm] = useState<Film>(initial.film);
   const [files, setFiles] = useState<PendingFile[]>([]);
   const [pledged, setPledged] = useState(false);
@@ -286,6 +292,7 @@ const WriteForm = ({
     source,
     title,
     videoUrl,
+    writerYear,
   };
 
   const input = submissionInput({
@@ -304,6 +311,7 @@ const WriteForm = ({
     title,
     type,
     videoUrl,
+    writerYear,
   });
   const missing = missingReason(
     pledged,
@@ -441,8 +449,10 @@ const WriteForm = ({
             aboutWriter={aboutWriter}
             onAboutWriter={setAboutWriter}
             onPenName={setPenName}
+            onWriterYear={setWriterYear}
             penName={penName}
             type={type}
+            writerYear={writerYear}
           />
           {desk === "news" ? null : (
             <Declarations
@@ -617,6 +627,7 @@ interface InputState {
   title: string;
   type: journal.Category;
   videoUrl: string;
+  writerYear: string;
 }
 
 const orNothing = (value: string) => value.trim() || undefined;
@@ -652,6 +663,10 @@ const submissionInput = (state: InputState) => {
     source_text: orNothing(state.source.text),
     title: state.title.trim(),
     video_url: needs.video ? orNothing(state.videoUrl) : undefined,
+    writer_year:
+      state.type === "opinion_essay" && journal.isWriterYear(state.writerYear)
+        ? state.writerYear
+        : undefined,
   };
 };
 
@@ -853,6 +868,7 @@ interface DraftContent {
   readonly source?: Source;
   readonly title?: string;
   readonly videoUrl?: string;
+  readonly writerYear?: string;
 }
 
 /** A saved draft, read under the member's own rights (RLS: theirs only). */
@@ -959,6 +975,7 @@ const fromDraft = (saved: DraftContent) => ({
   source: saved.source ?? { author: "", rights: "", text: "" },
   title: saved.title ?? "",
   videoUrl: saved.videoUrl ?? "",
+  writerYear: saved.writerYear ?? "",
 });
 
 /** Save draft beside Send, and Delete draft once it has one. */
@@ -1161,14 +1178,18 @@ const BylineFields = ({
   aboutWriter,
   onAboutWriter,
   onPenName,
+  onWriterYear,
   penName,
   type,
+  writerYear,
 }: {
   readonly aboutWriter: string;
   readonly onAboutWriter: (value: string) => void;
   readonly onPenName: (value: string) => void;
+  readonly onWriterYear: (value: string) => void;
   readonly penName: string;
   readonly type: journal.Category;
+  readonly writerYear: string;
 }) => {
   const t = useTranslations("diwan.journal.write.voices");
   if (journal.deskOf(type) !== "voices") {
@@ -1177,7 +1198,12 @@ const BylineFields = ({
   return (
     <>
       {type === "opinion_essay" ? (
-        <AboutWriterField onChange={onAboutWriter} value={aboutWriter} />
+        <IdentityFields
+          line={aboutWriter}
+          onLine={onAboutWriter}
+          onYear={onWriterYear}
+          year={writerYear}
+        />
       ) : null}
       <p className="type-caption">{t("ownName")}</p>
     </>
@@ -1296,26 +1322,75 @@ const WordsLine = ({
   );
 };
 
-/** An op-ed's line about its writer, after their name (the US identity line). */
-const AboutWriterField = ({
-  onChange,
-  value,
+/**
+ * An op-ed's identity line (decisions.md, Qirtas), built from the writer's
+ * class and the one line they give: a student gives their year and what
+ * they study ("is a junior studying business at AUIB"); anyone else, the
+ * line after their name. The line as it will run shows under the fields.
+ */
+const IdentityFields = ({
+  line,
+  onLine,
+  onYear,
+  year,
 }: {
-  readonly onChange: (value: string) => void;
-  readonly value: string;
+  readonly line: string;
+  readonly onLine: (value: string) => void;
+  readonly onYear: (value: string) => void;
+  readonly year: string;
 }) => {
   const t = useTranslations("diwan.journal.write.voices");
+  const ti = useTranslations("diwan.journal.write.voices.identity");
+  const locale = useLocale() as Locale;
+  const mine = useMyMembership();
+  const profile = useProfile();
+  const student = mine.data?.kind === "member";
+  const name = profile.data ? localized(profile.data, "full_name", locale) : "";
+  const built = journal.identityLine(ti, {
+    feminine: profile.data?.title_form === "feminine",
+    line,
+    name,
+    student,
+    year,
+  });
   return (
-    <Field hint={t("aboutHint")} label={t("about")}>
-      {(id) => (
-        <Input
-          id={id}
-          maxLength={160}
-          onChange={(e) => onChange(e.target.value)}
-          required
-          value={value}
-        />
-      )}
-    </Field>
+    <fieldset className="grid gap-4">
+      <legend className="type-label mb-2">{t("about")}</legend>
+      {student ? (
+        <Field label={ti("year")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) => onYear(e.target.value)}
+              value={year}
+            >
+              <option value="" />
+              {journal.WRITER_YEARS.map((y) => (
+                <option key={y} value={y}>
+                  {ti(`years.${y}`)}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+      ) : null}
+      <Field
+        hint={student ? ti("subjectHint") : ti("lineHint")}
+        label={student ? ti("subject") : ti("line")}
+      >
+        {(id) => (
+          <Input
+            id={id}
+            maxLength={160}
+            onChange={(e) => onLine(e.target.value)}
+            required
+            value={line}
+          />
+        )}
+      </Field>
+      {built ? (
+        <p className="type-caption">{ti("preview", { line: built })}</p>
+      ) : null}
+    </fieldset>
   );
 };

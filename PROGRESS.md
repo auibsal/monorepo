@@ -14,6 +14,35 @@ pages are deleted.
 Branch: `claude/new-session-qosn60`, one pull request for the third and
 fourth prompts (Nov 12).
 
+## Now: the sixteenth site prompt (Nov 15)
+
+- [x] Mirror replaced (decisions 18, glossary 12): the partner
+  application's reply time, the launch story's link, the op-ed identity
+  line in Arabic.
+- [x] "Good to know" under an event's date and place, with the nine major
+  US food allergens (gluten maps to wheat, crustaceans to crustacean
+  shellfish; no event used the EU-only ones). The access fields were never
+  granted to the editor, so the Diwan's Access form could not save; it can
+  now (`20261115000600_good_to_know.sql`).
+- [ ] **Owner:** fill the Sun Nov 22 screening's "Good to know" in the
+  Diwan's event page once this is live.
+- [x] One form flow on openings, auditions, nominations and the partner
+  application (`@repo/brand/components/sal/form-flow`: `ReviewStep`,
+  `Receipt`, `FlowSteps`); each takes its SUB number when sent
+  (`20261115000700_one_form_flow.sql`); the shared status words, with
+  shortlisting kept internal; auditions in Your account, Roles.
+- [x] Every page in one order (AdminHeading: title, one line, the
+  actions); the call terms after the action (`CallDetails`).
+- [x] One record page (`RecordView`) and one list (`RecordList`, `?q=`).
+- [x] The op-ed identity line built from the class and the writer's line
+  (`journal.identityLine`, `writer_year`).
+- [ ] "Who can come" has no "the AUIB community" access kind yet: the four
+  access kinds are Open, RSVP, Members and Private (decisions.md, Events),
+  so it reads Everyone, Members or Invited guests.
+- [ ] The identity line shows to the writer as they write and is kept on
+  the submission; the piece page does not print it yet (the Voices editor
+  adds it when making the piece).
+
 ## Now: the fourteenth and fifteenth site prompts (Nov 15)
 
 - [x] One register for every organization (partners, campus partners,
@@ -37,10 +66,9 @@ fourth prompts (Nov 12).
   and the open-call row (`OpenCallRow`) in `@repo/brand`; the one form flow
   on Qirtas's forms (drafts saved as you go, review, receipt, shared
   status words).
-- [ ] The one form flow on the other application forms (openings,
+- [x] The one form flow on the other application forms (openings,
   auditions, the partner application, nominations) and one record page and
-  list across Your account and the Diwan: the patterns exist; each form
-  still keeps its own steps.
+  list across Your account and the Diwan (the sixteenth prompt, below).
 
 ## Now: the ninth to twelfth site prompts (Nov 14)
 
@@ -111,7 +139,7 @@ All in PR #269.
 - [x] **Members' chats:** the ticket's QR code on the event's day, and the
   weekly handover and role-agreement reminders
   (`20261113004800_hudhud_reminders.sql`).
-- [ ] **Owner, decisions.md (proposed), Channels and email:** Hudhud's
+- [x] **Owner, decisions.md (proposed), Channels and email:** in decisions.md §14 now. Hudhud's
   rights include Add New Admins (it makes the four officers admins of
   both groups and the Council admins of the Diwan group, never with Add
   New Admins); "a reminder two days before and a 'doors open' post an hour
@@ -143,7 +171,7 @@ All in PR #269.
 - [ ] **Owner:** in Media → Channels, set the Diwan group's topics for the
   teams (Council, Qirtas, Media, Events, Membership, Partnerships); a team
   without one posts to the brief's topic.
-- [ ] **Owner, decisions.md (proposed):** "one notices model" in Channels
+- [x] **Owner, decisions.md (proposed):** in decisions.md §14 now. "one notices model" in Channels
   and email (each topic on each channel; reminders by Hudhud replace the
   email; the Paper and news go to both); and that bots cannot post
   stories or run streams, so those stay with the admins.

@@ -116,6 +116,7 @@ This is SAL-MED-02, Brand and Identity, Version 1, proposed until the Council ad
 - Plain HTML with `components/bundle.css` (classes prefixed `sal-`). Load `tokens.css` first, then `bundle.css`, and copy the markup from each preview.
 - `DocumentCover`, `DocumentFooter`, `FormHeader`, `SocialPost`, `Carousel`, `Story`, `Highlights`, `Hudhud`, `HudhudStickers`.
 - Covers and forms are always light (`data-theme="light"`).
+- One pattern for each kind of thing (React, `components/sal`): `SectionFront` (a section's title, one line, its action, then its lists); `OpenCallList` and `CallDetails` (one listing row and one call page's terms for everything people apply or send work to); `ReviewStep`, `Receipt` and `FlowSteps` in `form-flow` (the review before sending, the receipt with its number and reply time, and where a record stands in the shared words). They take their words as props.
 
 ## Social and print
 
