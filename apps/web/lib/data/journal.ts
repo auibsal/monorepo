@@ -8,7 +8,6 @@ export {
   draftPath,
   isVoicesForm,
   SEND_YOUR_WORK,
-  type VoicesForm,
   voicesForms,
 } from "./qirtas-paths";
 

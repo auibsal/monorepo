@@ -11,7 +11,7 @@ export const voicesForms = {
   letter: "letter_to_editor",
   "op-ed": "opinion_essay",
 } as const;
-export type VoicesForm = keyof typeof voicesForms;
+type VoicesForm = keyof typeof voicesForms;
 export const isVoicesForm = (value: string): value is VoicesForm =>
   Object.hasOwn(voicesForms, value);
 
