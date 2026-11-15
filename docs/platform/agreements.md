@@ -89,6 +89,6 @@ keep stable names too but are templates or records, never in the register.
 ## Retired numbers
 
 F-08, F-22, F-31 and F-44 were retired before the names. F-42, the
-"author letters" (the letters to a Write for Qirtas author about a
+"author letters" (the letters to a Submit to Qirtas author about a
 decision), retired with the names: the site sends those as its decision
 emails (`qirtas.decision`). Their old `/forms` addresses go to Documents.

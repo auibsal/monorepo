@@ -185,7 +185,7 @@ const RECEIPT_KINDS = new Set([
   "governance.candidacy_received",
   "journal.submission_received",
   "partners.application_received",
-  // Write for Qirtas (decisions.md, Qirtas): "received" with its number.
+  // Submit to Qirtas (decisions.md, Qirtas): "received" with its number.
   "qirtas.submission_received",
 ]);
 

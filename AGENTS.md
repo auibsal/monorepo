@@ -53,7 +53,9 @@ media do.
     what you sent at `/requests` and `/requests/<id>`. Also `/company/auditions`,
     `/qirtas/submit` (public; the forms at `/qirtas/submit/<type>`, a draft at
     `/qirtas/submit/<type>/<draft>`) and `/qirtas/read/<slug>` (a
-    members-only piece). The gates are in `components/diwan/gates.tsx`.
+    members-only piece), on Qirtas's paper with its nameplate like every
+    page of Qirtas (`Paper` in `components/qirtas/paper.tsx`). The gates
+    are in `components/diwan/gates.tsx`.
   - `app/[locale]/diwan`: **the Diwan**, auibsal.org/diwan, the staff's
     administration only (anyone holding a role, `RequireStaff`), one
     section per Council seat (decisions.md, The site; `adminSections` in
@@ -283,7 +285,7 @@ any schema change. Integration tests run against a local stack with
 the Council and the first semester, members and classes, names and titles,
 the card, numbers and codes, forms and signatures, events and the
 calendar, the Typewriter Tour, partners, guests, governance, Qirtas
-(Write for Qirtas, the Newsroom, reading, Editions, Games, the Prize,
+(Submit to Qirtas, the Newsroom, reading, Editions, Games, the Prize,
 Qalam, the Sunday Paper), and Notion, documents, Hudhud and email. Read
 the section for the domain you are changing first. Four rules hold
 everywhere:

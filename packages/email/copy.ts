@@ -192,7 +192,7 @@ const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
     ],
     en: [
       "Your work is read blind: readers and editors never see your name until a decision is made.",
-      "Every author hears by the announced date, either way. You can follow its progress on Write for Qirtas.",
+      "Every author hears by the announced date, either way. You can follow its progress on Submit to Qirtas.",
     ],
   },
   named: {
@@ -202,7 +202,7 @@ const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
     ],
     en: [
       "The desk editor will read it and work with you by name on the edit and the facts.",
-      "You can follow its progress on Write for Qirtas.",
+      "You can follow its progress on Submit to Qirtas.",
     ],
   },
 };
@@ -396,11 +396,11 @@ const callClosing = (closesAt: string, l: Lang) => {
   if (!callHasDeadline(closesAt)) {
     return l === "ar"
       ? "لم يُحدَّد موعد الإغلاق بعد. أرسل عملك من صفحة الكتابة لقرطاس."
-      : "Its closing date is still to be set. Send yours from Write for Qirtas.";
+      : "Its closing date is still to be set. Send yours from Submit to Qirtas.";
   }
   return l === "ar"
     ? `تستقبل الدعوة الأعمال حتى ${formatLongDate(closesAt, l)}. أرسل عملك من صفحة الكتابة لقرطاس.`
-    : `It takes work until ${formatLongDate(closesAt, l)}. Send yours from Write for Qirtas.`;
+    : `It takes work until ${formatLongDate(closesAt, l)}. Send yours from Submit to Qirtas.`;
 };
 
 /** "Tell me when": a Qirtas call has opened. */
@@ -894,7 +894,7 @@ const PAPER_TITLES = {
     places: "أدوار مفتوحة في «شارك معنا»",
     society: "من الجمعية",
     write: "أرسل عملك إلى قرطاس",
-    writeTitle: "اكتب لقرطاس",
+    writeTitle: "أرسل إلى قرطاس",
   },
   en: {
     events: "Events this month",
@@ -905,7 +905,7 @@ const PAPER_TITLES = {
     places: "Open on Get involved",
     society: "From the Society",
     write: "Send your work to Qirtas",
-    writeTitle: "Write for Qirtas",
+    writeTitle: "Submit to Qirtas",
   },
 } as const;
 
@@ -928,7 +928,7 @@ export const sundayPaper = (
     pieces: SundayItem[];
     /** "From the Society": the notices sent this month (decisions §5). */
     society?: SocietyItem[];
-    /** Write for Qirtas. */
+    /** Submit to Qirtas. */
     write?: string;
   }
 ) =>
@@ -2075,8 +2075,8 @@ export const welcome = (lang: Lang, app: string) =>
               href: link("/qirtas/submit"),
               title:
                 l === "ar"
-                  ? "اكتب لقرطاس: أي قسم، في أي وقت"
-                  : "Write for Qirtas: any section, any time",
+                  ? "أرسل إلى قرطاس: أي قسم، في أي وقت"
+                  : "Submit to Qirtas: any section, any time",
             },
             {
               href: link("/get-involved"),

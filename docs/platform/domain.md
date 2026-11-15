@@ -217,7 +217,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   pages, and each is a signature record like the rest
   (`private.record_signing`): its AGR number, its check at /verify, and
   the signed copy in Your account → Documents. Where the site already
-  does the job (joining, RSVPs, Write for Qirtas, Get involved,
+  does the job (joining, RSVPs, Submit to Qirtas, Get involved,
   elections), the form is that page. Members never see the word "form" or
   a form code; the requests they can start are plain actions where they
   belong (`StartLinks`).
@@ -365,7 +365,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   Gallery, Video, Games. Types are the editors' (`type_label`). Voices
   keeps the opinion rule (no party politics, religion, sect or
   ethnicity).
-- **Write for Qirtas** (`/qirtas/submit`) is the one door: public to read,
+- **Submit to Qirtas** (`/qirtas/submit`) is the one door: public to read,
   members send work in every section except Games, at any time, and
   everything is read blind. Drafts (`journal.submission_drafts`) are their
   writer's alone. Every decision carries its reason (`journal.decide`).

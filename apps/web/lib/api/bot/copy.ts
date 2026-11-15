@@ -176,7 +176,7 @@ const en = {
   postEventSoon: (date: string) => `<b>In two days</b>: ${date}`,
   postPiece: "<b>New in Qirtas</b>",
   postWeek: "<b>This week at SAL</b>",
-  postWeekCalls: "Write for Qirtas",
+  postWeekCalls: "Submit to Qirtas",
   postWeekCloses: (date: string) => `closes ${date}`,
   postWeekEvents: "Events",
   postWord: (n: string) => `<b>Word No. ${n}</b> is ready.`,

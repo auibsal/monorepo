@@ -9,7 +9,7 @@ import { DeskNav } from "./desk-nav";
 /**
  * The paper's nameplate (decisions.md, Qirtas): its name in the page's
  * language only (one language per page), in Ubuntu Light, a dateline between two ink
- * rules ending in the Masthead, the Editions, Topics and the Prize (decisions.md), and the sections. One nameplate on every page of the paper
+ * rules ending in the Masthead, the Editions, the Prize and Submit (decisions.md), and the sections. One nameplate on every page of the paper
  * (decisions.md): it belongs to the Qirtas layout, so it never
  * changes or reloads between the front page, a section and a piece.
  */
@@ -43,6 +43,15 @@ export const Nameplate = async ({ locale }: { locale: Locale }) => {
           </Link>
           <Link className="hover:text-accent" href="/qirtas/prize">
             {t("prize")}
+          </Link>
+          {/* Not fetched ahead: the submission pages run on your account's
+              code, which would weigh on every page of the paper. */}
+          <Link
+            className="hover:text-accent"
+            href="/qirtas/submit"
+            prefetch={false}
+          >
+            {t("submitLink")}
           </Link>
         </span>
       </p>

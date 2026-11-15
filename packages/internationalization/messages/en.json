@@ -383,7 +383,7 @@
         "openCall": "{call} closes {date}",
         "openCallNoDate": "{call} is open; its closing date is still to be set",
         "daysLeft": "{days, plural, one {{daysText} day left} other {{daysText} days left}}",
-        "submit": "Write for Qirtas",
+        "submit": "Submit to Qirtas",
         "none": "No Edition’s call is open. Qirtas takes work all year."
       },
       "programmes": {
@@ -807,7 +807,7 @@
         "yourWork": "Your drafts",
         "updated": "Updated",
         "yourWorkLede": "What you have sent and what is being edited with you. Only you see it here; your author page shows only what is published.",
-        "sendMore": "Write for Qirtas",
+        "sendMore": "Submit to Qirtas",
         "deck": "Deck",
         "deckHint": "One or two sentences under the headline.",
         "video": "Video link",
@@ -852,11 +852,11 @@
         "missingPledge": "To send, make the Human Authorship pledge.",
         "missingWork": "To send, add the work: write it in the editor or attach the file.",
         "missingDetails": "To send, fill in the title and the fields marked as needed.",
-        "title": "Write for Qirtas",
+        "title": "Submit to Qirtas",
         "saveDraft": "Save draft",
         "savingDraft": "Saving…",
         "draftSaved": "Draft saved",
-        "draftHint": "Not ready to send? Save it as a draft and come back to it from Write for Qirtas. Only you see your drafts. Files are added when you send.",
+        "draftHint": "Not ready to send? Save it as a draft and come back to it from Submit to Qirtas. Only you see your drafts. Files are added when you send.",
         "deleteDraft": "Delete draft",
         "deleteDraftConfirm": "Delete this draft? It can’t be brought back.",
         "draftMissing": "This draft isn’t here. It may have been sent or deleted.",
@@ -1226,7 +1226,7 @@
         "guests": {
           "link": "Guests",
           "title": "The Society’s guests",
-          "lede": "People outside AUIB who signed up as guests or whom an event’s lead invited by name. They hold a guest’s card: they book places and write for Qirtas. A partner’s guests are on its dashboard.",
+          "lede": "People outside AUIB who signed up as guests or whom an event’s lead invited by name. They hold a guest’s card: they book places and submit work to Qirtas. A partner’s guests are on its dashboard.",
           "current": "Guests now",
           "empty": "No guests yet.",
           "since": "Since {date}",
@@ -4630,7 +4630,7 @@
         },
         "email_receipts": {
           "label": "A “received” email",
-          "hint": "When you send an application or a submission (Write for Qirtas, an event pitch, a concern, a motion), with its record number."
+          "hint": "When you send an application or a submission (Submit to Qirtas, an event pitch, a concern, a motion), with its record number."
         },
         "email_daily_updates": {
           "label": "One daily update",
@@ -4816,7 +4816,7 @@
       },
       "guests": {
         "title": "Guests",
-        "lede": "Your guests may book places at events and write for Qirtas. Invite them by email or with a link; verify only people who belong to your organization.",
+        "lede": "Your guests may book places at events and submit work to Qirtas. Invite them by email or with a link; verify only people who belong to your organization.",
         "empty": "No guests yet.",
         "verify": "Verify",
         "decline": "Decline",
@@ -4869,7 +4869,7 @@
       "team": "On the team of {name}",
       "teamLine": "Open its dashboard: its profile, guests and team.",
       "guest": "Guest of {name}",
-      "guestLine": "{name} confirmed you. You may book places at events and write for Qirtas.",
+      "guestLine": "{name} confirmed you. You may book places at events and submit work to Qirtas.",
       "pending": "Waiting for {name}",
       "pendingLine": "Your partner confirms that you belong to it; then you are its guest.",
       "applied": "{name} has applied to partner",
@@ -4879,7 +4879,7 @@
       "do": "What you can do",
       "book": "Book a place",
       "bookLine": "Events that take bookings, on your calendar.",
-      "write": "Write for Qirtas",
+      "write": "Submit to Qirtas",
       "writeLine": "Calls opened to your partner.",
       "record": "Your documents",
       "societyGuest": "Guest of the Society",
@@ -4900,7 +4900,7 @@
       "unusable": "This invitation has been used, withdrawn or has expired. Ask whoever sent it for a new one.",
       "partners": "About our partners",
       "team": "{partner} invites you to its team, to keep its dashboard with the Society.",
-      "guest": "{partner} invites you to be its guest of the Society: book places at events and write for Qirtas.",
+      "guest": "{partner} invites you to be its guest of the Society: book places at events and submit work to Qirtas.",
       "signUp": "Create your account to accept. Already have one? Sign in below.",
       "otherAddress": "This invitation is for {email}. Sign in with that address to accept it.",
       "acceptTeam": "Accept to join the team.",
@@ -4913,8 +4913,8 @@
         "unknown": "Something went wrong. Try again.",
         "one_membership": "This account already holds a membership of another kind. An account is one kind only: a member, a guest or a partner’s."
       },
-      "society": "The AUIB Society of Arts and Letters invites you as its guest: book places at events, write for Qirtas and carry a guest’s card.",
-      "associate": "The AUIB Society of Arts and Letters invites you to join as an Associate Member: come to events, write for Qirtas and carry the live membership card.",
+      "society": "The AUIB Society of Arts and Letters invites you as its guest: book places at events, submit work to Qirtas and carry a guest’s card.",
+      "associate": "The AUIB Society of Arts and Letters invites you to join as an Associate Member: come to events, submit work to Qirtas and carry the live membership card.",
       "honorary": "The Council of the AUIB Society of Arts and Letters has voted to invite you to join as an Honorary Member.",
       "acceptClass": "Accept to join the Society."
     },
@@ -5091,7 +5091,7 @@
       "join": "Join",
       "involved": "Get involved",
       "events": "Events",
-      "write": "Write for Qirtas",
+      "write": "Submit to Qirtas",
       "qirtas": "Qirtas",
       "editions": "Editions",
       "nextStop": "Next Stop",
@@ -5127,7 +5127,7 @@
       "thisTerm": "Coming up",
       "allEvents": "The whole calendar",
       "closes": "Closes {date}",
-      "call": "Write for the next Edition",
+      "call": "Submit to the next Edition",
       "edition": "The newest Edition",
       "nextStop": "Next Stop’s latest",
       "nextStopAll": "Every episode",
@@ -5335,7 +5335,7 @@
       "firstEdition": "The first pieces arrive with the News desk on November 15.",
       "lead": "Lead story",
       "currentEdition": "The current Edition",
-      "sendNews": "Write for Qirtas",
+      "sendNews": "Submit to Qirtas",
       "deskLedes": {
         "news": "Campus and Society news: reports, features, interviews, profiles, event coverage and explainers, by named reporters.",
         "voices": "Reviews, columns, opinion essays, letters to the editor, debates and recommendations.",
@@ -5410,7 +5410,7 @@
       "shelfPrevious": "Previous Edition",
       "shelfNext": "Next Edition",
       "comingLede": "The pilot is being made. Send your work while the call is open.",
-      "writeForEdition": "Write for Qirtas",
+      "writeForEdition": "Submit to Qirtas",
       "reading": {
         "after": "Read on",
         "next": "Next",
@@ -5509,7 +5509,8 @@
       "fromTheSocietyEmpty": "No notices yet.",
       "fromTheSocietyAll": "All notices",
       "colophon": "Set in Ubuntu and Markazi Text. Written in Baghdad.",
-      "deskEditor": "Edited by {name}"
+      "deskEditor": "Edited by {name}",
+      "submitLink": "Submit"
     },
     "about": {
       "title": "About the Society",
@@ -5522,7 +5523,7 @@
       "does": {
         "qirtas": {
           "title": "Qirtas",
-          "body": "The Society’s paper of news, letters and art, with its own masthead and editorial independence. It includes Qalam, its summer program for high school students. Members and guests write for it through Write for Qirtas."
+          "body": "The Society’s paper of news, letters and art, with its own masthead and editorial independence. It includes Qalam, its summer program for high school students. Members and guests write for it through Submit to Qirtas."
         },
         "company": {
           "title": "The Company",
@@ -5664,7 +5665,7 @@
       "firstMonth": "Sign up · join the members’ group on Telegram · come to an event with a friend · tell us after your second event what you would like to do here.",
       "cta": "Sign up",
       "ctaHint": "Use your AUIB email address.",
-      "others": "Not at AUIB? Sign up with any address to come to events and write for Qirtas as a guest; an organization applies to partner.",
+      "others": "Not at AUIB? Sign up with any address to come to events and submit work to Qirtas as a guest; an organization applies to partner.",
       "othersLink": "Partners",
       "tour": {
         "title": "The Typewriter Tour",
@@ -5843,7 +5844,7 @@
         },
         "guests": {
           "title": "Bring your people",
-          "body": "Invite your people as guests: they book places at events and may write for Qirtas, through Write for Qirtas like everyone else."
+          "body": "Invite your people as guests: they book places at events and may submit work to Qirtas like everyone else."
         }
       },
       "gives": {
@@ -6239,7 +6240,7 @@
         },
         {
           "q": "I’m not an AUIB student. Can I take part?",
-          "a": "Yes, as a guest: you can RSVP to open events and write for Qirtas in any section but Games. Faculty, staff and alumni can ask for Associate membership on the Join page."
+          "a": "Yes, as a guest: you can RSVP to open events and submit work to Qirtas in any section but Games. Faculty, staff and alumni can ask for Associate membership on the Join page."
         },
         {
           "q": "What’s the difference between a Member, an Associate and a guest?",
@@ -6258,8 +6259,8 @@
           "a": "Open the event, or Your account → Calendar, and choose Cancel before it starts. Your place goes to the next person on the waitlist."
         },
         {
-          "q": "How do I write for Qirtas?",
-          "a": "Go to Write for Qirtas (auibsal.org/qirtas/submit), pick a section and send your work. You get an email with a record number, then one at each step."
+          "q": "How do I submit work to Qirtas?",
+          "a": "Go to Submit to Qirtas (auibsal.org/qirtas/submit), pick a section and send your work. You get an email with a record number, then one at each step."
         },
         {
           "q": "Is my work read without my name?",

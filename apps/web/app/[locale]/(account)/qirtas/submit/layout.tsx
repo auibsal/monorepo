@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
-import { MemberShell } from "@/components/account/member-shell";
 
-/** The members' frame, without the gates: visitors read the gateway too. */
-const WriteLayout = ({ children }: { readonly children: ReactNode }) => (
-  <MemberShell>{children}</MemberShell>
+/** The gateway, open to visitors: on Qirtas's paper, without the gates. */
+const SubmitLayout = ({ children }: { readonly children: ReactNode }) => (
+  <main className="mx-auto w-full max-w-6xl px-4 pt-10 pb-16" id="main">
+    {children}
+  </main>
 );
 
-export default WriteLayout;
+export default SubmitLayout;

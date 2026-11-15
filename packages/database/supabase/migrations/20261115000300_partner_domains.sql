@@ -37,9 +37,10 @@ as $$
   from (select lower(btrim(split_part(email, '@', 2))) as d) s
   where position('@' in coalesce(email, '')) > 0;
 $$;
-revoke all on function private.organization_domain(text) from public, anon;
--- Reads only the text it is given; the partners table's check calls it.
-grant execute on function private.organization_domain(text) to authenticated;
+-- Reads only the text it is given; the partners table's check calls it,
+-- whoever writes the row.
+revoke all on function private.organization_domain(text) from public;
+grant execute on function private.organization_domain(text) to anon, authenticated, service_role;
 
 -- ── 2. A partner's domain ───────────────────────────────────────────────
 alter table governance.partners

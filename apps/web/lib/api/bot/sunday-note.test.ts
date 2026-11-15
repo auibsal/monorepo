@@ -24,7 +24,7 @@ describe("Hudhud's Sunday note", () => {
     );
     expect(text).toContain("<b>This week at SAL</b>");
     expect(text).toContain("• Writing workshop, ");
-    expect(text).toContain("<b>Write for Qirtas</b>");
+    expect(text).toContain("<b>Submit to Qirtas</b>");
     expect(text).toContain("• Haven, closes Sunday, December 6");
   });
 
