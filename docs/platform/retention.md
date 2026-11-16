@@ -9,7 +9,10 @@ The schedule lives in one place, `private.retention_schedule()` (readable
 as `core.retention_schedule()`). One daily pg_cron job, `sal-retention`
 (5:15 UTC), runs every rule that is only rows; the daily Vercel Cron
 `/api/cron/retention` (1:00 UTC) runs the rules that also remove files or
-whole accounts, removing the files first, and then the same rules. A rule
+whole accounts, removing the files first, and then the same rules. Both run
+on purpose: only the route can remove files and accounts, and pg_cron keeps
+the rows' deadlines even on a day the host's cron does not fire; the rules
+are idempotent, so the day's second run finds nothing. A rule
 that fails is emailed to the administrators (`platform.cron_failed`) and the
 others still run. `99_retention.test.sql` tests each rule.
 

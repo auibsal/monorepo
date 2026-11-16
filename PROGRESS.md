@@ -67,9 +67,31 @@ the live headers, DNS and the outbox). Fixed in #283:
   needs a minimum age of 13.
 - [ ] Optional: the OpenSSF Best Practices badge (self-certified; the
   Scorecard check CII-Best-Practices).
-- [ ] Next, if wanted: account pages still send the whole `web` catalog
-  (53 kB in English); a CSP report endpoint of the site's own; a rate
-  limit on /api/password-check.
+- [x] Account pages send only the `web` copy their client components read
+  (about 2.7 of 53 kB in English); `/api/csp-report` logs what the policy
+  blocks to the Vercel runtime log; `/api/password-check` is rate limited.
+- [x] Lighthouse against the live site (Nov 16, mobile): accessibility 100
+  and SEO 100 on the public pages. Under real throttling (slow 4G, 4× CPU)
+  the largest paint is 3.2–3.4 s and blocking time 750–940 ms: the speed
+  standard (under 2.5 s) is not met on a slow phone. Best practices 75: all
+  of it was Cloudflare's: Zaraz loading a Google Tag Manager container
+  (decisions.md, The site: none; the CSP blocked it; Zaraz is now off) and
+  JavaScript Detections (a deprecation warning, ~0.4 s of phone CPU). The
+  sign-in page's layout shift (0.11, the footer moving when the form
+  replaced the spinner) is fixed.
+- [ ] **Owner:** Cloudflare → Security → Bots: JavaScript Detections off,
+  if the bot protection is not needed (Turnstile guards the forms).
+- [x] Keyboard pass on the live site, ten pages in each language: the skip
+  link comes first, every stop shows its focus and has a name, nothing
+  focused is off-screen. Still for people with devices: a pass with
+  VoiceOver (iPhone, Mac) and TalkBack (Android) in both languages.
+- [ ] **Owner:** production's Auth settings (the CAPTCHA, the minimum
+  password length) could not be read: add a Supabase access token (read)
+  in the environment's settings, or check Authentication → Attack
+  Protection and Providers → Email by hand (12 characters; Turnstile on).
+- The notes on COPPA and CAN-SPAM describe US practice; the Society is in
+  Iraq, and they are not legal advice: AUIB's counsel, or a lawyer in
+  Iraq, decides what applies.
 
 ## Now: the twentieth site prompt (Nov 16)
 
@@ -318,11 +340,20 @@ All in PR #269.
 - [x] **Media handoff:** no printed card; captions, credits, playbills and
   lower thirds by the short or credited name; signature blocks by the full
   official name.
-- [ ] **Scorecard, still open:** Branch-Protection and Code-Review (the
-  owner's GitHub settings: require a review on `main`), Signed-Releases and
-  Packaging (none made), Fuzzing (none) and CII-Best-Practices (the badge is
-  the owner's application). Every action is pinned by commit; Dependabot
-  keeps the pins current.
+- [ ] **Scorecard (6.9 on Nov 16; 13 of 18 checks at 10 once Fuzzing's
+  property tests are scanned).** What is left is not code:
+  Code-Review 0 (every merged change needs an approving review by someone
+  other than its author: a second maintainer reviewing on GitHub);
+  Branch-Protection 3 (a ruleset on `main`: pull request with one review,
+  stale approvals dismissed, status checks required, no force pushes,
+  applying to administrators too); CII-Best-Practices 0 (the owner applies
+  at bestpractices.dev; "passing" is self-certified); Maintained 0 (the
+  repository is under 90 days old; it rises by itself with steady
+  activity); Contributors 6 (contributors from three or more organizations
+  on their GitHub profiles); License 9 (10 only with an OSI-approved
+  license: the code is proprietary, the owner's decision). Packaging and
+  Signed-Releases are not scored (-1): the site is not a package or a
+  release, and making unsigned releases would lower the score.
 - [ ] **Owner:** the summaries of the 13 agreements, three lines in each
   language (the Governance chat); the Terms of Use's AI line in Notion
   (GOV); the 13 kinds in SAL-EXB-01's register in Notion; R2's lifecycle
@@ -967,10 +998,15 @@ First the second prompt's part 2 (7j), then the rest in place.
 - [ ] **EDT-02:** confirm the Library no longer lists it after the sync.
 - [ ] **GOV-04's text:** the Sunday Paper comes from qirtas@auibsal.org and
   is sent by the Managing Editor.
-- [ ] **Two retention schedulers** (`/api/cron/retention` and pg_cron's
-  `sal-retention`): keep one, or say why both.
-- [ ] **`anon` EXECUTE on `private`:** narrow it to the functions the public
-  pages need (USAGE stays: the public wrappers call into `private`).
+- [x] **Two retention schedulers, on purpose:** the route alone can remove
+  files and accounts (Storage and Auth); pg_cron's `sal-retention` keeps the
+  rows' deadlines even when the host's cron does not fire. The rules are
+  idempotent, so the second run of the day finds nothing
+  (docs/platform/retention.md).
+- [x] **`anon` EXECUTE on `private`:** already narrow (Nov 16, production):
+  no `private` function is executable through PUBLIC; 93 of 662 carry an
+  explicit grant to `anon`, each for a public wrapper or policy, and
+  `private` is not an exposed schema.
 - [ ] **The Diwan Telegram group, 7 days after a role ends:** the bot
   removes the person (today only on leaving the Society).
 - [ ] **The event lead from Notion:** the sync checks Lead but does not
@@ -1029,7 +1065,7 @@ officers as admins and two-step on (decisions.md, Where things live).
   records as they are. Send a test from hello@ to a Gmail address: SPF,
   DKIM and DMARC should all pass.
 - [ ] **Cloudflare:** turn off Web Analytics' automatic setup (the CSP
-  blocks its beacon), and the settings of part 9.
+  blocks its beacon), and the settings of part 9. (Zaraz off, Nov 16.)
 - [ ] **Hudhud:** Diwan → Desk → Connected → Hudhud → reconnect (the
   webhook at `/api/hooks/telegram` and the leaving updates); check with
   `/start` to @auibsal_bot. BotFather → Bot Settings → Main App: URL
