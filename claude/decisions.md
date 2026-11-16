@@ -705,6 +705,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Headers:** a Permissions-Policy (the camera only, for scanning cards) and X-Frame-Options DENY, matching the content policy.
   - **Reporting:** security.txt, served by Cloudflare, points to security@.
   - **Cloudflare first at the edge:** what Cloudflare can do in front of the site (TLS and HSTS, security.txt, script monitoring with Page Shield, the WAF, bots and the managed robots.txt) is done there, not in the site's code, which keeps only the headers that need the page. Zaraz stays off, with the other features that rewrite pages.
+  - **DNS holds only records that serve something:** nothing half set up stays in place (a record for a feature that isn't working is set up properly or deleted), and every service that sends as auibsal.org or news.auibsal.org has SPF and DKIM aligned, under DMARC reject.
   - **Data:** Supabase's AI data features are off, and unused production secrets are deleted.
   - **Monitoring:** the platforms' own logs, plus one free uptime check of the home page and sign-in that alerts media@ (no personal data).
   - **No silent failures:** a failed or canceled deploy, a failed backup, migration or scheduled job, and a stalled Notion sync or email outbox each post at once to the Diwan group's web topic and the Desk, for the web lead and the owner.
@@ -748,7 +749,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Resend:** open and click tracking off; bounce and complaint webhooks into the site; one sending-only API key per use, rotated yearly.
   - **A permissions table** in the Leadership Handbook, generated from the code, for the quarterly access review. Shared credentials go in Bitwarden (its free plan first).
   - **Speed Insights** is added (only Web Analytics is installed today).
-- **Subdomains:** the site and people's mailboxes stay on auibsal.org (www redirects to it); bulk mail goes from news.auibsal.org; a free public status page lives at status.auibsal.org, fed by the uptime check; nothing else gets a subdomain, since paths do the rest.
+- **Subdomains:** the site and people's mailboxes stay on auibsal.org (www redirects to it); bulk mail goes from news.auibsal.org; a free public status page lives at status.auibsal.org, fed by the uptime check; mta-sts.auibsal.org serves only the MTA-STS policy file, from a Cloudflare Worker; nothing else gets a subdomain, since paths do the rest.
 - **Templates:** the design page lists every template (emails, letter, certificate, card, posts, posters, playbill, an Edition's cover and inside, Next Stop's package) with its owner and where it's used.
 
 ## 14. Channels and email
@@ -783,7 +784,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
     - **elections@:** the Secretary until the Elections Committee is appointed, then its three members.
     - **postmaster@ and abuse@** (RFC 2142): groups delivering to the Secretary, since Zoho reserves them as aliases but allows them as groups. Anyone can send to them.
   - **Aliases** on a mailbox:
-    - **secretary@:** privacy@ (the Privacy Notice's contact) and dmarc@.
+    - **secretary@:** privacy@ (the Privacy Notice's contact), dmarc@ and tls-reports@ (TLS reports).
     - **editor@:** letters@ (letters to the editor), corrections@, tips@ (news tips).
     - **media@:** press@, security@ (security.txt), accessibility@ (GOV-06 requests), nextstop@ (people appearing in or pitching to the show).
     - **membership@:** alumni@ (until an alumni lead is appointed).
@@ -867,7 +868,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - no following, liking or reposting party-political content;
   - only each platform's own scheduling tools;
   - headlines in one color with no accent word.
-- **Email standards:** DMARC moves to quarantine and then reject after 30 days of clean reports; every email has a plain-text version; the mailing list sends from news.auibsal.org, with replies to hello@ and qirtas@; the list starts with recently active members before everyone, keeping complaints under 0.1%.
+- **Email standards:** DMARC is at reject (p=reject, sp=reject), with DKIM aligned strictly and SPF relaxed (aspf=r), so Resend's bounce subdomains align; Zoho signs with its own DKIM key; MTA-STS requires TLS for mail to Zoho's servers (in testing for two weeks, then enforce), with TLS reports to tls-reports@; every email has a plain-text version; the mailing list sends from news.auibsal.org, with replies to hello@ and qirtas@; the list starts with recently active members before everyone, keeping complaints under 0.1%.
 - **The Sunday Paper** goes at 10:00 a.m. Baghdad time on the first Sunday, scheduled the evening before after the test; each issue has its own address and appears in search.
 - **Hudhud's Sunday note:** one post each Sunday in the semester (any week with an event or an open call; a week with neither gets no note) in the members' group listing the week's events and open calls, plus the two-day reminders, alongside each new event's own post. Each line links to its own page (an event to its page, a call to its Edition page), with the Events button only when the note lists events.
 - **Hudhud for Qirtas:** a "last call" post three days before an Edition's call closes, linking to its Edition page; a post when an Edition is published, linking to it; and each new piece's post, as now.
@@ -930,6 +931,9 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 
 - **Tasks and to-dos (one standard, as US organizations run one work tracker):**
   - **Tasks** are every job a person does, all in Notion's one Tasks database (Work › Tasks): each has one owner and their seat, a due date, a status (To do, Doing, Waiting, Done, or Dropped for a task no longer wanted, kept for the record rather than deleted), its area and project (an event, an Edition, a production, or "Platform and accounts" for the owner's settings on the tool accounts), what blocks it, how often it repeats, a link to where it's done, and its steps in its page. Each person works from "My tasks"; each project shows its tasks in a linked view.
+  - **Every task is complete:** each has a seat, an area and a due date; a Waiting task links what it waits on (Blocked by), or names in one line who it waits on when that isn't a task; a repeating task carries Repeats.
+  - **Merged, never deleted:** when two tasks are one, the merged task is set to Dropped, and the task it went into says so in one line.
+  - **Checks are dated on the task** ("Checked Nov 16: …"), so the next person sees what was true and when.
   - **No other lists:** event plans, project pages, manuals and chats keep no checkboxes or task lists of their own; a plan's steps are its project's tasks. There are no separate checklists (no owner's or President's checklist files).
   - **To-dos** are only what the site itself asks one person to do on the site (sign, approve, set up two-step), shown on Today and the Desk and cleared when done; they are never copied into Notion. What the site does by itself (reminders, Hudhud's posts, scheduled emails) needs no task.
   - **The site chat** lists what it needs from the owner in its pull request report; the co-pilot chat turns each into a task. The repository's PROGRESS.md keeps only code work, and nothing in the public repository describes a security setting that is off or a weakness not yet fixed.
