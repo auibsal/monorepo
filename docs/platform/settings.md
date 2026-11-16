@@ -31,7 +31,12 @@ Turn **on**:
 - **Security → Settings → Client-side security (Page Shield):** continuous
   script monitoring on. It lists every script the pages load and flags new
   ones; the site has no report address of its own.
-- **Security → Settings → Block AI bots** (decisions.md, The site).
+- **Security → Settings → Block AI bots** (decisions.md, The site), and
+  the managed robots.txt: Security → Settings, filter by Bot traffic →
+  **AI Crawler and Agent access policies** → Training: **Disallow**, and
+  **Enable Bot Preference Sync** on. Cloudflare puts the AI crawlers'
+  Disallow lines before the site's own robots.txt, which keeps only the
+  search engines' rule and the sitemap.
 - **Caching → Configuration:** Standard caching for files; leave Browser
   Cache TTL as "Respect existing headers" (the site sets them).
 - **Network:** "True-Client-IP Header" or "Pseudo IPv4" off, and keep the

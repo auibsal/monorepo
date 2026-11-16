@@ -85,7 +85,10 @@ the live headers, DNS and the outbox). Fixed in #283:
   of Nov 16, Cloudflare first at the edge; every setting in
   `docs/platform/settings.md`, Cloudflare):
   - **Before merging #284:** Security → Settings → **security.txt**, with
-    the fields in settings.md; the site stops serving its own.
+    the fields in settings.md; the site stops serving its own. And the
+    **managed robots.txt** (Security → Settings → Bot traffic → AI Crawler
+    and Agent access policies → Training: Disallow; Bot Preference Sync
+    on): the site's robots.txt no longer lists the AI crawlers.
   - SSL/TLS → Edge Certificates → **Minimum TLS Version: TLS 1.2**. SSL
     Labs (Nov 16) finds TLS 1.0 and 1.1 still accepted on auibsal.org and
     www (grade B).
