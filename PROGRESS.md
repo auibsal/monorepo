@@ -60,11 +60,12 @@ the live headers, DNS and the outbox). Fixed in #283:
 - [ ] **Owner (GitHub settings):** require one approving review on `main`
   (the web lead's), with stale approvals dismissed; Scorecard's Code-Review
   and Branch-Protection are 0 and 3 of 10.
-- [ ] **Owner (a decision):** an under-18 account whose parent never
-  consents stays limited indefinitely. US practice (COPPA, §312.5(c)(1)) is
-  to delete a child's data when consent doesn't come within a reasonable
-  time; decide the window (30 days is common) and whether self sign-up
-  needs a minimum age of 13.
+- [x] **Minimum age 13** (the owner, Nov 16: US practice): a sign-up under
+  13 is refused, by the form and by `private.under_minimum_age`;
+  invitations (Qalam, a parent's link) carry their own consent. COPPA
+  reaches only children under 13, so its deletion window does not apply:
+  a member of 13 to 17 whose parent has not consented stays limited, with
+  the reminders after 3 and 7 days.
 - [ ] Optional: the OpenSSF Best Practices badge (self-certified; the
   Scorecard check CII-Best-Practices).
 - [x] Account pages send only the `web` copy their client components read
@@ -79,16 +80,34 @@ the live headers, DNS and the outbox). Fixed in #283:
   JavaScript Detections (a deprecation warning, ~0.4 s of phone CPU). The
   sign-in page's layout shift (0.11, the footer moving when the form
   replaced the spinner) is fixed.
-- [ ] **Owner:** Cloudflare → Security → Bots: JavaScript Detections off,
-  if the bot protection is not needed (Turnstile guards the forms).
+- [ ] **Owner: Cloudflare** (its Security Center, Nov 10):
+  - SSL/TLS → Edge Certificates → **Minimum TLS Version: TLS 1.2**. SSL
+    Labs (Nov 16) finds TLS 1.0 and 1.1 still accepted on auibsal.org and
+    www (grade B); NIST SP 800-52 Rev. 2 requires 1.2 or later.
+  - Security → Bots: leave **Bot Fight Mode off**. On the free plan it
+    can't be skipped for a path, so it would challenge Telegram's, Notion's
+    and Resend's webhooks and the uptime check; the forms have Turnstile
+    and the database's rate limits. JavaScript Detections (same page) can
+    go off too: ~0.4 s of phone CPU and a deprecation warning.
+  - "Security.txt not configured": the site serves its own at
+    `/.well-known/security.txt` (RFC 9116); archive the insight.
+  - Page Shield's script monitoring (turned off Nov 16) is not needed: the
+    site's CSP reports blocked scripts to `/api/csp-report`.
 - [x] Keyboard pass on the live site, ten pages in each language: the skip
   link comes first, every stop shows its focus and has a name, nothing
   focused is off-screen. Still for people with devices: a pass with
   VoiceOver (iPhone, Mac) and TalkBack (Android) in both languages.
-- [ ] **Owner:** production's Auth settings (the CAPTCHA, the minimum
-  password length) could not be read: add a Supabase access token (read)
-  in the environment's settings, or check Authentication → Attack
-  Protection and Providers → Email by hand (12 characters; Turnstile on).
+- [ ] **Owner: production's Auth settings** (read Nov 16): the CAPTCHA
+  (Turnstile) is on, refresh tokens rotate, emailed codes are 8 digits.
+  Not as AGENTS.md and `supabase/config.toml` say:
+  - Authentication → Providers → Email: **Minimum password length 6**, set
+    12 (the site checks 12 in the browser, but Supabase takes 6 from
+    anyone calling it directly); **Secure password change off**, turn it
+    on (a code by email for a change on an old sign-in).
+  - Attack Protection: leaked password protection off, and Sessions: no
+    30-day time-box. Both need Supabase Pro (the API refused the time-box
+    as "Pro Plans and up"); until then the site's own breach check
+    (`/api/password-check`) covers the site's forms.
 - The notes on COPPA and CAN-SPAM describe US practice; the Society is in
   Iraq, and they are not legal advice: AUIB's counsel, or a lawyer in
   Iraq, decides what applies.
@@ -1010,11 +1029,9 @@ First the second prompt's part 2 (7j), then the rest in place.
 - [x] **The Diwan Telegram group, 7 days after a role ends:** done in
   `lib/api/bot/titles.ts` (the tag comes off at once; the person is let go
   7 days after their last role ends, on the Telegram cron's run).
-- [ ] **The event lead from Notion:** the sync now stores Lead
-  (`events.lead_id`). **Owner (a decision):** whether naming the lead in
-  Notion is the appointment, so the site assigns the Event Lead role scoped
-  to the event without an acceptance (decisions.md, Members: a role is
-  assigned on acceptance), or the lead accepts an offer first.
+- [x] **The event lead from Notion:** the sync stores Lead
+  (`events.lead_id`); the Event Lead role follows only on acceptance (the
+  owner, Nov 16; decisions.md, Members), never from Notion alone.
 - [ ] **The team list** as one component: the Council page with covering,
   Our people, the masthead, Next Stop's credits, the Company's playbills,
   an event's lead and team.

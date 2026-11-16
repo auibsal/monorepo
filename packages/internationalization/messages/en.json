@@ -150,6 +150,7 @@
         "tooMany": "This reads as {count} names. If one of your names is two words, tap between them to join them."
       },
       "under18": "Under 18?",
+      "tooYoung": "An account is for people 13 or older.",
       "nameWords": "The words of your name: tap between two words to join or separate them",
       "nameJoin": "Join {first} and {second} as one name",
       "nameSeparate": "Separate {first} and {second}",

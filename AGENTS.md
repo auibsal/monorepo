@@ -259,7 +259,8 @@ any schema change. Integration tests run against a local stack with
   public: no directory, no contributor pages, no wall of names; credits
   show the name each person chose (`programmes.credited_names()`). The
   site keeps only what it
-  needs: no optional profile details or demographic reports. A member
+  needs: no optional profile details or demographic reports. An account
+  is for people 13 or older (an invitation aside). A member
   under 18 gives the month and year of birth (deleted at 18) and a
   parent's consent by link (`parent-consent`), and nothing shows or names them until
   then. No phone numbers until they can be verified. Never ask for a
