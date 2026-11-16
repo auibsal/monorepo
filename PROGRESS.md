@@ -63,16 +63,63 @@ better. Who does what is in `docs/platform/settings.md` and `secrets.md`.
   routes. A secret per caller is the standard: a `WORKFLOW_HOOK_SECRET`
   when the workflows are next changed.
 
+## Now: what is still open outside the code (checked Nov 16, evening)
+- [ ] **Urgent: security.txt is 404.** The site's own went with #284;
+  Cloudflare → Security → Settings → **security.txt** (fields in
+  settings.md).
+- [ ] Cloudflare's **managed robots.txt** is not on (robots.txt carries no
+  AI crawler lines; "Block AI bots" still enforces).
+- [ ] Cloudflare → Edge Certificates → **Minimum TLS Version: TLS 1.2**
+  (SSL Labs, Nov 16: TLS 1.0 and 1.1 still accepted, grade B).
+- [ ] **status.auibsal.org** still points at Better Stack with no page
+  behind it: delete the CNAME.
+- [x] **Dependabot without conflicts** (Nov 16): every Bun update rewrote
+  the one `bun.lock`, and six families each ran per workspace, so each
+  merge left the others in conflict and Dependabot reopened partial
+  duplicates (#279 and #287, #280 and #288). Now one pull request for all
+  minor and patch updates and one for majors (`.github/dependabot.yml`);
+  minor and patch updates merge themselves once CI passes
+  (`dependabot-auto-merge.yml`); majors wait for a person.
+- [ ] **Owner, after #286 merges:** GitHub → Settings → General → **Allow
+  auto-merge** on, and **Automatically delete head branches** on (13 old
+  Dependabot branches are left over: delete them under Branches); close
+  #279, #280, #287 and #288, then Insights → Dependency graph →
+  Dependabot → bun → **Check for updates**, which opens the one grouped
+  pull request.
+- [ ] **OpenSSF Scorecard** (6.9; what each check needs):
+  - Contributors (6): it finds two organizations (anthropics, theideaiq).
+    Make your membership of the **auibsal** organization public (GitHub →
+    auibsal → People → your name → Public): three is 10.
+  - CII-Best-Practices (0): apply at bestpractices.dev with the repository
+    (free, self-certified). Passing is 5, silver 7, gold 10; gold needs two
+    maintainers, among other things.
+  - Signed-Releases and Packaging: each production deploy is now a release
+    with signed SLSA provenance (`release` in ci.yml): Signed-Releases
+    reaches 10 after the next deploys. Packaging stays "not detected" (the
+    site is not a package); a check that does not apply is not scored.
+  - Code-Review (0) and Branch-Protection (3): both measure a second
+    person. Code-Review counts the last 30 merges approved by someone other
+    than their author; Branch-Protection's top marks need two required
+    approvers, code owners' review, stale-approval dismissal, last-push
+    approval and up-to-date branches. With one maintainer, requiring an
+    approval would stop every merge. The step that counts: a second
+    maintainer (an officer with a GitHub account, as decisions.md's handover
+    of accounts foresees), then a ruleset on `main` requiring one approval
+    with those options; two reviewers for 10.
+  - License (9): 10 only with an OSI-approved license. The code is
+    proprietary by the owner's choice; an open license (MIT for the code,
+    with the brand and Qirtas's content excluded) is a decision, not a fix.
+  - Maintained (0): the repository is under 90 days old; from early
+    January the steady activity scores it 10 on its own.
+
 ## Now: the free standards (Nov 16)
 - [x] MTA-STS policy (`lib/mta-sts.ts`, in testing mode) and
   `/.well-known/passkey-endpoints` (W3C: password managers find where to
   add a passkey); `mta-sts.auibsal.org` serves only the policy.
-- [ ] **Owner: MTA-STS and TLS-RPT**, in order (docs/platform/settings.md,
-  Email): the `tls-reports@` alias in Zoho; the `_smtp._tls` TXT; the
-  `mta-sts.auibsal.org` domain in Vercel and its CNAME in Cloudflare; then
-  the `_mta-sts` TXT. On or after **Monday, November 30**, with clean
-  reports: `enforce` and a new `id`.
-- [ ] **Owner: Zoho DKIM at 2048 bits** (settings.md, Email).
+- [x] MTA-STS (`_mta-sts`, the policy live at mta-sts.auibsal.org), TLS-RPT
+  (`_smtp._tls`) and Zoho's DKIM at 2048 bits (`zoho202611`; `zmail`
+  removed), Nov 16. On or after **Monday, November 30**, with clean
+  reports at tls-reports@: `enforce` in `lib/mta-sts.ts` and a new `id`.
 - [ ] **Owner: GitHub → Settings → Code security** (all free): secret
   scanning and **push protection** on; **private vulnerability reporting**
   on (GitHub's own form beside security@, as SAL-GOV-07 allows).
@@ -121,17 +168,12 @@ the live headers, DNS and the outbox). Fixed in #283:
   people; the health check now reports such emails once.
 - [ ] **Owner:** adopt SAL-GOV-07 (the disclosure policy is "Version 1,
   proposed").
-- [ ] **Owner (GitHub settings):** require one approving review on `main`
-  (the web lead's), with stale approvals dismissed; Scorecard's Code-Review
-  and Branch-Protection are 0 and 3 of 10.
 - [x] **Minimum age 13** (the owner, Nov 16: US practice): a sign-up under
   13 is refused, by the form and by `private.under_minimum_age`;
   invitations (Qalam, a parent's link) carry their own consent. COPPA
   reaches only children under 13, so its deletion window does not apply:
   a member of 13 to 17 whose parent has not consented stays limited, with
   the reminders after 3 and 7 days.
-- [ ] Optional: the OpenSSF Best Practices badge (self-certified; the
-  Scorecard check CII-Best-Practices).
 - [x] Account pages send only the `web` copy their client components read
   (about 2.7 of 53 kB in English); `/api/password-check` is rate limited.
   Blocked scripts are Cloudflare's to report (Page Shield), not a route of
@@ -442,20 +484,8 @@ All in PR #269.
 - [x] **Media handoff:** no printed card; captions, credits, playbills and
   lower thirds by the short or credited name; signature blocks by the full
   official name.
-- [ ] **Scorecard (6.9 on Nov 16; 13 of 18 checks at 10 once Fuzzing's
-  property tests are scanned).** What is left is not code:
-  Code-Review 0 (every merged change needs an approving review by someone
-  other than its author: a second maintainer reviewing on GitHub);
-  Branch-Protection 3 (a ruleset on `main`: pull request with one review,
-  stale approvals dismissed, status checks required, no force pushes,
-  applying to administrators too); CII-Best-Practices 0 (the owner applies
-  at bestpractices.dev; "passing" is self-certified); Maintained 0 (the
-  repository is under 90 days old; it rises by itself with steady
-  activity); Contributors 6 (contributors from three or more organizations
-  on their GitHub profiles); License 9 (10 only with an OSI-approved
-  license: the code is proprietary, the owner's decision). Packaging and
-  Signed-Releases are not scored (-1): the site is not a package or a
-  release, and making unsigned releases would lower the score.
+- [x] Scorecard: what each check still needs is one list, under "Now:
+  what is still open outside the code".
 - [ ] **Owner:** the summaries of the 13 agreements, three lines in each
   language (the Governance chat); the Terms of Use's AI line in Notion
   (GOV); the 13 kinds in SAL-EXB-01's register in Notion; R2's lifecycle
