@@ -1,3 +1,14 @@
+import { apiPath } from "@repo/internationalization";
+
+/**
+ * Where browsers report what the policy blocked: the site's own route,
+ * which logs a short line to the Vercel runtime log (no third-party
+ * monitoring; AGENTS.md, Security and data). `report-to` names the
+ * Reporting-Endpoints header's `csp` entry; `report-uri` is for browsers
+ * that don't know it yet.
+ */
+export const CSP_REPORT_PATH = apiPath("/csp-report");
+
 export interface CspSources {
   connect?: string[];
   font?: string[];
@@ -68,6 +79,8 @@ export const createContentSecurityPolicy = (...sources: CspSources[]): Csp => ({
   "manifest-src": ["'self'"],
   "media-src": ["'self'", "blob:", ...merge(sources, "media")],
   "object-src": ["'none'"],
+  "report-to": ["csp"],
+  "report-uri": [CSP_REPORT_PATH],
   "script-src": [
     "'self'",
     "'unsafe-inline'",

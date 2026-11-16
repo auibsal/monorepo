@@ -10,7 +10,10 @@ import { AccountFrame } from "@/components/account/frame";
 import { AppProviders } from "@/components/diwan/providers";
 import { Footer, SlimFooter } from "@/components/footer";
 import { FooterSwitch } from "@/components/footer-switch";
-import { accountDiwanMessages } from "@/lib/i18n/account-messages";
+import {
+  accountDiwanMessages,
+  accountWebMessages,
+} from "@/lib/i18n/account-messages";
 
 // Rendered for each request, so Next can put the request's CSP nonce on
 // its scripts (apps/web/proxy.ts): the layout waits for the request, and
@@ -62,7 +65,12 @@ const AccountLayout = async ({ children, params }: AccountLayoutProperties) => {
 
   return (
     <NextIntlClientProvider
-      messages={{ auth, common, diwan: accountDiwanMessages(diwan), web }}
+      messages={{
+        auth,
+        common,
+        diwan: accountDiwanMessages(diwan),
+        web: accountWebMessages(web),
+      }}
     >
       <AppProviders>
         <div className="flex min-h-svh flex-col">
