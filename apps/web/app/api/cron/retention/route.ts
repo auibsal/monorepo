@@ -43,9 +43,10 @@ const deleteSubmissions = async (admin: Admin) => {
  * start here: unpublished submissions, the photographs of unclaimed Tour
  * pages and guest accounts unused for two years. Then the database runs
  * every other rule (`core.run_retention`), emailing the administrators
- * about any that fail. The read also keeps a free-tier project awake.
+ * about any that fail. pg_cron's `sal-retention` calls it at 1:00 UTC
+ * (POST); GET serves a run by hand.
  */
-export const GET = async (request: Request) => {
+const retain = async (request: Request) => {
   if (!isAuthorizedCronRequest(request)) {
     return unauthorized();
   }
@@ -119,3 +120,7 @@ export const GET = async (request: Request) => {
     return problem(500, "retention_failed");
   }
 };
+
+export const maxDuration = 60;
+export const GET = retain;
+export const POST = retain;

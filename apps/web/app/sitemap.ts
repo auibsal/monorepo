@@ -55,9 +55,12 @@ const staticPaths = [
   "/about/credits",
 ];
 
+// `lastmod` only where the page's last change is known (an event, an issue,
+// a piece): search engines trust it only when it is accurate, so the
+// standing pages carry none rather than the time of the build.
 const localized = (
   path: string,
-  lastModified = new Date(),
+  lastModified?: Date,
   only: readonly Locale[] = locales
 ): MetadataRoute.Sitemap => {
   const languages: Record<string, string> = Object.fromEntries(
@@ -74,7 +77,7 @@ const localized = (
     alternates: {
       languages: { ...languages, "x-default": fallback },
     },
-    lastModified,
+    ...(lastModified ? { lastModified } : {}),
     url: languages[locale] ?? project.url,
   }));
 };

@@ -191,6 +191,13 @@ export const createNotion = (
         parent: { data_source_id: dataSourceId, type: "data_source_id" },
         properties,
       }),
+
+    /** A data source; `parent.database_id` is the database that holds it. */
+    dataSource: (dataSourceId: string) =>
+      request<{ parent?: { database_id?: string } }>(
+        "GET",
+        `/data_sources/${dataSourceId}`
+      ),
     /** Every page of a data source (database), optionally filtered. */
     query: (dataSourceId: string, filter?: object) =>
       all<NotionPage>((cursor) =>
@@ -204,7 +211,15 @@ export const createNotion = (
     trashPage: (pageId: string) =>
       request<NotionPage>("PATCH", `/pages/${pageId}`, { in_trash: true }),
 
-    /** A data source's title, description and properties (null removes one). */
+    /**
+     * A database's title, description and lock (is_locked: no one changes
+     * its properties or views in Notion's app). The description lives on the
+     * database, not on its data source.
+     */
+    updateDatabase: (databaseId: string, body: object) =>
+      request("PATCH", `/databases/${databaseId}`, body),
+
+    /** A data source's title and properties (null removes one). */
     updateDataSource: (dataSourceId: string, body: object) =>
       request("PATCH", `/data_sources/${dataSourceId}`, body),
 

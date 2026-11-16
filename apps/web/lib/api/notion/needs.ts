@@ -10,7 +10,7 @@ import {
   type SyncContext,
   saveLink,
 } from "./context";
-import { importedState, markImported } from "./events";
+import { importedState, lockCopy, markImported } from "./events";
 import { mirror, type Row } from "./mirrors";
 import { prop, read } from "./props";
 
@@ -172,7 +172,8 @@ interface SiteNeed {
   id: string;
   item: string;
   needed_by: string | null;
-  programme: { slug: string } | null;
+  /** The standing activity's slug (core.programmes), when it is for one. */
+  programme: string | null;
   provided_note: string | null;
   purpose: string;
   quantity: number;
@@ -187,7 +188,7 @@ export const needProps = (
 ): Record<string, object> => {
   const forName = need.event_id
     ? "Event"
-    : (SLUG_FOR[need.programme?.slug ?? ""] ?? null);
+    : (SLUG_FOR[need.programme ?? ""] ?? null);
   return {
     Answer: prop.text(need.provided_note),
     Event: prop.relation(eventPage ? [eventPage] : []),
@@ -207,21 +208,28 @@ export const copyNeeds = async (ctx: SyncContext) => {
   if (!(ctx.sources.needs && state.needs)) {
     return;
   }
-  const [{ data, error }, events] = await Promise.all([
+  // The standing activities are in core, the needs in programmes: no join
+  // across the two schemas, so their slugs come from a second read.
+  const [{ data, error }, events, programmes] = await Promise.all([
     ctx.admin
       .schema("programmes")
       .from("needs")
       .select(
-        "id, item, quantity, needed_by, purpose, status, requested_on, provided_note, event_id, programme:programmes(slug)"
+        "id, item, quantity, needed_by, purpose, status, requested_on, provided_note, event_id, programme_id"
       ),
     linksOf(ctx, "event"),
+    programmeIds(ctx),
   ]);
   if (error) {
     throw error;
   }
-  const rows: Row[] = ((data ?? []) as unknown as SiteNeed[]).map((n) => ({
+  const slugOf = new Map([...programmes].map(([slug, id]) => [id, slug]));
+  const rows: Row[] = (data ?? []).map((n) => ({
     key: n.id,
-    props: needProps(n, events.get(n.event_id ?? "")?.notion_page_id),
+    props: needProps(
+      { ...n, programme: slugOf.get(n.programme_id ?? "") ?? null },
+      events.get(n.event_id ?? "")?.notion_page_id
+    ),
   }));
   await mirror(ctx, "need", ctx.sources.needs, rows, { synced: false });
 };
@@ -232,14 +240,11 @@ export const lockNeeds = async (ctx: SyncContext) => {
   if (!(ctx.sources.needs && state.needs) || state.needsLocked) {
     return;
   }
-  const text = (content: string) => [{ text: { content }, type: "text" }];
-  await ctx.notion.updateDataSource(ctx.sources.needs, {
-    description: text(
-      "A read-only copy the site writes: list needs on the event, production or Edition in the Diwan, where the Secretary sends them to Student Life. Anything typed here is replaced at the next sync."
-    ),
+  await lockCopy(ctx, ctx.sources.needs, {
+    note: "A read-only copy the site writes: list needs on the event, production or Edition in the Diwan, where the Secretary sends them to Student Life. Anything typed here is replaced at the next sync.",
     // Who asked is the site's to keep (no personal data in Notion).
-    properties: { "Requested by": null },
-    title: text("Needs (from the site, read-only)"),
+    remove: ["Requested by"],
+    title: "Needs (from the site, read-only)",
   });
   await markImported(ctx, "needsLocked");
   count(ctx, "need.locked");

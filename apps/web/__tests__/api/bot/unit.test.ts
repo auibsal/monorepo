@@ -2,7 +2,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { copy, langOf } from "@/lib/api/bot/copy";
 import type { EventRow } from "@/lib/api/bot/db";
-import { baghdadHour } from "@/lib/api/bot/feeds";
 import { eventText } from "@/lib/api/bot/format";
 import {
   eventCalendar,
@@ -11,6 +10,7 @@ import {
   piecePage,
   wordPage,
 } from "@/lib/api/bot/links";
+import { baghdadHour } from "@/lib/api/bot/posts";
 import { briefText, summaryText } from "@/lib/api/bot/staff";
 
 vi.mock("server-only", () => ({}));

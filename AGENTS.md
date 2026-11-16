@@ -259,7 +259,8 @@ any schema change. Integration tests run against a local stack with
   public: no directory, no contributor pages, no wall of names; credits
   show the name each person chose (`programmes.credited_names()`). The
   site keeps only what it
-  needs: no optional profile details or demographic reports. A member
+  needs: no optional profile details or demographic reports. An account
+  is for people 13 or older (an invitation aside). A member
   under 18 gives the month and year of birth (deleted at 18) and a
   parent's consent by link (`parent-consent`), and nothing shows or names them until
   then. No phone numbers until they can be verified. Never ask for a
@@ -273,9 +274,13 @@ any schema change. Integration tests run against a local stack with
   the page (`journal.entry_text`) and images marked with their card
   number (`/api/files/blind`); originals open by role through
   `journal.open_original`, each opening kept.
-- **No third-party monitoring or protection.** Errors and logs go to the
-  Vercel runtime log (`lib/observability` prints only); the security
-  headers are the app's own (`lib/security`; your account and the Diwan
+- **Cloudflare first at the edge** (the owner, Nov 16, 2026): what
+  Cloudflare can do in front of the site (TLS and HSTS, security.txt,
+  script monitoring, the WAF, bots) is done there, not in code
+  (`docs/platform/settings.md`, Cloudflare). No other third-party
+  monitoring or protection. Errors and logs go to the
+  Vercel runtime log (`lib/observability` prints only); the headers that
+  need the page are the app's own (`lib/security`; your account and the Diwan
   render per request with a nonce-based CSP, `apps/web/proxy.ts`, so a new
   page there stays under their layouts and never adds an inline script); public forms are rate
   limited in the database (`withinRateLimit`, `core.take_rate`).

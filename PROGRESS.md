@@ -13,6 +13,188 @@ pages are deleted.
 
 Branch: `claude/new-session-qosn60`, one pull request per prompt.
 
+## Now: one job per platform (Nov 16)
+The owner's rule: one place for each thing, and a platform's own feature
+over the site's copy unless the platform's is capped or the site's is
+better. Who does what is in `docs/platform/settings.md` and `secrets.md`.
+- [x] One scheduler: pg_cron runs every job; retention no longer runs from
+  Vercel Cron as well (`20261116000400_one_scheduler.sql`;
+  `apps/web/vercel.json` has no crons).
+- [ ] **Owner: Supabase.**
+  - Settings → API Keys → **disable the legacy keys** (anon,
+    service_role): nothing uses them.
+  - Authentication → Emails → **SMTP Settings: turn off and clear.** The
+    Send Email hook sends every auth email through the site, so Supabase
+    never uses SMTP while it is on.
+  - Providers → Email: minimum password length 12, secure password change
+    on (above).
+  - The GitHub integration's **"Supabase Preview"** check is skipped on
+    every pull request (Branching is a paid feature; CI tests the database
+    itself): remove the integration, or keep it only if Branching is bought.
+- [ ] **Owner: Vercel → Environment Variables, delete** (read by nothing):
+  `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_PUBLISHABLE_KEY`,
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY`, **`SUPABASE_SERVICE_ROLE_KEY`**,
+  **`SUPABASE_JWT_SECRET`**, `POSTGRES_URL`, `POSTGRES_PRISMA_URL`,
+  `POSTGRES_URL_NON_POOLING`, `POSTGRES_USER`, `POSTGRES_HOST`,
+  `POSTGRES_PASSWORD`, `POSTGRES_DATABASE`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY`,
+  `VAPID_PRIVATE_KEY`. Vercel's `VERCEL_WEBHOOK_SECRET` is not set, so
+  failed deploys reach no one: add the webhook (Settings → Webhooks,
+  `https://auibsal.org/api/hooks/vercel`, deployment.error and
+  deployment.canceled) and its secret, or rely on Vercel's own email for
+  failed deploys and remove the route.
+- [ ] **Owner: Resend → API Keys:** delete **"SMTP"** (it served only
+  Supabase's SMTP). The keys named for another project are not the
+  Society's; whoever owns them decides.
+- [ ] **Owner: status.auibsal.org** points at Better Stack but no status
+  page claims it (it redirects to Better Stack's home page), and no monitor
+  checks auibsal.org (the Better Stack team in use is another
+  organization's, its monitors paused). **Delete the CNAME today**; then,
+  in a Better Stack team of the Society's own, a monitor on
+  `https://auibsal.org` and `/api/health` and the status page, and the
+  CNAME back (settings.md).
+- [ ] **A decision for decisions.md** (The site): it keeps "Vercel's
+  firewall as a second layer (its AI Bots rules on, Attack Challenge Mode
+  only during an attack)", but the project has no firewall rules at all,
+  and every request has passed Cloudflare first. Proposed: Cloudflare is
+  the firewall (WAF, bots, AI crawlers, "I'm Under Attack"); Vercel keeps
+  its default protection only.
+- [ ] `CRON_SECRET` is shared by pg_cron (the cron routes) and GitHub (the
+  workflow-failure hook); a leaked GitHub secret would open the cron
+  routes. A secret per caller is the standard: a `WORKFLOW_HOOK_SECRET`
+  when the workflows are next changed.
+
+## Now: the free standards (Nov 16)
+- [x] MTA-STS policy (`lib/mta-sts.ts`, in testing mode) and
+  `/.well-known/passkey-endpoints` (W3C: password managers find where to
+  add a passkey); `mta-sts.auibsal.org` serves only the policy.
+- [ ] **Owner: MTA-STS and TLS-RPT**, in order (docs/platform/settings.md,
+  Email): the `tls-reports@` alias in Zoho; the `_smtp._tls` TXT; the
+  `mta-sts.auibsal.org` domain in Vercel and its CNAME in Cloudflare; then
+  the `_mta-sts` TXT. On or after **Monday, November 30**, with clean
+  reports: `enforce` and a new `id`.
+- [ ] **Owner: Zoho DKIM at 2048 bits** (settings.md, Email).
+- [ ] **Owner: GitHub → Settings → Code security** (all free): secret
+  scanning and **push protection** on; **private vulnerability reporting**
+  on (GitHub's own form beside security@, as SAL-GOV-07 allows).
+
+## Now: the platform audit (Nov 16)
+
+Against US practice (OWASP, NIST SP 800-63B, WCAG 2.2 AA, CAN-SPAM and
+Gmail/Yahoo's sender rules, COPPA, OpenSSF Scorecard, Core Web Vitals), with
+production's own evidence (Supabase advisors and cron, Vercel's runtime log,
+the live headers, DNS and the outbox). Fixed in #283:
+
+- [x] The Notion sync, broken since #276 went out: the Needs copy (a join
+  across two schemas) and the locks (a description sent to the data source,
+  not its database). The copies are locked with `is_locked`.
+- [x] The hourly health check reported itself as late, and would have
+  raised the outbox alarm daily for four emails that gave up in October.
+- [x] Account pages send no more of the Diwan's admin copy than they read:
+  sign-in 71 kB compressed (was 99), 83 in Arabic (was 116).
+- [x] The performance budget follows the lighter public pages: about
+  250 kB of JavaScript since #276 stopped the error page carrying both
+  messages files (it was 450), so the budget is 320 kB and a regression
+  fails CI.
+- [x] Scorecard: the migration is called by CI (no `workflow_run` checkout),
+  no committed `.pyc` files, SECURITY.md follows SAL-GOV-07
+  (security@auibsal.org), and the README's badge uses the repository's new
+  name (auibsal/monorepo).
+- [x] /.well-known/change-password, /favicon.ico and the Apple touch icon;
+  the sitemap's dates only where known; Hudhud uses the platform's fetch.
+- [x] Checked and sound: every sitemap page in both languages passes axe
+  (WCAG 2.2 AA); headers (HSTS preloaded, CSP with a fresh nonce on each
+  account page, frame and type options); DNSSEC, CAA, SPF, DKIM and DMARC at
+  `p=reject`; one-click unsubscribe and the postal address in bulk email;
+  every API route authenticates, verifies a signature or a token, or is
+  public by design; no Scorecard vulnerabilities; production's advisors
+  show no security finding beyond the one below.
+- [ ] **Owner, first:** add the backup's secrets (above, under the twentieth
+  prompt): no off-site copy of the database has been made since Nov 13.
+- [ ] **Owner:** Supabase → Authentication → Attack Protection: leaked
+  password protection is **off** in production (the advisor says so;
+  docs/platform/settings.md expects it on). The site's own check runs in the
+  browser, so it can be bypassed by calling Supabase directly; Supabase's
+  check runs on the server. Check the CAPTCHA (Turnstile) setting there too.
+- [ ] **Owner:** four emails gave up after five tries before the Resend key
+  was fixed (two personal-email confirmations of Oct 25 and 30, an opening's
+  reply of Oct 31, a role notice of Nov 4): send them again or tell the
+  people; the health check now reports such emails once.
+- [ ] **Owner:** adopt SAL-GOV-07 (the disclosure policy is "Version 1,
+  proposed").
+- [ ] **Owner (GitHub settings):** require one approving review on `main`
+  (the web lead's), with stale approvals dismissed; Scorecard's Code-Review
+  and Branch-Protection are 0 and 3 of 10.
+- [x] **Minimum age 13** (the owner, Nov 16: US practice): a sign-up under
+  13 is refused, by the form and by `private.under_minimum_age`;
+  invitations (Qalam, a parent's link) carry their own consent. COPPA
+  reaches only children under 13, so its deletion window does not apply:
+  a member of 13 to 17 whose parent has not consented stays limited, with
+  the reminders after 3 and 7 days.
+- [ ] Optional: the OpenSSF Best Practices badge (self-certified; the
+  Scorecard check CII-Best-Practices).
+- [x] Account pages send only the `web` copy their client components read
+  (about 2.7 of 53 kB in English); `/api/password-check` is rate limited.
+  Blocked scripts are Cloudflare's to report (Page Shield), not a route of
+  the site's (the owner, Nov 16: Cloudflare first at the edge).
+- [x] Lighthouse against the live site (Nov 16, mobile): accessibility 100
+  and SEO 100 on the public pages. Under real throttling (slow 4G, 4× CPU)
+  the largest paint is 3.2–3.4 s and blocking time 750–940 ms: the speed
+  standard (under 2.5 s) is not met on a slow phone. Best practices 75: all
+  of it was Cloudflare's: Zaraz loading a Google Tag Manager container
+  (decisions.md, The site: none; the CSP blocked it; Zaraz is now off) and
+  JavaScript Detections (a deprecation warning, ~0.4 s of phone CPU). The
+  sign-in page's layout shift (0.11, the footer moving when the form
+  replaced the spinner) is fixed.
+- [ ] **Owner: Cloudflare** (its Security Center, Nov 10; the owner's rule
+  of Nov 16, Cloudflare first at the edge; every setting in
+  `docs/platform/settings.md`, Cloudflare):
+  - **Before merging #284:** Security → Settings → **security.txt**, with
+    the fields in settings.md; the site stops serving its own. And the
+    **managed robots.txt** (Security → Settings → Bot traffic → AI Crawler
+    and Agent access policies → Training: Disallow; Bot Preference Sync
+    on): the site's robots.txt no longer lists the AI crawlers.
+  - SSL/TLS → Edge Certificates → **Minimum TLS Version: TLS 1.2**. SSL
+    Labs (Nov 16) finds TLS 1.0 and 1.1 still accepted on auibsal.org and
+    www (grade B).
+  - Edge Certificates → **HSTS**: keep it on (12 months, subdomains,
+    preload), with **No-Sniff off** (the site sends that header with its
+    others); the site no longer sends its own HSTS.
+  - **A decision for decisions.md** (The site): it keeps Vercel's
+    firewall "as a second layer (its AI Bots rules on)", but with the
+    `*.vercel.app` addresses behind Vercel's login every request has
+    already passed Cloudflare, whose "Block AI bots" does the same. The
+    proposal: AI bots are blocked by Cloudflare and robots.txt only, and
+    Vercel's AI Bots rule goes off.
+  - Bot Fight Mode stays off (decisions.md, The site). JavaScript
+    Detections has no switch on the free plan: it stays.
+  - Page Shield's continuous script monitoring stays on (turned back on,
+    Nov 16).
+  - Speed → Optimization: **Speed Brain off** (the site preloads its own
+    pages; Cloudflare's whole-page fetches go unused), **Early Hints on**,
+    **0-RTT off**. Email → **DMARC Management** stays on.
+  - **A decision for decisions.md** (The site): in an attack, Cloudflare's
+    "I'm Under Attack" mode only, not Vercel's Attack Challenge Mode as
+    well (every request reaches Vercel through Cloudflare, so the two
+    would challenge the same visitor twice).
+- [x] Keyboard pass on the live site, ten pages in each language: the skip
+  link comes first, every stop shows its focus and has a name, nothing
+  focused is off-screen. Still for people with devices: a pass with
+  VoiceOver (iPhone, Mac) and TalkBack (Android) in both languages.
+- [ ] **Owner: production's Auth settings** (read Nov 16): the CAPTCHA
+  (Turnstile) is on, refresh tokens rotate, emailed codes are 8 digits.
+  Not as AGENTS.md and `supabase/config.toml` say:
+  - Authentication → Providers → Email: **Minimum password length 6**, set
+    12 (the site checks 12 in the browser, but Supabase takes 6 from
+    anyone calling it directly); **Secure password change off**, turn it
+    on (a code by email for a change on an old sign-in).
+  - Attack Protection: leaked password protection off, and Sessions: no
+    30-day time-box. Both need Supabase Pro (the API refused the time-box
+    as "Pro Plans and up"); until then the site's own breach check
+    (`/api/password-check`) covers the site's forms.
+- The notes on COPPA and CAN-SPAM describe US practice; the Society is in
+  Iraq, and they are not legal advice: AUIB's counsel, or a lawyer in
+  Iraq, decides what applies.
+
 ## Now: the twentieth site prompt (Nov 16)
 
 - [x] The mirror is the co-pilot's: its `claude/mirror` PR (decisions of
@@ -260,11 +442,20 @@ All in PR #269.
 - [x] **Media handoff:** no printed card; captions, credits, playbills and
   lower thirds by the short or credited name; signature blocks by the full
   official name.
-- [ ] **Scorecard, still open:** Branch-Protection and Code-Review (the
-  owner's GitHub settings: require a review on `main`), Signed-Releases and
-  Packaging (none made), Fuzzing (none) and CII-Best-Practices (the badge is
-  the owner's application). Every action is pinned by commit; Dependabot
-  keeps the pins current.
+- [ ] **Scorecard (6.9 on Nov 16; 13 of 18 checks at 10 once Fuzzing's
+  property tests are scanned).** What is left is not code:
+  Code-Review 0 (every merged change needs an approving review by someone
+  other than its author: a second maintainer reviewing on GitHub);
+  Branch-Protection 3 (a ruleset on `main`: pull request with one review,
+  stale approvals dismissed, status checks required, no force pushes,
+  applying to administrators too); CII-Best-Practices 0 (the owner applies
+  at bestpractices.dev; "passing" is self-certified); Maintained 0 (the
+  repository is under 90 days old; it rises by itself with steady
+  activity); Contributors 6 (contributors from three or more organizations
+  on their GitHub profiles); License 9 (10 only with an OSI-approved
+  license: the code is proprietary, the owner's decision). Packaging and
+  Signed-Releases are not scored (-1): the site is not a package or a
+  release, and making unsigned releases would lower the score.
 - [ ] **Owner:** the summaries of the 13 agreements, three lines in each
   language (the Governance chat); the Terms of Use's AI line in Notion
   (GOV); the 13 kinds in SAL-EXB-01's register in Notion; R2's lifecycle
@@ -909,14 +1100,19 @@ First the second prompt's part 2 (7j), then the rest in place.
 - [ ] **EDT-02:** confirm the Library no longer lists it after the sync.
 - [ ] **GOV-04's text:** the Sunday Paper comes from qirtas@auibsal.org and
   is sent by the Managing Editor.
-- [ ] **Two retention schedulers** (`/api/cron/retention` and pg_cron's
-  `sal-retention`): keep one, or say why both.
-- [ ] **`anon` EXECUTE on `private`:** narrow it to the functions the public
-  pages need (USAGE stays: the public wrappers call into `private`).
-- [ ] **The Diwan Telegram group, 7 days after a role ends:** the bot
-  removes the person (today only on leaving the Society).
-- [ ] **The event lead from Notion:** the sync checks Lead but does not
-  store it; the event-lead role scoped to the event should come from it.
+- [x] **Two retention schedulers:** merged into one (Nov 16): pg_cron's
+  `sal-retention` calls `/api/cron/retention`, which removes the files and
+  accounts and then runs every rule; Vercel Cron is no longer used.
+- [x] **`anon` EXECUTE on `private`:** already narrow (Nov 16, production):
+  no `private` function is executable through PUBLIC; 93 of 662 carry an
+  explicit grant to `anon`, each for a public wrapper or policy, and
+  `private` is not an exposed schema.
+- [x] **The Diwan Telegram group, 7 days after a role ends:** done in
+  `lib/api/bot/titles.ts` (the tag comes off at once; the person is let go
+  7 days after their last role ends, on the Telegram cron's run).
+- [x] **The event lead from Notion:** the sync stores Lead
+  (`events.lead_id`); the Event Lead role follows only on acceptance (the
+  owner, Nov 16; decisions.md, Members), never from Notion alone.
 - [ ] **The team list** as one component: the Council page with covering,
   Our people, the masthead, Next Stop's credits, the Company's playbills,
   an event's lead and team.
@@ -971,7 +1167,7 @@ officers as admins and two-step on (decisions.md, Where things live).
   records as they are. Send a test from hello@ to a Gmail address: SPF,
   DKIM and DMARC should all pass.
 - [ ] **Cloudflare:** turn off Web Analytics' automatic setup (the CSP
-  blocks its beacon), and the settings of part 9.
+  blocks its beacon), and the settings of part 9. (Zaraz off, Nov 16.)
 - [ ] **Hudhud:** Diwan → Desk → Connected → Hudhud → reconnect (the
   webhook at `/api/hooks/telegram` and the leaving updates); check with
   `/start` to @auibsal_bot. BotFather → Bot Settings → Main App: URL

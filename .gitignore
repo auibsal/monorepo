@@ -35,3 +35,7 @@ Thumbs.db
 *.sublime*
 .cursorrules
 .github/copilot-instructions.md
+
+# Python caches (the mascot rig scripts)
+__pycache__/
+*.pyc

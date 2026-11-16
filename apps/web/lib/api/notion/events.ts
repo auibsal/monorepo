@@ -563,26 +563,50 @@ const COPY_NOTE =
  * Debrief, Image, RSVPs, Platform note) are removed, so nothing there
  * looks editable. Their values are on the site.
  */
+/**
+ * Makes a Notion database a read-only copy: its own properties go, then
+ * the database takes its title, the note on what it is, and the lock that
+ * keeps its properties and views as the site set them (decisions.md, Where
+ * things live). The description and lock are the database's; the
+ * properties are its data source's.
+ */
+export const lockCopy = async (
+  ctx: SyncContext,
+  dataSourceId: string,
+  copy: { note: string; remove: string[]; title: string }
+) => {
+  await ctx.notion.updateDataSource(dataSourceId, {
+    properties: Object.fromEntries(copy.remove.map((name) => [name, null])),
+    title: richText(copy.title),
+  });
+  const { parent } = await ctx.notion.dataSource(dataSourceId);
+  if (parent?.database_id) {
+    await ctx.notion.updateDatabase(parent.database_id, {
+      description: richText(copy.note),
+      is_locked: true,
+      title: richText(copy.title),
+    });
+  }
+};
+
 export const lockEvents = async (ctx: SyncContext) => {
   const state = await importedState(ctx);
   if (!state.events || state.eventsLocked) {
     return;
   }
-  await ctx.notion.updateDataSource(ctx.sources.events, {
-    description: richText(COPY_NOTE),
-    properties: Object.fromEntries(
-      [
-        "Summary",
-        "Capacity",
-        "Off campus",
-        "Host",
-        "Debrief",
-        "Image",
-        "RSVPs",
-        "Platform note",
-      ].map((name) => [name, null])
-    ),
-    title: richText("Events (from the site, read-only)"),
+  await lockCopy(ctx, ctx.sources.events, {
+    note: COPY_NOTE,
+    remove: [
+      "Summary",
+      "Capacity",
+      "Off campus",
+      "Host",
+      "Debrief",
+      "Image",
+      "RSVPs",
+      "Platform note",
+    ],
+    title: "Events (from the site, read-only)",
   });
   await markImported(ctx, "eventsLocked");
   count(ctx, "event.locked");

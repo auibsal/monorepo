@@ -5,8 +5,8 @@ import { escapeHtml } from "@/lib/telegram";
 import { type Copy, copy, type Lang } from "./copy";
 import { db, type Group } from "./db";
 import { topicOf } from "./features/group/common";
-import { baghdadHour, copyFor, linkLang, once, type Run } from "./feeds";
 import { label, pick } from "./format";
+import { baghdadHour, copyFor, linkLang, once, type Run } from "./posts";
 
 /**
  * Hudhud in the Diwan group (/audience staff; decisions.md): a

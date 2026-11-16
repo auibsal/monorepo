@@ -3,7 +3,16 @@ import { describe, expect, test, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-const { fromCloudflare, visitorOf } = await import("@/lib/api/rate-limit");
+const rpc = vi.fn();
+const SHA256_HEX = /^[0-9a-f]{64}$/u;
+vi.mock("@repo/database/admin", () => ({
+  createAdminClient: () => ({ schema: () => ({ rpc }) }),
+}));
+vi.mock("@/lib/observability/log", () => ({ log: { warn: vi.fn() } }));
+
+const { fromCloudflare, visitorOf, withinRateLimit } = await import(
+  "@/lib/api/rate-limit"
+);
 
 const request = (headers: Record<string, string>) =>
   new Request("https://auibsal.org/api/x", { headers });
@@ -36,5 +45,38 @@ describe("the visitor's address", () => {
     expect(
       visitorOf(request({ "x-vercel-forwarded-for": "37.237.5.5, 10.0.0.1" }))
     ).toBe("37.237.5.5");
+  });
+});
+
+describe("the database's count", () => {
+  const visitor = request({ "x-real-ip": "37.237.9.9" });
+
+  test("takes one more request while the count allows it", async () => {
+    rpc.mockResolvedValueOnce({ data: true, error: null });
+    expect(await withinRateLimit(visitor, "form", { max: 3 })).toBe(true);
+    expect(rpc).toHaveBeenLastCalledWith(
+      "take_rate",
+      expect.objectContaining({ max_hits: 3, window_seconds: 600 })
+    );
+    rpc.mockResolvedValueOnce({ data: false, error: null });
+    expect(await withinRateLimit(visitor, "form")).toBe(false);
+  });
+
+  test("counts a hash, never the address itself", async () => {
+    rpc.mockResolvedValueOnce({ data: true, error: null });
+    await withinRateLimit(visitor, "form");
+    const args = rpc.mock.lastCall?.[1] as { bucket: string } | undefined;
+    const bucket = args?.bucket ?? "";
+    expect(bucket).toMatch(SHA256_HEX);
+    expect(bucket).not.toContain("37.237");
+  });
+
+  test("goes on when the count can't be read, except near sign-in", async () => {
+    rpc.mockResolvedValue({ data: null, error: { message: "down" } });
+    expect(await withinRateLimit(visitor, "form")).toBe(true);
+    expect(await withinRateLimit(visitor, "code", { failClosed: true })).toBe(
+      false
+    );
+    rpc.mockReset();
   });
 });

@@ -52,7 +52,10 @@ export const createBot = (
 ) => {
   const bot = new Bot<BotContext>(token, {
     botInfo: username ? identity(token, username) : undefined,
-    client: { timeoutSeconds: 15 },
+    // The platform's fetch, as lib/api/telegram.ts uses: grammY's Node shim
+    // (node-fetch 2) calls url.parse(), which Node deprecates (DEP0169) and
+    // which filled the runtime log with a warning on every update.
+    client: { fetch: globalThis.fetch as never, timeoutSeconds: 15 },
   });
 
   // Flood limits: wait and retry briefly; never hold a webhook for long.

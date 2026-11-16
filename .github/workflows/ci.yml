@@ -88,7 +88,8 @@ jobs:
           dir=packages/database/supabase/migrations
           newest=$(git ls-tree --name-only "origin/$BASE" "$dir/" | xargs -n1 basename | sort | tail -1)
           late=0
-          for f in $(ls "$dir"); do
+          for path in "$dir"/*; do
+            f=$(basename "$path")
             if ! git cat-file -e "origin/$BASE:$dir/$f" 2>/dev/null && [[ "$f" < "$newest" ]]; then
               echo "$f is older than $newest on $BASE: give it a later timestamp."
               late=1
@@ -310,3 +311,15 @@ jobs:
           name: playwright-traces
           path: apps/e2e/test-results
           retention-days: 7
+
+  # On a push to main, once every check above has passed: the migrations,
+  # then the deployment (migrate.yml), in the protected `production`
+  # environment.
+  migrate:
+    name: Migrate and deploy
+    needs: [ checks, upload-coverage-typescript, build, database, e2e ]
+    if: ${{ !cancelled() && !failure() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    permissions:
+      contents: read
+    uses: ./.github/workflows/migrate.yml
+    secrets: inherit
