@@ -155,14 +155,23 @@ let nextConfig: NextConfig = {
   // Off: with it, a missing event or piece answered 200 (its shared shell
   // streams first) and a piece's text-size buttons stopped answering.
   partialPrefetching: false,
-  redirects: async () =>
-    LANGUAGE_PREFIXES.flatMap((prefix) =>
+  redirects: async () => [
+    // The standard address password managers open to change a password
+    // (W3C, "A Well-Known URL for Changing Passwords"): Settings, at its
+    // password section. Not permanent, so the place can move.
+    {
+      destination: "/account/settings#password",
+      permanent: false,
+      source: "/.well-known/change-password",
+    },
+    ...LANGUAGE_PREFIXES.flatMap((prefix) =>
       [...MOVED, ...formRedirects].map(([from, to]) => ({
         destination: `${prefix}${to}`,
         permanent: true,
         source: `${prefix}${from}`,
       }))
     ),
+  ],
   // The design system's files, under its page in the Diwan, ahead of the
   // Diwan's routes.
   rewrites: async () => ({
