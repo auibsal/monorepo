@@ -6,14 +6,11 @@ vi.mock("server-only", () => ({}));
 const { pageHtml } = await import("@/lib/api/notion/blocks");
 const { createNotion, bareId } = await import("@/lib/api/notion/client");
 const { slugify, toInstant } = await import("@/lib/api/notion/props");
-const {
-  checkArabicEdition,
-  checkDocument,
-  checkEvent,
-  eventExtras,
-  languageOf,
-  RETIRED_DOCUMENT_FAMILY,
-} = await import("@/lib/api/notion/rules");
+const { checkDocument, RETIRED_DOCUMENT_FAMILY } = await import(
+  "@/lib/api/notion/rules"
+);
+const { copyProps, rowValues } = await import("@/lib/api/notion/events");
+const { needProps, needValues } = await import("@/lib/api/notion/needs");
 
 const rt = (content: string, extra: object = {}) => ({
   plain_text: content,
@@ -111,152 +108,141 @@ describe("Notion values", () => {
   });
 });
 
-describe("publishing rules", () => {
-  const wayIn = (name: string) => ({ select: { name }, type: "select" });
+describe("the one-time import from Notion (Nov 16, 2026)", () => {
+  const select = (name: string) => ({ select: { name }, type: "select" });
 
-  test("a complete event passes", () => {
-    const result = checkEvent(
+  test("an event row becomes a draft's values", () => {
+    const v = rowValues(
       page({
-        Capacity: { number: 40, type: "number" },
-        Owner: { people: [{ id: "lead-1" }], type: "people" },
-        Summary: text("Bring a poem."),
-        Title: title("Writing workshop"),
-        Venue: text("Library 47, room 2"),
-        "Way in": wayIn("RSVP"),
+        Access: select("Members"),
+        Capacity: { number: 200, type: "number" },
+        Debrief: { type: "url", url: "https://www.notion.so/debrief" },
+        Host: select("The Society"),
+        Slug: text("general-meeting-2027-02-17"),
+        Summary: text("The semester's plans."),
+        Title: title("General meeting"),
+        Venue: text("Room 101"),
         When: when(
-          "2026-10-20T18:00:00.000+03:00",
-          "2026-10-20T20:00:00.000+03:00"
+          "2027-02-17T16:00:00.000+03:00",
+          "2027-02-17T17:30:00.000+03:00"
         ),
       })
     );
-    expect(result).toMatchObject({
-      ok: true,
-      values: {
-        capacity: 40,
-        ends_at: "2026-10-20T17:00:00.000Z",
-        entry: "rsvp",
-        slug: "writing-workshop",
-        starts_at: "2026-10-20T15:00:00.000Z",
-      },
+    expect(v).toMatchObject({
+      capacity: 200,
+      debrief: "https://www.notion.so/debrief",
+      entry: "members",
+      host: null,
+      slug: "general-meeting-2027-02-17",
+      starts_at: "2027-02-17T13:00:00.000Z",
+      title: "General meeting",
+      venue: "Room 101",
     });
   });
 
-  test("an event's way in and off campus come from the row", () => {
-    const base = {
-      Owner: { people: [{ id: "lead-1" }], type: "people" },
-      Title: title("Council meeting"),
-      Venue: text("Library 47"),
-      When: when("2026-11-10T16:00:00.000+03:00"),
-    };
-    const check = (properties: Props) =>
-      checkEvent(page({ ...base, ...properties }));
-    expect(check({ "Way in": wayIn("Private") })).toMatchObject({
-      values: { entry: "invite", off_campus: false },
-    });
-    expect(check({ "Way in": wayIn("Open") })).toMatchObject({
-      values: { entry: "open" },
-    });
-    expect(check({ "Way in": wayIn("Members") })).toMatchObject({
-      values: { entry: "members" },
-    });
-    expect(
-      check({
-        "Off campus": { checkbox: true, type: "checkbox" },
-        "Way in": wayIn("Open"),
-      })
-    ).toMatchObject({ values: { off_campus: true } });
-    expect(check({})).toMatchObject({
-      ok: false,
-      problems: ["Set Access: Open, RSVP, Members or Private."],
-    });
-    // Decisions §10: no lead or no confirmed place, no publishing.
-    const unplaced = checkEvent(
+  test("a row without a start time is not brought over; a missing slug is made", () => {
+    expect(rowValues(page({ Title: title("Someday") }))).toBeNull();
+    const v = rowValues(
       page({
         Title: title("Writing workshop"),
-        "Way in": wayIn("Open"),
-        When: when("2026-11-10T16:00:00.000+03:00"),
+        When: when("2027-04-13T18:00:00.000+03:00"),
       })
     );
-    expect(unplaced.ok ? [] : unplaced.problems).toEqual([
-      "Set Venue to the confirmed room or place. An event is published only once its place is confirmed.",
-      "Set Lead to the event's lead. An event is published only with a lead.",
-    ]);
-    // Decisions §13: Way in becomes Access and Owner becomes Lead; either
-    // name is read, so Notion can be renamed after the code is deployed.
-    expect(
-      checkEvent(
-        page({
-          Access: wayIn("Members"),
-          Lead: { people: [{ id: "lead-1" }], type: "people" },
-          Title: title("General meeting"),
-          Venue: text("Library 47"),
-          When: when("2026-11-10T16:00:00.000+03:00"),
-        })
-      )
-    ).toMatchObject({ ok: true, values: { entry: "members" } });
+    expect(v?.slug).toBe("writing-workshop-2027-04-13");
+    expect(v?.entry).toBe("rsvp");
   });
 
-  test("an event's host and debrief (decisions §13)", () => {
-    expect(
-      eventExtras(
-        page({
-          Debrief: { type: "url", url: "https://www.notion.so/debrief" },
-          Host: wayIn("Poetry Hub"),
-        })
-      )
-    ).toEqual({ debrief: "https://www.notion.so/debrief", host: "Poetry Hub" });
-    expect(eventExtras(page({ Host: wayIn("The Society") }))).toEqual({
-      debrief: null,
-      host: null,
-    });
-  });
-
-  test("an event without a start time or a Latin slug says what to fix", () => {
-    const result = checkEvent(
+  test("a Needs row keeps its item, quantity, date and status", () => {
+    const v = needValues(
       page({
-        Summary: text("Bring a poem."),
-        Title: title("أمسية"),
-        When: when("2026-10-20"),
+        Item: title("Folding chairs"),
+        "Needed by": when("2026-12-01"),
+        Purpose: text("For the reading"),
+        Quantity: { number: 30, type: "number" },
+        Status: { status: { name: "Draft" }, type: "status" },
       })
     );
-    expect(result.ok).toBe(false);
-    const problems = result.ok ? [] : result.problems;
-    expect(problems).toEqual(
-      expect.arrayContaining([
-        "Add a start time to When, not only a date.",
-        expect.stringContaining("Set a Slug in Latin letters"),
-      ])
-    );
-    // One language per row: the English row never asks for Arabic.
-    expect(problems.join(" ")).not.toContain("Arabic");
+    expect(v).toMatchObject({
+      item: "Folding chairs",
+      needed_by: "2026-12-01",
+      quantity: 30,
+      requested_on: null,
+      status: "listed",
+    });
+    expect(needValues(page({ Item: title("") }))).toBeNull();
+  });
+});
+
+describe("the read-only copies", () => {
+  const ctx = {
+    appUrl: "https://auibsal.org/diwan",
+    webUrl: "https://auibsal.org",
+  };
+  const event = {
+    ends_at: null,
+    entry: "rsvp",
+    id: "e1",
+    lead_id: null,
+    slug: "screening",
+    starts_at: "2026-11-22T13:00:00.000Z",
+    status: "published",
+    title_ar: "عرض",
+    title_en: "Screening",
+    venue_ar: "القاعة",
+    venue_en: "The hall",
+  };
+
+  test("an event's copy holds title, dates, venue, status, access, lead and links", () => {
+    const en = copyProps(ctx, event, "en", "notion-lead");
+    expect(Object.keys(en).sort()).toEqual([
+      "Access",
+      "Diwan",
+      "Diwan ID",
+      "Language",
+      "Lead",
+      "Public page",
+      "Slug",
+      "Status",
+      "Title",
+      "Venue",
+      "When",
+    ]);
+    expect(en["Public page"]).toEqual({
+      url: "https://auibsal.org/events/screening",
+    });
+    expect(copyProps(ctx, event, "ar", undefined)["Public page"]).toEqual({
+      url: "https://auibsal.org/ar/events/screening",
+    });
+    expect(
+      copyProps(ctx, { ...event, status: "draft" }, "en", undefined)
+    ).toMatchObject({
+      "Public page": { url: null },
+      Status: { select: { name: "Planning" } },
+    });
   });
 
-  test("an Arabic edition is its own row, linked to its English row", () => {
-    const edition = page({
-      "Edition of": {
-        relation: [{ id: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" }],
-        type: "relation",
+  test("a need's copy names what it is for", () => {
+    const props = needProps(
+      {
+        event_id: null,
+        id: "n1",
+        item: "Paper",
+        needed_by: null,
+        programme: { slug: "typewriter-tour" },
+        provided_note: null,
+        purpose: "",
+        quantity: 2,
+        requested_on: null,
+        status: "listed",
       },
-      Language: { select: { name: "Arabic" }, type: "select" },
-      Title: title("ورشة كتابة"),
-      Venue: text("المكتبة"),
-    });
-    expect(languageOf(edition)).toBe("ar");
-    expect(checkArabicEdition(edition)).toEqual({
-      ok: true,
-      values: {
-        of: "aaaaaaaabbbbccccddddeeeeeeeeeeee",
-        summary: null,
-        title: "ورشة كتابة",
-        venue: "المكتبة",
-      },
-    });
-    const loose = checkArabicEdition(page({ Title: title("ورشة") }));
-    expect(loose.ok ? [] : loose.problems).toContain(
-      "An Arabic edition links exactly one English row in Edition of."
+      undefined
     );
+    expect(props.For).toEqual({ select: { name: "Typewriter Tour" } });
+    expect(props.Status).toEqual({ status: { name: "Draft" } });
   });
+});
 
+describe("document rules", () => {
   test("a document row needs its code, address and audience", () => {
     expect(
       checkDocument(

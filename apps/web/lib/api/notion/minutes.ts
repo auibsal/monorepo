@@ -112,7 +112,7 @@ const readDraft = async (
   const eventId = linked[0] ? await recordFor(ctx, "event", linked[0]) : null;
   if (linked[0] && !eventId) {
     problems.push(
-      "Publish the meeting's event (Event) first; its day becomes the meeting's date."
+      "Make the meeting's event in the Diwan first and link its row (Event); its day becomes the meeting's date."
     );
   }
   const meetingOn = read.date(page, "When")?.start?.slice(0, 10) ?? null;
@@ -135,7 +135,9 @@ const readDraft = async (
       "A Council meeting's event takes Access: Members (members may observe it)."
     );
   }
-  const day = meetingOn ?? facts?.day ?? null;
+  // One home for the date (decisions.md, Where things live): the event's
+  // day on the site; Notion's When only for a meeting with no event.
+  const day = facts?.day ?? meetingOn ?? null;
   if (problems.length > 0 || !(body && day && text)) {
     return { problems };
   }

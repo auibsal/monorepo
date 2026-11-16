@@ -1,8 +1,9 @@
 import { deviceName } from "@/lib/device";
-import { buckets } from "@/lib/storage";
+import { buckets, getMediaUrl } from "@/lib/storage";
 import "server-only";
 
 import { AsyncLocalStorage } from "node:async_hooks";
+import { createHash, randomBytes } from "node:crypto";
 import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
 import { EmailQuotaError, sendEmail } from "@repo/email";
@@ -70,11 +71,13 @@ import {
   shiftReminder,
   signInMoved,
   staffDigest,
+  studentLifeWeek,
   submissionInReading,
   submissionReceived,
   sundayPaper,
   twoStepReset,
   verificationDecided,
+  type WeekEvent,
   waitlistOffered,
   waitlistPromoted,
   welcome,
@@ -350,6 +353,8 @@ interface SendOptions {
    * the member keeps Hudhud's reminders on, else by email.
    */
   readonly reminder?: boolean;
+  /** Where replies go, when not hello@ (Student Life's requests: secretary@). */
+  readonly replyTo?: string;
   readonly sticker?: Sticker;
 }
 
@@ -394,7 +399,14 @@ const heldForRecords = async (
 const send = async (
   to: Recipient,
   built: Built,
-  { category = "service", footer, headers, reminder, sticker }: SendOptions = {}
+  {
+    category = "service",
+    footer,
+    headers,
+    reminder,
+    replyTo,
+    sticker,
+  }: SendOptions = {}
 ) => {
   const run = current.getStore();
   const row = run?.row;
@@ -452,7 +464,7 @@ const send = async (
       preview: built.preview,
     }),
     // Replies reach a person, never a no-reply box.
-    replyTo: project.supportEmail,
+    replyTo: replyTo ?? project.supportEmail,
     subject: built.subject,
     tags: run
       ? [{ name: "kind", value: run.kind.replace(/[^\w-]/gu, "_") }]
@@ -974,6 +986,106 @@ const PAPER_TEST_LINE = {
   en: "A test of the Sunday Paper, sent only to the Editor-in-Chief before it goes out.",
 } as const;
 
+const DAY_MS = 86_400_000;
+const SECRETARY = "secretary@auibsal.org";
+
+/** Next Monday (Baghdad's calendar day), as yyyy-mm-dd, from a Wednesday. */
+const nextMonday = (now: Date) => {
+  const baghdad = new Date(now.getTime() + 3 * 3_600_000);
+  const day = baghdad.getUTCDay();
+  const ahead = (8 - day) % 7 || 7;
+  return new Date(baghdad.getTime() + ahead * DAY_MS)
+    .toISOString()
+    .slice(0, 10);
+};
+
+/**
+ * Each Wednesday (pg_cron `sal-student-life-week`): next week's public
+ * events to Student Life, by the secure link (decisions.md, Events), from
+ * the Secretary's address. Each event comes with its paragraph in both
+ * languages, its image and its link; the link lets them mark which they
+ * included, without an account. A week with no public events sends none.
+ */
+const sendStudentLifeWeek = async (admin: AdminClient) => {
+  const weekOf = nextMonday(new Date());
+  const from = new Date(`${weekOf}T00:00:00+03:00`);
+  const until = new Date(from.getTime() + 7 * DAY_MS);
+  const weeks = admin.schema("events").from("student_life_weeks");
+  const { data: sent } = await weeks
+    .select("id")
+    .eq("week_of", weekOf)
+    .not("sent_at", "is", null)
+    .maybeSingle();
+  if (sent) {
+    return;
+  }
+  const { data: events } = await admin
+    .schema("events")
+    .from("events")
+    .select(
+      "id, slug, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, image_path"
+    )
+    .eq("status", "published")
+    .eq("members_only", false)
+    .neq("entry", "invite")
+    .gte("starts_at", from.toISOString())
+    .lt("starts_at", until.toISOString())
+    .order("starts_at");
+  const people = await roleHolders(admin, ["student_life"]);
+  if (!(events?.length && people.length)) {
+    return;
+  }
+  const token = randomBytes(24).toString("base64url");
+  const { data: week, error } = await weeks
+    .upsert(
+      {
+        token_hash: createHash("sha256").update(token).digest("hex"),
+        week_of: weekOf,
+      },
+      { onConflict: "week_of" }
+    )
+    .select("id")
+    .single();
+  if (error) {
+    throw error;
+  }
+  await admin
+    .schema("events")
+    .from("student_life_week_events")
+    .upsert(
+      events.map((e) => ({ event_id: e.id, week_id: week.id })),
+      { ignoreDuplicates: true, onConflict: "week_id,event_id" }
+    );
+  const base = appUrl();
+  const listed: WeekEvent[] = events.map((e) => ({
+    image: e.image_path ? getMediaUrl(admin, e.image_path) : null,
+    starts_at: e.starts_at,
+    summary_ar: e.summary_ar,
+    summary_en: e.summary_en,
+    title_ar: e.title_ar,
+    title_en: e.title_en,
+    url_ar: `${base}${localizedPath("ar", `/events/${e.slug}`)}`,
+    url_en: `${base}${localizedPath("en", `/events/${e.slug}`)}`,
+    venue_ar: e.venue_ar,
+    venue_en: e.venue_en,
+  }));
+  await Promise.all(
+    people.map((to) =>
+      send(
+        to,
+        studentLifeWeek(
+          to.lang,
+          listed,
+          `${base}${localizedPath(to.lang, "/student-life/week")}?token=${token}`
+        ),
+        // Requests to Student Life come from the Secretary (decisions.md).
+        { category: "officer", replyTo: SECRETARY }
+      )
+    )
+  );
+  await weeks.update({ sent_at: new Date().toISOString() }).eq("id", week.id);
+};
+
 const handlers: Record<string, Handler> = {
   // From /api/two-step/recover: the hour's tries ran out.
   "access.recovery_attempts": async (admin, payload) => {
@@ -1359,6 +1471,7 @@ const handlers: Record<string, Handler> = {
       );
     }
   },
+  "events.student_life_week": (admin) => sendStudentLifeWeek(admin),
   "events.waitlist_offered": async (admin, payload) => {
     const [to, event] = await Promise.all([
       recipient(admin, payload.user_id),

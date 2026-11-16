@@ -1,3 +1,8 @@
+# Dependabot is the only updater (decisions.md, The site: the code).
+# Security fixes: as soon as GitHub publishes an advisory that touches a
+# dependency (Dependabot security updates, turned on in Settings, Code
+# security), one grouped pull request per ecosystem, every week at the
+# latest. Everything else: one grouped pull request per family, monthly.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -5,7 +10,11 @@ updates:
     schedule:
       interval: monthly
     groups:
+      security:
+        applies-to: security-updates
+        patterns: [ "*" ]
       actions:
+        applies-to: version-updates
         patterns: [ "*" ]
 
   # One grouped PR per family keeps versions aligned across workspaces
@@ -23,15 +32,23 @@ updates:
       - dependency-name: "@types/node"
         update-types: [ "version-update:semver-major" ]
     groups:
+      security:
+        applies-to: security-updates
+        patterns: [ "*" ]
       next:
+        applies-to: version-updates
         patterns: [ "next", "@next/*", "eslint-config-next" ]
       react:
+        applies-to: version-updates
         patterns: [ "react", "react-dom", "@types/react", "@types/react-dom" ]
       supabase:
+        applies-to: version-updates
         patterns: [ "@supabase/*", "supabase" ]
       storybook:
+        applies-to: version-updates
         patterns: [ "storybook", "@storybook/*" ]
       tooling:
+        applies-to: version-updates
         patterns:
           [
             "@biomejs/*",
@@ -43,4 +60,5 @@ updates:
             "@vitest/*",
           ]
       minor-and-patch:
+        applies-to: version-updates
         update-types: [ minor, patch ]

@@ -27,6 +27,8 @@ import { AdvisorFindings } from "./system/advisors";
 import { StaffAlerts } from "./system/alerts";
 import { EmailDelivery } from "./system/email";
 import { NotionWorkspace } from "./system/notion";
+import { ScanFindings } from "./system/scan-findings";
+import { StudentLifeWeekPanel } from "./system/student-life-week";
 
 interface Overview {
   campaigns?: {
@@ -530,7 +532,13 @@ export const AdminOverview = () => {
       ) : null}
       <DiwanSection id="alerts" title={t("alerts.title")}>
         <StaffAlerts />
+        <ScanFindings />
       </DiwanSection>
+      {can("events.manage") || can("governance.manage") ? (
+        <DiwanSection id="student-life" title={t("studentLife.title")}>
+          <StudentLifeWeekPanel />
+        </DiwanSection>
+      ) : null}
       {can("audit.read") ? (
         <DiwanSection id="activity" title={t("activity")}>
           <RecentActivity />

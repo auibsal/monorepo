@@ -122,10 +122,9 @@ select throws_ok(
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000001a001');
-select throws_ok(
+select lives_ok(
   $$ insert into events.events (slug, title_en, title_ar, starts_at) values ('oh-new', 'New', 'جديد', now() + interval '5 days') $$,
-  '42501', null,
-  'Nobody makes an event in the Diwan: events come from Notion'
+  'Events are made in the Diwan (Nov 16, 2026: the site is the system of record)'
 );
 select is_empty(
   $$ delete from events.events where id = '00000000-0000-0000-0000-00000001a102' returning id $$,

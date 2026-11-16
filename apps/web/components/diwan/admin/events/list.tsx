@@ -13,7 +13,13 @@ import { type events, localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { DiwanSection } from "../../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../../states";
-import { AdminHeading, type Column, DataTable, RecordList } from "../kit";
+import {
+  AdminHeading,
+  type Column,
+  DataTable,
+  NewLink,
+  RecordList,
+} from "../kit";
 import { adminEventColumns } from "./data";
 
 type Kind = "upcoming" | "past" | "drafts";
@@ -163,6 +169,7 @@ export const EventsList = () => {
   return (
     <div className="grid gap-10">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <NewLink href="/events/new">{t("new")}</NewLink>
       {loading ? <SectionSpinner /> : null}
       {failed ? <ErrorState onRetry={() => failed.refetch()} /> : null}
       {loading || failed ? null : (

@@ -243,9 +243,16 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   the signer's name on the platform in the signature face, the card
   number, the date and a guilloche. Never typed.
 - **Events.** One events manager, one standard event. Every event,
-  meetings among them, is made in Notion's Events database and copied to
-  the site by the sync; the Diwan shows it read-only and keeps only the
-  site's own parts (nothing is made in the Diwan). Every event has
+  meetings among them, is made and edited only in the Diwan (Events, New
+  event; `EventFacts`), every field, and published from there with a lead
+  (`events.events.lead_id`, from the register) and a confirmed place (the
+  database refuses otherwise). Notion's Events database is a read-only copy
+  the site writes (decisions.md, Where things live). Each new event gets the
+  standard shifts: check-in for two, the membership table for one and
+  refreshments for two when food is served (`private.default_shifts`).
+  Hudhud announces it once in the members' group, three weeks ahead at
+  most (`announced_at`), and Student Life gets next week's public events
+  each Wednesday by the secure link (`events.student_life_weeks`). Every event has
   the one page on the site (`EventView` with `EventParts`) and in the
   Diwan (`EventEditor` with `EventPartsAdmin`), with only the standard
   parts: its access (`events.events.entry`: `open`, `rsvp`, `members` or
@@ -579,11 +586,11 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   people and private records, Telegram for talk. Every piece of
   information has one home; anywhere else it is a read-only view.
   Written in Notion and published by the sync (`lib/api/notion`,
-  `docs/platform/notion.md`): events, news, documents, minutes and the
-  content calendar. Kept on the site and copied to Notion read-only: the
-  officers and Qirtas's counts. One language per row: an Arabic edition is
-  its own row (Language Arabic, Edition of the English row), and an
-  Arabic event row takes Way in and Off campus from its English row. The
+  `docs/platform/notion.md`): documents and minutes; Notion alone keeps
+  meetings and agendas, plans, projects, tasks, event plans, the inventory
+  and debriefs. Kept on the site and copied to Notion read-only: events,
+  needs, the officers and Qirtas's counts (one language per row: an Arabic
+  edition is its own row, Language Arabic, Edition of the English row). The
   sync reads and writes Diwan and Diwan ID; rename a property only with
   the sync in the same change. Diwan pages with a Notion counterpart say
   so with `NotionManaged`.

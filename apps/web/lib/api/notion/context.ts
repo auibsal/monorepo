@@ -12,6 +12,7 @@ export type LinkKind =
   | "event_ar"
   | "journal_stage"
   | "minutes"
+  | "need"
   | "news"
   | "officer"
   | "piece"
@@ -26,6 +27,8 @@ export interface Sources {
   journal: string;
   /** Work, Meetings: minutes written there go to the Diwan (Nov 4, 2026). */
   meetings?: string;
+  /** Needs: moved to the site (Nov 16, 2026); a read-only copy since. */
+  needs?: string;
   news: string;
   officers: string;
   programmes: string;

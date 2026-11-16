@@ -61,6 +61,7 @@ export const TwoStepResetWithCode = email(samples.TwoStepResetWithCode);
 export const RecoveryAttempts = email(samples.RecoveryAttempts);
 export const ConcernRaised = email(samples.ConcernRaised);
 export const IncidentReported = email(samples.IncidentReported);
+export const StudentLifeWeek = email(samples.StudentLifeWeek);
 export const RemovalOverdue = email(samples.RemovalOverdue);
 export const RemovalReceived = email(samples.RemovalReceived);
 export const RemovalRequested = email(samples.RemovalRequested);

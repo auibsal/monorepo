@@ -7,9 +7,11 @@ auibsal.org.
 The owner's current decisions (`claude/decisions.md`) and the Arabic
 glossary (`claude/glossary_ar.md`) are the source of truth: where this file
 or any older document disagrees, they win. Both are a read-only mirror of
-the Claude project's copies, replaced whole whenever the owner sends a
-prompt and never edited in this repository; propose a change in your
-report instead (`bun run check:decisions` checks only the date line).
+the Claude project's copies: whenever they change, the co-pilot chat opens a
+pull request (`claude/mirror`) that replaces both whole; merge it, or rebase
+on it, before other work. Never edit them in any other pull request;
+propose a change in your report instead (`bun run check:decisions` checks
+only the date line).
 Start every session from them and from `PROGRESS.md` (the working
 checklist, with what is blocked), and continue from the first unticked
 item. decisions.md is organized by subject: code cites a decision by its

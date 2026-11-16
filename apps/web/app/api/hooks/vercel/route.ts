@@ -34,8 +34,8 @@ const signed = (secret: string, body: string, signature: string | null) => {
 
 /**
  * POST /api/hooks/vercel: Vercel's webhook. A production deploy that fails
- * becomes an urgent staff alert in the Council's topic of the Diwan group
- * (decisions.md: staff alerts go to the team's topic and the Desk).
+ * or is canceled becomes an urgent staff alert in the Diwan group's web
+ * topic and on the Desk (decisions.md, The site: no silent failures).
  */
 export const POST = async (request: Request) => {
   const secret = env.VERCEL_WEBHOOK_SECRET;
@@ -60,7 +60,7 @@ export const POST = async (request: Request) => {
     await staffAlert({
       key: `vercel:${id}`,
       link: link?.startsWith("https://") ? link : undefined,
-      team: "council",
+      team: "web",
       text_ar:
         "فشل نشر الموقع على Vercel، فما زالت النسخة السابقة تعمل. افتح سجل النشر لمعرفة السبب.",
       text_en:

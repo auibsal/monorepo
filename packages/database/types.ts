@@ -845,6 +845,40 @@ export type Database = {
         };
         Relationships: [];
       };
+      document_scan_hits: {
+        Row: {
+          found: string;
+          id: string;
+          keeper: string | null;
+          kind: string;
+          notion_page_id: string;
+          scanned_at: string;
+          title: string;
+          url: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          found: string;
+          id?: string;
+          keeper?: string | null;
+          kind: string;
+          notion_page_id: string;
+          scanned_at?: string;
+          title: string;
+          url: string;
+        };
+        Update: {
+          found?: string;
+          id?: string;
+          keeper?: string | null;
+          kind?: string;
+          notion_page_id?: string;
+          scanned_at?: string;
+          title?: string;
+          url?: string;
+        };
+        Relationships: [];
+      };
       email_suppressions: {
         Row: {
           created_at: string;
@@ -2152,6 +2186,7 @@ export type Database = {
         Row: {
           accommodation_by: string | null;
           allergens: string[];
+          announced_at: string | null;
           body_ar: string | null;
           body_en: string | null;
           capacity: number | null;
@@ -2164,6 +2199,7 @@ export type Database = {
           id: string;
           image_path: string | null;
           language: string | null;
+          lead_id: string | null;
           members_only: boolean;
           no_photos: boolean;
           off_campus: boolean;
@@ -2197,6 +2233,7 @@ export type Database = {
         Insert: {
           accommodation_by?: string | null;
           allergens?: string[];
+          announced_at?: string | null;
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
@@ -2209,6 +2246,7 @@ export type Database = {
           id?: string;
           image_path?: string | null;
           language?: string | null;
+          lead_id?: string | null;
           members_only?: never;
           no_photos?: boolean;
           off_campus?: boolean;
@@ -2241,6 +2279,7 @@ export type Database = {
         Update: {
           accommodation_by?: string | null;
           allergens?: string[];
+          announced_at?: string | null;
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
@@ -2253,6 +2292,7 @@ export type Database = {
           id?: string;
           image_path?: string | null;
           language?: string | null;
+          lead_id?: string | null;
           members_only?: never;
           no_photos?: boolean;
           off_campus?: boolean;
@@ -2514,6 +2554,71 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      student_life_week_events: {
+        Row: {
+          answered_at: string | null;
+          event_id: string;
+          included: boolean | null;
+          week_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          answered_at?: string | null;
+          event_id: string;
+          included?: boolean | null;
+          week_id: string;
+        };
+        Update: {
+          answered_at?: string | null;
+          event_id?: string;
+          included?: boolean | null;
+          week_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "student_life_week_events_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "student_life_week_events_week_id_fkey";
+            columns: ["week_id"];
+            isOneToOne: false;
+            referencedRelation: "student_life_weeks";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      student_life_weeks: {
+        Row: {
+          answered_at: string | null;
+          created_at: string;
+          id: string;
+          sent_at: string | null;
+          token_hash: string;
+          week_of: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          answered_at?: string | null;
+          created_at?: string;
+          id?: string;
+          sent_at?: string | null;
+          token_hash: string;
+          week_of: string;
+        };
+        Update: {
+          answered_at?: string | null;
+          created_at?: string;
+          id?: string;
+          sent_at?: string | null;
+          token_hash?: string;
+          week_of?: string;
+        };
+        Relationships: [];
       };
       waitlist: {
         Row: {
@@ -7877,8 +7982,10 @@ export type Database = {
           event_id: string | null;
           given_by: string | null;
           id: string;
+          issue_id: string | null;
           item: string;
-          needed_by: string;
+          needed_by: string | null;
+          production_id: string | null;
           programme_id: string | null;
           provided_note: string | null;
           provided_on: string | null;
@@ -7895,12 +8002,14 @@ export type Database = {
           event_id?: string | null;
           given_by?: string | null;
           id?: string;
+          issue_id?: string | null;
           item: string;
-          needed_by: string;
+          needed_by?: string | null;
+          production_id?: string | null;
           programme_id?: string | null;
           provided_note?: string | null;
           provided_on?: string | null;
-          purpose: string;
+          purpose?: string;
           quantity?: number;
           requested_on?: string | null;
           status?: string;
@@ -7912,8 +8021,10 @@ export type Database = {
           event_id?: string | null;
           given_by?: string | null;
           id?: string;
+          issue_id?: string | null;
           item?: string;
-          needed_by?: string;
+          needed_by?: string | null;
+          production_id?: string | null;
           programme_id?: string | null;
           provided_note?: string | null;
           provided_on?: string | null;
@@ -7923,7 +8034,15 @@ export type Database = {
           status?: string;
           updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "needs_production_id_fkey";
+            columns: ["production_id"];
+            isOneToOne: false;
+            referencedRelation: "productions";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       next_stop_guest_ideas: {
         Row: {

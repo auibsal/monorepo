@@ -1,26 +1,13 @@
 import type { NotionPage } from "./client";
-import { named, read, SLUG, slugify, toInstant } from "./props";
+import { read, SLUG, slugify } from "./props";
 
 /**
- * What a Notion page must hold before the platform publishes it, checked
- * the same way as the Diwan's forms and the database. Each problem is a
- * short instruction for the page's Platform note and comment. One language
- * per row (Nov 4, 2026): an English row publishes the record, and an
- * Arabic edition (Language Arabic, Edition of the English row) gives it
- * its Arabic.
+ * What a Notion document must hold before the platform publishes it,
+ * checked the same way as the Diwan's forms and the database. Each problem
+ * is a short instruction for the page's Platform note and comment. One
+ * language per row (Nov 4, 2026). Events are no longer published from
+ * Notion: they are made in the Diwan (decisions.md, Events).
  */
-
-export interface EventValues {
-  capacity: number | null;
-  ends_at: string | null;
-  entry: "invite" | "members" | "open" | "rsvp";
-  off_campus: boolean;
-  slug: string;
-  starts_at: string;
-  summary_en: string | null;
-  title_en: string;
-  venue_en: string | null;
-}
 
 type Checked<T> = { ok: true; values: T } | { ok: false; problems: string[] };
 
@@ -30,33 +17,6 @@ const lengthProblem = (label: string, text: string, max: number) =>
   text.length > max
     ? [`${label} is ${text.length} characters; keep it to ${max}.`]
     : [];
-
-const slugFor = (page: NotionPage, title: string) => {
-  const given = read.text(page, "Slug").toLowerCase();
-  return given || slugify(title);
-};
-
-/**
- * The event's access (decisions §10): Open (just come), RSVP (book a
- * place), Members (members book a place, such as a Council meeting, which
- * members may observe) or Private (invited only, such as a partner's
- * private event). It alone decides who sees the event.
- */
-const WAYS_IN = {
-  Members: "members",
-  Open: "open",
-  Private: "invite",
-  RSVP: "rsvp",
-} as const;
-
-const wayIn = (page: NotionPage, problems: string[]) => {
-  const chosen = read.select(page, named(page, "Access", "Way in")) ?? "";
-  if (chosen in WAYS_IN) {
-    return WAYS_IN[chosen as keyof typeof WAYS_IN];
-  }
-  problems.push("Set Access: Open, RSVP, Members or Private.");
-  return "open";
-};
 
 const slugProblems = (slug: string) =>
   SLUG.test(slug)
@@ -69,18 +29,6 @@ const slugProblems = (slug: string) =>
 export const languageOf = (page: NotionPage): "ar" | "en" =>
   read.select(page, "Language") === "Arabic" ? "ar" : "en";
 
-/** The English row an Arabic edition translates, if it names one. */
-const editionOf = (page: NotionPage, problems: string[]) => {
-  const linked = read.relation(page, "Edition of");
-  if (linked.length !== 1) {
-    problems.push(
-      "An Arabic edition links exactly one English row in Edition of."
-    );
-    return null;
-  }
-  return (linked[0] ?? "").replaceAll("-", "");
-};
-
 const englishTitle = (page: NotionPage, problems: string[]) => {
   const title = read.text(page, "Title");
   if (!title) {
@@ -88,116 +36,6 @@ const englishTitle = (page: NotionPage, problems: string[]) => {
   }
   problems.push(...lengthProblem("The title", title, 200));
   return title;
-};
-
-export const checkEvent = (page: NotionPage): Checked<EventValues> => {
-  const problems: string[] = [];
-  const titleEn = englishTitle(page, problems);
-  const when = read.date(page, "When");
-  const startsAt = toInstant(when?.start);
-  const endsAt = toInstant(when?.end);
-  if (!when?.start) {
-    problems.push("Set When to the start date and time.");
-  } else if (!startsAt) {
-    problems.push("Add a start time to When, not only a date.");
-  }
-  if (when?.end && !endsAt) {
-    problems.push("Add an end time to When, or remove the end date.");
-  }
-  if (startsAt && endsAt && endsAt <= startsAt) {
-    problems.push("The end of When must be after the start.");
-  }
-  const summaryEn = read.text(page, "Summary");
-  problems.push(...lengthProblem("The summary", summaryEn, 500));
-  const capacity = read.number(page, "Capacity");
-  if (capacity !== null && !(Number.isInteger(capacity) && capacity > 0)) {
-    problems.push("Capacity must be a whole number above zero, or empty.");
-  }
-  const slug = slugFor(page, titleEn);
-  problems.push(...slugProblems(slug));
-  const entry = wayIn(page, problems);
-  // Decisions §10: an event is published only with a lead and a confirmed
-  // place.
-  if (read.text(page, "Venue").trim() === "") {
-    problems.push(
-      "Set Venue to the confirmed room or place. An event is published only once its place is confirmed."
-    );
-  }
-  if (read.people(page, named(page, "Lead", "Owner")).length === 0) {
-    problems.push(
-      "Set Lead to the event's lead. An event is published only with a lead."
-    );
-  }
-
-  if (problems.length > 0 || !startsAt) {
-    return { ok: false, problems };
-  }
-  return {
-    ok: true,
-    values: {
-      capacity,
-      ends_at: endsAt,
-      entry,
-      off_campus: read.checkbox(page, "Off campus"),
-      slug,
-      starts_at: startsAt,
-      summary_en: optional(summaryEn),
-      title_en: titleEn,
-      venue_en: optional(read.text(page, "Venue")),
-    },
-  };
-};
-
-const THE_SOCIETY = /^the society$/iu;
-
-/**
- * What an event row says beyond the event itself (decisions §13): its
- * host (the Society, or the partner the event is held for, by name) and
- * the link to its debrief (event-debrief).
- */
-export const eventExtras = (page: NotionPage) => {
-  const host = read.select(page, "Host") ?? read.text(page, "Host");
-  const debrief = read.url(page, "Debrief");
-  return {
-    debrief: debrief?.startsWith("https://") ? debrief : null,
-    host: host && !THE_SOCIETY.test(host.trim()) ? host.trim() : null,
-  };
-};
-
-export interface ArabicEdition {
-  /** The English row's page id, bare. */
-  of: string;
-  summary: string | null;
-  title: string;
-  venue: string | null;
-}
-
-/** An Arabic edition row: its own title, summary and venue, and its English row. */
-export const checkArabicEdition = (
-  page: NotionPage,
-  { summary = "Summary", title = "Title", venue = "Venue" } = {}
-): Checked<ArabicEdition> => {
-  const problems: string[] = [];
-  const of = editionOf(page, problems);
-  const text = read.text(page, title);
-  if (!text) {
-    problems.push("Add the Arabic title.");
-  }
-  problems.push(...lengthProblem("The title", text, 200));
-  const summaryText = read.text(page, summary);
-  problems.push(...lengthProblem("The summary", summaryText, 500));
-  if (problems.length > 0 || !of) {
-    return { ok: false, problems };
-  }
-  return {
-    ok: true,
-    values: {
-      of,
-      summary: optional(summaryText),
-      title: text,
-      venue: optional(read.text(page, venue)),
-    },
-  };
 };
 
 const CODE = /^SAL-(GOV|EXB|EVT|MEM|PTN|MED|ART|EDT)-\d{2}$/u;

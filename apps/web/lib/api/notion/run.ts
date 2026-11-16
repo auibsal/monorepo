@@ -9,9 +9,11 @@ import { log } from "@/lib/observability/log";
 import { createNotion, type Notion, type NotionUser } from "./client";
 import type { Admin, Sources, SyncContext } from "./context";
 import { publishDocuments, syncAdoptionRecords } from "./documents";
+import { copyEvents, importEvents, lockEvents } from "./events";
 import { sendMinutesToDiwan } from "./minutes";
 import { mirrorJournal, mirrorOfficers, peopleByEmail } from "./mirrors";
-import { publishWaiting, reportStaleEvents, syncRsvpCounts } from "./publish";
+import { copyNeeds, importNeeds, lockNeeds } from "./needs";
+import { scanDocuments } from "./scan";
 import { unpublishFromNotion } from "./unpublish";
 
 const SOURCE_KEYS = [
@@ -44,6 +46,7 @@ const sourcesFrom = (value: unknown): Sources | null => {
   return {
     ...(v as unknown as Sources),
     meetings: typeof v.meetings === "string" ? v.meetings : undefined,
+    needs: typeof v.needs === "string" ? v.needs : undefined,
   };
 };
 
@@ -55,11 +58,12 @@ export interface SyncState {
 }
 
 /**
- * Everything one sync does, in order (Nov 4, 2026): the read-only copies
- * (officers, Qirtas's counts), then what Notion authors (events,
- * documents and their adoption record,
- * minutes), then the RSVP counts. Nothing is made in the Diwan and copied
- * back: events and minutes are written in Notion only (decisions §8).
+ * Everything one sync does, in order (Nov 16, 2026): what Notion authors
+ * (documents and their adoption record, minutes), then the read-only
+ * copies the site writes (officers, Qirtas's counts, events, needs).
+ * Events and needs are the site's (decisions.md, Where things live): they
+ * were imported from Notion once, and their Notion databases are copies.
+ * Nothing is edited in both places.
  */
 const steps: [
   string,
@@ -67,7 +71,6 @@ const steps: [
 ][] = [
   ["officers", (ctx, users) => mirrorOfficers(ctx, peopleByEmail(users))],
   ["journal", (ctx) => mirrorJournal(ctx)],
-  ["publishing", (ctx) => publishWaiting(ctx)],
   [
     "documents",
     (ctx) => publishDocuments(ctx, { all: ctx.resyncDocuments === true }),
@@ -75,15 +78,14 @@ const steps: [
   ["adoption", (ctx) => syncAdoptionRecords(ctx)],
   ["off the site", (ctx) => unpublishFromNotion(ctx)],
   ["minutes", (ctx) => sendMinutesToDiwan(ctx)],
-  ["rsvps", (ctx) => syncRsvpCounts(ctx)],
-  [
-    "stale events",
-    (ctx, users) =>
-      reportStaleEvents(
-        ctx,
-        new Set(users.filter((u) => u.type === "bot").map((u) => u.id))
-      ),
-  ],
+  ["events import", (ctx, users) => importEvents(ctx, users)],
+  ["needs import", (ctx) => importNeeds(ctx)],
+  ["events copy", (ctx, users) => copyEvents(ctx, users)],
+  ["needs copy", (ctx) => copyNeeds(ctx)],
+  ["events lock", (ctx) => lockEvents(ctx)],
+  ["needs lock", (ctx) => lockNeeds(ctx)],
+  // Last, in whatever time is left: the weekly scan of the documents.
+  ["document scan", (ctx) => scanDocuments(ctx)],
 ];
 
 export const runNotionSync = async (

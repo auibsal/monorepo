@@ -1110,6 +1110,88 @@ export const incidentReported = (
     ],
   }));
 
+/** One of next week's public events, for Student Life's weekly email. */
+export interface WeekEvent {
+  image: string | null;
+  starts_at: string;
+  summary_ar: string | null;
+  summary_en: string | null;
+  title_ar: string;
+  title_en: string;
+  url_ar: string;
+  url_en: string;
+  venue_ar: string | null;
+  venue_en: string | null;
+}
+
+/**
+ * The event's ready-to-paste paragraph, in one language: what, when,
+ * where and the link (decisions.md, Events: Student Life's weekly email).
+ */
+const weekParagraph = (e: WeekEvent, l: Lang) => {
+  const at = `${formatLongDate(e.starts_at, l)}, ${formatClock(e.starts_at, l)}`;
+  if (l === "ar") {
+    const place = e.venue_ar ?? e.venue_en;
+    return [
+      `${e.title_ar}.`,
+      e.summary_ar,
+      `${at}${place ? `، ${place}` : ""}.`,
+      `التفاصيل: ⁦${e.url_ar}⁩`,
+    ]
+      .filter(Boolean)
+      .join(" ");
+  }
+  return [
+    `${e.title_en}.`,
+    e.summary_en,
+    `${at}${e.venue_en ? `, ${e.venue_en}` : ""}.`,
+    `Details: ${e.url_en}`,
+  ]
+    .filter(Boolean)
+    .join(" ");
+};
+
+/**
+ * Each Wednesday, to Student Life (decisions.md, Events): next week's
+ * public events, each with its paragraph in both languages, its image and
+ * its link, and the secure link to mark which were included.
+ */
+export const studentLifeWeek = (
+  lang: Lang,
+  events: WeekEvent[],
+  answer: string
+) =>
+  build(lang, (l) => ({
+    action: {
+      fallback: true,
+      href: answer,
+      label: l === "ar" ? "علّموا ما أدرجتموه" : "Mark what you included",
+    },
+    heading:
+      l === "ar"
+        ? "فعاليات الجمعية في الأسبوع القادم"
+        : "The Society’s events next week",
+    lists: events.map((e) => ({
+      items: [
+        { meta: "English", title: weekParagraph(e, "en") },
+        { meta: "العربية", title: weekParagraph(e, "ar") },
+        ...(e.image
+          ? [{ href: e.image, title: l === "ar" ? "الصورة" : "The image" }]
+          : []),
+        {
+          href: l === "ar" ? e.url_ar : e.url_en,
+          title: l === "ar" ? "صفحة الفعالية" : "The event’s page",
+        },
+      ],
+      title: l === "ar" ? e.title_ar : e.title_en,
+    })),
+    paragraphs: [
+      l === "ar"
+        ? "هذه فعاليات الجمعية العامة في الأسبوع القادم، لكل منها فقرة جاهزة للنسخ بالإنجليزية والعربية مع صورتها ورابطها. إن أدرجتم أيًا منها في إعلاناتكم فعلّموه من الرابط أدناه، بلا حساب."
+        : "These are the Society’s public events next week, each with a paragraph ready to paste in English and Arabic, its image and its link. If you include any in your announcements, mark them at the link below; no account is needed.",
+    ],
+  }));
+
 /** The test notice sent from Profile and privacy (push only, no email). */
 export interface FailedJob {
   failures: number;

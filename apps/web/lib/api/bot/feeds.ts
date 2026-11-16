@@ -21,8 +21,8 @@ import { staffPosts } from "./staff";
 
 /**
  * What the bot posts to connected groups, every ten minutes (pg_cron calls
- * /cron/telegram): the Sunday note (the week's events and open calls), a
- * reminder for each event two days before, "doors open" an hour before it
+ * /cron/telegram): the Sunday note (the week's events and open calls), each
+ * new event once (three weeks ahead at most), a reminder for each event two days before, "doors open" an hour before it
  * starts, "voting is open" and "closes tomorrow" for members' elections,
  * and new Qirtas pieces; each post in English
  * with a button to the Arabic page (decisions §6). The daily word goes only
@@ -35,6 +35,9 @@ const HOUR = 60 * 60 * 1000;
 // A reminder two days before, never on the day (decisions §6).
 const SOON = 48 * HOUR;
 const NOT_ON_THE_DAY = 24 * HOUR;
+// A new event is announced once, no earlier than three weeks ahead
+// (decisions.md, Hudhud).
+const NEW_EVENT_AHEAD = 21 * 24 * HOUR;
 const NEW_PIECE_WINDOW = 72 * HOUR;
 // "Last call" three days before an Edition's call closes (decisions.md, Hudhud).
 const LAST_CALL = 72 * HOUR;
@@ -163,6 +166,61 @@ export const sequence = async (
   }
   return sent;
 };
+
+/**
+ * Each new event, once, in the members' group's Events topic: when it is
+ * published, or three weeks before it if it was published earlier (Nov 16,
+ * 2026). In English with the «العربية» button; the event remembers it was
+ * announced (events.events.announced_at), and the Sunday note still lists
+ * the week.
+ */
+const newEvents = (run: Run, events: PublicEvent[]) =>
+  sequence(
+    events
+      .filter((event) => {
+        const lead = startsIn(event, run.now);
+        return lead > NOT_ON_THE_DAY && lead <= NEW_EVENT_AHEAD;
+      })
+      .map((event) => async () => {
+        const sent = await once(run.group, "event", event.id, () =>
+          postTo(
+            run.api,
+            run.group,
+            ["events", "announcements"],
+            copyFor(run.group, (lang) => {
+              const venue = pick(lang, event.venue_en, event.venue_ar);
+              const summary = pick(lang, event.summary_en, event.summary_ar);
+              return [
+                copy[lang].postEventNew(when(lang, event.starts_at)),
+                `<b>${escapeHtml(pick(lang, event.title_en, event.title_ar))}</b>`,
+                venue ? escapeHtml(venue) : null,
+                summary ? `\n${escapeHtml(summary)}` : null,
+              ]
+                .filter(Boolean)
+                .join("\n");
+            }),
+            {
+              reply_markup: new InlineKeyboard()
+                .url(
+                  label(run.group.lang, (t) => t.buttons.rsvp),
+                  botLink(run.username, `ev_${event.id}`)
+                )
+                .url(copy.ar.buttons.arabic, eventPage("ar", event.slug)),
+            }
+          )
+        );
+        if (sent) {
+          await db()
+            .schema("events")
+            .from("events")
+            .update({ announced_at: run.now.toISOString() })
+            .eq("id", event.id)
+            .is("announced_at", null);
+        }
+        return sent;
+      }),
+    MAX_PER_RUN
+  );
 
 /** Two days before an event: a reminder in the members' group. */
 const soonEvents = (run: Run, events: PublicEvent[]) =>
@@ -887,13 +945,22 @@ export const runFeeds = async (
       const announced = await groupNotices(run, notices);
       const voting = await electionPosts(run, elections);
       const doors = await doorsOpen(run, events);
+      const fresh = await newEvents(run, events);
       const soon = await soonEvents(run, events);
       const week = await sundayNote(run, events, calls);
       const last = await lastCalls(run, calls);
       const edition = await newEditions(run, editions ?? []);
       const written = await newPieces(run, pieces);
       return (
-        announced + voting + doors + soon + week + last + edition + written
+        announced +
+        voting +
+        doors +
+        fresh +
+        soon +
+        week +
+        last +
+        edition +
+        written
       );
     })
   );
