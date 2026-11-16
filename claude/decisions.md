@@ -923,6 +923,12 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 | **Email** | The mailboxes and groups above; the site's emails; the mailing list. |
 | **The monorepo** (github.com/auibsal/monorepo) | The code and the brand kit (SAL-MED-02), plus the read-only mirror of this file and the glossary. |
 
+- **Tasks and to-dos (one standard, as US organizations run one work tracker):**
+  - **Tasks** are every job a person does, all in Notion's one Tasks database (Work › Tasks): each has one owner and their seat, a due date, a status (To do, Doing, Waiting, Done), its area and project (an event, an Edition, a production, or "Platform and accounts" for the owner's settings on the tool accounts), what blocks it, how often it repeats, a link to where it's done, and its steps in its page. Each person works from "My tasks"; each project shows its tasks in a linked view.
+  - **No other lists:** event plans, project pages, manuals and chats keep no checkboxes or task lists of their own; a plan's steps are its project's tasks. There are no separate checklists (no owner's or President's checklist files).
+  - **To-dos** are only what the site itself asks one person to do on the site (sign, approve, set up two-step), shown on Today and the Desk and cleared when done; they are never copied into Notion. What the site does by itself (reminders, Hudhud's posts, scheduled emails) needs no task.
+  - **The site chat** lists what it needs from the owner in its pull request report; the co-pilot chat turns each into a task. The repository's PROGRESS.md keeps only code work, and nothing in the public repository describes a security setting that is off or a weakness not yet fixed.
+  - **No secrets** (passwords, keys, tokens, recovery codes) ever go in a task: they live in Bitwarden.
 - **Never Notion:** partners and members never use it.
 - **No personal storage:** no Google Drive, and no Society files in personal storage. The Society's files in the President's OneDrive move into Notion (the Tour scans into the site), and the folder is then deleted.
 - **Rows, not pages,** for small records (needs, shifts, credits, hours, roles); big records keep their own pages.
