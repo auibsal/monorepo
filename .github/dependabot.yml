@@ -2,7 +2,7 @@
 # Security fixes: as soon as GitHub publishes an advisory that touches a
 # dependency (Dependabot security updates, turned on in Settings, Code
 # security), one grouped pull request per ecosystem, every week at the
-# latest. Everything else: one grouped pull request per family, monthly.
+# latest. Everything else: monthly, as few pull requests as possible.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -17,8 +17,13 @@ updates:
         applies-to: version-updates
         patterns: [ "*" ]
 
-  # One grouped PR per family keeps versions aligned across workspaces
-  # (separate per-directory PRs previously left packages on old versions).
+  # Bun: one lockfile (bun.lock at the root) serves every workspace, so every
+  # update rewrites it, and two update PRs always conflict once either is
+  # merged. So there are as few as possible: one PR for every minor and
+  # patch update across all workspaces (merged on green CI by
+  # dependabot-auto-merge.yml), and one for the majors, which wait for a
+  # person. The families (Next, React, Supabase, Storybook, the tooling)
+  # still move together, inside them.
   - package-ecosystem: bun
     directories:
       - /
@@ -26,7 +31,7 @@ updates:
       - /packages/*
     schedule:
       interval: monthly
-    open-pull-requests-limit: 10
+    rebase-strategy: auto
     ignore:
       # Types follow the Node.js runtime (26 LTS, .nvmrc), not the newest Node.
       - dependency-name: "@types/node"
@@ -35,30 +40,11 @@ updates:
       security:
         applies-to: security-updates
         patterns: [ "*" ]
-      next:
-        applies-to: version-updates
-        patterns: [ "next", "@next/*", "eslint-config-next" ]
-      react:
-        applies-to: version-updates
-        patterns: [ "react", "react-dom", "@types/react", "@types/react-dom" ]
-      supabase:
-        applies-to: version-updates
-        patterns: [ "@supabase/*", "supabase" ]
-      storybook:
-        applies-to: version-updates
-        patterns: [ "storybook", "@storybook/*" ]
-      tooling:
-        applies-to: version-updates
-        patterns:
-          [
-            "@biomejs/*",
-            "ultracite",
-            "turbo",
-            "@turbo/*",
-            "typescript",
-            "vitest",
-            "@vitest/*",
-          ]
       minor-and-patch:
         applies-to: version-updates
+        patterns: [ "*" ]
         update-types: [ minor, patch ]
+      major:
+        applies-to: version-updates
+        patterns: [ "*" ]
+        update-types: [ major ]

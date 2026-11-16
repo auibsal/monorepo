@@ -73,6 +73,19 @@ better. Who does what is in `docs/platform/settings.md` and `secrets.md`.
   (SSL Labs, Nov 16: TLS 1.0 and 1.1 still accepted, grade B).
 - [ ] **status.auibsal.org** still points at Better Stack with no page
   behind it: delete the CNAME.
+- [x] **Dependabot without conflicts** (Nov 16): every Bun update rewrote
+  the one `bun.lock`, and six families each ran per workspace, so each
+  merge left the others in conflict and Dependabot reopened partial
+  duplicates (#279 and #287, #280 and #288). Now one pull request for all
+  minor and patch updates and one for majors (`.github/dependabot.yml`);
+  minor and patch updates merge themselves once CI passes
+  (`dependabot-auto-merge.yml`); majors wait for a person.
+- [ ] **Owner, after #286 merges:** GitHub → Settings → General → **Allow
+  auto-merge** on, and **Automatically delete head branches** on (13 old
+  Dependabot branches are left over: delete them under Branches); close
+  #279, #280, #287 and #288, then Insights → Dependency graph →
+  Dependabot → bun → **Check for updates**, which opens the one grouped
+  pull request.
 - [ ] **OpenSSF Scorecard** (6.9; what each check needs):
   - Contributors (6): it finds two organizations (anthropics, theideaiq).
     Make your membership of the **auibsal** organization public (GitHub →
