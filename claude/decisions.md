@@ -1,4 +1,4 @@
-# SAL: current decisions (source of truth, Monday, November 16, 2026)
+# SAL: current decisions (source of truth, Tuesday, November 17, 2026)
 
 Every chat in this project follows this file. Where an older document, project doc or chat disagrees, this file wins. Every Society document is **Version 1**: there are no earlier versions, no change histories and no old names.
 
@@ -710,6 +710,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Data:** Supabase's AI data features are off, and unused production secrets are deleted.
   - **Monitoring:** the platforms' own logs, plus one free uptime check of the home page and sign-in that alerts media@ (no personal data).
   - **No silent failures:** a failed or canceled deploy, a failed backup, migration or scheduled job, and a stalled Notion sync or email outbox each post at once to the Diwan group's web topic and the Desk, for the web lead and the owner.
+  - **Background jobs:** outbound work (Telegram posts first, then email as it moves) runs through Supabase Queues: pg_cron starts each run, which takes a small batch and ends well inside the time limit, and a message whose run fails returns to the queue for the next one. Supabase's own integrations are used only where they do the job better than the site; GraphQL is off, since the site reads only through the Data API.
   - **Grants and reviews:** the public role may call only the functions it needs; one security review a year against OWASP ASVS Level 2, each September, with every platform's settings checked.
   - **Backups:** daily, through Supabase Pro asked as a need; until then, the site's nightly encrypted backup (kept only as long as it takes to copy, never as a GitHub artifact on the public repository) to a private Cloudflare R2 bucket, with a key limited to that bucket and a 7-day bucket lock so no copy can be deleted early, kept 30 days, so a deleted account is gone from every copy within 30 days. Personal data is never exported for anything else.
 - **Speed:** every public page meets Core Web Vitals at the 75th percentile on a mid-range phone (largest paint under 2.5 s, response to taps under 200 ms, layout shift under 0.1), checked in CI and on real visitors with Vercel Speed Insights (cookieless, to be added beside Web Analytics). Images in AVIF or WebP at the size shown, with sizes set; YouTube loads only when tapped; fonts trimmed.
