@@ -120,6 +120,11 @@ const publicClient = (...tags: CacheTag[]): SupabaseClient<Database> | null => {
     env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
       auth: { autoRefreshToken: false, persistSession: false },
+      // No retries: the client waits 1, 2 and 4 seconds before trying a
+      // 503 again, and a read still waiting at prerender stops the page and
+      // the build. A failed read already shows an empty section and is read
+      // again within a minute (cachedRead).
+      db: { retry: false },
       global: { fetch: cachedFetch(tags) },
     }
   );
