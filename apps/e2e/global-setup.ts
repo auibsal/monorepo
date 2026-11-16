@@ -186,21 +186,31 @@ export default async function globalSetup() {
   }
 
   const start = new Date(Date.now() + 5 * 86_400_000);
-  await db.schema("events").from("events").upsert(
-    {
-      capacity: 30,
-      published_at: new Date().toISOString(),
-      slug: event.slug,
-      starts_at: start.toISOString(),
-      status: "published",
-      summary_ar: "اقرأ صفحة تحبها.",
-      summary_en: "Read a page you love.",
-      title_ar: "صفحات مفتوحة (اختبار)",
-      title_en: event.title,
-      venue_en: "Library",
-    },
-    { onConflict: "slug" }
-  );
+  await db
+    .schema("events")
+    .from("events")
+    .upsert(
+      {
+        access_detail_ar: "كل المقاعد فوق الدرج، ولا مقاعد في المستوى الأرضي.",
+        access_detail_en: "Every seat is up steps; none at ground level.",
+        capacity: 30,
+        ends_at: new Date(start.getTime() + 2 * 3_600_000).toISOString(),
+        language: "both",
+        published_at: new Date().toISOString(),
+        seating: "seated",
+        slug: event.slug,
+        starts_at: start.toISOString(),
+        status: "published",
+        step_free: false,
+        summary_ar: "اقرأ صفحة تحبها.",
+        summary_en: "Read a page you love.",
+        title_ar: "صفحات مفتوحة (اختبار)",
+        title_en: event.title,
+        venue_ar: "المكتبة",
+        venue_en: "Library",
+      },
+      { onConflict: "slug" }
+    );
   // The event's Baghdad day (UTC+3), all day, as the AUIB sync stores it.
   const day = new Date(
     `${new Date(start.getTime() + 3 * 3_600_000).toISOString().slice(0, 10)}T00:00:00Z`

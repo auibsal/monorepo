@@ -5,7 +5,11 @@ import { ReviewStep } from "@repo/brand/components/sal/form-flow";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
-import { formatClock, formatLongDate } from "@repo/internationalization/format";
+import {
+  formatClock,
+  formatClockRange,
+  formatLongDate,
+} from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
@@ -227,8 +231,7 @@ export const Productions = () => {
                     <p className="font-medium">
                       {titleOf(r.production_id)} ·{" "}
                       {formatLongDate(r.starts_at, locale)} ·{" "}
-                      {formatClock(r.starts_at, locale)}–
-                      {formatClock(r.ends_at, locale)}
+                      {formatClockRange(r.starts_at, r.ends_at, locale)}
                     </p>
                     <p className="type-caption" dir="auto">
                       {[where, r.called].filter(Boolean).join(" · ")}
@@ -286,8 +289,7 @@ const AuditionSlot = ({
     <li className="border-line grid gap-2 border-t pt-3">
       <p className="font-medium">
         {formatLongDate(audition.starts_at, locale)} ·{" "}
-        {formatClock(audition.starts_at, locale)}–
-        {formatClock(audition.ends_at, locale)}
+        {formatClockRange(audition.starts_at, audition.ends_at, locale)}
         {where ? ` · ${where}` : ""}
       </p>
       {prepare ? (

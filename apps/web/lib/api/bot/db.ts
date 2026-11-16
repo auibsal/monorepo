@@ -59,10 +59,11 @@ export interface Account {
 
 export interface EventRow {
   capacity: number | null;
+  /** Who can come (decisions.md, Events: Access): the classes ticked. */
+  classes: string[];
   confirmed: number;
   ends_at: string | null;
   id: string;
-  members_only: boolean;
   mine: "confirmed" | "waitlisted" | null;
   rsvp_enabled: boolean;
   slug: string;

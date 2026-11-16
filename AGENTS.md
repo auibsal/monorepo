@@ -293,7 +293,7 @@ any schema change. Integration tests run against a local stack with
 the Council and the first semester, members and classes, names and titles,
 the card, numbers and codes, forms and signatures, events and the
 calendar, the Typewriter Tour, partners, guests, governance, Qirtas
-(Submit to Qirtas, the Newsroom, reading, Editions, Games, the Prize,
+(Send your work, the Newsroom, reading, Editions, Games, the Prize,
 Qalam, the Sunday Paper), and Notion, documents, Hudhud and email. Read
 the section for the domain you are changing first. Four rules hold
 everywhere:
@@ -453,6 +453,15 @@ everywhere:
 - **shadcn/ui:** files in `packages/brand/components/ui` are generated;
   update them with the shadcn CLI where possible. SAL components live in
   `packages/brand/components/sal`.
+- **The owner's tasks live in Notion** (Work › Tasks; decisions.md, Where
+  things live: Tasks and to-dos), kept by the co-pilot chat. `PROGRESS.md`
+  keeps only open code work. List what you need from the owner under "For
+  the owner" in each pull request's report; never as a checklist here.
+- **Nothing public describes a weakness.** No line in the public
+  repository (`PROGRESS.md`, docs, commits, pull request descriptions)
+  describes a security setting that is off or a weakness not yet fixed:
+  tell the owner in chat instead. `docs/platform/settings.md` may still
+  describe the settings as they are meant to be.
 - **Activity log.** It reads as sentences
   (`components/diwan/admin/system/activity.tsx`); a new logged table needs
   its line there, and a new record table with history its entry in

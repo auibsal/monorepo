@@ -8,7 +8,7 @@ import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
 import {
-  formatClock,
+  formatClockRange,
   formatDateTime,
   formatLongDate,
   formatNumber,
@@ -1473,8 +1473,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
                 </p>
                 <p className="type-caption">
                   {formatLongDate(shift.starts_at, locale)},{" "}
-                  {formatClock(shift.starts_at, locale)}–
-                  {formatClock(shift.ends_at, locale)} ·{" "}
+                  {formatClockRange(shift.starts_at, shift.ends_at, locale)} ·{" "}
                   {t("signups", {
                     capacity: formatNumber(shift.capacity),
                     count: formatNumber(signups.length),

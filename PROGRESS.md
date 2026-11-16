@@ -12,12 +12,8 @@ Branch: `claude/new-session-qosn60`, one pull request per prompt.
 
 ## Open
 
-- [ ] **MTA-STS to enforce**, on or after Monday, November 30, once the
-  TLS reports at tls-reports@ are clean: `MTA_STS_MODE` to `enforce` in
-  `lib/mta-sts.ts`, and the owner gives `_mta-sts` a new `id`.
-- [ ] **A secret per caller:** `/api/hooks/workflow` takes its own
-  `WORKFLOW_HOOK_SECRET` (GitHub and Vercel), not `CRON_SECRET`, when the
-  workflows are next changed.
+- [ ] **MTA-STS:** `MTA_STS_MODE` in `lib/mta-sts.ts` moves to `enforce`
+  on or after Monday, November 30 (docs/platform/settings.md, Email).
 - [ ] Events have no short address of their own (decisions.md lists
   /haven, /tour and /join); the kit prints and encodes the event's own
   address, auibsal.org/events/<slug>, until one is decided.
@@ -28,8 +24,8 @@ Branch: `claude/new-session-qosn60`, one pull request per prompt.
   Editor-in-Chief and approved with the Managing Editor before Mon, Dec 7; the Desk
   shows it as a to-do. Then set Edition 1's deadline on its Call tab and
   publish the call.
-- [ ] **Undo when testing is done:** a migration deleting the 23 grants
-  of the temporary President test; restore the President test in
+- [ ] **End the President test period** when the owner says it is over:
+  one migration closes it; restore the President test in
   `lib/rbac/rbac.test.ts` and `roles.ts`; drop the set-aside block from
   `95_journal_pipeline`, `99_president_absence`,
   `99_qirtas_by_the_decisions` and `99_two_officers`, and
@@ -46,3 +42,6 @@ Branch: `claude/new-session-qosn60`, one pull request per prompt.
   `access.two_step_from`, `journal.accepted_unplaced`,
   `journal.is_edition_desk` and `programmes.shift_places` are called by no
   page; drop each with its pgTAP assertions, or give it its page.
+- [ ] **The promo kit to the screening kit's files:** once the owner sends
+  them, match each layout's sizes and type to the reference (the kit
+  builds every piece from the event's fields and its Program today).

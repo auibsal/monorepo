@@ -9,7 +9,12 @@ const { slugify, toInstant } = await import("@/lib/api/notion/props");
 const { checkDocument, RETIRED_DOCUMENT_FAMILY } = await import(
   "@/lib/api/notion/rules"
 );
-const { copyProps, rowValues } = await import("@/lib/api/notion/events");
+const { accessLabel, copyProps, rowValues } = await import(
+  "@/lib/api/notion/events"
+);
+const { COPY_COLUMNS, lastMonth, MEASURES, seasonOf } = await import(
+  "@/lib/api/notion/copies"
+);
 const { needProps, needValues } = await import("@/lib/api/notion/needs");
 
 const rt = (content: string, extra: object = {}) => ({
@@ -130,8 +135,9 @@ describe("the one-time import from Notion (Nov 16, 2026)", () => {
     );
     expect(v).toMatchObject({
       capacity: 200,
+      classes: ["member"],
       debrief: "https://www.notion.so/debrief",
-      entry: "members",
+      entry: "rsvp",
       host: null,
       slug: "general-meeting-2027-02-17",
       starts_at: "2027-02-17T13:00:00.000Z",
@@ -173,12 +179,16 @@ describe("the one-time import from Notion (Nov 16, 2026)", () => {
   });
 });
 
+const PERSONAL =
+  /(^|[\s,(:_])(user_id|email|phone|contact_\w+|full_name\w*|created_by|author_id|confirmed_by|assigned_by|notes|answers|birth\w*)\b/u;
+
 describe("the read-only copies", () => {
   const ctx = {
     appUrl: "https://auibsal.org/diwan",
     webUrl: "https://auibsal.org",
   };
   const event = {
+    classes: ["member", "associate", "honorary", "guest"],
     ends_at: null,
     entry: "rsvp",
     id: "e1",
@@ -219,6 +229,40 @@ describe("the read-only copies", () => {
       "Public page": { url: null },
       Status: { select: { name: "Planning" } },
     });
+    expect(en.Access).toEqual({
+      select: { name: "Everyone · Booking required" },
+    });
+  });
+
+  test("access reads as the two settings (decisions.md, Events: Access)", () => {
+    expect(accessLabel({ classes: ["member"], entry: "rsvp" })).toBe(
+      "Members only · Booking required"
+    );
+    expect(accessLabel({ classes: ["member", "guest"], entry: "open" })).toBe(
+      "Members and Guests · Open"
+    );
+    expect(accessLabel({ classes: [], entry: "invite" })).toBe("Invited only");
+  });
+
+  test("no copy reads a personal field (decisions.md, Where things live)", () => {
+    for (const [copy, columns] of Object.entries(COPY_COLUMNS)) {
+      expect({ columns, copy, personal: PERSONAL.test(columns) }).toEqual({
+        columns,
+        copy,
+        personal: false,
+      });
+    }
+  });
+
+  test("the measures are written for the month just ended, on the first", () => {
+    expect(lastMonth(new Date("2026-11-30T21:30:00Z"))).toEqual({
+      first: true,
+      month: "2026-11-01",
+    });
+    expect(lastMonth(new Date("2026-11-16T12:00:00Z")).first).toBe(false);
+    expect(Object.keys(MEASURES)).toHaveLength(5);
+    expect(seasonOf("2026-11-22T11:00:00Z")).toBe("Fall 2026");
+    expect(seasonOf("2027-03-30T11:00:00Z")).toBe("Spring 2027");
   });
 
   test("a need's copy names what it is for", () => {

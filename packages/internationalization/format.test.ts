@@ -4,8 +4,10 @@ import { getDirection } from "./config";
 import {
   formatCalendarDate,
   formatClock,
+  formatClockRange,
   formatCurrency,
   formatDate,
+  formatDateRange,
   formatDateTime,
   formatDayParts,
   formatFieldValue,
@@ -163,5 +165,30 @@ describe("Baghdad months", () => {
       monthIndex: 9,
       year: 2026,
     });
+  });
+});
+
+const ISOLATED_RANGE = /^\u2066.+ – .+\u2069$/u;
+
+describe("ranges", () => {
+  const two = "2026-11-22T11:00:00Z";
+  const four = "2026-11-22T13:00:00Z";
+  const morning = "2026-11-22T08:00:00Z";
+
+  test("shares one meridiem in English, with an en dash", () => {
+    expect(formatClockRange(two, four, "en")).toBe("2:00–4:00 p.m.");
+    expect(formatClockRange(morning, four, "en")).toBe("11:00 a.m.–4:00 p.m.");
+  });
+
+  test("keeps Arabic ranges left to right in an isolate", () => {
+    const range = formatClockRange(two, four, "ar");
+    expect(range.startsWith("\u2066")).toBe(true);
+    expect(range.endsWith("\u2069")).toBe(true);
+    expect(range).toContain("2:00–4:00");
+    expect(range.indexOf("2:00")).toBeLessThan(range.indexOf("4:00"));
+    expect(formatDateRange(two, "2026-11-23T11:00:00Z", "ar")).toMatch(
+      ISOLATED_RANGE
+    );
+    expect(formatDateRange(two, four, "en")).not.toContain("\u2066");
   });
 });

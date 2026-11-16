@@ -7,31 +7,47 @@ import { bareId, type Notion, NotionError } from "./client";
 export type Admin = ReturnType<typeof createAdminClient>;
 
 export type LinkKind =
+  | "announcement"
   | "document"
+  | "edition"
+  | "episode"
   | "event"
   | "event_ar"
   | "journal_stage"
+  | "measure"
   | "minutes"
   | "need"
   | "news"
   | "officer"
+  | "opening"
+  | "organization"
   | "piece"
   | "piece_ar"
+  | "production"
   | "programme"
-  | "programme_ar";
+  | "programme_ar"
+  | "resolution";
 
 /** The workspace's data sources (core.settings `notion.data_sources`). */
 export interface Sources {
   documents: string;
+  /** The copies added Nov 16, 2026 (copies.ts); each optional. */
+  editions?: string;
   events: string;
   journal: string;
+  measures?: string;
   /** Work, Meetings: minutes written there go to the Diwan (Nov 4, 2026). */
   meetings?: string;
   /** Needs: moved to the site (Nov 16, 2026); a read-only copy since. */
   needs?: string;
   news: string;
   officers: string;
+  openings?: string;
+  organizations?: string;
+  productions?: string;
   programmes: string;
+  /** Announcements and resolutions. */
+  records?: string;
 }
 
 export interface SyncContext {

@@ -70,10 +70,10 @@ describe("copy", () => {
 describe("formatting", () => {
   const event: EventRow = {
     capacity: 10,
+    classes: ["member", "associate", "honorary", "guest"],
     confirmed: 9,
     ends_at: null,
     id: "e1",
-    members_only: false,
     mine: null,
     rsvp_enabled: true,
     slug: "open-mic",
@@ -170,6 +170,29 @@ describe("the Diwan group", () => {
     expect(text).toContain("Partner applications: 1");
     expect(text).toContain("New replies to openings: 2");
     expect(text).not.toContain("Perks waiting");
+  });
+
+  it("flags the shifts still empty within five days", () => {
+    const text = briefText(
+      { lang: "en" },
+      {
+        empty_shifts: [
+          {
+            shifts: [{ open: 1, role_ar: "التصوير", role_en: "Photos" }],
+            slug: "screening",
+            starts_at: "2026-11-22T11:00:00Z",
+            title_ar: "عرض",
+            title_en: "The screening",
+          },
+        ],
+        events: [],
+        waiting,
+      },
+      new Date("2026-11-18T06:00:00Z")
+    );
+    expect(text).toContain("Shifts still empty");
+    expect(text).toContain("<b>The screening</b>");
+    expect(text).toContain("Photos (1 open)");
   });
 
   it("says when nothing is on and nothing waits", () => {

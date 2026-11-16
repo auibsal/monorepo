@@ -39,7 +39,17 @@ interface BriefEvent {
 
 type WaitingKey = keyof Copy["briefCounts"];
 
+interface EmptyShifts {
+  shifts: { open: number; role_ar: string; role_en: string }[];
+  slug: string;
+  starts_at: string;
+  title_ar: string;
+  title_en: string;
+}
+
 interface Brief {
+  /** Events within five days with a shift nobody has taken (decisions.md, Events). */
+  empty_shifts?: EmptyShifts[];
   events: BriefEvent[];
   waiting: Record<
     | "grants_asked"
@@ -118,12 +128,24 @@ export const briefText = (
     const waiting = WAITING.filter(([key]) => brief.waiting[key] > 0).map(
       ([key, name]) => `${t.briefCounts[name]}: ${brief.waiting[key]}`
     );
+    const shifts = (brief.empty_shifts ?? []).map(
+      (e) =>
+        `<b>${escapeHtml(pick(lang, e.title_en, e.title_ar))}</b>, ${formatLongDate(e.starts_at, lang)}: ${e.shifts
+          .map((x) =>
+            t.briefShift(
+              escapeHtml(pick(lang, x.role_en, x.role_ar)),
+              String(x.open)
+            )
+          )
+          .join(", ")}`
+    );
     return [
       t.briefTitle(formatLongDate(now.toISOString(), lang)),
       "",
       ...(brief.events.length
         ? brief.events.map((event) => eventLine(lang, event))
         : [t.briefNoEvents]),
+      ...(shifts.length ? ["", t.briefShifts, ...shifts] : []),
       "",
       t.briefWaiting,
       ...(waiting.length ? waiting : [t.briefNothing]),

@@ -26,10 +26,14 @@ export interface Faces {
 }
 
 export interface Content {
-  /** One line: the date and time. */
+  /** One line: the date and time (or a work's credit, year and length). */
   date: string;
   /** A list item of the event's own, for its carousel slide. */
   item?: string;
+  /** Rows set one per line in place of the summary ("Good to know"). */
+  lines?: string[];
+  /** A work with no still: its number, large, where the image would be. */
+  number?: string;
   summary: string;
   title: string;
   /** The address shown and in the QR. */
@@ -38,11 +42,15 @@ export interface Content {
 }
 
 export interface Layout {
+  /** A white margin around the whole piece (print: 10 mm). */
+  border?: number;
   height: number;
   /** The image's share of the height (portrait) or width (landscape). */
   imageShare: number;
   margin: number;
   qr: boolean;
+  /** The QR on a wide piece too (campus screens), not only portrait. */
+  qrWide?: boolean;
   /** Kept clear of text at the top and bottom (a story's overlays). */
   safeBottom: number;
   safeTop: number;
@@ -166,7 +174,8 @@ const placeImage = (
   ctx: CanvasRenderingContext2D,
   layout: Layout,
   art: Art,
-  lang: Lang
+  lang: Lang,
+  number?: string
 ): Frame => {
   const { height: h, margin: m, width: w } = layout;
   const wide = w > h;
@@ -178,6 +187,20 @@ const placeImage = (
     wide,
   };
   if (!art.image) {
+    if (number && !wide) {
+      // A numbered card: the work's number, large, on stone.
+      const ih = h * layout.imageShare;
+      ctx.fillStyle = COLORS.stone;
+      ctx.fillRect(0, 0, w, ih);
+      ctx.fillStyle = COLORS.ink;
+      ctx.font = `300 ${ih * 0.6}px ${art.faces.sans}`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.direction = "ltr";
+      ctx.fillText(number, w / 2, ih / 2);
+      ctx.textBaseline = "alphabetic";
+      return { ...frame, top: Math.max(frame.top, ih + m) };
+    }
     return frame;
   }
   if (wide) {
@@ -241,12 +264,12 @@ const placeHeading = (
 const placeBody = (
   pen: Pen,
   frame: Frame,
-  text: string,
+  text: string | string[],
   art: Art,
   top: number,
   bottom: number
 ) => {
-  if (!text || frame.wide) {
+  if (text.length === 0 || frame.wide) {
     return;
   }
   const { ctx } = pen;
@@ -255,12 +278,11 @@ const placeBody = (
   ctx.fillStyle = COLORS.ink;
   ctx.font = `400 ${size}px ${art.faces.serif}`;
   const fits = Math.max(0, Math.floor((bottom - top) / lineHeight));
-  setLines(
-    pen,
-    wrap(ctx, text, pen.end - pen.start).slice(0, fits),
-    top,
-    lineHeight
-  );
+  const width = pen.end - pen.start;
+  const lines = Array.isArray(text)
+    ? text.flatMap((row) => wrap(ctx, row, width))
+    : wrap(ctx, text, width);
+  setLines(pen, lines.slice(0, fits), top, lineHeight);
 };
 
 /** The address, and the QR at the far end (never on Telegram's image). */
@@ -285,7 +307,7 @@ const placeFoot = (
     bottom
   );
   ctx.textBaseline = "alphabetic";
-  if (layout.qr && !frame.wide) {
+  if (layout.qr && (layout.qrWide || !frame.wide)) {
     drawQr(
       ctx,
       content.url,
@@ -309,9 +331,13 @@ export const drawCard = (
   art: Art,
   lang: Lang
 ) => {
+  if (layout.border) {
+    framed(ctx, layout, (inner) => drawCard(ctx, inner, content, art, lang));
+    return;
+  }
   ctx.fillStyle = COLORS.paper;
   ctx.fillRect(0, 0, layout.width, layout.height);
-  const frame = placeImage(ctx, layout, art, lang);
+  const frame = placeImage(ctx, layout, art, lang, content.number);
   const pen: Pen = { ctx, end: frame.end, lang, start: frame.start };
   const titleTop = placeLockup(ctx, frame, art, lang);
   const below = placeHeading(pen, frame, content, art, titleTop);
@@ -320,10 +346,218 @@ export const drawCard = (
   placeBody(
     pen,
     frame,
-    content.item ?? content.summary,
+    content.lines ?? content.item ?? content.summary,
     art,
     below + frame.unit * 4,
     bottom - qrSize - frame.unit * 4
   );
   placeFoot(pen, frame, layout, content, art, bottom, qrSize);
+};
+
+/** A white margin around the piece; the piece drawn inside it. */
+const framed = (
+  ctx: CanvasRenderingContext2D,
+  layout: Layout,
+  draw: (inner: Layout) => void
+) => {
+  const b = layout.border ?? 0;
+  ctx.fillStyle = COLORS.white;
+  ctx.fillRect(0, 0, layout.width, layout.height);
+  ctx.save();
+  ctx.translate(b, b);
+  ctx.beginPath();
+  ctx.rect(0, 0, layout.width - 2 * b, layout.height - 2 * b);
+  ctx.clip();
+  draw({
+    ...layout,
+    border: 0,
+    height: layout.height - 2 * b,
+    width: layout.width - 2 * b,
+  });
+  ctx.restore();
+};
+
+/** A sign: the lockup, a large heading, a line of text, a QR, logos. */
+export interface Sign {
+  heading: string;
+  /** Logos in a row at the foot (the co-sponsors on the thank-you card). */
+  logos?: (CanvasImageSource & { height: number; width: number })[];
+  /** The address in the QR, shown under it. */
+  qr?: string;
+  text?: string;
+}
+
+/**
+ * The door signs, the table tents and the thank-you card: one design, on
+ * paper, the heading Light and large on the reading side.
+ */
+export const drawSign = (
+  ctx: CanvasRenderingContext2D,
+  layout: Layout,
+  sign: Sign,
+  art: Art,
+  lang: Lang
+) => {
+  if (layout.border) {
+    framed(ctx, layout, (inner) => drawSign(ctx, inner, sign, art, lang));
+    return;
+  }
+  const { height: h, margin: m, width: w } = layout;
+  ctx.fillStyle = COLORS.paper;
+  ctx.fillRect(0, 0, w, h);
+  const unit = Math.min(w, h) / 100;
+  const frame: Frame = { end: w - m, start: m, top: m, unit, wide: w > h };
+  const pen: Pen = { ctx, end: frame.end, lang, start: frame.start };
+  const top = placeLockup(ctx, frame, art, lang);
+  const size = unit * (frame.wide ? 11 : 12);
+  ctx.fillStyle = COLORS.ink;
+  ctx.font = `${lang === "ar" ? 400 : 300} ${size}px ${art.faces.sans}`;
+  ctx.textBaseline = "top";
+  let y = setLines(
+    pen,
+    wrap(ctx, sign.heading, pen.end - pen.start).slice(0, 3),
+    top + unit * 4,
+    size * 1.12
+  );
+  if (sign.text) {
+    const body = unit * 4.4;
+    ctx.font = `400 ${body}px ${art.faces.serif}`;
+    y = setLines(
+      pen,
+      wrap(ctx, sign.text, pen.end - pen.start).slice(0, 6),
+      y + unit * 4,
+      body * 1.36
+    );
+  }
+  const bottom = h - m;
+  if (sign.qr) {
+    const q = unit * 26;
+    drawQr(
+      ctx,
+      sign.qr,
+      lang === "ar" ? pen.start : pen.end - q,
+      bottom - q,
+      q
+    );
+    ctx.fillStyle = COLORS.ink;
+    ctx.font = `500 ${unit * 3.2}px ${art.faces.sans}`;
+    ctx.direction = "ltr";
+    ctx.textAlign = lang === "ar" ? "right" : "left";
+    ctx.textBaseline = "bottom";
+    ctx.fillText(
+      sign.qr.replace(SCHEME, ""),
+      lang === "ar" ? pen.end : pen.start,
+      bottom
+    );
+  }
+  if (sign.logos?.length) {
+    const lh = unit * 8;
+    let x = pen.start;
+    for (const logo of sign.logos) {
+      const lw = (logo.width / logo.height) * lh;
+      if (x + lw > pen.end) {
+        break;
+      }
+      ctx.drawImage(logo, x, bottom - lh, lw, lh);
+      x += lw + unit * 5;
+    }
+  }
+  ctx.textBaseline = "alphabetic";
+};
+
+/**
+ * A table tent: folded A4, the sign on both halves, the top one turned so
+ * it reads from the other side of the table.
+ */
+export const drawTent = (
+  ctx: CanvasRenderingContext2D,
+  layout: Layout,
+  sign: Sign,
+  art: Art,
+  lang: Lang
+) => {
+  const half: Layout = { ...layout, height: layout.height / 2 };
+  ctx.save();
+  ctx.translate(0, layout.height / 2);
+  drawSign(ctx, half, sign, art, lang);
+  ctx.restore();
+  ctx.save();
+  ctx.translate(layout.width, layout.height / 2);
+  ctx.rotate(Math.PI);
+  drawSign(ctx, half, sign, art, lang);
+  ctx.restore();
+  ctx.strokeStyle = COLORS.stone;
+  ctx.lineWidth = Math.max(1, layout.width / 1000);
+  ctx.beginPath();
+  ctx.moveTo(0, layout.height / 2);
+  ctx.lineTo(layout.width, layout.height / 2);
+  ctx.stroke();
+};
+
+/** The printed program: the event, then each work with its facts and line. */
+export interface Program {
+  date: string;
+  items: { facts: string; line: string; title: string }[];
+  title: string;
+  venue: string;
+}
+
+export const drawProgram = (
+  ctx: CanvasRenderingContext2D,
+  layout: Layout,
+  program: Program,
+  art: Art,
+  lang: Lang
+) => {
+  const { height: h, margin: m, width: w } = layout;
+  ctx.fillStyle = COLORS.white;
+  ctx.fillRect(0, 0, w, h);
+  const unit = Math.min(w, h) / 100;
+  const frame: Frame = { end: w - m, start: m, top: m, unit, wide: false };
+  const pen: Pen = { ctx, end: frame.end, lang, start: frame.start };
+  const top = placeLockup(ctx, frame, art, lang);
+  let y = placeHeading(
+    pen,
+    frame,
+    {
+      date: program.date,
+      summary: "",
+      title: program.title,
+      url: "",
+      venue: program.venue,
+    },
+    art,
+    top
+  );
+  const width = pen.end - pen.start;
+  for (const [i, item] of program.items.entries()) {
+    y += unit * 5;
+    ctx.strokeStyle = COLORS.stone;
+    ctx.lineWidth = Math.max(1, unit / 6);
+    ctx.beginPath();
+    ctx.moveTo(pen.start, y - unit * 2);
+    ctx.lineTo(pen.end, y - unit * 2);
+    ctx.stroke();
+    ctx.fillStyle = COLORS.ink;
+    ctx.font = `500 ${unit * 4.2}px ${art.faces.sans}`;
+    y = setLines(
+      pen,
+      wrap(ctx, `${i + 1}. ${item.title}`, width),
+      y,
+      unit * 5.4
+    );
+    ctx.fillStyle = COLORS.ash;
+    ctx.font = `400 ${unit * 3.2}px ${art.faces.sans}`;
+    if (item.facts) {
+      y = setLines(pen, wrap(ctx, item.facts, width), y + unit, unit * 4.4);
+    }
+    ctx.fillStyle = COLORS.ink;
+    ctx.font = `400 ${unit * 3.8}px ${art.faces.serif}`;
+    if (item.line) {
+      y = setLines(pen, wrap(ctx, item.line, width), y + unit, unit * 5);
+    }
+    if (y > h - m) {
+      break;
+    }
+  }
 };

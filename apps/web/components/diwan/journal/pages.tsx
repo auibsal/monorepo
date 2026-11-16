@@ -107,7 +107,7 @@ interface Sent {
  * Edition submissions and newsroom pieces alike, newest first, each with
  * where it stands and its own page.
  */
-/** The member's drafts in Submit to Qirtas, newest first. */
+/** The member's drafts in Send your work, newest first. */
 const useMyDrafts = () => {
   const { supabase, user } = useAuth();
   return useQuery({

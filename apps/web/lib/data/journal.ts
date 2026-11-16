@@ -1114,7 +1114,7 @@ export const pieceEvent = async (client: Client, eventId: string | null) =>
           .select("id, slug, title_en, title_ar, starts_at")
           .eq("id", eventId)
           .eq("status", "published")
-          .eq("members_only", false)
+          .neq("entry", "invite")
           .maybeSingle()
       )
     : null;
@@ -1305,7 +1305,7 @@ export const editionLaunch = async (client: Client, issueId: string) => {
       .select("id, slug, title_en, title_ar, starts_at, venue_en, venue_ar")
       .eq("id", id)
       .eq("status", "published")
-      .eq("members_only", false)
+      .neq("entry", "invite")
       .maybeSingle()
   );
 };

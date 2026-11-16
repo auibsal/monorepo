@@ -31,6 +31,7 @@ const THINGS = {
   "events.event_organizations": "events",
   "events.events": "events",
   "events.joint_tasks": "events",
+  "events.program_items": "events",
   "events.session_links": "events",
   "governance.candidates": "council",
   "governance.election_results": "council",

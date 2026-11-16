@@ -88,7 +88,7 @@ rows in `core.outbox`, written in the same transaction and handed to the API).
 | sal-outbox-drain | Every 10 minutes | Retries any outbox row the insert's call missed |
 | sal-publish | Every 10 minutes | Publishes what was scheduled |
 | sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's groups |
-| sal-notion-sync | Every 15 minutes | Copies Notion's events, needs and documents to the site, and the site's people back |
+| sal-notion-sync | Every 15 minutes | Publishes Notion's documents and minutes, and writes the site's read-only copies into Notion (notion.md) |
 | sal-two-step-from | Hourly at :05 | Turns on two-step sign-in for roles whose date has come |
 | sal-calendar-sync | Hourly at :07 | Refreshes the AUIB campus calendar and the semesters |
 | sal-platform-health | Hourly at :20 | Alerts the web topic and the Desk to a late job, a stalled outbox or Notion sync, a dead email |
@@ -99,6 +99,7 @@ rows in `core.outbox`, written in the same transaction and handed to the API).
 | sal-daily | 4:45 (7:45 a.m. Baghdad) | Event and shift reminders, agreement reminders, role-ending notices |
 | sal-applications | 4:45 | Declines offers for openings that were not answered in time |
 | sal-cron-health | 5:35 | Emails the administrators the jobs that failed in the last day |
+| sal-thanks-for-coming | 6:00 (9:00 a.m. Baghdad) | "Thanks for coming" to everyone who checked in yesterday, with "How was it?" |
 | sal-student-life-week | Wednesdays, 6:00 | Student Life's week of events |
 | sal-daily-updates | 17:00 (8:00 p.m. Baghdad) | Each person's one daily update email |
 | Nightly backup (GitHub Actions) | 23:20 | Encrypted dump of the production database (and Storage on the 1st), kept 30 days, emailed on failure (`backups.md`) |

@@ -3,7 +3,10 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import type { Locale } from "@repo/internationalization";
-import { formatClock, formatLongDate } from "@repo/internationalization/format";
+import {
+  formatClockRange,
+  formatLongDate,
+} from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
@@ -37,7 +40,7 @@ const useNameOf = (ids: readonly (string | null | undefined)[]) => {
 };
 
 const when = (row: { ends_at: string; starts_at: string }, locale: Locale) =>
-  `${formatLongDate(row.starts_at, locale)} · ${formatClock(row.starts_at, locale)}–${formatClock(row.ends_at, locale)}`;
+  `${formatLongDate(row.starts_at, locale)} · ${formatClockRange(row.starts_at, row.ends_at, locale)}`;
 
 // ── Auditions ───────────────────────────────────────────────────────────────
 

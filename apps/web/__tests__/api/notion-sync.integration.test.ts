@@ -351,13 +351,16 @@ describe.skipIf(!enabled)("Notion sync", () => {
     const { data: event } = await admin
       .schema("events")
       .from("events")
-      .select("status, entry, lead_id, title_ar, body_en, body_ar, starts_at")
+      .select(
+        "status, entry, classes, lead_id, title_ar, body_en, body_ar, starts_at"
+      )
       .eq("id", link?.record_key ?? "")
       .single();
     expect(event).toMatchObject({
       body_ar: "<p>نص الصفحة.</p>",
       body_en: "<p>Bring a poem.</p>",
-      entry: "members",
+      classes: ["member"],
+      entry: "rsvp",
       lead_id: leadId,
       status: "draft",
       title_ar: "الاجتماع العام",

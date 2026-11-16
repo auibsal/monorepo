@@ -8,6 +8,14 @@ import { parseError } from "@/lib/observability/error";
 import { log } from "@/lib/observability/log";
 import { createNotion, type Notion, type NotionUser } from "./client";
 import type { Admin, Sources, SyncContext } from "./context";
+import {
+  copyEditions,
+  copyMeasures,
+  copyOpenings,
+  copyOrganizations,
+  copyProductions,
+  copyRecords,
+} from "./copies";
 import { publishDocuments, syncAdoptionRecords } from "./documents";
 import { copyEvents, importEvents, lockEvents } from "./events";
 import { sendMinutesToDiwan } from "./minutes";
@@ -23,6 +31,17 @@ const SOURCE_KEYS = [
   "news",
   "officers",
   "programmes",
+] as const;
+
+const OPTIONAL_SOURCES = [
+  "editions",
+  "measures",
+  "meetings",
+  "needs",
+  "openings",
+  "organizations",
+  "productions",
+  "records",
 ] as const;
 
 const setting = async (admin: Admin, key: string) => {
@@ -45,8 +64,12 @@ const sourcesFrom = (value: unknown): Sources | null => {
   }
   return {
     ...(v as unknown as Sources),
-    meetings: typeof v.meetings === "string" ? v.meetings : undefined,
-    needs: typeof v.needs === "string" ? v.needs : undefined,
+    ...Object.fromEntries(
+      OPTIONAL_SOURCES.map((k) => [
+        k,
+        typeof v[k] === "string" ? v[k] : undefined,
+      ])
+    ),
   };
 };
 
@@ -82,6 +105,12 @@ const steps: [
   ["needs import", (ctx) => importNeeds(ctx)],
   ["events copy", (ctx, users) => copyEvents(ctx, users)],
   ["needs copy", (ctx) => copyNeeds(ctx)],
+  ["editions copy", (ctx) => copyEditions(ctx)],
+  ["productions copy", (ctx) => copyProductions(ctx)],
+  ["openings copy", (ctx) => copyOpenings(ctx)],
+  ["organizations copy", (ctx) => copyOrganizations(ctx)],
+  ["records copy", (ctx) => copyRecords(ctx)],
+  ["measures", (ctx) => copyMeasures(ctx)],
   ["events lock", (ctx) => lockEvents(ctx)],
   ["needs lock", (ctx) => lockNeeds(ctx)],
   // Last, in whatever time is left: the weekly scan of the documents.

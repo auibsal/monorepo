@@ -1,6 +1,14 @@
 import { z } from "zod";
 import { type Client, currentDate, unwrap } from "./client";
 
+export {
+  FEEDBACK_DAYS,
+  feedbackOpen,
+  feedbackWindow,
+  guestsBookBy,
+  RATINGS,
+} from "./event-times";
+
 export const eventQuestionSchema = z.object({
   id: z.string().min(1).max(40),
   label_ar: z.string().min(1).max(200),
@@ -12,21 +20,63 @@ export const eventQuestionSchema = z.object({
 export const eventQuestionsSchema = z.array(eventQuestionSchema).max(10);
 
 /**
- * Access (decisions §10): Open (just come), RSVP (book a place), Members
- * (members book a place) or Private (invited people only). Set in Notion's
- * Way in; members-only is derived from it.
+ * Access (decisions.md, Events: Access), two settings on every event. How:
+ * Open (walk in, no booking) or Booking required (`rsvp`); or Invited only
+ * (`invite`, named invitations). Who can come: the classes ticked, all four
+ * being "Everyone".
  */
-export const ENTRIES = ["open", "rsvp", "members", "invite"] as const;
+export const ENTRIES = ["open", "rsvp", "invite"] as const;
 export type Entry = (typeof ENTRIES)[number];
+
+export const CLASSES = ["member", "associate", "honorary", "guest"] as const;
+export type EventClass = (typeof CLASSES)[number];
+
+export const isEventClass = (value: string): value is EventClass =>
+  (CLASSES as readonly string[]).includes(value);
+
+/** All four classes ticked: "Everyone". */
+export const isEveryone = (classes: readonly string[]) =>
+  CLASSES.every((c) => classes.includes(c));
+
+/**
+ * The classes in words: "Everyone", or "Members only" for one class, or a
+ * list ("Members, Associate Members and Guests"). `names` are the classes'
+ * names in the page's language; `only` wraps a single class.
+ */
+export const classesLabel = (
+  classes: readonly string[],
+  {
+    everyone,
+    locale,
+    names,
+    only,
+  }: {
+    everyone: string;
+    locale: "ar" | "en";
+    names: Record<EventClass, string>;
+    only?: (name: string) => string;
+  }
+) => {
+  if (isEveryone(classes)) {
+    return everyone;
+  }
+  const named = CLASSES.filter((c) => classes.includes(c)).map((c) => names[c]);
+  if (named.length === 1 && only) {
+    return only(named[0] ?? "");
+  }
+  return new Intl.ListFormat(locale === "ar" ? "ar" : "en-US", {
+    type: "conjunction",
+  }).format(named);
+};
 
 const events = (client: Client) => client.schema("events");
 
 export const eventColumns =
-  "id, slug, programme_id, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, capacity, rsvp_enabled, entry, status, image_path, off_campus, student_life_approved_on";
+  "id, slug, programme_id, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, classes, capacity, rsvp_enabled, entry, status, image_path, off_campus, student_life_approved_on";
 
 /**
- * Public events. Members-only events are filtered here AND by RLS, so they
- * never reach a public page whichever client runs the query.
+ * Public events: every published event but the invitation-only ones,
+ * which RLS also keeps to the invited.
  */
 export const publicEvents = async (
   client: Client,
@@ -40,7 +90,7 @@ export const publicEvents = async (
     .from("events")
     .select(eventColumns)
     .eq("status", "published")
-    .eq("members_only", false)
+    .neq("entry", "invite")
     .gte("starts_at", from.toISOString())
     .order("starts_at")
     .limit(limit);
@@ -63,7 +113,7 @@ export const pastPublicEvents = async (
     .from("events")
     .select(eventColumns)
     .eq("status", "published")
-    .eq("members_only", false)
+    .neq("entry", "invite")
     .lt("starts_at", before.toISOString())
     .order("starts_at", { ascending: false })
     .limit(limit);
@@ -96,7 +146,7 @@ export const isAllergen = (value: string): value is Allergen =>
 
 /** The site's own "Good to know" fields, set in the Diwan's editor. */
 export const goodToKnowColumns =
-  "serves_food, step_free, seating, allergens, language, accommodation_by, served_en, served_ar, other_allergens_en, other_allergens_ar, content_note_en, content_note_ar, no_photos";
+  "serves_food, step_free, seating, allergens, language, accommodation_by, access_detail_en, access_detail_ar, served_en, served_ar, other_allergens_en, other_allergens_ar, content_note_en, content_note_ar, no_photos";
 
 export const publicEvent = async (client: Client, eventSlug: string) =>
   unwrap(
@@ -106,7 +156,7 @@ export const publicEvent = async (client: Client, eventSlug: string) =>
         `${eventColumns}, body_en, body_ar, questions, ${goodToKnowColumns}`
       )
       .eq("slug", eventSlug)
-      .eq("members_only", false)
+      .neq("entry", "invite")
       .in("status", ["published", "canceled"])
       .maybeSingle()
   );
@@ -169,9 +219,8 @@ export const myRsvps = async (client: Client, userId: string) =>
   );
 
 /**
- * Events between two times: everything the caller may see, and
- * members-only events as teasers (title, time and program only) for those
- * who may not. Invitation-only events reach only the invited.
+ * Events between two times: everything the caller may see. Invitation-only
+ * events reach only the invited.
  */
 export const calendar = async (client: Client, from: Date, to: Date) =>
   unwrap(
@@ -288,3 +337,78 @@ export const sessionLinkSchema = z.object({
     .refine((v) => v.startsWith("https://"), { message: "https_only" })
     .refine((v) => URL.canParse(v), { message: "invalid_url" }),
 });
+
+/** Where the person reading an event's page stands (events.booking_terms). */
+export interface BookingTerms {
+  /** May book: an Open event takes a booking only from a Guest on campus. */
+  readonly books: boolean;
+  readonly class: EventClass | null;
+  /** Their class is ticked (or the event is Invited only). */
+  readonly eligible: boolean;
+  readonly guests_by: string | null;
+  /** A Guest, on campus, after the 14 days before. */
+  readonly guests_closed: boolean;
+}
+
+export const bookingTerms = async (client: Client, eventId: string) =>
+  (unwrap(await events(client).rpc("booking_terms", { event_id: eventId })) ??
+    null) as BookingTerms | null;
+
+export const feedbackSchema = z.object({
+  comment: z.string().trim().max(500).optional(),
+  rating: z.number().int().min(1).max(5),
+});
+
+/** The person's own answer, if they gave one. */
+export const myFeedback = async (client: Client, eventId: string) =>
+  unwrap(
+    await events(client)
+      .from("feedback")
+      .select("rating")
+      .eq("event_id", eventId)
+      .maybeSingle()
+  );
+
+export const sendFeedback = async (
+  client: Client,
+  eventId: string,
+  answer: z.infer<typeof feedbackSchema>
+) =>
+  unwrap(
+    await events(client)
+      .from("feedback")
+      .insert({
+        comment: answer.comment || null,
+        event_id: eventId,
+        rating: answer.rating,
+      })
+  );
+
+export interface FeedbackSummary {
+  readonly average: number | null;
+  readonly comments: { comment: string; rating: number }[];
+  readonly count: number;
+  readonly ratings: Record<string, number>;
+}
+
+/** What the event's managers read: counts and comments, never names. */
+export const feedbackSummary = async (client: Client, eventId: string) =>
+  unwrap(
+    await events(client).rpc("feedback_summary", { event_id: eventId })
+  ) as FeedbackSummary | null;
+
+/** An event's program, in order (decisions.md, Events): the works it shows. */
+export const programColumns =
+  "id, position, title_en, title_ar, credit, year, length_minutes, line_en, line_ar, award_en, award_ar, still_path";
+
+export const programItems = async (client: Client, eventId: string) =>
+  unwrap(
+    await events(client)
+      .from("program_items")
+      .select(programColumns)
+      .eq("event_id", eventId)
+      .order("position")
+      .order("created_at")
+  ) ?? [];
+
+export type ProgramItem = Awaited<ReturnType<typeof programItems>>[number];

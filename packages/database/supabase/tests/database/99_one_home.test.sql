@@ -104,21 +104,22 @@ select pg_temp.grant_role('00000000-0000-0000-0000-00000001a001', 'events_direct
 select pg_temp.grant_role('00000000-0000-0000-0000-00000001a002', 'general_secretary');
 
 insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry) values
-  ('00000000-0000-0000-0000-00000001a101', 'oh-members', 'Members', 'الأعضاء', now() + interval '2 days', 'published', 'members'),
+  ('00000000-0000-0000-0000-00000001a101', 'oh-members', 'Members', 'الأعضاء', now() + interval '2 days', 'published', 'rsvp'),
   ('00000000-0000-0000-0000-00000001a102', 'oh-open', 'Open', 'مفتوح', now() + interval '3 days', 'published', 'open');
 
+update events.events set classes = array['member'] where id = '00000000-0000-0000-0000-00000001a101';
 select ok(
-  (select members_only and rsvp_enabled from events.events where id = '00000000-0000-0000-0000-00000001a101'),
-  'A Members event is members-only and takes bookings'
+  (select classes = array['member'] and rsvp_enabled from events.events where id = '00000000-0000-0000-0000-00000001a101'),
+  'A Members-only event takes bookings'
 );
 select ok(
-  (select not members_only from events.events where id = '00000000-0000-0000-0000-00000001a102'),
-  'An Open event is public'
+  (select classes @> array['member', 'associate', 'honorary', 'guest'] from events.events where id = '00000000-0000-0000-0000-00000001a102'),
+  'A new event is for Everyone'
 );
 select throws_ok(
-  $$ update events.events set members_only = true where id = '00000000-0000-0000-0000-00000001a102' $$,
-  '428C9', null,
-  'members_only is derived from the access type and never written'
+  $$ update events.events set classes = array['staff'] where id = '00000000-0000-0000-0000-00000001a102' $$,
+  '23514', null,
+  'Who can come takes only the four classes'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000001a001');

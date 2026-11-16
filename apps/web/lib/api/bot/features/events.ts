@@ -58,12 +58,10 @@ const cardKeyboard = (ctx: BotContext, event: EventRow) => {
     }
     keyboard.row();
   }
-  if (!event.members_only) {
-    keyboard
-      .url(ctx.t.buttons.details, eventPage(ctx.lang, event.slug))
-      .url(ctx.t.buttons.calendar, eventCalendar(ctx.lang, event.slug))
-      .row();
-  }
+  keyboard
+    .url(ctx.t.buttons.details, eventPage(ctx.lang, event.slug))
+    .url(ctx.t.buttons.calendar, eventCalendar(ctx.lang, event.slug))
+    .row();
   return keyboard.text(ctx.t.buttons.back, "evs");
 };
 

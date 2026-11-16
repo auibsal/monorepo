@@ -25,14 +25,8 @@ import {
 type Row = events.CalendarEvent;
 type UniversityRow = events.UniversityEvent;
 
-/**
- * Where a row leads: the event's page, or, for a members-only teaser, the
- * members' events page (which asks the visitor to sign in).
- */
-const rowHref = (row: Row) =>
-  row.teaser || row.members_only
-    ? `/account/events#${row.slug}`
-    : `/events/${row.slug}`;
+/** Where a row leads: the event's page, which says who can come. */
+const rowHref = (row: Row) => `/events/${row.slug}`;
 
 type WayKey = "canceled" | "members" | "open" | "rsvp" | "invite";
 
@@ -44,7 +38,8 @@ const wayOf = (row: Row): WayKey => {
   if (row.entry === "invite") {
     return "invite";
   }
-  if (row.teaser) {
+  // Members only (of any class), when Guests aren't ticked.
+  if (!row.classes.includes("guest")) {
     return "members";
   }
   return row.entry === "open" ? "open" : "rsvp";
@@ -120,7 +115,7 @@ export const MonthCalendar = async ({
     line: t(`ways.${wayOf(row)}`),
     time: formatClock(row.starts_at, locale),
     title: localized(row, "title", locale),
-    venue: row.teaser ? null : localized(row, "venue", locale) || null,
+    venue: localized(row, "venue", locale) || null,
   }));
 
   const items = [...societyItems, ...universityItems].sort((a, b) =>

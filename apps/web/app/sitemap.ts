@@ -89,7 +89,7 @@ const publicEventPages = async (client: SupabaseClient<Database>) => {
     .from("events")
     .select("slug, updated_at")
     .eq("status", "published")
-    .eq("members_only", false);
+    .neq("entry", "invite");
   return (data ?? []).filter((event) => event.slug);
 };
 

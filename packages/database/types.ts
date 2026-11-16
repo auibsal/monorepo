@@ -1013,6 +1013,7 @@ export type Database = {
           last_error: string | null;
           payload: NonNullable<Json>;
           processed_at: string | null;
+          waits_for_fix: boolean;
         };
         ComputedFields: never;
         Insert: {
@@ -1023,6 +1024,7 @@ export type Database = {
           last_error?: string | null;
           payload?: NonNullable<Json>;
           processed_at?: string | null;
+          waits_for_fix?: boolean;
         };
         Update: {
           attempts?: number;
@@ -1032,6 +1034,7 @@ export type Database = {
           last_error?: string | null;
           payload?: NonNullable<Json>;
           processed_at?: string | null;
+          waits_for_fix?: boolean;
         };
         Relationships: [];
       };
@@ -1897,6 +1900,7 @@ export type Database = {
         Args: { news: boolean; paper: boolean };
         Returns: undefined;
       };
+      society_measures: { Args: { month_start: string }; Returns: Json };
       society_notices: {
         Args: { max_results?: number };
         Returns: {
@@ -2159,23 +2163,26 @@ export type Database = {
       };
       events: {
         Row: {
+          access_detail_ar: string | null;
+          access_detail_en: string | null;
           accommodation_by: string | null;
           allergens: string[];
           announced_at: string | null;
           body_ar: string | null;
           body_en: string | null;
           capacity: number | null;
+          classes: string[];
           content_note_ar: string | null;
           content_note_en: string | null;
           created_at: string;
           created_by: string | null;
           ends_at: string | null;
           entry: string;
+          format: string | null;
           id: string;
           image_path: string | null;
           language: string | null;
           lead_id: string | null;
-          members_only: boolean;
           no_photos: boolean;
           off_campus: boolean;
           other_allergens_ar: string | null;
@@ -2206,23 +2213,26 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          access_detail_ar?: string | null;
+          access_detail_en?: string | null;
           accommodation_by?: string | null;
           allergens?: string[];
           announced_at?: string | null;
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
+          classes?: string[];
           content_note_ar?: string | null;
           content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
           ends_at?: string | null;
           entry?: string;
+          format?: string | null;
           id?: string;
           image_path?: string | null;
           language?: string | null;
           lead_id?: string | null;
-          members_only?: never;
           no_photos?: boolean;
           off_campus?: boolean;
           other_allergens_ar?: string | null;
@@ -2252,23 +2262,26 @@ export type Database = {
           venue_en?: string | null;
         };
         Update: {
+          access_detail_ar?: string | null;
+          access_detail_en?: string | null;
           accommodation_by?: string | null;
           allergens?: string[];
           announced_at?: string | null;
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
+          classes?: string[];
           content_note_ar?: string | null;
           content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
           ends_at?: string | null;
           entry?: string;
+          format?: string | null;
           id?: string;
           image_path?: string | null;
           language?: string | null;
           lead_id?: string | null;
-          members_only?: never;
           no_photos?: boolean;
           off_campus?: boolean;
           other_allergens_ar?: string | null;
@@ -2298,6 +2311,42 @@ export type Database = {
           venue_en?: string | null;
         };
         Relationships: [];
+      };
+      feedback: {
+        Row: {
+          comment: string | null;
+          created_at: string;
+          event_id: string;
+          id: string;
+          rating: number;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          comment?: string | null;
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          rating: number;
+          user_id?: string;
+        };
+        Update: {
+          comment?: string | null;
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          rating?: number;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "feedback_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       incident_reports: {
         Row: {
@@ -2412,6 +2461,66 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "joint_tasks_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      program_items: {
+        Row: {
+          award_ar: string | null;
+          award_en: string | null;
+          created_at: string;
+          credit: string | null;
+          event_id: string;
+          id: string;
+          length_minutes: number | null;
+          line_ar: string | null;
+          line_en: string | null;
+          position: number;
+          still_path: string | null;
+          title_ar: string;
+          title_en: string;
+          year: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          award_ar?: string | null;
+          award_en?: string | null;
+          created_at?: string;
+          credit?: string | null;
+          event_id: string;
+          id?: string;
+          length_minutes?: number | null;
+          line_ar?: string | null;
+          line_en?: string | null;
+          position?: number;
+          still_path?: string | null;
+          title_ar?: string;
+          title_en?: string;
+          year?: number | null;
+        };
+        Update: {
+          award_ar?: string | null;
+          award_en?: string | null;
+          created_at?: string;
+          credit?: string | null;
+          event_id?: string;
+          id?: string;
+          length_minutes?: number | null;
+          line_ar?: string | null;
+          line_en?: string | null;
+          position?: number;
+          still_path?: string | null;
+          title_ar?: string;
+          title_en?: string;
+          year?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "program_items_event_id_fkey";
             columns: ["event_id"];
             isOneToOne: false;
             referencedRelation: "events";
@@ -2642,22 +2751,22 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      booking_terms: { Args: { event_id: string }; Returns: Json };
       calendar: {
         Args: { from_at: string; to_at: string };
         Returns: {
           capacity: number;
+          classes: string[];
           ends_at: string;
           entry: string;
           id: string;
           image_path: string;
-          members_only: boolean;
           programme_id: string;
           slug: string;
           starts_at: string;
           status: string;
           summary_ar: string;
           summary_en: string;
-          teaser: boolean;
           title_ar: string;
           title_en: string;
           venue_ar: string;
@@ -2710,6 +2819,7 @@ export type Database = {
           url: string;
         }[];
       };
+      feedback_summary: { Args: { event_id: string }; Returns: Json };
       find_attendee: {
         Args: { event_id: string; query: string };
         Returns: {

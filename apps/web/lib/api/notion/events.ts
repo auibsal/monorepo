@@ -67,19 +67,42 @@ export const markImported = async (ctx: SyncContext, part: keyof Imported) => {
 
 // ── Reading a row ────────────────────────────────────────────────────────────
 
+/** Notion's old Access, read once at the import (Members became Members only). */
 const WAYS_IN = {
-  Members: "members",
+  Members: "rsvp",
   Open: "open",
   Private: "invite",
   RSVP: "rsvp",
 } as const;
 type Entry = (typeof WAYS_IN)[keyof typeof WAYS_IN];
 
-const ACCESS: Record<string, string> = {
-  invite: "Private",
-  members: "Members",
-  open: "Open",
-  rsvp: "RSVP",
+const CLASS_ORDER = ["member", "associate", "honorary", "guest"] as const;
+const CLASS_NAMES: Record<(typeof CLASS_ORDER)[number], string> = {
+  associate: "Associate Members",
+  guest: "Guests",
+  honorary: "Honorary Members",
+  member: "Members",
+};
+
+/**
+ * Access as the copy shows it (decisions.md, Events: Access): "Invited
+ * only", or who can come and how ("Everyone · Booking required", "Members
+ * only · Open").
+ */
+export const accessLabel = (event: { classes: string[]; entry: string }) => {
+  if (event.entry === "invite") {
+    return "Invited only";
+  }
+  const how = event.entry === "open" ? "Open" : "Booking required";
+  const names = CLASS_ORDER.filter((c) => event.classes.includes(c)).map(
+    (c) => CLASS_NAMES[c]
+  );
+  const list = new Intl.ListFormat("en-US", { type: "conjunction" });
+  if (names.length === CLASS_ORDER.length) {
+    return `Everyone · ${how}`;
+  }
+  const who = names.length === 1 ? `${names[0]} only` : list.format(names);
+  return `${who} · ${how}`;
 };
 
 const STATUS: Record<string, string> = {
@@ -92,6 +115,8 @@ const THE_SOCIETY = /^the society$/iu;
 
 export interface RowValues {
   capacity: number | null;
+  /** Who can come: Notion's Members became Members only. */
+  classes: string[] | null;
   debrief: string | null;
   ends_at: string | null;
   entry: Entry;
@@ -136,6 +161,10 @@ export const rowValues = (
   const debrief = read.url(page, "Debrief");
   return {
     capacity: wholeNumber(read.number(page, "Capacity")),
+    classes:
+      (read.select(page, "Access") ?? read.select(page, "Way in")) === "Members"
+        ? ["member"]
+        : null,
     debrief: debrief?.startsWith("https://") ? debrief : null,
     ends_at: endsAt && endsAt > startsAt ? endsAt : null,
     entry: entryOf(page),
@@ -263,6 +292,7 @@ const makeDraft = async (
       capacity: v.capacity,
       ends_at: v.ends_at,
       entry: v.entry,
+      ...(v.classes ? { classes: v.classes } : {}),
       image_path: image ?? null,
       lead_id: lead,
       off_campus: v.off_campus,
@@ -456,6 +486,7 @@ export const importEvents = async (ctx: SyncContext, users: NotionUser[]) => {
 // ── The read-only copy ───────────────────────────────────────────────────────
 
 interface SiteEvent {
+  classes: string[];
   ends_at: string | null;
   entry: string;
   id: string;
@@ -497,7 +528,7 @@ export const copyProps = (
   const arabic = lang === "ar";
   const live = event.status === "published";
   return {
-    Access: prop.select(ACCESS[event.entry] ?? "RSVP"),
+    Access: prop.select(accessLabel(event)),
     Diwan: prop.url(`${ctx.appUrl}/events/${event.slug}`),
     "Diwan ID": prop.text(event.id),
     Language: prop.select(arabic ? "Arabic" : "English"),
@@ -526,7 +557,7 @@ export const copyEvents = async (ctx: SyncContext, users: NotionUser[]) => {
     .schema("events")
     .from("events")
     .select(
-      "id, slug, title_en, title_ar, venue_en, venue_ar, starts_at, ends_at, status, entry, lead_id"
+      "id, slug, title_en, title_ar, venue_en, venue_ar, starts_at, ends_at, status, entry, classes, lead_id"
     )
     .order("starts_at");
   if (error) {

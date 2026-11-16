@@ -7,7 +7,10 @@ import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
+import {
+  formatDateRange,
+  formatLongDate,
+} from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
@@ -1014,9 +1017,9 @@ const Agreements = () => {
     },
     {
       cell: (row) =>
-        `${formatLongDate(row.starts_on, locale, true)}${
-          row.ends_on ? ` – ${formatLongDate(row.ends_on, locale, true)}` : ""
-        }`,
+        row.ends_on
+          ? formatDateRange(row.starts_on, row.ends_on, locale, true)
+          : formatLongDate(row.starts_on, locale, true),
       header: t("dates"),
       key: "dates",
     },

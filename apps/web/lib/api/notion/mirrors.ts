@@ -29,9 +29,17 @@ export interface Row {
 }
 
 interface MirrorOptions {
+  /**
+   * When a record goes, its row is ticked Archived and kept, never
+   * deleted (the copies made from Nov 16, 2026: copies.ts).
+   */
+  archive?: boolean;
   /** Whether the database has a Synced date (the officers' and Qirtas's). */
   synced?: boolean;
 }
+
+/** The hash an archived row keeps, so it is archived once. */
+const ARCHIVED = "archived";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -67,6 +75,31 @@ const writeRow = async (
   const page = await ctx.notion.createPage(dataSourceId, props);
   await saveLink(ctx, kind, page.id, row.key, contentHash);
   count(ctx, `${kind}.created`);
+};
+
+/** Ticks Archived on the copy of a record that is gone; the row stays. */
+const archiveRow = async (
+  ctx: SyncContext,
+  kind: LinkKind,
+  key: string,
+  link: Link
+) => {
+  if (link.content_hash === ARCHIVED) {
+    return;
+  }
+  try {
+    await ctx.notion.updatePage(link.notion_page_id, {
+      Archived: prop.checkbox(true),
+    });
+    await saveLink(ctx, kind, link.notion_page_id, key, ARCHIVED);
+    count(ctx, `${kind}.archived`);
+  } catch (error) {
+    if (isGone(error)) {
+      await dropLink(ctx, link.notion_page_id);
+      return;
+    }
+    problem(ctx, `${kind} ${key}: ${(error as Error).message}`);
+  }
 };
 
 /** Removes the copy of a record that no longer exists in the Diwan. */
@@ -115,7 +148,7 @@ export const mirror = async (
       continue;
     }
     // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
-    await removeRow(ctx, kind, key, link);
+    await (options.archive ? archiveRow : removeRow)(ctx, kind, key, link);
   }
 };
 

@@ -377,7 +377,7 @@
         "openCall": "{call} closes {date}",
         "openCallNoDate": "{call} is open; its closing date is still to be set",
         "daysLeft": "{days, plural, one {{daysText} day left} other {{daysText} days left}}",
-        "submit": "Submit to Qirtas",
+        "submit": "Send your work",
         "none": "No Edition’s call is open. Qirtas takes work all year."
       },
       "programmes": {
@@ -807,7 +807,7 @@
         "yourWork": "Your drafts",
         "updated": "Updated",
         "yourWorkLede": "What you have sent and what is being edited with you. Only you see it here; your author page shows only what is published.",
-        "sendMore": "Submit to Qirtas",
+        "sendMore": "Send your work",
         "deck": "Deck",
         "deckHint": "One or two sentences under the headline.",
         "video": "Video link",
@@ -841,11 +841,11 @@
         "missingPledge": "To send, make the Human Authorship pledge.",
         "missingWork": "To send, add the work: write it in the editor or attach the file.",
         "missingDetails": "To send, fill in the title and the fields marked as needed.",
-        "title": "Submit to Qirtas",
+        "title": "Send your work",
         "saveDraft": "Save draft",
         "savingDraft": "Saving…",
         "draftSaved": "Draft saved",
-        "draftHint": "Not ready to send? Save it as a draft and come back to it from Submit to Qirtas. Only you see your drafts. Files are added when you send.",
+        "draftHint": "Not ready to send? Save it as a draft and come back to it from your account, under Work. Only you see your drafts. Files are added when you send.",
         "deleteDraft": "Delete draft",
         "deleteDraftConfirm": "Delete this draft? It can’t be brought back.",
         "draftMissing": "This draft isn’t here. It may have been sent or deleted.",
@@ -1521,17 +1521,10 @@
         "serviceHours": "Hours {name} gave",
         "recordHours": "Record hours",
         "hoursRecorded": "Hours recorded",
-        "entry": "Access",
-        "entries": {
-          "open": "Open",
-          "rsvp": "RSVP",
-          "members": "Members",
-          "invite": "Private"
-        },
+        "entry": "How",
         "entryHint": {
-          "open": "Anyone who can see it just comes. Members can ask for a reminder the day before.",
-          "rsvp": "People book a place; the capacity and the waitlist apply.",
-          "members": "Members book a place; the capacity and the waitlist apply. It never appears publicly.",
+          "open": "Walk in, no booking. On campus, Guests still book, and their booking closes 14 days before.",
+          "rsvp": "People book a place; the capacity and the waitlist apply. On campus, Guests’ booking closes 14 days before.",
           "invite": "Only the people invited see it, and they book a place. It never appears publicly."
         },
         "invitations": "Invitations",
@@ -1657,10 +1650,44 @@
         },
         "promo": {
           "title": "Promo kit",
-          "lede": "Built from this event’s fields and image, in English and Arabic: the A3 poster and the A4 two-sided handout (PDF), the Instagram carousel and story, the Telegram image, the page and link-preview image, and the captions. Save each file you need; Media posts them.",
+          "lede": "Built from this event’s fields, image and Program, in English and Arabic: the Instagram carousel (a cover, a card for each work and Good to know) and the stories (the cover, each work, Tomorrow and Today); the A3 poster and an A1 for easels, the A4 handout and a 1920 × 1080 version for campus screens; the A5 program and an A4 sheet of two, printed double-sided; the check-in and join table tents; the door signs; the thank-you card with the co-sponsors’ logos; the Telegram image, the link preview and the captions. Save each file you need; Media posts them.",
           "build": "Build the promo kit",
           "building": "Building…",
           "failed": "The kit could not be built. Check the event’s image, then try again."
+        },
+        "classesHint": "Tick all four for Everyone. Anyone whose class isn’t ticked sees whom the event is for.",
+        "format": "Kind",
+        "formatHint": "A screening or a performance adds two shifts: Projection and sound, and Photos (for Media).",
+        "formats": {
+          "none": "Neither",
+          "screening": "Screening",
+          "performance": "Performance"
+        },
+        "accessDetail": "Access detail (optional)",
+        "accessDetailHint": "What step-free and seated leave out, shown after the access row: “Every seat is up steps; none at ground level.”",
+        "feedback": {
+          "title": "How was it?",
+          "summary": "{count} answered; the average is {average} out of 5.",
+          "none": "No answers yet. The question is open on the event’s page for 14 days after it ends.",
+          "seeAnswers": "The answers to “How was it?”"
+        },
+        "program": {
+          "title": "Program",
+          "lede": "The works the event shows, in order. The event’s page lists them and the promo kit draws a card for each.",
+          "empty": "No program yet. Add the first work.",
+          "add": "Add a work",
+          "itemTitle": "Title",
+          "credit": "Credit",
+          "creditHint": "The work’s credit line, as a bibliography cites it: a film’s director, a book’s author. Anyone from the Society is picked from the site’s people.",
+          "year": "Year",
+          "length": "Length (minutes)",
+          "line": "One line about it",
+          "award": "Award (optional)",
+          "still": "Still (optional)",
+          "minutes": "{n} min.",
+          "edit": "Edit",
+          "done": "Done",
+          "remove": "Remove"
         }
       },
       "checkIn": {
@@ -3609,7 +3636,8 @@
           "events_session_links": "an event’s link",
           "events_event_organizations": "who an event is with",
           "events_joint_tasks": "a joint event’s checklist item",
-          "core_profiles": "a member’s name"
+          "core_profiles": "a member’s name",
+          "events_program_items": "a work in an event’s program"
         },
         "roleFor": "{role} for {person}"
       },
@@ -4782,7 +4810,7 @@
         },
         "email_receipts": {
           "label": "A “received” email",
-          "hint": "When you send an application or a submission (Submit to Qirtas, an event pitch, a concern, a motion), with its record number."
+          "hint": "When you send an application or a submission (work sent to Qirtas, an event pitch, a concern, a motion), with its record number."
         },
         "email_daily_updates": {
           "label": "One daily update",
@@ -5039,7 +5067,7 @@
       "do": "What you can do",
       "book": "Book a place",
       "bookLine": "Events that take bookings, on your calendar.",
-      "write": "Submit to Qirtas",
+      "write": "Send your work",
       "writeLine": "Calls opened to your partner.",
       "record": "Your documents",
       "societyGuest": "Guest of the Society",
@@ -5343,7 +5371,7 @@
       "join": "Join",
       "involved": "Get involved",
       "events": "Events",
-      "write": "Submit to Qirtas",
+      "write": "Send your work",
       "qirtas": "Qirtas",
       "editions": "Editions",
       "nextStop": "Next Stop",
@@ -5427,7 +5455,7 @@
       "all": "Events",
       "cancelled": "This event has been canceled.",
       "rsvp": "Book a place",
-      "rsvpHint": "Sign in to book a place: members and the Society’s guests book.",
+      "rsvpHint": "Sign in to book a place.",
       "addToCalendar": "Add to calendar",
       "everything": "Everything",
       "previous": "Previous month: {month}",
@@ -5444,7 +5472,6 @@
         "canceled": "Canceled"
       },
       "remind": "Remind me",
-      "remindHint": "No booking needed. Members can ask for a reminder the day before.",
       "inCalendar": "See it in Events",
       "dates": "Coming dates",
       "noDates": "No dates are announced yet.",
@@ -5480,8 +5507,19 @@
         "who": {
           "label": "Who can come",
           "everyone": "Everyone",
-          "members": "Members",
-          "invite": "Invited guests"
+          "invite": "Invited only",
+          "classes": {
+            "member": "Members",
+            "associate": "Associate Members",
+            "honorary": "Honorary Members",
+            "guest": "Guests"
+          },
+          "only": "{classes} only",
+          "how": {
+            "open": "Open",
+            "rsvp": "Booking required"
+          },
+          "guestsBy": "Guests book by {date}"
         },
         "placesLeft": "Places left: {count}",
         "language": {
@@ -5522,6 +5560,32 @@
           "soy": "soy",
           "sesame": "sesame"
         }
+      },
+      "forClasses": "This event is for {classes}.",
+      "guestsClosed": "Guests book by {date}.",
+      "feedback": {
+        "title": "How was it?",
+        "ratings": {
+          "1": "Not for me",
+          "2": "It was all right",
+          "3": "Liked it",
+          "4": "Really liked it",
+          "5": "Loved it"
+        },
+        "choose": "Your answer",
+        "comment": "Anything to add? (optional)",
+        "send": "Send your answer",
+        "thanks": "Thank you. Your answer reaches the event’s team without your name.",
+        "answered": "You answered. Thank you.",
+        "signIn": "Sign in to answer",
+        "closes": "Open until {date}.",
+        "failed": "It didn’t go through. Try again.",
+        "find": "Find",
+        "none": "No answer yet"
+      },
+      "program": {
+        "title": "Program",
+        "length": "{n, plural, one {{shown} minute} other {{shown} minutes}}"
       }
     },
     "journal": {
@@ -5605,7 +5669,7 @@
       "firstEdition": "The first pieces arrive with the News desk on November 15.",
       "lead": "Lead story",
       "currentEdition": "The current Edition",
-      "sendNews": "Submit to Qirtas",
+      "sendNews": "Send your work",
       "deskLedes": {
         "news": "Campus and Society news: reports, features, interviews, profiles, event coverage and explainers, by named reporters.",
         "voices": "Reviews, columns, opinion essays, letters to the editor, debates and recommendations.",
@@ -5680,7 +5744,7 @@
       "shelfPrevious": "Previous Edition",
       "shelfNext": "Next Edition",
       "comingLede": "The pilot is being made. Send your work while the call is open.",
-      "writeForEdition": "Submit to Qirtas",
+      "writeForEdition": "Send your work",
       "reading": {
         "after": "Read on",
         "next": "Next",
@@ -5856,7 +5920,7 @@
       "does": {
         "qirtas": {
           "title": "Qirtas",
-          "body": "The Society’s paper of news, letters and art, with its own masthead and editorial independence. It includes Qalam, its summer program for high school students. Members and guests write for it through Submit to Qirtas."
+          "body": "The Society’s paper of news, letters and art, with its own masthead and editorial independence. It includes Qalam, its summer program for high school students. Members and guests write for it through its Editions: Send your work."
         },
         "company": {
           "title": "The Company",
@@ -6594,7 +6658,7 @@
         },
         {
           "q": "How do I submit work to Qirtas?",
-          "a": "Go to Submit to Qirtas (auibsal.org/qirtas/submit), pick a section and send your work. You get an email with a record number, then one at each step."
+          "a": "Go to Qirtas’s Editions (auibsal.org/qirtas/editions), choose Send your work, pick a section and send it. You get an email with a record number, then one at each step."
         },
         {
           "q": "Is my work read without my name?",

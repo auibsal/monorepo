@@ -108,7 +108,7 @@ values
    'An album, played', 'ألبوم', now() - interval '7 days', 'published', 'open'),
   ('00000000-0000-0000-0000-0000000e5102', 'lr-e5-members',
    (select id from core.programmes where slug = 'company'),
-   'For members', 'للأعضاء', now() - interval '14 days', 'published', 'members'),
+   'For members', 'للأعضاء', now() - interval '14 days', 'published', 'invite'),
   ('00000000-0000-0000-0000-0000000e5103', 'salon-e5',
    (select id from core.programmes where slug = 'typewriter-tour'),
    'A salon', 'صالون', now() - interval '7 days', 'published', 'open');
@@ -144,7 +144,7 @@ delete from events.session_links;
 
 select pg_temp.login_anon();
 select is((select count(*)::int from events.session_links), 1,
-  'a visitor reads a public session''s links, not a members-only one''s, and a member cannot remove them');
+  'a visitor reads a public session''s links, not an invitation-only one''s, and a member cannot remove them');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e5001');
 delete from events.session_links where label_en = 'The album';

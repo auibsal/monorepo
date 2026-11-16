@@ -66,6 +66,13 @@ route sends it. Every email (audited end to end on 2026-11-04):
   (their role's work) or *direct* (no account behind the address).
 - **Safe retries**: an idempotency key per row and address; a spent daily
   quota gives the row back to wait for the next drain.
+- **A configuration failure waits for the fix** (the email key or its
+  domain refused the send, `EmailConfigError`): the row is marked
+  `waits_for_fix`. Once any email sends again, the drain tries each such row
+  once more (`retryAfterFix`), but closes one older than 7 days or whose
+  link has expired (an address confirmation, a parent's link, a held
+  place) with the reason in `last_error`. A row tried after the fix never
+  waits a second time.
 - **Tagged** in Resend by kind (`kind`), so each journey's delivery can be
   read on its own.
 - Members who turned them on also get the notice on their phone and in
@@ -81,6 +88,7 @@ route sends it. Every email (audited end to end on 2026-11-04):
 | `events.rsvp_confirmed` | A place booked, or a held place claimed | The member | Service |
 | `events.waitlist_offered` | A released place held for the next on the waiting list: 12 hours, or until two hours before the start; one button claims it | The member | Service |
 | `events.reminder` | The day before | Booked: the member, with "Can't come? Cancel" (the event's page); "Remind me": whoever asked | Service |
+| `events.thanks` | 9:00 a.m. Baghdad time the day after (`sal-thanks-for-coming`) | Everyone who checked in, not those who only booked: "Thanks for coming" and "How was it?" on the event's page (`#feedback`), open 14 days | Optional |
 | `events.changed` | A published event canceled, or its day, time or place changed | Everyone booked, waiting or asking to be reminded; edits within ten minutes make one email | Service |
 | `events.shift_reminder` | The day before a shift | Whoever is on it | Optional |
 | `company.audition_update` | An audition time booked; called back, cast or not cast | The member | Service |

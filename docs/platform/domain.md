@@ -229,7 +229,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   pages, and each is a signature record like the rest
   (`private.record_signing`): its AGR number, its check at /verify, and
   the signed copy in Your account → Documents. Where the site already
-  does the job (joining, RSVPs, Submit to Qirtas, Get involved,
+  does the job (joining, RSVPs, Send your work, Get involved,
   elections), the form is that page. Members never see the word "form" or
   a form code; the requests they can start are plain actions where they
   belong (`StartLinks`).
@@ -255,15 +255,25 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (`events.events.lead_id`, from the register) and a confirmed place (the
   database refuses otherwise). Notion's Events database is a read-only copy
   the site writes (decisions.md, Where things live). Each new event gets the
-  standard shifts: check-in for two, the membership table for one and
-  refreshments for two when food is served (`private.default_shifts`).
+  standard shifts: check-in for two, the membership table for one,
+  refreshments for two when food is served, and for a screening or a
+  performance (`format`) Projection and sound and Photos, one each
+  (`private.default_shifts`); Hudhud's morning brief flags an event within
+  five days with a shift still empty.
   Hudhud announces it once in the members' group, three weeks ahead at
   most (`announced_at`), and Student Life gets next week's public events
   each Wednesday by the secure link (`events.student_life_weeks`). Every event has
   the one page on the site (`EventView` with `EventParts`) and in the
   Diwan (`EventEditor` with `EventPartsAdmin`), with only the standard
-  parts: its access (`events.events.entry`: `open`, `rsvp`, `members` or
-  `invite` (Private); `members_only` is derived from it), RSVP and
+  parts: its access, two settings (decisions.md, Events: Access): who
+  can come (`events.events.classes`, any of the four classes, all four
+  being Everyone, or Invited only, `entry = 'invite'`) and how (`entry`:
+  `open` or `rsvp`, Booking required). On campus a Guest always books, even
+  for an Open event, until 14 days before (`private.guests_book_by`), when
+  the names go to Security through Student Life; whoever's class isn't
+  ticked sees whom the event is for (`events.booking_terms`). The event's
+  page shows every published event but the invitation-only ones. Then
+  RSVP and
   check-in (the booking asks only about accessibility needs, and diet
   when `serves_food`; a released place is held for the next on the
   waitlist for 12 hours or until two hours before the start, whichever is
@@ -291,10 +301,22 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `programmes` schema, `programme_id`, `programs.manage`; copy says
   "event" or "event lead"). Minutes and resolutions are governance records
   pointing at their meeting's event (`governance.minutes.event_id`).
+- **After an event** (decisions.md, Events): its page asks "How was it?"
+  (`events.feedback`: five choices and an optional comment, once per
+  person, from the end for 14 days; `/events/<slug>#feedback`), and at
+  9:00 a.m. Baghdad time the next day "Thanks for coming" goes to everyone
+  who checked in (`private.thanks_for_coming`, `events.thanks`). The
+  event's team reads the count, the average and the comments, never names
+  (`events.feedback_summary`), on its Diwan page, which the debrief links.
+- **The Program** (`events.program_items`): the works a screening, reading
+  or performance shows, each with its credit line (an outside work's,
+  typed; the Society's people are picked from the register), year, length,
+  a line and an award in both languages, and a still. The event's page
+  lists them; the promo kit draws a card for each.
 - **Events is one calendar page**: `/events`, a month at
   `/events?month=<yyyy-mm>`, the Company's dates at `/events?host=company`,
-  each event at `/events/<slug>`. The public calendar shows members-only
-  events as teasers; SECURITY DEFINER code checks visibility with
+  each event at `/events/<slug>`, which says who can come. SECURITY
+  DEFINER code checks visibility with
   `private.can_see_event_id`. AUIB's own calendar is one link, not dates
   beside the Society's.
 - **Event leads.** `programme_lead` (Event Lead) is scoped to one event

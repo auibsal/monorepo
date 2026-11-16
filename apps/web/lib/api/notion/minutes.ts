@@ -78,7 +78,7 @@ const eventFacts = async (ctx: SyncContext, eventId: string | null) => {
   const { data } = await ctx.admin
     .schema("events")
     .from("events")
-    .select("starts_at, entry")
+    .select("starts_at, entry, classes")
     .eq("id", eventId)
     .maybeSingle();
   return data
@@ -86,7 +86,11 @@ const eventFacts = async (ctx: SyncContext, eventId: string | null) => {
         day: new Date(data.starts_at).toLocaleDateString("en-CA", {
           timeZone: "Asia/Baghdad",
         }),
-        entry: data.entry,
+        // Members only: the one class, and not Invited only.
+        membersOnly:
+          data.entry !== "invite" &&
+          data.classes.length === 1 &&
+          data.classes[0] === "member",
       }
     : null;
 };
@@ -130,9 +134,9 @@ const readDraft = async (
   const facts = await eventFacts(ctx, eventId);
   // Council meetings are Members events: members may observe them, with
   // the closed session held apart (decisions.md, Events: Access).
-  if (body === "council" && facts && facts.entry !== "members") {
+  if (body === "council" && facts && !facts.membersOnly) {
     problems.push(
-      "A Council meeting's event takes Access: Members (members may observe it)."
+      "A Council meeting's event is for Members only (members may observe it): set Who can come in the Diwan."
     );
   }
   // One home for the date (decisions.md, Where things live): the event's
@@ -187,7 +191,7 @@ const sendMinutes = async (
   const publisher = await publisherFor(ctx, email);
   if (!publisher) {
     await refuse(ctx, page, [
-      `${email} does not hold governance.manage in the Diwan. Ask the Secretary to set Minutes in the Diwan.`,
+      "Whoever set it does not hold governance.manage in the Diwan. Ask the Secretary to set Minutes in the Diwan.",
     ]);
     return;
   }

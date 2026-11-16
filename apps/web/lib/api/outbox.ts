@@ -6,7 +6,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { createHash, randomBytes } from "node:crypto";
 import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
-import { EmailQuotaError, sendEmail } from "@repo/email";
+import { EmailConfigError, EmailQuotaError, sendEmail } from "@repo/email";
 import {
   type ApplicationStep,
   accountDeleted,
@@ -75,6 +75,7 @@ import {
   submissionInReading,
   submissionReceived,
   sundayPaper,
+  thanksForComing,
   twoStepReset,
   verificationDecided,
   type WeekEvent,
@@ -133,6 +134,12 @@ import {
 /** Also in private.queue_revalidation(): a row past it no longer counts as waiting. */
 const MAX_ATTEMPTS = 5;
 
+/** A row tried again after a configuration fix: never waits a second time. */
+const RETRIED_ONCE = "retried once after the configuration was fixed";
+
+/** When an email last went out from this instance: the configuration works. */
+let lastSentAt = 0;
+
 type Lang = CopyLang;
 interface OutboxRow {
   attempts: number;
@@ -189,7 +196,7 @@ const RECEIPT_KINDS = new Set([
   "governance.candidacy_received",
   "journal.submission_received",
   "partners.application_received",
-  // Submit to Qirtas (decisions.md, Qirtas): "received" with its number.
+  // Send your work (decisions.md, Qirtas): "received" with its number.
   "qirtas.submission_received",
 ]);
 
@@ -472,6 +479,7 @@ const send = async (
     text: noticeText({ blocks: built.blocks, footer: lines }),
     to: to.email,
   });
+  lastSentAt = Date.now();
   // It never throws: email is the record. A reminder that came this far
   // went by email because Hudhud's reminders are off: no copy there.
   if (run && to.userId && !reminder) {
@@ -859,7 +867,7 @@ const paperContents = async (
       .from("events")
       .select("slug, title_en, title_ar, starts_at")
       .eq("status", "published")
-      .eq("members_only", false)
+      .neq("entry", "invite")
       .gt("starts_at", now.toISOString())
       .lte("starts_at", new Date(now.getTime() + 31 * 86_400_000).toISOString())
       .order("starts_at")
@@ -1023,10 +1031,9 @@ const sendStudentLifeWeek = async (admin: AdminClient) => {
     .schema("events")
     .from("events")
     .select(
-      "id, slug, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, image_path"
+      "id, slug, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, image_path, classes, entry, off_campus"
     )
     .eq("status", "published")
-    .eq("members_only", false)
     .neq("entry", "invite")
     .gte("starts_at", from.toISOString())
     .lt("starts_at", until.toISOString())
@@ -1058,7 +1065,10 @@ const sendStudentLifeWeek = async (admin: AdminClient) => {
     );
   const base = appUrl();
   const listed: WeekEvent[] = events.map((e) => ({
+    classes: e.classes,
+    entry: e.entry,
     image: e.image_path ? getMediaUrl(admin, e.image_path) : null,
+    off_campus: e.off_campus,
     starts_at: e.starts_at,
     summary_ar: e.summary_ar,
     summary_en: e.summary_en,
@@ -1472,6 +1482,19 @@ const handlers: Record<string, Handler> = {
     }
   },
   "events.student_life_week": (admin) => sendStudentLifeWeek(admin),
+  // The day after, to everyone who checked in (private.thanks_for_coming):
+  // one question on the event's page. A mailing the person can turn off.
+  "events.thanks": async (admin, payload) => {
+    const [to, event] = await Promise.all([
+      recipient(admin, payload.user_id),
+      eventInfo(admin, payload.event_id),
+    ]);
+    if (to && event?.slug) {
+      await send(to, thanksForComing(to.lang, event, appUrl()), {
+        category: "optional",
+      });
+    }
+  },
   "events.waitlist_offered": async (admin, payload) => {
     const [to, event] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -2640,6 +2663,7 @@ const NON_ESSENTIAL = new Set([
   "qirtas.piece_note",
   "events.reminder",
   "events.shift_reminder",
+  "events.thanks",
   "get_involved.replies_digest",
 ]);
 
@@ -2659,7 +2683,7 @@ export const processRow = async (admin: AdminClient, id: number) => {
   const { data: row } = await admin
     .schema("core")
     .from("outbox")
-    .select("id, kind, payload, attempts")
+    .select("id, kind, payload, attempts, last_error")
     .eq("id", id)
     .is("processed_at", null)
     .lt("attempts", MAX_ATTEMPTS)
@@ -2711,30 +2735,153 @@ export const processRow = async (admin: AdminClient, id: number) => {
       .eq("id", id);
     return true;
   } catch (error) {
-    const quota = error instanceof EmailQuotaError;
-    // A Broadcast whose contact import is still running carries on at the
-    // next drain, without spending a try.
-    const pending = error instanceof BroadcastPending;
-    await admin
-      .schema("core")
-      .from("outbox")
-      .update({
-        // A spent sending limit is not the row's fault: give the try back.
-        ...(quota || pending ? { attempts: previousAttempts } : {}),
-        last_error: String(
-          error instanceof Error ? error.message : error
-        ).slice(0, 1000),
-      })
-      .eq("id", id);
-    if (quota) {
+    await recordFailure(admin, { ...row, attempts: previousAttempts }, error);
+    if (error instanceof EmailQuotaError) {
       throw error;
     }
     return false;
   }
 };
 
+/** Keeps a failed row's error, and whether the try counts. */
+const recordFailure = async (
+  admin: AdminClient,
+  row: { attempts: number; id: number; last_error: string | null },
+  error: unknown
+) => {
+  const quota = error instanceof EmailQuotaError;
+  // The key or its domain is wrong: the row waits for the fix
+  // (retryAfterFix), its tries spent like any other failure.
+  const config =
+    error instanceof EmailConfigError && row.last_error !== RETRIED_ONCE;
+  // A Broadcast whose contact import is still running carries on at the
+  // next drain, without spending a try.
+  const pending = error instanceof BroadcastPending;
+  await admin
+    .schema("core")
+    .from("outbox")
+    .update({
+      // A spent sending limit is not the row's fault: give the try back.
+      ...(quota || pending ? { attempts: row.attempts } : {}),
+      ...(config ? { waits_for_fix: true } : {}),
+      last_error: String(error instanceof Error ? error.message : error).slice(
+        0,
+        1000
+      ),
+    })
+    .eq("id", row.id);
+};
+
+const RETRY_WITHIN_MS = 7 * 86_400_000;
+
+/**
+ * Whether a waiting row's link has expired: an address confirmation's
+ * request is gone or older than its 7 days, a parent's link past its date, a
+ * held place past its hold. Other emails carry no link that expires.
+ */
+const linkExpired = async (
+  admin: AdminClient,
+  row: { kind: string; payload: Record<string, unknown> },
+  now: number
+) => {
+  if (row.kind === "personal_email.confirm") {
+    const { data } = await admin
+      .schema("core")
+      .from("personal_email_requests")
+      .select("requested_at")
+      .eq("user_id", String(row.payload.user_id))
+      .maybeSingle();
+    // The link works for 7 days (private.confirm_personal_email).
+    return (
+      !data || new Date(data.requested_at).getTime() < now - RETRY_WITHIN_MS
+    );
+  }
+  if (row.kind === "forms.link") {
+    const { data } = await admin
+      .schema("governance")
+      .from("form_links")
+      .select("expires_at, used_at")
+      .eq("id", String(row.payload.link_id))
+      .maybeSingle();
+    return (
+      !data ||
+      data.used_at !== null ||
+      new Date(data.expires_at).getTime() < now
+    );
+  }
+  if (row.kind === "events.waitlist_offered") {
+    return (
+      typeof row.payload.until !== "string" ||
+      new Date(row.payload.until).getTime() < now
+    );
+  }
+  return false;
+};
+
+/**
+ * Once an email sends again, each row that failed for a configuration
+ * reason is tried once more (decisions.md, The site: no silent failures),
+ * unless it is older than 7 days or its link has expired: those are
+ * closed with the reason.
+ */
+export const retryAfterFix = async (admin: AdminClient, now = Date.now()) => {
+  const { data: waiting } = await admin
+    .schema("core")
+    .from("outbox")
+    .select("id, kind, payload, created_at")
+    .eq("waits_for_fix", true)
+    .is("processed_at", null)
+    .limit(200);
+  const settled = await Promise.all(
+    (waiting ?? []).map((row) =>
+      settleAfterFix(
+        admin,
+        { ...row, payload: row.payload as Record<string, unknown> },
+        now
+      )
+    )
+  );
+  return settled.filter(Boolean).length;
+};
+
+/** One waiting row: tried once more, or closed with the reason. */
+const settleAfterFix = async (
+  admin: AdminClient,
+  row: {
+    created_at: string;
+    id: number;
+    kind: string;
+    payload: Record<string, unknown>;
+  },
+  now: number
+) => {
+  const old = new Date(row.created_at).getTime() < now - RETRY_WITHIN_MS;
+  const expired = old || (await linkExpired(admin, row, now));
+  await admin
+    .schema("core")
+    .from("outbox")
+    .update(
+      expired
+        ? {
+            last_error: old
+              ? "expired: older than 7 days when the configuration was fixed"
+              : "expired: its link expired before the configuration was fixed",
+            processed_at: new Date(now).toISOString(),
+            waits_for_fix: false,
+          }
+        : {
+            attempts: MAX_ATTEMPTS - 1,
+            last_error: RETRIED_ONCE,
+            waits_for_fix: false,
+          }
+    )
+    .eq("id", row.id);
+  return !expired;
+};
+
 /** Pending rows older than two minutes (the trigger handles fresh ones). */
 export const drain = async (admin: AdminClient, limit = 50) => {
+  const started = Date.now();
   const { data: pending } = await admin
     .schema("core")
     .from("outbox")
@@ -2763,6 +2910,9 @@ export const drain = async (admin: AdminClient, limit = 50) => {
       }
       throw error;
     }
+  }
+  if (lastSentAt >= started) {
+    await retryAfterFix(admin);
   }
   return { done, quotaReached: false, seen: rows.length };
 };

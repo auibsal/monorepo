@@ -120,7 +120,8 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000007a3', 'web_lead');
 delete from events.events;
 insert into events.events (id, slug, title_en, title_ar, starts_at, capacity, status, entry) values
   ('e0000000-0000-0000-0000-0000000007e1', 'tg-open', 'Open', 'مفتوح', now() + interval '2 days', 10, 'published', 'rsvp'),
-  ('e0000000-0000-0000-0000-0000000007e2', 'tg-members', 'Members', 'الأعضاء', now() + interval '3 days', 10, 'published', 'members');
+  ('e0000000-0000-0000-0000-0000000007e2', 'tg-members', 'Members', 'الأعضاء', now() + interval '3 days', 10, 'published', 'invite');
+insert into events.invitations (event_id, user_id) select 'e0000000-0000-0000-0000-0000000007e2', m.user_id from membership.memberships m;
 
 -- Codes
 select pg_temp.login_anon();
@@ -181,7 +182,7 @@ select is(jsonb_array_length(core.telegram_events(9999)), 1,
   'An unlinked account sees only public events');
 select pg_temp.as_service();
 select is(jsonb_array_length(core.telegram_events(4242)), 2,
-  'A linked member also sees members-only events');
+  'A linked member also sees the events they are invited to');
 select pg_temp.as_service();
 select is(core.telegram_rsvp(4242, 'e0000000-0000-0000-0000-0000000007e2'), 'confirmed',
   'The member RSVPs through the bot');

@@ -19,7 +19,7 @@ import {
   NO_EMAIL,
   needsChanges,
   publishedNote,
-  publisherName,
+  publisherSeat,
 } from "./publish";
 import {
   checkDocument,
@@ -177,11 +177,11 @@ const publishDocument = async (
   const publisher = await publisherFor(ctx, email);
   if (!publisher) {
     await needsChanges(ctx, page, [
-      `${email} does not hold governance.manage in the Diwan. Ask the President, the Vice President or the Secretary to set Ready to publish.`,
+      "Whoever set it does not hold governance.manage in the Diwan. Ask the President, the Vice President or the Secretary to set Ready to publish.",
     ]);
     return;
   }
-  const who = await publisherName(ctx, publisher);
+  const who = await publisherSeat(ctx, publisher);
   if (v.audience === "internal") {
     await keepInternal(ctx, page, v.code, who);
     const arabic =

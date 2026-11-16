@@ -256,7 +256,7 @@ select ok(core.is_partner_guest(), 'A verified guest is a partner''s guest');
 select pg_temp.logout();
 insert into events.events (id, slug, title_en, title_ar, starts_at, capacity, status, entry)
 values ('e0000000-0000-0000-0000-0000000000f1', 'guest-reading', 'Reading', 'قراءة',
-  now() + interval '3 days', 10, 'published', 'rsvp');
+  now() + interval '20 days', 10, 'published', 'rsvp');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select is(events.rsvp('e0000000-0000-0000-0000-0000000000f1'), 'confirmed',
   'and books a place at an event');
