@@ -87,7 +87,7 @@ export interface Group {
 
 export const whoami = async (telegramId: number) => {
   const { data, error } = await db()
-    .schema("core")
+    .schema("api")
     .rpc("telegram_whoami", { telegram_id: telegramId });
   if (error) {
     throw error;
@@ -99,7 +99,7 @@ export const visibleEvents = async (
   telegramId: number,
   { eventId, max = 6 }: { eventId?: string; max?: number } = {}
 ) => {
-  const { data, error } = await db().schema("core").rpc("telegram_events", {
+  const { data, error } = await db().schema("api").rpc("telegram_events", {
     event_id: eventId,
     max_rows: max,
     telegram_id: telegramId,
@@ -112,8 +112,8 @@ export const visibleEvents = async (
 
 export const group = async (chatId: number) => {
   const { data, error } = await db()
-    .schema("core")
-    .from("telegram_groups")
+    .schema("api")
+    .from("telegram_groups_all")
     .select("audience, chat_id, title, lang, topics")
     .eq("chat_id", chatId)
     .maybeSingle();
@@ -125,8 +125,8 @@ export const group = async (chatId: number) => {
 
 export const groups = async () => {
   const { data, error } = await db()
-    .schema("core")
-    .from("telegram_groups")
+    .schema("api")
+    .from("telegram_groups_all")
     .select("audience, chat_id, title, lang, topics");
   if (error) {
     throw error;
@@ -137,7 +137,7 @@ export const groups = async () => {
 /** Whether a Telegram account is linked to someone holding a Society role. */
 export const isStaffAccount = async (telegramId: number) => {
   const { data, error } = await db()
-    .schema("core")
+    .schema("api")
     .rpc("telegram_is_staff", { telegram_id: telegramId });
   if (error) {
     throw error;

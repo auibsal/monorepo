@@ -40,7 +40,7 @@ export const Handover = () => {
   const { supabase } = useAuth();
   const rows = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("core").rpc("handover")) ?? [],
+      unwrap(await supabase.schema("api").rpc("handover")) ?? [],
     queryKey: ["admin", "handover"],
   });
   if (!rows.data) {

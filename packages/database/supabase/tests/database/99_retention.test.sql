@@ -104,10 +104,10 @@ update auth.users set last_sign_in_at = now() where id = '00000000-0000-0000-000
 -- Timestamps are set by triggers on update; this test sets them itself.
 alter table journal.submission_drafts disable trigger user;
 alter table journal.blind_entries disable trigger user;
-alter table programmes.opening_replies disable trigger user;
-alter table programmes.removal_requests disable trigger user;
+alter table programs.opening_replies disable trigger user;
+alter table programs.removal_requests disable trigger user;
 alter table governance.form_submissions disable trigger user;
-alter table programmes.six_words disable trigger user;
+alter table programs.six_words disable trigger user;
 alter table membership.guests disable trigger user;
 
 select is(
@@ -128,14 +128,14 @@ insert into governance.form_submissions (form_key, submitted_by, status, created
   ('incident-report', '00000000-0000-0000-0000-0000000e2a02', 'closed', now() - interval '3 years', now() - interval '3 years', now() - interval '3 years', 'New Account', now() - interval '3 years', '{"case":"closed"}'),
   ('incident-report', '00000000-0000-0000-0000-0000000e2a02', 'submitted', now() - interval '8 years', now() - interval '8 years', now() - interval '8 years', 'New Account', null, '{"case":"open"}');
 -- A reply decided over a year ago
-insert into programmes.openings (id, programme_id, role, title_en, title_ar)
-values ('0be00000-0000-0000-0000-0000000e2a0b', (select id from core.programmes where slug = 'company'),
+insert into programs.openings (id, program_id, role, title_en, title_ar)
+values ('0be00000-0000-0000-0000-0000000e2a0b', (select id from core.programs where slug = 'company'),
   'stage_manager', 'Stage Manager', 'مدير الخشبة');
-insert into programmes.opening_replies (opening_id, user_id, status, created_at, updated_at, decided_at) values
+insert into programs.opening_replies (opening_id, user_id, status, created_at, updated_at, decided_at) values
   ('0be00000-0000-0000-0000-0000000e2a0b', '00000000-0000-0000-0000-0000000e2a01', 'not_picked', now() - interval '14 months', now() - interval '13 months', now() - interval '13 months'),
   ('0be00000-0000-0000-0000-0000000e2a0b', '00000000-0000-0000-0000-0000000e2a02', 'new', now() - interval '14 months', now() - interval '13 months', null);
 -- A removal request closed three years ago
-insert into programmes.removal_requests (requester_name, requester_email, details, status, action_taken, closed_at)
+insert into programs.removal_requests (requester_name, requester_email, details, status, action_taken, closed_at)
 values ('Someone', 'someone@example.com', 'My photo', 'removed', 'Taken down', now() - interval '3 years');
 -- Who voted in a round that closed two years ago
 insert into journal.prize_rounds (id, year, period_from, period_to, vote_opens_at, vote_closes_at)
@@ -149,7 +149,7 @@ insert into core.personal_email_requests (user_id, email, requested_at)
 values ('00000000-0000-0000-0000-0000000e2a01', 'old@example.com', now() - interval '8 days');
 -- An unclaimed Tour page, past its date
 update core.settings set value = to_jsonb((current_date - 1)::text) where key = 'tour.unclaimed_until';
-insert into programmes.six_words (text, language, tour, photo_path)
+insert into programs.six_words (text, language, tour, photo_path)
 values ('Six words nobody came back for', 'en', 'spring-2026', 'station/00000000-0000-0000-0000-0000000e2a0d.jpg');
 -- A guest who hasn't signed in for two years
 insert into membership.guests (user_id) values ('00000000-0000-0000-0000-0000000e2a01')
@@ -170,9 +170,9 @@ select is((select count(*)::integer from journal.blind_entries where blind_id = 
   'A blind copy with no submission is deleted after 12 months');
 select is((select array_agg(data ->> 'case') from governance.form_submissions where form_key = 'incident-report'),
   array['open'], 'Incident records go two years after the case closes; an open case stays');
-select is((select array_agg(status) from programmes.opening_replies where opening_id = '0be00000-0000-0000-0000-0000000e2a0b'),
+select is((select array_agg(status) from programs.opening_replies where opening_id = '0be00000-0000-0000-0000-0000000e2a0b'),
   array['new'], 'A decided reply goes after 12 months; an open one stays');
-select is((select count(*)::integer from programmes.removal_requests where requester_email = 'someone@example.com'), 0,
+select is((select count(*)::integer from programs.removal_requests where requester_email = 'someone@example.com'), 0,
   'Removal requests go two years after closing');
 select is((select count(*)::integer from journal.prize_vote_receipts where round_id = '0be00000-0000-0000-0000-0000000e2a0c'), 0,
   'Who voted for the Prize goes a year after the vote');
@@ -181,7 +181,7 @@ select is((select count(*)::integer from membership.calendar_tokens where token 
   'Calendar feed addresses of accounts unused for a year go');
 select is((select count(*)::integer from core.personal_email_requests where email = 'old@example.com'), 0,
   'Personal email requests unconfirmed after seven days go');
-select is((select count(*)::integer from programmes.six_words where photo_path = 'station/00000000-0000-0000-0000-0000000e2a0d.jpg'), 0,
+select is((select count(*)::integer from programs.six_words where photo_path = 'station/00000000-0000-0000-0000-0000000e2a0d.jpg'), 0,
   'Unclaimed Tour pages go after their date');
 
 select results_eq(

@@ -1,9 +1,10 @@
 import { env } from "@/env";
 import { hasBearer } from "@/lib/api/bearer";
-import { sharedBot } from "@/lib/api/bot/bot";
+import { createBot, sharedBot } from "@/lib/api/bot/bot";
 import { db } from "@/lib/api/bot/db";
 import { runRemovals } from "@/lib/api/bot/features/group/removals";
 import { runFeeds } from "@/lib/api/bot/feeds";
+import { queueing, sendQueued } from "@/lib/api/bot/queue";
 import { ensureInviteLinks, runTitles } from "@/lib/api/bot/titles";
 import {
   runAlerts,
@@ -23,13 +24,15 @@ export const maxDuration = 60;
 const BUDGET_MS = 40_000;
 const STEP_MS = 20_000;
 const HARD_STOP_MS = 45_000;
+/** The send step stops reading the queue after this, inside its share. */
+const SEND_MS = 15_000;
 
 /** The steps the last run left, first in line on this one. */
 const LEFT_KEY = "telegram.left";
 
 const leftLastTime = async () => {
   const { data } = await db()
-    .schema("core")
+    .schema("api")
     .from("settings")
     .select("value")
     .eq("key", LEFT_KEY)
@@ -43,7 +46,7 @@ const leaveForNextTime = async (before: string[], left: string[]) => {
     return;
   }
   await db()
-    .schema("core")
+    .schema("api")
     .from("settings")
     .upsert({ key: LEFT_KEY, value: left });
 };
@@ -68,19 +71,24 @@ const run = async (request: Request) => {
   }
   const bot = sharedBot();
   await bot.init();
+  // Planning puts each post on the queue (Supabase Queues); the send step
+  // delivers it (decisions.md, The site: Background jobs).
+  const planner = queueing(createBot(env.TELEGRAM_BOT_TOKEN).api);
+  const { username } = bot.botInfo;
   const first = await leftLastTime().catch(() => []);
-  // The staff alerts first: a slow step later must never hold back the
-  // alert about it.
+  // The staff alerts first and straight to Telegram: a slow step later, or
+  // the queue itself, must never hold back the alert about it.
   const outcome = await runSteps(
     [
       { name: "alerts", run: () => runAlerts(bot.api) },
-      { name: "feeds", run: () => runFeeds(bot.api, bot.botInfo.username) },
+      { name: "feeds", run: () => runFeeds(planner, username) },
+      { name: "paper", run: () => runPaper(planner) },
+      { name: "tickets", run: () => runTickets(planner) },
+      { name: "todos", run: () => runRoleTodos(planner) },
+      { name: "send", run: () => sendQueued(bot.api, Date.now() + SEND_MS) },
       { name: "removed", run: () => runRemovals(bot.api) },
       { name: "links", run: () => ensureInviteLinks(bot.api) },
       { name: "titles", run: () => runTitles(bot.api) },
-      { name: "paper", run: () => runPaper(bot.api) },
-      { name: "tickets", run: () => runTickets(bot.api) },
-      { name: "todos", run: () => runRoleTodos(bot.api) },
       { name: "descriptions", run: () => syncDescriptions(bot.api) },
       { name: "watch", run: () => runWatch() },
     ],

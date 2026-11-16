@@ -126,7 +126,7 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
   const { data: users } = await db.auth.admin.listUsers({ perPage: 200 });
   const readerId = users.users.find((u) => u.email === editor.email)?.id ?? "";
   const { data: call } = await db
-    .schema("journal")
+    .schema("api")
     .from("calls")
     .select("id, issue:issues!inner(slug)")
     // Haven's call, Edition 0 (decisions.md, Qirtas: one Edition, one call).
@@ -134,8 +134,8 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
     .limit(1)
     .single();
   const { data: entry, error } = await db
-    .schema("journal")
-    .from("blind_entries")
+    .schema("api")
+    .from("blind_entries_all")
     .upsert(
       {
         blind_id: "W-E2E2E2",
@@ -152,7 +152,7 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
   expect(error).toBeNull();
   const entryId = entry?.id ?? "";
   await db
-    .schema("journal")
+    .schema("api")
     .from("assignments")
     .upsert(
       { blind_entry_id: entryId, read_number: 1, reader_id: readerId },
@@ -160,7 +160,7 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
     );
   // A reader who hasn't signed confidentiality-agreement, the readers' pledge.
   await db
-    .schema("governance")
+    .schema("api")
     .from("form_submissions")
     .delete()
     .eq("form_key", "confidentiality-agreement")
@@ -219,8 +219,8 @@ test("an officer who manages members corrects a member's name to the official on
   const memberId = created.data.user?.id ?? "";
   // A member who has seen how their name appears on the site.
   await db
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .update({ name_confirmed_at: new Date().toISOString() })
     .eq("id", memberId);
 
@@ -276,14 +276,14 @@ test("an officer who manages members corrects a member's name to the official on
   ).toBeVisible();
 
   const unchanged = await db
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .select("full_name_en")
     .eq("id", memberId)
     .single();
   expect(unchanged.data?.full_name_en).toBe("Mariam AlHakimi");
   const waiting = await db
-    .schema("governance")
+    .schema("api")
     .from("pending_actions")
     .select("kind, status")
     .eq("payload->>member", memberId);

@@ -144,11 +144,17 @@ Vercel (Production). The steps, for a new domain or a move:
   → Emails → SMTP Settings** stays empty (Resend's "SMTP" key is deleted),
   so there is one way auth email leaves. The templates in
   `packages/database/supabase/templates` serve only the local stack.
-- **API → Exposed schemas:** `public`, `graphql_public`, `core`, `access`,
-  `membership`, `events`, `journal`, `programmes`, `governance` and
-  `content` (the list in `config.toml`, `[api] schemas`). Without one, every
-  read of that schema fails with PGRST106; the site's published pages
-  then render empty sections and the Diwan cannot load.
+- **Integrations → Data API:** exposed schemas `api` only (the views and
+  wrappers `private.build_api()` makes; `config.toml`, `[api] schemas`);
+  extra search path `extensions` only; "Automatically expose new tables"
+  off. The data schemas (`core`, `access`, `membership`, `events`,
+  `journal`, `programs`, `governance`, `content`), `public`, `pgmq` and
+  `graphql_public` are not exposed. GraphQL is off (`pg_graphql` is not
+  installed). Without `api`, every read fails with PGRST106: the published
+  pages render empty sections and the Diwan can't load.
+- **Integrations → Queues:** the queue `telegram` (Hudhud's posts), made
+  by its migration; its schema stays unexposed, and only the server's key
+  reaches it, through `api.telegram_*`.
 - **Settings → API Keys:** the publishable and secret keys only; **Legacy
   API keys (anon, service_role): disabled**. Nothing reads them, and
   Vercel's `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,

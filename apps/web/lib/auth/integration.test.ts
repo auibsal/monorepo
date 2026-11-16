@@ -58,7 +58,7 @@ describe.skipIf(
     );
     expect(result.ok).toBe(true);
 
-    const { data } = await supabase.schema("membership").rpc("my_status");
+    const { data } = await supabase.schema("api").rpc("my_status");
     expect(data?.[0]).toMatchObject({ is_member: true, verified: true });
   });
 
@@ -72,13 +72,13 @@ describe.skipIf(
     );
     await signInWithPassword(supabase, `bb${stamp}@example.com`, password);
 
-    const { data } = await supabase.schema("membership").rpc("my_status");
+    const { data } = await supabase.schema("api").rpc("my_status");
     expect(data?.[0]).toMatchObject({ is_member: false, verified: false });
 
     // Partners verify their own people (decisions.md): no request
     // waits in the Society's queue.
     const { data: requests } = await supabase
-      .schema("membership")
+      .schema("api")
       .from("verification_requests")
       .select("status");
     expect(requests).toEqual([]);

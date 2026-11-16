@@ -11,7 +11,7 @@ import { type DatedItem, DatedList, eventItems } from "@/components/event-list";
 import { EpisodeCard, loadEpisodes } from "@/components/next-stop";
 import { PieceCardView } from "@/components/qirtas/cards";
 import { FromTheSociety } from "@/components/qirtas/from-the-society";
-import { events, journal, localized, programmes } from "@/lib/data";
+import { events, journal, localized, programs } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -49,7 +49,7 @@ const Home = async ({ params }: HomeProps) => {
       readPublished(["journal"], (c) => journal.frontPieces(c), []),
       readPublished(["journal"], (c) => journal.deskPieces(c, "news"), []),
       loadEpisodes(),
-      readPublished(["programmes"], (c) => programmes.openPlaces(c), []),
+      readPublished(["programs"], (c) => programs.openPlaces(c), []),
     ]);
 
   // Home, in decisions.md's order, each part only when it has something:

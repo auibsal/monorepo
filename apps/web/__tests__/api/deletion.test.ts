@@ -42,7 +42,7 @@ const fakeAdmin = (deleteError: Error | null = null) => {
   const tables: Record<string, unknown> = {
     activity_log: { delete: () => logDelete },
     outbox: { insert },
-    profiles: { select: () => profile },
+    profiles_all: { select: () => profile },
     six_words: { select: () => pages },
     submission_files: { select: () => files },
     submissions: { select: () => submissions },

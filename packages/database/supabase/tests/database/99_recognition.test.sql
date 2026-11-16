@@ -102,25 +102,25 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'member-rc@auib
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-rc@auib.edu.iq', 'The President');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a3', 'eic-rc@auib.edu.iq', 'The Editor');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a6', 'qalam-rc@auib.edu.iq', 'The Qalam Lead');
-select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'lead-rc@auib.edu.iq', 'Programme Lead');
+select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'lead-rc@auib.edu.iq', 'Program Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a5', 'gs-rc@auib.edu.iq', 'Secretary');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'president');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a3', 'eic');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a6', 'qalam_lead');
 -- A Qalam student is an account on the roster (made by the parent's consent).
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a7', 'sara@school.example', 'Sara Ahmed');
-insert into programmes.qalam_students (id, user_id, year, school)
+insert into programs.qalam_students (id, user_id, year, school)
 values ('00000000-0000-0000-0000-00000000c001', '00000000-0000-0000-0000-0000000000a7', 2028, 'Baghdad High');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'company'));
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a4', 'program_lead', 'program',
+  (select id from core.programs where slug = 'company'));
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a5', 'general_secretary');
 
 -- Members log hours (F-16) as pending, and cannot confirm them.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok(
-  $$ insert into membership.service_records (id, programme_id, occurred_on, activity, what, hours)
+  $$ insert into membership.service_records (id, program_id, occurred_on, activity, what, hours)
      select '00000000-0000-0000-0000-00000000e001', id, current_date - 3, 'Side Quest', 'Set up chairs', 3
-     from core.programmes where slug = 'company' $$,
+     from core.programs where slug = 'company' $$,
   'A member logs hours as pending'
 );
 select throws_ok(

@@ -41,7 +41,7 @@ Branch: `claude/new-session-qosn60`, one pull request per prompt.
   (the Council page uses `council_seats`), `core.current_term`,
   `core.pledge_versions`, `core.my_topics`, `core.is_partner_guest`,
   `access.two_step_from`, `journal.accepted_unplaced`,
-  `journal.is_edition_desk` and `programmes.shift_places` are called by no
+  `journal.is_edition_desk` and `programs.shift_places` are called by no
   page; drop each with its pgTAP assertions, or give it its page.
 - [ ] **The promo kit to the screening kit's files:** once the owner sends
   them, match each layout's sizes and type to the reference (the kit

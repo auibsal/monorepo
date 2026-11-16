@@ -16,7 +16,15 @@ describe("what happened", () => {
       "migrations"
     );
     const sql = readdirSync(dir)
-      .map((file) => readFileSync(join(dir, file), "utf8"))
+      // Migrations before 20261116001200_programs.sql, as it renamed them.
+      .map((file) =>
+        file < "20261116001200"
+          ? readFileSync(join(dir, file), "utf8").replaceAll(
+              "programme",
+              "program"
+            )
+          : readFileSync(join(dir, file), "utf8")
+      )
       .join("\n");
     // Dropped tables, one or a list at a time, and whole dropped schemas.
     const dropped = new Set(

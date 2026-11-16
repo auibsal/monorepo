@@ -165,7 +165,7 @@ export const AccessForm = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .update(toRow(form))
           .eq("id", eventId)

@@ -229,7 +229,7 @@ export const ViewForm = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("form_submissions")
           .select("*")
           .eq("id", id)
@@ -279,7 +279,7 @@ const SealedName = ({
   const state = useQuery({
     queryFn: async () =>
       unwrap(
-        await supabase.schema("governance").rpc("sealed_state", {
+        await supabase.schema("api").rpc("sealed_state", {
           submission_id: id,
         })
       ),
@@ -289,7 +289,7 @@ const SealedName = ({
     mutationFn: async (reason: "safety" | "agreed") =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("open_sealed", { reason, submission_id: id })
       ),
   });
@@ -347,7 +347,7 @@ const WithdrawConsent = ({ submission }: { submission: Submission }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("withdraw_consent", { submission_id: submission.id })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["forms"] }),

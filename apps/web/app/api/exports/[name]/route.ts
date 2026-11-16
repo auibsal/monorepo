@@ -50,7 +50,7 @@ export const POST = async (
   // this officer's request (governance.request_export); it is spent here.
   if (definition.secondOfficer) {
     const { data: approved } = await createAdminClient()
-      .schema("governance")
+      .schema("api")
       .rpc("spend_export", {
         name,
         params: parsed.data,

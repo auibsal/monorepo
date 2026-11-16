@@ -30,7 +30,7 @@ const SOURCE_KEYS = [
   "journal",
   "news",
   "officers",
-  "programmes",
+  "programs",
 ] as const;
 
 const OPTIONAL_SOURCES = [
@@ -46,7 +46,7 @@ const OPTIONAL_SOURCES = [
 
 const setting = async (admin: Admin, key: string) => {
   const { data } = await admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .select("value")
     .eq("key", key)
@@ -179,7 +179,7 @@ export const runNotionSync = async (
     problems: ctx.problems.slice(0, 20),
   };
   await admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .update({ value: state as never })
     .eq("key", "notion.sync_state");
@@ -208,9 +208,9 @@ export const accessLists = async (notion: Notion): Promise<AccessLists> => {
   const admin = createAdminClient();
   const now = new Date().toISOString();
   const [{ data: officers, error }, held, users] = await Promise.all([
-    admin.schema("access").rpc("officer_directory"),
+    admin.schema("api").rpc("officer_directory"),
     admin
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .select("user_id, roles!inner(in_notion)")
       .eq("roles.in_notion", true)

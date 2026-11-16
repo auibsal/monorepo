@@ -20,8 +20,8 @@ export const GET = async (request: Request) => {
     return problem(400, "invalid_token", headers);
   }
   const { data } = await createAdminClient()
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .select("mail_paper, mail_news")
     .eq("id", userId)
     .maybeSingle();
@@ -59,14 +59,14 @@ export const POST = async (request: Request) => {
     const admin = createAdminClient();
     const [{ error }, { error: listError }] = await Promise.all([
       admin
-        .schema("membership")
-        .from("invitations")
+        .schema("api")
+        .from("membership_invitations")
         .delete()
         .eq("email", email),
       // A writer added to the mailing list from the invitation leaves it.
       admin
-        .schema("content")
-        .from("newsletter_subscribers")
+        .schema("api")
+        .from("newsletter_subscribers_all")
         .update({
           status: "unsubscribed",
           unsubscribed_at: new Date().toISOString(),
@@ -93,8 +93,8 @@ export const POST = async (request: Request) => {
     return problem(400, "invalid_token", headers);
   }
   const { error } = await createAdminClient()
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .update(
       topics.success
         ? { mail_news: topics.data.news, mail_paper: topics.data.paper }

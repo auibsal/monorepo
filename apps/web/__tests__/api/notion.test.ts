@@ -272,7 +272,7 @@ describe("the read-only copies", () => {
         id: "n1",
         item: "Paper",
         needed_by: null,
-        programme: "typewriter-tour",
+        program: "typewriter-tour",
         provided_note: null,
         purpose: "",
         quantity: 2,

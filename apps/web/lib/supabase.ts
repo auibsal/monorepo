@@ -17,7 +17,7 @@ export const cacheTags = [
   "events",
   "journal",
   "news",
-  "programmes",
+  "programs",
   "documents",
   "about",
   "partners",

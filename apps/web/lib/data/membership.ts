@@ -23,7 +23,7 @@ export const profileSchema = z.object({
   notify_email: z.boolean(),
 });
 
-const membership = (client: Client) => client.schema("membership");
+const membership = (client: Client) => client.schema("api");
 
 export interface MemberStatus {
   activities: number;
@@ -144,16 +144,16 @@ export interface PersonalEmail {
 export const myPersonalEmail = async (
   client: Client
 ): Promise<PersonalEmail | null> =>
-  (unwrap(await client.schema("core").rpc("my_personal_email"))?.[0] as
+  (unwrap(await client.schema("api").rpc("my_personal_email"))?.[0] as
     | PersonalEmail
     | undefined) ?? null;
 
 /** Raises email_invalid, email_auib or email_in_use (DataError message). */
 export const requestPersonalEmail = async (client: Client, email: string) =>
-  unwrap(await client.schema("core").rpc("request_personal_email", { email }));
+  unwrap(await client.schema("api").rpc("request_personal_email", { email }));
 
 export const removePersonalEmail = async (client: Client) =>
-  unwrap(await client.schema("core").rpc("remove_personal_email"));
+  unwrap(await client.schema("api").rpc("remove_personal_email"));
 
 /** Why an address was refused, from the database's message. */
 export const personalEmailError = (
@@ -186,32 +186,32 @@ export interface MyAddresses {
 export const myAddresses = async (
   client: Client
 ): Promise<MyAddresses | null> =>
-  (unwrap(await client.schema("core").rpc("my_addresses"))?.[0] as
+  (unwrap(await client.schema("api").rpc("my_addresses"))?.[0] as
     | MyAddresses
     | undefined) ?? null;
 
 /** Sends a code to the AUIB address (email_not_auib, email_has_account…). */
 export const requestAuibAddress = async (client: Client, email: string) =>
-  unwrap(await client.schema("core").rpc("request_auib_address", { email }));
+  unwrap(await client.schema("api").rpc("request_auib_address", { email }));
 
 /** The code typed in: the AUIB address becomes the sign-in. */
 export const confirmAuibAddress = async (client: Client, code: string) =>
-  unwrap(await client.schema("core").rpc("confirm_auib_address", { code }));
+  unwrap(await client.schema("api").rpc("confirm_auib_address", { code }));
 
 /** "I've left AUIB": an Associate from now on. */
 export const reportLeaving = async (client: Client, graduated: boolean) =>
-  unwrap(await client.schema("core").rpc("report_leaving", { graduated }));
+  unwrap(await client.schema("api").rpc("report_leaving", { graduated }));
 
 /** Sends a code to the other account's address. */
 export const requestMerge = async (client: Client, email: string) =>
-  unwrap(await client.schema("core").rpc("request_merge", { email }));
+  unwrap(await client.schema("api").rpc("request_merge", { email }));
 
 /** The code typed in: the request goes to the Director of Membership. */
 export const proveMerge = async (client: Client, code: string) =>
-  unwrap(await client.schema("core").rpc("prove_merge", { code }));
+  unwrap(await client.schema("api").rpc("prove_merge", { code }));
 
 export const withdrawMerge = async (client: Client) =>
-  unwrap(await client.schema("core").rpc("withdraw_merge"));
+  unwrap(await client.schema("api").rpc("withdraw_merge"));
 
 const ADDRESS_ERRORS = [
   "email_not_auib",

@@ -56,7 +56,7 @@ export const EventBooking = ({
 
   const load = useCallback(async () => {
     const client = await loadClient();
-    const supabase = client.schema("events");
+    const supabase = client.schema("api");
     const [rsvp, waiting, reminder, event, standing] = await Promise.all([
       supabase
         .from("rsvps")

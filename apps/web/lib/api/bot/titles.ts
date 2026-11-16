@@ -49,7 +49,7 @@ export const shortTitle = (title: string) => {
   return short;
 };
 
-const titles = () => db().schema("core").from("telegram_titles");
+const titles = () => db().schema("api").from("telegram_titles");
 
 /** Ignores Telegram's "not there" and "nothing changed" answers. */
 const quietly = async (call: Promise<unknown>) => {
@@ -69,8 +69,8 @@ const quietly = async (call: Promise<unknown>) => {
  * never shown. The Faculty Advisor holds a role and carries that tag. */
 const holders = async () => {
   const [roles, exempt] = await Promise.all([
-    db().schema("core").rpc("telegram_role_titles"),
-    db().schema("core").from("telegram_exempt").select("telegram_id"),
+    db().schema("api").rpc("telegram_role_titles"),
+    db().schema("api").from("telegram_exempt").select("telegram_id"),
   ]);
   if (roles.error ?? exempt.error) {
     throw roles.error ?? exempt.error;
@@ -301,8 +301,8 @@ export const runTitles = async (api: Api) => {
  */
 export const ensureInviteLinks = async (api: Api) => {
   const { data, error } = await db()
-    .schema("core")
-    .from("telegram_groups")
+    .schema("api")
+    .from("telegram_groups_all")
     .select("chat_id, audience")
     .is("invite_link", null);
   if (error) {
@@ -320,8 +320,8 @@ export const ensureInviteLinks = async (api: Api) => {
         return false;
       }
       await db()
-        .schema("core")
-        .from("telegram_groups")
+        .schema("api")
+        .from("telegram_groups_all")
         .update({ invite_link: link.invite_link })
         .eq("chat_id", row.chat_id);
       return true;
@@ -333,7 +333,7 @@ export const ensureInviteLinks = async (api: Api) => {
 /** The groups a linked account may join, with their links. */
 export const joinLinks = async (telegramId: number) => {
   const { data: account } = await db()
-    .schema("core")
+    .schema("api")
     .from("telegram_accounts")
     .select("user_id")
     .eq("telegram_id", telegramId)
@@ -342,7 +342,7 @@ export const joinLinks = async (telegramId: number) => {
     return [];
   }
   const { data, error } = await db()
-    .schema("core")
+    .schema("api")
     .rpc("telegram_join_links_for", { member: account.user_id });
   if (error) {
     throw error;

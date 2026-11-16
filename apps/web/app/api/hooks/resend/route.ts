@@ -77,7 +77,7 @@ export const POST = async (request: Request) => {
   }).catch(() => undefined);
   if (rows.length) {
     const { error } = await createAdminClient()
-      .schema("core")
+      .schema("api")
       .from("email_suppressions")
       .upsert(rows, { onConflict: "email" });
     if (error) {

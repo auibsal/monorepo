@@ -37,7 +37,7 @@ const attendanceRows = async (
   const db = session.supabase;
   const event = unwrap(
     await db
-      .schema("events")
+      .schema("api")
       .from("events")
       .select("questions")
       .eq("id", eventId)
@@ -52,14 +52,14 @@ const attendanceRows = async (
   }[];
   const [rsvps, checkIns] = await Promise.all([
     db
-      .schema("events")
+      .schema("api")
       .from("rsvps")
       .select("user_id, answers, created_at, from_waitlist")
       .eq("event_id", eventId)
       .eq("status", "confirmed")
       .order("created_at"),
     db
-      .schema("events")
+      .schema("api")
       .from("check_ins")
       .select("user_id, method, checked_in_at")
       .eq("event_id", eventId),
@@ -70,7 +70,7 @@ const attendanceRows = async (
   const profiles = ids.length
     ? (unwrap(
         await db
-          .schema("core")
+          .schema("api")
           .from("profiles")
           .select("id, full_name_en, full_name_ar")
           .in("id", ids)
@@ -110,13 +110,13 @@ const attendanceRows = async (
 const needsRows = async (session: ApiSession): Promise<ExportTable> => {
   const [rows, programs] = await Promise.all([
     session.supabase
-      .schema("programmes")
+      .schema("api")
       .from("needs")
       .select(
-        "programme_id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note"
+        "program_id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note"
       )
       .order("needed_by"),
-    session.supabase.schema("core").from("programmes").select("id, name_en"),
+    session.supabase.schema("api").from("programs").select("id, name_en"),
   ]);
   const names = new Map((unwrap(programs) ?? []).map((p) => [p.id, p.name_en]));
   return {
@@ -132,7 +132,7 @@ const needsRows = async (session: ApiSession): Promise<ExportTable> => {
       "provided_note",
     ],
     rows: (unwrap(rows) ?? []).map((r) => [
-      (r.programme_id ? names.get(r.programme_id) : undefined) ?? "",
+      (r.program_id ? names.get(r.program_id) : undefined) ?? "",
       r.item,
       r.quantity,
       r.needed_by,
@@ -180,7 +180,7 @@ export const exportsByName: Record<string, ExportDefinition> = {
     run: async (session, params) =>
       studentLifeTable(
         unwrap(
-          await session.supabase.schema("governance").rpc("student_life_list", {
+          await session.supabase.schema("api").rpc("student_life_list", {
             election_id: uuid.parse(params.election_id),
           })
         ) ?? []
@@ -191,9 +191,8 @@ export const exportsByName: Record<string, ExportDefinition> = {
     permissions: ["governance.manage"],
     run: async (session) =>
       studentLifeTable(
-        unwrap(
-          await session.supabase.schema("governance").rpc("student_life_list")
-        ) ?? []
+        unwrap(await session.supabase.schema("api").rpc("student_life_list")) ??
+          []
       ),
     secondOfficer: true,
   },

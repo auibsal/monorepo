@@ -8,7 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { localized, programmes, unwrap } from "@/lib/data";
+import { localized, programs, unwrap } from "@/lib/data";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { useQueryState } from "@/lib/diwan/use-query-param";
@@ -72,10 +72,10 @@ const useOpenings = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("openings")
           .select(
-            "id, kind, owner, role, programme_id, event_id, title_en, title_ar, closes_at, is_open, questions, opening_replies(opening_id, user_id, note, status, talk_at, created_at, answers, availability, files, accommodation, lang, gpa_consent_at, submitted_at, offer_expires_at, student_life_eligible_at)"
+            "id, kind, owner, role, program_id, event_id, title_en, title_ar, closes_at, is_open, questions, opening_replies(opening_id, user_id, note, status, talk_at, created_at, answers, availability, files, accommodation, lang, gpa_consent_at, submitted_at, offer_expires_at, student_life_eligible_at)"
           )
           .order("created_at", { ascending: false })
       ) ?? [],
@@ -90,7 +90,7 @@ const useComingEvents = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("id, slug, title_en, title_ar, starts_at")
           .gte("starts_at", new Date().toISOString())
@@ -143,7 +143,7 @@ const OpeningItem = ({
   readonly runs: boolean;
   readonly whose: string;
 }) => {
-  const t = useTranslations("diwan.admin.programmes.openings");
+  const t = useTranslations("diwan.admin.programs.openings");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -151,7 +151,7 @@ const OpeningItem = ({
     mutationFn: async (open: boolean) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("openings")
           .update({ is_open: open })
           .eq("id", o.id)
@@ -195,7 +195,7 @@ const OpeningItem = ({
                 director={DIRECTOR_ROLES.has(o.role ?? "")}
                 key={reply.user_id}
                 name={person ? memberName(person, locale) : "—"}
-                questions={programmes.questionsOf(o.questions)}
+                questions={programs.questionsOf(o.questions)}
                 reply={reply as Reply}
                 runs={runs}
               />
@@ -241,7 +241,7 @@ const OpeningItem = ({
  * is edited at its own address.
  */
 export const OpeningsAdmin = () => {
-  const t = useTranslations("diwan.admin.programmes.openings");
+  const t = useTranslations("diwan.admin.programs.openings");
   const th = useTranslations("diwan.admin.hiring");
   const locale = useLocale() as Locale;
   const grants = useGrants();
@@ -314,7 +314,7 @@ export const OpeningsAdmin = () => {
             <ul className="divide-line grid divide-y">
               {found.map((o) => (
                 <OpeningItem
-                  canPick={picks(grants.data, o.owner, o.programme_id)}
+                  canPick={picks(grants.data, o.owner, o.program_id)}
                   key={o.id}
                   names={names.data ?? []}
                   opening={o}
@@ -341,7 +341,7 @@ const PlaceForm = ({
   readonly kind: PlaceKind;
   readonly onDone: () => void;
 }) => {
-  const t = useTranslations("diwan.admin.programmes.openings");
+  const t = useTranslations("diwan.admin.programs.openings");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -351,7 +351,7 @@ const PlaceForm = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("openings")
           .insert({
             body_ar: form.body.ar || null,
@@ -446,7 +446,7 @@ const PlaceForm = ({
  * posts, then its form. A role is chosen from the Society's roles (hiring).
  */
 export const NewOpeningPage = () => {
-  const t = useTranslations("diwan.admin.programmes.openings");
+  const t = useTranslations("diwan.admin.programs.openings");
   const grants = useGrants();
   const router = useRouter();
   const done = () => router.push("/membership/openings");

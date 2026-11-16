@@ -44,7 +44,7 @@ const useIntakeQueue = (issueId: string | null) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .rpc("intake_queue", { issue_id: issueId ?? "" })
       ) ?? [],
     queryKey: [...pipelineKey, "intake", issueId],
@@ -165,7 +165,7 @@ const AssignSlot = ({
   const assign = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("journal").rpc("assign_reader", {
+        await supabase.schema("api").rpc("assign_reader", {
           blind_entry_id: entryId,
           read_number: readNumber,
           reader_id: reader,
@@ -176,11 +176,7 @@ const AssignSlot = ({
   const remove = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
-        await supabase
-          .schema("journal")
-          .from("assignments")
-          .delete()
-          .eq("id", id)
+        await supabase.schema("api").from("assignments").delete().eq("id", id)
       ),
     onSuccess: refresh,
   });
@@ -244,9 +240,7 @@ export const Readers = ({ issueId }: { issueId: string }) => {
   const team = useQuery({
     queryFn: async () =>
       unwrap(
-        await supabase
-          .schema("journal")
-          .rpc("review_team", { issue_id: issueId })
+        await supabase.schema("api").rpc("review_team", { issue_id: issueId })
       ) ?? [],
     queryKey: [...pipelineKey, "team", issueId],
   });
@@ -322,25 +316,25 @@ export const SubmissionView = () => {
     queryFn: async () => {
       const [row, files, history, openings] = await Promise.all([
         supabase
-          .schema("journal")
+          .schema("api")
           .from("submissions")
           .select("*, call:calls(issue_id)")
           .eq("id", id ?? "")
           .maybeSingle(),
         supabase
-          .schema("journal")
+          .schema("api")
           .from("submission_files")
           .select("id, kind, mime_type, size_bytes, created_at")
           .eq("submission_id", id ?? "")
           .order("created_at"),
         supabase
-          .schema("journal")
+          .schema("api")
           .from("status_history")
           .select("id, from_status, to_status, note, changed_at")
           .eq("submission_id", id ?? "")
           .order("changed_at"),
         supabase
-          .schema("journal")
+          .schema("api")
           .from("original_openings")
           .select("id, file_id, opened_by, opened_at")
           .eq("submission_id", id ?? "")
@@ -372,7 +366,7 @@ export const SubmissionView = () => {
   const returnIt = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("journal").rpc("return_for_formatting", {
+        await supabase.schema("api").rpc("return_for_formatting", {
           note,
           submission_id: id ?? "",
         })

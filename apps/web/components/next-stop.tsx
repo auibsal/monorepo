@@ -2,22 +2,20 @@ import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations } from "next-intl/server";
-import { localized, programmes } from "@/lib/data";
+import { localized, programs } from "@/lib/data";
 import { mediaUrl } from "@/lib/media";
 import { readPublished } from "@/lib/supabase";
 
 /**
  * Next Stop's published episodes, the latest first (decisions.md, Next
  * Stop): the Society's show, not part of Qirtas, kept in
- * programmes.episodes and edited in the Diwan (Media → Next Stop).
+ * programs.episodes and edited in the Diwan (Media → Next Stop).
  */
 export const loadEpisodes = () =>
-  readPublished(["journal"], (c) => programmes.publicEpisodes(c), []);
+  readPublished(["journal"], (c) => programs.publicEpisodes(c), []);
 
-export const episodeTitle = (
-  episode: programmes.PublicEpisode,
-  locale: Locale
-) => localized(episode, "title", locale);
+export const episodeTitle = (episode: programs.PublicEpisode, locale: Locale) =>
+  localized(episode, "title", locale);
 
 /** One episode as a card: its thumbnail, number, title and release date. */
 export const EpisodeCard = async ({
@@ -25,7 +23,7 @@ export const EpisodeCard = async ({
   heading = "h3",
   locale,
 }: {
-  episode: programmes.PublicEpisode;
+  episode: programs.PublicEpisode;
   heading?: "h2" | "h3";
   locale: Locale;
 }) => {

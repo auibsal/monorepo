@@ -45,7 +45,7 @@ export const POST = async (request: Request) => {
   try {
     const admin = createAdminClient();
     const { data: notice } = await admin
-      .schema("core")
+      .schema("api")
       .from("announcements")
       .select("id, title_en, title_ar, body_en, body_ar, link_path, sent_at")
       .eq("id", id)
@@ -75,7 +75,7 @@ export const POST = async (request: Request) => {
       });
     }
     await admin
-      .schema("core")
+      .schema("api")
       .from("announcements")
       .update({ tested_at: new Date().toISOString() })
       .eq("id", id);

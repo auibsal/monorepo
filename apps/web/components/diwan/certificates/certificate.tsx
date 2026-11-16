@@ -24,7 +24,7 @@ const useCertificate = (id: string) => {
     queryFn: async () => {
       const row = unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("certificates")
           .select("*")
           .eq("id", id)
@@ -38,7 +38,7 @@ const useCertificate = (id: string) => {
       const [member, signers] = await Promise.all([
         row.user_id
           ? supabase
-              .schema("core")
+              .schema("api")
               .from("profiles")
               .select("full_name_en, full_name_ar")
               .eq("id", row.user_id)

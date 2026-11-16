@@ -81,7 +81,7 @@ const expiryAlert = async (
 /** The database advisors (the Desk's findings), as one alert a day. */
 const advisorAlert = async (now: Date) => {
   const { data } = await createAdminClient()
-    .schema("core")
+    .schema("api")
     .rpc("advisor_findings");
   const count = (data ?? []).length;
   if (!count) {

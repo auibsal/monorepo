@@ -87,7 +87,7 @@ const usePartners = () => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partners")
           .select("*")
           .order("name_en")
@@ -376,7 +376,7 @@ const PartnerForm = ({
           };
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partners")
           .update(update)
           .eq("id", initial.id)
@@ -690,7 +690,7 @@ const AddOrganization = () => {
         .replace(SLUG_ENDS, "");
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partners")
           .insert({
             is_listed: true,
@@ -771,7 +771,7 @@ const PendingLogo = ({
     mutationFn: async (approve: boolean) => {
       const declined = unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("decide_partner_logo", { approve, partner: partnerId })
       );
       if (declined) {
@@ -936,7 +936,7 @@ const Agreements = () => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_agreements")
           .select("*")
           .order("starts_on", { ascending: false })
@@ -957,7 +957,7 @@ const Agreements = () => {
     }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_agreements")
           .update(patch)
           .eq("id", id)
@@ -974,7 +974,7 @@ const Agreements = () => {
     }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("give_grants", { agreement_id: id, grants: given })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
@@ -1164,7 +1164,7 @@ export const AgreementPage = ({ id }: { id: string }) => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_agreements")
           .select("*")
           .eq("id", id)
@@ -1220,7 +1220,7 @@ const Affiliations = ({ partnerId }: { partnerId: string }) => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_affiliations")
           .select("id, partner_id, user_id, status, note, created_at")
           .eq("partner_id", partnerId)
@@ -1234,7 +1234,7 @@ const Affiliations = ({ partnerId }: { partnerId: string }) => {
     mutationFn: async ({ id, status }: { id: string; status: string }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_affiliations")
           .update({ status })
           .eq("id", id)
@@ -1353,7 +1353,7 @@ export const Declarations = () => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("conflict_declarations")
           .select(
             "id, user_id, role_title, nothing_to_declare, signed_at, received_at, conflict_items (id, kind, partner_id, what, closed_on)"
@@ -1368,7 +1368,7 @@ export const Declarations = () => {
     mutationFn: async (id: string) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("conflict_declarations")
           .update({ received_at: new Date().toISOString() })
           .eq("id", id)

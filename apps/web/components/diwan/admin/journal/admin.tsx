@@ -41,7 +41,7 @@ export const useIssues = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("issues")
           .select(
             "id, volume, number, slug, title_en, title_ar, status, published_at, publish_at"
@@ -125,7 +125,7 @@ const Newsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
   const pieces = useQuery({
     queryFn: async () => {
       let query = supabase
-        .schema("journal")
+        .schema("api")
         .from("pieces")
         .select(
           "id, desk, category, language, title_en, title_ar, status, publish_at, published_at, updated_at, front_rank, contributor:contributors!pieces_contributor_id_fkey(name_en, name_ar)"
@@ -248,7 +248,7 @@ const QueueWork = ({ item }: { item: QueueRow }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("submission_files")
           .select("id, kind")
           .eq("submission_id", item.submission_id)
@@ -260,7 +260,7 @@ const QueueWork = ({ item }: { item: QueueRow }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("submissions")
           .select("body_html, cover_note, video_url")
           .eq("id", item.submission_id)
@@ -333,7 +333,7 @@ const QueueActions = ({ item }: { item: QueueRow }) => {
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
   });
-  const j = supabase.schema("journal");
+  const j = supabase.schema("api");
   const id = item.submission_id;
   const move = (to: journal.SubmissionStatus) =>
     act.mutate(() => j.rpc("transition_submission", { id, to_status: to }));
@@ -557,7 +557,7 @@ const FrontPage = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("pieces")
           .select(
             "id, desk, category, title_en, title_ar, front_rank, published_at"
@@ -573,7 +573,7 @@ const FrontPage = () => {
     mutationFn: async (row: { id: string; rank: number | null }) =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           // null takes the piece off the front page.
           .rpc("set_front", {
             front_rank: row.rank as number,
@@ -650,18 +650,18 @@ const QirtasNeeds = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
-          .from("programmes")
+          .schema("api")
+          .from("programs")
           .select("id")
           .eq("slug", "qirtas")
           .maybeSingle()
       ),
-    queryKey: ["admin", "qirtas-programme"],
+    queryKey: ["admin", "qirtas-program"],
   });
   if (row.isPending) {
     return <SectionSpinner />;
   }
-  return row.data ? <Needs programmeId={row.data.id} /> : null;
+  return row.data ? <Needs programId={row.data.id} /> : null;
 };
 
 // Who writes in the newsroom: the masthead and every section editor.

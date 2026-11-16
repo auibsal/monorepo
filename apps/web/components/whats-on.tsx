@@ -54,7 +54,7 @@ const YEAR = 366 * 24 * 60 * 60 * 1000;
  */
 export const nextAfter = async (
   month: Month,
-  programmeId?: string
+  programId?: string
 ): Promise<Row | null> => {
   const from = new Date(Math.max(await roughlyNow(), month.from.getTime()));
   const rows = await readPublished(
@@ -66,7 +66,7 @@ export const nextAfter = async (
     rows.find(
       (row) =>
         row.status !== "canceled" &&
-        (!programmeId || row.programme_id === programmeId)
+        (!programId || row.program_id === programId)
     ) ?? null
   );
 };

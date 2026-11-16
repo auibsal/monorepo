@@ -59,15 +59,15 @@ export const useProfile = () => {
     // they come from functions.
     const [profile, extra, parts] = await Promise.all([
       supabase
-        .schema("core")
+        .schema("api")
         .from("profiles")
         .select(
           "id, full_name_en, full_name_ar, bio, avatar_path, locale, camera_shy, setup_completed_at, verified_at, legal_name_locked_at, created_at, updated_at"
         )
         .eq("id", userId)
         .single(),
-      supabase.schema("core").rpc("my_private_profile"),
-      supabase.schema("core").rpc("my_name_parts"),
+      supabase.schema("api").rpc("my_private_profile"),
+      supabase.schema("api").rpc("my_name_parts"),
     ]);
     const row = unwrap(profile);
     if (!row) {
@@ -96,7 +96,7 @@ export const useGrants = () => {
   return useUserQuery(
     queryKeys.grants,
     async () =>
-      (unwrap(await supabase.schema("access").rpc("my_permissions")) ??
+      (unwrap(await supabase.schema("api").rpc("my_permissions")) ??
         []) as Grant[]
   );
 };
@@ -107,7 +107,7 @@ export const useActivity = () => {
     const records =
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("activity_records")
           .select("id, kind, occurred_at, note, event_id")
           .order("occurred_at", { ascending: false })
@@ -122,7 +122,7 @@ export const useActivity = () => {
     const events = ids.length
       ? (unwrap(
           await supabase
-            .schema("events")
+            .schema("api")
             .from("events")
             .select("id, title_en, title_ar")
             .in("id", ids)
@@ -142,7 +142,7 @@ export const useMyRsvps = () => {
   return useUserQuery(queryKeys.rsvps, async (userId) =>
     unwrap(
       await supabase
-        .schema("events")
+        .schema("api")
         .from("rsvps")
         .select(
           "id, ticket_code, from_waitlist, event:events(id, slug, title_en, title_ar, starts_at, ends_at, venue_en, venue_ar)"
@@ -158,7 +158,7 @@ export const useMyWaitlist = () => {
   return useUserQuery(queryKeys.waitlist, async (userId) =>
     unwrap(
       await supabase
-        .schema("events")
+        .schema("api")
         .from("waitlist")
         .select(
           "id, status, offered_until, event:events(id, slug, title_en, title_ar, starts_at)"
@@ -189,7 +189,7 @@ export const useMyShifts = () => {
   return useUserQuery(queryKeys.shifts, async () =>
     unwrap(
       await supabase
-        .schema("programmes")
+        .schema("api")
         .from("shift_signups")
         .select(
           "shift_id, status, shift:shifts(id, role_en, role_ar, starts_at, ends_at, location_en, location_ar)"
@@ -229,7 +229,7 @@ export const useEsign = () => {
   return useQuery({
     enabled: Boolean(user),
     queryFn: async () => {
-      const rows = unwrap(await supabase.schema("core").rpc("my_esign")) ?? [];
+      const rows = unwrap(await supabase.schema("api").rpc("my_esign")) ?? [];
       return rows[0] ?? { agreed_at: null, asked_at: null };
     },
     queryKey: ["account", "esign", user?.id],

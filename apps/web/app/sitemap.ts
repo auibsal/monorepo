@@ -9,7 +9,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { MetadataRoute } from "next";
 import { cacheLife } from "next/cache";
 import { pieceHref } from "@/components/qirtas/cards";
-import { content, documents, journal, programmes } from "@/lib/data";
+import { content, documents, journal, programs } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 
 /**
@@ -85,7 +85,7 @@ const localized = (
 /** Published, public events: their own pages, dated by their last change. */
 const publicEventPages = async (client: SupabaseClient<Database>) => {
   const { data } = await client
-    .schema("events")
+    .schema("api")
     .from("events")
     .select("slug, updated_at")
     .eq("status", "published")
@@ -111,7 +111,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       readPublished(["events"], publicEventPages, []),
       readPublished(["news"], (c) => content.sundayPaperIssues(c), []),
       readPublished(["journal"], publishedEditions, []),
-      readPublished(["journal"], (c) => programmes.publicEpisodes(c), []),
+      readPublished(["journal"], (c) => programs.publicEpisodes(c), []),
     ]);
   return [
     ...staticPaths,

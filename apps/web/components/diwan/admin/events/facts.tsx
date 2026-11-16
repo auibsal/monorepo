@@ -130,7 +130,7 @@ const usePartners = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partners")
           .select("id, name_en, name_ar")
           .eq("status", "active")
@@ -392,7 +392,7 @@ const DebriefField = ({ eventId }: { readonly eventId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("debriefs")
           .select("url")
           .eq("event_id", eventId)
@@ -404,7 +404,7 @@ const DebriefField = ({ eventId }: { readonly eventId: string }) => {
   const value = url ?? debrief.data?.url ?? "";
   const save = useMutation({
     mutationFn: async () => {
-      const table = supabase.schema("events").from("debriefs");
+      const table = supabase.schema("api").from("debriefs");
       unwrap(
         value
           ? await table.upsert({
@@ -468,7 +468,7 @@ const StatusActions = ({
     mutationFn: async (status: "canceled" | "draft" | "published") => {
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .update({
             status,
@@ -549,7 +549,7 @@ export const EventFacts = ({
 
   const save = useMutation({
     mutationFn: async () => {
-      const table = supabase.schema("events").from("events");
+      const table = supabase.schema("api").from("events");
       if (event) {
         unwrap(await table.update(row).eq("id", event.id));
         return row.slug;

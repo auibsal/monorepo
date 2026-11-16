@@ -547,7 +547,7 @@ export interface SignInput {
  * without an account, or anonymously, goes through /api/forms/sign. */
 export const signForm = async (client: Client, input: SignInput) =>
   unwrap(
-    await client.schema("governance").rpc("sign_form", {
+    await client.schema("api").rpc("sign_form", {
       anonymous: input.anonymous ?? false,
       data: input.data as never,
       esign_agreed: input.esignAgreed,
@@ -566,7 +566,7 @@ export const handleForm = async (
   office?: FormData
 ) =>
   unwrap(
-    await client.schema("governance").rpc("handle_form", {
+    await client.schema("api").rpc("handle_form", {
       office: (office ?? undefined) as never,
       status,
       submission_id: id,
@@ -575,12 +575,8 @@ export const handleForm = async (
 
 export const formTypes = async (client: Client) =>
   unwrap(
-    await client
-      .schema("governance")
-      .from("form_types")
-      .select("*")
-      .order("sort")
+    await client.schema("api").from("form_types").select("*").order("sort")
   ) ?? [];
 
 export const formQueue = async (client: Client) =>
-  unwrap(await client.schema("governance").rpc("form_queue")) ?? [];
+  unwrap(await client.schema("api").rpc("form_queue")) ?? [];

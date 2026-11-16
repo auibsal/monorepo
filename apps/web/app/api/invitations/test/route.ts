@@ -59,7 +59,7 @@ export const POST = async (request: Request) => {
   try {
     const admin = createAdminClient();
     const { data: found } = await admin
-      .schema("membership")
+      .schema("api")
       .from("invitation_lists")
       .select("source, sent_at")
       .eq("source", list)
@@ -81,13 +81,13 @@ export const POST = async (request: Request) => {
     const tour = list.startsWith("tour");
     const [{ data: profile }, { data: page }] = await Promise.all([
       admin
-        .schema("core")
-        .from("profiles")
+        .schema("api")
+        .from("profiles_all")
         .select("first_name_en")
         .eq("id", presidentUser)
         .maybeSingle(),
       admin
-        .schema("programmes")
+        .schema("api")
         .from("six_words")
         .select("text, station")
         .eq("user_id", presidentUser)
@@ -123,7 +123,7 @@ export const POST = async (request: Request) => {
       to: email,
     });
     await admin
-      .schema("membership")
+      .schema("api")
       .from("invitation_lists")
       .update({ tested_at: new Date().toISOString() })
       .eq("source", list);

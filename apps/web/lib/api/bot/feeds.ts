@@ -29,6 +29,13 @@ import {
   type Run,
   release,
 } from "./posts";
+import {
+  currentClaim,
+  enqueue,
+  PIN_ANNOUNCEMENT,
+  QUEUED_ID,
+  whenBlocked,
+} from "./queue";
 import { staffPosts } from "./staff";
 
 /**
@@ -134,7 +141,7 @@ const newEvents = (run: Run, events: PublicEvent[]) =>
         );
         if (sent) {
           await db()
-            .schema("events")
+            .schema("api")
             .from("events")
             .update({ announced_at: run.now.toISOString() })
             .eq("id", event.id)
@@ -243,7 +250,7 @@ interface Election {
 /** Members' elections in their voting days (Hudhud reads them with the key). */
 const votingElections = async (now: Date) => {
   const { data, error } = await db()
-    .schema("governance")
+    .schema("api")
     .from("elections")
     .select("id, title_en, title_ar, voting_closes_at")
     .eq("status", "voting")
@@ -528,7 +535,7 @@ const dailyWordDirect = async (api: Api, username: string, now: Date) => {
   }
   const day = gameDay(now);
   const today = baghdadDate(now);
-  const accounts = () => db().schema("core").from("telegram_accounts");
+  const accounts = () => db().schema("api").from("telegram_accounts");
   const { data: due } = await accounts()
     .select("telegram_id, user_id, word_sent_on")
     .eq("daily_word", true)
@@ -538,8 +545,8 @@ const dailyWordDirect = async (api: Api, username: string, now: Date) => {
     return 0;
   }
   const { data: profiles } = await db()
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .select("id, locale")
     .in(
       "id",
@@ -612,7 +619,7 @@ interface Notice {
 /** Notices sent in the last three days, oldest first. */
 const sentNotices = async (now: Date) => {
   const { data } = await db()
-    .schema("core")
+    .schema("api")
     .from("announcements")
     .select("id, title_en, title_ar, body_en, body_ar, link_path")
     .not("sent_at", "is", null)
@@ -653,6 +660,14 @@ const pinned = async (
   post: Promise<{ message_id: number } | null>
 ) => {
   const message = await post;
+  const claim = currentClaim();
+  if (message?.message_id === QUEUED_ID && claim) {
+    // Queued: the pin follows the post in the queue (lib/api/bot/queue.ts).
+    await enqueue([
+      { claim, method: PIN_ANNOUNCEMENT, payload: { chat_id: chatId } },
+    ]);
+    return message;
+  }
   if (message) {
     const { data: before } = await posts()
       .select("message_id")
@@ -705,8 +720,8 @@ const groupNotices = (run: Run, notices: Notice[]) =>
     MAX_PER_RUN
   );
 
-const deliveries = () => db().schema("core").from("announcement_deliveries");
-const telegramAccounts = () => db().schema("core").from("telegram_accounts");
+const deliveries = () => db().schema("api").from("announcement_deliveries");
+const telegramAccounts = () => db().schema("api").from("telegram_accounts");
 
 /**
  * One notice to one member's chat: claimed first; a member who blocked the
@@ -728,10 +743,12 @@ const sendNotice = async (
     return false;
   }
   try {
-    await api.sendMessage(chat, noticeText(notice, lang), {
-      parse_mode: "HTML",
-      reply_markup: noticeButton(notice, lang),
-    });
+    await whenBlocked({ notify: false }, () =>
+      api.sendMessage(chat, noticeText(notice, lang), {
+        parse_mode: "HTML",
+        reply_markup: noticeButton(notice, lang),
+      })
+    );
     return true;
   } catch (error) {
     if (error instanceof GrammyError && error.error_code === 403) {
@@ -767,8 +784,8 @@ const directNotices = async (api: Api, notices: Notice[]) => {
     return 0;
   }
   const { data: profiles } = await db()
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .select("id, locale")
     .in(
       "id",
@@ -800,7 +817,7 @@ export const withdrawGone = async (api: Api) => {
   }
   const ids = [...new Set(rows.map((r) => r.ref))];
   const { data: live } = await db()
-    .schema("events")
+    .schema("api")
     .from("events")
     .select("id")
     .in("id", ids)

@@ -40,7 +40,7 @@ export interface Imported {
 
 export const importedState = async (ctx: SyncContext): Promise<Imported> => {
   const { data } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .select("value")
     .eq("key", IMPORTED)
@@ -51,7 +51,7 @@ export const importedState = async (ctx: SyncContext): Promise<Imported> => {
 export const markImported = async (ctx: SyncContext, part: keyof Imported) => {
   const now = await importedState(ctx);
   const { error } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .upsert({
       description:
@@ -199,7 +199,7 @@ const leadOf = async (
     return null;
   }
   const { data } = await ctx.admin
-    .schema("governance")
+    .schema("api")
     .rpc("user_by_email", { email });
   return (data as string | null) ?? null;
 };
@@ -209,7 +209,7 @@ const partnerNamed = async (ctx: SyncContext, name: string | null) => {
     return null;
   }
   const { data } = await ctx.admin
-    .schema("governance")
+    .schema("api")
     .from("partners")
     .select("id, name_en, name_ar")
     .eq("status", "active");
@@ -223,7 +223,7 @@ const partnerNamed = async (ctx: SyncContext, name: string | null) => {
 
 const slugFree = async (ctx: SyncContext, slug: string) => {
   const { data } = await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select("slug")
     .like("slug", `${slug}%`);
@@ -244,7 +244,7 @@ const keepDebrief = async (
     return;
   }
   await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("debriefs")
     .upsert(
       { event_id: eventId, updated_at: new Date().toISOString(), url },
@@ -261,7 +261,7 @@ const completeExisting = async (
 ) => {
   if (lead) {
     await ctx.admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .update({ lead_id: lead })
       .eq("id", eventId)
@@ -285,7 +285,7 @@ const makeDraft = async (
     partnerNamed(ctx, v.host),
   ]);
   const { data, error } = await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .insert({
       body_en: body,
@@ -368,7 +368,7 @@ const fillArabic = async (
   page: NotionPage
 ) => {
   const { data: event } = await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select("title_en, title_ar, summary_ar, venue_ar, body_ar")
     .eq("id", eventId)
@@ -387,7 +387,7 @@ const fillArabic = async (
   };
   if (Object.keys(update).length > 0) {
     const { error } = await ctx.admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .update(update)
       .eq("id", eventId);
@@ -423,13 +423,13 @@ const importArabic = async (
     eventId = await makeDraft(ctx, page, v, await leadOf(ctx, page, addresses));
     // That link was the English one; the row is the Arabic edition.
     await ctx.admin
-      .schema("core")
+      .schema("api")
       .from("notion_links")
       .delete()
       .eq("kind", "event")
       .eq("notion_page_id", bareId(page.id));
     await ctx.admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .update({ body_en: null, summary_en: null, venue_en: null })
       .eq("id", eventId);
@@ -554,7 +554,7 @@ export const copyEvents = async (ctx: SyncContext, users: NotionUser[]) => {
     return;
   }
   const { data, error } = await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select(
       "id, slug, title_en, title_ar, venue_en, venue_ar, starts_at, ends_at, status, entry, classes, lead_id"

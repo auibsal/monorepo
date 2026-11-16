@@ -45,7 +45,7 @@ const LISTING =
 export const publicDocuments = async (client: Client) =>
   (unwrap(
     await client
-      .schema("governance")
+      .schema("api")
       .from("society_documents")
       .select(LISTING)
       .eq("audience", "public")
@@ -56,7 +56,7 @@ export const publicDocuments = async (client: Client) =>
 export const documentBySlug = async (client: Client, slug: string) =>
   (unwrap(
     await client
-      .schema("governance")
+      .schema("api")
       .from("society_documents")
       .select("*")
       .eq("slug", slug)
@@ -67,7 +67,7 @@ export const documentBySlug = async (client: Client, slug: string) =>
 export const allDocuments = async (client: Client) =>
   (unwrap(
     await client
-      .schema("governance")
+      .schema("api")
       .from("society_documents")
       .select(LISTING)
       .order("sort")

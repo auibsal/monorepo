@@ -23,7 +23,7 @@ import {
   useState,
 } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { localized, programmes, unwrap } from "@/lib/data";
+import { localized, programs, unwrap } from "@/lib/data";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermissionAnywhere } from "@/lib/rbac";
@@ -32,7 +32,7 @@ import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
 import { CreditedNames } from "../credited-names";
-import { useProgrammeOptions } from "../events/data";
+import { useProgramOptions } from "../events/data";
 import { RequestQueue } from "../forms/admin";
 import { ImageField } from "../image-field";
 import {
@@ -53,7 +53,7 @@ import { memberName } from "../members/directory";
 import { ProblemReports } from "../problem-reports";
 import { slugify } from "../slug";
 
-const invalidateKey = ["admin", "programmes-module"];
+const invalidateKey = ["admin", "programs-module"];
 
 // ── Episodes ────────────────────────────────────────────────────────────────
 
@@ -100,8 +100,8 @@ const blankEpisode: EpisodeForm = {
  * Next Stop's episodes, each edited on its own page
  * (/media/episodes/<slug>, or /new), published from the list.
  */
-const Episodes = ({ programmeId }: { programmeId: string }) => {
-  const t = useTranslations("diwan.admin.programmes.episodes");
+const Episodes = ({ programId }: { programId: string }) => {
+  const t = useTranslations("diwan.admin.programs.episodes");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -109,14 +109,14 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("episodes")
           .select("*")
-          .eq("programme_id", programmeId)
+          .eq("program_id", programId)
           .order("season", { ascending: false, nullsFirst: false })
           .order("number", { ascending: false, nullsFirst: false })
       ) ?? [],
-    queryKey: [...invalidateKey, "episodes", programmeId],
+    queryKey: [...invalidateKey, "episodes", programId],
   });
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: invalidateKey });
@@ -125,7 +125,7 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
     mutationFn: async (episode: { id: string; published_at: string | null }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("episodes")
           .update({
             published_at: episode.published_at
@@ -184,18 +184,18 @@ const Episodes = ({ programmeId }: { programmeId: string }) => {
 
 /** One Next Stop episode on its own page, by its slug; new for a blank one. */
 export const EpisodePage = ({ slug }: { readonly slug: string }) => {
-  const t = useTranslations("diwan.admin.programmes.episodes");
+  const t = useTranslations("diwan.admin.programs.episodes");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
-  const options = useProgrammeOptions(null);
-  const programmeId = options.options.find((p) => p.slug === "next-stop")?.id;
+  const options = useProgramOptions(null);
+  const programId = options.options.find((p) => p.slug === "next-stop")?.id;
   const back = "/media";
   const episode = useQuery({
     enabled: slug !== "new",
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("episodes")
           .select("*")
           .eq("slug", slug)
@@ -207,7 +207,7 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
     return <SectionSpinner />;
   }
   const e = episode.data;
-  if (!programmeId || (slug !== "new" && !e)) {
+  if (!programId || (slug !== "new" && !e)) {
     return (
       <EmptyLine action={{ href: back, label: t("back") }}>
         {t("missing")}
@@ -218,8 +218,8 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
     ? {
         captionsAr: e.captions_ar_path,
         captionsEn: e.captions_en_path,
-        chapters: programmes.chaptersOf(e.chapters).map((c) => ({
-          time: programmes.clockOf(c.at),
+        chapters: programs.chaptersOf(e.chapters).map((c) => ({
+          time: programs.clockOf(c.at),
           title: { ar: c.title_ar, en: c.title_en },
         })),
         id: e.id,
@@ -248,7 +248,7 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
         }
         title={e ? localized(e, "title", locale) : t("new")}
       />
-      <EpisodeEditor initial={initial} programmeId={programmeId} />
+      <EpisodeEditor initial={initial} programId={programId} />
       {e ? <OnCamera episodeId={e.id} /> : null}
       {e ? <EpisodeCredits episodeId={e.id} /> : null}
     </div>
@@ -257,12 +257,12 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
 
 const EpisodeEditor = ({
   initial,
-  programmeId,
+  programId,
 }: {
   readonly initial: EpisodeForm;
-  readonly programmeId: string;
+  readonly programId: string;
 }) => {
-  const t = useTranslations("diwan.admin.programmes.episodes");
+  const t = useTranslations("diwan.admin.programs.episodes");
   const tk = useTranslations("diwan.admin.kit");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -273,9 +273,9 @@ const EpisodeEditor = ({
     queryClient.invalidateQueries({ queryKey: invalidateKey });
   const save = useMutation({
     mutationFn: async () => {
-      const id = programmes.youtubeId(form.youtube);
+      const id = programs.youtubeId(form.youtube);
       const idAr = form.youtubeAr.trim()
-        ? programmes.youtubeId(form.youtubeAr)
+        ? programs.youtubeId(form.youtubeAr)
         : null;
       if (!id || (form.youtubeAr.trim() && !idAr)) {
         setProblem(t("youtubeError"));
@@ -284,7 +284,7 @@ const EpisodeEditor = ({
       const chapters = form.chapters
         .filter((c) => c.title.en.trim() || c.title.ar.trim())
         .map((c) => ({
-          at: programmes.secondsOf(c.time),
+          at: programs.secondsOf(c.time),
           title_ar: c.title.ar.trim(),
           title_en: c.title.en.trim(),
         }));
@@ -298,7 +298,7 @@ const EpisodeEditor = ({
         captions_en_path: form.captionsEn,
         chapters: chapters.sort((a, b) => (a.at ?? 0) - (b.at ?? 0)),
         number: form.number ? Number(form.number) : null,
-        programme_id: programmeId,
+        program_id: programId,
         released_on: form.releasedOn || null,
         season: form.season ? Number(form.season) : null,
         segment: form.segment.trim() || null,
@@ -311,7 +311,7 @@ const EpisodeEditor = ({
         youtube_id: id,
         youtube_id_ar: idAr,
       };
-      const table = supabase.schema("programmes").from("episodes");
+      const table = supabase.schema("api").from("episodes");
       unwrap(
         form.id
           ? await table.update(row).eq("id", form.id)
@@ -556,7 +556,7 @@ const CaptionsField = ({
   readonly onChange: (path: string | null) => void;
   readonly value: string | null;
 }) => {
-  const t = useTranslations("diwan.admin.programmes.episodes");
+  const t = useTranslations("diwan.admin.programs.episodes");
   const { supabase } = useAuth();
   const id = useId();
   const upload = useMutation({
@@ -601,7 +601,7 @@ const CaptionsField = ({
  * signed (decisions.md, Next Stop: releases).
  */
 const OnCamera = ({ episodeId }: { readonly episodeId: string }) => {
-  const t = useTranslations("diwan.admin.programmes.episodes.onCamera");
+  const t = useTranslations("diwan.admin.programs.episodes.onCamera");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -610,7 +610,7 @@ const OnCamera = ({ episodeId }: { readonly episodeId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("episode_on_camera")
           .select(
             "id, user_id, guest_name_en, guest_name_ar, is_guest, form_link_id, release_id"
@@ -627,7 +627,7 @@ const OnCamera = ({ episodeId }: { readonly episodeId: string }) => {
   const send = useMutation({
     mutationFn: async (input: { id: string; email?: string }) =>
       unwrap(
-        await supabase.schema("programmes").rpc("episode_release_link", {
+        await supabase.schema("api").rpc("episode_release_link", {
           on_camera: input.id,
           sent_to: input.email,
         })
@@ -638,7 +638,7 @@ const OnCamera = ({ episodeId }: { readonly episodeId: string }) => {
     mutationFn: async (id: string) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("episode_on_camera")
           .delete()
           .eq("id", id)
@@ -710,7 +710,7 @@ const OnCameraRow = ({
     user_id: string | null;
   };
 }) => {
-  const t = useTranslations("diwan.admin.programmes.episodes.onCamera");
+  const t = useTranslations("diwan.admin.programs.episodes.onCamera");
   let status = t("unsent");
   if (row.release_id) {
     status = t("signed");
@@ -772,7 +772,7 @@ const GuestLink = ({
   readonly pending: boolean;
   readonly sent: boolean;
 }) => {
-  const t = useTranslations("diwan.admin.programmes.episodes.onCamera");
+  const t = useTranslations("diwan.admin.programs.episodes.onCamera");
   const [email, setEmail] = useState("");
   const id = useId();
   return (
@@ -809,7 +809,7 @@ const AddOnCamera = ({
   readonly episodeId: string;
   readonly onDone: () => void;
 }) => {
-  const t = useTranslations("diwan.admin.programmes.episodes.onCamera");
+  const t = useTranslations("diwan.admin.programs.episodes.onCamera");
   const { supabase } = useAuth();
   const [person, setPerson] = useState<{ id: string } | null>(null);
   const [email, setEmail] = useState("");
@@ -821,17 +821,14 @@ const AddOnCamera = ({
     mutationFn: async () =>
       person
         ? unwrap(
-            await supabase
-              .schema("programmes")
-              .from("episode_on_camera")
-              .insert({
-                episode_id: episodeId,
-                is_guest: isGuest,
-                user_id: person.id,
-              })
+            await supabase.schema("api").from("episode_on_camera").insert({
+              episode_id: episodeId,
+              is_guest: isGuest,
+              user_id: person.id,
+            })
           )
         : unwrap(
-            await supabase.schema("programmes").rpc("invite_on_camera", {
+            await supabase.schema("api").rpc("invite_on_camera", {
               email: email.trim(),
               episode: episodeId,
             })
@@ -887,7 +884,7 @@ const AddOnCamera = ({
   );
 };
 
-const CREDIT_KEYS = programmes.CREDITS.filter((c) => c !== "guests");
+const CREDIT_KEYS = programs.CREDITS.filter((c) => c !== "guests");
 
 /**
  * The crew's credits: Next Stop crew roles scoped to this episode, each with
@@ -896,7 +893,7 @@ const CREDIT_KEYS = programmes.CREDITS.filter((c) => c !== "guests");
  * come from the on-camera list.
  */
 const EpisodeCredits = ({ episodeId }: { readonly episodeId: string }) => {
-  const t = useTranslations("diwan.admin.programmes.episodes.credits");
+  const t = useTranslations("diwan.admin.programs.episodes.credits");
   const tc = useTranslations("web.journal.nextStop.credit");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -905,7 +902,7 @@ const EpisodeCredits = ({ episodeId }: { readonly episodeId: string }) => {
   const credits = useQuery({
     queryFn: async () =>
       unwrap(
-        await supabase.schema("programmes").rpc("episode_credits", {
+        await supabase.schema("api").rpc("episode_credits", {
           episode: episodeId,
         })
       ) ?? [],
@@ -916,7 +913,7 @@ const EpisodeCredits = ({ episodeId }: { readonly episodeId: string }) => {
   const assign = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("programmes").rpc("credit_episode", {
+        await supabase.schema("api").rpc("credit_episode", {
           credit,
           episode: episodeId,
           member: person?.id ?? "",
@@ -937,7 +934,7 @@ const EpisodeCredits = ({ episodeId }: { readonly episodeId: string }) => {
             // biome-ignore lint/suspicious/noArrayIndexKey: one credit may name several people
             key={`${c.credit}-${index}`}
           >
-            <dt className="type-label">{tc(c.credit as programmes.Credit)}</dt>
+            <dt className="type-label">{tc(c.credit as programs.Credit)}</dt>
             <dd>{locale === "ar" ? c.name_ar || c.name_en : c.name_en}</dd>
           </div>
         ))}
@@ -996,7 +993,7 @@ const IDEA_STATUSES = [
  * Media, the producer and the host see it (media.guest_ideas).
  */
 const GuestIdeas = () => {
-  const t = useTranslations("diwan.admin.programmes.guestIdeas");
+  const t = useTranslations("diwan.admin.programs.guestIdeas");
   const { supabase } = useAuth();
   const grants = useGrants();
   const queryClient = useQueryClient();
@@ -1007,7 +1004,7 @@ const GuestIdeas = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("next_stop_guest_ideas")
           .select("id, name, why, status")
           .order("created_at", { ascending: false })
@@ -1019,7 +1016,7 @@ const GuestIdeas = () => {
     mutationFn: async (input: { id: string; status: string }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("next_stop_guest_ideas")
           .update({ status: input.status })
           .eq("id", input.id)
@@ -1030,7 +1027,7 @@ const GuestIdeas = () => {
     mutationFn: async (id: string) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("next_stop_guest_ideas")
           .delete()
           .eq("id", id)
@@ -1099,7 +1096,7 @@ const GuestIdeas = () => {
 };
 
 const AddGuestIdea = ({ onDone }: { readonly onDone: () => void }) => {
-  const t = useTranslations("diwan.admin.programmes.guestIdeas");
+  const t = useTranslations("diwan.admin.programs.guestIdeas");
   const { supabase } = useAuth();
   const [name, setName] = useState("");
   const [why, setWhy] = useState("");
@@ -1107,7 +1104,7 @@ const AddGuestIdea = ({ onDone }: { readonly onDone: () => void }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("next_stop_guest_ideas")
           .insert({ name: name.trim(), why: why.trim() || null })
       ),
@@ -1155,9 +1152,9 @@ const AddGuestIdea = ({ onDone }: { readonly onDone: () => void }) => {
 
 const platforms = ["instagram", "tiktok", "youtube_shorts"] as const;
 
-const Reels = ({ programmeId }: { programmeId: string }) => {
-  const t = useTranslations("diwan.admin.programmes.reels");
-  const te = useTranslations("diwan.admin.programmes.episodes");
+const Reels = ({ programId }: { programId: string }) => {
+  const t = useTranslations("diwan.admin.programs.reels");
+  const te = useTranslations("diwan.admin.programs.episodes");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -1165,20 +1162,20 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
     queryFn: async () => {
       const [reels, episodes] = await Promise.all([
         supabase
-          .schema("programmes")
+          .schema("api")
           .from("reels")
           .select("*")
-          .eq("programme_id", programmeId)
+          .eq("program_id", programId)
           .order("created_at", { ascending: false }),
         supabase
-          .schema("programmes")
+          .schema("api")
           .from("episodes")
           .select("id, title_en, title_ar")
-          .eq("programme_id", programmeId),
+          .eq("program_id", programId),
       ]);
       return { episodes: unwrap(episodes) ?? [], reels: unwrap(reels) ?? [] };
     },
-    queryKey: [...invalidateKey, "reels", programmeId],
+    queryKey: [...invalidateKey, "reels", programId],
   });
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: invalidateKey });
@@ -1186,7 +1183,7 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
     mutationFn: async (reel: { id: string; published_at: string | null }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("reels")
           .update({
             published_at: reel.published_at ? null : new Date().toISOString(),
@@ -1236,8 +1233,8 @@ const Reels = ({ programmeId }: { programmeId: string }) => {
 };
 
 /** A new reel for Next Stop, at /media/reels/new. */
-const NewReel = ({ programmeId }: { readonly programmeId: string }) => {
-  const t = useTranslations("diwan.admin.programmes.reels");
+const NewReel = ({ programId }: { readonly programId: string }) => {
+  const t = useTranslations("diwan.admin.programs.reels");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -1253,30 +1250,30 @@ const NewReel = ({ programmeId }: { readonly programmeId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("episodes")
           .select("id, title_en, title_ar")
-          .eq("programme_id", programmeId)
+          .eq("program_id", programId)
       ) ?? [],
-    queryKey: [...invalidateKey, "episodes", programmeId],
+    queryKey: [...invalidateKey, "episodes", programId],
   });
   const add = useMutation({
     mutationFn: async () => {
-      if (!programmes.isReelUrl(form.url)) {
+      if (!programs.isReelUrl(form.url)) {
         setProblem(t("urlError"));
         throw new Error("invalid");
       }
       setProblem(null);
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("reels")
           .insert({
             caption_ar: form.caption.ar || null,
             caption_en: form.caption.en || null,
             episode_id: form.episode_id || null,
             platform: form.platform,
-            programme_id: programmeId,
+            program_id: programId,
             url: form.url.trim(),
           })
       );
@@ -1366,15 +1363,15 @@ const NewReel = ({ programmeId }: { readonly programmeId: string }) => {
 };
 
 export const NewReelPage = () => {
-  const t = useTranslations("diwan.admin.programmes.reels");
-  const options = useProgrammeOptions(null);
+  const t = useTranslations("diwan.admin.programs.reels");
+  const options = useProgramOptions(null);
   if (options.isPending) {
     return <SectionSpinner />;
   }
   const nextStop = options.options.find((p) => p.slug === "next-stop");
   return (
     <RecordPage back="/media" backLabel={t("back")} title={t("new")}>
-      {nextStop ? <NewReel programmeId={nextStop.id} /> : null}
+      {nextStop ? <NewReel programId={nextStop.id} /> : null}
     </RecordPage>
   );
 };
@@ -1388,7 +1385,7 @@ type SignupStatus = "signed_up" | "confirmed" | "swap_requested" | "canceled";
  * event and log no hours; there are no rotas).
  */
 export const Shifts = ({ eventId }: { eventId: string }) => {
-  const t = useTranslations("diwan.admin.programmes.rotas");
+  const t = useTranslations("diwan.admin.programs.rotas");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -1397,7 +1394,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
       const shifts =
         unwrap(
           await supabase
-            .schema("programmes")
+            .schema("api")
             .from("shifts")
             .select("*")
             .eq("event_id", eventId)
@@ -1406,7 +1403,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
       const signups = shifts.length
         ? (unwrap(
             await supabase
-              .schema("programmes")
+              .schema("api")
               .from("shift_signups")
               .select("shift_id, user_id, status")
               .in(
@@ -1431,7 +1428,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
     }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("shift_signups")
           .update({ status: input.status })
           .eq("shift_id", input.shift_id)
@@ -1442,11 +1439,7 @@ export const Shifts = ({ eventId }: { eventId: string }) => {
   const remove = useMutation({
     mutationFn: async (shiftId: string) =>
       unwrap(
-        await supabase
-          .schema("programmes")
-          .from("shifts")
-          .delete()
-          .eq("id", shiftId)
+        await supabase.schema("api").from("shifts").delete().eq("id", shiftId)
       ),
     onSuccess: invalidate,
   });
@@ -1550,7 +1543,7 @@ const NewShift = ({
   /** Called once saved: closes the form in place. */
   readonly onDone: () => void;
 }) => {
-  const t = useTranslations("diwan.admin.programmes.rotas");
+  const t = useTranslations("diwan.admin.programs.rotas");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const stationId = useId();
@@ -1566,7 +1559,7 @@ const NewShift = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("shifts")
           .insert({
             capacity: Number(form.capacity) || 1,
@@ -1662,7 +1655,7 @@ const NewShift = ({
 
 // ── Removal requests ────────────────────────────────────────────────────────
 
-type RemovalStatus = (typeof programmes.removalStatuses)[number];
+type RemovalStatus = (typeof programs.removalStatuses)[number];
 
 const useOpenRemovals = () => {
   const { supabase } = useAuth();
@@ -1670,7 +1663,7 @@ const useOpenRemovals = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("removal_requests")
           .select("*")
           .order("due_at")
@@ -1681,13 +1674,13 @@ const useOpenRemovals = () => {
 };
 
 const Countdown = ({ dueAt }: { dueAt: string }) => {
-  const t = useTranslations("diwan.admin.programmes.removals");
+  const t = useTranslations("diwan.admin.programs.removals");
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 30_000);
     return () => window.clearInterval(timer);
   }, []);
-  const left = programmes.timeLeft(dueAt, now);
+  const left = programs.timeLeft(dueAt, now);
   const values = {
     hours: formatNumber(left.hours),
     minutes: formatNumber(left.minutes),
@@ -1707,7 +1700,7 @@ const RemovalCard = ({
 }: {
   request: NonNullable<ReturnType<typeof useOpenRemovals>["data"]>[number];
 }) => {
-  const t = useTranslations("diwan.admin.programmes.removals");
+  const t = useTranslations("diwan.admin.programs.removals");
   const locale = useLocale() as Locale;
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
@@ -1718,7 +1711,7 @@ const RemovalCard = ({
       const closing = next !== "open" && next !== "in_progress";
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("removal_requests")
           .update({
             action_taken: action.trim() || null,
@@ -1801,7 +1794,7 @@ const RemovalCard = ({
 };
 
 const Removals = () => {
-  const t = useTranslations("diwan.admin.programmes.removals");
+  const t = useTranslations("diwan.admin.programs.removals");
   const locale = useLocale() as Locale;
   const requests = useOpenRemovals();
   const open = (requests.data ?? []).filter(
@@ -1841,7 +1834,7 @@ const Removals = () => {
 
 /** Event pitches (members-meeting-motion) waiting for the President, who owns events. */
 export const ProgramPitches = () => {
-  const t = useTranslations("diwan.admin.programmes");
+  const t = useTranslations("diwan.admin.programs");
   const grants = useGrants();
   // Only those who answer pitches see them (the President, decisions.md).
   if (!hasPermissionAnywhere(grants.data, "programs.manage")) {
@@ -1863,9 +1856,9 @@ export const ProgramPitches = () => {
  * its episodes, its reels and the takedown requests its promise allows.
  */
 export const MediaAdmin = () => {
-  const t = useTranslations("diwan.admin.programmes");
+  const t = useTranslations("diwan.admin.programs");
   const ts = useTranslations("diwan.admin.sections");
-  const options = useProgrammeOptions(null);
+  const options = useProgramOptions(null);
   if (options.isPending) {
     return <SectionSpinner />;
   }
@@ -1876,10 +1869,10 @@ export const MediaAdmin = () => {
       {nextStop ? (
         <>
           <DiwanSection id="episodes" title={t("tabs.episodes")}>
-            <Episodes programmeId={nextStop.id} />
+            <Episodes programId={nextStop.id} />
           </DiwanSection>
           <DiwanSection id="reels" title={t("tabs.reels")}>
-            <Reels programmeId={nextStop.id} />
+            <Reels programId={nextStop.id} />
           </DiwanSection>
           <GuestIdeas />
         </>

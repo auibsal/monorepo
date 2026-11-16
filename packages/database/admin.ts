@@ -1,8 +1,8 @@
 import "server-only";
 
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "./index";
 import { keys } from "./keys";
-import type { Database } from "./types";
 
 /**
  * Privileged Supabase client for trusted server code only (webhooks, cron

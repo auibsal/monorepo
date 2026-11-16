@@ -1,9 +1,9 @@
 import { RequireModule } from "@/components/diwan/admin/admin-shell";
-import { OpeningsAdmin } from "@/components/diwan/admin/programmes/openings";
+import { OpeningsAdmin } from "@/components/diwan/admin/programs/openings";
 import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("diwan.admin.programmes.openings.listTitle")
+  t("diwan.admin.programs.openings.listTitle")
 );
 
 /** Every opening on Get involved, in one list (People → Openings). */

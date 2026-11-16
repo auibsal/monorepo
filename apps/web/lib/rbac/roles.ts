@@ -488,8 +488,8 @@ export const roles = {
     nameEn: "Producer",
     permissions: ["productions.manage"],
   },
-  programme_lead: {
-    defaultScope: "programme",
+  program_lead: {
+    defaultScope: "program",
     isCouncil: false,
     nameAr: "قائد الفعالية",
     nameEn: "Event Lead",

@@ -69,10 +69,10 @@ export const classesLabel = (
   }).format(named);
 };
 
-const events = (client: Client) => client.schema("events");
+const events = (client: Client) => client.schema("api");
 
 export const eventColumns =
-  "id, slug, programme_id, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, classes, capacity, rsvp_enabled, entry, status, image_path, off_campus, student_life_approved_on";
+  "id, slug, program_id, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, classes, capacity, rsvp_enabled, entry, status, image_path, off_campus, student_life_approved_on";
 
 /**
  * Public events: every published event but the invitation-only ones,
@@ -83,8 +83,8 @@ export const publicEvents = async (
   {
     from = currentDate(),
     limit = 50,
-    programmeId,
-  }: { from?: Date; limit?: number; programmeId?: string } = {}
+    programId,
+  }: { from?: Date; limit?: number; programId?: string } = {}
 ) => {
   let query = events(client)
     .from("events")
@@ -94,8 +94,8 @@ export const publicEvents = async (
     .gte("starts_at", from.toISOString())
     .order("starts_at")
     .limit(limit);
-  if (programmeId) {
-    query = query.eq("programme_id", programmeId);
+  if (programId) {
+    query = query.eq("program_id", programId);
   }
   return unwrap(await query);
 };
@@ -106,8 +106,8 @@ export const pastPublicEvents = async (
   {
     before = currentDate(),
     limit = 20,
-    programmeId,
-  }: { before?: Date; limit?: number; programmeId?: string } = {}
+    programId,
+  }: { before?: Date; limit?: number; programId?: string } = {}
 ) => {
   let query = events(client)
     .from("events")
@@ -117,8 +117,8 @@ export const pastPublicEvents = async (
     .lt("starts_at", before.toISOString())
     .order("starts_at", { ascending: false })
     .limit(limit);
-  if (programmeId) {
-    query = query.eq("programme_id", programmeId);
+  if (programId) {
+    query = query.eq("program_id", programId);
   }
   return unwrap(await query);
 };
@@ -244,7 +244,7 @@ export const universityCalendar = async (
 ) =>
   unwrap(
     await client
-      .schema("core")
+      .schema("api")
       .from("external_events")
       .select("id, title, starts_at, ends_at, all_day, location, url")
       .eq("source", "auib")
@@ -280,7 +280,7 @@ export const myReminders = async (client: Client) =>
 export const invitations = async (client: Client, eventId: string) =>
   unwrap(
     await events(client)
-      .from("invitations")
+      .from("events_invitations")
       .select("user_id, created_at")
       .eq("event_id", eventId)
   ) ?? [];
@@ -288,7 +288,7 @@ export const invitations = async (client: Client, eventId: string) =>
 export const invite = async (client: Client, eventId: string, userId: string) =>
   unwrap(
     await events(client)
-      .from("invitations")
+      .from("events_invitations")
       .upsert(
         { event_id: eventId, user_id: userId },
         { ignoreDuplicates: true }
@@ -302,7 +302,7 @@ export const withdrawInvitation = async (
 ) =>
   unwrap(
     await events(client)
-      .from("invitations")
+      .from("events_invitations")
       .delete()
       .eq("event_id", eventId)
       .eq("user_id", userId)

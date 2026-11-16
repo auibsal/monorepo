@@ -90,7 +90,7 @@ const MailingCounts = () => {
   const { supabase } = useAuth();
   const counts = useQuery({
     queryFn: async () =>
-      (unwrap(await supabase.schema("content").rpc("mailing_counts")) ??
+      (unwrap(await supabase.schema("api").rpc("mailing_counts")) ??
         []) as Count[],
     queryKey: ["admin", "mailing", "counts"],
   });
@@ -164,7 +164,7 @@ const Groups = () => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("telegram_groups")
           .select("chat_id, title, lang, topics, audience")
           .order("registered_at")
@@ -217,7 +217,7 @@ const GroupSettings = ({ group }: { readonly group: Group }) => {
       }
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("telegram_groups")
           .update({ audience, lang, topics: chosen })
           .eq("chat_id", group.chat_id)
@@ -294,7 +294,7 @@ const Exempt = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("telegram_exempt")
           .select("telegram_id, label")
           .order("label")
@@ -305,7 +305,7 @@ const Exempt = () => {
     mutationFn: async (id: number) =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("telegram_exempt")
           .delete()
           .eq("telegram_id", id)
@@ -360,7 +360,7 @@ const NewExempt = ({ onDone }: { readonly onDone: () => void }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("telegram_exempt")
           .insert({ label: label.trim(), telegram_id: Number(id.trim()) })
       ),

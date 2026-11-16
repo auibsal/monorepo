@@ -134,18 +134,18 @@ insert into events.events (id, slug, title_en, title_ar, starts_at, status, publ
 -- ── Proposing and the stage gate ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a6');
 select lives_ok(
-  $$ insert into programmes.productions (id, slug, title_en, title_ar, playwright, script_origin)
+  $$ insert into programs.productions (id, slug, title_en, title_ar, playwright, script_origin)
      values ('00000000-0000-0000-0000-00000000f001', 'the-reading', 'The Reading', 'القراءة',
        'A Member', 'original') $$,
   'The Vice President proposes a production'
 );
 select throws_ok(
-  $$ insert into programmes.productions (slug, title_en, title_ar, stage)
+  $$ insert into programs.productions (slug, title_en, title_ar, stage)
      values ('skip-ahead', 'Skip', 'تخطي', 'performances') $$,
   '22023', 'production_starts_as_proposal',
   'and it starts as a proposal'
 );
-insert into programmes.productions (id, slug, title_en, title_ar)
+insert into programs.productions (id, slug, title_en, title_ar)
 values ('00000000-0000-0000-0000-00000000f002', 'other-show', 'Other show', 'عرض آخر');
 select pg_temp.logout();
 
@@ -156,156 +156,156 @@ select lives_ok(
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-select is((select count(*)::int from programmes.productions), 1,
+select is((select count(*)::int from programs.productions), 1,
   'The lead sees only their own production');
 select lives_ok(
-  $$ update programmes.productions set stage = 'approved', rights_note = 'Written consent from the author, Oct 1.'
+  $$ update programs.productions set stage = 'approved', rights_note = 'Written consent from the author, Oct 1.'
      where id = '00000000-0000-0000-0000-00000000f001' $$,
   'The lead records what the rights rest on'
 );
-select is((select rights_recorded_by from programmes.productions where id = '00000000-0000-0000-0000-00000000f001'),
+select is((select rights_recorded_by from programs.productions where id = '00000000-0000-0000-0000-00000000f001'),
   '00000000-0000-0000-0000-0000000000a4'::uuid, 'and is recorded as having done so');
 select throws_ok(
-  $$ update programmes.productions set rights_status = 'cleared'
+  $$ update programs.productions set rights_status = 'cleared'
      where id = '00000000-0000-0000-0000-00000000f001' $$,
   '42501', 'through_rpc',
   'Rights are not cleared through the table'
 );
 select throws_ok(
-  $$ update programmes.productions set stage = 'performances'
+  $$ update programs.productions set stage = 'performances'
      where id = '00000000-0000-0000-0000-00000000f001' $$,
   '22023', 'rights_not_cleared',
   'No performances until the rights are cleared'
 );
 select throws_ok(
-  $$ insert into programmes.production_events values
+  $$ insert into programs.production_events values
      ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-00000000e001') $$,
   '22023', 'rights_not_cleared',
   'and no performance is linked'
 );
 select throws_ok(
-  $$ select programmes.clear_production_rights('00000000-0000-0000-0000-00000000f001') $$,
+  $$ select programs.clear_production_rights('00000000-0000-0000-0000-00000000f001') $$,
   '42501', 'someone_else_clears',
   'Whoever recorded the rights does not clear them'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a6');
 select lives_ok(
-  $$ select programmes.clear_production_rights('00000000-0000-0000-0000-00000000f001') $$,
+  $$ select programs.clear_production_rights('00000000-0000-0000-0000-00000000f001') $$,
   'Someone else clears them'
 );
-update programmes.productions set script_origin = 'licensed'
+update programs.productions set script_origin = 'licensed'
 where id = '00000000-0000-0000-0000-00000000f002';
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
-update programmes.productions set rights_note = 'Licensed from the publisher.'
+update programs.productions set rights_note = 'Licensed from the publisher.'
 where id = '00000000-0000-0000-0000-00000000f002';
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a6');
 select throws_ok(
-  $$ select programmes.clear_production_rights('00000000-0000-0000-0000-00000000f002') $$,
+  $$ select programs.clear_production_rights('00000000-0000-0000-0000-00000000f002') $$,
   '22023', 'license_not_on_file',
   'A licensed script needs the license on file'
 );
 
 -- ── Auditions and private notes ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-update programmes.productions set stage = 'auditions' where id = '00000000-0000-0000-0000-00000000f001';
-insert into programmes.auditions (id, production_id, starts_at, ends_at, capacity)
+update programs.productions set stage = 'auditions' where id = '00000000-0000-0000-0000-00000000f001';
+insert into programs.auditions (id, production_id, starts_at, ends_at, capacity)
 values ('00000000-0000-0000-0000-00000000a001', '00000000-0000-0000-0000-00000000f001',
   now() + interval '2 days', now() + interval '2 days 2 hours', 1);
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');
-select is((select count(*)::int from programmes.auditions), 1, 'Members see open auditions');
+select is((select count(*)::int from programs.auditions), 1, 'Members see open auditions');
 select lives_ok(
-  $$ select programmes.sign_up_for_audition('00000000-0000-0000-0000-00000000a001', 'Hamlet, Act 3') $$,
+  $$ select programs.sign_up_for_audition('00000000-0000-0000-0000-00000000a001', 'Hamlet, Act 3') $$,
   'and sign up'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
-  $$ select programmes.sign_up_for_audition('00000000-0000-0000-0000-00000000a001') $$,
+  $$ select programs.sign_up_for_audition('00000000-0000-0000-0000-00000000a001') $$,
   '23514', 'audition_full',
   'A full audition takes no more'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-insert into programmes.audition_notes (audition_id, user_id, note)
+insert into programs.audition_notes (audition_id, user_id, note)
 values ('00000000-0000-0000-0000-00000000a001', '00000000-0000-0000-0000-0000000000a5', 'Strong voice; call back.');
-update programmes.audition_signups set status = 'called_back'
+update programs.audition_signups set status = 'called_back'
 where user_id = '00000000-0000-0000-0000-0000000000a5';
-select is((select count(*)::int from programmes.audition_notes), 1, 'The panel keeps notes');
+select is((select count(*)::int from programs.audition_notes), 1, 'The panel keeps notes');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');
-select is((select count(*)::int from programmes.audition_notes), 0,
+select is((select count(*)::int from programs.audition_notes), 0,
   'which the person auditioning never sees');
-select is((select status from programmes.audition_signups), 'called_back',
+select is((select status from programs.audition_signups), 'called_back',
   'though they see their own call-back');
-update programmes.audition_signups set status = 'cast';
-select is((select status from programmes.audition_signups), 'called_back',
+update programs.audition_signups set status = 'cast';
+select is((select status from programs.audition_signups), 'called_back',
   'and cannot cast themselves');
 
 -- ── Credits, rehearsals and the company ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-select hasnt_column('programmes', 'production_credits', 'show_publicly',
+select hasnt_column('programs', 'production_credits', 'show_publicly',
   'There is no hiding a name: a credit is public with the production');
-insert into programmes.production_credits (id, production_id, user_id, department, role_en)
+insert into programs.production_credits (id, production_id, user_id, department, role_en)
 values ('00000000-0000-0000-0000-00000000c001', '00000000-0000-0000-0000-00000000f001',
   '00000000-0000-0000-0000-0000000000a1', 'cast', 'Ophelia');
 -- A credit typed before the rule (the third prompt, §1) stays; new ones
 -- name an account.
 select pg_temp.logout();
-alter table programmes.production_credits disable trigger credit_names_an_account;
-insert into programmes.production_credits (production_id, person_name, partner_id, department, role_en)
+alter table programs.production_credits disable trigger credit_names_an_account;
+insert into programs.production_credits (production_id, person_name, partner_id, department, role_en)
 values ('00000000-0000-0000-0000-00000000f001', 'Guest Actor', '00000000-0000-0000-0000-00000000d001',
   'cast', 'Hamlet');
-alter table programmes.production_credits enable trigger credit_names_an_account;
+alter table programs.production_credits enable trigger credit_names_an_account;
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-insert into programmes.rehearsals (production_id, starts_at, ends_at, called)
+insert into programs.rehearsals (production_id, starts_at, ends_at, called)
 values ('00000000-0000-0000-0000-00000000f001', now() + interval '5 days', now() + interval '5 days 3 hours', 'Full company');
-update programmes.productions set stage = 'rehearsals', is_public = true
+update programs.productions set stage = 'rehearsals', is_public = true
 where id = '00000000-0000-0000-0000-00000000f001';
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select is((select count(*)::int from programmes.productions), 1, 'The company reads its production');
-select is((select count(*)::int from programmes.rehearsals), 1, 'and its rehearsals');
-select hasnt_function('programmes', 'set_credit_visibility', 'and no setting for it');
+select is((select count(*)::int from programs.productions), 1, 'The company reads its production');
+select is((select count(*)::int from programs.rehearsals), 1, 'and its rehearsals');
+select hasnt_function('programs', 'set_credit_visibility', 'and no setting for it');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a5');
-select is((select count(*)::int from programmes.rehearsals), 0, 'Others do not see the rehearsals');
+select is((select count(*)::int from programs.rehearsals), 0, 'Others do not see the rehearsals');
 
 select pg_temp.login_anon();
-select is((select count(*)::int from programmes.public_production_credits('00000000-0000-0000-0000-00000000f001')), 2,
+select is((select count(*)::int from programs.public_production_credits('00000000-0000-0000-0000-00000000f001')), 2,
   'The public page credits everyone in it');
 select throws_ok(
-  $$ select * from programmes.productions $$,
+  $$ select * from programs.productions $$,
   '42501', null,
   'and never reads the register itself (rights, report)'
 );
 
 -- ── Partners, performances and the report ──
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-select is(to_regclass('programmes.production_partners'), null,
+select is(to_regclass('programs.production_partners'), null,
   'A production''s partners are its performances'' hosts: no separate list (audit C8)');
 update events.events set partner_id = '00000000-0000-0000-0000-00000000d001'
 where id = '00000000-0000-0000-0000-00000000e001';
-update programmes.productions set stage = 'performances' where id = '00000000-0000-0000-0000-00000000f001';
-insert into programmes.production_events values
+update programs.productions set stage = 'performances' where id = '00000000-0000-0000-0000-00000000f001';
+insert into programs.production_events values
   ('00000000-0000-0000-0000-00000000f001', '00000000-0000-0000-0000-00000000e001');
 select ok(
   not exists (select 1 from pg_proc where proname in ('record_production_service', 'draft_production_certificates')),
   'No hours from credits and no production certificates (decisions.md)'
 );
 select pg_temp.login_anon();
-select is((select count(*)::int from programmes.public_production_events('00000000-0000-0000-0000-00000000f001')), 1,
+select is((select count(*)::int from programs.public_production_events('00000000-0000-0000-0000-00000000f001')), 1,
   'Performances appear publicly once the rights are cleared');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a4');
-update programmes.productions set stage = 'closed' where id = '00000000-0000-0000-0000-00000000f001';
+update programs.productions set stage = 'closed' where id = '00000000-0000-0000-0000-00000000f001';
 select throws_ok(
-  $$ select programmes.sign_production_report('00000000-0000-0000-0000-00000000f001') $$,
+  $$ select programs.sign_production_report('00000000-0000-0000-0000-00000000f001') $$,
   '22023', 'report_incomplete',
   'The Program Report (F-25) is signed only when complete'
 );
-update programmes.productions set report_people_reached = 80, report_what_happened = 'Two readings.',
+update programs.productions set report_people_reached = 80, report_what_happened = 'Two readings.',
   report_lessons = 'Book the hall early.', report_repeat = 'Yes, in spring.'
 where id = '00000000-0000-0000-0000-00000000f001';
-select programmes.sign_production_report('00000000-0000-0000-0000-00000000f001');
+select programs.sign_production_report('00000000-0000-0000-0000-00000000f001');
 
 
 select * from finish();

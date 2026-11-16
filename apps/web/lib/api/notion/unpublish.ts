@@ -60,7 +60,7 @@ const markRow = async (
 /** Takes a document off the Library. */
 const hide = (ctx: SyncContext, id: string) =>
   ctx.admin
-    .schema("governance")
+    .schema("api")
     .from("society_documents")
     .update({ on_site: false })
     .eq("id", id);
@@ -111,7 +111,7 @@ export const unpublishFromNotion = async (ctx: SyncContext) => {
   const [documentRows, documents] = await Promise.all([
     ctx.notion.query(ctx.sources.documents),
     ctx.admin
-      .schema("governance")
+      .schema("api")
       .from("society_documents")
       .select("id")
       .eq("on_site", true),

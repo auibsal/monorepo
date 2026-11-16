@@ -59,14 +59,14 @@ const RoleAgreement = ({
   const { supabase } = useAuth();
   const name = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("core").rpc("my_register_name")) ?? "",
+      unwrap(await supabase.schema("api").rpc("my_register_name")) ?? "",
     queryKey: ["core", "register-name"],
   });
   const sign = useMutation({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("access")
+          .schema("api")
           .rpc("sign_role_agreement", { assignment_id: assignmentId })
       ),
     onSuccess: onSigned,
@@ -112,7 +112,7 @@ export const RoleChecklist = () => {
   const steps = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      (unwrap(await supabase.schema("access").rpc("my_role_checklist")) ??
+      (unwrap(await supabase.schema("api").rpc("my_role_checklist")) ??
         []) as Step[],
     queryKey: key,
   });
@@ -120,7 +120,7 @@ export const RoleChecklist = () => {
     mutationFn: async ({ id, step }: { id: string; step: string }) =>
       unwrap(
         await supabase
-          .schema("access")
+          .schema("api")
           .rpc("tick_role_step", { assignment_id: id, step })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
@@ -221,7 +221,7 @@ export const UnsignedRoleAgreements = () => {
     enabled: Boolean(user),
     queryFn: async () =>
       (unwrap(
-        await supabase.schema("access").rpc("my_unsigned_role_agreements")
+        await supabase.schema("api").rpc("my_unsigned_role_agreements")
       ) ?? []) as Unsigned[],
     queryKey: key,
   });

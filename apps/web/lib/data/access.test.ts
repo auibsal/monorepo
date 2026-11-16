@@ -21,8 +21,7 @@ describe("role assignments", () => {
   test("a global role has no scope id; a scoped role needs one", () => {
     expect(roleAssignmentSchema.safeParse(base).success).toBe(true);
     expect(
-      roleAssignmentSchema.safeParse({ ...base, scope_type: "programme" })
-        .success
+      roleAssignmentSchema.safeParse({ ...base, scope_type: "program" }).success
     ).toBe(false);
     expect(
       roleAssignmentSchema.safeParse({ ...base, scope_id: user }).success

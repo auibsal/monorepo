@@ -39,7 +39,7 @@ const ensureUser = async (email: string, name: string) => {
  */
 const seedEdition = async (db: ReturnType<typeof admin>) => {
   const issue = await db
-    .schema("journal")
+    .schema("api")
     .from("issues")
     .upsert(
       {
@@ -55,20 +55,20 @@ const seedEdition = async (db: ReturnType<typeof admin>) => {
     .single();
   const issueId = issue.data?.id;
   const existing = await db
-    .schema("journal")
+    .schema("api")
     .from("calls")
     .select("id")
     .eq("issue_id", issueId ?? "");
   if (issueId && (existing.data ?? []).length > 0) {
     await db
-      .schema("journal")
+      .schema("api")
       .from("calls")
       .update({ opens_at: new Date().toISOString() })
       .eq("issue_id", issueId);
   }
   if (issueId && (existing.data ?? []).length === 0) {
     await db
-      .schema("journal")
+      .schema("api")
       .from("calls")
       .insert({
         closes_at: new Date(Date.now() + 30 * 86_400_000).toISOString(),
@@ -101,7 +101,7 @@ export default async function globalSetup() {
   const grandfatherOf = (id: string) => grandfathers[id] ?? ["", ""];
   for (const id of [memberId, editorId, editor2Id, presidentId]) {
     const versions = await db
-      .schema("core")
+      .schema("api")
       .from("settings")
       .select("key, value")
       .like("key", "pledges.%.version");
@@ -111,7 +111,7 @@ export default async function globalSetup() {
           ? "human_authorship"
           : "member";
       await db
-        .schema("membership")
+        .schema("api")
         .from("pledges")
         .upsert(
           {
@@ -123,8 +123,8 @@ export default async function globalSetup() {
         );
     }
     await db
-      .schema("core")
-      .from("profiles")
+      .schema("api")
+      .from("profiles_all")
       .update({
         // Asked once whether they sign electronically, and agreed.
         esign_agreed_at: new Date().toISOString(),
@@ -144,7 +144,7 @@ export default async function globalSetup() {
   }
 
   await db
-    .schema("access")
+    .schema("api")
     .from("role_assignments")
     .upsert(
       [
@@ -152,7 +152,7 @@ export default async function globalSetup() {
         // Qirtas's News desk (journal.edit.news), for the newsroom journey.
         { role: "news_editor", scope_type: "global", user_id: editorId },
         // Events (events.manage), for the door: the Event Lead.
-        { role: "programme_lead", scope_type: "global", user_id: editorId },
+        { role: "program_lead", scope_type: "global", user_id: editorId },
         { role: "web_lead", scope_type: "global", user_id: editor2Id },
       ],
       { ignoreDuplicates: true }
@@ -164,7 +164,7 @@ export default async function globalSetup() {
     [editor2Id, "general_secretary"],
   ] as const) {
     const held = await db
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .select("id")
       .eq("user_id", userId)
@@ -172,7 +172,7 @@ export default async function globalSetup() {
       .maybeSingle();
     if (!held.data) {
       const given = await db
-        .schema("access")
+        .schema("api")
         .from("role_assignments")
         .insert({ role, scope_type: "global", user_id: userId });
       if (given.error) {
@@ -187,7 +187,7 @@ export default async function globalSetup() {
 
   const start = new Date(Date.now() + 5 * 86_400_000);
   await db
-    .schema("events")
+    .schema("api")
     .from("events")
     .upsert(
       {
@@ -216,7 +216,7 @@ export default async function globalSetup() {
     `${new Date(start.getTime() + 3 * 3_600_000).toISOString().slice(0, 10)}T00:00:00Z`
   );
   await db
-    .schema("core")
+    .schema("api")
     .from("external_events")
     .upsert(
       {
@@ -235,7 +235,7 @@ export default async function globalSetup() {
   // production (decisions §10); here one of the old News pieces is put
   // back as a fixture, dated after it was made.
   await db
-    .schema("journal")
+    .schema("api")
     .from("pieces")
     .update({ published_at: new Date().toISOString(), status: "published" })
     .eq("slug", "qirtas-launches-as-one-paper");

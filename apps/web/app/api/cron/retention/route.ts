@@ -10,7 +10,7 @@ type Admin = ReturnType<typeof createAdminClient>;
 /** Unpublished submissions twelve months after the decision: files, then rows. */
 const deleteSubmissions = async (admin: Admin) => {
   const { data: due, error } = await admin
-    .schema("journal")
+    .schema("api")
     .rpc("expired_submissions");
   if (error) {
     throw error;
@@ -29,7 +29,7 @@ const deleteSubmissions = async (admin: Admin) => {
     }
   }
   const { data: deleted, error: deleteError } = await admin
-    .schema("journal")
+    .schema("api")
     .rpc("delete_submissions", { ids: rows.map((r) => r.submission_id) });
   if (deleteError) {
     throw deleteError;
@@ -55,7 +55,7 @@ const retain = async (request: Request) => {
     const submissions = await deleteSubmissions(admin);
 
     const { data: due, error: dueError } = await admin
-      .schema("core")
+      .schema("api")
       .rpc("retention_due");
     if (dueError) {
       throw dueError;
@@ -73,7 +73,7 @@ const retain = async (request: Request) => {
     }
 
     const { data: run, error: runError } = await admin
-      .schema("core")
+      .schema("api")
       .rpc("run_retention");
     if (runError) {
       throw runError;
@@ -101,7 +101,7 @@ const retain = async (request: Request) => {
     log.error("Retention failed", { message });
     // The administrators hear of it the way they hear of a failed pg_cron job.
     await admin
-      .schema("core")
+      .schema("api")
       .from("outbox")
       .insert({
         kind: "platform.cron_failed",

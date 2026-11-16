@@ -50,7 +50,7 @@ export const EventOffCampus = ({
     mutationFn: async (value: boolean) =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .update({ off_campus: value })
           .eq("id", event.id)
@@ -60,7 +60,7 @@ export const EventOffCampus = ({
   const record = useMutation({
     mutationFn: async (value: string | null) =>
       unwrap(
-        await supabase.schema("events").rpc("record_approval", {
+        await supabase.schema("api").rpc("record_approval", {
           approved_by: value ? by.trim() : (null as unknown as string),
           approved_on: value as string,
           event_id: event.id,

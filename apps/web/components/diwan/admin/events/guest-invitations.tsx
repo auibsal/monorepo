@@ -31,7 +31,7 @@ export const GuestInvitations = ({ eventId }: { eventId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_invitations")
           .select("id, email, accepted_at, revoked_at")
           .eq("event_id", eventId)
@@ -43,7 +43,7 @@ export const GuestInvitations = ({ eventId }: { eventId: string }) => {
   const invite = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("governance").from("partner_invitations").insert({
+        await supabase.schema("api").from("partner_invitations").insert({
           email: email.trim(),
           event_id: eventId,
           kind: "guest",
@@ -59,7 +59,7 @@ export const GuestInvitations = ({ eventId }: { eventId: string }) => {
     mutationFn: async (id: string) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_invitations")
           .update({ revoked_at: new Date().toISOString() })
           .eq("id", id)

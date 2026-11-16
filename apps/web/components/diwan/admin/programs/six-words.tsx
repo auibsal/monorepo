@@ -28,7 +28,7 @@ const withinSixWords = (value: string) => {
   const words = value.match(WORDS)?.length ?? 0;
   return words < 6 || (words === 6 && !ENDS_IN_SPACE.test(value));
 };
-const queryKey = ["admin", "programmes", "six-words"];
+const queryKey = ["admin", "programs", "six-words"];
 
 /** The message for a card the database refused. */
 const cardProblem = (error: unknown) => {
@@ -50,7 +50,7 @@ const cardProblem = (error: unknown) => {
  * profile or the Tour's page; an editor may mark one not publishable.
  */
 export const TourCards = () => {
-  const t = useTranslations("diwan.admin.programmes.sixWords");
+  const t = useTranslations("diwan.admin.programs.sixWords");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -66,7 +66,7 @@ export const TourCards = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("six_words")
           .select(
             "id, user_id, text, language, visibility, publishable, writer_name, station, tour, photo_path, created_at"
@@ -82,7 +82,7 @@ export const TourCards = () => {
   const record = useMutation({
     mutationFn: async (card: { card_code: string; digits: string } | null) =>
       unwrap(
-        await supabase.schema("programmes").rpc("record_six_words", {
+        await supabase.schema("api").rpc("record_six_words", {
           language: ARABIC.test(text) ? "ar" : "en",
           words: text.trim(),
           ...(card ?? {}),
@@ -106,7 +106,7 @@ export const TourCards = () => {
     }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .rpc("attach_six_words", { entry_id: id, ...card })
       ),
     onError: (error) => setProblem(cardProblem(error)),
@@ -120,7 +120,7 @@ export const TourCards = () => {
     mutationFn: async ({ id, value }: { id: string; value: boolean }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .rpc("moderate_six_words", { approve: value, entry_id: id })
       ),
     onSuccess: refresh,
@@ -131,7 +131,7 @@ export const TourCards = () => {
     mutationFn: async ({ id, member }: { id: string; member: string }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .rpc("attach_page_to_member", { entry_id: id, member_id: member })
       ),
     onSuccess: async () => {
@@ -311,18 +311,18 @@ export const TourCards = () => {
 
 /**
  * A page the station photographed, typed from its photograph by whoever
- * runs the Tour (`programmes.transcribe_page`): only then can it show on
+ * runs the Tour (`programs.transcribe_page`): only then can it show on
  * the writer's profile or the Tour's page, as the writer chooses.
  */
 const Transcribe = ({ id, onDone }: { id: string; onDone: () => void }) => {
-  const t = useTranslations("diwan.admin.programmes.sixWords");
+  const t = useTranslations("diwan.admin.programs.sixWords");
   const { supabase } = useAuth();
   const fieldId = useId();
   const [words, setWords] = useState("");
   const save = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("programmes").rpc("transcribe_page", {
+        await supabase.schema("api").rpc("transcribe_page", {
           lang: ARABIC.test(words) ? "ar" : "en",
           page_id: id,
           words: words.trim(),

@@ -18,17 +18,16 @@ interface ProfileChange {
   title_form?: "masculine" | "feminine" | null;
 }
 
-/** Saves one of the person's own choices (RLS and column grants decide). */
+/** Saves one of the person's own choices (core.update_my_profile: their
+ * own row, the columns they may change). */
 const useSaveProfile = () => {
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (change: ProfileChange) => {
       const { error } = await supabase
-        .schema("core")
-        .from("profiles")
-        .update(change)
-        .eq("id", user?.id ?? "");
+        .schema("api")
+        .rpc("update_my_profile", { change: { ...change } });
       if (error) {
         throw error;
       }

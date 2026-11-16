@@ -150,7 +150,7 @@ export type DeclarationInput = z.input<typeof declarationSchema>;
 
 /** Active, listed partners with a signed memorandum in force. */
 export const publicPartners = async (client: Client) =>
-  unwrap(await client.schema("governance").rpc("public_partners")) ?? [];
+  unwrap(await client.schema("api").rpc("public_partners")) ?? [];
 
 /** Days until a date (negative when it has passed). */
 export const daysUntil = (date: string, today = currentDate()) => {
@@ -181,12 +181,12 @@ export const renewalsDue = <
 
 /** Partner names for a role holder's declaration (needs-list). */
 export const declarablePartners = async (client: Client) =>
-  unwrap(await client.schema("governance").rpc("declarable_partners")) ?? [];
+  unwrap(await client.schema("api").rpc("declarable_partners")) ?? [];
 
 export const myDeclarations = async (client: Client) =>
   unwrap(
     await client
-      .schema("governance")
+      .schema("api")
       .from("conflict_declarations")
       .select(
         "id, role_title, nothing_to_declare, signed_at, received_at, semester_id, conflict_items (id, kind, partner_id, what, affects, handling, closed_on)"
@@ -198,7 +198,7 @@ export const myDeclarations = async (client: Client) =>
 export const closeConflictItem = async (client: Client, itemId: string) =>
   unwrap(
     await client
-      .schema("governance")
+      .schema("api")
       .from("conflict_items")
       .update({ closed_on: currentDate().toISOString().slice(0, 10) })
       .eq("id", itemId)
@@ -212,7 +212,7 @@ export const declareConflicts = async (
   const parsed = declarationSchema.parse(input);
   const declaration = unwrap(
     await client
-      .schema("governance")
+      .schema("api")
       .from("conflict_declarations")
       .insert({
         nothing_to_declare: parsed.nothing_to_declare,
@@ -228,7 +228,7 @@ export const declareConflicts = async (
   if (parsed.items.length > 0) {
     unwrap(
       await client
-        .schema("governance")
+        .schema("api")
         .from("conflict_items")
         .insert(
           parsed.items.map((item) => ({
@@ -256,7 +256,7 @@ export const recordCouncilVote = async (
   resolutionId: string
 ) =>
   unwrap(
-    await client.schema("governance").rpc("record_partner_vote", {
+    await client.schema("api").rpc("record_partner_vote", {
       agreement_id: agreementId,
       resolution: resolutionId,
     })
@@ -266,7 +266,7 @@ export const recordCouncilVote = async (
 export const councilResolutions = async (client: Client) =>
   unwrap(
     await client
-      .schema("governance")
+      .schema("api")
       .from("resolutions")
       .select("id, code, title_en, title_ar, adopted_on")
       .eq("status", "adopted")

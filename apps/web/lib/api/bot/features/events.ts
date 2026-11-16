@@ -143,7 +143,7 @@ dm.callbackQuery(new RegExp(`^(rsvp|unrsvp):(${UUID})$`, "u"), async (ctx) => {
   let booked = false;
   if (ctx.match[1] === "rsvp") {
     const { data, error } = await db()
-      .schema("core")
+      .schema("api")
       .rpc("telegram_rsvp", params);
     notice = error
       ? rsvpError(ctx, error)
@@ -155,7 +155,7 @@ dm.callbackQuery(new RegExp(`^(rsvp|unrsvp):(${UUID})$`, "u"), async (ctx) => {
     booked = !error && data === "confirmed";
   } else {
     const { error } = await db()
-      .schema("core")
+      .schema("api")
       .rpc("telegram_cancel_rsvp", params);
     notice = error ? rsvpError(ctx, error) : ctx.t.rsvpCancelled;
   }

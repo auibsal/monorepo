@@ -567,7 +567,7 @@ export const ExportButton = ({
   // A list for Student Life needs a second officer: the first press asks.
   const ask = async () => {
     const { error } = await supabase
-      .schema("governance")
+      .schema("api")
       .rpc("request_export", { name, params });
     setState(error ? "failed" : "asked");
   };

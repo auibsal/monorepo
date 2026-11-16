@@ -268,7 +268,7 @@ export const AuthorName = ({ entryId }: { entryId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .rpc("entry_author", { blind_entry_id: entryId })
       )?.[0] ?? null,
     queryKey: [...pipelineKey, "author", entryId],
@@ -284,7 +284,7 @@ export const Decided = ({ issueId }: { issueId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("decisions")
           .select(
             "id, decision, decided_at, entry:blind_entries!inner(id, blind_id, title, issue_id)"

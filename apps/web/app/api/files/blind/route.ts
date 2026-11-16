@@ -40,7 +40,7 @@ export const POST = async (request: Request) => {
   const entryId = parsed.data.entry;
 
   const text = await session.supabase
-    .schema("journal")
+    .schema("api")
     .rpc("entry_text", { entry: entryId });
   if (text.error) {
     return text.error.hint === "reader_pledge"
@@ -54,7 +54,7 @@ export const POST = async (request: Request) => {
 
   const admin = createAdminClient();
   const { data: link } = await admin
-    .schema("journal")
+    .schema("api")
     .from("blind_keys")
     .select("submission_id")
     .eq("blind_entry_id", entryId)
@@ -63,7 +63,7 @@ export const POST = async (request: Request) => {
     return json({ images: [] });
   }
   const { data: rows } = await admin
-    .schema("journal")
+    .schema("api")
     .from("submission_files")
     .select("id, mime_type, storage_path")
     .eq("submission_id", link.submission_id)

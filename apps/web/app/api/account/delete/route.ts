@@ -35,8 +35,8 @@ export const POST = async (request: Request) => {
     const admin = createAdminClient();
     const now = new Date();
     const { error } = await admin
-      .schema("core")
-      .from("profiles")
+      .schema("api")
+      .from("profiles_all")
       .update({ deletion_requested_at: now.toISOString() })
       .eq("id", session.userId);
     if (error) {
@@ -46,7 +46,7 @@ export const POST = async (request: Request) => {
       now.getTime() + GRACE_DAYS * 86_400_000
     ).toISOString();
     await admin
-      .schema("core")
+      .schema("api")
       .from("outbox")
       .insert({
         kind: "account.deletion_scheduled",

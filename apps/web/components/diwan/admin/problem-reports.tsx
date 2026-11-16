@@ -31,7 +31,7 @@ export const ProblemReports = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("problem_reports")
           .select("id, page, message, reply_to, user_id, created_at")
           .eq("status", "open")
@@ -44,7 +44,7 @@ export const ProblemReports = () => {
     mutationFn: async (input: { id: string; status: "fixed" | "closed" }) =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("problem_reports")
           .update({
             handled_at: new Date().toISOString(),

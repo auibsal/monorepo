@@ -18,7 +18,7 @@ export interface AccountDeletion {
  */
 const ownFiles = async (admin: Client, userId: string) => {
   const { data: submissions } = await admin
-    .schema("journal")
+    .schema("api")
     .from("submissions")
     .select("id")
     .eq("author_id", userId);
@@ -27,7 +27,7 @@ const ownFiles = async (admin: Client, userId: string) => {
     return [];
   }
   const { data: files } = await admin
-    .schema("journal")
+    .schema("api")
     .from("submission_files")
     .select("storage_path, blind_path")
     .in("submission_id", ids);
@@ -64,7 +64,7 @@ export const deleteAccount = async (
   }
   // The Tour pages the station photographed for them (decisions §12).
   const { data: pages } = await admin
-    .schema("programmes")
+    .schema("api")
     .from("six_words")
     .select("photo_path")
     .eq("user_id", userId)
@@ -87,8 +87,8 @@ export const deleteAccount = async (
   const [{ data: user }, { data: profile }] = await Promise.all([
     admin.auth.admin.getUserById(userId),
     admin
-      .schema("core")
-      .from("profiles")
+      .schema("api")
+      .from("profiles_all")
       .select("locale")
       .eq("id", userId)
       .maybeSingle(),
@@ -101,9 +101,9 @@ export const deleteAccount = async (
   // The activity log keeps no lines by or about someone who has gone
   // (audit E1).
   await Promise.all([
-    admin.schema("core").from("activity_log").delete().eq("actor_id", userId),
+    admin.schema("api").from("activity_log").delete().eq("actor_id", userId),
     admin
-      .schema("core")
+      .schema("api")
       .from("activity_log")
       .delete()
       .or(`new_row->>user_id.eq.${userId},old_row->>user_id.eq.${userId}`),
@@ -111,7 +111,7 @@ export const deleteAccount = async (
   const email = user?.user?.email;
   if (email) {
     await admin
-      .schema("core")
+      .schema("api")
       .from("outbox")
       .insert({
         kind: "account.deleted",

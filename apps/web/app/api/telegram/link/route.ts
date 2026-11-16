@@ -92,7 +92,7 @@ export const POST = async (request: Request) => {
       ...parsed.data,
     });
     const { error } = await createAdminClient()
-      .schema("core")
+      .schema("api")
       .rpc("telegram_link_account", {
         telegram_id: identity.telegramId,
         user_id: session.userId,

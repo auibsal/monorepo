@@ -60,14 +60,14 @@ const Invitations = ({ data }: { readonly data: Status }) => {
   const queryClient = useQueryClient();
   const list = useQuery({
     queryFn: async () =>
-      (unwrap(await supabase.schema("core").rpc("notion_to_invite")) ??
+      (unwrap(await supabase.schema("api").rpc("notion_to_invite")) ??
         []) as Invite[],
     queryKey: INVITE_KEY,
   });
   const mark = useMutation({
     mutationFn: async (member: string) =>
       unwrap(
-        await supabase.schema("core").rpc("mark_notion_invited", { member })
+        await supabase.schema("api").rpc("mark_notion_invited", { member })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: INVITE_KEY }),
   });

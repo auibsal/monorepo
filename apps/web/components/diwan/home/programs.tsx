@@ -11,8 +11,8 @@ import { RowList } from "../page";
 import { EmptyLine } from "../states";
 import { Section } from "./section";
 
-export const MyProgrammes = () => {
-  const t = useTranslations("diwan.home.programmes");
+export const MyPrograms = () => {
+  const t = useTranslations("diwan.home.programs");
   const ta = useTranslations("diwan.next");
   const locale = useLocale() as "en" | "ar";
   const { supabase, user } = useAuth();
@@ -28,7 +28,7 @@ export const MyProgrammes = () => {
       status: "confirmed" | "swap_requested";
     }) => {
       const { error } = await supabase
-        .schema("programmes")
+        .schema("api")
         .from("shift_signups")
         .update({ status })
         .eq("shift_id", shiftId)
@@ -44,7 +44,7 @@ export const MyProgrammes = () => {
   });
 
   return (
-    <Section id="programmes" title={t("title")}>
+    <Section id="programs" title={t("title")}>
       {shifts.data?.length === 0 ? (
         <EmptyLine action={{ href: "/get-involved", label: ta("openShifts") }}>
           {t("empty")}

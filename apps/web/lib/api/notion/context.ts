@@ -24,8 +24,8 @@ export type LinkKind =
   | "piece"
   | "piece_ar"
   | "production"
-  | "programme"
-  | "programme_ar"
+  | "program"
+  | "program_ar"
   | "resolution";
 
 /** The workspace's data sources (core.settings `notion.data_sources`). */
@@ -45,7 +45,7 @@ export interface Sources {
   openings?: string;
   organizations?: string;
   productions?: string;
-  programmes: string;
+  programs: string;
   /** Announcements and resolutions. */
   records?: string;
 }
@@ -81,7 +81,7 @@ export interface Link {
 
 export const linksOf = async (ctx: SyncContext, kind: LinkKind) => {
   const { data, error } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("notion_links")
     .select("notion_page_id, record_key, content_hash")
     .eq("kind", kind);
@@ -98,7 +98,7 @@ export const recordFor = async (
   pageId: string
 ) => {
   const { data } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("notion_links")
     .select("record_key")
     .eq("kind", kind)
@@ -116,14 +116,14 @@ export const saveLink = async (
 ) => {
   // One page per record: drop any older page for this record first.
   await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("notion_links")
     .delete()
     .eq("kind", kind)
     .eq("record_key", recordKey)
     .neq("notion_page_id", bareId(pageId));
   const { error } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("notion_links")
     .upsert({
       content_hash: contentHash,
@@ -139,7 +139,7 @@ export const saveLink = async (
 
 export const dropLink = (ctx: SyncContext, pageId: string) =>
   ctx.admin
-    .schema("core")
+    .schema("api")
     .from("notion_links")
     .delete()
     .eq("notion_page_id", bareId(pageId));

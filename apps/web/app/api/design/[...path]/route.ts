@@ -45,7 +45,7 @@ type Session = NonNullable<Awaited<ReturnType<typeof authenticateCookies>>>;
 
 const isStaff = async (session: Session) => {
   const { data, error } = await session.supabase
-    .schema("membership")
+    .schema("api")
     .rpc("my_membership");
   const row = Array.isArray(data) ? data[0] : data;
   return !error && row?.staff === true;

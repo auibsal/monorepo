@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { chaptersOf, clockOf, secondsOf } from "./programmes";
+import { chaptersOf, clockOf, secondsOf } from "./programs";
 
 describe("Next Stop's chapters", () => {
   test("times read and write both ways", () => {

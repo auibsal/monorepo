@@ -29,14 +29,14 @@ export const Motions = () => {
   const queryClient = useQueryClient();
   const motions = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("governance").rpc("open_motions")) ?? [],
+      unwrap(await supabase.schema("api").rpc("open_motions")) ?? [],
     queryKey: KEY,
   });
   const support = useMutation({
     mutationFn: async ({ id, on }: { id: string; on: boolean }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("support_motion", { submission_id: id, support: on })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),

@@ -30,7 +30,7 @@ const useCalls = (issueId: string) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("calls")
           .select("*")
           .eq("issue_id", issueId)
@@ -90,7 +90,7 @@ const CallForm = ({
         title_ar: call?.title_ar ?? "",
         title_en: call?.title_en ?? "",
       };
-      const calls = supabase.schema("journal").from("calls");
+      const calls = supabase.schema("api").from("calls");
       unwrap(
         call
           ? await calls.update(row).eq("id", call.id)
@@ -246,7 +246,7 @@ export const EditionContents = ({ issueId }: { readonly issueId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("pieces")
           .select("id, title_en, title_ar, desk, status, approvals(kind)")
           .eq("issue_id", issueId)

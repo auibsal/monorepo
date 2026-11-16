@@ -103,21 +103,21 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000e1a01', 'lead-open@auib
 insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
 values ('e0000e1a-0000-0000-0000-000000000001', 'lead-night', 'Night', 'ليلة', now() + interval '20 days', 'published', 'open');
 
-insert into programmes.openings (id, kind, event_id, title_en, title_ar, places)
+insert into programs.openings (id, kind, event_id, title_en, title_ar, places)
 values ('00000000-0000-0000-0000-0000000e1a0b', 'event_team', 'e0000e1a-0000-0000-0000-000000000001', '', '', 6);
 
-select is((select role from programmes.openings where id = '00000000-0000-0000-0000-0000000e1a0b'), 'programme_lead',
+select is((select role from programs.openings where id = '00000000-0000-0000-0000-0000000e1a0b'), 'program_lead',
   'An event''s opening is for its lead');
-select is((select places from programmes.openings where id = '00000000-0000-0000-0000-0000000e1a0b'), 1,
+select is((select places from programs.openings where id = '00000000-0000-0000-0000-0000000e1a0b'), 1,
   'with one place: the rest of the team signs up for shifts');
 
-insert into programmes.opening_replies (opening_id, user_id, status)
+insert into programs.opening_replies (opening_id, user_id, status)
 values ('00000000-0000-0000-0000-0000000e1a0b', '00000000-0000-0000-0000-0000000e1a01', 'offered');
-update programmes.opening_replies set status = 'onboarded'
+update programs.opening_replies set status = 'onboarded'
 where opening_id = '00000000-0000-0000-0000-0000000e1a0b';
 
 select is((select scope_type || ':' || scope_id from access.role_assignments
-  where user_id = '00000000-0000-0000-0000-0000000e1a01' and role = 'programme_lead'),
+  where user_id = '00000000-0000-0000-0000-0000000e1a01' and role = 'program_lead'),
   'event:e0000e1a-0000-0000-0000-000000000001', 'The person onboarded leads that event only');
 select is((select count(*)::int from access.role_assignments
   where user_id = '00000000-0000-0000-0000-0000000e1a01' and scope_type = 'global'), 0,

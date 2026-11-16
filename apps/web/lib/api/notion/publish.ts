@@ -56,7 +56,7 @@ export const NO_EMAIL =
 export const publisherSeat = async (ctx: SyncContext, userId: string) => {
   const now = new Date().toISOString();
   const { data } = await ctx.admin
-    .schema("access")
+    .schema("api")
     .from("role_assignments")
     .select("ends_at, starts_at, role:roles(name_en, sort, retired)")
     .eq("user_id", userId)

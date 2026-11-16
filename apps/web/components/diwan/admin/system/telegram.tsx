@@ -41,7 +41,7 @@ export const TelegramBot = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("settings")
           .select("value")
           .eq("key", "telegram.bot_username")
@@ -57,7 +57,7 @@ export const TelegramBot = () => {
     mutationFn: async () => {
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("settings")
           .update({
             updated_by: user?.id ?? null,
@@ -91,7 +91,7 @@ export const TelegramBot = () => {
   }
   const groupCode = useMutation({
     mutationFn: async () =>
-      unwrap(await supabase.schema("core").rpc("telegram_group_code")),
+      unwrap(await supabase.schema("api").rpc("telegram_group_code")),
     onSuccess: setCode,
   });
 

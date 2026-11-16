@@ -63,7 +63,7 @@ describe.skipIf(
       })
     );
     await admin
-      .schema("membership")
+      .schema("api")
       .from("pledges")
       .insert([
         {
@@ -74,7 +74,7 @@ describe.skipIf(
         { pledge_type: "member", user_id: authorId, version: "1" },
       ]);
     const issue = await admin
-      .schema("journal")
+      .schema("api")
       .from("issues")
       .insert({
         number: (stamp % 900) + 1,
@@ -86,7 +86,7 @@ describe.skipIf(
       .select("id")
       .single();
     const call = await admin
-      .schema("journal")
+      .schema("api")
       .from("calls")
       .insert({
         closes_at: new Date(Date.now() + 86_400_000).toISOString(),
@@ -100,7 +100,7 @@ describe.skipIf(
       .single();
     const author = await signIn(`author${stamp}@auib.edu.iq`);
     const submission = await author
-      .schema("journal")
+      .schema("api")
       .from("submissions")
       .insert({
         call_id: call.data?.id ?? "",

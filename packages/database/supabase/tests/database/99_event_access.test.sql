@@ -256,7 +256,7 @@ select is(
 
 update events.events set format = 'screening' where id = 'e0000000-0000-0000-0000-00000000ac01';
 select is(
-  (select array_agg(role_en order by role_en) from programmes.shifts
+  (select array_agg(role_en order by role_en) from programs.shifts
     where event_id = 'e0000000-0000-0000-0000-00000000ac01' and capacity = 1 and role_en in ('Photos', 'Projection and sound')),
   array['Photos', 'Projection and sound'],
   'A screening adds Projection and sound and Photos, one person each'

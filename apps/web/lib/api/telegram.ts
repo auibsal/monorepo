@@ -44,7 +44,7 @@ export const telegramToUser = async (
     return false;
   }
   const { data: account } = await admin
-    .schema("core")
+    .schema("api")
     .from("telegram_accounts")
     .select("telegram_id, notify, reminders")
     .eq("user_id", userId)
@@ -79,7 +79,7 @@ export const telegramToUser = async (
   } catch (error) {
     if (error instanceof GrammyError && error.error_code === 403) {
       await admin
-        .schema("core")
+        .schema("api")
         .from("telegram_accounts")
         .update({ notify: false })
         .eq("user_id", userId);

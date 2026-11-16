@@ -37,7 +37,7 @@ const MediaKitPage = async ({ params }: LocaleParams) => {
 
       <Section id="name" title={t("nameTitle")}>
         <p className="type-body">{t("name")}</p>
-        <p className="type-body">{t("programmeLine")}</p>
+        <p className="type-body">{t("programLine")}</p>
       </Section>
 
       <Section id="about" title={t("aboutTitle")}>

@@ -119,14 +119,14 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000f1a04', 'parent@home.ex
 
 -- Qalam's staff send the consent to the parent, the teacher copied.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
-select isnt(programmes.qalam_consent_link('parent@home.example', 'teacher@school.example', 'Baghdad High'), null,
+select isnt(programs.qalam_consent_link('parent@home.example', 'teacher@school.example', 'Baghdad High'), null,
   'The consent goes to the parent, with the teacher''s copy');
 select pg_temp.logout();
 select is((select sent_to || ' / ' || copy_to from governance.form_links where form_key = 'qalam-parent-consent'),
   'parent@home.example / teacher@school.example', 'to the parent''s own address');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a02');
 select throws_ok(
-  $$ select programmes.qalam_consent_link('p@home.example', 't@school.example') $$,
+  $$ select programs.qalam_consent_link('p@home.example', 't@school.example') $$,
   '42501', null, 'Only Qalam''s staff send it');
 select pg_temp.logout();
 
@@ -139,13 +139,13 @@ values ('00000000-0000-0000-0000-0000000f1c01', 'qalam-parent-consent', 'submitt
 -- Staff can't add a student by typing a name any more.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
 select throws_ok(
-  $$ insert into programmes.qalam_students (user_id, year, school)
+  $$ insert into programs.qalam_students (user_id, year, school)
      values ('00000000-0000-0000-0000-0000000f1a03', 2028, 'Baghdad High') $$,
   '42501', null,
   'Staff never add a student by hand'
 );
 select throws_ok(
-  $$ select programmes.qalam_enroll('00000000-0000-0000-0000-0000000f1c01', '00000000-0000-0000-0000-0000000f1a03', '00000000-0000-0000-0000-0000000f1a04') $$,
+  $$ select programs.qalam_enroll('00000000-0000-0000-0000-0000000f1c01', '00000000-0000-0000-0000-0000000f1a03', '00000000-0000-0000-0000-0000000f1a04') $$,
   '42501', null,
   'and can''t enroll one: only the consent does'
 );
@@ -153,7 +153,7 @@ select pg_temp.logout();
 
 -- The consent enrolls the student (as the API route does, with the secret key).
 set local role service_role;
-select isnt(programmes.qalam_enroll('00000000-0000-0000-0000-0000000f1c01', '00000000-0000-0000-0000-0000000f1a03', '00000000-0000-0000-0000-0000000f1a04'), null,
+select isnt(programs.qalam_enroll('00000000-0000-0000-0000-0000000f1c01', '00000000-0000-0000-0000-0000000f1a03', '00000000-0000-0000-0000-0000000f1a04'), null,
   'The parent''s consent puts the student on the roster');
 reset role;
 
@@ -161,10 +161,10 @@ select is(private.membership_kind('00000000-0000-0000-0000-0000000f1a03'), 'gues
   'on a guest account');
 select ok(private.is_qalam_student('00000000-0000-0000-0000-0000000f1a03'),
   'with the Qalam student role');
-select is((select school || ' · ' || coalesce(grade, '') from programmes.qalam_students
+select is((select school || ' · ' || coalesce(grade, '') from programs.qalam_students
   where user_id = '00000000-0000-0000-0000-0000000f1a03'), 'Baghdad High · 11',
   'the school and grade from the consent');
-select is((select photos_allowed::text || publishing_allowed::text from programmes.qalam_students
+select is((select photos_allowed::text || publishing_allowed::text from programs.qalam_students
   where user_id = '00000000-0000-0000-0000-0000000f1a03'), 'falsetrue',
   'and its photo and publishing answers');
 select is(private.membership_kind('00000000-0000-0000-0000-0000000f1a04'), 'guest',
@@ -182,19 +182,19 @@ select is((select subject_user_id from governance.form_submissions where id = '0
 
 -- The roster reads names from the accounts, for Qalam's staff only.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
-select is((select full_name_en from programmes.qalam_roster(null)), 'Sara Ahmed',
+select is((select full_name_en from programs.qalam_roster(null)), 'Sara Ahmed',
   'The roster names the student from their account');
 select lives_ok(
-  $$ update programmes.qalam_students set status = 'accepted', sessions_attended = 1
+  $$ update programs.qalam_students set status = 'accepted', sessions_attended = 1
      where user_id = '00000000-0000-0000-0000-0000000f1a03' $$,
   'Staff keep the roster');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a02');
-select is((select count(*)::int from programmes.qalam_students), 0, 'Members never read the roster');
-select is((select count(*)::int from programmes.qalam_roster(null)), 0, 'nor its names');
+select is((select count(*)::int from programs.qalam_students), 0, 'Members never read the roster');
+select is((select count(*)::int from programs.qalam_roster(null)), 0, 'nor its names');
 select pg_temp.logout();
 select pg_temp.login_anon();
 select throws_ok(
-  $$ select count(*) from programmes.qalam_students $$,
+  $$ select count(*) from programs.qalam_students $$,
   '42501', null,
   'and visitors are refused'
 );
@@ -218,8 +218,8 @@ select is((select school from membership.verify_card_qalam(
 
 -- The release goes out for a student on the roster; the link names them.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
-select isnt(programmes.qalam_release_link(
-    (select id from programmes.qalam_students where user_id = '00000000-0000-0000-0000-0000000f1a03'),
+select isnt(programs.qalam_release_link(
+    (select id from programs.qalam_students where user_id = '00000000-0000-0000-0000-0000000f1a03'),
     'parent@home.example', 'teacher@school.example', 'Baghdad High'), null,
   'A release link is sent to a parent for a student on the roster');
 select pg_temp.logout();
@@ -228,7 +228,7 @@ select is((select subject_user from governance.form_links where form_key = 'qala
 
 -- The role ends with the program; the guest account stays.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f1a01');
-update programmes.qalam_students set status = 'finished'
+update programs.qalam_students set status = 'finished'
 where user_id = '00000000-0000-0000-0000-0000000f1a03';
 select pg_temp.logout();
 select ok(not private.is_qalam_student('00000000-0000-0000-0000-0000000f1a03'),

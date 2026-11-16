@@ -32,7 +32,7 @@ export const RemovalForm = () => {
         body: JSON.stringify({
           content_url: data.get("content_url") || undefined,
           details: data.get("details"),
-          programme: "next-stop",
+          program: "next-stop",
           requester_email: data.get("requester_email"),
           // The receipt and the done notice come in this language.
           requester_lang: locale,

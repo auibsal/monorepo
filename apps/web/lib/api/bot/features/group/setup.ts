@@ -27,12 +27,10 @@ groups.command("setup", async (ctx) => {
     await replyHere(ctx, ctx.t.setupUsage);
     return;
   }
-  const { data: ok } = await db()
-    .schema("core")
-    .rpc("telegram_register_group", {
-      chat_id: ctx.chat.id,
-      code,
-      title: ctx.chat.title,
-    });
+  const { data: ok } = await db().schema("api").rpc("telegram_register_group", {
+    chat_id: ctx.chat.id,
+    code,
+    title: ctx.chat.title,
+  });
   await replyHere(ctx, ok ? ctx.t.setupOk : ctx.t.setupBad);
 });

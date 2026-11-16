@@ -10,9 +10,9 @@ import {
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations } from "next-intl/server";
-import { localized, type programmes } from "@/lib/data";
+import { localized, type programs } from "@/lib/data";
 
-type Place = Awaited<ReturnType<typeof programmes.openPlaces>>[number];
+type Place = Awaited<ReturnType<typeof programs.openPlaces>>[number];
 
 const KINDS = ["role", "event_team", "qalam_mentor", "audition"] as const;
 

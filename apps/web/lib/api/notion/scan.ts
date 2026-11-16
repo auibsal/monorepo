@@ -97,7 +97,7 @@ export const findIn = (
 
 const readState = async (ctx: SyncContext) => {
   const { data } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .select("value")
     .eq("key", STATE)
@@ -107,7 +107,7 @@ const readState = async (ctx: SyncContext) => {
 
 const saveState = async (ctx: SyncContext, state: ScanState) => {
   await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .upsert({
       description:
@@ -121,8 +121,8 @@ const saveState = async (ctx: SyncContext, state: ScanState) => {
 /** Full names in the Register, two words or more (no single first names). */
 const registerNames = async (ctx: SyncContext) => {
   const { data } = await ctx.admin
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .select("full_name_en, full_name_ar")
     .not("verified_at", "is", null);
   const names = (data ?? []).flatMap((p) => [p.full_name_en, p.full_name_ar]);
@@ -183,7 +183,7 @@ const due = (state: ScanState | null, now: Date) =>
     : true);
 
 const finish = async (ctx: SyncContext, state: ScanState) => {
-  const table = ctx.admin.schema("core").from("document_scan_hits");
+  const table = ctx.admin.schema("api").from("document_scan_hits");
   const { error } = await table.delete().gte("scanned_at", "1970-01-01");
   if (error) {
     throw error;

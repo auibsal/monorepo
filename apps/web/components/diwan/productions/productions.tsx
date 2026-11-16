@@ -54,7 +54,7 @@ const useProductionsData = () => {
         [
           productions.memberProductions(supabase),
           supabase
-            .schema("programmes")
+            .schema("api")
             .from("auditions")
             .select(
               "id, production_id, starts_at, ends_at, location_en, location_ar, prepare_en, prepare_ar"
@@ -62,19 +62,19 @@ const useProductionsData = () => {
             .gte("starts_at", new Date().toISOString())
             .order("starts_at"),
           supabase
-            .schema("programmes")
+            .schema("api")
             .from("audition_signups")
             .select("audition_id, status, interest, reference")
             .eq("user_id", user?.id ?? ""),
           supabase
-            .schema("programmes")
+            .schema("api")
             .from("production_credits")
             .select(
               "id, production_id, department, role_en, role_ar, productions(title_en, title_ar, stage)"
             )
             .eq("user_id", user?.id ?? ""),
           supabase
-            .schema("programmes")
+            .schema("api")
             .from("rehearsals")
             .select(
               "id, production_id, starts_at, ends_at, location_en, location_ar, called"

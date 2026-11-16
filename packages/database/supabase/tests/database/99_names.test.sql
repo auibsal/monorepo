@@ -159,7 +159,7 @@ select lives_ok(
        'Omar', 'Aly', 'Hassan', null, 'عمر', 'علي', 'حسن', null, 'As on the passport') $$,
   'The Director of Membership corrects the official name');
 select throws_ok(
-  $$ select programmes.set_credited_name('00000000-0000-0000-0000-00000000c0a1', 'Omi', null) $$,
+  $$ select programs.set_credited_name('00000000-0000-0000-0000-00000000c0a1', 'Omi', null) $$,
   '42501', null, 'A credited name is set by Media or the Artistic Director, not Membership');
 
 select pg_temp.logout();

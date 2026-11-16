@@ -177,7 +177,7 @@ const morningBrief = async (run: Run) => {
     return 0;
   }
   const { data, error } = await db()
-    .schema("core")
+    .schema("api")
     .rpc("telegram_staff_brief", { at: run.now.toISOString() });
   if (error) {
     throw error;
@@ -197,7 +197,7 @@ const eventSummaries = async (run: Run) => {
   const until = new Date(run.now.getTime() - AFTER_END);
   const since = new Date(until.getTime() - SUMMARY_WINDOW);
   const { data, error } = await db()
-    .schema("core")
+    .schema("api")
     .rpc("telegram_event_summaries", {
       since: since.toISOString(),
       until: until.toISOString(),

@@ -27,7 +27,7 @@ export const useMemberNames = (ids: readonly (string | null | undefined)[]) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("profiles")
           .select("id, full_name_en, full_name_ar")
           .in("id", wanted)
@@ -65,7 +65,7 @@ export const MemberPicker = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("profiles")
           .select("id, full_name_en, full_name_ar")
           .not("verified_at", "is", null)

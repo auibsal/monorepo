@@ -20,7 +20,7 @@ export const AccountLanguage = () => {
   const save = useMutation({
     mutationFn: async (locale: "ar" | "en") => {
       const { error } = await supabase
-        .schema("core")
+        .schema("api")
         .from("profiles")
         .update({ locale })
         .eq("id", user?.id ?? "");

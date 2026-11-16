@@ -44,7 +44,7 @@ const NewIncident = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("incident_reports")
           .insert({
             action_taken: action.trim() || null,
@@ -134,7 +134,7 @@ const CloseCase = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .rpc("close_incident", { closed: !closedAt, report: id })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key(eventId) }),
@@ -170,7 +170,7 @@ export const Incidents = ({ eventId }: { readonly eventId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("incident_reports")
           .select(
             "id, happened_at, what_happened, action_taken, closed_at, qalam"

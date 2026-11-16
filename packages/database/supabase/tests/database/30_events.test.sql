@@ -106,12 +106,12 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'four@auib.edu.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'guest@gmail.com', 'Guest');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c1', 'staff@auib.edu.iq', 'Staff');
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, capacity, status, entry) values
-  ('e0000000-0000-0000-0000-000000000001', 'open-pages-night', (select id from core.programmes where slug = 'company'),
+insert into events.events (id, slug, program_id, title_en, title_ar, starts_at, capacity, status, entry) values
+  ('e0000000-0000-0000-0000-000000000001', 'open-pages-night', (select id from core.programs where slug = 'company'),
     'Open Pages', 'صفحات مفتوحة', now() + interval '3 days', 2, 'published', 'rsvp'),
-  ('e0000000-0000-0000-0000-000000000002', 'members-majlis', (select id from core.programmes where slug = 'company'),
+  ('e0000000-0000-0000-0000-000000000002', 'members-majlis', (select id from core.programs where slug = 'company'),
     'Members Majlis', 'مجلس الأعضاء', now() + interval '4 days', null, 'published', 'rsvp'),
-  ('e0000000-0000-0000-0000-000000000003', 'draft-night', (select id from core.programmes where slug = 'company'),
+  ('e0000000-0000-0000-0000-000000000003', 'draft-night', (select id from core.programs where slug = 'company'),
     'Draft', 'مسودة', now() + interval '5 days', null, 'draft', 'rsvp');
 update events.events set classes = array['member'] where id = 'e0000000-0000-0000-0000-000000000002';
 

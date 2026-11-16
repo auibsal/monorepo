@@ -142,26 +142,26 @@ select throws_ok(
 
 -- Six Words from the Tour
 select throws_ok(
-  $$ insert into programmes.six_words (user_id, text, language)
+  $$ insert into programs.six_words (user_id, text, language)
      values ('00000000-0000-0000-0000-0000000060a1', 'one two three four five six', 'en') $$,
   '42501', null, 'Members no longer write their six words on the site'
 );
 select throws_ok(
-  $$ select programmes.record_six_words('one two three four five six', 'en') $$,
+  $$ select programs.record_six_words('one two three four five six', 'en') $$,
   '42501', null, 'Only those who run the Tour transcribe cards'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000060a2');
 create temp table unsigned on commit drop as
-  select programmes.record_six_words('ink on paper under the stars', 'en') as id;
+  select programs.record_six_words('ink on paper under the stars', 'en') as id;
 grant select on unsigned to public;
 select is(
-  (select visibility from programmes.six_words where id = (select id from unsigned)), 'private',
+  (select visibility from programs.six_words where id = (select id from unsigned)), 'private',
   'A recorded page is private until its writer chooses (decisions.md)'
 );
 select pg_temp.login_anon();
 select ok(
-  (select pages from programmes.six_words_counts()) >= 1,
+  (select pages from programs.six_words_counts()) >= 1,
   'and the Tour''s page only counts it'
 );
 
@@ -174,31 +174,31 @@ grant select on writer_card to public;
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000060a2');
 select throws_ok(
-  $$ select programmes.attach_six_words((select id from unsigned),
+  $$ select programs.attach_six_words((select id from unsigned),
        (select code from writer_card), (select stale from writer_card)) $$,
   '22023', 'card_not_live', 'A screenshot of a card attaches nothing'
 );
 select lives_ok(
-  $$ select programmes.attach_six_words((select id from unsigned),
+  $$ select programs.attach_six_words((select id from unsigned),
        (select code from writer_card), (select live from writer_card)) $$,
   'Scanning the live card attaches the page to its writer'
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000060a1');
 select is(
-  (select text from programmes.my_six_words() where id = (select id from unsigned)),
+  (select text from programs.my_six_words() where id = (select id from unsigned)),
   'ink on paper under the stars', 'The writer sees the page in Your account'
 );
 select pg_temp.login_anon();
 select throws_ok(
-  $$ select * from programmes.my_six_words() $$,
+  $$ select * from programs.my_six_words() $$,
   '42501', null, 'and no one else does (decisions.md, Members)'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000060a2');
-select programmes.record_six_words('a second card from the tour', 'en',
+select programs.record_six_words('a second card from the tour', 'en',
   (select code from writer_card), (select live from writer_card));
 select is(
-  (select count(*)::integer from programmes.six_words where user_id = '00000000-0000-0000-0000-0000000060a1'),
+  (select count(*)::integer from programs.six_words where user_id = '00000000-0000-0000-0000-0000000060a1'),
   2, 'A writer may have more than one page'
 );
 

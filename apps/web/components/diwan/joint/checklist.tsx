@@ -42,7 +42,7 @@ const NewItem = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("joint_tasks")
           .insert({
             due_on: due || null,
@@ -130,7 +130,7 @@ export const JointChecklist = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("joint_tasks")
           .select("id, side, label, due_on, done_at")
           .eq("event_id", eventId)
@@ -144,7 +144,7 @@ export const JointChecklist = ({
     mutationFn: async ({ done, task }: { done: boolean; task: string }) =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("joint_tasks")
           .update({ done_at: done ? new Date().toISOString() : null })
           .eq("id", task)
@@ -154,11 +154,7 @@ export const JointChecklist = ({
   const remove = useMutation({
     mutationFn: async (task: string) =>
       unwrap(
-        await supabase
-          .schema("events")
-          .from("joint_tasks")
-          .delete()
-          .eq("id", task)
+        await supabase.schema("api").from("joint_tasks").delete().eq("id", task)
       ),
     onSettled: refresh,
   });

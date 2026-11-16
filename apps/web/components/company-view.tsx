@@ -5,9 +5,9 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
-import { loadProgramme } from "@/components/series";
+import { loadProgram } from "@/components/series";
 import { whatsOnPath } from "@/components/whats-on-page";
-import { localized, productions, programmes } from "@/lib/data";
+import { localized, productions, programs } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 import { roughlyNow } from "@/lib/this-year";
 import { monthFrom } from "@/lib/whats-on";
@@ -23,14 +23,14 @@ import { monthFrom } from "@/lib/whats-on";
  */
 export const CompanyView = async ({ locale }: { locale: Locale }) => {
   const now = new Date(await roughlyNow());
-  const company = await loadProgramme("company");
+  const company = await loadProgram("company");
   if (!company) {
     notFound();
   }
   const t = await getTranslations({ locale, namespace: "web.company" });
   const [shows, places] = await Promise.all([
     readPublished(["productions"], (c) => productions.publicProductions(c), []),
-    readPublished(["programmes"], (c) => programmes.openPlaces(c), []),
+    readPublished(["programs"], (c) => programs.openPlaces(c), []),
   ]);
   const opening = places.find((p) => p.role === "artistic_director");
   const bills = await Promise.all(

@@ -46,33 +46,33 @@ const useScopeOptions = () => {
   const locale = useLocale();
   return useQuery({
     queryFn: async () => {
-      const [programmes, issues, shows, partnerRows, eventRows, episodeRows] =
+      const [programs, issues, shows, partnerRows, eventRows, episodeRows] =
         await Promise.all([
           supabase
-            .schema("core")
-            .from("programmes")
+            .schema("api")
+            .from("programs")
             .select("id, name_en, name_ar")
             .order("sort"),
           supabase
-            .schema("journal")
+            .schema("api")
             .from("issues")
             .select("id, volume, number, title_en, title_ar")
             .order("volume", { ascending: false })
             .order("number", { ascending: false }),
           supabase
-            .schema("programmes")
+            .schema("api")
             .from("productions")
             .select("id, title_en, title_ar")
             .order("created_at", { ascending: false }),
           // A partner's representatives (partner_rep) hold their role for it.
           supabase
-            .schema("governance")
+            .schema("api")
             .from("partners")
             .select("id, name_en, name_ar")
             .order("name_en"),
           // An event lead may hold the role for one event (decisions.md): the events from a month ago on.
           supabase
-            .schema("events")
+            .schema("api")
             .from("events")
             .select("id, title_en, title_ar, starts_at")
             .gte("starts_at", new Date(Date.now() - 30 * 864e5).toISOString())
@@ -80,7 +80,7 @@ const useScopeOptions = () => {
             .limit(200),
           // Next Stop's crew hold their roles for one episode.
           supabase
-            .schema("programmes")
+            .schema("api")
             .from("episodes")
             .select("id, title_en, title_ar, season, number")
             .order("created_at", { ascending: false })
@@ -113,7 +113,7 @@ const useScopeOptions = () => {
           id: p.id,
           label: localized(p, "title", locale),
         })),
-        programme: (unwrap(programmes) ?? []).map((p) => ({
+        program: (unwrap(programs) ?? []).map((p) => ({
           id: p.id,
           label: localized(p, "name", locale),
         })),
@@ -186,7 +186,7 @@ const ActivitySection = ({ userId }: { userId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("activity_records")
           .select("id, occurred_at")
           .eq("user_id", userId)
@@ -475,7 +475,7 @@ const AssignRole = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("resolutions")
           .select("id, code, title_en, title_ar")
           .eq("status", "adopted")
@@ -698,7 +698,7 @@ const Departure = ({ name, userId }: { name: string; userId: string }) => {
     mutationFn: async (graduated: boolean) =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .rpc("record_departure", { graduated, member: userId })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin"] }),
@@ -755,7 +755,7 @@ const AuibAddressSet = ({ userId }: { userId: string }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .rpc("set_auib_address", { email: email.trim(), member: userId })
       ),
     onSuccess: () => {
@@ -827,7 +827,7 @@ const Removal = ({ userId }: { userId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("resolutions")
           .select("id, code, title_en, title_ar, adopted_on")
           .eq("status", "adopted")
@@ -839,7 +839,7 @@ const Removal = ({ userId }: { userId: string }) => {
   const ask = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("governance").rpc("request_removal", {
+        await supabase.schema("api").rpc("request_removal", {
           member: userId,
           reason: reason.trim(),
           resolution,
@@ -927,7 +927,7 @@ const NameCorrection = ({ userId }: { userId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("profiles")
           .select(
             "full_name_en, full_name_ar, first_name_en, father_name_en, grandfather_name_en, last_name_en, first_name_ar, father_name_ar, grandfather_name_ar, last_name_ar"
@@ -946,7 +946,7 @@ const NameCorrection = ({ userId }: { userId: string }) => {
   const save = useMutation({
     mutationFn: async () => {
       unwrap(
-        await supabase.schema("membership").rpc("correct_name", {
+        await supabase.schema("api").rpc("correct_name", {
           father_ar: parts.ar.father.trim(),
           father_en: parts.en.father.trim(),
           first_ar: parts.ar.first.trim(),

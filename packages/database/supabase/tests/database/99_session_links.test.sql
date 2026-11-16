@@ -98,19 +98,19 @@ select plan(8);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e5001', 'host.e5@auib.edu.iq', 'Host');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e5002', 'member.e5@auib.edu.iq', 'Member');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000e5001', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'company'));
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000e5001', 'program_lead', 'program',
+  (select id from core.programs where slug = 'company'));
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, entry)
+insert into events.events (id, slug, program_id, title_en, title_ar, starts_at, status, entry)
 values
   ('00000000-0000-0000-0000-0000000e5101', 'lr-e5-public',
-   (select id from core.programmes where slug = 'company'),
+   (select id from core.programs where slug = 'company'),
    'An album, played', 'ألبوم', now() - interval '7 days', 'published', 'open'),
   ('00000000-0000-0000-0000-0000000e5102', 'lr-e5-members',
-   (select id from core.programmes where slug = 'company'),
+   (select id from core.programs where slug = 'company'),
    'For members', 'للأعضاء', now() - interval '14 days', 'published', 'invite'),
   ('00000000-0000-0000-0000-0000000e5103', 'salon-e5',
-   (select id from core.programmes where slug = 'typewriter-tour'),
+   (select id from core.programs where slug = 'typewriter-tour'),
    'A salon', 'صالون', now() - interval '7 days', 'published', 'open');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e5001');

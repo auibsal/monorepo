@@ -84,7 +84,7 @@ export const RequestQueue = ({
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("form_submissions")
           .select("*")
           .neq("status", "draft")
@@ -353,7 +353,7 @@ export const RequestPage = ({
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("form_submissions")
           .select("*")
           .eq("id", id)

@@ -455,7 +455,7 @@ export const submissionObjectPath = (
 
 // ── Queries ─────────────────────────────────────────────────────────────────
 
-const journal = (client: Client) => client.schema("journal");
+const journal = (client: Client) => client.schema("api");
 
 /**
  * A topic page goes public only once it has three published pieces, and
@@ -1109,7 +1109,7 @@ export const pieceEvent = async (client: Client, eventId: string | null) =>
   eventId
     ? unwrap(
         await client
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("id, slug, title_en, title_ar, starts_at")
           .eq("id", eventId)
@@ -1300,7 +1300,7 @@ export const editionLaunch = async (client: Client, issueId: string) => {
   }
   return unwrap(
     await client
-      .schema("events")
+      .schema("api")
       .from("events")
       .select("id, slug, title_en, title_ar, starts_at, venue_en, venue_ar")
       .eq("id", id)

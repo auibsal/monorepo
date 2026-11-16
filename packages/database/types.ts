@@ -1255,7 +1255,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      programmes: {
+      programs: {
         Row: {
           created_at: string;
           id: string;
@@ -1931,6 +1931,8 @@ export type Database = {
         Args: { event_id: string; telegram_id: number };
         Returns: undefined;
       };
+      telegram_done: { Args: { msg_id: number }; Returns: boolean };
+      telegram_enqueue: { Args: { messages: Json[] }; Returns: number };
       telegram_event_summaries: {
         Args: { since: string; until: string };
         Returns: Json;
@@ -1967,6 +1969,14 @@ export type Database = {
         Returns: undefined;
       };
       telegram_link_code: { Args: Record<PropertyKey, never>; Returns: string };
+      telegram_read: {
+        Args: { hidden_for: number; how_many: number };
+        Returns: {
+          message: Json;
+          msg_id: number;
+          read_ct: number;
+        }[];
+      };
       telegram_redeem_link: {
         Args: { code: string; telegram_id: number; username?: string };
         Returns: string;
@@ -2000,6 +2010,7 @@ export type Database = {
         Args: { event_id: string; telegram_id: number };
         Returns: string;
       };
+      telegram_set_aside: { Args: { msg_id: number }; Returns: boolean };
       telegram_staff_brief: { Args: { at?: string }; Returns: Json };
       telegram_tickets_soon: {
         Args: Record<PropertyKey, never>;
@@ -2017,6 +2028,7 @@ export type Database = {
         }[];
       };
       telegram_whoami: { Args: { telegram_id: number }; Returns: Json };
+      update_my_profile: { Args: { change: Json }; Returns: undefined };
       withdraw_merge: { Args: Record<PropertyKey, never>; Returns: undefined };
     };
     Enums: {
@@ -2188,7 +2200,7 @@ export type Database = {
           other_allergens_ar: string | null;
           other_allergens_en: string | null;
           partner_id: string | null;
-          programme_id: string | null;
+          program_id: string | null;
           published_at: string | null;
           questions: NonNullable<Json>;
           rsvp_enabled: boolean;
@@ -2238,7 +2250,7 @@ export type Database = {
           other_allergens_ar?: string | null;
           other_allergens_en?: string | null;
           partner_id?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
@@ -2287,7 +2299,7 @@ export type Database = {
           other_allergens_ar?: string | null;
           other_allergens_en?: string | null;
           partner_id?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
@@ -2761,7 +2773,7 @@ export type Database = {
           entry: string;
           id: string;
           image_path: string;
-          programme_id: string;
+          program_id: string;
           slug: string;
           starts_at: string;
           status: string;
@@ -7227,7 +7239,7 @@ export type Database = {
           hours: number;
           id: string;
           occurred_on: string;
-          programme_id: string | null;
+          program_id: string | null;
           reject_reason: string | null;
           source: string;
           source_id: string | null;
@@ -7245,7 +7257,7 @@ export type Database = {
           hours: number;
           id?: string;
           occurred_on: string;
-          programme_id?: string | null;
+          program_id?: string | null;
           reject_reason?: string | null;
           source?: string;
           source_id?: string | null;
@@ -7262,7 +7274,7 @@ export type Database = {
           hours?: number;
           id?: string;
           occurred_on?: string;
-          programme_id?: string | null;
+          program_id?: string | null;
           reject_reason?: string | null;
           source?: string;
           source_id?: string | null;
@@ -7661,7 +7673,7 @@ export type Database = {
       [_ in never]: never;
     };
   };
-  programmes: {
+  programs: {
     Tables: {
       application_reviews: {
         Row: {
@@ -7915,7 +7927,7 @@ export type Database = {
           duration_seconds: number | null;
           id: string;
           number: number | null;
-          programme_id: string;
+          program_id: string;
           published_at: string | null;
           released_on: string | null;
           season: number | null;
@@ -7939,7 +7951,7 @@ export type Database = {
           duration_seconds?: number | null;
           id?: string;
           number?: number | null;
-          programme_id: string;
+          program_id: string;
           published_at?: string | null;
           released_on?: string | null;
           season?: number | null;
@@ -7962,7 +7974,7 @@ export type Database = {
           duration_seconds?: number | null;
           id?: string;
           number?: number | null;
-          programme_id?: string;
+          program_id?: string;
           published_at?: string | null;
           released_on?: string | null;
           season?: number | null;
@@ -8035,7 +8047,7 @@ export type Database = {
           item: string;
           needed_by: string | null;
           production_id: string | null;
-          programme_id: string | null;
+          program_id: string | null;
           provided_note: string | null;
           provided_on: string | null;
           purpose: string;
@@ -8055,7 +8067,7 @@ export type Database = {
           item: string;
           needed_by?: string | null;
           production_id?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           provided_note?: string | null;
           provided_on?: string | null;
           purpose?: string;
@@ -8074,7 +8086,7 @@ export type Database = {
           item?: string;
           needed_by?: string | null;
           production_id?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           provided_note?: string | null;
           provided_on?: string | null;
           purpose?: string;
@@ -8240,7 +8252,7 @@ export type Database = {
           kind: string;
           owner: string;
           places: number | null;
-          programme_id: string | null;
+          program_id: string | null;
           questions: NonNullable<Json>;
           role: string | null;
           second_reviewer: string | null;
@@ -8266,7 +8278,7 @@ export type Database = {
           kind?: string;
           owner?: string;
           places?: number | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           questions?: NonNullable<Json>;
           role?: string | null;
           second_reviewer?: string | null;
@@ -8291,7 +8303,7 @@ export type Database = {
           kind?: string;
           owner?: string;
           places?: number | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           questions?: NonNullable<Json>;
           role?: string | null;
           second_reviewer?: string | null;
@@ -8382,7 +8394,7 @@ export type Database = {
           kind: string;
           playwright: string | null;
           poster_path: string | null;
-          programme_id: string | null;
+          program_id: string | null;
           report_lessons: string | null;
           report_people_reached: number | null;
           report_repeat: string | null;
@@ -8413,7 +8425,7 @@ export type Database = {
           kind?: string;
           playwright?: string | null;
           poster_path?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           report_lessons?: string | null;
           report_people_reached?: number | null;
           report_repeat?: string | null;
@@ -8443,7 +8455,7 @@ export type Database = {
           kind?: string;
           playwright?: string | null;
           poster_path?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           report_lessons?: string | null;
           report_people_reached?: number | null;
           report_repeat?: string | null;
@@ -8527,7 +8539,7 @@ export type Database = {
           episode_id: string | null;
           id: string;
           platform: string;
-          programme_id: string;
+          program_id: string;
           published_at: string | null;
           url: string;
         };
@@ -8539,7 +8551,7 @@ export type Database = {
           episode_id?: string | null;
           id?: string;
           platform: string;
-          programme_id: string;
+          program_id: string;
           published_at?: string | null;
           url: string;
         };
@@ -8550,7 +8562,7 @@ export type Database = {
           episode_id?: string | null;
           id?: string;
           platform?: string;
-          programme_id?: string;
+          program_id?: string;
           published_at?: string | null;
           url?: string;
         };
@@ -8622,7 +8634,7 @@ export type Database = {
           hidden_kind: string | null;
           hidden_was: string | null;
           id: string;
-          programme_id: string | null;
+          program_id: string | null;
           requester_email: string;
           requester_lang: string;
           requester_name: string;
@@ -8641,7 +8653,7 @@ export type Database = {
           hidden_kind?: string | null;
           hidden_was?: string | null;
           id?: string;
-          programme_id?: string | null;
+          program_id?: string | null;
           requester_email: string;
           requester_lang?: string;
           requester_name: string;
@@ -8659,7 +8671,7 @@ export type Database = {
           hidden_kind?: string | null;
           hidden_was?: string | null;
           id?: string;
-          programme_id?: string | null;
+          program_id?: string | null;
           requester_email?: string;
           requester_lang?: string;
           requester_name?: string;
@@ -9342,7 +9354,7 @@ export const Constants = {
       tier: ["member", "associate", "honorary"],
     },
   },
-  programmes: {
+  programs: {
     Enums: {},
   },
   public: {

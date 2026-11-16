@@ -18,8 +18,8 @@ export const GET = async (request: Request) => {
     return problem(400, "invalid_token", headers);
   }
   const { data } = await createAdminClient()
-    .schema("content")
-    .from("newsletter_subscribers")
+    .schema("api")
+    .from("newsletter_subscribers_all")
     .select("paper, news, status")
     .eq("unsubscribe_token", token)
     .maybeSingle();
@@ -53,8 +53,8 @@ export const POST = async (request: Request) => {
     return problem(400, "invalid_token", headers);
   }
   const table = createAdminClient()
-    .schema("content")
-    .from("newsletter_subscribers");
+    .schema("api")
+    .from("newsletter_subscribers_all");
   // Changing topics keeps a confirmed reader on the list; with none left,
   // or from the one-click link, they leave it.
   const { error } =

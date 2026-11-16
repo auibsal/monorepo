@@ -69,7 +69,7 @@ Every schema below is exposed to the Data API, with RLS on every table;
 | `membership` | memberships and classes, pledges, cards and Wallet passes, guests, invitations and their lists, certificates, service records and letters, requests (Associate, merge, verification) |
 | `events` | events, RSVPs and the waitlist, staff, check-ins, invitations, reminders, debriefs, incident reports, Student Life Week |
 | `journal` | Qirtas: Editions (`issues`) and calls, contributors, pieces and their parts, submissions and files, blind entries and keys, readers' assignments and scores, decisions, the Prize, games |
-| `programmes` | Next Stop's episodes and reels, the Tour (Six Words), needs and shifts, openings and replies, the Company's productions, auditions and rehearsals, Qalam, removal requests |
+| `programs` | Next Stop's episodes and reels, the Tour (Six Words), needs and shifts, openings and replies, the Company's productions, auditions and rehearsals, Qalam, removal requests |
 | `governance` | the Council's minutes, resolutions and motions, elections, partners and memoranda, forms and signed copies, the Library (`society_documents`), conflict declarations |
 | `content` | the Sunday Paper and its list |
 
@@ -87,7 +87,7 @@ rows in `core.outbox`, written in the same transaction and handed to the API).
 | sal-release-unclaimed | Every 5 minutes | Releases unclaimed places at full events and expires waitlist offers |
 | sal-outbox-drain | Every 10 minutes | Retries any outbox row the insert's call missed |
 | sal-publish | Every 10 minutes | Publishes what was scheduled |
-| sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's groups, within a 40-second budget; what a run can't reach goes first on the next (`lib/api/steps.ts`) |
+| sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's groups and members' chats: planned onto the queue `telegram` (Supabase Queues), then sent a batch at a time and deleted once Telegram confirms; a message failing five times is set aside and reported (`lib/api/bot/queue.ts`). The run keeps to a 40-second budget (`lib/api/steps.ts`) |
 | sal-notion-sync | Every 15 minutes | Publishes Notion's documents and minutes, and writes the site's read-only copies into Notion (notion.md) |
 | sal-two-step-from | Hourly at :05 | Turns on two-step sign-in for roles whose date has come |
 | sal-calendar-sync | Hourly at :07 | Refreshes the AUIB campus calendar and the semesters |

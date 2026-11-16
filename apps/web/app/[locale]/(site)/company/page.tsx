@@ -2,7 +2,7 @@ import type { Locale } from "@repo/internationalization";
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { CompanyView } from "@/components/company-view";
-import { loadProgramme, seriesMetadata } from "@/components/series";
+import { loadProgram, seriesMetadata } from "@/components/series";
 
 // Made on its first visit (its productions and openings change), then kept
 // until something is published again.
@@ -16,7 +16,7 @@ export const generateMetadata = async ({
   params,
 }: CompanyProps): Promise<Metadata> => {
   const { locale } = await params;
-  const company = await loadProgramme("company");
+  const company = await loadProgram("company");
   return company ? seriesMetadata(locale, company) : {};
 };
 

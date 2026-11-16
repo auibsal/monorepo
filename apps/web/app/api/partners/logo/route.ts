@@ -69,7 +69,7 @@ export const POST = async (request: Request) => {
     return json({ error: "upload_failed" }, 500);
   }
   const { error } = await session.supabase
-    .schema("governance")
+    .schema("api")
     .rpc("propose_partner_logo", { partner, path });
   if (error) {
     await bucket.remove([path]);

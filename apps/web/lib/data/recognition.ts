@@ -165,7 +165,7 @@ export const serviceEntrySchema = z.object({
     .max(24)
     .refine((h) => Number.isInteger(h * 4), { message: "quarter_hours" }),
   occurred_on: z.iso.date(),
-  programme_id: z.uuid().nullable().optional(),
+  program_id: z.uuid().nullable().optional(),
   what: optionalText(1000),
 });
 
@@ -256,10 +256,10 @@ export const linkedInUrl = (input: {
 export const myService = async (client: Client) =>
   unwrap(
     await client
-      .schema("membership")
+      .schema("api")
       .from("service_records")
       .select(
-        "id, source, programme_id, occurred_on, activity, what, hours, status, reject_reason, confirmed_at"
+        "id, source, program_id, occurred_on, activity, what, hours, status, reject_reason, confirmed_at"
       )
       .eq("user_id", (await client.auth.getUser()).data.user?.id ?? "")
       .order("occurred_on", { ascending: false })
@@ -269,13 +269,13 @@ export const logHours = async (client: Client, input: ServiceEntryInput) => {
   const entry = serviceEntrySchema.parse(input);
   return unwrap(
     await client
-      .schema("membership")
+      .schema("api")
       .from("service_records")
       .insert({
         activity: entry.activity,
         hours: entry.hours,
         occurred_on: entry.occurred_on,
-        programme_id: entry.programme_id ?? null,
+        program_id: entry.program_id ?? null,
         what: entry.what ?? null,
       })
   );
@@ -286,7 +286,7 @@ export const serviceHours = async (client: Client, userId?: string) =>
   Number(
     unwrap(
       await client
-        .schema("membership")
+        .schema("api")
         .rpc("service_hours", userId ? { uid: userId } : {})
     ) ?? 0
   );
@@ -294,7 +294,7 @@ export const serviceHours = async (client: Client, userId?: string) =>
 export const myCertificates = async (client: Client) =>
   unwrap(
     await client
-      .schema("membership")
+      .schema("api")
       .from("certificates")
       .select("*")
       .eq("user_id", (await client.auth.getUser()).data.user?.id ?? "")
@@ -308,7 +308,7 @@ export const certificateSignerNames = async (
 ) =>
   unwrap(
     await client
-      .schema("membership")
+      .schema("api")
       .rpc("certificate_signers", { certificate_id: certificateId })
   )?.[0] ?? null;
 
@@ -321,7 +321,7 @@ export const confirmService = async (
   reason?: string
 ) =>
   unwrap(
-    await client.schema("membership").rpc("confirm_service", {
+    await client.schema("api").rpc("confirm_service", {
       approve,
       reason: reason ?? undefined,
       record_id: recordId,
@@ -329,13 +329,13 @@ export const confirmService = async (
   );
 
 export const serviceTotals = async (client: Client) =>
-  unwrap(await client.schema("membership").rpc("service_totals")) ?? [];
+  unwrap(await client.schema("api").rpc("service_totals")) ?? [];
 
 /** Signs or countersigns; returns "issued" once both have signed. */
 export const signCertificate = async (client: Client, certificateId: string) =>
   unwrap(
     await client
-      .schema("membership")
+      .schema("api")
       .rpc("sign_certificate", { certificate_id: certificateId })
   ) as "signed" | "issued";
 
@@ -345,7 +345,7 @@ export const revokeCertificate = async (
   reason: string
 ) =>
   unwrap(
-    await client.schema("membership").rpc("revoke_certificate", {
+    await client.schema("api").rpc("revoke_certificate", {
       certificate_id: certificateId,
       reason,
     })
@@ -354,20 +354,18 @@ export const revokeCertificate = async (
 // ── Public ──────────────────────────────────────────────────────────────────
 
 export const verifyCertificate = async (client: Client, code: string) =>
-  unwrap(
-    await client.schema("membership").rpc("verify_certificate", { code })
-  )?.[0] ?? null;
+  unwrap(await client.schema("api").rpc("verify_certificate", { code }))?.[0] ??
+  null;
 
 /** A service letter's check (service-letter): who, for what, when, and whether it stands. */
 /** A signed agreement or consent, by the code on the signer's copy. */
 export const verifyAgreement = async (client: Client, code: string) =>
-  unwrap(
-    await client.schema("governance").rpc("verify_agreement", { code })
-  )?.[0] ?? null;
+  unwrap(await client.schema("api").rpc("verify_agreement", { code }))?.[0] ??
+  null;
 
 export const verifyServiceLetter = async (client: Client, code: string) =>
   unwrap(
-    await client.schema("membership").rpc("verify_service_letter", { code })
+    await client.schema("api").rpc("verify_service_letter", { code })
   )?.[0] ?? null;
 
 // ── Service letters (service-letter) ──────────────────────────────────────────────────
@@ -393,7 +391,7 @@ export const issueServiceLetter = async (
   const letter = serviceLetterSchema.parse(input);
   return unwrap(
     await client
-      .schema("membership")
+      .schema("api")
       .from("service_letters")
       .insert({
         body: letter.body ?? null,
@@ -413,7 +411,7 @@ export const issueServiceLetter = async (
 /** The letters the reader may see: their own, or all for the Director. */
 export const serviceLetters = async (client: Client, userId?: string) => {
   let query = client
-    .schema("membership")
+    .schema("api")
     .from("service_letters")
     .select("*")
     .order("issued_at", { ascending: false });
@@ -426,7 +424,7 @@ export const serviceLetters = async (client: Client, userId?: string) => {
 export const serviceLetter = async (client: Client, id: string) =>
   unwrap(
     await client
-      .schema("membership")
+      .schema("api")
       .from("service_letters")
       .select("*")
       .eq("id", id)
@@ -461,7 +459,7 @@ export const myYear = async (client: Client, userId: string, year: number) => {
   const [checkIns, roles, service, submissions, certificates] =
     await Promise.all([
       client
-        .schema("events")
+        .schema("api")
         .from("check_ins")
         .select(
           "id, checked_in_at, event:events(slug, title_en, title_ar, starts_at)"
@@ -471,7 +469,7 @@ export const myYear = async (client: Client, userId: string, year: number) => {
         .lt("checked_in_at", to)
         .order("checked_in_at"),
       client
-        .schema("access")
+        .schema("api")
         .from("role_assignments")
         .select(
           "id, role, title_en, title_ar, starts_at, ends_at, roles(name_en, name_ar)"
@@ -481,7 +479,7 @@ export const myYear = async (client: Client, userId: string, year: number) => {
         .or(`ends_at.is.null,ends_at.gte.${from}`)
         .order("starts_at"),
       client
-        .schema("membership")
+        .schema("api")
         .from("service_records")
         .select("id, occurred_on, activity, hours")
         .eq("user_id", userId)
@@ -490,7 +488,7 @@ export const myYear = async (client: Client, userId: string, year: number) => {
         .lt("occurred_on", toDay)
         .order("occurred_on"),
       client
-        .schema("journal")
+        .schema("api")
         .from("submissions")
         .select("id, title, status, created_at")
         .gte("created_at", from)
@@ -498,7 +496,7 @@ export const myYear = async (client: Client, userId: string, year: number) => {
         .neq("status", "withdrawn")
         .order("created_at"),
       client
-        .schema("membership")
+        .schema("api")
         .from("certificates")
         .select("id, kind, serial, issued_at")
         .eq("user_id", userId)

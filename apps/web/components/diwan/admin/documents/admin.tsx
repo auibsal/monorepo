@@ -135,7 +135,7 @@ export const LibraryDocument = ({ slug }: { slug: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("society_documents")
           .select("*")
           .eq("slug", slug)
@@ -192,7 +192,7 @@ const EditorForm = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("society_documents")
           .update({
             adopted_on: optionalDate(form.adopted_on),

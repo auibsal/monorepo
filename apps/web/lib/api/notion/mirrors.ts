@@ -189,7 +189,7 @@ export const mirrorOfficers = async (
   people: ReadonlyMap<string, string>
 ) => {
   const { data, error } = await ctx.admin
-    .schema("access")
+    .schema("api")
     .rpc("officer_directory");
   if (error) {
     throw error;
@@ -239,7 +239,7 @@ const STAGES = [
 export const mirrorJournal = async (ctx: SyncContext) => {
   const since = new Date(Date.now() - 90 * 86_400_000).toISOString();
   const { data: calls, error } = await ctx.admin
-    .schema("journal")
+    .schema("api")
     .from("calls")
     .select("id, title_en, closes_at")
     .gte("closes_at", since);
@@ -250,7 +250,7 @@ export const mirrorJournal = async (ctx: SyncContext) => {
   for (const call of calls ?? []) {
     // biome-ignore lint/performance/noAwaitInLoops: a few calls at most
     const { data: subs } = await ctx.admin
-      .schema("journal")
+      .schema("api")
       .from("submissions")
       .select("status")
       .eq("call_id", call.id);
@@ -277,11 +277,11 @@ export const mirrorJournal = async (ctx: SyncContext) => {
   // pieces by stage of the newsroom (counts only; no titles or names).
   const [{ data: named }, { data: pieces }] = await Promise.all([
     ctx.admin
-      .schema("journal")
+      .schema("api")
       .from("submissions")
       .select("desk, status")
       .is("call_id", null),
-    ctx.admin.schema("journal").from("pieces").select("desk, status"),
+    ctx.admin.schema("api").from("pieces").select("desk, status"),
   ]);
   for (const desk of ["news", "voices", "video", "games"] as const) {
     const tally = new Map<string, number>();

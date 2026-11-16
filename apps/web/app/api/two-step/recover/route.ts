@@ -45,7 +45,7 @@ export const POST = async (request: Request) => {
     });
     if (alert) {
       await admin
-        .schema("core")
+        .schema("api")
         .from("outbox")
         .insert({
           kind: "access.recovery_attempts",
@@ -57,8 +57,8 @@ export const POST = async (request: Request) => {
   try {
     // Spent in one statement: a code works once, even if sent twice.
     const spent = await admin
-      .schema("access")
-      .from("recovery_codes")
+      .schema("api")
+      .from("recovery_codes_all")
       .update({ used_at: new Date().toISOString() })
       .eq("user_id", session.userId)
       .eq("code_hash", hashRecoveryCode(code))
@@ -73,7 +73,7 @@ export const POST = async (request: Request) => {
     }
     await removeAuthenticators(admin, session.userId);
     const recorded = await admin
-      .schema("access")
+      .schema("api")
       .from("two_step_resets")
       .insert({ user_id: session.userId, via: "recovery_code" });
     if (recorded.error) {

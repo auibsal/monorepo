@@ -57,7 +57,7 @@ export type Permission = (typeof permissions)[number];
 
 export const scopeTypes = [
   "global",
-  "programme",
+  "program",
   "event",
   "issue",
   "production",

@@ -12,7 +12,7 @@ export * as membership from "./membership";
 export * as names from "./names";
 export * as partners from "./partners";
 export * as productions from "./productions";
-export * as programmes from "./programmes";
+export * as programs from "./programs";
 export * as recognition from "./recognition";
 export {
   sanitizeRichText,

@@ -39,7 +39,7 @@ export const MyPiece = () => {
   const data = useQuery({
     enabled: Boolean(id),
     queryFn: async () => {
-      const j = supabase.schema("journal");
+      const j = supabase.schema("api");
       const [piece, body] = await Promise.all([
         j
           .from("pieces")
@@ -60,7 +60,7 @@ export const MyPiece = () => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .rpc("author_approve", { piece_id: id ?? "" })
       ),
     onSuccess: () =>
@@ -193,7 +193,7 @@ const Disclosure = ({
   const save = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("journal").rpc("set_conflict_disclosure", {
+        await supabase.schema("api").rpc("set_conflict_disclosure", {
           disclosure: text,
           piece_id: pieceId,
         })

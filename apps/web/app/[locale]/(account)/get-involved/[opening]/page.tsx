@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ApplyForm } from "@/components/account/apply-form";
 import { DiwanPage, DiwanSection } from "@/components/diwan/page";
-import { localized, programmes } from "@/lib/data";
+import { localized, programs } from "@/lib/data";
 import { titleFrom } from "@/lib/diwan/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -27,8 +27,8 @@ const OpeningPage = async ({ params }: PageProps) => {
     notFound();
   }
   const place = await readPublished(
-    ["programmes"],
-    (client) => programmes.openPlace(client, opening),
+    ["programs"],
+    (client) => programs.openPlace(client, opening),
     null
   );
   if (!place) {
@@ -62,7 +62,7 @@ const OpeningPage = async ({ params }: PageProps) => {
         closesAt={place.closes_at}
         director={place.director}
         openingId={place.id}
-        questions={programmes.questionsOf(place.questions)}
+        questions={programs.questionsOf(place.questions)}
       />
     </DiwanPage>
   );

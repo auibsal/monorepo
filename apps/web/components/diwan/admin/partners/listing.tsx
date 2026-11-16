@@ -23,7 +23,7 @@ export const usePartnerOwned = (partnerId: string) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("partner_owned", { partner: partnerId })
       ) === true,
     queryKey: [...KEY, "owned", partnerId],
@@ -69,7 +69,7 @@ export const PartnerPeople = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("partner_people", { partner: partnerId })
       ) ?? [],
     queryKey: [...KEY, "people", partnerId],
@@ -130,7 +130,7 @@ export const PendingListing = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_listing_changes")
           .select("id, description_en, description_ar, url, proposed_at")
           .eq("partner_id", partnerId)
@@ -143,7 +143,7 @@ export const PendingListing = ({
     mutationFn: async ({ approve, id }: { approve: boolean; id: string }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("decide_partner_listing", { approve, change: id })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
@@ -241,7 +241,7 @@ export const PartnerLinking = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("partner_matches", { partner: partnerId })
       ) ?? [],
     queryKey: [...KEY, "matches", partnerId],
@@ -250,7 +250,7 @@ export const PartnerLinking = ({
     mutationFn: async (existing: string) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("link_partner", { application: partnerId, existing })
       ),
     onSuccess: async (slug) => {
@@ -262,7 +262,7 @@ export const PartnerLinking = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("keep_partner_entry", { application: partnerId })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),

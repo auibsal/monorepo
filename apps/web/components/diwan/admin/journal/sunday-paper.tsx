@@ -42,13 +42,13 @@ export const SundayPaperComposer = () => {
     queryFn: async () => {
       const [draft, sent] = await Promise.all([
         supabase
-          .schema("content")
+          .schema("api")
           .from("sunday_paper_drafts")
           .select("letter_en, letter_ar, tested_at")
           .eq("month", month)
           .maybeSingle(),
         supabase
-          .schema("content")
+          .schema("api")
           .from("sunday_paper_issues")
           .select("month, sent_on")
           .order("month", { ascending: false }),
@@ -67,7 +67,7 @@ export const SundayPaperComposer = () => {
   const save = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("content").rpc("save_sunday_paper", {
+        await supabase.schema("api").rpc("save_sunday_paper", {
           letter_ar: letter.ar,
           letter_en: letter.en,
           month,
@@ -77,16 +77,12 @@ export const SundayPaperComposer = () => {
   });
   const test = useMutation({
     mutationFn: async () =>
-      unwrap(
-        await supabase.schema("content").rpc("test_sunday_paper", { month })
-      ),
+      unwrap(await supabase.schema("api").rpc("test_sunday_paper", { month })),
     onSuccess: refresh,
   });
   const send = useMutation({
     mutationFn: async () =>
-      unwrap(
-        await supabase.schema("content").rpc("send_sunday_paper", { month })
-      ),
+      unwrap(await supabase.schema("api").rpc("send_sunday_paper", { month })),
     onSuccess: refresh,
   });
 

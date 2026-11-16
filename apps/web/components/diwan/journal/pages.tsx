@@ -70,14 +70,14 @@ const useMyPieces = () => {
   return useQuery({
     queryFn: async () => {
       const mine =
-        unwrap(await supabase.schema("journal").rpc("my_contributors")) ?? [];
+        unwrap(await supabase.schema("api").rpc("my_contributors")) ?? [];
       if (mine.length === 0) {
         return [];
       }
       return (
         unwrap(
           await supabase
-            .schema("journal")
+            .schema("api")
             .from("pieces")
             .select("id, title_en, title_ar, category, status, updated_at")
             .in(
@@ -115,7 +115,7 @@ const useMyDrafts = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("submission_drafts")
           .select("id, category, title, updated_at, path:content->>path")
           .order("updated_at", { ascending: false })
@@ -311,7 +311,7 @@ const PieceLink = ({ submissionId }: { submissionId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("pieces")
           .select("id")
           .eq("submission_id", submissionId)
@@ -338,7 +338,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
   // (decisions.md); the database signs in that name.
   const registered = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("core").rpc("my_register_name")) ?? "",
+      unwrap(await supabase.schema("api").rpc("my_register_name")) ?? "",
     queryKey: ["core", "register-name"],
   });
   const name = registered.data ?? "";
@@ -346,7 +346,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("agreements")
           .select("signed_at, signer_name, version")
           .eq("submission_id", submissionId)
@@ -357,7 +357,7 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
   const sign = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("journal").rpc("sign_agreement", {
+        await supabase.schema("api").rpc("sign_agreement", {
           signer_name: name,
           submission_id: submissionId,
         })
@@ -429,19 +429,19 @@ export const MySubmission = () => {
     queryFn: async () => {
       const [row, files, history] = await Promise.all([
         supabase
-          .schema("journal")
+          .schema("api")
           .from("submissions")
           .select("*")
           .eq("id", id ?? "")
           .maybeSingle(),
         supabase
-          .schema("journal")
+          .schema("api")
           .from("submission_files")
           .select("id, kind, mime_type, storage_path, created_at")
           .eq("submission_id", id ?? "")
           .order("created_at"),
         supabase
-          .schema("journal")
+          .schema("api")
           .from("status_history")
           .select("id, to_status, changed_at")
           .eq("submission_id", id ?? "")
@@ -481,7 +481,7 @@ export const MySubmission = () => {
     mutationFn: async () => {
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("submissions")
           .update(revisableColumns(work))
           .eq("id", id ?? "")
@@ -507,7 +507,7 @@ export const MySubmission = () => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .rpc("resend_revision", { submission_id: id ?? "" })
       ),
     onSuccess: refresh,

@@ -44,7 +44,7 @@ export const ClassInvitations = () => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_invitations")
           .insert({
             email: email.trim(),

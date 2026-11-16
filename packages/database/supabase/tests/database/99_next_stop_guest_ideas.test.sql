@@ -105,17 +105,17 @@ select pg_temp.grant_role('00000000-0000-0000-0000-00000000f7a3', 'design_lead')
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000f7a1');
 select lives_ok(
-  $$ insert into programmes.next_stop_guest_ideas (name, why) values ('A campus guest', 'Runs the bookshop') $$,
+  $$ insert into programs.next_stop_guest_ideas (name, why) values ('A campus guest', 'Runs the bookshop') $$,
   'The host adds a guest idea');
-select is((select count(*)::int from programmes.next_stop_guest_ideas), 1, 'and reads the list');
+select is((select count(*)::int from programs.next_stop_guest_ideas), 1, 'and reads the list');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000f7a3');
-select is((select count(*)::int from programmes.next_stop_guest_ideas), 0,
+select is((select count(*)::int from programs.next_stop_guest_ideas), 0,
   'Other Media staff don''t see it');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000f7a2');
 select throws_ok(
-  $$ insert into programmes.next_stop_guest_ideas (name) values ('Someone') $$,
+  $$ insert into programs.next_stop_guest_ideas (name) values ('Someone') $$,
   '42501', null, 'A member can''t add to it');
 
 select * from finish();

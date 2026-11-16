@@ -122,28 +122,28 @@ select is((select count(*)::int from storage.objects where bucket_id = 'media'),
 select pg_temp.logout();
 select is(
   (select with_check from pg_policies
-   where schemaname = 'programmes' and tablename = 'shift_signups'
+   where schemaname = 'programs' and tablename = 'shift_signups'
      and policyname = 'Update by authenticated') = 'true',
   false, 'The manager update policy on sign-ups checks the new row');
 
 insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
 values ('00000000-0000-0000-0000-00000000c001', 'door-night-af', 'Door night', 'ليلة الباب', now() + interval '3 days', 'published', 'open');
-insert into programmes.shifts (id, event_id, role_en, role_ar, starts_at, ends_at, capacity) values
+insert into programs.shifts (id, event_id, role_en, role_ar, starts_at, ends_at, capacity) values
   ('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-00000000c001', 'Door', 'الباب',
    now() + interval '1 day', now() + interval '1 day 2 hours', 2);
-insert into programmes.shift_signups (shift_id, user_id) values
+insert into programs.shift_signups (shift_id, user_id) values
   ('00000000-0000-0000-0000-00000000c101', '00000000-0000-0000-0000-0000000000a1');
 
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'programme_lead', 'event',
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000000a2', 'program_lead', 'event',
   '00000000-0000-0000-0000-00000000c001');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a2');
 select lives_ok(
-  $$ update programmes.shift_signups set status = 'confirmed'
+  $$ update programs.shift_signups set status = 'confirmed'
      where user_id = '00000000-0000-0000-0000-0000000000a1' $$,
   'An event lead still updates a sign-up');
 select pg_temp.logout();
 select is(
-  (select status from programmes.shift_signups where user_id = '00000000-0000-0000-0000-0000000000a1'),
+  (select status from programs.shift_signups where user_id = '00000000-0000-0000-0000-0000000000a1'),
   'confirmed', 'and the change is saved');
 
 select * from finish();

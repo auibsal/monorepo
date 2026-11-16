@@ -28,7 +28,7 @@ export const AssociateRequests = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("associate_requests")
           .select("id, full_name, email, relation, note, created_at")
           .eq("status", "pending")
@@ -43,7 +43,7 @@ export const AssociateRequests = () => {
       why: string | null;
     }) =>
       unwrap(
-        await supabase.schema("membership").rpc("decide_associate_request", {
+        await supabase.schema("api").rpc("decide_associate_request", {
           approve: input.approve,
           request_id: input.id,
           why: input.why ?? undefined,

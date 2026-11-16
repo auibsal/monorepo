@@ -24,7 +24,7 @@ export const Sessions = () => {
   const queryClient = useQueryClient();
   const sessions = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("core").rpc("my_sessions")) ?? [],
+      unwrap(await supabase.schema("api").rpc("my_sessions")) ?? [],
     queryKey: KEY,
   });
   const others = useMutation({

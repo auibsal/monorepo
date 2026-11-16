@@ -43,7 +43,7 @@ const useNames = (ids: string[]) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("profiles")
           .select("id, full_name_en, full_name_ar")
           .in("id", ids)
@@ -61,7 +61,7 @@ export const useAttendeeSearch = (eventId: string, query: string) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .rpc("find_attendee", { event_id: eventId, query: deferred })
       ) ?? [],
     queryKey: ["admin", "find-attendee", eventId, deferred],
@@ -79,7 +79,7 @@ const Staff = ({ eventId }: { eventId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("event_staff")
           .select("user_id, duty")
           .eq("event_id", eventId)
@@ -97,7 +97,7 @@ const Staff = ({ eventId }: { eventId: string }) => {
     mutationFn: async (userId: string) =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("event_staff")
           .insert({
             duty: duty.trim() || null,
@@ -115,7 +115,7 @@ const Staff = ({ eventId }: { eventId: string }) => {
     mutationFn: async (userId: string) =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("event_staff")
           .delete()
           .eq("event_id", eventId)
@@ -228,21 +228,21 @@ export const Attendance = ({
     queryFn: async () => {
       const [rsvps, waitlist, checkIns] = await Promise.all([
         supabase
-          .schema("events")
+          .schema("api")
           .from("rsvps")
           .select("id, user_id, answers, from_waitlist, created_at")
           .eq("event_id", eventId)
           .eq("status", "confirmed")
           .order("created_at"),
         supabase
-          .schema("events")
+          .schema("api")
           .from("waitlist")
           .select("id, user_id, created_at")
           .eq("event_id", eventId)
           .eq("status", "waiting")
           .order("created_at"),
         supabase
-          .schema("events")
+          .schema("api")
           .from("check_ins")
           .select("user_id")
           .eq("event_id", eventId),
@@ -266,7 +266,7 @@ export const Attendance = ({
       const results = await Promise.all(
         userIds.map((target_user) =>
           supabase
-            .schema("events")
+            .schema("api")
             .rpc("check_in", { event_id: eventId, target_user })
         )
       );

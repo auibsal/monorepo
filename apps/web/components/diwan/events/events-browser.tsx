@@ -54,7 +54,7 @@ const useUpcomingEvents = () => {
       const rows =
         unwrap(
           await supabase
-            .schema("events")
+            .schema("api")
             .from("events")
             .select(`${events.eventColumns}, questions`)
             .in("status", ["published", "canceled"])
@@ -72,7 +72,7 @@ const useUpcomingEvents = () => {
             ? null
             : (unwrap(
                 await supabase
-                  .schema("events")
+                  .schema("api")
                   .rpc("confirmed_count", { event_id: row.id })
               ) as number)
         )

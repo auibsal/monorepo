@@ -107,78 +107,78 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'guest@gmail.co
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
-  $$ insert into programmes.six_words (text, language) values ('The paper waited for the pen', 'en') $$,
+  $$ insert into programs.six_words (text, language) values ('The paper waited for the pen', 'en') $$,
   '42501', null, 'Members do not write six words on the site'
 );
 select throws_ok(
-  $$ select programmes.record_six_words('The paper waited for the pen', 'en') $$,
+  $$ select programs.record_six_words('The paper waited for the pen', 'en') $$,
   '42501', null, 'nor transcribe Tour cards'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 select throws_ok(
-  $$ select programmes.record_six_words(repeat('x', 401), 'en') $$,
+  $$ select programs.record_six_words(repeat('x', 401), 'en') $$,
   '23514', null, 'A Tour page is at most 400 characters'
 );
 select lives_ok(
-  $$ select programmes.record_six_words('The paper waited for the pen', 'en') $$,
+  $$ select programs.record_six_words('The paper waited for the pen', 'en') $$,
   'Whoever runs the Tour transcribes a card'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select throws_ok(
-  $$ select programmes.record_six_words('Guests cannot write in the book', 'en') $$,
+  $$ select programs.record_six_words('Guests cannot write in the book', 'en') $$,
   '42501', null, 'Guests transcribe nothing'
 );
 
 select pg_temp.login_anon();
-select is((select pages from programmes.six_words_counts())::integer, 1,
+select is((select pages from programs.six_words_counts())::integer, 1,
   'The Tour''s page shows counts only (decisions.md, Members)');
 select pg_temp.logout();
-update programmes.six_words set visibility = 'tour';
+update programs.six_words set visibility = 'tour';
 select pg_temp.login_anon();
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select throws_ok(
-  $$ select programmes.moderate_six_words((select id from programmes.six_words limit 1), false) $$,
+  $$ select programs.moderate_six_words((select id from programs.six_words limit 1), false) $$,
   '42501', null, 'Members cannot moderate'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f1');
 select lives_ok(
-  $$ select programmes.moderate_six_words(id, false) from programmes.six_words $$,
+  $$ select programs.moderate_six_words(id, false) from programs.six_words $$,
   'Whoever runs the Tour can mark a page not publishable'
 );
 
 select pg_temp.login_anon();
-select is((select writers from programmes.six_words_counts())::integer, 0,
+select is((select writers from programs.six_words_counts())::integer, 0,
   'An unattached page has no writer to count');
 select throws_ok(
-  $$ select * from programmes.my_six_words() $$,
+  $$ select * from programs.my_six_words() $$,
   '42501', null, 'Visitors read no one''s pages: nothing about members is public'
 );
 
 -- ── Removal requests ────────────────────────────────────────────────────────
 
 select throws_ok(
-  $$ insert into programmes.removal_requests (requester_name, requester_email, details)
+  $$ insert into programs.removal_requests (requester_name, requester_email, details)
      values ('A', 'a@example.com', 'Please remove') $$,
   '42501', null, 'The public cannot write removal requests directly (they go through apps/api)'
 );
 
 select pg_temp.logout();
-insert into programmes.removal_requests (requester_name, requester_email, details, programme_id)
+insert into programs.removal_requests (requester_name, requester_email, details, program_id)
 values ('A', 'a@example.com', 'Please remove the clip at 2:10',
-  (select id from core.programmes where slug = 'next-stop'));
+  (select id from core.programs where slug = 'next-stop'));
 select ok(
-  (select due_at = private.add_business_days(created_at, 2) from programmes.removal_requests),
+  (select due_at = private.add_business_days(created_at, 2) from programs.removal_requests),
   'A removal request is due in two business days (MEM-02)'
 );
 select ok(exists (select 1 from core.outbox where kind = 'removal.requested'),
-  'A removal request emails the programme leads');
+  'A removal request emails the program leads');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select is((select count(*) from programmes.removal_requests)::integer, 0, 'Members cannot read removal requests');
+select is((select count(*) from programs.removal_requests)::integer, 0, 'Members cannot read removal requests');
 
 -- ── Content and settings ────────────────────────────────────────────────────
 

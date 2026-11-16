@@ -1,6 +1,6 @@
 import type { Tables } from "@repo/database/types";
 
-export type ProductionRow = Tables<{ schema: "programmes" }, "productions">;
+export type ProductionRow = Tables<{ schema: "programs" }, "productions">;
 
 export const productionsKey = ["admin", "productions"];
 

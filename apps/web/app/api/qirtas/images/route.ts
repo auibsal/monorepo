@@ -38,7 +38,7 @@ export const POST = async (request: Request) => {
   if (!parsed.success) {
     return json({ error: "invalid_request" }, 400);
   }
-  const journal = session.supabase.schema("journal");
+  const journal = session.supabase.schema("api");
   const { data: piece } = await journal
     .from("pieces")
     .select("id, submission_id")
@@ -57,7 +57,7 @@ export const POST = async (request: Request) => {
 
   const admin = createAdminClient();
   const { data: files } = await admin
-    .schema("journal")
+    .schema("api")
     .from("submission_files")
     .select("mime_type, storage_path")
     .eq("submission_id", piece.submission_id)

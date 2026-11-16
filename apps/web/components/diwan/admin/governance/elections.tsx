@@ -57,25 +57,23 @@ const useElection = (electionId: string) => {
     queryFn: async () => {
       const [positions, results, turnout] = await Promise.all([
         supabase
-          .schema("governance")
+          .schema("api")
           .from("positions")
           .select("*")
           .eq("election_id", electionId)
           .order("sort"),
         supabase
-          .schema("governance")
+          .schema("api")
           .from("election_results")
           .select("*")
           .eq("election_id", electionId),
-        supabase
-          .schema("governance")
-          .rpc("turnout", { election_id: electionId }),
+        supabase.schema("api").rpc("turnout", { election_id: electionId }),
       ]);
       const positionRows = unwrap(positions) ?? [];
       const candidates = positionRows.length
         ? (unwrap(
             await supabase
-              .schema("governance")
+              .schema("api")
               .from("candidates")
               .select("*")
               .in(
@@ -128,7 +126,7 @@ const ElectionCard = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("access")
+          .schema("api")
           .from("roles")
           .select("key, name_en, name_ar")
           .in("key", [...EXECUTIVE_ROLES])
@@ -142,7 +140,7 @@ const ElectionCard = ({
     mutationFn: async (next: ElectionStatus) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("elections")
           .update({ status: next })
           .eq("id", election.id)
@@ -153,7 +151,7 @@ const ElectionCard = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("give_notice", { election_id: election.id })
       ),
     onSuccess: invalidate,
@@ -162,7 +160,7 @@ const ElectionCard = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("open_voting", { election_id: election.id })
       ),
     onSuccess: invalidate,
@@ -171,7 +169,7 @@ const ElectionCard = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("count_election", { election_id: election.id })
       ),
     onSuccess: invalidate,
@@ -183,7 +181,7 @@ const ElectionCard = ({
       const week = Date.parse(election.voting_closes_at) + 7 * 86_400_000;
       const closes = Math.min(Date.now() + 2 * 86_400_000, week - 60_000);
       return unwrap(
-        await supabase.schema("governance").rpc("start_runoff", {
+        await supabase.schema("api").rpc("start_runoff", {
           closes_at: new Date(closes).toISOString(),
           election_id: election.id,
           opens_at: new Date().toISOString(),
@@ -196,7 +194,7 @@ const ElectionCard = ({
   const recordLot = useMutation({
     mutationFn: async (vars: { candidateId: string; positionId: string }) =>
       unwrap(
-        await supabase.schema("governance").rpc("record_lot", {
+        await supabase.schema("api").rpc("record_lot", {
           candidate_id: vars.candidateId,
           election_id: election.id,
           position_id: vars.positionId,
@@ -208,7 +206,7 @@ const ElectionCard = ({
     mutationFn: async ({ approve, id }: { approve: boolean; id: string }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("decide_candidate", { approve, candidate_id: id })
       ),
     onSuccess: invalidate,
@@ -219,7 +217,7 @@ const ElectionCard = ({
     mutationFn: async ({ eligible, id }: { eligible: boolean; id: string }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("record_gpa_check", { candidate_id: id, eligible })
       ),
     onSuccess: invalidate,
@@ -228,7 +226,7 @@ const ElectionCard = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("positions")
           .insert(
             EXECUTIVE_ROLES.map((role, index) => {
@@ -533,7 +531,7 @@ const VotingPoint = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("elections")
           .update({
             voting_point_ar: point.place.ar || null,
@@ -663,7 +661,7 @@ export const Elections = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("elections")
           .select("*")
           .order("voting_opens_at", { ascending: false })
@@ -724,7 +722,7 @@ export const NewElection = () => {
       setProblem(null);
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("elections")
           .insert({
             nominations_close_at: form.nominations_close_at ?? "",

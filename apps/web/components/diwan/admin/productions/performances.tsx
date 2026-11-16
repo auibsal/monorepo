@@ -34,12 +34,12 @@ export const PerformancesTab = ({
     queryFn: async () => {
       const [links, events] = await Promise.all([
         supabase
-          .schema("programmes")
+          .schema("api")
           .from("production_events")
           .select("event_id")
           .eq("production_id", production.id),
         supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("id, title_en, title_ar, starts_at, status")
           .gte("starts_at", new Date(Date.now() - 864e5 * 60).toISOString())
@@ -58,7 +58,7 @@ export const PerformancesTab = ({
     mutationFn: async (id: string) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("production_events")
           .insert({ event_id: id, production_id: production.id })
       ),
@@ -71,7 +71,7 @@ export const PerformancesTab = ({
     mutationFn: async (id: string) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("production_events")
           .delete()
           .eq("production_id", production.id)

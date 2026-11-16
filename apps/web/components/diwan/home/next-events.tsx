@@ -194,7 +194,7 @@ const WaitlistItem = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .rpc("waitlist_position", { event_id: eventId })
       ),
     queryKey: ["waitlist-position", eventId],

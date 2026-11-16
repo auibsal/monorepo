@@ -40,7 +40,7 @@ const BODIES: Record<string, governance.MeetingBody> = {
 };
 
 const publisherFor = async (ctx: SyncContext, email: string) => {
-  const { data } = await ctx.admin.schema("access").rpc("notion_publisher", {
+  const { data } = await ctx.admin.schema("api").rpc("notion_publisher", {
     email,
     permission: "governance.manage",
     scope_type: "global",
@@ -76,7 +76,7 @@ const eventFacts = async (ctx: SyncContext, eventId: string | null) => {
     return null;
   }
   const { data } = await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select("starts_at, entry, classes")
     .eq("id", eventId)
@@ -195,7 +195,7 @@ const sendMinutes = async (
     ]);
     return;
   }
-  const minutes = ctx.admin.schema("governance").from("minutes");
+  const minutes = ctx.admin.schema("api").from("minutes");
   const { data, error } = existing
     ? await minutes.update(draft).eq("id", existing.id).select("id").single()
     : await minutes
@@ -248,7 +248,7 @@ const handleMeeting = async (
   const { data: existing } =
     link && UUID.test(link.key)
       ? await ctx.admin
-          .schema("governance")
+          .schema("api")
           .from("minutes")
           .select("id, status, adopted_on")
           .eq("id", link.key)

@@ -6,15 +6,13 @@ export const search = async (client: Client, query: string, limit = 30) =>
   query.trim().length < 2
     ? []
     : (unwrap(
-        await client
-          .schema("content")
-          .rpc("search", { max_results: limit, query })
+        await client.schema("api").rpc("search", { max_results: limit, query })
       ) ?? []);
 
 export const publicSetting = async (client: Client, key: string) =>
   unwrap(
     await client
-      .schema("core")
+      .schema("api")
       .from("settings")
       .select("value")
       .eq("key", key)
@@ -29,7 +27,7 @@ export const publicSetting = async (client: Client, key: string) =>
 export const sundayPaperIssues = async (client: Client) =>
   unwrap(
     await client
-      .schema("content")
+      .schema("api")
       .from("sunday_paper_issues")
       .select("month, sent_on")
       .order("month", { ascending: false })
@@ -73,5 +71,5 @@ export const announcementSchema = z
  */
 export const societyNotices = async (client: Client, limit = 3) =>
   unwrap(
-    await client.schema("core").rpc("society_notices", { max_results: limit })
+    await client.schema("api").rpc("society_notices", { max_results: limit })
   ) ?? [];

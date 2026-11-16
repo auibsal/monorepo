@@ -109,19 +109,19 @@ insert into events.events (id, slug, title_en, title_ar, starts_at, status, entr
 values ('00000000-0000-0000-0000-00000016e101', 'e16-reading', 'A reading', 'قراءة',
   now() + interval '10 days', 'draft', 'rsvp', false);
 select is(
-  (select array_agg(role_en || ':' || capacity order by role_en) from programmes.shifts
+  (select array_agg(role_en || ':' || capacity order by role_en) from programs.shifts
     where event_id = '00000000-0000-0000-0000-00000016e101'),
   array['Check-in:2', 'Membership table:1'],
   'a new event gets check-in for two and the membership table for one');
 update events.events set serves_food = true where id = '00000000-0000-0000-0000-00000016e101';
 select is(
-  (select count(*)::integer from programmes.shifts
+  (select count(*)::integer from programs.shifts
     where event_id = '00000000-0000-0000-0000-00000016e101' and role_en = 'Refreshments' and capacity = 2),
   1, 'serving food adds refreshments for two');
 update events.events set serves_food = false where id = '00000000-0000-0000-0000-00000016e101';
 update events.events set serves_food = true where id = '00000000-0000-0000-0000-00000016e101';
 select is(
-  (select count(*)::integer from programmes.shifts
+  (select count(*)::integer from programs.shifts
     where event_id = '00000000-0000-0000-0000-00000016e101' and role_en = 'Refreshments'),
   1, 'and only once');
 
@@ -148,7 +148,7 @@ insert into journal.issues (id, slug, volume, status)
 values ('00000000-0000-0000-0000-00000016e201', 'e16-edition', 1, 'draft');
 select pg_temp.login_as('00000000-0000-0000-0000-00000016e003');
 select throws_ok(
-  $$ insert into programmes.needs (issue_id, item, quantity)
+  $$ insert into programs.needs (issue_id, item, quantity)
      values ('00000000-0000-0000-0000-00000016e201', 'Paper', 10) $$,
   '42501', null, 'a member lists no needs for an Edition');
 select pg_temp.logout();

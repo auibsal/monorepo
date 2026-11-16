@@ -30,7 +30,7 @@ const useEventRows = (tab: Kind) => {
     queryFn: async () => {
       const now = new Date().toISOString();
       let query = supabase
-        .schema("events")
+        .schema("api")
         .from("events")
         .select(adminEventColumns);
       if (tab === "drafts") {
@@ -52,7 +52,7 @@ const useEventRows = (tab: Kind) => {
       const rsvps = ids.length
         ? (unwrap(
             await supabase
-              .schema("events")
+              .schema("api")
               .from("rsvps")
               .select("event_id")
               .eq("status", "confirmed")

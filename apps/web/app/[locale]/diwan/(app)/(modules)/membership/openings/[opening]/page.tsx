@@ -1,9 +1,9 @@
 import { RequireModule } from "@/components/diwan/admin/admin-shell";
-import { OpeningEditor } from "@/components/diwan/admin/programmes/opening-editor";
+import { OpeningEditor } from "@/components/diwan/admin/programs/opening-editor";
 import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>
-  t("diwan.admin.programmes.openings.editTitle")
+  t("diwan.admin.programs.openings.editTitle")
 );
 
 /** One opening, of any kind, edited on its own page. */

@@ -39,7 +39,7 @@ const useSave = () => {
     }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("productions")
           .update(input.changes)
           .eq("id", input.id)
@@ -59,23 +59,23 @@ export const DetailsTab = ({ production }: { production: ProductionRow }) => {
     kind: production.kind as Kind,
     playwright: production.playwright ?? "",
     poster_path: production.poster_path,
-    programme_id: production.programme_id ?? "",
+    program_id: production.program_id ?? "",
     summary: {
       ar: production.summary_ar ?? "",
       en: production.summary_en ?? "",
     },
     title: { ar: production.title_ar, en: production.title_en },
   });
-  const programmes = useQuery({
+  const programs = useQuery({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
-          .from("programmes")
+          .schema("api")
+          .from("programs")
           .select("id, name_en, name_ar")
           .order("sort")
       ) ?? [],
-    queryKey: ["admin", "programmes", "names"],
+    queryKey: ["admin", "programs", "names"],
   });
 
   const stage = production.stage as Stage;
@@ -133,7 +133,7 @@ export const DetailsTab = ({ production }: { production: ProductionRow }) => {
               kind: form.kind,
               playwright: form.playwright.trim() || null,
               poster_path: form.poster_path,
-              programme_id: form.programme_id || null,
+              program_id: form.program_id || null,
               summary_ar: form.summary.ar.trim() || null,
               summary_en: form.summary.en.trim() || null,
               title_ar: form.title.ar.trim(),
@@ -189,17 +189,17 @@ export const DetailsTab = ({ production }: { production: ProductionRow }) => {
               </SelectInput>
             )}
           </Field>
-          <Field label={t("fields.programme")}>
+          <Field label={t("fields.program")}>
             {(id) => (
               <SelectInput
                 id={id}
                 onChange={(e) =>
-                  setForm((f) => ({ ...f, programme_id: e.target.value }))
+                  setForm((f) => ({ ...f, program_id: e.target.value }))
                 }
-                value={form.programme_id}
+                value={form.program_id}
               >
-                <option value="">{t("fields.noProgramme")}</option>
-                {(programmes.data ?? []).map((p) => (
+                <option value="">{t("fields.noProgram")}</option>
+                {(programs.data ?? []).map((p) => (
                   <option key={p.id} value={p.id}>
                     {localized(p, "name", locale)}
                   </option>

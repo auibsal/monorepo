@@ -131,7 +131,7 @@ export const MySignature = ({
   const registered = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      (await supabase.schema("core").rpc("my_register_name")).data ?? null,
+      (await supabase.schema("api").rpc("my_register_name")).data ?? null,
     queryKey: ["forms", "me", user?.id],
   });
   const name = registered.data || profile.data?.full_name_en || "";

@@ -2,6 +2,7 @@ import { type Api, GrammyError } from "grammy";
 import type { Lang } from "./copy";
 import { db, type Group } from "./db";
 import { groupText } from "./features/group/common";
+import { forClaim, QUEUED_ID } from "./queue";
 
 /**
  * Hudhud's post log and the helpers every feed shares (decisions.md,
@@ -28,7 +29,7 @@ export type Kind =
   | "last_call"
   | "edition";
 
-export const posts = () => db().schema("core").from("telegram_posts");
+export const posts = () => db().schema("api").from("telegram_posts");
 
 const claim = async (chatId: number, kind: Kind, ref: string) => {
   const { data } = await posts()
@@ -64,10 +65,14 @@ export const once = async (
     return false;
   }
   try {
-    const message = await send();
+    const message = await forClaim({ chat_id: group.chat_id, kind, ref }, send);
     if (!message) {
       await release(group.chat_id, kind, ref);
       return false;
+    }
+    if (message.message_id === QUEUED_ID) {
+      // Queued: the sender records the id once Telegram has it.
+      return true;
     }
     await posts()
       .update({ message_id: message.message_id })

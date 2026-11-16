@@ -99,79 +99,79 @@ select plan(20);
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a1', 'volunteer@auib.edu.iq', 'Volunteer');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a2', 'stage.lead@auib.edu.iq', 'Stage Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000070a3', 'outsider@example.com', 'Outsider');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000070a2', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'company'));
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000070a2', 'program_lead', 'program',
+  (select id from core.programs where slug = 'company'));
 
 -- Openings
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
 select throws_ok(
-  $$ insert into programmes.openings (programme_id, role, title_en, title_ar)
-     values ((select id from core.programmes where slug = 'company'), 'stage_manager', 'Stage Manager', 'مدير الخشبة') $$,
+  $$ insert into programs.openings (program_id, role, title_en, title_ar)
+     values ((select id from core.programs where slug = 'company'), 'stage_manager', 'Stage Manager', 'مدير الخشبة') $$,
   '42501', null, 'Members do not post openings'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a2');
 select lives_ok(
-  $$ insert into programmes.openings (id, programme_id, role, title_en, title_ar, questions)
-     values ('0be00000-0000-0000-0000-0000000070b1', (select id from core.programmes where slug = 'company'),
+  $$ insert into programs.openings (id, program_id, role, title_en, title_ar, questions)
+     values ('0be00000-0000-0000-0000-0000000070b1', (select id from core.programs where slug = 'company'),
        'stage_manager', 'Stage Manager', 'مدير الخشبة',
        '[{"key": "why", "en": "Why this role?", "ar": "لماذا هذا الدور؟", "required": true}]') $$,
   'A program''s managers post openings with their questions'
 );
 select throws_ok(
-  $$ insert into programmes.openings (programme_id, role, title_en, title_ar)
-     values ((select id from core.programmes where slug = 'typewriter-tour'), 'programme_lead', 'Salon Host', 'مضيف الصالون') $$,
+  $$ insert into programs.openings (program_id, role, title_en, title_ar)
+     values ((select id from core.programs where slug = 'typewriter-tour'), 'program_lead', 'Salon Host', 'مضيف الصالون') $$,
   '42501', null, 'but only for their own program'
 );
-insert into programmes.openings (id, programme_id, role, title_en, title_ar, is_open)
-values ('0be00000-0000-0000-0000-0000000070b2', (select id from core.programmes where slug = 'company'),
+insert into programs.openings (id, program_id, role, title_en, title_ar, is_open)
+values ('0be00000-0000-0000-0000-0000000070b2', (select id from core.programs where slug = 'company'),
   'stage_manager', 'Closed role', 'دور مغلق', false);
 
 select pg_temp.logout();
 select throws_ok(
-  $$ insert into programmes.openings (role, owner, title_en, title_ar)
+  $$ insert into programs.openings (role, owner, title_en, title_ar)
      values ('media_director', 'council', 'Director of Media', 'مدير الإعلام') $$,
   'P0001', 'eb_approval_first', 'A director seat opens only once the Executive Board approves it'
 );
 
 select pg_temp.login_anon();
 select ok(
-  exists (select 1 from programmes.open_places() where id = '0be00000-0000-0000-0000-0000000070b1'),
+  exists (select 1 from programs.open_places() where id = '0be00000-0000-0000-0000-0000000070b1'),
   'Visitors read the open roles on Get involved'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
-select is((select count(*)::integer from programmes.openings where programme_id = (select id from core.programmes where slug = 'company')), 1, 'Members see open openings only');
+select is((select count(*)::integer from programs.openings where program_id = (select id from core.programs where slug = 'company')), 1, 'Members see open openings only');
 
 -- Applications
 select throws_ok(
-  $$ insert into programmes.opening_replies (opening_id) values ('0be00000-0000-0000-0000-0000000070b1') $$,
+  $$ insert into programs.opening_replies (opening_id) values ('0be00000-0000-0000-0000-0000000070b1') $$,
   '42501', null, 'Applications go through the function, not the table'
 );
 select is(
-  programmes.save_application('0be00000-0000-0000-0000-0000000070b1', '{}', 'Evenings', 'en', '{}', null, null, false),
+  programs.save_application('0be00000-0000-0000-0000-0000000070b1', '{}', 'Evenings', 'en', '{}', null, null, false),
   'draft', 'A member saves a draft'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a2');
-select is((select count(*)::integer from programmes.opening_replies), 0, 'A draft stays the applicant''s');
+select is((select count(*)::integer from programs.opening_replies), 0, 'A draft stays the applicant''s');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
 select throws_ok(
-  $$ select programmes.save_application('0be00000-0000-0000-0000-0000000070b1', '{}', null, 'en', '{}', null, null, true) $$,
+  $$ select programs.save_application('0be00000-0000-0000-0000-0000000070b1', '{}', null, 'en', '{}', null, null, true) $$,
   '22023', 'answer_required', 'A required question must be answered to send'
 );
 select is(
-  programmes.save_application('0be00000-0000-0000-0000-0000000070b1', '{"why": "I keep lists."}',
+  programs.save_application('0be00000-0000-0000-0000-0000000070b1', '{"why": "I keep lists."}',
     'Evenings', 'en', '{}', 'A seat near the door', null, true),
   'new', 'and then it is sent'
 );
 select matches(
-  (select reference from programmes.opening_replies where opening_id = '0be00000-0000-0000-0000-0000000070b1'),
+  (select reference from programs.opening_replies where opening_id = '0be00000-0000-0000-0000-0000000070b1'),
   '^SUB-[0-9]{4}-[0-9]{4}$', 'Sent, it takes its record number (decisions.md, The site: one form flow)'
 );
 select is(
-  (select count(*)::integer from programmes.opening_replies where reference is null and status <> 'draft'),
+  (select count(*)::integer from programs.opening_replies where reference is null and status <> 'draft'),
   0, 'and no sent application is without one'
 );
 select pg_temp.logout();
@@ -181,23 +181,23 @@ select ok(
 );
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
 select throws_ok(
-  $$ select programmes.save_application('0be00000-0000-0000-0000-0000000070b1', '{"why": "Again"}', null, 'en', '{}', null, null, true) $$,
+  $$ select programs.save_application('0be00000-0000-0000-0000-0000000070b1', '{"why": "Again"}', null, 'en', '{}', null, null, true) $$,
   'P0001', 'already_applied', 'One application per opening'
 );
 select throws_ok(
-  $$ select programmes.save_application('0be00000-0000-0000-0000-0000000070b2', '{}', null, 'en', '{}', null, null, false) $$,
+  $$ select programs.save_application('0be00000-0000-0000-0000-0000000070b2', '{}', null, 'en', '{}', null, null, false) $$,
   'P0001', 'opening_closed', 'A closed opening takes none'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a3', '{"aal":"aal1"}');
-select is((select count(*)::integer from programmes.openings), 0, 'Accounts that are not members see no openings');
+select is((select count(*)::integer from programs.openings), 0, 'Accounts that are not members see no openings');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a2');
-select is((select answers ->> 'why' from programmes.opening_replies), 'I keep lists.', 'The program''s managers read the application');
+select is((select answers ->> 'why' from programs.opening_replies), 'I keep lists.', 'The program''s managers read the application');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000070a1');
-select ok(programmes.withdraw_application('0be00000-0000-0000-0000-0000000070b1'), 'A member withdraws');
-select is((select status from programmes.opening_replies), 'withdrawn', 'and the application is kept as withdrawn');
+select ok(programs.withdraw_application('0be00000-0000-0000-0000-0000000070b1'), 'A member withdraws');
+select is((select status from programs.opening_replies), 'withdrawn', 'and the application is kept as withdrawn');
 
 select * from finish();
 rollback;

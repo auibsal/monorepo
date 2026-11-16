@@ -29,7 +29,7 @@ export const ScanFindings = () => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("document_scan_hits")
           .select("id, title, url, kind, found")
           .order("title")

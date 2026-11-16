@@ -298,7 +298,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   sign the trip consent, `trip-consent`. Nothing is built for one event or one kind
   of event. An event that recurs is made again for each date; there are
   no series and no programs (the code keeps its identifiers: the
-  `programmes` schema, `programme_id`, `programs.manage`; copy says
+  `programs` schema, `program_id`, `programs.manage`; copy says
   "event" or "event lead"). Minutes and resolutions are governance records
   pointing at their meeting's event (`governance.minutes.event_id`).
 - **After an event** (decisions.md, Events): its page asks "How was it?"
@@ -319,32 +319,32 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   DEFINER code checks visibility with
   `private.can_see_event_id`. AUIB's own calendar is one link, not dates
   beside the Society's.
-- **Event leads.** `programme_lead` (Event Lead) is scoped to one event
+- **Event leads.** `program_lead` (Event Lead) is scoped to one event
   (scope `event`): they edit it, keep its shifts and needs, see its
   bookings and run its door (`private.leads_event`). The Director of
   Events (or the President, covering) picks them.
 - **The Typewriter Tour** belongs to membership: `/join/typewriter-tour`,
-  with the Six Words wall (`programmes.six_words_wall()`) and a typewriter
+  with the Six Words wall (`programs.six_words_wall()`) and a typewriter
   to try (`TypingToy`, silent until the key sound is turned on). Whoever
   runs the Tour (`tour.run`: the Director of Membership, the General
   Secretary and the Tour Lead) records pages in the Diwan (Membership →
   Typewriter Tour) and attaches each to its writer's account. At the
   Tour's station (decisions §12; `/account/station`), a volunteer the
-  event lead confirmed on a station shift (`programmes.shifts.station`)
+  event lead confirmed on a station shift (`programs.shifts.station`)
   may, while the shift runs and only then (`private.my_station_shift`),
   photograph a typed page and attach it to a live card, a Member's or a
-  Guest's (`/api/tour/station`, `programmes.station_attach`; the photo in
+  Guest's (`/api/tour/station`, `programs.station_attach`; the photo in
   the private `tour-pages` bucket, read through `/api/tour/photo`), or
   keep it against a pending "Request Associate membership"
   (`membership.associate_requests`, from `/join#associate`): attached
   when the Director of Membership approves (a named invitation) and the
   account accepts, deleted if declined. Every station page is logged;
   photographed pages show nowhere until whoever runs the Tour types their
-  words (`programmes.transcribe_page`). Six Words
+  words (`programs.transcribe_page`). Six Words
   are not part of Qirtas: they are Tour pages, private by default, shown
   on the writer's profile or the Tour's page only by their choice
-  (`programmes.six_words.visibility`). Spring 2026 pages arrive by the
-  one import (`programmes.import_tour`); pages with no email stay private
+  (`programs.six_words.visibility`). Spring 2026 pages arrive by the
+  one import (`programs.import_tour`); pages with no email stay private
   and editors-only until a writer claims one through Help Desk. The
   one-time invitations (`membership.invitations`) come in lists
   (`membership.invitation_lists`: the Tour's import, the club fair's
@@ -352,7 +352,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   tested on the President first and goes only when the President says
   go (`membership.send_invitations(list)`), as one Broadcast, and is
   deleted thirty days after its own send.
-- **Get involved** (`/get-involved`, `programmes.open_places()`) lists open
+- **Get involved** (`/get-involved`, `programs.open_places()`) lists open
   roles only, soonest first: Council and team roles, an event's lead
   (one place; the rest of the night are shifts), Qalam mentors,
   auditions. Members reply "I'm interested" in one step;
@@ -424,7 +424,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **Money: none.** No budgets, costs, prices, spending limits, ledgers,
   claims, reimbursements, payments or ads anywhere; sponsors give in kind
   only. Every event, Qirtas and the Tour keep a needs list
-  (`programmes.needs`: item, quantity, date needed, purpose), and the
+  (`programs.needs`: item, quantity, date needed, purpose), and the
   Secretary sends each request to Student Life and logs what was
   provided (Council → Requests), and by whom: Student Life, or a partner
   in kind (`needs.given_by`, picked from the register); whom the event's
@@ -549,14 +549,14 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **Qalam**, Qirtas's summer program for high school students. The
   school gives the parents' addresses with its application; Qalam's staff
   send the consent (`qalam-parent-consent`) to each parent through their
-  own single-use link (`programmes.qalam_consent_link`), and the teacher
+  own single-use link (`programs.qalam_consent_link`), and the teacher
   gets a copy of each signed consent (`form_links.copy_to`). Signing makes
   the parent's guest account with the Parent role on their child and the
   student's guest account with the "Qalam student" role
-  (`programmes.qalam_enroll`, from `/api/forms/sign`): the names and
+  (`programs.qalam_enroll`, from `/api/forms/sign`): the names and
   addresses on it become the accounts' own. The site writes to the parent
   and the teacher, never to the student. The roster is the list of those
-  accounts (`programmes.qalam_roster`), staff only (`/diwan/qirtas/qalam`,
+  accounts (`programs.qalam_roster`), staff only (`/diwan/qirtas/qalam`,
   `qalam.manage`), never in Notion, deleted three years on; the student's
   role and the parent's Qalam role end when the student finishes,
   withdraws or is declined, and the guest accounts stay. The publishing
@@ -565,25 +565,25 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   and last initial, "Guest · Qalam student", and the school and summer.
 - **Next Stop** is the Director of Media's video show at `/next-stop`
   (its promise at `/next-stop/care`), not part of Qirtas. Episodes are
-  `programmes.episodes`, edited in the Diwan (Media → Next Stop): number,
+  `programs.episodes`, edited in the Diwan (Media → Next Stop): number,
   title and description in both languages, one YouTube video per language
   edition (or one with both caption tracks), release date, chapters,
   WebVTT captions and a thumbnail. Each has its page at
   `/next-stop/episodes/<slug>` with a click-to-load player on
   youtube-nocookie.com, TVEpisode JSON-LD, and a place in the sitemap.
-  Everyone on camera is listed (`programmes.episode_on_camera`, Media only)
+  Everyone on camera is listed (`programs.episode_on_camera`, Media only)
   and signs `media-release` by a single-use link to their address
-  (`programmes.episode_release_link`); an episode can't be published until
+  (`programs.episode_release_link`); an episode can't be published until
   all have signed (`private.episode_releases_signed`). Credits come from
   Next Stop crew roles scoped to the episode, each with its `credit`
-  (`programmes.credit_episode`), plus guests and the standing producer and
-  host, in the American order (`programmes.episode_credits`). A removal
+  (`programs.credit_episode`), plus guests and the standing producer and
+  host, in the American order (`programs.episode_credits`). A removal
   request naming an episode's address hides it at once. The kit's video
   files are in the private `brand-kit` bucket, listed in
   `packages/brand/assets/video/manifest.json`, uploaded by Media and
   downloaded by staff through `/api/brand-kit/<file>`. Guest ideas, people
   the show might invite, are a private list in Media → Next Stop
-  (`programmes.next_stop_guest_ideas`, `media.guest_ideas`: the Director of
+  (`programs.next_stop_guest_ideas`, `media.guest_ideas`: the Director of
   Media, the producer and the host), never in Notion.
 - **The mailing list** (decisions.md, Channels and email): one audience
   with two topics, "The Sunday Paper" (`paper`) and "Society news and

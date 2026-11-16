@@ -46,7 +46,7 @@ export const TourStation = () => {
 
   const shift = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("programmes").rpc("my_station_shift")),
+      unwrap(await supabase.schema("api").rpc("my_station_shift")),
     queryKey: ["station", "shift"],
     refetchInterval: 60_000,
   });

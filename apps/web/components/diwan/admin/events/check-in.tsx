@@ -72,7 +72,7 @@ export const useDoorEvents = () => {
       return (
         unwrap(
           await supabase
-            .schema("events")
+            .schema("api")
             .from("events")
             .select("id, slug, title_en, title_ar, starts_at")
             .eq("status", "published")
@@ -135,7 +135,7 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("id, title_en, title_ar, starts_at")
           .eq("id", eventId)
@@ -147,7 +147,7 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
     queryFn: async () =>
       (
         await supabase
-          .schema("events")
+          .schema("api")
           .from("check_ins")
           .select("id", { count: "exact", head: true })
           .eq("event_id", eventId)
@@ -161,13 +161,13 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
     async (target: DoorTarget) =>
       unwrap(
         "card_code" in target
-          ? await supabase.schema("events").rpc("check_in_card", {
+          ? await supabase.schema("api").rpc("check_in_card", {
               card_code: target.card_code,
               digits: target.digits,
               event_id: eventId,
             })
           : await supabase
-              .schema("events")
+              .schema("api")
               .rpc("check_in", { event_id: eventId, ...target })
       ),
     [eventId, supabase]

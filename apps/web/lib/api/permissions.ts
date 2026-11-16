@@ -18,7 +18,7 @@ export const hasPermission = async (
   scopeId: string | null = null
 ) => {
   const { data, error } = await session.supabase
-    .schema("access")
+    .schema("api")
     .rpc("has_permission", {
       permission,
       scope_id: scopeId ?? undefined,
@@ -33,7 +33,7 @@ export const hasPermissionAnywhere = async (
   permission: Permission
 ) => {
   const { data, error } = await session.supabase
-    .schema("access")
+    .schema("api")
     .rpc("has_permission_anywhere", { permission });
   return !error && data === true;
 };

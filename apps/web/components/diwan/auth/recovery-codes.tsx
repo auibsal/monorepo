@@ -31,7 +31,7 @@ export const RecoveryCodes = () => {
     enabled: needs && Boolean(user),
     queryFn: async () => {
       const { count, error } = await supabase
-        .schema("access")
+        .schema("api")
         .from("recovery_codes")
         .select("id", { count: "exact", head: true })
         .is("used_at", null);

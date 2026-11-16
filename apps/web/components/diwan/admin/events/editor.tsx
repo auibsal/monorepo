@@ -65,7 +65,7 @@ export const EventEditor = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("*")
           .eq("id", eventId ?? "")

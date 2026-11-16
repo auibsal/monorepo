@@ -64,7 +64,7 @@ export const POST = async (request: Request) => {
   const admin = createAdminClient();
   // A bounced or complaining address is never added back.
   const { data: suppressed } = await admin
-    .schema("core")
+    .schema("api")
     .from("email_suppressions")
     .select("email")
     .eq("email", email)
@@ -72,7 +72,7 @@ export const POST = async (request: Request) => {
   if (suppressed) {
     return json({ ok: true });
   }
-  const table = admin.schema("content").from("newsletter_subscribers");
+  const table = admin.schema("api").from("newsletter_subscribers_all");
   const { data: existing } = await table
     .select("id, status, confirm_sent_at, confirm_sends, confirm_window_at")
     .eq("email", email)

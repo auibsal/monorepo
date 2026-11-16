@@ -109,31 +109,31 @@ values ('00000000-0000-0000-0000-0000000067e1', 'a-reading-gi', 'A reading', 'ق
   now() + interval '10 days', 'published', 'open');
 
 select ok(
-  not exists (select 1 from pg_class where relname in ('placements', 'rotas') and relnamespace = 'programmes'::regnamespace),
+  not exists (select 1 from pg_class where relname in ('placements', 'rotas') and relnamespace = 'programs'::regnamespace),
   'No placements and no rotas: the Apprenticeship and First Ink are retired'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000067a4');
 select lives_ok(
-  $$ insert into programmes.openings (id, kind, owner, event_id, title_en, title_ar, places)
+  $$ insert into programs.openings (id, kind, owner, event_id, title_en, title_ar, places)
      values ('00000000-0000-0000-0000-0000000067b1', 'event_team', 'program',
        '00000000-0000-0000-0000-0000000067e1', 'Door team', 'فريق الباب', 3) $$,
   'The President posts a place on an event''s team'
 );
 select throws_ok(
-  $$ insert into programmes.openings (kind, owner, title_en, title_ar)
+  $$ insert into programs.openings (kind, owner, title_en, title_ar)
      values ('event_team', 'program', 'No event', 'بلا فعالية') $$,
   '23514', null, 'An event team names its event'
 );
 select throws_ok(
-  $$ insert into programmes.openings (kind, owner, title_en, title_ar)
+  $$ insert into programs.openings (kind, owner, title_en, title_ar)
      values ('apprenticeship', 'program', 'Old kind', 'نوع قديم') $$,
   '23514', null, 'The retired kinds are refused'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000067a5');
 select lives_ok(
-  $$ insert into programmes.openings (id, kind, owner, title_en, title_ar, places)
+  $$ insert into programs.openings (id, kind, owner, title_en, title_ar, places)
      values ('00000000-0000-0000-0000-0000000067b2', 'qalam_mentor', 'qirtas',
        'Qalam mentor', 'مرشد «قلم»', 4) $$,
   'The Editor-in-Chief posts Qalam mentor places'
@@ -141,20 +141,20 @@ select lives_ok(
 
 select pg_temp.login_anon();
 select is(
-  (select array_agg(kind order by kind) from programmes.open_places()
+  (select array_agg(kind order by kind) from programs.open_places()
    where id in ('00000000-0000-0000-0000-0000000067b1', '00000000-0000-0000-0000-0000000067b2')),
   array['event_team', 'qalam_mentor'],
   'Visitors read the open places on Get involved'
 );
 select is(
-  (select event_slug from programmes.open_places() where id = '00000000-0000-0000-0000-0000000067b1'),
+  (select event_slug from programs.open_places() where id = '00000000-0000-0000-0000-0000000067b1'),
   'a-reading-gi',
   'An event team links to its event'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000067a6');
 select is(
-  programmes.save_application('00000000-0000-0000-0000-0000000067b1', '{}', null, 'en', '{}', null, null, true),
+  programs.save_application('00000000-0000-0000-0000-0000000067b1', '{}', null, 'en', '{}', null, null, true),
   'new', 'A member applies'
 );
 select ok(

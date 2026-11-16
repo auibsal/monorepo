@@ -52,7 +52,7 @@ const since = () => new Date(Date.now() - 90 * 86_400_000).toISOString();
 /** Public SAL events (never invitation-only ones), for the public feed. */
 export const publicEvents = async (admin: AdminClient, locale: "en" | "ar") => {
   const { data } = await admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select(eventColumns)
     .in("status", ["published", "canceled"])
@@ -69,7 +69,7 @@ export const publicEvent = async (
   locale: "en" | "ar"
 ) => {
   const { data } = await admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select(eventColumns)
     .eq("slug", slug)
@@ -87,7 +87,7 @@ export const publicEvent = async (
  */
 export const memberFeed = async (admin: AdminClient, token: string) => {
   const { data: owner } = await admin
-    .schema("membership")
+    .schema("api")
     .from("calendar_tokens")
     .select("user_id")
     .eq("token", token)
@@ -99,20 +99,20 @@ export const memberFeed = async (admin: AdminClient, token: string) => {
   const [{ data: profile }, { data: rsvps }, { data: invitations }] =
     await Promise.all([
       admin
-        .schema("core")
-        .from("profiles")
+        .schema("api")
+        .from("profiles_all")
         .select("locale")
         .eq("id", owner.user_id)
         .maybeSingle(),
       admin
-        .schema("events")
+        .schema("api")
         .from("rsvps")
         .select("event_id")
         .eq("user_id", owner.user_id)
         .eq("status", "confirmed"),
       admin
-        .schema("events")
-        .from("invitations")
+        .schema("api")
+        .from("events_invitations")
         .select("event_id")
         .eq("user_id", owner.user_id),
     ]);
@@ -121,7 +121,7 @@ export const memberFeed = async (admin: AdminClient, token: string) => {
   const going = new Set((rsvps ?? []).map((r) => r.event_id));
 
   const query = admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select(eventColumns)
     .in("status", ["published", "canceled"])
@@ -131,7 +131,7 @@ export const memberFeed = async (admin: AdminClient, token: string) => {
     query,
     // AUIB's own dates, synced hourly from the University's public calendar.
     admin
-      .schema("core")
+      .schema("api")
       .from("external_events")
       .select("uid, title, location, url, starts_at, ends_at, all_day")
       .eq("source", "auib")

@@ -24,7 +24,7 @@ export const POST = async (request: Request) => {
     return json({ error: "invalid_token" }, 400);
   }
   const { error } = await createAdminClient()
-    .schema("core")
+    .schema("api")
     .rpc("confirm_personal_email", { token: parsed.data.token });
   if (error?.message.includes("invalid_token")) {
     return json({ error: "invalid_token" }, 400);

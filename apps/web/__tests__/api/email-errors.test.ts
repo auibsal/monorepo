@@ -1,4 +1,8 @@
-import { EmailConfigError, EmailQuotaError, sendError } from "@repo/email/errors";
+import {
+  EmailConfigError,
+  EmailQuotaError,
+  sendError,
+} from "@repo/email/errors";
 import { describe, expect, test } from "vitest";
 
 describe("why a send failed", () => {

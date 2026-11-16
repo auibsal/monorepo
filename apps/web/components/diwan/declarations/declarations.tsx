@@ -63,7 +63,7 @@ export const Declarations = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("semesters")
           .select("id, name_en, name_ar, starts_on, ends_on")
           .order("starts_on", { ascending: false })

@@ -363,8 +363,7 @@ const useLogoCounts = (enabled: boolean) => {
   return useQuery({
     enabled,
     queryFn: async () => {
-      const partnersTable = () =>
-        supabase.schema("governance").from("partners");
+      const partnersTable = () => supabase.schema("api").from("partners");
       const [missing, waiting] = await Promise.all([
         partnersTable()
           .select("id", { count: "exact", head: true })
@@ -394,7 +393,7 @@ const useUntitledEditions = (enabled: boolean) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("issues")
           .select("id, number, calls(opens_at)")
           .is("title_en", null)
@@ -436,7 +435,7 @@ export const AdminOverview = () => {
   const grants = useGrants();
   const overview = useQuery({
     queryFn: async () =>
-      (unwrap(await supabase.schema("core").rpc("admin_overview")) ??
+      (unwrap(await supabase.schema("api").rpc("admin_overview")) ??
         {}) as Overview,
     queryKey: ["admin", "overview"],
   });
@@ -450,7 +449,7 @@ export const AdminOverview = () => {
         return null;
       }
       const { count } = await supabase
-        .schema("journal")
+        .schema("api")
         .from("pieces")
         .select("id", { count: "exact", head: true })
         .in("status", ["editing", "author_approved", "approved"]);

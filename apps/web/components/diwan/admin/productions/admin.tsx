@@ -45,7 +45,7 @@ const useProductionList = () => {
       (
         unwrap(
           await supabase
-            .schema("programmes")
+            .schema("api")
             .from("productions")
             .select("*")
             .order("created_at", { ascending: false })
@@ -328,7 +328,7 @@ export const ProductionPage = ({
       }
       history={
         tab === "details" ? (
-          <RecordHistory id={production.id} table="programmes.productions" />
+          <RecordHistory id={production.id} table="programs.productions" />
         ) : null
       }
       title={localized(production, "title", locale)}

@@ -42,7 +42,7 @@ export const GameChecks = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("game_checks")
           .select("game_day, lang, flagged, note")
           .gte("game_day", today)
@@ -58,7 +58,7 @@ export const GameChecks = () => {
     }) =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("game_checks")
           .upsert({ ...row, checked_at: new Date().toISOString() })
       ),

@@ -131,7 +131,7 @@ const ApplicationCard = ({
   const decline = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("governance").rpc("decline_partner_application", {
+        await supabase.schema("api").rpc("decline_partner_application", {
           partner: application.partner_id,
           reason: reason.trim(),
         })
@@ -222,7 +222,7 @@ const EarlierRequests = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("verification_requests")
           .select("id, user_id, email, statement, created_at")
           .eq("status", "pending")
@@ -235,7 +235,7 @@ const EarlierRequests = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("profiles")
           .select("id, full_name_en, full_name_ar")
           .in("id", requests.data?.map((r) => r.user_id) ?? [])
@@ -276,9 +276,8 @@ export const VerificationQueue = () => {
   const { supabase } = useAuth();
   const applications = useQuery({
     queryFn: async () =>
-      (unwrap(
-        await supabase.schema("governance").rpc("partner_applications")
-      ) ?? []) as Application[],
+      (unwrap(await supabase.schema("api").rpc("partner_applications")) ??
+        []) as Application[],
     queryKey: ["admin", "partner-applications"],
   });
   const ids = applications.data?.map((a) => a.agreement_id) ?? [];
@@ -287,7 +286,7 @@ export const VerificationQueue = () => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_agreements")
           .select("id, purpose_en, partner_will, grants")
           .in("id", ids)

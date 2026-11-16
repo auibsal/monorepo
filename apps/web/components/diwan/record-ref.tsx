@@ -1,5 +1,6 @@
 "use client";
 
+import { apiName, type Schema } from "@repo/database";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
@@ -13,7 +14,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
 interface Lookup {
   /** The column that holds the readable name (slug). */
   readonly column: string;
-  readonly schema: string;
+  readonly schema: Schema;
   readonly table: string;
 }
 
@@ -57,9 +58,9 @@ export const RecordRef = ({
         return null;
       }
       const { data } = await supabase
+        .schema("api")
         // biome-ignore lint/suspicious/noExplicitAny: the lookup names its own schema and table.
-        .schema(lookup.schema as any)
-        .from(lookup.table)
+        .from(apiName(lookup.schema, lookup.table) as any)
         .select("id")
         .eq(lookup.column, value)
         .maybeSingle();

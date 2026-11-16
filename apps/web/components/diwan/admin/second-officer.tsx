@@ -37,7 +37,7 @@ const useDetail = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("access")
+          .schema("api")
           .from("roles")
           .select("key, name_en, name_ar")
       ) ?? [],
@@ -79,7 +79,7 @@ export const SecondOfficer = () => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("pending_actions")
           .select("id, kind, payload, requested_at, requested_by")
           .eq("status", "pending")
@@ -99,7 +99,7 @@ export const SecondOfficer = () => {
     mutationFn: async ({ id, approve }: { id: string; approve: boolean }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("decide_action", { action_id: id, approve })
       ),
     onSuccess: async () => {

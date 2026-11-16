@@ -52,7 +52,7 @@ export const YearSummary = ({ year }: { readonly year: number }) => {
         recognition.myYear(supabase, id, year),
         membership.myCard(supabase),
         supabase
-          .schema("core")
+          .schema("api")
           .from("profiles")
           .select("full_name_en, full_name_ar")
           .eq("id", id)

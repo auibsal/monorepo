@@ -21,20 +21,17 @@ export const removalRequestSchema = z.object({
 
 /** The Tour's page: counts only (decisions.md, Members). */
 export const sixWordsCounts = async (client: Client) =>
-  (unwrap(await client.schema("programmes").rpc("six_words_counts")) ??
-    [])[0] ?? {
+  (unwrap(await client.schema("api").rpc("six_words_counts")) ?? [])[0] ?? {
     pages: 0,
     writers: 0,
   };
 
 /** The writer's own pages, each with the event it was typed at. */
 export const mySixWords = async (client: Client) =>
-  unwrap(await client.schema("programmes").rpc("my_six_words")) ?? [];
+  unwrap(await client.schema("api").rpc("my_six_words")) ?? [];
 
-export const programmes = async (client: Client) =>
-  unwrap(
-    await client.schema("core").from("programmes").select("*").order("sort")
-  );
+export const programs = async (client: Client) =>
+  unwrap(await client.schema("api").from("programs").select("*").order("sort"));
 
 const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/u;
 const YOUTUBE_HOSTS = new Set([
@@ -113,7 +110,7 @@ const APPLICATION_STATUSES = [
 ] as const;
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
-/** A question an opening asks (programmes.openings.questions). */
+/** A question an opening asks (programs.openings.questions). */
 const questionSchema = z.object({
   ar: z.string().trim().min(1).max(300),
   en: z.string().trim().min(1).max(300),
@@ -130,21 +127,19 @@ export const questionsOf = (value: unknown): Question[] =>
 
 /** Open roles for anyone (decisions §1): the public list. */
 export const openPlaces = async (client: Client) =>
-  unwrap(await client.schema("programmes").rpc("open_places")) ?? [];
+  unwrap(await client.schema("api").rpc("open_places")) ?? [];
 
 /** One open opening, with its questions. */
 export const openPlace = async (client: Client, openingId: string) =>
   (unwrap(
-    await client
-      .schema("programmes")
-      .rpc("open_place", { opening_id: openingId })
+    await client.schema("api").rpc("open_place", { opening_id: openingId })
   ) ?? [])[0] ?? null;
 
 /** The signed-in member's applications, with each opening's title. */
 export const myApplications = async (client: Client, userId: string) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .from("opening_replies")
       .select(
         "opening_id, status, reference, answers, availability, lang, files, accommodation, gpa_consent_name, submitted_at, talk_at, offer_expires_at, updated_at, opening:openings(title_en, title_ar, role, closes_at)"
@@ -170,7 +165,7 @@ export const saveApplication = async (
   submit: boolean
 ) =>
   unwrap(
-    await client.schema("programmes").rpc("save_application", {
+    await client.schema("api").rpc("save_application", {
       accommodation: input.accommodation,
       answers: input.answers,
       availability: input.availability,
@@ -185,7 +180,7 @@ export const saveApplication = async (
 export const withdrawApplication = async (client: Client, openingId: string) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .rpc("withdraw_application", { opening_id: openingId })
   );
 
@@ -196,7 +191,7 @@ export const answerOffer = async (
 ) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .rpc("answer_offer", { accept, opening_id: openingId })
   );
 
@@ -250,7 +245,7 @@ export const secondsOf = (value: string) => {
 export const publicEpisodes = async (client: Client) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .from("episodes")
       .select(EPISODE_COLUMNS)
       .not("published_at", "is", null)
@@ -263,7 +258,7 @@ export type PublicEpisode = Awaited<ReturnType<typeof publicEpisodes>>[number];
 export const publicEpisode = async (client: Client, slug: string) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .from("episodes")
       .select(EPISODE_COLUMNS)
       .eq("slug", slug)
@@ -271,12 +266,10 @@ export const publicEpisode = async (client: Client, slug: string) =>
       .maybeSingle()
   );
 
-/** The credits in the American order (programmes.episode_credits). */
+/** The credits in the American order (programs.episode_credits). */
 export const episodeCredits = async (client: Client, episodeId: string) =>
   unwrap(
-    await client
-      .schema("programmes")
-      .rpc("episode_credits", { episode: episodeId })
+    await client.schema("api").rpc("episode_credits", { episode: episodeId })
   ) ?? [];
 
 export const CREDITS = [

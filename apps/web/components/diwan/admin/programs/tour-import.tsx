@@ -11,7 +11,7 @@ import { unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { ErrorLine } from "../kit";
 
-const waitingKey = ["admin", "programmes", "invitations-waiting"];
+const waitingKey = ["admin", "programs", "invitations-waiting"];
 
 interface Waiting {
   joined: number;
@@ -29,11 +29,11 @@ const pagesOf = (words: string, emailRows: number) =>
  * The spring 2026 Tour, once (decisions §1 and §2): the scanned pages
  * (diwan_six_words_import.csv) and the invitation list
  * (invitation_list.csv) go from this browser straight to the database
- * (`programmes.import_tour`); neither file is kept anywhere else. The
+ * (`programs.import_tour`); neither file is kept anywhere else. The
  * invitations go from Membership → Invitations, list by list.
  */
 export const TourImport = () => {
-  const t = useTranslations("diwan.admin.programmes.sixWords.import");
+  const t = useTranslations("diwan.admin.programs.sixWords.import");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const pagesId = useId();
@@ -45,7 +45,7 @@ export const TourImport = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .rpc("invitations_waiting", { list: "tour_2026" })
       ) as Waiting | null,
     queryKey: waitingKey,
@@ -71,7 +71,7 @@ export const TourImport = () => {
         ),
       }));
       return unwrap(
-        await supabase.schema("programmes").rpc("import_tour", {
+        await supabase.schema("api").rpc("import_tour", {
           invitations,
           pages: pages ?? [],
         })
@@ -80,7 +80,7 @@ export const TourImport = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: waitingKey });
       await queryClient.invalidateQueries({
-        queryKey: ["admin", "programmes", "six-words"],
+        queryKey: ["admin", "programs", "six-words"],
       });
     },
   });

@@ -66,7 +66,7 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
       const auditions =
         unwrap(
           await supabase
-            .schema("programmes")
+            .schema("api")
             .from("auditions")
             .select("*")
             .eq("production_id", production.id)
@@ -75,12 +75,12 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
       const ids = auditions.map((a) => a.id);
       const [signups, notes] = await Promise.all([
         supabase
-          .schema("programmes")
+          .schema("api")
           .from("audition_signups")
           .select("audition_id, user_id, status, interest")
           .in("audition_id", ids),
         supabase
-          .schema("programmes")
+          .schema("api")
           .from("audition_notes")
           .select("id, audition_id, user_id, author_id, note, created_at")
           .in("audition_id", ids)
@@ -103,11 +103,7 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
   const remove = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
-        await supabase
-          .schema("programmes")
-          .from("auditions")
-          .delete()
-          .eq("id", id)
+        await supabase.schema("api").from("auditions").delete().eq("id", id)
       ),
     onSuccess: refresh,
   });
@@ -119,7 +115,7 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
     }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("audition_signups")
           .update({ status: input.status })
           .eq("audition_id", input.auditionId)
@@ -131,7 +127,7 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
     mutationFn: async (input: { auditionId: string; userId: string }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("audition_notes")
           .insert({
             audition_id: input.auditionId,
@@ -300,7 +296,7 @@ const AuditionScore = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("audition_scores")
           .select("scorer, scores, notes")
           .eq("audition_id", auditionId)
@@ -321,7 +317,7 @@ const AuditionScore = ({
       );
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("audition_scores")
           .upsert({
             audition_id: auditionId,
@@ -434,7 +430,7 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("production_credits")
           .select("*")
           .eq("production_id", production.id)
@@ -450,7 +446,7 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
     mutationFn: async (id: string) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("production_credits")
           .delete()
           .eq("id", id)
@@ -524,7 +520,7 @@ export const RehearsalsTab = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("rehearsals")
           .select("*")
           .eq("production_id", production.id)
@@ -536,11 +532,7 @@ export const RehearsalsTab = ({
   const remove = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
-        await supabase
-          .schema("programmes")
-          .from("rehearsals")
-          .delete()
-          .eq("id", id)
+        await supabase.schema("api").from("rehearsals").delete().eq("id", id)
       ),
     onSuccess: refresh,
   });
@@ -602,7 +594,7 @@ const NewAuditionSlot = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("auditions")
           .insert({
             capacity: Number(form.capacity),
@@ -775,7 +767,7 @@ const NewRehearsal = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("rehearsals")
           .insert({
             called: form.called.trim() || null,

@@ -154,9 +154,9 @@ select matches((select code from governance.partner_agreements where id = '00000
   '^MOU-\d{4}-001$', 'The countersignature gives it the year''s next MOU- number');
 
 -- ── Typewriter Tour pages ────────────────────────────────────────────────────
-insert into programmes.six_words (user_id, text, language, page_ref)
+insert into programs.six_words (user_id, text, language, page_ref)
 values ('00000000-0000-0000-0000-0000000c0de1', 'The paper waited for the pen', 'en', 'TT26-014');
-select matches((select reference from programmes.six_words where page_ref = 'TT26-014'),
+select matches((select reference from programs.six_words where page_ref = 'TT26-014'),
   '^TOUR-\d{4}-\d{3}$', 'A Tour page gets its TOUR- number and keeps its scan reference');
 
 -- ── Nobody writes the counters ───────────────────────────────────────────────

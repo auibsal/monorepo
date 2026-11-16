@@ -56,7 +56,7 @@ import {
 const READY = "Ready to publish";
 
 const publisherFor = async (ctx: SyncContext, email: string) => {
-  const { data } = await ctx.admin.schema("access").rpc("notion_publisher", {
+  const { data } = await ctx.admin.schema("api").rpc("notion_publisher", {
     email,
     permission: "governance.manage",
     scope_type: "global",
@@ -70,7 +70,7 @@ const recordOf = async (ctx: SyncContext, page: NotionPage, code: string) => {
   if (linked) {
     return linked;
   }
-  const docs = ctx.admin.schema("governance").from("society_documents");
+  const docs = ctx.admin.schema("api").from("society_documents");
   const given = read.text(page, "Diwan ID");
   if (given) {
     const { data } = await docs.select("id").eq("id", given).maybeSingle();
@@ -136,7 +136,7 @@ const keepInternal = async (
     const existing = await recordOf(ctx, page, code);
     if (existing) {
       const { error } = await ctx.admin
-        .schema("governance")
+        .schema("api")
         .from("society_documents")
         .delete()
         .eq("id", existing);
@@ -204,7 +204,7 @@ const publishDocument = async (
     ]);
     return;
   }
-  const docs = ctx.admin.schema("governance").from("society_documents");
+  const docs = ctx.admin.schema("api").from("society_documents");
   const existing = await recordOf(ctx, page, v.code);
   const values = {
     audience: "public",
@@ -267,7 +267,7 @@ const publishArabicEdition = async (
     ]);
     return;
   }
-  const docs = ctx.admin.schema("governance").from("society_documents");
+  const docs = ctx.admin.schema("api").from("society_documents");
   const { data: english } = await docs
     .select("id, slug")
     .eq("code", edition.code)
@@ -369,7 +369,7 @@ export const syncAdoptionRecords = async (ctx: SyncContext) => {
     return;
   }
   const { data, error: loadError } = await ctx.admin
-    .schema("governance")
+    .schema("api")
     .from("society_documents")
     .select("id, adopted_on, vote")
     .in("id", [...links.keys()]);

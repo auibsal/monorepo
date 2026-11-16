@@ -29,7 +29,7 @@ export const PieceOriginal = ({ record }: { record: PieceRecord }) => {
       const original = sanitizeRichText(html) || null;
       return unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("piece_bodies")
           .update({ original, original_lang: original ? lang : null })
           .eq("piece_id", pieceId)

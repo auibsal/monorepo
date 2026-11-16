@@ -1,6 +1,6 @@
 import { RequireModule } from "@/components/diwan/admin/admin-shell";
 import { EventsList } from "@/components/diwan/admin/events/list";
-import { ProgramPitches } from "@/components/diwan/admin/programmes/admin";
+import { ProgramPitches } from "@/components/diwan/admin/programs/admin";
 import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) => t("diwan.admin.events.title"));

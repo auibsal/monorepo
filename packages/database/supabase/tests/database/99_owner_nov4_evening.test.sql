@@ -167,7 +167,7 @@ select ok(
 select ok(
   not exists (
     select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-    where n.nspname in ('private', 'journal', 'core', 'access', 'programmes', 'membership')
+    where n.nspname in ('private', 'journal', 'core', 'access', 'programs', 'membership')
       and (p.proname ~ 'prizes|callboard|award' or p.prosrc ~ 'prizes|callboard|award_')
   )
   and not exists (

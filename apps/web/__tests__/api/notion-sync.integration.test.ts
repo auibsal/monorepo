@@ -208,7 +208,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
   >;
   let run: typeof import("@/lib/api/notion/run").runNotionSync;
   let sources: Record<
-    "documents" | "events" | "needs" | "officers" | "programmes",
+    "documents" | "events" | "needs" | "officers" | "programs",
     string
   >;
   let leadId = "";
@@ -227,14 +227,14 @@ describe.skipIf(!enabled)("Notion sync", () => {
     admin = createAdminClient();
     ({ runNotionSync: run } = await import("@/lib/api/notion/run"));
     const { data } = await admin
-      .schema("core")
+      .schema("api")
       .from("settings")
       .select("value")
       .eq("key", "notion.data_sources")
       .single();
     sources = data?.value as typeof sources;
     // The stand-in starts empty, so start from no links (local stack only).
-    await admin.schema("core").from("notion_links").delete().neq("kind", "");
+    await admin.schema("api").from("notion_links").delete().neq("kind", "");
     for (const email of [lead, member]) {
       // biome-ignore lint/performance/noAwaitInLoops: two accounts
       const { data: created, error } = await admin.auth.admin.createUser({
@@ -253,21 +253,21 @@ describe.skipIf(!enabled)("Notion sync", () => {
       }
     }
     const { data: salon } = await admin
-      .schema("core")
-      .from("programmes")
+      .schema("api")
+      .from("programs")
       .select("id")
       .eq("slug", "company")
       .single();
     salonId = salon?.id ?? "";
     const { error: roleError } = await admin
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .insert([
-        { role: "programme_lead", scope_type: "global", user_id: leadId },
+        { role: "program_lead", scope_type: "global", user_id: leadId },
         {
-          role: "programme_lead",
+          role: "program_lead",
           scope_id: salonId,
-          scope_type: "programme",
+          scope_type: "program",
           user_id: leadId,
         },
       ]);
@@ -292,9 +292,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
     expect(officers.some((p) => diwanId(p) === memberId)).toBe(false);
     // Programs are written in Notion now: none are copied there.
     expect(
-      [...fake.pages.values()].filter(
-        (p) => p.dataSource === sources.programmes
-      )
+      [...fake.pages.values()].filter((p) => p.dataSource === sources.programs)
     ).toHaveLength(0);
   });
 
@@ -336,20 +334,20 @@ describe.skipIf(!enabled)("Notion sync", () => {
     });
     // The import runs until it has finished once.
     await admin
-      .schema("core")
+      .schema("api")
       .from("settings")
       .delete()
       .eq("key", "notion.imported");
     await sync();
     const { data: link } = await admin
-      .schema("core")
+      .schema("api")
       .from("notion_links")
       .select("record_key")
       .eq("kind", "event")
       .eq("notion_page_id", english.id.replaceAll("-", ""))
       .single();
     const { data: event } = await admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .select(
         "status, entry, classes, lead_id, title_ar, body_en, body_ar, starts_at"
@@ -372,7 +370,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
 
   test("copies the site's events to Notion, and nothing typed there is read", async () => {
     const { data: made, error } = await admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .insert({
         entry: "rsvp",
@@ -405,14 +403,14 @@ describe.skipIf(!enabled)("Notion sync", () => {
     });
     await sync();
     const { data: still } = await admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .select("title_en")
       .eq("id", made?.id ?? "")
       .single();
     expect(still?.title_en).toBe(`A reading ${stamp}`);
     await admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .update({ venue_en: "Library 48" })
       .eq("id", made?.id ?? "");
@@ -422,17 +420,17 @@ describe.skipIf(!enabled)("Notion sync", () => {
 
   test("copies needs with their standing activity, and locks both copies once", async () => {
     const { data: tour } = await admin
-      .schema("core")
-      .from("programmes")
+      .schema("api")
+      .from("programs")
       .select("id")
       .eq("slug", "typewriter-tour")
       .single();
     const { data: need, error } = await admin
-      .schema("programmes")
+      .schema("api")
       .from("needs")
       .insert({
         item: `Typewriter ribbons ${stamp}`,
-        programme_id: tour?.id ?? null,
+        program_id: tour?.id ?? null,
         quantity: 3,
       })
       .select("id")
@@ -441,7 +439,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
     // Imported but not yet locked (the import test above starts the import
     // over, which unlocks the copies too).
     const { data: imported } = await admin
-      .schema("core")
+      .schema("api")
       .from("settings")
       .select("value")
       .eq("key", "notion.imported")
@@ -452,7 +450,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
       ...unlocked
     } = (imported?.value ?? {}) as Record<string, string>;
     await admin
-      .schema("core")
+      .schema("api")
       .from("settings")
       .update({ value: unlocked })
       .eq("key", "notion.imported");
@@ -463,7 +461,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
     // The next sync leaves the locked copies alone.
     await sync();
     const { data: link } = await admin
-      .schema("core")
+      .schema("api")
       .from("notion_links")
       .select("notion_page_id")
       .eq("kind", "need")

@@ -37,14 +37,14 @@ const PartnerForm = ({ event }: { readonly event: JointEvent }) => {
   const [choice, setChoice] = useState(event.partner_id ?? NONE);
   const partners = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
+      unwrap(await supabase.schema("api").rpc("partner_names")) ?? [],
     queryKey: ["admin", "partner-names"],
   });
   const save = useMutation({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .update({ partner_id: choice === NONE ? null : choice })
           .eq("id", event.id)
@@ -116,14 +116,14 @@ export const EventOrganizations = ({
   const queryKey = ["admin", "event", eventId, "organizations"];
   const register = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
+      unwrap(await supabase.schema("api").rpc("partner_names")) ?? [],
     queryKey: ["admin", "partner-names"],
   });
   const chosen = useQuery({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("event_organizations")
           .select("partner_id, line")
           .eq("event_id", eventId)
@@ -135,7 +135,7 @@ export const EventOrganizations = ({
     mutationFn: async ({ line, partner }: { line: Line; partner: string }) =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("event_organizations")
           .insert({ event_id: eventId, line, partner_id: partner })
       ),
@@ -145,7 +145,7 @@ export const EventOrganizations = ({
     mutationFn: async (partner: string) =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("event_organizations")
           .delete()
           .eq("event_id", eventId)

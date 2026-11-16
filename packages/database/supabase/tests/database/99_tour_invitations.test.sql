@@ -108,13 +108,13 @@ delete from core.outbox where kind like 'membership.%';
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000071a2');
 select throws_ok(
-  $$ select programmes.import_tour('[]'::jsonb, '[]'::jsonb) $$,
+  $$ select programs.import_tour('[]'::jsonb, '[]'::jsonb) $$,
   '42501', null, 'Only whoever runs the Tour imports it'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000071a1');
 select is(
-  programmes.import_tour(
+  programs.import_tour(
     '[{"page_ref":"TT26-T-001","text":"Kept for the writer who has an account","language":"en","email":"Writer.1234@auib.edu.iq","status":"Eligible, needs consent","tier":"A","tour":"Typewriter Tour, Spring 2026"},
       {"page_ref":"TT26-T-002","text":"Not for the wall","language":"mixed","email":"","status":"Not for publication"}]'::jsonb,
     '[{"email":"new.9999@auib.edu.iq","first_name":"New","station":"College of Law","their_words":"A small story","quote_words":"yes","pages":1},
@@ -123,17 +123,17 @@ select is(
   '1', 'A page whose writer has an account goes to them at once'
 );
 select pg_temp.logout();
-select is((select visibility from programmes.six_words where page_ref = 'TT26-T-001'), 'private',
+select is((select visibility from programs.six_words where page_ref = 'TT26-T-001'), 'private',
   'and stays private until the writer chooses');
-select is((select publishable from programmes.six_words where page_ref = 'TT26-T-002'), false,
+select is((select publishable from programs.six_words where page_ref = 'TT26-T-002'), false,
   'A page marked not for publication stays off every public view');
-select is((select language from programmes.six_words where page_ref = 'TT26-T-002'), 'other',
+select is((select language from programs.six_words where page_ref = 'TT26-T-002'), 'other',
   'A language other than English or Arabic is kept as other');
 select is((select quote_words::text || pages from membership.invitations where email = 'new.9999@auib.edu.iq'), 'true1',
   'The invitation keeps whether the words may be quoted');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000071a1');
-select is((programmes.import_tour('[{"page_ref":"TT26-T-001","text":"Kept, corrected","language":"en","email":"writer.1234@auib.edu.iq"}]'::jsonb, '[]'::jsonb) ->> 'pages'), '1',
+select is((programs.import_tour('[{"page_ref":"TT26-T-001","text":"Kept, corrected","language":"en","email":"writer.1234@auib.edu.iq"}]'::jsonb, '[]'::jsonb) ->> 'pages'), '1',
   'Loading again updates what was loaded');
 -- A fresh list for the test: the migration's Tour list was sent already.
 select pg_temp.logout();

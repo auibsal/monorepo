@@ -77,7 +77,7 @@ const FigureForm = ({
         unit_ar: unit.ar.trim() || null,
         unit_en: unit.en.trim() || null,
       };
-      const table = supabase.schema("journal").from("piece_figures");
+      const table = supabase.schema("api").from("piece_figures");
       return unwrap(
         existing
           ? await table.update(row).eq("id", existing.id)
@@ -148,7 +148,7 @@ export const PieceFigures = ({ pieceId }: { readonly pieceId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("piece_figures")
           .select(
             "id, sort, title_en, title_ar, unit_en, unit_ar, source_en, source_ar, rows"
@@ -161,11 +161,7 @@ export const PieceFigures = ({ pieceId }: { readonly pieceId: string }) => {
   const remove = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
-        await supabase
-          .schema("journal")
-          .from("piece_figures")
-          .delete()
-          .eq("id", id)
+        await supabase.schema("api").from("piece_figures").delete().eq("id", id)
       ),
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: ["admin", "journal"] }),

@@ -59,7 +59,7 @@ const usePartnerDraft = () => {
       ((
         unwrap(
           await supabase
-            .schema("governance")
+            .schema("api")
             .from("partner_application_drafts")
             .select("content")
             .maybeSingle()
@@ -74,7 +74,7 @@ const usePartnerDraft = () => {
         return;
       }
       await supabase
-        .schema("governance")
+        .schema("api")
         .from("partner_application_drafts")
         .upsert({
           content: content as { [key: string]: Json },
@@ -88,7 +88,7 @@ const usePartnerDraft = () => {
       return;
     }
     await supabase
-      .schema("governance")
+      .schema("api")
       .from("partner_application_drafts")
       .delete()
       .eq("user_id", user.id);
@@ -101,9 +101,8 @@ const useMyApplication = () => {
   return useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      ((unwrap(
-        await supabase.schema("governance").rpc("my_partner_application")
-      ) ?? [])[0] ?? null) as Application | null,
+      ((unwrap(await supabase.schema("api").rpc("my_partner_application")) ??
+        [])[0] ?? null) as Application | null,
     queryKey: ["partner-application", user?.id ?? ""],
   });
 };
@@ -193,7 +192,7 @@ const ApplicationForm = ({ onSent }: { readonly onSent: () => void }) => {
   const apply = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("governance").rpc("apply_as_partner", {
+        await supabase.schema("api").rpc("apply_as_partner", {
           accepted: form.accepted,
           contact_role: form.contactRole,
           description_ar: "",

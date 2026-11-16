@@ -79,7 +79,7 @@ const WalletLink = ({ code }: { code: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("wallet_passes")
           .select("state")
           .eq("code", code)

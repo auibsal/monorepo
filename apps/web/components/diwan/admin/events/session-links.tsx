@@ -42,7 +42,7 @@ const NewLink = ({
       }
       return unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("session_links")
           .insert({ ...parsed.data, event_id: eventId })
       );
@@ -102,11 +102,7 @@ export const SessionLinks = ({ eventId }: { readonly eventId: string }) => {
   const remove = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
-        await supabase
-          .schema("events")
-          .from("session_links")
-          .delete()
-          .eq("id", id)
+        await supabase.schema("api").from("session_links").delete().eq("id", id)
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key(eventId) }),
   });

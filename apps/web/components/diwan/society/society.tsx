@@ -22,7 +22,7 @@ const Minutes = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("minutes")
           .select(
             "id, body, meeting_on, adopted_on, title_en, title_ar, text_en, text_ar"
@@ -94,7 +94,7 @@ const Resolutions = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("resolutions")
           .select("id, code, title_en, title_ar, adopted_on")
           .eq("status", "adopted")

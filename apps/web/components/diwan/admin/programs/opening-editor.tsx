@@ -9,7 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { localized, programmes, unwrap } from "@/lib/data";
+import { localized, programs, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, PageSpinner } from "../../states";
@@ -44,11 +44,11 @@ const QuestionsEditor = ({
   onChange,
   value,
 }: {
-  readonly onChange: (questions: programmes.Question[]) => void;
-  readonly value: readonly programmes.Question[];
+  readonly onChange: (questions: programs.Question[]) => void;
+  readonly value: readonly programs.Question[];
 }) => {
-  const t = useTranslations("diwan.admin.programmes.openings");
-  const set = (index: number, change: Partial<programmes.Question>) =>
+  const t = useTranslations("diwan.admin.programs.openings");
+  const set = (index: number, change: Partial<programs.Question>) =>
     onChange(value.map((q, i) => (i === index ? { ...q, ...change } : q)));
   return (
     <fieldset className="grid gap-4">
@@ -119,7 +119,7 @@ export interface OpeningEditorProps {
  * team's event) stays as posted (decisions.md: open roles only). Closing takes it off Get involved; reopening puts it back.
  */
 export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
-  const t = useTranslations("diwan.admin.programmes.openings");
+  const t = useTranslations("diwan.admin.programs.openings");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -129,7 +129,7 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("openings")
           .select(COLUMNS)
           .eq("id", id)
@@ -146,7 +146,7 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
     eb_resolution: "",
     eligibility: { ar: "", en: "" },
     places: "",
-    questions: [] as programmes.Question[],
+    questions: [] as programs.Question[],
     second_reviewer: null as Person | null,
     title: { ar: "", en: "" },
   });
@@ -168,7 +168,7 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
           en: row.eligibility_en ?? "",
         },
         places: row.places ? String(row.places) : "",
-        questions: programmes.questionsOf(row.questions),
+        questions: programs.questionsOf(row.questions),
         second_reviewer: reviewer ?? null,
         title: { ar: row.title_ar ?? "", en: row.title_en ?? "" },
       });
@@ -189,7 +189,7 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
       const place = kind !== "role";
       return unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("openings")
           .update({
             asks_files: form.asks_files,
@@ -218,7 +218,7 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
     mutationFn: async (open: boolean) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("openings")
           .update({ is_open: open })
           .eq("id", id)

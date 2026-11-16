@@ -79,8 +79,8 @@ export const copyEditions = async (ctx: SyncContext) => {
     return;
   }
   const [{ data: issues, error }, { data: calls }] = await Promise.all([
-    ctx.admin.schema("journal").from("issues").select(COPY_COLUMNS.issues),
-    ctx.admin.schema("journal").from("calls").select(COPY_COLUMNS.calls),
+    ctx.admin.schema("api").from("issues").select(COPY_COLUMNS.issues),
+    ctx.admin.schema("api").from("calls").select(COPY_COLUMNS.calls),
   ]);
   if (error) {
     throw error;
@@ -131,18 +131,15 @@ export const copyProductions = async (ctx: SyncContext) => {
     { data: eventDates },
   ] = await Promise.all([
     ctx.admin
-      .schema("programmes")
+      .schema("api")
       .from("productions")
       .select(COPY_COLUMNS.productions),
     ctx.admin
-      .schema("programmes")
+      .schema("api")
       .from("production_events")
       .select(COPY_COLUMNS.productionEvents),
-    ctx.admin
-      .schema("programmes")
-      .from("episodes")
-      .select(COPY_COLUMNS.episodes),
-    ctx.admin.schema("events").from("events").select(COPY_COLUMNS.eventDates),
+    ctx.admin.schema("api").from("episodes").select(COPY_COLUMNS.episodes),
+    ctx.admin.schema("api").from("events").select(COPY_COLUMNS.eventDates),
   ]);
   if (error || episodesError) {
     throw error ?? episodesError;
@@ -223,7 +220,7 @@ export const copyOpenings = async (ctx: SyncContext) => {
     return;
   }
   const { data, error } = await ctx.admin
-    .schema("programmes")
+    .schema("api")
     .from("openings")
     .select(COPY_COLUMNS.openings);
   if (error) {
@@ -259,16 +256,13 @@ export const copyOrganizations = async (ctx: SyncContext) => {
   }
   const [{ data, error }, { data: withEvents }, { data: hosted }] =
     await Promise.all([
+      ctx.admin.schema("api").from("partners").select(COPY_COLUMNS.partners),
       ctx.admin
-        .schema("governance")
-        .from("partners")
-        .select(COPY_COLUMNS.partners),
-      ctx.admin
-        .schema("events")
+        .schema("api")
         .from("event_organizations")
         .select(COPY_COLUMNS.eventOrganizations),
       ctx.admin
-        .schema("events")
+        .schema("api")
         .from("events")
         .select(COPY_COLUMNS.eventPartners)
         .not("partner_id", "is", null),
@@ -315,18 +309,18 @@ export const copyRecords = async (ctx: SyncContext) => {
     { data: aboutPeople },
   ] = await Promise.all([
     ctx.admin
-      .schema("core")
+      .schema("api")
       .from("announcements")
       .select(COPY_COLUMNS.announcements),
     ctx.admin
-      .schema("governance")
+      .schema("api")
       .from("resolutions")
       .select(COPY_COLUMNS.resolutions)
       .eq("status", "adopted"),
     // A resolution that grants a role exception is about a person: never
     // copied.
     ctx.admin
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .select("exception_resolution_id")
       .not("exception_resolution_id", "is", null),
@@ -434,7 +428,7 @@ export const copyMeasures = async (ctx: SyncContext, now = new Date()) => {
     return;
   }
   const { data, error } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .rpc("society_measures", { month_start: month });
   if (error) {
     throw error;

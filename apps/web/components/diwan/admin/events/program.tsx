@@ -167,7 +167,7 @@ const ItemRow = ({
   const { supabase } = useAuth();
   const client = useQueryClient();
   const [editing, setEditing] = useState(false);
-  const table = () => supabase.schema("events").from("program_items");
+  const table = () => supabase.schema("api").from("program_items");
   const save = useMutation({
     mutationFn: async (form: Form) =>
       unwrap(await table().update(toRow(form)).eq("id", item.id)),
@@ -247,7 +247,7 @@ export const EventProgramAdmin = ({
     mutationFn: async (form: Form) =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("program_items")
           .insert({ ...toRow(form), event_id: eventId })
       ),
