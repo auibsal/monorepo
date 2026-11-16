@@ -29,7 +29,6 @@ const toIcs = (
   locale: "en" | "ar",
   tag?: string
 ): IcsEvent => ({
-  canceled: event.status === "canceled",
   description:
     locale === "ar"
       ? (event.summary_ar ?? event.summary_en)
@@ -55,7 +54,9 @@ export const publicEvents = async (admin: AdminClient, locale: "en" | "ar") => {
     .schema("api")
     .from("events")
     .select(eventColumns)
-    .in("status", ["published", "canceled"])
+    // Published only: a canceled event leaves the feed, and calendars that
+    // subscribe remove it on their next refresh.
+    .eq("status", "published")
     .neq("entry", "invite")
     .gte("starts_at", since())
     .order("starts_at");
@@ -124,7 +125,7 @@ export const memberFeed = async (admin: AdminClient, token: string) => {
     .schema("api")
     .from("events")
     .select(eventColumns)
-    .in("status", ["published", "canceled"])
+    .eq("status", "published")
     .gte("starts_at", since())
     .order("starts_at");
   const [{ data: events }, { data: campus }] = await Promise.all([

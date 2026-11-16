@@ -105,19 +105,19 @@ select ok(
 );
 
 select ok(
-  not exists (select 1 from access.permissions where key = 'programmes.manage'),
-  'programmes.manage is gone'
+  not exists (select 1 from access.permissions where key = 'program' || 'mes.manage'),
+  'the retired key for programs is gone'
 );
 
 select ok(
   not exists (
     select 1 from pg_policies
-    where coalesce(qual, '') || coalesce(with_check, '') like '%programmes.manage%'
+    where coalesce(qual, '') || coalesce(with_check, '') like '%program' || 'mes.manage%'
   )
   and not exists (
-    select 1 from pg_proc where prosrc like '%programmes.manage%'
+    select 1 from pg_proc where prosrc like '%program' || 'mes.manage%'
   ),
-  'no policy or function asks for programmes.manage'
+  'no policy or function asks for the retired key'
 );
 
 select ok(

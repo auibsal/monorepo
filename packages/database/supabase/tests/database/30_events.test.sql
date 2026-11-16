@@ -160,13 +160,13 @@ select throws_ok(
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select lives_ok($$ select events.cancel_rsvp('e0000000-0000-0000-0000-000000000001') $$, 'Cancelling an RSVP');
+select lives_ok($$ select events.cancel_rsvp('e0000000-0000-0000-0000-000000000001') $$, 'Canceling an RSVP');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a3');
 select is(
   (select status from events.waitlist where event_id = 'e0000000-0000-0000-0000-000000000001'),
   'offered',
-  'Cancelling holds the place for the first person on the waitlist'
+  'Canceling holds the place for the first person on the waitlist'
 );
 select ok(
   (select offered_until between now() + interval '11 hours' and now() + interval '12 hours 1 minute'

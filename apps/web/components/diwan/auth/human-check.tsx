@@ -104,11 +104,11 @@ export const useHumanCheck = (action: string) => {
     if (!(siteKey && container.current)) {
       return;
     }
-    let cancelled = false;
+    let canceled = false;
     const element = container.current;
     loadTurnstile()
       .then((turnstile) => {
-        if (cancelled) {
+        if (canceled) {
           return;
         }
         widget.current = turnstile.render(element, {
@@ -141,7 +141,7 @@ export const useHumanCheck = (action: string) => {
       })
       .catch(() => setProblem({ code: "script", kind: "failed" }));
     return () => {
-      cancelled = true;
+      canceled = true;
       if (widget.current) {
         window.turnstile?.remove(widget.current);
         widget.current = null;

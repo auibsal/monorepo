@@ -72,7 +72,7 @@ declare
   e events.events;
 begin
   select * into e from events.events where id = feedback_summary.event_id;
-  if not found or not private.leads_event('events.manage', e.id, e.programme_id) then
+  if not found or not private.leads_event('events.manage', e.id, e.program_id) then
     raise exception 'events.manage is required for this event' using errcode = '42501';
   end if;
   return jsonb_build_object(
@@ -188,21 +188,21 @@ create policy "Event managers add to the program" on events.program_items
   with check (exists (
     select 1 from events.events e
     where e.id = event_id
-      and (select private.leads_event('events.manage', e.id, e.programme_id))
+      and (select private.leads_event('events.manage', e.id, e.program_id))
   ));
 create policy "Event managers edit the program" on events.program_items
   for update to authenticated
   using (exists (
     select 1 from events.events e
     where e.id = event_id
-      and (select private.leads_event('events.manage', e.id, e.programme_id))
+      and (select private.leads_event('events.manage', e.id, e.program_id))
   ));
 create policy "Event managers remove from the program" on events.program_items
   for delete to authenticated
   using (exists (
     select 1 from events.events e
     where e.id = event_id
-      and (select private.leads_event('events.manage', e.id, e.programme_id))
+      and (select private.leads_event('events.manage', e.id, e.program_id))
   ));
 
 create trigger log_activity
@@ -298,16 +298,16 @@ as $$
         select e.slug, e.title_en, e.title_ar, e.starts_at,
           jsonb_agg(jsonb_build_object('role_en', s.role_en, 'role_ar', s.role_ar,
             'open', s.capacity - (
-              select count(*) from programmes.shift_signups g
+              select count(*) from programs.shift_signups g
               where g.shift_id = s.id and g.status in ('signed_up', 'confirmed')
             )) order by s.starts_at, s.role_en) as shifts
         from events.events e
-        join programmes.shifts s on s.event_id = e.id
+        join programs.shifts s on s.event_id = e.id
         where e.status = 'published'
           and e.starts_at > at
           and e.starts_at <= at + interval '5 days'
           and s.capacity > (
-            select count(*) from programmes.shift_signups g
+            select count(*) from programs.shift_signups g
             where g.shift_id = s.id and g.status in ('signed_up', 'confirmed')
           )
         group by e.id
@@ -324,7 +324,7 @@ as $$
         where s.status in ('received', 'intake_check')
       ),
       'hiring_new', (
-        select count(*) from programmes.opening_replies r where r.status = 'new'
+        select count(*) from programs.opening_replies r where r.status = 'new'
       ),
       'requests_open', (
         select count(*) from governance.form_submissions f

@@ -11,7 +11,7 @@ import {
 } from "./email";
 
 describe("email helpers", () => {
-  test("recognises AUIB addresses in any case", () => {
+  test("recognizes AUIB addresses in any case", () => {
     expect(isAuibEmail("Student@AUIB.edu.iq ")).toBe(true);
     expect(isAuibEmail("someone@auib.edu.iq.evil.com")).toBe(false);
     expect(isAuibEmail("someone@gmail.com")).toBe(false);

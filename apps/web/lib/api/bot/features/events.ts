@@ -157,7 +157,7 @@ dm.callbackQuery(new RegExp(`^(rsvp|unrsvp):(${UUID})$`, "u"), async (ctx) => {
     const { error } = await db()
       .schema("api")
       .rpc("telegram_cancel_rsvp", params);
-    notice = error ? rsvpError(ctx, error) : ctx.t.rsvpCancelled;
+    notice = error ? rsvpError(ctx, error) : ctx.t.rsvpCanceled;
   }
   await ctx.answerCallbackQuery({
     show_alert: notice.length > 60,

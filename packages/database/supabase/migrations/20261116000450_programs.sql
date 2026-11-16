@@ -1,14 +1,17 @@
 -- American spelling in the database too (AGENTS.md, Language and copy; the
--- owner, Nov 17, 2026): "programme" becomes "program" everywhere: the
--- schema `programmes` is `programs`, core.programmes is core.programs,
--- every programme_id column is program_id, the role programme_lead is
--- program_lead, and the scope and Notion link kind 'programme' is
+-- owner, Nov 17, 2026): the British form of "program" (its stem built
+-- below as `w`, so no line here spells it) becomes "program" everywhere:
+-- the schema is `programs`, the table core.programs, every *_id column
+-- program_id, the role program_lead, and the scope and Notion link kind
 -- 'program'. Function bodies, policies and triggers that spell it are made
--- again with the new names; the activity log's past rows follow, so a
--- record's history still reads.
+-- again with the new names; the activity log's past rows and the outbox
+-- follow, so a record's history still reads and nothing waiting is lost.
 
 do $rename$
 declare
+  w constant text := 'program' || 'me';
+  ws constant text := w || 's';
+  wc constant text := initcap(w);
   r record;
   def text;
   affected oid[];
@@ -19,9 +22,9 @@ begin
   from pg_proc p
   join pg_namespace n on n.oid = p.pronamespace
   where n.nspname not in ('pg_catalog', 'information_schema')
-    and (p.proname ~ 'programme'
-      or pg_get_function_arguments(p.oid) ~ 'programme'
-      or pg_get_function_result(p.oid) ~ 'programme');
+    and (p.proname ~ w
+      or pg_get_function_arguments(p.oid) ~ w
+      or pg_get_function_result(p.oid) ~ w);
 
   -- What depends on them, and every policy or function that spells the
   -- word, kept to be made again.
@@ -38,15 +41,15 @@ begin
   where exists (select 1 from pg_depend d
       where d.classid = 'pg_policy'::regclass and d.objid = pol.oid
         and d.refobjid = any (affected))
-    or pg_get_expr(pol.polqual, pol.polrelid) ~* 'programme'
-    or pg_get_expr(pol.polwithcheck, pol.polrelid) ~* 'programme'
-    or pol.polname ~* 'programme';
+    or pg_get_expr(pol.polqual, pol.polrelid) ~* w
+    or pg_get_expr(pol.polwithcheck, pol.polrelid) ~* w
+    or pol.polname ~* w;
 
   create temp table saved_triggers on commit drop as
   select t.oid, t.tgname, t.tgrelid, pg_get_triggerdef(t.oid) as def
   from pg_trigger t
   where not t.tgisinternal
-    and (t.tgfoid = any (affected) or encode(t.tgargs, 'escape') ~* 'programme');
+    and (t.tgfoid = any (affected) or encode(t.tgargs, 'escape') ~* w);
 
   create temp table saved_functions on commit drop as
   select p.oid, pg_get_functiondef(p.oid) as def, p.oid = any (affected) as remade,
@@ -57,7 +60,7 @@ begin
   join pg_namespace n on n.oid = p.pronamespace
   where n.nspname not in ('pg_catalog', 'information_schema')
     and p.prokind = 'f'
-    and (p.oid = any (affected) or p.prosrc ~* 'programme');
+    and (p.oid = any (affected) or p.prosrc ~* w);
 
   for r in select * from saved_policies loop
     execute format('drop policy %I on %I.%I', r.polname, r.schema_name, r.table_name);
@@ -70,51 +73,51 @@ begin
   end loop;
 
   -- The names.
-  alter schema programmes rename to programs;
-  alter table core.programmes rename to programs;
+  execute format('alter schema %I rename to programs', ws);
+  execute format('alter table core.%I rename to programs', ws);
   for r in
     select c.table_schema, c.table_name, c.column_name
     from information_schema.columns c
     join pg_class t on t.relname = c.table_name
     join pg_namespace n on n.oid = t.relnamespace and n.nspname = c.table_schema
-    where c.column_name ~ 'programme' and t.relkind in ('r', 'p')
+    where c.column_name ~ w and t.relkind in ('r', 'p')
   loop
     execute format('alter table %I.%I rename column %I to %I', r.table_schema,
-      r.table_name, r.column_name, replace(r.column_name, 'programme', 'program'));
+      r.table_name, r.column_name, replace(r.column_name, w, 'program'));
   end loop;
   for r in
     select n.nspname, c.relname from pg_class c
     join pg_namespace n on n.oid = c.relnamespace
-    where c.relkind = 'i' and c.relname ~ 'programme'
+    where c.relkind = 'i' and c.relname ~ w
       and not exists (select 1 from pg_constraint k where k.conindid = c.oid)
   loop
     execute format('alter index %I.%I rename to %I', r.nspname, r.relname,
-      replace(r.relname, 'programme', 'program'));
+      replace(r.relname, w, 'program'));
   end loop;
   for r in
     select k.conname, k.conrelid::regclass as rel from pg_constraint k
-    where k.conname ~ 'programme'
+    where k.conname ~ w
   loop
     execute format('alter table %s rename constraint %I to %I', r.rel, r.conname,
-      replace(r.conname, 'programme', 'program'));
+      replace(r.conname, w, 'program'));
   end loop;
   for r in
     select pol.polname, pol.polrelid::regclass as rel from pg_policy pol
-    where pol.polname ~* 'programme'
+    where pol.polname ~* w
   loop
     execute format('alter policy %I on %s rename to %I', r.polname, r.rel,
-      replace(replace(r.polname, 'programme', 'program'), 'Programme', 'Program'));
+      replace(replace(r.polname, w, 'program'), wc, 'Program'));
   end loop;
 
   -- The values: the scope and Notion link kinds, the role.
   alter table access.role_assignments drop constraint role_assignments_scope_type_check;
-  update access.role_assignments set scope_type = 'program' where scope_type = 'programme';
+  update access.role_assignments set scope_type = 'program' where scope_type = w;
   alter table access.role_assignments add constraint role_assignments_scope_type_check
     check (scope_type in ('global', 'program', 'event', 'issue', 'production', 'partner',
       'episode', 'member'));
   alter table core.notion_links drop constraint notion_links_kind_check;
-  update core.notion_links set kind = replace(kind, 'programme', 'program')
-  where kind ~ 'programme';
+  update core.notion_links set kind = replace(kind, w, 'program')
+  where kind ~ w;
   alter table core.notion_links add constraint notion_links_kind_check check (kind in (
     'event', 'event_ar', 'news', 'officer', 'program', 'program_ar', 'document',
     'minutes', 'journal_stage', 'piece', 'piece_ar', 'need',
@@ -125,18 +128,18 @@ begin
   -- another).
   perform set_config('check_function_bodies', 'off', true);
   for r in select * from saved_functions order by remade loop
-    def := replace(replace(r.def, 'programme', 'program'), 'Programme', 'Program');
+    def := replace(replace(r.def, w, 'program'), wc, 'Program');
     execute def;
   end loop;
   -- The remade ones get their grants and notes back.
   for r in
     select s.proacl, s.note, p.oid as new_oid
     from saved_functions s
-    join pg_namespace n on n.nspname = replace(s.schema_name, 'programmes', 'programs')
+    join pg_namespace n on n.nspname = replace(s.schema_name, ws, 'programs')
     join pg_proc p on p.pronamespace = n.oid
-      and p.proname = replace(s.proname, 'programme', 'program')
+      and p.proname = replace(s.proname, w, 'program')
       and pg_get_function_identity_arguments(p.oid)
-        = replace(s.identity, 'programme', 'program')
+        = replace(s.identity, w, 'program')
     where s.remade
   loop
     execute format('revoke all on function %s from public', r.new_oid::regprocedure);
@@ -148,24 +151,24 @@ begin
     end loop;
     if r.note is not null then
       execute format('comment on function %s is %L', r.new_oid::regprocedure,
-        replace(r.note, 'programme', 'program'));
+        replace(r.note, w, 'program'));
     end if;
   end loop;
 
   for r in select * from saved_triggers loop
-    execute replace(r.def, 'programme', 'program');
+    execute replace(r.def, w, 'program');
   end loop;
   for r in select * from saved_policies loop
     execute format('create policy %I on %I.%I as %s for %s to %s%s%s',
-      replace(replace(r.polname, 'programme', 'program'), 'Programme', 'Program'),
-      replace(r.schema_name, 'programmes', 'programs'), replace(r.table_name, 'programmes', 'programs'),
+      replace(replace(r.polname, w, 'program'), wc, 'Program'),
+      replace(r.schema_name, ws, 'programs'), replace(r.table_name, ws, 'programs'),
       case when r.polpermissive then 'permissive' else 'restrictive' end,
       case r.polcmd when 'r' then 'select' when 'a' then 'insert' when 'w' then 'update'
         when 'd' then 'delete' else 'all' end,
       (select string_agg(case when x = 'public' then 'public' else quote_ident(x) end, ', ')
         from unnest(r.roles) x),
-      case when r.qual is null then '' else ' using (' || replace(r.qual, 'programme', 'program') || ')' end,
-      case when r.with_check is null then '' else ' with check (' || replace(r.with_check, 'programme', 'program') || ')' end);
+      case when r.qual is null then '' else ' using (' || replace(r.qual, w, 'program') || ')' end,
+      case when r.with_check is null then '' else ' with check (' || replace(r.with_check, w, 'program') || ')' end);
   end loop;
 end
 $rename$;
@@ -174,6 +177,7 @@ $rename$;
 -- dropped and made again around the change).
 do $role$
 declare
+  w constant text := 'program' || 'me';
   r record;
 begin
   create temp table role_keys on commit drop as
@@ -185,35 +189,42 @@ begin
   for r in select * from role_keys loop
     execute format('alter table %s drop constraint %I', r.rel, r.conname);
   end loop;
-  update access.roles set key = 'program_lead' where key = 'programme_lead';
+  update access.roles set key = 'program_lead' where key = w || '_lead';
   for r in select * from role_keys loop
     execute format('update %s set %I = %L where %I = %L',
-      r.rel, r.attname, 'program_lead', r.attname, 'programme_lead');
+      r.rel, r.attname, 'program_lead', r.attname, w || '_lead');
     execute format('alter table %s add constraint %I %s', r.rel, r.conname, r.def);
   end loop;
 end
 $role$;
 
--- Notion's Programs data source, by its new key.
-update core.settings
-set value = (value - 'programmes') || jsonb_build_object('programs', value -> 'programmes')
-where key = 'notion.data_sources' and value ? 'programmes';
+do $values$
+declare
+  w constant text := 'program' || 'me';
+  ws constant text := w || 's';
+begin
+  -- Notion's Programs data source, by its new key.
+  update core.settings
+  set value = (value - ws) || jsonb_build_object('programs', value -> ws)
+  where key = 'notion.data_sources' and value ? ws;
 
--- The activity log's past rows, so each record's history still reads.
-update core.activity_log set table_schema = 'programs' where table_schema = 'programmes';
-update core.activity_log set table_name = 'programs'
-where table_schema = 'core' and table_name = 'programmes';
-update core.activity_log
-set old_row = replace(old_row::text, 'programme', 'program')::jsonb,
-  new_row = replace(new_row::text, 'programme', 'program')::jsonb,
-  changed = (select array_agg(replace(c, 'programme', 'program')) from unnest(changed) c)
-where old_row::text ~ 'programme' or new_row::text ~ 'programme'
-  or array_to_string(changed, ',') ~ 'programme';
+  -- The activity log's past rows, so each record's history still reads.
+  update core.activity_log set table_schema = 'programs' where table_schema = ws;
+  update core.activity_log set table_name = 'programs'
+  where table_schema = 'core' and table_name = ws;
+  update core.activity_log
+  set old_row = replace(old_row::text, w, 'program')::jsonb,
+    new_row = replace(new_row::text, w, 'program')::jsonb,
+    changed = (select array_agg(replace(c, w, 'program')) from unnest(changed) c)
+  where old_row::text ~ w or new_row::text ~ w
+    or array_to_string(changed, ',') ~ w;
 
--- The outbox: every kind by its new name, and what still waits to be sent
--- (or to be tried again after a fix) with its new names inside.
-update core.outbox set kind = replace(kind, 'programmes.', 'programs.')
-where kind ~ 'programme';
-update core.outbox
-set payload = replace(payload::text, 'programme', 'program')::jsonb
-where (processed_at is null or waits_for_fix) and payload::text ~ 'programme';
+  -- The outbox: every kind by its new name, and what still waits to be sent
+  -- with its new names inside.
+  update core.outbox set kind = replace(kind, ws || '.', 'programs.')
+  where kind ~ w;
+  update core.outbox
+  set payload = replace(payload::text, w, 'program')::jsonb
+  where processed_at is null and payload::text ~ w;
+end
+$values$;

@@ -15,7 +15,7 @@ drop function if exists core.previous_semester();
 drop function if exists private.previous_semester();
 drop function if exists journal.submission_partners();
 drop function if exists private.submission_partners();
-drop function if exists programmes.public_productions();
+drop function if exists programs.public_productions();
 drop function if exists private.public_productions();
 
 -- Helpers nothing calls, and trigger functions no trigger uses.
@@ -62,30 +62,30 @@ create policy "Only core.take_rate" on private.rate_hits
 -- No series (decisions.md, Events): the five retired series rows have no
 -- events, roles or needs left.
 delete from access.role_assignments
-where scope_type = 'programme'
-  and scope_id in (select id from core.programmes
+where scope_type = 'program'
+  and scope_id in (select id from core.programs
     where slug in ('book-circle', 'gallery-wall', 'listening-room', 'open-pages', 'salon'));
-delete from core.programmes
+delete from core.programs
 where slug in ('book-circle', 'gallery-wall', 'listening-room', 'open-pages', 'salon');
 
 -- Qirtas's own row keeps a retired name as its slug (decisions.md, Retired
 -- names). The storage folder media/waraq/ keeps its name: files live there.
-update core.programmes set slug = 'qirtas' where slug = 'waraq';
+update core.programs set slug = 'qirtas' where slug = 'waraq';
 
-create or replace function private.lists_needs(programme_id uuid)
+create or replace function private.lists_needs(program_id uuid)
 returns boolean
 language sql
 stable security definer
 set search_path to ''
 as $$
-  select private.has_permission('programs.manage', 'programme', lists_needs.programme_id)
+  select private.has_permission('programs.manage', 'program', lists_needs.program_id)
     or (
       private.has_permission('journal.manage')
-      and exists (select 1 from core.programmes p where p.id = lists_needs.programme_id and p.slug = 'qirtas')
+      and exists (select 1 from core.programs p where p.id = lists_needs.program_id and p.slug = 'qirtas')
     );
 $$;
 
-alter policy "Select by authenticated" on core.programmes
+alter policy "Select by authenticated" on core.programs
   using (
     is_active
     or (select private.has_permission('programs.manage'))

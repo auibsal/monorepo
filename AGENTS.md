@@ -382,9 +382,8 @@ everywhere:
   Merriam-Webster), no exceptions, in UI copy, emails, comments, commits,
   docs and the database's text: curly quotes and apostrophes, the serial
   comma, en dashes for ranges, the ellipsis character, sentence case for
-  interface labels. Code identifiers, schemas, tables and columns follow
-  it too (`programs`, `program_id`); the one exception left is the status
-  value `cancelled`.
+  interface labels. Code identifiers, schemas, tables, columns and stored
+  values follow it too (`programs`, `program_id`, `canceled`).
 - **Arabic:** Modern Standard Arabic for the site, your account, the
   Diwan, emails, documents, certificates and Qirtas, written by Claude
   with no native-review gate; Iraqi Arabic (with گ، چ، پ) only where the

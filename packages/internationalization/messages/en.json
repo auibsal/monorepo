@@ -188,7 +188,7 @@
     },
     "passkeyErrors": {
       "already_registered": "This device already has a passkey for your account.",
-      "cancelled": "No passkey was used. Try again, or sign in with your email.",
+      "canceled": "No passkey was used. Try again, or sign in with your email.",
       "expired": "That took too long. Please try again.",
       "human_check": "We couldn’t confirm you’re a person. Reload the page and try again.",
       "rate_limited": "Too many attempts. Please wait a moment and try again.",
@@ -513,7 +513,7 @@
       "notice": {
         "booked": "Booked. Your ticket is in your account, and a confirmation email is on its way.",
         "waitlisted": "The event is full, so you’re on the waitlist. We’ll email you if a place opens.",
-        "cancelled": "Done. Your place has gone to the next person waiting, if there is one.",
+        "canceled": "Done. Your place has gone to the next person waiting, if there is one.",
         "leftWaitlist": "Done. You’re off the waitlist.",
         "notVerified": "Booking opens once your membership is verified. An officer checks new members within a few days.",
         "closed": "Booking for this event has closed.",
@@ -5456,7 +5456,7 @@
       "subscribe": "Subscribe to the calendar",
       "subscribeHint": "(adds every public event to your phone or computer calendar)",
       "all": "Events",
-      "cancelled": "This event has been canceled.",
+      "canceled": "This event has been canceled.",
       "rsvp": "Book a place",
       "rsvpHint": "Sign in to book a place.",
       "addToCalendar": "Add to calendar",
@@ -5501,7 +5501,7 @@
       "notices": {
         "booked": "Booked. A confirmation is on its way.",
         "waitlisted": "It’s full, so you’re on the waitlist; you’ll hear if a place opens.",
-        "cancelled": "Done.",
+        "canceled": "Done.",
         "reminded": "We’ll remind you the day before.",
         "failed": "That didn’t go through. Try again, or book from your calendar."
       },
@@ -6176,7 +6176,7 @@
         "horizontalAr": "Arabic horizontal lockup",
         "horizontalArReversed": "Arabic horizontal lockup, reversed"
       },
-      "coloursTitle": "Colors",
+      "colorsTitle": "Colors",
       "contactPress": "For anything else, contact the Media Director through any of our channels."
     },
     "privacy": {

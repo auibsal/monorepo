@@ -59,7 +59,7 @@ const OPENING: Record<string, FlowStatus> = {
 
 const AUDITION: Record<string, FlowStatus> = {
   called_back: { step: "callback" },
-  cancelled: { step: "withdrawn" },
+  canceled: { step: "withdrawn" },
   cast: { decision: "cast", step: "decision" },
   not_cast: { decision: "notCast", step: "decision" },
   signed_up: { step: "received" },

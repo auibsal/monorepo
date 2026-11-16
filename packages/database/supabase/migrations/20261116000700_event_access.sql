@@ -42,14 +42,14 @@ drop function private.calendar(timestamptz, timestamptz);
 -- Seeing an event: published (or canceled) for everyone, any state for
 -- whoever manages it. Invited only stays with the invited (the restrictive
 -- policy and private.can_see_event_id).
-create function private.can_see_event(status text, programme_id uuid)
+create function private.can_see_event(status text, program_id uuid)
 returns boolean
 language sql
 stable security definer
 set search_path to ''
 as $$
   select status in ('published', 'canceled')
-    or access.has_permission('events.manage', 'programme', programme_id);
+    or access.has_permission('events.manage', 'program', program_id);
 $$;
 grant execute on function private.can_see_event(text, uuid) to anon, authenticated;
 
@@ -62,8 +62,8 @@ as $$
   select exists (
     select 1 from events.events e
     where e.id = can_see_event_id.event_id
-      and private.can_see_event(e.status, e.programme_id)
-      and (e.entry <> 'invite' or private.invited(e.id, e.programme_id))
+      and private.can_see_event(e.status, e.program_id)
+      and (e.entry <> 'invite' or private.invited(e.id, e.program_id))
   );
 $$;
 
@@ -86,7 +86,7 @@ as $$
     )
     from events.events e
     where e.id = confirmed_count.event_id
-      and private.can_see_event(e.status, e.programme_id)
+      and private.can_see_event(e.status, e.program_id)
   ), 0);
 $$;
 
@@ -96,7 +96,7 @@ create policy "Anyone reads published events" on events.events
 create policy "Signed-in users read the events they may see" on events.events
   for select to authenticated
   using (
-    (select private.can_see_event(status, programme_id))
+    (select private.can_see_event(status, program_id))
     or (select private.has_permission('events.manage', 'event', id))
   );
 
@@ -106,7 +106,7 @@ drop function private.can_see_event(text, boolean, uuid);
 -- invited. Nothing is a teaser any more.
 create function private.calendar(from_at timestamptz, to_at timestamptz)
 returns table (
-  id uuid, slug text, programme_id uuid, title_en text, title_ar text,
+  id uuid, slug text, program_id uuid, title_en text, title_ar text,
   summary_en text, summary_ar text, venue_en text, venue_ar text,
   starts_at timestamptz, ends_at timestamptz, classes text[], entry text,
   capacity integer, status text, image_path text
@@ -115,22 +115,22 @@ language sql
 stable security definer
 set search_path to ''
 as $$
-  select e.id, e.slug, e.programme_id, e.title_en, e.title_ar,
+  select e.id, e.slug, e.program_id, e.title_en, e.title_ar,
     e.summary_en, e.summary_ar, e.venue_en, e.venue_ar,
     e.starts_at, e.ends_at, e.classes, e.entry, e.capacity, e.status, e.image_path
   from events.events e
   where e.status in ('published', 'canceled')
     and e.starts_at >= calendar.from_at
     and e.starts_at < calendar.to_at
-    and private.can_see_event(e.status, e.programme_id)
-    and (e.entry <> 'invite' or private.invited(e.id, e.programme_id))
+    and private.can_see_event(e.status, e.program_id)
+    and (e.entry <> 'invite' or private.invited(e.id, e.program_id))
   order by e.starts_at
   limit 500;
 $$;
 
 create function events.calendar(from_at timestamptz, to_at timestamptz)
 returns table (
-  id uuid, slug text, programme_id uuid, title_en text, title_ar text,
+  id uuid, slug text, program_id uuid, title_en text, title_ar text,
   summary_en text, summary_ar text, venue_en text, venue_ar text,
   starts_at timestamptz, ends_at timestamptz, classes text[], entry text,
   capacity integer, status text, image_path text
@@ -177,15 +177,15 @@ as $$
   select * from (
     select o.id, o.kind, o.owner, o.role, o.title_en, o.title_ar, o.body_en, o.body_ar,
       o.eligibility_en, o.eligibility_ar, o.closes_at, o.places, e.slug, o.created_at
-    from programmes.openings o
+    from programs.openings o
     left join events.events e on e.id = o.event_id
     where o.is_open and (o.closes_at is null or o.closes_at > now())
       and (o.event_id is null or (e.status = 'published' and e.entry <> 'invite'))
     union all
     select a.id, 'audition', 'program', null, pr.title_en, pr.title_ar,
       a.prepare_en, a.prepare_ar, null, null, a.starts_at, a.capacity, null, a.created_at
-    from programmes.auditions a
-    join programmes.productions pr on pr.id = a.production_id
+    from programs.auditions a
+    join programs.productions pr on pr.id = a.production_id
     where pr.is_public and pr.stage = 'auditions' and a.starts_at > now()
   ) places
   order by places.closes_at nulls last, places.created_at desc;
@@ -201,8 +201,8 @@ stable security definer
 set search_path to ''
 as $$
   select e.slug, e.title_en, e.title_ar, e.starts_at, e.venue_en, e.venue_ar
-  from programmes.production_events pe
-  join programmes.productions p on p.id = pe.production_id
+  from programs.production_events pe
+  join programs.productions p on p.id = pe.production_id
   join events.events e on e.id = pe.event_id
   where pe.production_id = public_production_events.production_id
     and p.is_public and p.rights_status = 'cleared'
@@ -252,7 +252,7 @@ as $$
       coalesce(p.summary_en, p.summary_ar), p.created_at,
       ts_rank(to_tsvector('simple'::regconfig, concat_ws(' ', p.title_en, p.title_ar,
         p.summary_en, p.summary_ar, p.playwright)), q.tsq)
-    from programmes.productions p, q
+    from programs.productions p, q
     where p.is_public and p.stage not in ('proposal', 'canceled')
       and to_tsvector('simple'::regconfig, concat_ws(' ', p.title_en, p.title_ar,
         p.summary_en, p.summary_ar, p.playwright)) @@ q.tsq

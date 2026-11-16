@@ -27,7 +27,7 @@ with failed as (
   update core.outbox
   set processed_at = now(),
     last_error = 'replaced: queued again once after the email key was fixed'
-  where kind in ('access.role_assigned', 'programmes.opening_reply')
+  where kind in ('access.role_assigned', 'programs.opening_reply')
     and processed_at is null
     and attempts >= 5
     and last_error like 'The associated domain with your API key is not verified%'
