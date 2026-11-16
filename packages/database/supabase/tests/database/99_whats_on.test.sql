@@ -103,11 +103,11 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000057a3', 'events.lead@au
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000057a3', 'programme_lead');
 
 insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, rsvp_enabled, entry, status) values
-  ('e0000000-0000-0000-0000-0000000057e1', 'open-night', (select id from core.programmes where slug = 'open-pages'),
+  ('e0000000-0000-0000-0000-0000000057e1', 'open-night', (select id from core.programmes where slug = 'company'),
     'Open Night', 'ليلة مفتوحة', now() + interval '1 day', true, 'open', 'published'),
-  ('e0000000-0000-0000-0000-0000000057e2', 'members-night', (select id from core.programmes where slug = 'open-pages'),
+  ('e0000000-0000-0000-0000-0000000057e2', 'members-night', (select id from core.programmes where slug = 'company'),
     'Members Night', 'ليلة الأعضاء', now() + interval '2 days', true, 'members', 'published'),
-  ('e0000000-0000-0000-0000-0000000057e3', 'invited-night', (select id from core.programmes where slug = 'open-pages'),
+  ('e0000000-0000-0000-0000-0000000057e3', 'invited-night', (select id from core.programmes where slug = 'company'),
     'Invited Night', 'ليلة المدعوين', now() + interval '3 days', true, 'invite', 'published');
 insert into events.events (id, slug, title_en, title_ar, starts_at, rsvp_enabled, status) values
   ('e0000000-0000-0000-0000-0000000057e4', 'old-writer', 'Old Writer', 'كاتب قديم', now() + interval '4 days', false, 'published');

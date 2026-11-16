@@ -144,7 +144,7 @@ select is((select count(*)::integer from programmes.needs), 0, 'Members do not s
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b0a4');
 select lives_ok(
   $$ insert into programmes.needs (programme_id, item, quantity, needed_by, purpose)
-     values ((select id from core.programmes where slug = 'waraq'), 'Printing of the Edition', 100, '2027-02-15', 'Edition 1') $$,
+     values ((select id from core.programmes where slug = 'qirtas'), 'Printing of the Edition', 100, '2027-02-15', 'Edition 1') $$,
   'The Editor lists the paper''s needs'
 );
 

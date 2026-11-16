@@ -101,7 +101,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000eb002', 'lead@club-eb.o
 select pg_temp.make_user('00000000-0000-0000-0000-0000000eb003', 'other@club-eb2.org', 'Other Lead');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000eb004', 'member.eb@auib.edu.iq', 'Member');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000eb001', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'salon'));
+  (select id from core.programmes where slug = 'company'));
 
 insert into governance.partners (id, slug, name_en, kind, is_listed, status) values
   ('00000000-0000-0000-0000-0000000ebd01', 'club-eb', 'The Club', 'club', true, 'active'),
@@ -111,7 +111,7 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000eb003', 'partner_lead'
 
 insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status, entry)
 values ('00000000-0000-0000-0000-0000000eb101', 'salon-eb-joint',
-  (select id from core.programmes where slug = 'salon'),
+  (select id from core.programmes where slug = 'company'),
   'A Joint Salon', 'صالون مشترك', now() + interval '20 days', 'draft', 'open');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000eb001');

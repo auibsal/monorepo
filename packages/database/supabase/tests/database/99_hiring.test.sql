@@ -104,7 +104,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-00000000d1a4', 'lead-h@auib.ed
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000d1a1', 'general_secretary');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000d1a2', 'eic');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000d1a4', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'salon'));
+  (select id from core.programmes where slug = 'company'));
 
 select pg_temp.logout();
 select set_eq(

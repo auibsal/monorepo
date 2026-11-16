@@ -50,3 +50,59 @@ delete from core.settings where key in ('journal.tagline_en', 'journal.tagline_a
 -- rows had none.
 alter table private.rate_hits
   add column if not exists id bigint generated always as identity primary key;
+
+-- Its one reader and writer is core.take_rate (SECURITY DEFINER, as the
+-- owner); no one else reaches it. Said as a policy, so RLS shows the intent
+-- (Supabase's advisor: RLS enabled, no policy).
+create policy "Only core.take_rate" on private.rate_hits
+  as restrictive for all to public using (false) with check (false);
+
+-- ── Retired rows ────────────────────────────────────────────────────────────
+
+-- No series (decisions.md, Events): the five retired series rows have no
+-- events, roles or needs left.
+delete from access.role_assignments
+where scope_type = 'programme'
+  and scope_id in (select id from core.programmes
+    where slug in ('book-circle', 'gallery-wall', 'listening-room', 'open-pages', 'salon'));
+delete from core.programmes
+where slug in ('book-circle', 'gallery-wall', 'listening-room', 'open-pages', 'salon');
+
+-- Qirtas's own row keeps a retired name as its slug (decisions.md, Retired
+-- names). The storage folder media/waraq/ keeps its name: files live there.
+update core.programmes set slug = 'qirtas' where slug = 'waraq';
+
+create or replace function private.lists_needs(programme_id uuid)
+returns boolean
+language sql
+stable security definer
+set search_path to ''
+as $$
+  select private.has_permission('programs.manage', 'programme', lists_needs.programme_id)
+    or (
+      private.has_permission('journal.manage')
+      and exists (select 1 from core.programmes p where p.id = lists_needs.programme_id and p.slug = 'qirtas')
+    );
+$$;
+
+alter policy "Select by authenticated" on core.programmes
+  using (
+    is_active
+    or (select private.has_permission('programs.manage'))
+    or (slug = 'qirtas' and (select private.has_permission('journal.manage')))
+  );
+
+-- Descriptions that still name retired roles and the old staff space.
+update access.permissions set description = 'See who wrote each submission (the Managing Editor)'
+where key = 'journal.identity.view';
+update access.permissions set description =
+  'Run the Typewriter Tour: transcribe, attach and approve Six Words (the Secretary, the Director of Membership and the Tour Lead)'
+where key = 'tour.run';
+update access.permissions set description = 'Read the signed copies of forms filled on the site (the Secretary)'
+where key = 'forms.handle';
+update core.settings set description = 'The bot''s Telegram username without the @, for the “Connect Telegram” link in Settings.'
+where key = 'telegram.bot_username';
+update core.settings set description = 'The officer handbook in the team''s Notion workspace: its first page and each page by its slug.'
+where key = 'notion.handbook';
+update core.settings set description = 'Notion data sources the platform syncs with.'
+where key = 'notion.data_sources';

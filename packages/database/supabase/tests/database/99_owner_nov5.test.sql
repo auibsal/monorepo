@@ -97,7 +97,7 @@ $$;
 -- The owner's decisions of Nov 5, 2026: the Council of six, no programs
 -- (events, with event leads scoped to a series or one event), and the
 -- Typewriter Tour under membership.
-select plan(18);
+select plan(17);
 
 select is(
   (select array_agg(key order by key) from access.roles where is_council),
@@ -149,7 +149,7 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000f5001', 'programme_lea
   '00000000-0000-0000-0000-0000000f5101');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000f5002', 'tour_lead');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000f5003', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'salon'));
+  (select id from core.programmes where slug = 'company'));
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f5001');
 select is((select count(*)::int from events.events where id in (
@@ -176,11 +176,6 @@ select throws_ok(
   'a series'' event lead does not: the Tour belongs to membership'
 );
 select pg_temp.logout();
-select is(
-  (select rhythm_en from core.programmes where slug = 'salon'),
-  'Tuesdays, as the term calendar sets.',
-  'Each series runs as the term calendar sets'
-);
 
 -- Standard events (decisions.md, later): an event's parts are its own.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000f5001');
@@ -199,7 +194,7 @@ select throws_ok(
 select pg_temp.logout();
 select ok(
   not exists (select 1 from events.events e join core.programmes p on p.id = e.programme_id
-    where p.slug in ('second-chapter', 'salon', 'book-circle', 'open-pages', 'listening-room', 'typewriter-tour')),
+    where p.slug in ('second-chapter', 'typewriter-tour')),
   'No event belongs to a series'
 );
 

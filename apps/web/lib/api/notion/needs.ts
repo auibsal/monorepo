@@ -25,8 +25,8 @@ import { prop, read } from "./props";
 /** Notion's "For", as the site's standing activities (core.programmes). */
 const FOR_SLUG: Record<string, string> = {
   "Next Stop": "next-stop",
-  Qalam: "waraq",
-  Qirtas: "waraq",
+  Qalam: "qirtas",
+  Qirtas: "qirtas",
   "Second Chapter": "second-chapter",
   "The Company": "company",
   "Typewriter Tour": "typewriter-tour",

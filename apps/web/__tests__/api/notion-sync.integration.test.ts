@@ -256,7 +256,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
       .schema("core")
       .from("programmes")
       .select("id")
-      .eq("slug", "salon")
+      .eq("slug", "company")
       .single();
     salonId = salon?.id ?? "";
     const { error: roleError } = await admin

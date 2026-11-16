@@ -653,7 +653,7 @@ const QirtasNeeds = () => {
           .schema("core")
           .from("programmes")
           .select("id")
-          .eq("slug", "waraq")
+          .eq("slug", "qirtas")
           .maybeSingle()
       ),
     queryKey: ["admin", "qirtas-programme"],
