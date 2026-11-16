@@ -93,14 +93,12 @@ there goes to auibsal.org).
    `lib/mta-sts.ts`, and a new `id` (the date) in `_mta-sts`. Any change to
    the MX records or the policy needs both.
 
-**DKIM at 2048 bits:** Zoho's selector `zmail` is 1024-bit; Zoho → Mail
-Admin → Domains → auibsal.org → Email Configuration → DKIM: add a 2048-bit
-selector named `zoho202611` (the provider, then the year and month the key
-was made, so the next rotation is `zoho202711` beside it), publish its TXT
-at `zoho202611._domainkey`, verify, make it the default, and remove
-`zmail` from Zoho and Cloudflare a week later, once mail signed with it
-has arrived (M3AAWG and NIST SP 800-177 recommend 2048 bits and a yearly
-rotation). Resend chooses its own keys.
+**DKIM at 2048 bits:** Zoho signs with the selector `zoho202611`
+(2048-bit; the provider, then the year and month the key was made). Each
+year a new key is added beside it (`zoho202711`), made the default, and
+the old one removed a week later, once mail signed with it has arrived
+(M3AAWG and NIST SP 800-177: 2048 bits, a yearly rotation). Resend chooses
+its own keys.
 
 **BIMI** (the logo beside the Society's mail in inboxes) is not used: Gmail
 and Apple Mail show it only with a paid mark certificate (decisions.md:
@@ -131,7 +129,7 @@ Vercel (Production). The steps, for a new domain or a move:
 - **Authentication → Sign In / Providers → Email:** Confirm email on;
   Secure email change on; minimum password length 12; secure password
   change on. **Attack Protection:** CAPTCHA (Turnstile) on; leaked
-  password protection on once the plan allows it (Pro).
+  password protection (a Pro plan setting) on.
 - **Authentication → Sessions:** JWT expiry 3600 seconds (an hour);
   refresh token reuse interval 10 seconds.
 - **Database → Network Restrictions:** where the plan allows, only the
@@ -158,10 +156,9 @@ run from outside. Until it exists, `status` must not point anywhere.
    `https://auibsal.org` and `https://auibsal.org/api/health` every three
    minutes, alerting the web lead.
 2. Then, in Cloudflare, a CNAME `status` to the address the status
-   service gives, DNS only. A CNAME with no status page behind it (as on
-   Nov 16: it led to Better Stack's home page) lets anyone who claims the
-   name on Better Stack show their page at status.auibsal.org; delete it
-   until the page exists.
+   service gives, DNS only. A CNAME with no status page behind it lets
+   anyone who claims the name on that service show their page at
+   status.auibsal.org, so the record exists only while the page does.
 
 ## Telegram
 - Hudhud is an admin in both groups with every right but Remain Anonymous, **Add New Admins included**: it makes the officers admins (`docs/platform/telegram.md`).
