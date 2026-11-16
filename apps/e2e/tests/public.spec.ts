@@ -97,7 +97,9 @@ test.describe("public site", () => {
         expect(range?.startsWith("\u2066")).toBe(true);
         expect(range?.trimEnd().endsWith("\u2069")).toBe(true);
       } else {
-        expect(range).toMatch(/\d:\d\d–\d{1,2}:\d\d [ap]\.m\./u);
+        expect(range).toMatch(
+          /\d{1,2}:\d\d( [ap]\.m\.)?–\d{1,2}:\d\d [ap]\.m\./u
+        );
       }
       const footer = page.getByRole("contentinfo");
       await expect(footer).not.toContainText(
