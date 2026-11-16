@@ -107,11 +107,7 @@ export const ArchiveMonth = async ({
       {shown.map((d) => {
         const inDesk = pieces.filter((p) => p.desk === d);
         return inDesk.length === 0 ? null : (
-          <section
-            aria-labelledby={`archive-${d}`}
-            className="grid gap-4"
-            key={d}
-          >
+          <section aria-label={t(`desks.${d}`)} className="grid gap-4" key={d}>
             <h2
               className="type-label border-text border-b pb-2"
               id={`archive-${d}`}

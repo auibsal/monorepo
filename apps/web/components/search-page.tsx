@@ -213,10 +213,7 @@ const SearchStart = async ({ locale }: { locale: Locale }) => {
   return (
     <div className="grid gap-10 md:grid-cols-2">
       {recent.length > 0 ? (
-        <section
-          aria-labelledby="search-recent"
-          className="grid content-start gap-3"
-        >
+        <section aria-label={t("recent")} className="grid content-start gap-3">
           <h2 className="type-heading" id="search-recent">
             {t("recent")}
           </h2>
@@ -242,10 +239,7 @@ const SearchStart = async ({ locale }: { locale: Locale }) => {
         </section>
       ) : null}
       {coming.length > 0 ? (
-        <section
-          aria-labelledby="search-coming"
-          className="grid content-start gap-3"
-        >
+        <section aria-label={t("coming")} className="grid content-start gap-3">
           <h2 className="type-heading" id="search-coming">
             {t("coming")}
           </h2>

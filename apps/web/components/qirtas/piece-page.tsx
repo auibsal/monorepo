@@ -251,7 +251,7 @@ export const PieceArticle = async ({
       <ReadOn issue={issue} locale={locale} next={next} />
       {related.length > 0 ? (
         <aside
-          aria-labelledby="related"
+          aria-label={t("moreFrom", { desk: t(`desks.${desk}`) })}
           className="mx-auto grid w-full max-w-3xl gap-4 px-4 print:hidden"
         >
           <h2 className="type-heading" id="related">

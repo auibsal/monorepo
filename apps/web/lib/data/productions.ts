@@ -11,7 +11,7 @@ import { type Client, unwrap } from "./client";
 export const productionKinds = ["staged_reading", "production"] as const;
 export type ProductionKind = (typeof productionKinds)[number];
 
-/** In order. `cancelled` can be reached from any stage before `closed`. */
+/** In order. `canceled` can be reached from any stage before `closed`. */
 const productionStages = [
   "proposal",
   "approved",

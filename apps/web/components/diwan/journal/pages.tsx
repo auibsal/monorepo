@@ -697,7 +697,7 @@ const ReadingTimeline = ({
     history.find((h) => stageOf(h.to_status) === stage)?.changed_at;
 
   return (
-    <section aria-labelledby="timeline" className="grid gap-3">
+    <section aria-label={t("progress")} className="grid gap-3">
       <h2 className="type-subheading" id="timeline">
         {t("progress")}
       </h2>

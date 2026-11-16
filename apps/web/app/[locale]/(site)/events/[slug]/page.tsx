@@ -93,7 +93,7 @@ const EventView = async ({
   const ti = await getTranslations({ locale, namespace: "web.institutions" });
   const body = localized(event, "body", locale);
   const image = mediaUrl(event.image_path);
-  const cancelled = event.status === "canceled";
+  const canceled = event.status === "canceled";
   // A partner that owns the event (Notion's Host) is named under the title,
   // "Hosted by"; the Society's own events have no host line (decisions.md,
   // Events).
@@ -114,26 +114,27 @@ const EventView = async ({
   const now = await roughlyNow();
   const upcoming = new Date(event.starts_at).getTime() > now;
   // "How was it?" from the end for 14 days (decisions.md, Events).
-  const asking = !cancelled && events.feedbackOpen(event, now);
+  const asking = !canceled && events.feedbackOpen(event, now);
 
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-16">
-      <JsonLd
-        data={eventLd(locale, {
-          audience:
-            event.entry === "invite"
-              ? null
-              : await classesText(event.classes, locale, "list"),
-          ends_at: event.ends_at,
-          image,
-          name: localized(event, "title", locale),
-          slug: event.slug,
-          starts_at: event.starts_at,
-          status: event.status,
-          summary: localized(event, "summary", locale),
-          venue: localized(event, "venue", locale),
-        })}
-      />
+      {canceled ? null : (
+        <JsonLd
+          data={eventLd(locale, {
+            audience:
+              event.entry === "invite"
+                ? null
+                : await classesText(event.classes, locale, "list"),
+            ends_at: event.ends_at,
+            image,
+            name: localized(event, "title", locale),
+            slug: event.slug,
+            starts_at: event.starts_at,
+            summary: localized(event, "summary", locale),
+            venue: localized(event, "venue", locale),
+          })}
+        />
+      )}
       <Link
         className="type-caption underline underline-offset-4"
         href="/events"
@@ -171,8 +172,8 @@ const EventView = async ({
           </p>
         ) : null}
       </header>
-      {cancelled ? null : <GoodToKnow event={event} locale={locale} />}
-      {cancelled || !upcoming ? null : (
+      {canceled ? null : <GoodToKnow event={event} locale={locale} />}
+      {canceled || !upcoming ? null : (
         <ActionBar>
           <EventBooking
             entry={event.entry}
@@ -191,12 +192,12 @@ const EventView = async ({
           </a>
         </ActionBar>
       )}
-      {cancelled ? (
+      {canceled ? (
         <p
           className="type-body border-line border-s-4 border-t p-4"
           role="status"
         >
-          {t("cancelled")}
+          {t("canceled")}
         </p>
       ) : null}
       {image ? (

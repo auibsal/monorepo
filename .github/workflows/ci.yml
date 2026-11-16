@@ -131,7 +131,7 @@ jobs:
   upload-coverage-typescript:
     name: Upload coverage (TypeScript)
     needs: checks
-    if: ${{ !cancelled() && needs.checks.result == 'success' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+    if: ${{ (success() || failure()) && needs.checks.result == 'success' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -318,7 +318,7 @@ jobs:
   migrate:
     name: Migrate and deploy
     needs: [ checks, upload-coverage-typescript, build, database, e2e ]
-    if: ${{ !cancelled() && !failure() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    if: ${{ (success() || failure()) && !contains(needs.*.result, 'failure') && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     permissions:
       contents: read
     uses: ./.github/workflows/migrate.yml
@@ -331,7 +331,7 @@ jobs:
   release:
     name: Record the deploy
     needs: [ migrate ]
-    if: ${{ !cancelled() && needs.migrate.result == 'success' }}
+    if: ${{ (success() || failure()) && needs.migrate.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

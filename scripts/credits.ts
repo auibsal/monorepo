@@ -73,7 +73,7 @@ const software = [...names].sort().map((name) => {
 const credits = {
   fonts: [
     {
-      license: "Ubuntu Font Licence 1.0",
+      license: "UFL-1.0",
       name: "Ubuntu",
       url: "https://design.ubuntu.com/font",
     },

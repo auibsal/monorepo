@@ -51,7 +51,7 @@ const News = async ({
   }
   return (
     <section
-      aria-labelledby="news"
+      aria-label={t("desks.news")}
       className={
         alone
           ? "grid content-start gap-4 md:col-span-3"
@@ -157,7 +157,7 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
           />
           {letters.length > 0 ? (
             <section
-              aria-labelledby="letters"
+              aria-label={t("desks.letters")}
               className="grid content-start gap-4 md:col-span-2"
             >
               <h2 className={heading} id="letters">
@@ -173,7 +173,7 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
         </div>
 
         {gallery.length > 0 ? (
-          <section aria-labelledby="gallery" className="grid gap-4">
+          <section aria-label={t("desks.gallery")} className="grid gap-4">
             <h2 className={heading} id="gallery">
               <Link href="/qirtas/gallery">{t("desks.gallery")}</Link>
             </h2>
@@ -212,7 +212,7 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
         <div className="grid gap-12 md:grid-cols-3">
           {voices.length > 0 ? (
             <section
-              aria-labelledby="voices"
+              aria-label={t("desks.voices")}
               className="grid content-start gap-4"
             >
               <h2 className={heading} id="voices">
@@ -223,7 +223,7 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
           ) : null}
           {video.length > 0 ? (
             <section
-              aria-labelledby="video"
+              aria-label={t("desks.video")}
               className="grid content-start gap-4"
             >
               <h2 className={heading} id="video">
@@ -236,7 +236,7 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
 
         {edition ? (
           <section
-            aria-labelledby="edition"
+            aria-label={t("currentEdition")}
             className="border-line pt-space-4 grid gap-6 border-t md:grid-cols-[1fr_2fr]"
           >
             {cover ? (
@@ -270,7 +270,7 @@ const QirtasFrontPage = async ({ params }: QirtasProps) => {
       </div>
       <div className="mx-auto w-full max-w-6xl px-4 py-12">
         <section
-          aria-labelledby="newsletter"
+          aria-label={t("newsletter")}
           className="border-line pt-space-4 grid gap-4 border-t md:grid-cols-[1fr_1.4fr] md:items-start"
         >
           <div className="grid gap-2">

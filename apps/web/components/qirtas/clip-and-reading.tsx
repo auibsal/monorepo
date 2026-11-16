@@ -57,7 +57,11 @@ export const PairedClip = async ({
   const title = localized(clip, "title", locale);
   return (
     <aside
-      aria-labelledby="clip"
+      aria-label={
+        clip.category === "next_stop_episode"
+          ? t("clipNextStop")
+          : t("clipTitle")
+      }
       className="border-line mx-auto grid w-full max-w-3xl gap-3 border-t px-4 pt-6 print:hidden"
     >
       <h2 className="type-heading" id="clip">

@@ -22,7 +22,7 @@ interface DataTableProps<T> {
 /**
  * Brand tables: a crimson hairline under the head and gray hairlines
  * between rows, never full grids. On phones each row stacks into a block,
- * the first column as its title and the rest labelled, so nothing scrolls
+ * the first column as its title and the rest labeled, so nothing scrolls
  * sideways (brand book, Screens: Phones).
  */
 export const DataTable = <T,>({

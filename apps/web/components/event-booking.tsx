@@ -16,7 +16,7 @@ type Status = "booked" | "held" | "waiting" | "reminded" | "none";
 const loadClient = async () =>
   (await import("@/lib/diwan/supabase")).getSupabase();
 const loadEvents = async () => await import("@/lib/data/events");
-type Notice = "booked" | "waitlisted" | "cancelled" | "reminded" | "failed";
+type Notice = "booked" | "waitlisted" | "canceled" | "reminded" | "failed";
 
 /**
  * Booking on the event's own page (audit C8): a signed-in member books,
@@ -138,7 +138,7 @@ export const EventBooking = ({
     run(async () => {
       const [client, events] = await Promise.all([loadClient(), loadEvents()]);
       await events.cancelRsvp(client, eventId);
-      return "cancelled";
+      return "canceled";
     });
   const remind = (on: boolean) =>
     run(async () => {
@@ -146,7 +146,7 @@ export const EventBooking = ({
       await (on
         ? events.remindMe(client, eventId)
         : events.forgetReminder(client, eventId));
-      return on ? "reminded" : "cancelled";
+      return on ? "reminded" : "canceled";
     });
 
   // An Open event takes no booking, except from a Guest on campus.

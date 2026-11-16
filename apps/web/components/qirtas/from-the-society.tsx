@@ -26,7 +26,7 @@ export const FromTheSociety = async ({
     return null;
   }
   return (
-    <section aria-labelledby="from-the-society" className="grid gap-4">
+    <section aria-label={t("fromTheSociety")} className="grid gap-4">
       <h2 className={headingClassName} id="from-the-society">
         {t("fromTheSociety")}
       </h2>

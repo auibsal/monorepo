@@ -12,15 +12,13 @@ const client = (auth: Record<string, unknown>) =>
 
 describe("passkey helpers", () => {
   test("maps WebAuthn and Supabase errors to UI codes", () => {
-    expect(toPasskeyError({ code: "ERROR_CEREMONY_ABORTED" })).toBe(
-      "cancelled"
-    );
+    expect(toPasskeyError({ code: "ERROR_CEREMONY_ABORTED" })).toBe("canceled");
     expect(
       toPasskeyError({
         cause: { name: "NotAllowedError" },
         code: "ERROR_PASSTHROUGH_SEE_CAUSE_PROPERTY",
       })
-    ).toBe("cancelled");
+    ).toBe("canceled");
     expect(
       toPasskeyError({
         cause: { name: "UnknownError" },
@@ -48,7 +46,7 @@ describe("passkey helpers", () => {
       }),
     });
     expect(await signInWithPasskey(supabase)).toEqual({
-      code: "cancelled",
+      code: "canceled",
       ok: false,
     });
   });

@@ -12,7 +12,7 @@ type Client = SupabaseClient<Database>;
 
 export type PasskeyErrorCode =
   | "already_registered"
-  | "cancelled"
+  | "canceled"
   | "expired"
   | "human_check"
   | "rate_limited"
@@ -52,17 +52,17 @@ const causeName = (cause: unknown) =>
 /**
  * Maps a WebAuthn or Supabase Auth error to a code the UI can translate.
  * Browsers report a dismissed prompt and "no passkey for this site" the
- * same way (NotAllowedError), so both read as "cancelled".
+ * same way (NotAllowedError), so both read as "canceled".
  */
 export const toPasskeyError = (
   error: PasskeyFailure | null | undefined
 ): PasskeyErrorCode => {
   switch (error?.code) {
     case "ERROR_CEREMONY_ABORTED":
-      return "cancelled";
+      return "canceled";
     case "ERROR_PASSTHROUGH_SEE_CAUSE_PROPERTY":
       return causeName(error.cause) === "NotAllowedError"
-        ? "cancelled"
+        ? "canceled"
         : "unknown";
     case "ERROR_AUTHENTICATOR_PREVIOUSLY_REGISTERED":
       return "already_registered";

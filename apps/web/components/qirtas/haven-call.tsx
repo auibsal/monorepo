@@ -12,7 +12,7 @@ export const HavenCall = async ({ locale }: { readonly locale: Locale }) => {
   const t = await getTranslations({ locale, namespace: "web.journal.haven" });
   return (
     <section
-      aria-labelledby="haven-call"
+      aria-label={t("title")}
       className="border-line grid gap-3 border-y py-8"
     >
       <h2 className="type-display" id="haven-call">

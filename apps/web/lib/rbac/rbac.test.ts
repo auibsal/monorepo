@@ -24,7 +24,7 @@ const migrations = join(
 /** Migrations before 20261116001200_programs.sql, as it renamed them. */
 const american = (file: string, text: string) =>
   file < "20261116001200"
-    ? text.replace(/programme(?!s\.manage)/gu, "program")
+    ? text.replace(/program[m]e(?!s\.manage)/gu, "program")
     : text;
 
 const sql = readdirSync(migrations)

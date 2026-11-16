@@ -54,7 +54,7 @@ const PrizePage = async ({ params }: PrizeProps) => {
         <h1 className="type-display">{t("title")}</h1>
         <p className="type-lede">{t("lede")}</p>
       </header>
-      <section aria-labelledby="how" className="grid gap-3">
+      <section aria-label={t("how.title")} className="grid gap-3">
         <h2 className="type-heading" id="how">
           {t("how.title")}
         </h2>
@@ -75,7 +75,7 @@ const PrizePage = async ({ params }: PrizeProps) => {
         }
         return (
           <section
-            aria-labelledby={`round-${round.year}`}
+            aria-label={t("round", { year: String(round.year) })}
             className="grid gap-4"
             key={round.id}
           >

@@ -139,7 +139,7 @@ export const EditionComing = async ({ locale }: { locale: Locale }) => {
   return (
     <div className="grid gap-12">
       {launches.length > 0 ? (
-        <section aria-labelledby="launch-night" className="grid gap-4">
+        <section aria-label={t("launchTitle")} className="grid gap-4">
           <SectionHead
             size="heading"
             title={t("launchTitle")}

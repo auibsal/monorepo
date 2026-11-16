@@ -288,18 +288,17 @@ export const TwoStepPanel = () => {
     );
   }
 
+  let title = factorId ? t("verifyTitle") : t("setupTitle");
+  if (state.data.stale) {
+    title = t("againTitle");
+  }
   return (
     <section
-      aria-labelledby="two-step-title"
+      aria-label={title}
       className="border-line pt-space-4 grid max-w-xl gap-4 border-t"
     >
       <h2 className="type-heading" id="two-step-title">
-        {(() => {
-          if (state.data.stale) {
-            return t("againTitle");
-          }
-          return factorId ? t("verifyTitle") : t("setupTitle");
-        })()}
+        {title}
       </h2>
       <p className="type-body">{factorId ? t("verifyBody") : t("setupBody")}</p>
       {/* Set-up order (fourth prompt, 3): a passkey first (two factors on

@@ -83,7 +83,7 @@ const MediaKitPage = async ({ params }: LocaleParams) => {
         </ul>
       </Section>
 
-      <Section id="colours" title={t("coloursTitle")}>
+      <Section id="colors" title={t("colorsTitle")}>
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {COLORS.map(([name, hex]) => (
             <li className="grid gap-2" key={hex}>

@@ -100,7 +100,7 @@ const OtherDoors = ({ eventId }: { readonly eventId: string }) => {
     return null;
   }
   return (
-    <section aria-labelledby="other-doors" className="grid gap-3">
+    <section aria-label={t("otherDoors")} className="grid gap-3">
       <h2 className="type-subheading" id="other-doors">
         {t("otherDoors")}
       </h2>

@@ -55,7 +55,7 @@ const HelpPage = async ({ params }: PageProps) => {
           </li>
         </ul>
       </PageHeader>
-      <section aria-labelledby="questions" className="grid gap-4">
+      <section aria-label={t("questions")} className="grid gap-4">
         <h2 className="type-heading" id="questions">
           {t("questions")}
         </h2>

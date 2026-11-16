@@ -3,7 +3,7 @@ import { cn } from "../../lib/utils";
 
 /**
  * SAL card: a block of related content with no fill and no border,
- * set off from its neighbours by a hairline above and space. Use it only
+ * set off from its neighbors by a hairline above and space. Use it only
  * for a separate object (a ticket, a notice); lists of things are rows with
  * hairlines, not cards.
  */

@@ -96,7 +96,7 @@ type UpcomingEvent = NonNullable<
 type NoticeKey =
   | "booked"
   | "waitlisted"
-  | "cancelled"
+  | "canceled"
   | "leftWaitlist"
   | "reminded"
   | "forgotten"
@@ -229,7 +229,7 @@ export const EventsBrowser = () => {
       events.cancelRsvp(supabase, id),
     onError: (_error, { id }) => setNotice({ id, key: "failed" }),
     onSuccess: async (_result, { id, waiting: wasWaiting }) => {
-      setNotice({ id, key: wasWaiting ? "leftWaitlist" : "cancelled" });
+      setNotice({ id, key: wasWaiting ? "leftWaitlist" : "canceled" });
       await refresh();
     },
   });

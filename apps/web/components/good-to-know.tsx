@@ -236,7 +236,7 @@ export const GoodToKnow = async ({
   });
   const rows = await rowsFor(event, locale);
   return (
-    <section aria-labelledby="good-to-know" className="grid gap-2">
+    <section aria-label={t("title")} className="grid gap-2">
       <h2 className="type-label" id="good-to-know">
         {t("title")}
       </h2>

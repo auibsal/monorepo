@@ -282,8 +282,8 @@ const AuditionSlot = ({
   const [interest, setInterest] = useState("");
   const where = localized(audition, "location", locale);
   const prepare = localized(audition, "prepare", locale);
-  // A canceled sign-up can sign up again (the database says "cancelled").
-  const active = status && !["canceled", "cancelled"].includes(status);
+  // A canceled sign-up can sign up again.
+  const active = status && status !== "canceled";
 
   return (
     <li className="border-line grid gap-2 border-t pt-3">

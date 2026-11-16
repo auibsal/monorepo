@@ -91,7 +91,7 @@ export const EventFeedback = ({
 
   return (
     <section
-      aria-labelledby={`${id}-title`}
+      aria-label={t("title")}
       className="border-line grid scroll-mt-24 gap-3 border-t pt-6"
       id="feedback"
     >

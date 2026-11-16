@@ -114,7 +114,7 @@ const EpisodePage = async ({ params }: EpisodeProps) => {
       ) : null}
 
       {chapters.length > 0 ? (
-        <section aria-labelledby="chapters" className="grid gap-3">
+        <section aria-label={t("nextStop.chapters")} className="grid gap-3">
           <h2 className="type-heading" id="chapters">
             {t("nextStop.chapters")}
           </h2>
@@ -140,7 +140,7 @@ const EpisodePage = async ({ params }: EpisodeProps) => {
       ) : null}
 
       {byCredit.length > 0 ? (
-        <section aria-labelledby="credits" className="grid gap-3">
+        <section aria-label={t("nextStop.credits")} className="grid gap-3">
           <h2 className="type-heading" id="credits">
             {t("nextStop.credits")}
           </h2>

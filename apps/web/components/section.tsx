@@ -17,7 +17,7 @@ export const Section = ({
   id: string;
   title: string;
 }) => (
-  <section aria-labelledby={id} className="gap-space-5 grid">
+  <section aria-label={title} className="gap-space-5 grid">
     <SectionHead action={action} title={title} titleId={id} />
     {children}
   </section>

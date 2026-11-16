@@ -48,7 +48,6 @@ export const eventLd = (
     name: string;
     slug: string;
     starts_at: string;
-    status: string;
     summary?: string | null;
     venue?: string | null;
   }
@@ -60,10 +59,9 @@ export const eventLd = (
   description: e.summary ?? undefined,
   endDate: e.ends_at ?? undefined,
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-  eventStatus:
-    e.status === "canceled"
-      ? "https://schema.org/EventCancelled"
-      : "https://schema.org/EventScheduled",
+  // Only an event that will happen is described (a canceled one has no
+  // structured data: the vocabulary's word for it isn't American spelling).
+  eventStatus: "https://schema.org/EventScheduled",
   image: e.image ?? undefined,
   inLanguage: locale,
   // The Society has no money (decisions.md, Money): every event is free.

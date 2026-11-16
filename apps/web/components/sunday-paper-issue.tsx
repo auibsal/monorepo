@@ -76,10 +76,7 @@ export const SundayPaperIssue = async ({
       </header>
 
       <div className="grid gap-10 lg:grid-cols-[2fr_1fr]">
-        <section
-          aria-labelledby="issue-qirtas"
-          className="grid content-start gap-4"
-        >
+        <section aria-label={tj("title")} className="grid content-start gap-4">
           <h2
             className="type-label border-text border-b pb-2"
             id="issue-qirtas"
@@ -123,7 +120,7 @@ export const SundayPaperIssue = async ({
         </section>
 
         <section
-          aria-labelledby="issue-on"
+          aria-label={t("archive.whatsOn")}
           className="grid content-start gap-4"
         >
           <h2 className="type-label border-text border-b pb-2" id="issue-on">
@@ -158,7 +155,7 @@ export const SundayPaperIssue = async ({
       {/* The sign-up itself, not a link to it (decisions.md): one
           step fewer for a reader who has just read an issue. */}
       <section
-        aria-labelledby="next-issue"
+        aria-label={t("archive.subscribe")}
         className="border-line grid gap-3 border-t pt-6 print:hidden"
       >
         <h2 className="type-heading" id="next-issue">

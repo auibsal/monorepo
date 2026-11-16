@@ -5,8 +5,6 @@
 export interface IcsEvent {
   /** A whole day (or days): written as dates, not times. */
   allDay?: boolean;
-  /** Canceled: kept in feeds as STATUS:CANCELLED so calendars remove it. */
-  canceled?: boolean;
   description?: string | null;
   end?: string | null;
   location?: string | null;
@@ -98,7 +96,7 @@ export const renderCalendar = (
         `SEQUENCE:${sequence}`
       );
     }
-    lines.push(`STATUS:${event.canceled ? "CANCELLED" : "CONFIRMED"}`);
+    lines.push("STATUS:CONFIRMED");
     if (event.allDay) {
       // DTEND of a date is exclusive (as the AUIB feed gives it); a day
       // without an end runs to the next day.

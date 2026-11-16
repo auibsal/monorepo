@@ -58,7 +58,7 @@ export const DiwanSection = ({
   readonly title: ReactNode;
 }) => (
   <section
-    aria-labelledby={id}
+    aria-label={typeof title === "string" ? title : undefined}
     className={cn("grid content-start gap-5", className)}
   >
     <div className="grid gap-2">

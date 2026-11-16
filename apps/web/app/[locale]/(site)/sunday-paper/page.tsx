@@ -45,7 +45,7 @@ const NewsletterPage = async ({ params }: NewsletterProps) => {
       </section>
       <p className="type-body text-text-secondary">{t("members")}</p>
       {issues.length > 0 ? (
-        <section aria-labelledby="past-issues" className="grid gap-4">
+        <section aria-label={t("archive.title")} className="grid gap-4">
           <h2 className="type-heading" id="past-issues">
             {t("archive.title")}
           </h2>

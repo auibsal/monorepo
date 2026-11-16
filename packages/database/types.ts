@@ -2570,7 +2570,7 @@ export type Database = {
       rsvps: {
         Row: {
           answers: NonNullable<Json>;
-          cancelled_at: string | null;
+          canceled_at: string | null;
           created_at: string;
           event_id: string;
           from_waitlist: boolean;
@@ -2582,7 +2582,7 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           answers?: NonNullable<Json>;
-          cancelled_at?: string | null;
+          canceled_at?: string | null;
           created_at?: string;
           event_id: string;
           from_waitlist?: boolean;
@@ -2593,7 +2593,7 @@ export type Database = {
         };
         Update: {
           answers?: NonNullable<Json>;
-          cancelled_at?: string | null;
+          canceled_at?: string | null;
           created_at?: string;
           event_id?: string;
           from_waitlist?: boolean;

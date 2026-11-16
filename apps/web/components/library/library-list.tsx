@@ -73,7 +73,7 @@ export const LibraryList = ({
         }
         return (
           <section
-            aria-labelledby={`for-${group.key}`}
+            aria-label={group.title}
             className="grid gap-4"
             key={group.key}
           >

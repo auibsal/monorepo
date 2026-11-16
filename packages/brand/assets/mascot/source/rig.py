@@ -1,4 +1,4 @@
-"""Hudhud, flat edition: a parametric rig. Bird faces right; local origin at the body's centre."""
+"""Hudhud, flat edition: a parametric rig. Bird faces right; local origin at the body's center."""
 import math
 CR='#9c213e'; C700='#7e1a32'; C100='#e2ddd6'; C50='#f7ecef'; INK='#273236'; INK70='#4a5559'; W='#ffffff'
 SCHEMES={

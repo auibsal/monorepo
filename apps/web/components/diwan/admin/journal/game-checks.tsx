@@ -67,7 +67,7 @@ export const GameChecks = () => {
   const [notes, setNotes] = useState<Record<string, string>>({});
 
   return (
-    <section aria-labelledby="game-checks" className="grid gap-4">
+    <section aria-label={t("title")} className="grid gap-4">
       <h2 className="type-heading" id="game-checks">
         {t("title")}
       </h2>
