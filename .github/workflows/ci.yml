@@ -323,3 +323,48 @@ jobs:
       contents: read
     uses: ./.github/workflows/migrate.yml
     secrets: inherit
+
+  # A signed record of each production deploy (SLSA build provenance, the
+  # practice US supply-chain guidance asks for): the deployed commit's
+  # source as a release, with GitHub's attestation of where and how it was
+  # made. `gh attestation verify <file> --repo auibsal/monorepo` checks it.
+  release:
+    name: Record the deploy
+    needs: [ migrate ]
+    if: ${{ !cancelled() && needs.migrate.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      attestations: write
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Package the deployed source
+        id: source
+        run: |
+          stamp="$(date -u +%Y.%m.%d)-${GITHUB_RUN_NUMBER}"
+          file="auibsal-${stamp}.tar.gz"
+          git archive --format=tar.gz --prefix="auibsal-${stamp}/" -o "$file" HEAD
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+          echo "tag=deploy-${stamp}" >> "$GITHUB_OUTPUT"
+      - name: Attest its provenance
+        id: attest
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: ${{ steps.source.outputs.file }}
+      - name: Publish the release
+        env:
+          BUNDLE: ${{ steps.attest.outputs.bundle-path }}
+          FILE: ${{ steps.source.outputs.file }}
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.source.outputs.tag }}
+        run: |
+          # The attestation (an in-toto statement in a Sigstore bundle), one line.
+          jq -c . "$BUNDLE" > "${FILE}.intoto.jsonl"
+          gh release create "$TAG" "$FILE" "${FILE}.intoto.jsonl" \
+            --target "$GITHUB_SHA" \
+            --title "Production, $(date -u '+%B %-d, %Y')" \
+            --notes "The source deployed to auibsal.org from ${GITHUB_SHA}, with its signed build provenance."
