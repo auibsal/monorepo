@@ -119,8 +119,8 @@ begin
       view_name, columns, rel.nspname, rel.relname);
     -- The view passes each kind of access the role has at all; the table's
     -- own grants (columns included) and policies decide, as the caller.
-    foreach role_name in array array['anon', 'authenticated', 'service_role'] loop
-      foreach priv in array array['select', 'insert', 'update', 'delete'] loop
+    for role_name in select unnest(array['anon', 'authenticated', 'service_role']) loop
+      for priv in select unnest(array['select', 'insert', 'update', 'delete']) loop
         if has_table_privilege(role_name, rel.oid, priv)
           or (priv <> 'delete' and has_any_column_privilege(role_name, rel.oid, priv))
         then
@@ -133,7 +133,7 @@ begin
       execute format(
         'create view api.%I with (security_invoker = true) as select * from %I.%I',
         view_name || '_all', rel.nspname, rel.relname);
-      foreach priv in array array['select', 'insert', 'update', 'delete'] loop
+      for priv in select unnest(array['select', 'insert', 'update', 'delete']) loop
         if has_table_privilege('service_role', rel.oid, priv) then
           execute format('grant %s on api.%I to service_role', priv, view_name || '_all');
         end if;
@@ -175,7 +175,7 @@ begin
       private.api_name(fn.nspname, fn.proname, true), fn.args, fn.result, volatility, body);
     execute format('revoke all on function api.%I(%s) from public',
       private.api_name(fn.nspname, fn.proname, true), pg_get_function_identity_arguments(fn.oid));
-    foreach role_name in array array['anon', 'authenticated', 'service_role'] loop
+    for role_name in select unnest(array['anon', 'authenticated', 'service_role']) loop
       if has_function_privilege(role_name, fn.oid, 'execute') then
         execute format('grant execute on function api.%I(%s) to %I',
           private.api_name(fn.nspname, fn.proname, true),
