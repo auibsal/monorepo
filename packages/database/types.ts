@@ -1734,13 +1734,6 @@ export type Database = {
           asked_at: string;
         }[];
       };
-      my_minor_status: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          consent_pending: boolean;
-          minor: boolean;
-        }[];
-      };
       my_name_parts: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1849,24 +1842,6 @@ export type Database = {
         }[];
       };
       post_notice: { Args: { id: string; shown_at: string }; Returns: string };
-      previous_semester: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          code: string;
-          created_at: string;
-          ends_on: string;
-          id: string;
-          name_ar: string;
-          name_en: string;
-          starts_on: string;
-        };
-        SetofOptions: {
-          from: "*";
-          to: "semesters";
-          isOneToOne: true;
-          isSetofReturn: false;
-        };
-      };
       prove_merge: { Args: { code: string }; Returns: string };
       record_history: {
         Args: { record_id: string; record_table: string };
@@ -2975,34 +2950,6 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
-      };
-      council_terms: {
-        Row: {
-          created_at: string;
-          ends_on: string;
-          id: string;
-          name_ar: string;
-          name_en: string;
-          starts_on: string;
-        };
-        ComputedFields: never;
-        Insert: {
-          created_at?: string;
-          ends_on: string;
-          id?: string;
-          name_ar: string;
-          name_en: string;
-          starts_on: string;
-        };
-        Update: {
-          created_at?: string;
-          ends_on?: string;
-          id?: string;
-          name_ar?: string;
-          name_en?: string;
-          starts_on?: string;
-        };
-        Relationships: [];
       };
       election_results: {
         Row: {
@@ -6616,14 +6563,6 @@ export type Database = {
         Returns: string;
       };
       sign_reader_pledge: { Args: { esign_agreed: boolean }; Returns: string };
-      submission_partners: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          id: string;
-          name_ar: string;
-          name_en: string;
-        }[];
-      };
       transition_submission: {
         Args: {
           id: string;
@@ -8960,22 +8899,6 @@ export type Database = {
           name_ar: string;
           name_en: string;
           url: string;
-        }[];
-      };
-      public_productions: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          first_performance: string;
-          id: string;
-          kind: string;
-          playwright: string;
-          poster_path: string;
-          slug: string;
-          stage: string;
-          summary_ar: string;
-          summary_en: string;
-          title_ar: string;
-          title_en: string;
         }[];
       };
       qalam_consent_link: {

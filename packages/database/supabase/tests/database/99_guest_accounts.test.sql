@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(4);
+select plan(3);
 
 create function pg_temp.outside_user(uid uuid, email text, meta jsonb)
 returns void language plpgsql as $$
@@ -109,11 +109,6 @@ end;
 $$;
 grant execute on all functions in schema pg_temp to public;
 
--- The gate the sign-up service runs (private.sign_up_allowed).
-select ok(
-  private.sign_up_allowed('visitor@gmail.com', '{}'),
-  'Any address may sign up, on the one sign-up page (decisions.md, Members)'
-);
 select pg_temp.outside_user('00000000-0000-0000-0000-0000000f2a02', 'guest@gmail.com', '{}');
 select is(
   (select accepted_versions from core.profiles where id = '00000000-0000-0000-0000-0000000f2a02'),

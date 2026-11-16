@@ -96,7 +96,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(32);
+select plan(30);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'membership-om@auib.edu.iq', 'Membership');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'member-om@auib.edu.iq', 'Plain Member');
@@ -162,14 +162,6 @@ values ('guest', 'friend@example.org', '00000000-0000-0000-0000-00000000e001');
 select set_config('test.friend', (select code from governance.partner_invitations where email = 'friend@example.org'), true);
 select set_config('test.assoc', (select code from governance.partner_invitations where email = 'linked@example.org'), true);
 
-select ok(
-  private.sign_up_allowed('friend@example.org', jsonb_build_object('invitation', current_setting('test.friend'))),
-  'The invitation lets its address sign up'
-);
-select ok(
-  not private.sign_up_allowed('other@example.org', jsonb_build_object('invitation', current_setting('test.friend'))),
-  'but not another address'
-);
 
 select pg_temp.login_anon();
 select results_eq(

@@ -68,9 +68,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   valid 14 days and revocable, sent by the Director of Membership
   (classes), a Partner Lead (the team, its guests) or an event's lead
   (guests); no shareable links and no invitation ever grants a role.
-  Sign-up takes an AUIB address only, unless the account comes from an
-  invitation, applies to partner or signs up as a guest
-  (`private.sign_up_allowed`). A student who leaves AUIB says so in
+  Any address may sign up, on one page for everyone; the class follows
+  the address, and an invitation counts only if it is real, still usable
+  and for that address (`private.invited_sign_up`; redeemed by
+  `accept_partner_invitation`, which refuses another address). A student who leaves AUIB says so in
   Settings (`core.report_leaving`) or is recorded by Membership on their
   Diwan page (`membership.record_departure`), whichever comes first:
   graduated or not, they become an Associate Member with the same number,
