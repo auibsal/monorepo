@@ -8,7 +8,7 @@
   ],
   "workspaces": {
     ".": {
-      "entry": ["scripts/*.ts", "scripts/*.mjs"]
+      "entry": ["scripts/*.ts", "scripts/*.mjs", "infra/*/src/index.js"]
     },
     "apps/web": {
       "entry": ["scripts/*.ts", "public/sw.js"]
