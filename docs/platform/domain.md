@@ -84,6 +84,12 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   under-18 rules still on; sign-up under 18 takes only an AUIB
   student's address or an invitation that isn't to a class
   (`private.refuse_minor_associate_sign_up`).
+- **An account is for people 13 or older** (the owner, Nov 16, 2026, as US
+  sites follow COPPA, which reaches children under 13): a sign-up whose
+  month and year of birth make the person under 13 (the birthday taken as
+  the end of the month) is refused by the form and by
+  `private.under_minimum_age`; an invitation (Qalam, a parent's consent
+  link) brings its own consent and is not refused.
 - **Alumni** sign up with another address and tick "I studied at AUIB"
   (shown only to someone 18 or older): the account is a guest's and the
   Director of Membership approves the request

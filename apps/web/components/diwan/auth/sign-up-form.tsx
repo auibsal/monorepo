@@ -64,7 +64,7 @@ const monthNames = (locale: string) => {
   );
 };
 
-interface MinorForm {
+export interface MinorForm {
   readonly month: string;
   readonly parent: string;
   readonly year: string;
@@ -73,13 +73,51 @@ interface MinorForm {
 /** "I'm 18 or older" ticked, or "Under 18?" opened. */
 type Adult = "" | "no" | "yes";
 
+/**
+ * Under 13 (decisions.md, Members: minors, as US sites follow COPPA): an
+ * account is for people 13 or older, unless an invitation brings its own
+ * consent. Only the month and year are asked, so the birthday is taken as
+ * the end of the month; private.under_minimum_age refuses the same.
+ */
+export const underMinimumAge = (minor: MinorForm, now = new Date()) => {
+  if (minor.month === "" || !MINOR_YEAR.test(minor.year)) {
+    return false;
+  }
+  const thirteen = new Date(
+    Date.UTC(Number(minor.year) + 13, Number(minor.month), 1)
+  );
+  return thirteen > now;
+};
+
+/** Says at once that an account is for people 13 or older. */
+const MinimumAgeNote = ({
+  invited,
+  minor,
+}: {
+  readonly invited: boolean;
+  readonly minor: MinorForm;
+}) => {
+  const t = useTranslations("auth.signUp");
+  return invited || !underMinimumAge(minor) ? null : (
+    <p className="type-caption" role="status">
+      {t("tooYoung")}
+    </p>
+  );
+};
+
 /** 18 or older, or under 18 with the month, year and a parent's address. */
-const isAgeAnswered = (adult: Adult, minorAllowed: boolean, minor: MinorForm) =>
+const isAgeAnswered = (
+  adult: Adult,
+  minorAllowed: boolean,
+  minor: MinorForm,
+  invited: boolean
+) =>
   adult === "yes" ||
   (minorAllowed &&
     adult === "no" &&
     minor.month !== "" &&
     MINOR_YEAR.test(minor.year) &&
+    (invited || !underMinimumAge(minor)) &&
     EMAIL_SHAPE.test(minor.parent.trim()));
 
 const minorDetails = (adult: Adult, minorAllowed: boolean, minor: MinorForm) =>
@@ -332,7 +370,7 @@ export const SignUpForm = (props: SignUpFormProps) => {
     !outside?.adultsOnly && (isStudentAddress(email) || invited);
   const [adult, setAdult] = useState<Adult>("");
   const [minor, setMinor] = useState({ month: "", parent: "", year: "" });
-  const ageAnswered = isAgeAnswered(adult, minorAllowed, minor);
+  const ageAnswered = isAgeAnswered(adult, minorAllowed, minor, invited);
   // The mailing list (decisions.md, Channels and email): ticked for
   // everyone, who can untick it.
   const [mailingOn, setMailing] = useState(true);
@@ -565,6 +603,7 @@ export const SignUpForm = (props: SignUpFormProps) => {
                   }
                   value={minor.year}
                 />
+                <MinimumAgeNote invited={invited} minor={minor} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor={`${id}-parent`}>

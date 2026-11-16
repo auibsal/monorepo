@@ -1,3 +1,4 @@
+import { project } from "@repo/config";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { env } from "@/env";
@@ -114,14 +115,10 @@ let nextConfig: NextConfig = {
   cacheComponents: true,
   headers: async () => [
     // The API routes answer with JSON, CSV or a calendar (audit E5): the
-    // transport and sniffing headers the pages get, and never framed or
-    // indexed. The design system's files keep their own rule below.
+    // sniffing headers the pages get, and never framed or indexed (HSTS is
+    // Cloudflare's, decisions.md, The site). The design system's files keep their own rule below.
     {
       headers: [
-        {
-          key: "Strict-Transport-Security",
-          value: "max-age=63072000; includeSubDomains; preload",
-        },
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
@@ -163,6 +160,19 @@ let nextConfig: NextConfig = {
       destination: "/account/settings#password",
       permanent: false,
       source: "/.well-known/change-password",
+    },
+    // mta-sts.auibsal.org serves the MTA-STS policy only (lib/mta-sts.ts);
+    // any other address there is the site's own.
+    {
+      destination: `${project.url}/:path*`,
+      has: [
+        {
+          type: "host" as const,
+          value: `mta-sts.${new URL(project.url).host}`,
+        },
+      ],
+      permanent: true,
+      source: "/:path((?!\\.well-known/mta-sts\\.txt$).*)",
     },
     ...LANGUAGE_PREFIXES.flatMap((prefix) =>
       [...MOVED, ...formRedirects].map(([from, to]) => ({

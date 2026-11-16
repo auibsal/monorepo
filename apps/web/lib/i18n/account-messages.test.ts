@@ -4,7 +4,9 @@ import en from "@repo/internationalization/messages/en.json";
 import { describe, expect, it } from "vitest";
 import {
   ACCOUNT_ADMIN_MESSAGES,
+  ACCOUNT_WEB_MESSAGES,
   accountDiwanMessages,
+  accountWebMessages,
   pickMessages,
 } from "./account-messages";
 
@@ -16,6 +18,8 @@ const IMPORT =
   /(?:import|export)\s[^'"]*?from\s+["']([^"']+)["']|import\(\s*["']([^"']+)["']\s*\)/gu;
 const ADMIN_LITERAL = /["'`]diwan\.admin\.([A-Za-z0-9_.]+)["'`]/gu;
 const BARE_ADMIN = /useTranslations\(\s*["']diwan\.admin["']\s*\)/u;
+const CLIENT_WEB =
+  /useTranslations\(\s*["']web\.([A-Za-z0-9_.]+)["']|\bt\(\s*["']web\.([A-Za-z0-9_.]+)["']/gu;
 const ROOT_KEY = /\bt\(\s*["']([A-Za-z0-9_.]+)["']/gu;
 const SOURCE = /\.(tsx?)$/u;
 
@@ -119,5 +123,35 @@ describe("your account's share of the Diwan's copy", () => {
     }
     const size = (value: unknown) => JSON.stringify(value).length;
     expect(size(sent.admin)).toBeLessThan(size(en.diwan.admin) / 3);
+  });
+});
+
+describe("your account's share of the public site's copy", () => {
+  it("keeps every part of web its client components read", () => {
+    const missing = new Set<string>();
+    for (const file of reachable()) {
+      const source = readFileSync(file, "utf8");
+      // getTranslations (the server) needs nothing sent to the browser.
+      for (const match of source.matchAll(CLIENT_WEB)) {
+        const key = (match[1] ?? match[2]) as string;
+        const kept = ACCOUNT_WEB_MESSAGES.some(
+          (part) => key === part || key.startsWith(`${part}.`)
+        );
+        if (!(kept || source.includes("getTranslations"))) {
+          missing.add(`${path.relative(WEB, file)}: web.${key}`);
+        }
+      }
+    }
+    expect([...missing]).toEqual([]);
+  });
+
+  it("sends a small part of it", () => {
+    const sent = accountWebMessages(en.web);
+    for (const part of ACCOUNT_WEB_MESSAGES) {
+      expect(sent[part], `web.${part}`).toEqual(en.web[part]);
+    }
+    expect(JSON.stringify(sent).length).toBeLessThan(
+      JSON.stringify(en.web).length / 10
+    );
   });
 });

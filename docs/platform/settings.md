@@ -4,25 +4,103 @@ What the code can't set, with the exact values (decisions.md, The site:
 Tools and settings; Subdomains). Tick each in PROGRESS.md when done.
 
 ## Cloudflare (auibsal.org)
+What Cloudflare can do at the edge, it does, not the site (the owner, Nov
+16, 2026; decisions.md, The site: "every feature that protects it"). The
+site keeps only what needs the page or the database: the CSP with each
+request's nonce, the other response headers, Turnstile's check and the
+rate limits per form and per account. Each thing lives in one place, never
+both: the `*.vercel.app` addresses are behind Vercel's login, so every
+visitor comes through Cloudflare.
+
 Turn **on**:
 - **Security → WAF:** the free managed rules.
-- **Security → Bots:** Bot Fight Mode.
 - **DDoS protection:** on by default; leave it on.
 - **SSL/TLS → Overview:** Full (strict). **Edge Certificates:** Always Use
-  HTTPS on; HSTS stays as it is (the site sends its own header).
+  HTTPS on; **Minimum TLS Version: TLS 1.2** (NIST SP 800-52 Rev. 2);
+  TLS 1.3 on; **HTTP Strict Transport Security (HSTS):** on, Max Age 12
+  months, Apply HSTS policy to subdomains on, Preload on, **No-Sniff
+  header off** (the site sends `X-Content-Type-Options` with its other
+  headers, which stay together in `lib/security`). The site no longer
+  sends its own HSTS header.
+- **Security → Settings → security.txt:** Contact
+  `mailto:security@auibsal.org`; Policy `https://auibsal.org/security`;
+  Preferred languages `en, ar`; Canonical
+  `https://auibsal.org/.well-known/security.txt`; Expires a year ahead
+  (renew it each September with the other yearly checks). The site no
+  longer serves its own.
+- **Security → Settings → Client-side security (Page Shield):** continuous
+  script monitoring on. It lists every script the pages load and flags new
+  ones; the site has no report address of its own.
+- **Security → Settings → Block AI bots** (decisions.md, The site), and
+  the managed robots.txt: Security → Settings, filter by Bot traffic →
+  **AI Crawler and Agent access policies** → Training: **Disallow**, and
+  **Enable Bot Preference Sync** on. Cloudflare puts the AI crawlers'
+  Disallow lines before the site's own robots.txt, which keeps only the
+  search engines' rule and the sitemap.
 - **Caching → Configuration:** Standard caching for files; leave Browser
-  Cache TTL as "Respect existing headers" (the site sets them).
+  Cache TTL as "Respect existing headers" (the site sets them). No Cache
+  Rule caches pages: Vercel caches them and refreshes each on publish, so
+  Cloudflare passes pages through (`cf-cache-status: DYNAMIC`) and caches
+  only the files, a year for the built ones.
+- **Speed → Optimization:** Brotli on; **Early Hints** on (Cloudflare sends
+  the site's font and script preloads before the page); HTTP/3 on;
+  **0-RTT off** (a resumed connection's first request can be replayed).
+- **DNS:** DNSSEC on; the CAA records as Cloudflare manages them for its
+  certificates; **Email → DMARC Management** on (the reports of
+  `_dmarc`'s `p=reject` go to it).
 - **Network:** "True-Client-IP Header" or "Pseudo IPv4" off, and keep the
   default `CF-Connecting-IP`, so the real visitor address reaches Vercel
   (the rate limits read it).
 
-Turn **off**:
+Leave **off**:
+- **Bot Fight Mode** (decisions.md, The site): on the free plan nothing can
+  exempt the webhooks (Telegram, Resend, Notion, Supabase, Vercel) from it.
+  JavaScript Detections still runs on the free plan; Cloudflare offers no
+  switch for it below Super Bot Fight Mode.
 - **Scrape Shield → Email Address Obfuscation** (it rewrites the page and
   breaks the CSP).
 - **Speed → Optimization → Rocket Loader** and any **Auto Minify** left
   on (they rewrite scripts and break the CSP's nonces).
+- **Zaraz** (decisions.md, The site: no Tag Manager or Google Analytics).
+- **Speed → Optimization → Speed Brain:** the site already loads the next
+  page ahead of a click and opens it in place, so the whole pages Speed
+  Brain fetches are never used.
+- **Email → Email Routing:** mail is Zoho's (the MX records).
+- **Scrape Shield → Hotlink Protection:** Telegram and Notion show the
+  site's images in their previews.
 - **Analytics → Web Analytics** automatic setup (the CSP blocks it; Vercel's
   analytics are used).
+
+## Email: delivery standards (auibsal.org)
+In place: SPF, DKIM (Zoho, Resend, Resend's news domain), DMARC at
+`p=reject` with strict alignment (reports to Cloudflare's DMARC
+Management), DNSSEC, and the CAA records' `iodef`.
+
+**MTA-STS and TLS-RPT** (RFC 8461 and 8460): servers sending to
+@auibsal.org deliver only over TLS to Zoho's MX hosts, and report any
+failure. The policy is the site's (`lib/mta-sts.ts`, served at
+`https://mta-sts.auibsal.org/.well-known/mta-sts.txt`; every other address
+there goes to auibsal.org).
+1. Zoho: an alias `tls-reports@auibsal.org` to the web lead (the daily
+   reports are JSON; nobody needs them in hello@).
+2. Cloudflare → DNS: TXT `_smtp._tls`, `v=TLSRPTv1;
+   rua=mailto:tls-reports@auibsal.org`.
+3. Vercel → the project → Domains: add `mta-sts.auibsal.org`. Cloudflare →
+   DNS: CNAME `mta-sts` to `cname.vercel-dns.com`, proxied.
+4. Once `https://mta-sts.auibsal.org/.well-known/mta-sts.txt` answers:
+   Cloudflare → DNS, TXT `_mta-sts`, `v=STSv1; id=20261116`.
+5. After two weeks of clean reports: `MTA_STS_MODE` to `enforce` in
+   `lib/mta-sts.ts`, and a new `id` (the date) in `_mta-sts`. Any change to
+   the MX records or the policy needs both.
+
+**DKIM at 2048 bits:** Zoho's selector `zmail` is 1024-bit; Zoho → Mail
+Admin → Domains → auibsal.org → Email Configuration → DKIM: add a 2048-bit
+selector, publish it, verify, make it the default, then remove `zmail`
+(M3AAWG and NIST SP 800-177 recommend 2048). Resend chooses its own keys.
+
+**BIMI** (the logo beside the Society's mail in inboxes) is not used: Gmail
+and Apple Mail show it only with a paid mark certificate (decisions.md:
+money, none).
 
 ## news.auibsal.org (bulk email)
 Done: the domain is verified in Resend and `RESEND_BULK_DOMAIN` is set in
@@ -47,23 +125,39 @@ Vercel (Production). The steps, for a new domain or a move:
 
 ## Supabase
 - **Authentication → Sign In / Providers → Email:** Confirm email on;
-  Secure email change on.
-- **Authentication → Attack Protection:** Leaked password protection on.
+  Secure email change on; minimum password length 12; secure password
+  change on. **Attack Protection:** CAPTCHA (Turnstile) on; leaked
+  password protection on once the plan allows it (Pro).
 - **Authentication → Sessions:** JWT expiry 3600 seconds (an hour);
   refresh token reuse interval 10 seconds.
 - **Database → Network Restrictions:** where the plan allows, only the
   addresses that need the database directly.
-- **Authentication → Emails → SMTP Settings:** host `smtp.resend.com`, port
-  465, user `resend`, the sending key as the password, sender
-  `hello@auibsal.org`, name "AUIB Society of Arts and Letters". The
-  templates are in `packages/database/supabase/templates`.
+- **Authentication → Hooks → Send Email:** on, HTTPS,
+  `https://auibsal.org/api/hooks/auth-email`, with the secret that is
+  `SEND_EMAIL_HOOK_SECRET` in Vercel. Every auth email (confirmation, reset,
+  address change) is the site's own template (`@repo/email`), sent through
+  Resend. While the hook is on, Supabase never uses SMTP: **Authentication
+  → Emails → SMTP Settings** stays empty (Resend's "SMTP" key is deleted),
+  so there is one way auth email leaves. The templates in
+  `packages/database/supabase/templates` serve only the local stack.
+- **Settings → API Keys:** the publishable and secret keys only; **Legacy
+  API keys (anon, service_role): disabled**. Nothing reads them, and
+  Vercel's `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+  `SUPABASE_JWT_SECRET` and the rest of the old integration's variables are
+  deleted (`docs/platform/secrets.md`).
 
 ## status.auibsal.org
-1. A free status page fed by the uptime check (for example Better Stack's
-   free plan), checking `https://auibsal.org` and
-   `https://auibsal.org/api/health` every three minutes.
-2. In Cloudflare, a CNAME `status` to the address the status service gives,
-   DNS only.
+The uptime check is the one thing the site cannot do for itself: it has to
+run from outside. Until it exists, `status` must not point anywhere.
+1. A free status page fed by the uptime check (Better Stack's free plan, in
+   the Society's own team, not another organization's), checking
+   `https://auibsal.org` and `https://auibsal.org/api/health` every three
+   minutes, alerting the web lead.
+2. Then, in Cloudflare, a CNAME `status` to the address the status
+   service gives, DNS only. A CNAME with no status page behind it (as on
+   Nov 16: it led to Better Stack's home page) lets anyone who claims the
+   name on Better Stack show their page at status.auibsal.org; delete it
+   until the page exists.
 
 ## Telegram
 - Hudhud is an admin in both groups with every right but Remain Anonymous, **Add New Admins included**: it makes the officers admins (`docs/platform/telegram.md`).

@@ -27,6 +27,14 @@ export const ACCOUNT_ADMIN_MESSAGES = [
   "sections",
 ] as const;
 
+/**
+ * The public site's copy (`web`) your account's client components read:
+ * the header's menu, the newsletter's form and the page-not-found screen.
+ * The rest of `web` (53 KB in English, most of it Qirtas and Help) is read
+ * only on the server (getTranslations), which needs nothing sent.
+ */
+export const ACCOUNT_WEB_MESSAGES = ["nav", "newsletter", "notFound"] as const;
+
 type Tree = Record<string, unknown>;
 
 const isTree = (value: unknown): value is Tree =>
@@ -63,3 +71,7 @@ export const accountDiwanMessages = <T extends Tree>(diwan: T): Tree => {
     admin: isTree(admin) ? pickMessages(admin, ACCOUNT_ADMIN_MESSAGES) : {},
   };
 };
+
+/** The `web` messages your account sends: what its client components read. */
+export const accountWebMessages = (web: unknown): Tree =>
+  isTree(web) ? pickMessages(web, ACCOUNT_WEB_MESSAGES) : {};

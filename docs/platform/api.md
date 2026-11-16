@@ -22,10 +22,10 @@ the secret is unset.
 | `/api/calendar/events/<slug>` | GET | Anyone (Add to calendar) | Public | cached |
 | `/api/calendar/feed/<token>` | GET | A member’s calendar app | The feed’s secret token | — |
 | `/api/calendar/sal.ics` | GET | Anyone (the public calendar, `/calendar.ics`) | Public | cached |
-| `/api/cron/calendar-sync` | GET, POST | Vercel Cron (GET), pg_cron (POST) | `CRON_SECRET` Bearer | hourly |
-| `/api/cron/notion-sync` | GET, POST | Vercel Cron, pg_cron | `CRON_SECRET` Bearer | every 15 minutes |
-| `/api/cron/retention` | GET | Vercel Cron | `CRON_SECRET` Bearer | daily |
-| `/api/cron/telegram` | GET, POST | Vercel Cron, pg_cron | `CRON_SECRET` Bearer | every 10 minutes |
+| `/api/cron/calendar-sync` | GET, POST | pg_cron (POST); GET by hand | `CRON_SECRET` Bearer | hourly |
+| `/api/cron/notion-sync` | GET, POST | pg_cron (POST); GET by hand | `CRON_SECRET` Bearer | every 15 minutes |
+| `/api/cron/retention` | GET, POST | pg_cron (POST); GET by hand | `CRON_SECRET` Bearer | daily, 1:00 UTC |
+| `/api/cron/telegram` | GET, POST | pg_cron (POST); GET by hand | `CRON_SECRET` Bearer | every 10 minutes |
 | `/api/design/[...path]` | GET | The Diwan’s design system page (its entries’ files, at `/diwan/media/design/kit`) | Staff session cookie | — |
 | `/api/email/stop` | POST | The stop page; mail apps’ one-click unsubscribe (RFC 8058) | The email’s signed token | — |
 | `/api/exports/<name>` | POST | The Diwan | Member + permission per export | — |
