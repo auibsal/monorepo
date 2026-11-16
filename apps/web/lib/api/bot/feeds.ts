@@ -12,11 +12,23 @@ import {
 } from "@/lib/data/journal";
 import { escapeHtml } from "@/lib/telegram";
 import { copy, type Lang } from "./copy";
-import { anon, db, type Group, groups } from "./db";
-import { groupText, postTo } from "./features/group/common";
+import { anon, db, groups } from "./db";
+import { postTo } from "./features/group/common";
 import { pieceAuthor, publicPieces } from "./features/qirtas";
 import { label, pick, when } from "./format";
 import { botLink, eventPage, mainApp, piecePage, web } from "./links";
+import {
+  baghdadDate,
+  baghdadHour,
+  copyFor,
+  type Kind,
+  linkLang,
+  once,
+  posted,
+  posts,
+  type Run,
+  release,
+} from "./posts";
 import { staffPosts } from "./staff";
 
 /**
@@ -48,88 +60,6 @@ const MAX_PER_RUN = 3;
 const WORD_HOUR = 9;
 const DIRECT_WORDS_PER_RUN = 25;
 
-export type Kind =
-  | "event"
-  | "event_soon"
-  | "piece"
-  | "word"
-  | "brief"
-  | "event_summary"
-  | "announcement"
-  | "sunday_note"
-  | "paper"
-  | "description"
-  | "stream"
-  | "doors"
-  | "vote_open"
-  | "vote_closing"
-  | "last_call"
-  | "edition";
-
-const posts = () => db().schema("core").from("telegram_posts");
-
-const claim = async (chatId: number, kind: Kind, ref: string) => {
-  const { data } = await posts()
-    .upsert(
-      { chat_id: chatId, kind, ref },
-      { ignoreDuplicates: true, onConflict: "chat_id,kind,ref" }
-    )
-    .select("ref");
-  return Boolean(data?.length);
-};
-
-const release = (chatId: number, kind: Kind, ref: string) =>
-  posts().delete().eq("chat_id", chatId).eq("kind", kind).eq("ref", ref);
-
-const posted = async (chatId: number, kind: Kind, ref: string) => {
-  const { data } = await posts()
-    .select("message_id")
-    .eq("chat_id", chatId)
-    .eq("kind", kind)
-    .eq("ref", ref)
-    .maybeSingle();
-  return data?.message_id ?? undefined;
-};
-
-/** Claims, sends and records one post. Returns whether it went out. */
-export const once = async (
-  group: Group,
-  kind: Kind,
-  ref: string,
-  send: () => Promise<{ message_id: number } | null>
-) => {
-  if (!(await claim(group.chat_id, kind, ref))) {
-    return false;
-  }
-  try {
-    const message = await send();
-    if (!message) {
-      await release(group.chat_id, kind, ref);
-      return false;
-    }
-    await posts()
-      .update({ message_id: message.message_id })
-      .eq("chat_id", group.chat_id)
-      .eq("kind", kind)
-      .eq("ref", ref);
-    return true;
-  } catch (error) {
-    await release(group.chat_id, kind, ref);
-    if (error instanceof GrammyError) {
-      console.warn("Group post failed", group.chat_id, kind, error.description);
-      return false;
-    }
-    throw error;
-  }
-};
-
-export const copyFor = (group: Group, build: (lang: Lang) => string) =>
-  groupText(group, (_t, lang) => build(lang));
-
-/** Links in a group post: Arabic pages for Arabic groups, else English. */
-export const linkLang = (group: Group): Lang =>
-  group.lang === "ar" ? "ar" : "en";
-
 type PublicEvent = NonNullable<
   Awaited<ReturnType<typeof publicEvents>>
 >[number];
@@ -137,13 +67,6 @@ type PublicEvent = NonNullable<
 export interface FeedResult {
   groups: number;
   posted: number;
-}
-
-export interface Run {
-  api: Api;
-  group: Group;
-  now: Date;
-  username: string;
 }
 
 const startsIn = (event: PublicEvent, now: Date) =>
@@ -969,18 +892,3 @@ export const runFeeds = async (
     posted: counts.reduce((sum, n) => sum + n, direct),
   };
 };
-
-const hourFormat = new Intl.DateTimeFormat("en-US", {
-  hour: "numeric",
-  hourCycle: "h23",
-  timeZone: "Asia/Baghdad",
-});
-
-export const baghdadHour = (date: Date) => Number(hourFormat.format(date));
-
-const dateFormat = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Asia/Baghdad",
-});
-
-/** The day in Baghdad, as yyyy-mm-dd. */
-export const baghdadDate = (date: Date) => dateFormat.format(date);

@@ -1,6 +1,6 @@
 # auibsal.org
 
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/auibsal/mono/badge)](https://scorecard.dev/viewer/?uri=github.com/auibsal/mono)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/auibsal/monorepo/badge)](https://scorecard.dev/viewer/?uri=github.com/auibsal/monorepo)
 
 The platform of the AUIB Society of Arts and Letters (SAL, «جمعية الفنون
 والآداب»), the bilingual student society for literature, theater and the
