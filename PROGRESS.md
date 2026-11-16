@@ -1086,11 +1086,9 @@ First the second prompt's part 2 (7j), then the rest in place.
 - [ ] **EDT-02:** confirm the Library no longer lists it after the sync.
 - [ ] **GOV-04's text:** the Sunday Paper comes from qirtas@auibsal.org and
   is sent by the Managing Editor.
-- [x] **Two retention schedulers, on purpose:** the route alone can remove
-  files and accounts (Storage and Auth); pg_cron's `sal-retention` keeps the
-  rows' deadlines even when the host's cron does not fire. The rules are
-  idempotent, so the second run of the day finds nothing
-  (docs/platform/retention.md).
+- [x] **Two retention schedulers:** merged into one (Nov 16): pg_cron's
+  `sal-retention` calls `/api/cron/retention`, which removes the files and
+  accounts and then runs every rule; Vercel Cron is no longer used.
 - [x] **`anon` EXECUTE on `private`:** already narrow (Nov 16, production):
   no `private` function is executable through PUBLIC; 93 of 662 carry an
   explicit grant to `anon`, each for a public wrapper or policy, and
