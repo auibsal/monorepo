@@ -103,8 +103,6 @@ const securityHeaders = (
   // The origin on cross-site requests (analytics attribution), never the
   // full URL.
   ["Referrer-Policy", "strict-origin-when-cross-origin"],
-  // Two years, every subdomain, on the browsers' preload list.
-  ["Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload"],
   ["X-Content-Type-Options", "nosniff"],
   ["X-DNS-Prefetch-Control", "off"],
   ["X-Download-Options", "noopen"],

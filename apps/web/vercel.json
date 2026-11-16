@@ -6,11 +6,5 @@
     }
   },
   "ignoreCommand": "node ../../scripts/vercel-ignore.mjs web",
-  "crons": [
-    {
-      "path": "/api/cron/retention",
-      "schedule": "0 1 * * *"
-    }
-  ],
   "regions": ["fra1"]
 }

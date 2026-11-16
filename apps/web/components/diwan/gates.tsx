@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@repo/brand/lib/utils";
 import { usePathname, useRouter } from "@repo/internationalization/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
@@ -163,7 +164,12 @@ export const RequirePartner = ({ children }: GateProps) => {
   return grants.isSuccess && holds ? children : <PageSpinner />;
 };
 
-/** Sign-in and sign-up pages: signed-in users go on to their account. */
+/**
+ * Sign-in and sign-up pages: signed-in users go on to their account. While
+ * the session is read, the form is laid out but hidden (and inert) under
+ * the spinner, so the page does not jump when it appears (Core Web Vitals:
+ * layout shift; decisions.md, The site).
+ */
 export const GuestOnly = ({ children }: GateProps) => {
   const { loading, user } = useAuth();
   const router = useRouter();
@@ -175,7 +181,22 @@ export const GuestOnly = ({ children }: GateProps) => {
     }
   }, [loading, router, user]);
 
-  return loading || user ? <FullPageSpinner /> : children;
+  const waiting = loading || Boolean(user);
+  return (
+    <div aria-busy={waiting} className="relative flex flex-1 flex-col">
+      <div
+        className={cn("flex flex-1 flex-col", waiting && "invisible")}
+        inert={waiting}
+      >
+        {children}
+      </div>
+      {waiting ? (
+        <div className="absolute inset-0 flex">
+          <FullPageSpinner />
+        </div>
+      ) : null}
+    </div>
+  );
 };
 
 /**

@@ -7,11 +7,11 @@ rows and links to it, and the site enforces every row below.
 
 The schedule lives in one place, `private.retention_schedule()` (readable
 as `core.retention_schedule()`). One daily pg_cron job, `sal-retention`
-(5:15 UTC), runs every rule that is only rows; the daily Vercel Cron
-`/api/cron/retention` (1:00 UTC) runs the rules that also remove files or
-whole accounts, removing the files first, and then the same rules. A rule
-that fails is emailed to the administrators (`platform.cron_failed`) and the
-others still run. `99_retention.test.sql` tests each rule.
+(1:00 UTC), calls `/api/cron/retention`, which removes the files and whole
+accounts first (Storage and Auth) and then runs every rule
+(`core.run_retention`). A rule that fails is emailed to the administrators
+(`platform.cron_failed`) and the others still run; a run that does not
+happen shows in the platform's health check. `99_retention.test.sql` tests each rule.
 
 | Record | Kept | Deleted by |
 | --- | --- | --- |

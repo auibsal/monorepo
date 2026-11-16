@@ -1,5 +1,11 @@
-import { describe, expect, test } from "vitest";
-import { isActiveAssignment, roleAssignmentSchema } from "./access";
+import { describe, expect, test, vi } from "vitest";
+import {
+  assignRole,
+  brokenRoleRule,
+  isActiveAssignment,
+  roleAssignmentSchema,
+} from "./access";
+import type { Client } from "./client";
 
 const user = "0b6f6d5e-1f2a-4c3b-9d8e-7f6a5b4c3d2e";
 const base = {
@@ -41,5 +47,31 @@ describe("role assignments", () => {
     expect(
       isActiveAssignment({ ...base, starts_at: "2026-10-06T00:00:00Z" }, now)
     ).toBe(false);
+  });
+});
+
+describe("assigning a role", () => {
+  test("sends empty notes and titles as not given", async () => {
+    const rpc = vi.fn(async () => ({ data: "assignment-id", error: null }));
+    const client = { schema: () => ({ rpc }) } as unknown as Client;
+    await assignRole(client, { ...base, note: "", title_en: "" });
+    expect(rpc).toHaveBeenCalledWith(
+      "assign_role",
+      expect.objectContaining({
+        ends_at: undefined,
+        note: undefined,
+        role_key: "director",
+        scope_id: undefined,
+        title_en: undefined,
+      })
+    );
+  });
+
+  test("names the rule the database refused it under", () => {
+    expect(brokenRoleRule(new Error("one_council_seat"))).toBe(
+      "one_council_seat"
+    );
+    expect(brokenRoleRule(new Error("something else"))).toBeNull();
+    expect(brokenRoleRule("one_council_seat")).toBeNull();
   });
 });

@@ -138,7 +138,8 @@ const ensureProperties = async () => {
 export const pullUnsubscribes = async (admin: AdminClient) => {
   const gone: string[] = [];
   let after: string | undefined;
-  for (;;) {
+  let more = true;
+  while (more) {
     // biome-ignore lint/performance/noAwaitInLoops: pages, in order
     const listed = await client().contacts.list({
       limit: 100,
@@ -150,9 +151,7 @@ export const pullUnsubscribes = async (admin: AdminClient) => {
         gone.push(contact.email.toLowerCase());
       }
     }
-    if (!page.has_more || page.data.length === 0) {
-      break;
-    }
+    more = page.has_more && page.data.length > 0;
     after = page.data.at(-1)?.id;
   }
   if (gone.length === 0) {
@@ -239,7 +238,7 @@ export const forgetContacts = async (emails: readonly string[]) => {
 /** Waits for a contact import; false while it is still running. */
 const importDone = async (importId: string) => {
   const started = Date.now();
-  for (;;) {
+  while (Date.now() - started <= IMPORT_WAIT_MS) {
     // biome-ignore lint/performance/noAwaitInLoops: polling
     const found = ok(await client().contacts.imports.get(importId), "import");
     if (found.status === "completed") {
@@ -248,11 +247,9 @@ const importDone = async (importId: string) => {
     if (found.status === "failed") {
       throw new Error(`Resend import ${importId} failed.`);
     }
-    if (Date.now() - started > IMPORT_WAIT_MS) {
-      return false;
-    }
     await wait(2000);
   }
+  return false;
 };
 
 /**

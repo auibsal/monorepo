@@ -1,25 +1,12 @@
 import { describe, expect, test } from "vitest";
 import robots from "@/app/robots";
 
-describe("robots.txt (decisions.md, The site: AI crawlers are blocked)", () => {
+// The AI crawlers' lines are Cloudflare's managed robots.txt, put before
+// these at the edge (docs/platform/settings.md, Cloudflare).
+describe("robots.txt", () => {
   const rules = [robots().rules].flat();
   const forAgent = (agent: string) =>
     rules.find((rule) => [rule.userAgent].flat().includes(agent));
-
-  test("the AI training crawlers are disallowed everywhere", () => {
-    for (const bot of [
-      "GPTBot",
-      "ClaudeBot",
-      "Google-Extended",
-      "CCBot",
-      "PerplexityBot",
-      "Applebot-Extended",
-      "Bytespider",
-      "meta-externalagent",
-    ]) {
-      expect(forAgent(bot)?.disallow).toEqual(["/"]);
-    }
-  });
 
   test("search engines keep the site, all but the API", () => {
     const everyone = forAgent("*");
@@ -28,5 +15,6 @@ describe("robots.txt (decisions.md, The site: AI crawlers are blocked)", () => {
     for (const engine of ["Googlebot", "Bingbot", "DuckDuckBot", "Applebot"]) {
       expect(forAgent(engine)).toBeUndefined();
     }
+    expect(rules).toHaveLength(1);
   });
 });

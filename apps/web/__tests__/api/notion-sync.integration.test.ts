@@ -67,6 +67,7 @@ const promised = <T extends Record<string, (...args: never[]) => unknown>>(
 
 const fakeNotion = (users: { email: string; id: string }[]) => {
   const pages = new Map<string, FakePage>();
+  const changes: { body: object; id: string; kind: string }[] = [];
   const matches = (p: FakePage, filter: unknown): boolean => {
     if (!filter) {
       return true;
@@ -115,6 +116,7 @@ const fakeNotion = (users: { email: string; id: string }[]) => {
     return page;
   };
   return {
+    changes,
     client: promised({
       // One language per page: an Arabic row's text is Arabic, every other
       // row's English.
@@ -144,6 +146,11 @@ const fakeNotion = (users: { email: string; id: string }[]) => {
       },
       createPage: (dataSource: string, props: Record<string, never>) =>
         make(dataSource, props),
+      // The database that holds each data source, and what the sync asked
+      // of either (the description and lock are the database's).
+      dataSource: (id: string) => ({
+        parent: { database_id: `db-${id}`, type: "database_id" },
+      }),
       query: (dataSource: string, filter?: object) =>
         [...pages.values()].filter(
           (p) =>
@@ -154,7 +161,14 @@ const fakeNotion = (users: { email: string; id: string }[]) => {
         page.in_trash = true;
         return page;
       },
-      updateDataSource: () => ({}),
+      updateDatabase: (id: string, body: object) => {
+        changes.push({ body, id, kind: "database" });
+        return {};
+      },
+      updateDataSource: (id: string, body: object) => {
+        changes.push({ body, id, kind: "data_source" });
+        return {};
+      },
       updatePage: (id: string, props: Record<string, never>) => {
         const page = find(id);
         Object.assign(page.properties, asRead(props));
@@ -194,7 +208,7 @@ describe.skipIf(!enabled)("Notion sync", () => {
   >;
   let run: typeof import("@/lib/api/notion/run").runNotionSync;
   let sources: Record<
-    "documents" | "events" | "officers" | "programmes",
+    "documents" | "events" | "needs" | "officers" | "programmes",
     string
   >;
   let leadId = "";
@@ -401,5 +415,80 @@ describe.skipIf(!enabled)("Notion sync", () => {
       .eq("id", made?.id ?? "");
     await sync();
     expect(titleOf(english as FakePage)).toBe(`A reading ${stamp}`);
+  });
+
+  test("copies needs with their standing activity, and locks both copies once", async () => {
+    const { data: tour } = await admin
+      .schema("core")
+      .from("programmes")
+      .select("id")
+      .eq("slug", "typewriter-tour")
+      .single();
+    const { data: need, error } = await admin
+      .schema("programmes")
+      .from("needs")
+      .insert({
+        item: `Typewriter ribbons ${stamp}`,
+        programme_id: tour?.id ?? null,
+        quantity: 3,
+      })
+      .select("id")
+      .single();
+    expect(error).toBeNull();
+    // Imported but not yet locked (the import test above starts the import
+    // over, which unlocks the copies too).
+    const { data: imported } = await admin
+      .schema("core")
+      .from("settings")
+      .select("value")
+      .eq("key", "notion.imported")
+      .single();
+    const {
+      eventsLocked: _events,
+      needsLocked: _needs,
+      ...unlocked
+    } = (imported?.value ?? {}) as Record<string, string>;
+    await admin
+      .schema("core")
+      .from("settings")
+      .update({ value: unlocked })
+      .eq("key", "notion.imported");
+    fake.changes.length = 0;
+    const state = await sync();
+    // No step failed: a failing step only adds a line here.
+    expect("problems" in state ? state.problems : []).toEqual([]);
+    // The next sync leaves the locked copies alone.
+    await sync();
+    const { data: link } = await admin
+      .schema("core")
+      .from("notion_links")
+      .select("notion_page_id")
+      .eq("kind", "need")
+      .eq("record_key", need?.id ?? "")
+      .single();
+    const copy = [...fake.pages.values()].find(
+      (p) =>
+        p.dataSource === sources.needs &&
+        p.id.replaceAll("-", "") === link?.notion_page_id?.replaceAll("-", "")
+    );
+    expect(copy).toBeDefined();
+    expect(
+      (getProp(copy as FakePage, "For").select as { name: string } | null)?.name
+    ).toBe("Typewriter Tour");
+    // Each copy: its data source loses the site's own properties, and its
+    // database takes the note and the lock (never the data source).
+    for (const source of [sources.events, sources.needs]) {
+      const onSource = fake.changes.filter(
+        (c) => c.kind === "data_source" && c.id === source
+      );
+      expect(onSource).toHaveLength(1);
+      expect(onSource[0]?.body).not.toHaveProperty("description");
+      const onDatabase = fake.changes.filter(
+        (c) => c.kind === "database" && c.id === `db-${source}`
+      );
+      expect(onDatabase).toHaveLength(1);
+      expect(onDatabase[0]?.body).toMatchObject({ is_locked: true });
+      expect(onDatabase[0]?.body).toHaveProperty("description");
+    }
   });
 });

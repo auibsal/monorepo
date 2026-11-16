@@ -9,9 +9,9 @@ import { escapeHtml } from "@/lib/telegram";
 import { copy, type Lang } from "./copy";
 import { anon, db, type Group, groups } from "./db";
 import { postTo, topicOf } from "./features/group/common";
-import { baghdadDate, baghdadHour, copyFor, once } from "./feeds";
 import { pick, when } from "./format";
 import { eventPage, web } from "./links";
+import { baghdadDate, baghdadHour, copyFor, once } from "./posts";
 import { qrPng } from "./qr";
 
 /** How long after an issue goes out Hudhud keeps bringing it to chats. */
