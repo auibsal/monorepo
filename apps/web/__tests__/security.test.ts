@@ -7,7 +7,6 @@ import {
   scriptHash,
   securityOptionsWith,
   withNonce,
-  withSecurityHeaders,
 } from "@/lib/security/proxy";
 import { themeScript } from "@/lib/theme";
 
@@ -51,16 +50,5 @@ describe("the Content Security Policy", () => {
     expect(await scriptHash("alert(1)")).toBe(
       "'sha256-bhHHL3z2vDgxUt0W3dWQOrprscmda2Y5pLsLg4GF+pI='"
     );
-  });
-});
-
-describe("reports of what the policy blocks", () => {
-  test("go to the site's own address, in both forms browsers use", () => {
-    const policy = contentSecurityPolicy(securityOptionsWith());
-    expect(directive(policy, "report-uri")).toEqual(["/api/csp-report"]);
-    expect(directive(policy, "report-to")).toEqual(["csp"]);
-    const { headers } = withSecurityHeaders(new Response(null));
-    expect(headers.get("Reporting-Endpoints")).toBe('csp="/api/csp-report"');
-    expect(headers.get("Content-Security-Policy")).toContain("report-to csp");
   });
 });

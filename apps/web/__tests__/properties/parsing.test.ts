@@ -1,6 +1,5 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import { violationsIn, withoutQuery } from "@/lib/api/csp-report";
 import { pickMessages } from "@/lib/i18n/account-messages";
 import { breachedIn } from "@/lib/password";
 
@@ -30,28 +29,6 @@ describe("reading what comes from outside", () => {
           ).toBe(false);
         }
       )
-    );
-  });
-
-  it("never keeps a query or fragment from a reported address", () => {
-    fc.assert(
-      fc.property(
-        fc.webUrl({ withFragments: true, withQueryParameters: true }),
-        (url) => {
-          const kept = withoutQuery(url);
-          expect(kept).not.toContain("?");
-          expect(kept).not.toContain("#");
-        }
-      )
-    );
-  });
-
-  it("reads any report without throwing", () => {
-    fc.assert(
-      fc.property(fc.jsonValue(), (payload) => {
-        expect(Array.isArray(violationsIn(payload))).toBe(true);
-        expect(violationsIn([payload]).length).toBeLessThanOrEqual(1);
-      })
     );
   });
 

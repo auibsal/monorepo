@@ -69,8 +69,9 @@ the live headers, DNS and the outbox). Fixed in #283:
 - [ ] Optional: the OpenSSF Best Practices badge (self-certified; the
   Scorecard check CII-Best-Practices).
 - [x] Account pages send only the `web` copy their client components read
-  (about 2.7 of 53 kB in English); `/api/csp-report` logs what the policy
-  blocks to the Vercel runtime log; `/api/password-check` is rate limited.
+  (about 2.7 of 53 kB in English); `/api/password-check` is rate limited.
+  Blocked scripts are Cloudflare's to report (Page Shield), not a route of
+  the site's (the owner, Nov 16: Cloudflare first at the edge).
 - [x] Lighthouse against the live site (Nov 16, mobile): accessibility 100
   and SEO 100 on the public pages. Under real throttling (slow 4G, 4× CPU)
   the largest paint is 3.2–3.4 s and blocking time 750–940 ms: the speed
@@ -80,19 +81,20 @@ the live headers, DNS and the outbox). Fixed in #283:
   JavaScript Detections (a deprecation warning, ~0.4 s of phone CPU). The
   sign-in page's layout shift (0.11, the footer moving when the form
   replaced the spinner) is fixed.
-- [ ] **Owner: Cloudflare** (its Security Center, Nov 10):
+- [ ] **Owner: Cloudflare** (its Security Center, Nov 10; the owner's rule
+  of Nov 16, Cloudflare first at the edge; every setting in
+  `docs/platform/settings.md`, Cloudflare):
+  - **Before merging #284:** Security → Settings → **security.txt**, with
+    the fields in settings.md; the site stops serving its own.
   - SSL/TLS → Edge Certificates → **Minimum TLS Version: TLS 1.2**. SSL
     Labs (Nov 16) finds TLS 1.0 and 1.1 still accepted on auibsal.org and
-    www (grade B); NIST SP 800-52 Rev. 2 requires 1.2 or later.
-  - Security → Bots: leave **Bot Fight Mode off**. On the free plan it
-    can't be skipped for a path, so it would challenge Telegram's, Notion's
-    and Resend's webhooks and the uptime check; the forms have Turnstile
-    and the database's rate limits. JavaScript Detections (same page) can
-    go off too: ~0.4 s of phone CPU and a deprecation warning.
-  - "Security.txt not configured": the site serves its own at
-    `/.well-known/security.txt` (RFC 9116); archive the insight.
-  - Page Shield's script monitoring (turned off Nov 16) is not needed: the
-    site's CSP reports blocked scripts to `/api/csp-report`.
+    www (grade B).
+  - Edge Certificates → **HSTS**: keep it on (12 months, subdomains,
+    preload, No-Sniff); the site no longer sends its own.
+  - Bot Fight Mode stays off (decisions.md, The site). JavaScript
+    Detections has no switch on the free plan: it stays.
+  - Page Shield's continuous script monitoring stays on (turned back on,
+    Nov 16).
 - [x] Keyboard pass on the live site, ten pages in each language: the skip
   link comes first, every stop shows its focus and has a name, nothing
   focused is off-screen. Still for people with devices: a pass with

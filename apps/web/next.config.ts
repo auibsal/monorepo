@@ -114,14 +114,10 @@ let nextConfig: NextConfig = {
   cacheComponents: true,
   headers: async () => [
     // The API routes answer with JSON, CSV or a calendar (audit E5): the
-    // transport and sniffing headers the pages get, and never framed or
-    // indexed. The design system's files keep their own rule below.
+    // sniffing headers the pages get, and never framed or indexed (HSTS is
+    // Cloudflare's, decisions.md, The site). The design system's files keep their own rule below.
     {
       headers: [
-        {
-          key: "Strict-Transport-Security",
-          value: "max-age=63072000; includeSubDomains; preload",
-        },
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
