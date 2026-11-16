@@ -13,6 +13,63 @@ pages are deleted.
 
 Branch: `claude/new-session-qosn60`, one pull request per prompt.
 
+## Now: the platform audit (Nov 16)
+
+Against US practice (OWASP, NIST SP 800-63B, WCAG 2.2 AA, CAN-SPAM and
+Gmail/Yahoo's sender rules, COPPA, OpenSSF Scorecard, Core Web Vitals), with
+production's own evidence (Supabase advisors and cron, Vercel's runtime log,
+the live headers, DNS and the outbox). Fixed in #283:
+
+- [x] The Notion sync, broken since #276 went out: the Needs copy (a join
+  across two schemas) and the locks (a description sent to the data source,
+  not its database). The copies are locked with `is_locked`.
+- [x] The hourly health check reported itself as late, and would have
+  raised the outbox alarm daily for four emails that gave up in October.
+- [x] Account pages send no more of the Diwan's admin copy than they read:
+  sign-in 71 kB compressed (was 99), 83 in Arabic (was 116).
+- [x] The error page no longer puts both messages files in every page's
+  JavaScript: public pages about 250 kB of it (was 440); the budget is now
+  320 kB.
+- [x] Scorecard: the migration is called by CI (no `workflow_run` checkout),
+  no committed `.pyc` files, SECURITY.md follows SAL-GOV-07
+  (security@auibsal.org), and the README's badge uses the repository's new
+  name (auibsal/monorepo).
+- [x] /.well-known/change-password, /favicon.ico and the Apple touch icon;
+  the sitemap's dates only where known; Hudhud uses the platform's fetch.
+- [x] Checked and sound: every sitemap page in both languages passes axe
+  (WCAG 2.2 AA); headers (HSTS preloaded, CSP with a fresh nonce on each
+  account page, frame and type options); DNSSEC, CAA, SPF, DKIM and DMARC at
+  `p=reject`; one-click unsubscribe and the postal address in bulk email;
+  every API route authenticates, verifies a signature or a token, or is
+  public by design; no Scorecard vulnerabilities; production's advisors
+  show no security finding beyond the one below.
+- [ ] **Owner, first:** add the backup's secrets (above, under the twentieth
+  prompt): no off-site copy of the database has been made since Nov 13.
+- [ ] **Owner:** Supabase → Authentication → Attack Protection: leaked
+  password protection is **off** in production (the advisor says so;
+  docs/platform/settings.md expects it on). The site's own check runs in the
+  browser, so it can be bypassed by calling Supabase directly; Supabase's
+  check runs on the server. Check the CAPTCHA (Turnstile) setting there too.
+- [ ] **Owner:** four emails gave up after five tries before the Resend key
+  was fixed (two personal-email confirmations of Oct 25 and 30, an opening's
+  reply of Oct 31, a role notice of Nov 4): send them again or tell the
+  people; the health check now reports such emails once.
+- [ ] **Owner:** adopt SAL-GOV-07 (the disclosure policy is "Version 1,
+  proposed").
+- [ ] **Owner (GitHub settings):** require one approving review on `main`
+  (the web lead's), with stale approvals dismissed; Scorecard's Code-Review
+  and Branch-Protection are 0 and 3 of 10.
+- [ ] **Owner (a decision):** an under-18 account whose parent never
+  consents stays limited indefinitely. US practice (COPPA, §312.5(c)(1)) is
+  to delete a child's data when consent doesn't come within a reasonable
+  time; decide the window (30 days is common) and whether self sign-up
+  needs a minimum age of 13.
+- [ ] Optional: the OpenSSF Best Practices badge (self-certified; the
+  Scorecard check CII-Best-Practices).
+- [ ] Next, if wanted: account pages still send the whole `web` catalog
+  (53 kB in English); a CSP report endpoint of the site's own; a rate
+  limit on /api/password-check.
+
 ## Now: the twentieth site prompt (Nov 16)
 
 - [x] The mirror is the co-pilot's: its `claude/mirror` PR (decisions of
