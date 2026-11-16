@@ -13,6 +13,56 @@ pages are deleted.
 
 Branch: `claude/new-session-qosn60`, one pull request per prompt.
 
+## Now: one job per platform (Nov 16)
+The owner's rule: one place for each thing, and a platform's own feature
+over the site's copy unless the platform's is capped or the site's is
+better. Who does what is in `docs/platform/settings.md` and `secrets.md`.
+- [x] One scheduler: pg_cron runs every job; retention no longer runs from
+  Vercel Cron as well (`20261116000400_one_scheduler.sql`;
+  `apps/web/vercel.json` has no crons).
+- [ ] **Owner: Supabase.**
+  - Settings → API Keys → **disable the legacy keys** (anon,
+    service_role): nothing uses them.
+  - Authentication → Emails → **SMTP Settings: turn off and clear.** The
+    Send Email hook sends every auth email through the site, so Supabase
+    never uses SMTP while it is on.
+  - Providers → Email: minimum password length 12, secure password change
+    on (above).
+  - The GitHub integration's **"Supabase Preview"** check is skipped on
+    every pull request (Branching is a paid feature; CI tests the database
+    itself): remove the integration, or keep it only if Branching is bought.
+- [ ] **Owner: Vercel → Environment Variables, delete** (read by nothing):
+  `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_PUBLISHABLE_KEY`,
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY`, **`SUPABASE_SERVICE_ROLE_KEY`**,
+  **`SUPABASE_JWT_SECRET`**, `POSTGRES_URL`, `POSTGRES_PRISMA_URL`,
+  `POSTGRES_URL_NON_POOLING`, `POSTGRES_USER`, `POSTGRES_HOST`,
+  `POSTGRES_PASSWORD`, `POSTGRES_DATABASE`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY`,
+  `VAPID_PRIVATE_KEY`. Vercel's `VERCEL_WEBHOOK_SECRET` is not set, so
+  failed deploys reach no one: add the webhook (Settings → Webhooks,
+  `https://auibsal.org/api/hooks/vercel`, deployment.error and
+  deployment.canceled) and its secret, or rely on Vercel's own email for
+  failed deploys and remove the route.
+- [ ] **Owner: Resend → API Keys:** delete **"SMTP"** (it served only
+  Supabase's SMTP). The keys named for another project are not the
+  Society's; whoever owns them decides.
+- [ ] **Owner: status.auibsal.org** points at Better Stack but no status
+  page claims it (it redirects to Better Stack's home page), and no monitor
+  checks auibsal.org (the Better Stack team in use is another
+  organization's, its monitors paused). **Delete the CNAME today**; then,
+  in a Better Stack team of the Society's own, a monitor on
+  `https://auibsal.org` and `/api/health` and the status page, and the
+  CNAME back (settings.md).
+- [ ] **A decision for decisions.md** (The site): it keeps "Vercel's
+  firewall as a second layer (its AI Bots rules on, Attack Challenge Mode
+  only during an attack)", but the project has no firewall rules at all,
+  and every request has passed Cloudflare first. Proposed: Cloudflare is
+  the firewall (WAF, bots, AI crawlers, "I'm Under Attack"); Vercel keeps
+  its default protection only.
+- [ ] `CRON_SECRET` is shared by pg_cron (the cron routes) and GitHub (the
+  workflow-failure hook); a leaked GitHub secret would open the cron
+  routes. A secret per caller is the standard: a `WORKFLOW_HOOK_SECRET`
+  when the workflows are next changed.
+
 ## Now: the platform audit (Nov 16)
 
 Against US practice (OWASP, NIST SP 800-63B, WCAG 2.2 AA, CAN-SPAM and

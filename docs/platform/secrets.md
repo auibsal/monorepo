@@ -15,7 +15,9 @@ fails a build whose client bundle names one.
 | `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN` | `.auibsal.org` | empty | empty |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | the Turnstile widget for auibsal.org | Cloudflare’s test keys | empty (the check is off) |
 | `CRON_SECRET`, `DATABASE_WEBHOOK_SECRET`, `REVALIDATE_SECRET` | one value each (`openssl rand -hex 32`) | different values | any |
-| `RESEND_TOKEN` | full-access key for auibsal.org | empty, or a test key | empty (emails are logged) |
+| `RESEND_TOKEN` | a sending-only key for auibsal.org and news.auibsal.org | empty, or a test key | empty (emails are logged) |
+| `RESEND_BULK_DOMAIN` | `news.auibsal.org` | empty | empty |
+| `SEND_EMAIL_HOOK_SECRET` | the Supabase Send Email hook's secret (`v1,whsec_…`) | empty | empty (the local stack sends its own) |
 | `RESEND_WEBHOOK_SECRET` | the webhook’s `whsec_…` | empty | empty |
 | `VERCEL_WEBHOOK_SECRET` | the Vercel webhook’s secret (failed deploys to the Council’s topic) | empty | empty |
 | `NOTION_TOKEN` | the “SAL Platform” connection | empty | empty, or a test workspace |
@@ -23,6 +25,14 @@ fails a build whose client bundle names one.
 | `GOOGLE_WALLET_ISSUER_ID`, `GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_WALLET_PRIVATE_KEY` | the issuer’s service account | empty | empty |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`, `TELEGRAM_WEBHOOK_SECRET` | Hudhud | empty | a separate test bot |
 | `TELEGRAM_LOGIN_CLIENT_SECRET` | Hudhud’s OpenID client secret | empty | empty |
+
+Nothing else. The variables Supabase's old Vercel integration added are
+read by nothing and are deleted: `SUPABASE_URL`, `SUPABASE_ANON_KEY`,
+`SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+`SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_JWT_SECRET` and the eight
+`POSTGRES_*`; so are `NEXT_PUBLIC_VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY`
+(no Web Push is sent). A key that grants the whole database does not sit
+where nothing needs it.
 
 ## The database (Supabase → the project)
 

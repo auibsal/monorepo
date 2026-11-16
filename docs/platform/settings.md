@@ -94,23 +94,39 @@ Vercel (Production). The steps, for a new domain or a move:
 
 ## Supabase
 - **Authentication → Sign In / Providers → Email:** Confirm email on;
-  Secure email change on.
-- **Authentication → Attack Protection:** Leaked password protection on.
+  Secure email change on; minimum password length 12; secure password
+  change on. **Attack Protection:** CAPTCHA (Turnstile) on; leaked
+  password protection on once the plan allows it (Pro).
 - **Authentication → Sessions:** JWT expiry 3600 seconds (an hour);
   refresh token reuse interval 10 seconds.
 - **Database → Network Restrictions:** where the plan allows, only the
   addresses that need the database directly.
-- **Authentication → Emails → SMTP Settings:** host `smtp.resend.com`, port
-  465, user `resend`, the sending key as the password, sender
-  `hello@auibsal.org`, name "AUIB Society of Arts and Letters". The
-  templates are in `packages/database/supabase/templates`.
+- **Authentication → Hooks → Send Email:** on, HTTPS,
+  `https://auibsal.org/api/hooks/auth-email`, with the secret that is
+  `SEND_EMAIL_HOOK_SECRET` in Vercel. Every auth email (confirmation, reset,
+  address change) is the site's own template (`@repo/email`), sent through
+  Resend. While the hook is on, Supabase never uses SMTP: **Authentication
+  → Emails → SMTP Settings** stays empty (Resend's "SMTP" key is deleted),
+  so there is one way auth email leaves. The templates in
+  `packages/database/supabase/templates` serve only the local stack.
+- **Settings → API Keys:** the publishable and secret keys only; **Legacy
+  API keys (anon, service_role): disabled**. Nothing reads them, and
+  Vercel's `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+  `SUPABASE_JWT_SECRET` and the rest of the old integration's variables are
+  deleted (`docs/platform/secrets.md`).
 
 ## status.auibsal.org
-1. A free status page fed by the uptime check (for example Better Stack's
-   free plan), checking `https://auibsal.org` and
-   `https://auibsal.org/api/health` every three minutes.
-2. In Cloudflare, a CNAME `status` to the address the status service gives,
-   DNS only.
+The uptime check is the one thing the site cannot do for itself: it has to
+run from outside. Until it exists, `status` must not point anywhere.
+1. A free status page fed by the uptime check (Better Stack's free plan, in
+   the Society's own team, not another organization's), checking
+   `https://auibsal.org` and `https://auibsal.org/api/health` every three
+   minutes, alerting the web lead.
+2. Then, in Cloudflare, a CNAME `status` to the address the status
+   service gives, DNS only. A CNAME with no status page behind it (as on
+   Nov 16: it led to Better Stack's home page) lets anyone who claims the
+   name on Better Stack show their page at status.auibsal.org; delete it
+   until the page exists.
 
 ## Telegram
 - Hudhud is an admin in both groups with every right but Remain Anonymous, **Add New Admins included**: it makes the officers admins (`docs/platform/telegram.md`).
