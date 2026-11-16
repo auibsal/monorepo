@@ -95,8 +95,12 @@ there goes to auibsal.org).
 
 **DKIM at 2048 bits:** Zoho's selector `zmail` is 1024-bit; Zoho → Mail
 Admin → Domains → auibsal.org → Email Configuration → DKIM: add a 2048-bit
-selector, publish it, verify, make it the default, then remove `zmail`
-(M3AAWG and NIST SP 800-177 recommend 2048). Resend chooses its own keys.
+selector named `zoho202611` (the provider, then the year and month the key
+was made, so the next rotation is `zoho202711` beside it), publish its TXT
+at `zoho202611._domainkey`, verify, make it the default, and remove
+`zmail` from Zoho and Cloudflare a week later, once mail signed with it
+has arrived (M3AAWG and NIST SP 800-177 recommend 2048 bits and a yearly
+rotation). Resend chooses its own keys.
 
 **BIMI** (the logo beside the Society's mail in inboxes) is not used: Gmail
 and Apple Mail show it only with a paid mark certificate (decisions.md:
