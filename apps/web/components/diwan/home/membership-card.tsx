@@ -237,7 +237,7 @@ export const MembershipCard = () => {
     );
 
   return (
-    <section aria-labelledby="membership-card" className="grid gap-4">
+    <section aria-label={t("card.title")} className="grid gap-4">
       <h2 className="sr-only" id="membership-card">
         {t("card.title")}
       </h2>

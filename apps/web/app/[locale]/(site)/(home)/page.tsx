@@ -65,6 +65,7 @@ const Home = async ({ params }: HomeProps) => {
   const [lead, ...rest] = pieces;
   const [latestEpisode] = episodes;
   const roles = (places ?? []).slice(0, 3);
+  const editionTitle = call ? t("call") : t("edition");
 
   return (
     <>
@@ -84,7 +85,7 @@ const Home = async ({ params }: HomeProps) => {
 
       {term.length > 0 ? (
         <section
-          aria-labelledby="this-term"
+          aria-label={t("thisTerm")}
           className="gap-space-5 mx-auto grid w-full max-w-6xl px-4 py-16 [&_h2]:scroll-mt-28"
         >
           <SectionHead
@@ -102,11 +103,11 @@ const Home = async ({ params }: HomeProps) => {
 
       {call || edition ? (
         <section
-          aria-labelledby="edition"
+          aria-label={editionTitle}
           className="gap-space-4 border-line mx-auto grid w-full max-w-6xl border-t px-4 py-16"
         >
           <h2 className="type-heading" id="edition">
-            {call ? t("call") : t("edition")}
+            {editionTitle}
           </h2>
           {call ? (
             <div className="grid gap-2">
@@ -140,7 +141,7 @@ const Home = async ({ params }: HomeProps) => {
       ) : null}
 
       {lead ? (
-        <section aria-labelledby="paper" className="bg-surface-reading">
+        <section aria-label={tj("title")} className="bg-surface-reading">
           <div className="gap-space-5 mx-auto grid w-full max-w-6xl px-4 py-16">
             <header className="border-text flex flex-wrap items-end justify-between gap-x-8 gap-y-2 border-b pb-3">
               <h2 id="paper">
@@ -167,7 +168,7 @@ const Home = async ({ params }: HomeProps) => {
 
       {latestEpisode ? (
         <section
-          aria-labelledby="next-stop"
+          aria-label={t("nextStop")}
           className="gap-space-4 mx-auto grid w-full max-w-6xl px-4 py-16"
         >
           <SectionHead
@@ -187,7 +188,7 @@ const Home = async ({ params }: HomeProps) => {
 
       {roles.length > 0 ? (
         <section
-          aria-labelledby="open-roles"
+          aria-label={t("openRoles")}
           className="gap-space-4 border-line mx-auto grid w-full max-w-6xl border-t px-4 py-16"
         >
           <SectionHead

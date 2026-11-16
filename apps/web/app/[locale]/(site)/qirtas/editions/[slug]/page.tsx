@@ -157,7 +157,7 @@ const CallView = async ({
         <>
           <CallTerms call={call} locale={locale} />
           <section
-            aria-labelledby="send-title"
+            aria-label={tc("chooseForm")}
             className="grid gap-4"
             id="send"
           >
@@ -261,7 +261,7 @@ const EditionPage = async ({ params }: EditionProps) => {
       </header>
       {letter ? (
         <section
-          aria-labelledby="letter"
+          aria-label={t("editorsNote")}
           className="reading mx-auto grid w-full max-w-2xl gap-3 p-8"
         >
           <h2 className="type-heading" id="letter">
@@ -271,7 +271,7 @@ const EditionPage = async ({ params }: EditionProps) => {
         </section>
       ) : null}
       <section
-        aria-labelledby="contents"
+        aria-label={t("contents")}
         className="mx-auto grid w-full max-w-3xl gap-10"
       >
         <h2 className="type-heading" id="contents">

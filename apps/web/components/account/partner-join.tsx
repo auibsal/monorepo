@@ -242,7 +242,7 @@ const ApplicationForm = ({ onSent }: { readonly onSent: () => void }) => {
     >
       {/* Paper, like a certificate: light whatever the theme. */}
       <article
-        aria-labelledby="memorandum-title"
+        aria-label={tm("title")}
         className="border-line bg-surface-reading text-text grid gap-8 border p-6 sm:p-10"
         data-theme="light"
       >

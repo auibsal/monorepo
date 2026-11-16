@@ -191,14 +191,14 @@ export const ChoiceInput = ({
   const listRef = useRef<HTMLDivElement>(null);
 
   // The field's label names the choices, wherever the label was written.
+  const [labelText, setLabelText] = useState<string>();
   useEffect(() => {
     const label = document.querySelector<HTMLLabelElement>(
       `label[for="${CSS.escape(baseId)}"]`
     );
-    if (label && !label.id) {
-      label.id = `${baseId}-label`;
-    }
+    setLabelText(label?.textContent?.trim() || undefined);
   }, [baseId]);
+  const groupName = ariaLabel ?? labelText;
 
   const choices = readChoices(children);
   const chosen = choices.find((c) => c.value === value);
@@ -259,8 +259,7 @@ export const ChoiceInput = ({
     return (
       <div
         aria-describedby={describedBy}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabel ? undefined : `${baseId}-label`}
+        aria-label={groupName}
         className={cn("border-line relative grid border-y", className)}
         id={baseId}
         role="radiogroup"
@@ -411,7 +410,7 @@ export const ChoiceInput = ({
             </div>
           ) : null}
           <div
-            aria-labelledby={baseId}
+            aria-label={groupName}
             className="grid max-h-80 overflow-y-auto"
             id={listId}
             onKeyDown={onListKey}

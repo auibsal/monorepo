@@ -233,7 +233,10 @@ export const MonthSection = async ({
   const previous = shiftMonth(month, -1);
   const following = shiftMonth(month, 1);
   return (
-    <section aria-labelledby="month" className="gap-space-5 grid">
+    <section
+      aria-label={formatMonth(month.from, locale)}
+      className="gap-space-5 grid"
+    >
       <div className="border-line pt-space-4 flex flex-wrap items-baseline justify-between gap-4 border-t">
         <h2 className="type-title font-light" id="month">
           {formatMonth(month.from, locale)}

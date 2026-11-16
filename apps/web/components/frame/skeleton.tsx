@@ -1,5 +1,5 @@
 /**
- * Loading: the page's own shape in hairline grey, rows where the rows will
+ * Loading: the page's own shape in hairline gray, rows where the rows will
  * be, while the title is already there. The turning ring is only for
  * buttons.
  */

@@ -61,7 +61,7 @@ export const ReviewStep = ({
   }
   return (
     <section
-      aria-labelledby="review"
+      aria-label={words.title}
       className="border-line grid gap-4 border-y py-5"
     >
       <h2 className="type-heading" id="review">
@@ -114,11 +114,7 @@ export const Receipt = ({
   /** "Received". */
   readonly title: string;
 }) => (
-  <section
-    aria-labelledby="receipt"
-    className="grid max-w-3xl gap-4"
-    role="status"
-  >
+  <section aria-label={title} className="grid max-w-3xl gap-4" role="status">
     <h2 className="type-display" id="receipt">
       {title}
     </h2>

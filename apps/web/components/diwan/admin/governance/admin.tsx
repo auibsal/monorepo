@@ -233,7 +233,7 @@ export const MeetingResolutions = ({
     },
   ];
   return (
-    <section aria-labelledby="meeting-resolutions" className="grid gap-4">
+    <section aria-label={t("resolutions.title")} className="grid gap-4">
       <h2 className="type-heading" id="meeting-resolutions">
         {t("resolutions.title")}
       </h2>

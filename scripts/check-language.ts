@@ -122,7 +122,7 @@ const ENGLISH: Rule[] = [
   },
   {
     pattern:
-      /\b(colo[u]r|cent[r]e|program[m]es?\b|cancel[l]ed|cancel[l]ing|organ[i]s|behavio[u]r|catalog[u]e|travel[l]ed|judg[e]ment|favo[u]rite|hono[u]r|theat[r]e|licen[c]e|recogn[i]s|apolog[i]s|label[l]ed|model[l]ing|enrol[m]ent|analy[s]e)/iu,
+      /\b(colo[u]r|cent[r]e|program[m]es?\b|cancel[l]ed|cancel[l]ing|organ[i]s|behavio[u]r|catalog[u]e|travel[l]ed|judg[e]ment|favo[u]rite|hono[u]r|theat[r]e|licen[c]e|recogn[i]s|apolog[i]s|label[l]ed|model[l]ing|enrol[m]ent|analy[s]e|gr[e]y|neighbo[u]r|acknowledg[e]ment)/iu,
     // Each British form with one letter in brackets, so this file holds
     // none of them.
     why: "American spelling",

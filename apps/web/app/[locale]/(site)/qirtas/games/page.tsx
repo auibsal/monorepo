@@ -55,7 +55,7 @@ const GamesPage = async ({ params }: GamesProps) => {
 
       {/* Today's word first (design review A18, C21), with its streak and a
           result to share; its own page stays the plain route. */}
-      <section aria-labelledby="today" className="grid gap-6">
+      <section aria-label={t("todaysPuzzle")} className="grid gap-6">
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
           <h2 className="type-heading" id="today">
             {t("todaysPuzzle")} · <GameNumber />
@@ -67,7 +67,7 @@ const GamesPage = async ({ params }: GamesProps) => {
         <WordGuess lang={lang} />
       </section>
 
-      <section aria-labelledby="daily" className="grid gap-4">
+      <section aria-label={t("alsoDaily")} className="grid gap-4">
         <h2 className="type-heading" id="daily">
           {t("alsoDaily")}
         </h2>

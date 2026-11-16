@@ -51,7 +51,7 @@ export const RecentDrafts = () => {
     return null;
   }
   return (
-    <section aria-labelledby="drafts" className="grid gap-3">
+    <section aria-label={t("title")} className="grid gap-3">
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
         <h2 className="type-heading" id="drafts">
           {t("title")}

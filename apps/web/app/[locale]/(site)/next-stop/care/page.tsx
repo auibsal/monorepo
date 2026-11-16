@@ -29,11 +29,7 @@ const CarePage = async ({ params }: LocaleParams) => {
         </ol>
         <p className="type-caption">{t("source")}</p>
       </Section>
-      <section
-        aria-labelledby="request-title"
-        className="grid gap-4"
-        id="request"
-      >
+      <section aria-label={t("formTitle")} className="grid gap-4" id="request">
         <h2
           className="type-heading border-line border-b pb-2"
           id="request-title"

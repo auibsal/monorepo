@@ -64,7 +64,7 @@ export const AccessReview = () => {
     !last ||
     Date.parse(last.reviewed_at) < Date.now() - 92 * 24 * 60 * 60 * 1000;
   return (
-    <section aria-labelledby="access-review" className="grid gap-3">
+    <section aria-label={t("title")} className="grid gap-3">
       <h2 className="text-lg font-light" id="access-review">
         {t("title")}
       </h2>

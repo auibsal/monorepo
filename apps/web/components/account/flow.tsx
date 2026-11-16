@@ -118,7 +118,7 @@ export const FlowTerms = ({
     rows.push([t("fees"), t("partner.fees")]);
   }
   return (
-    <section aria-labelledby={`terms-${kind}`} className="grid gap-4">
+    <section aria-label={t("title")} className="grid gap-4">
       <h2 className="type-heading" id={`terms-${kind}`}>
         {t("title")}
       </h2>

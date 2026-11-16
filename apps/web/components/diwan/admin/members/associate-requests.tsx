@@ -53,7 +53,7 @@ export const AssociateRequests = () => {
   });
 
   return (
-    <section aria-labelledby="associate-requests" className="grid gap-4">
+    <section aria-label={t("title")} className="grid gap-4">
       <h2 className="type-heading" id="associate-requests">
         {t("title")}
       </h2>

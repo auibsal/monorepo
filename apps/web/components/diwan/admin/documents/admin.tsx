@@ -287,7 +287,7 @@ const EditorForm = ({
       ) : null}
       <SaveButton pending={save.isPending} success={save.isSuccess} />
       <ErrorLine error={save.error} />
-      <section aria-labelledby="document-text" className="grid gap-3">
+      <section aria-label={t("textTitle")} className="grid gap-3">
         <h2 className="type-heading" id="document-text">
           {t("textTitle")}
         </h2>

@@ -190,7 +190,7 @@ export const DocumentArticle = async ({
       </DocumentHeader>
 
       {contents.length > 0 ? (
-        <nav aria-labelledby="contents" className="grid gap-3">
+        <nav aria-label={t("contents")} className="grid gap-3">
           <h2 className="type-heading border-line border-b pb-2" id="contents">
             {t("contents")}
           </h2>

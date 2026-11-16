@@ -276,7 +276,7 @@ const ListCard = ({ canSend, list }: { canSend: boolean; list: List }) => {
 
   return (
     <section
-      aria-labelledby={headingId}
+      aria-label={locale === "ar" ? list.title_ar : list.title_en}
       className="border-line grid gap-4 border-t pt-6"
     >
       <h3 className="type-subheading" id={headingId}>

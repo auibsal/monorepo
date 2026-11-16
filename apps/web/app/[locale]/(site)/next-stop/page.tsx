@@ -61,7 +61,10 @@ const NextStopPage = async ({ params }: NextStopProps) => {
       />
 
       {latest ? (
-        <section aria-labelledby="latest" className="grid max-w-3xl gap-4">
+        <section
+          aria-label={t("nextStop.latest")}
+          className="grid max-w-3xl gap-4"
+        >
           <h2 className="type-heading" id="latest">
             {t("nextStop.latest")}
           </h2>
@@ -71,7 +74,7 @@ const NextStopPage = async ({ params }: NextStopProps) => {
         <p className="type-body max-w-[60ch]">{t("nextStop.pilot")}</p>
       )}
 
-      <section aria-labelledby="episodes" className="grid gap-4">
+      <section aria-label={t("nextStop.episodes")} className="grid gap-4">
         <h2 className="type-heading" id="episodes">
           {t("nextStop.episodes")}
         </h2>
@@ -96,7 +99,7 @@ const NextStopPage = async ({ params }: NextStopProps) => {
       </section>
 
       {team.length > 0 ? (
-        <section aria-labelledby="crew" className="grid gap-4">
+        <section aria-label={t("nextStop.team")} className="grid gap-4">
           <h2 className="type-heading" id="crew">
             {t("nextStop.team")}
           </h2>
