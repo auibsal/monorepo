@@ -105,6 +105,13 @@ the live headers, DNS and the outbox). Fixed in #283:
     Detections has no switch on the free plan: it stays.
   - Page Shield's continuous script monitoring stays on (turned back on,
     Nov 16).
+  - Speed → Optimization: **Speed Brain off** (the site preloads its own
+    pages; Cloudflare's whole-page fetches go unused), **Early Hints on**,
+    **0-RTT off**. Email → **DMARC Management** stays on.
+  - **A decision for decisions.md** (The site): in an attack, Cloudflare's
+    "I'm Under Attack" mode only, not Vercel's Attack Challenge Mode as
+    well (every request reaches Vercel through Cloudflare, so the two
+    would challenge the same visitor twice).
 - [x] Keyboard pass on the live site, ten pages in each language: the skip
   link comes first, every stop shows its focus and has a name, nothing
   focused is off-screen. Still for people with devices: a pass with

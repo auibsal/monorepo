@@ -38,7 +38,16 @@ Turn **on**:
   Disallow lines before the site's own robots.txt, which keeps only the
   search engines' rule and the sitemap.
 - **Caching → Configuration:** Standard caching for files; leave Browser
-  Cache TTL as "Respect existing headers" (the site sets them).
+  Cache TTL as "Respect existing headers" (the site sets them). No Cache
+  Rule caches pages: Vercel caches them and refreshes each on publish, so
+  Cloudflare passes pages through (`cf-cache-status: DYNAMIC`) and caches
+  only the files, a year for the built ones.
+- **Speed → Optimization:** Brotli on; **Early Hints** on (Cloudflare sends
+  the site's font and script preloads before the page); HTTP/3 on;
+  **0-RTT off** (a resumed connection's first request can be replayed).
+- **DNS:** DNSSEC on; the CAA records as Cloudflare manages them for its
+  certificates; **Email → DMARC Management** on (the reports of
+  `_dmarc`'s `p=reject` go to it).
 - **Network:** "True-Client-IP Header" or "Pseudo IPv4" off, and keep the
   default `CF-Connecting-IP`, so the real visitor address reaches Vercel
   (the rate limits read it).
@@ -53,6 +62,12 @@ Leave **off**:
 - **Speed → Optimization → Rocket Loader** and any **Auto Minify** left
   on (they rewrite scripts and break the CSP's nonces).
 - **Zaraz** (decisions.md, The site: no Tag Manager or Google Analytics).
+- **Speed → Optimization → Speed Brain:** the site already loads the next
+  page ahead of a click and opens it in place, so the whole pages Speed
+  Brain fetches are never used.
+- **Email → Email Routing:** mail is Zoho's (the MX records).
+- **Scrape Shield → Hotlink Protection:** Telegram and Notion show the
+  site's images in their previews.
 - **Analytics → Web Analytics** automatic setup (the CSP blocks it; Vercel's
   analytics are used).
 
