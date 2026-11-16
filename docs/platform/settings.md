@@ -71,6 +71,37 @@ Leave **off**:
 - **Analytics → Web Analytics** automatic setup (the CSP blocks it; Vercel's
   analytics are used).
 
+## Email: delivery standards (auibsal.org)
+In place: SPF, DKIM (Zoho, Resend, Resend's news domain), DMARC at
+`p=reject` with strict alignment (reports to Cloudflare's DMARC
+Management), DNSSEC, and the CAA records' `iodef`.
+
+**MTA-STS and TLS-RPT** (RFC 8461 and 8460): servers sending to
+@auibsal.org deliver only over TLS to Zoho's MX hosts, and report any
+failure. The policy is the site's (`lib/mta-sts.ts`, served at
+`https://mta-sts.auibsal.org/.well-known/mta-sts.txt`; every other address
+there goes to auibsal.org).
+1. Zoho: an alias `tls-reports@auibsal.org` to the web lead (the daily
+   reports are JSON; nobody needs them in hello@).
+2. Cloudflare → DNS: TXT `_smtp._tls`, `v=TLSRPTv1;
+   rua=mailto:tls-reports@auibsal.org`.
+3. Vercel → the project → Domains: add `mta-sts.auibsal.org`. Cloudflare →
+   DNS: CNAME `mta-sts` to `cname.vercel-dns.com`, proxied.
+4. Once `https://mta-sts.auibsal.org/.well-known/mta-sts.txt` answers:
+   Cloudflare → DNS, TXT `_mta-sts`, `v=STSv1; id=20261116`.
+5. After two weeks of clean reports: `MTA_STS_MODE` to `enforce` in
+   `lib/mta-sts.ts`, and a new `id` (the date) in `_mta-sts`. Any change to
+   the MX records or the policy needs both.
+
+**DKIM at 2048 bits:** Zoho's selector `zmail` is 1024-bit; Zoho → Mail
+Admin → Domains → auibsal.org → Email Configuration → DKIM: add a 2048-bit
+selector, publish it, verify, make it the default, then remove `zmail`
+(M3AAWG and NIST SP 800-177 recommend 2048). Resend chooses its own keys.
+
+**BIMI** (the logo beside the Society's mail in inboxes) is not used: Gmail
+and Apple Mail show it only with a paid mark certificate (decisions.md:
+money, none).
+
 ## news.auibsal.org (bulk email)
 Done: the domain is verified in Resend and `RESEND_BULK_DOMAIN` is set in
 Vercel (Production). The steps, for a new domain or a move:

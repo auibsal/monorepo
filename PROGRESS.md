@@ -63,6 +63,20 @@ better. Who does what is in `docs/platform/settings.md` and `secrets.md`.
   routes. A secret per caller is the standard: a `WORKFLOW_HOOK_SECRET`
   when the workflows are next changed.
 
+## Now: the free standards (Nov 16)
+- [x] MTA-STS policy (`lib/mta-sts.ts`, in testing mode) and
+  `/.well-known/passkey-endpoints` (W3C: password managers find where to
+  add a passkey); `mta-sts.auibsal.org` serves only the policy.
+- [ ] **Owner: MTA-STS and TLS-RPT**, in order (docs/platform/settings.md,
+  Email): the `tls-reports@` alias in Zoho; the `_smtp._tls` TXT; the
+  `mta-sts.auibsal.org` domain in Vercel and its CNAME in Cloudflare; then
+  the `_mta-sts` TXT. On or after **Monday, November 30**, with clean
+  reports: `enforce` and a new `id`.
+- [ ] **Owner: Zoho DKIM at 2048 bits** (settings.md, Email).
+- [ ] **Owner: GitHub → Settings → Code security** (all free): secret
+  scanning and **push protection** on; **private vulnerability reporting**
+  on (GitHub's own form beside security@, as SAL-GOV-07 allows).
+
 ## Now: the platform audit (Nov 16)
 
 Against US practice (OWASP, NIST SP 800-63B, WCAG 2.2 AA, CAN-SPAM and
