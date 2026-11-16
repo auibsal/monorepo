@@ -45,6 +45,10 @@ const listFiles = async (directory: string): Promise<string[]> => {
   const nested = await Promise.all(
     entries.map((entry) => {
       const path = join(directory, entry.name);
+      // A link (the agent skills under .claude/skills) is read where it points.
+      if (entry.isSymbolicLink()) {
+        return [];
+      }
       if (entry.isDirectory()) {
         return IGNORED_DIRECTORIES.has(entry.name) ? [] : listFiles(path);
       }

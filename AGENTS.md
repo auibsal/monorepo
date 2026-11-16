@@ -163,6 +163,23 @@ Run `check`, `typecheck` and `test` before every commit, and `db:test` for
 any schema change. Integration tests run against a local stack with
 `SUPABASE_INTEGRATION=1` (see `.github/workflows/ci.yml`).
 
+## Supabase's MCP server and skills
+
+`.mcp.json` connects Claude Code to the production project through
+Supabase's MCP server (each person signs in once with `/mcp`). The agent
+skills under `.agents/skills` (`supabase`, `supabase-postgres-best-practices`,
+pinned in `skills-lock.json`, updated with `npx skills update`) are
+Supabase's general advice; where they differ, this file wins:
+
+- The MCP server reaches production: read with it (SELECTs, logs,
+  advisors, docs), never change anything with it. No `execute_sql` that
+  writes, no `apply_migration`, no edge function or branch from it.
+  Schema changes are migrations written by hand, tested locally
+  (`db:reset`, `db:test`) and shipped through CI.
+- Roles live in `access.role_assignments`, never in `app_metadata`.
+- The private SECURITY DEFINER body with a SECURITY INVOKER wrapper in
+  `api` is the house pattern (Security and data), not a mistake to undo.
+
 ## Security and data
 
 - **RLS first.** Postgres Row Level Security is the security boundary for
