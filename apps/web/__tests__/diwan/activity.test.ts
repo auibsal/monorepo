@@ -16,9 +16,9 @@ describe("what happened", () => {
       "migrations"
     );
     const sql = readdirSync(dir)
-      // Migrations before 20261116000450_programs.sql, as it renamed them.
+      // Migrations before 20261116001200_programs.sql, as it renamed them.
       .map((file) =>
-        file < "20261116000450"
+        file < "20261116001200"
           ? readFileSync(join(dir, file), "utf8").replace(
               /program[m]e/gu,
               "program"

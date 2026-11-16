@@ -9,7 +9,7 @@
 
 alter table core.notion_links drop constraint notion_links_kind_check;
 alter table core.notion_links add constraint notion_links_kind_check check (kind in (
-  'event', 'event_ar', 'news', 'officer', 'program', 'program_ar', 'document',
+  'event', 'event_ar', 'news', 'officer', 'programme', 'programme_ar', 'document',
   'minutes', 'journal_stage', 'piece', 'piece_ar', 'need',
   'edition', 'production', 'episode', 'opening', 'organization', 'announcement',
   'resolution', 'measure'

@@ -34,3 +34,4 @@ begin
 end
 $canceled$;
 
+select private.build_api();

@@ -21,9 +21,9 @@ const migrations = join(
 // access.role_permissions where role = '...' and permission = '...'`. A
 // renamed permission moves its grants with `update access.role_permissions
 // set permission = 'new' where permission = 'old'`.
-/** Migrations before 20261116000450_programs.sql, as it renamed them. */
+/** Migrations before 20261116001200_programs.sql, as it renamed them. */
 const american = (file: string, text: string) =>
-  file < "20261116000450"
+  file < "20261116001200"
     ? text.replace(/program[m]e(?!s\.manage)/gu, "program")
     : text;
 
