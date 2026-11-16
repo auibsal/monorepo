@@ -204,6 +204,31 @@ describe("a configuration failure waits for the fix", () => {
     expect(rows.at(1)?.last_error).toContain("older than 7 days");
   });
 
+  test("a held place whose hold has passed is closed, not retried", async () => {
+    const now = Date.parse("2026-11-20T00:00:00Z");
+    const rows: Row[] = [
+      {
+        attempts: 5,
+        created_at: "2026-11-19T00:00:00Z",
+        id: 9,
+        kind: "events.waitlist_offered",
+        payload: { until: "2026-11-19T12:00:00Z" },
+        waits_for_fix: true,
+      },
+      {
+        attempts: 5,
+        created_at: "2026-11-19T00:00:00Z",
+        id: 10,
+        kind: "events.waitlist_offered",
+        payload: { until: "2026-11-21T12:00:00Z" },
+        waits_for_fix: true,
+      },
+    ];
+    expect(await retryAfterFix(fakeAdmin(rows), now)).toBe(1);
+    expect(rows.at(0)?.last_error).toContain("link expired");
+    expect(rows.at(1)?.attempts).toBe(4);
+  });
+
   test("a row tried after the fix never waits a second time", async () => {
     sendEmail.mockRejectedValue(new EmailConfigError("domain is not verified"));
     const rows = [
