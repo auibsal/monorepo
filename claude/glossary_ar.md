@@ -107,6 +107,8 @@ Arabic rules: Modern Standard Arabic; Latin digits (0–9); «» for quotations 
 | Sign out | تسجيل الخروج |
 | "Doors open" (Hudhud's post an hour before) | «الأبواب مفتوحة الآن» |
 | Event page fields: Good to know / Who can come / Places left / Language / Step-free / Not step-free / Ask for an accommodation by <date> / Food and drink / Contains / Content note / Photos are taken | «معلومات مفيدة» / «من يمكنه الحضور» / «الأماكن المتبقية» / «اللغة» / «بلا درج» / «فيه درج» / «اطلب تسهيلات قبل <التاريخ>» / «الطعام والشراب» / «يحتوي على» / «تنبيه حول المحتوى» / «يُصوَّر الحدث» |
+| Who can come: Everyone / Members / Associate Members / Honorary Members / Guests / Invited only | «الجميع» / «الأعضاء» / «الأعضاء المنتسبون» / «الأعضاء الفخريون» / «الضيوف» / «بدعوة فقط» |
+| How: Open / Booking required / Guests book by <date> | «دخول حر» / «الحجز مطلوب» / «يحجز الضيوف قبل <التاريخ>» |
 | Hosted by (a partner that owns an event, under the title) | «باستضافة» |
 | The nine major allergens, and corn: milk, eggs, fish, crustacean shellfish, tree nuts, peanuts, wheat, soy, sesame; corn | الحليب، البيض، السمك، القشريات، المكسرات، الفول السوداني، القمح، الصويا، السمسم؛ الذرة |
 | agreements and consents / Raise a concern / Pitch an event | الاتفاقيات والموافقات / «أبلِغ عن مخاوف» / «اقترح فعالية» |
