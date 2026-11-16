@@ -435,9 +435,30 @@ describe.skipIf(!enabled)("Notion sync", () => {
       .select("id")
       .single();
     expect(error).toBeNull();
+    // Imported but not yet locked (the import test above starts the import
+    // over, which unlocks the copies too).
+    const { data: imported } = await admin
+      .schema("core")
+      .from("settings")
+      .select("value")
+      .eq("key", "notion.imported")
+      .single();
+    const {
+      eventsLocked: _events,
+      needsLocked: _needs,
+      ...unlocked
+    } = (imported?.value ?? {}) as Record<string, string>;
+    await admin
+      .schema("core")
+      .from("settings")
+      .update({ value: unlocked })
+      .eq("key", "notion.imported");
+    fake.changes.length = 0;
     const state = await sync();
     // No step failed: a failing step only adds a line here.
     expect("problems" in state ? state.problems : []).toEqual([]);
+    // The next sync leaves the locked copies alone.
+    await sync();
     const { data: link } = await admin
       .schema("core")
       .from("notion_links")
