@@ -78,9 +78,9 @@ jobs:
         # The password comes from SUPABASE_DB_PASSWORD (CLI 3 ignores link --password).
         run: bunx supabase link --project-ref "$PROJECT_REF"
       # Supabase's GitHub integration applies the migrations on the merge
-      # (the owner, Nov 17, 2026: Deploy to production is on, working
-      # directory packages/database). Wait for it, up to ten minutes, so
-      # the two never push at once.
+      # (Deploy to production on, working directory packages/database;
+      # docs/platform/releases.md). Wait for it, up to ten minutes, so the
+      # two never push at once.
       - name: Wait for Supabase's deploy
         working-directory: packages/database
         run: |
