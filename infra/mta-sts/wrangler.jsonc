@@ -1,0 +1,14 @@
+{
+  // Deployed by Cloudflare Workers Builds from this folder (root directory
+  // infra/mta-sts, deploy command `npx wrangler deploy`, watch path
+  // infra/mta-sts/*). decisions.md §13: this is the only job of the
+  // mta-sts subdomain.
+  "$schema": "https://unpkg.com/wrangler@4/config-schema.json",
+  "name": "mta-sts",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "mta-sts.auibsal.org", "custom_domain": true }],
+  "observability": { "enabled": false }
+}
