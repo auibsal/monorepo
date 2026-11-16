@@ -8,7 +8,9 @@ What Cloudflare can do at the edge, it does, not the site (the owner, Nov
 16, 2026; decisions.md, The site: "every feature that protects it"). The
 site keeps only what needs the page or the database: the CSP with each
 request's nonce, the other response headers, Turnstile's check and the
-rate limits per form and per account.
+rate limits per form and per account. Each thing lives in one place, never
+both: the `*.vercel.app` addresses are behind Vercel's login, so every
+visitor comes through Cloudflare.
 
 Turn **on**:
 - **Security → WAF:** the free managed rules.
@@ -16,8 +18,10 @@ Turn **on**:
 - **SSL/TLS → Overview:** Full (strict). **Edge Certificates:** Always Use
   HTTPS on; **Minimum TLS Version: TLS 1.2** (NIST SP 800-52 Rev. 2);
   TLS 1.3 on; **HTTP Strict Transport Security (HSTS):** on, Max Age 12
-  months, Apply HSTS policy to subdomains on, Preload on, No-Sniff header
-  on. The site no longer sends its own HSTS header.
+  months, Apply HSTS policy to subdomains on, Preload on, **No-Sniff
+  header off** (the site sends `X-Content-Type-Options` with its other
+  headers, which stay together in `lib/security`). The site no longer
+  sends its own HSTS header.
 - **Security → Settings → security.txt:** Contact
   `mailto:security@auibsal.org`; Policy `https://auibsal.org/security`;
   Preferred languages `en, ar`; Canonical

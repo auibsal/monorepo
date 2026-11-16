@@ -90,7 +90,14 @@ the live headers, DNS and the outbox). Fixed in #283:
     Labs (Nov 16) finds TLS 1.0 and 1.1 still accepted on auibsal.org and
     www (grade B).
   - Edge Certificates → **HSTS**: keep it on (12 months, subdomains,
-    preload, No-Sniff); the site no longer sends its own.
+    preload), with **No-Sniff off** (the site sends that header with its
+    others); the site no longer sends its own HSTS.
+  - **A decision for decisions.md** (The site): it keeps Vercel's
+    firewall "as a second layer (its AI Bots rules on)", but with the
+    `*.vercel.app` addresses behind Vercel's login every request has
+    already passed Cloudflare, whose "Block AI bots" does the same. The
+    proposal: AI bots are blocked by Cloudflare and robots.txt only, and
+    Vercel's AI Bots rule goes off.
   - Bot Fight Mode stays off (decisions.md, The site). JavaScript
     Detections has no switch on the free plan: it stays.
   - Page Shield's continuous script monitoring stays on (turned back on,
