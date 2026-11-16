@@ -59,7 +59,7 @@ describe("reports of what the policy blocks", () => {
     const policy = contentSecurityPolicy(securityOptionsWith());
     expect(directive(policy, "report-uri")).toEqual(["/api/csp-report"]);
     expect(directive(policy, "report-to")).toEqual(["csp"]);
-    const headers = withSecurityHeaders(new Response(null)).headers;
+    const { headers } = withSecurityHeaders(new Response(null));
     expect(headers.get("Reporting-Endpoints")).toBe('csp="/api/csp-report"');
     expect(headers.get("Content-Security-Policy")).toContain("report-to csp");
   });

@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const allowed = { value: true };
+const RANGE_URL = /range\/21BD1$/u;
 
 vi.mock("@/lib/api/rate-limit", () => ({
   withinRateLimit: vi.fn(async () => allowed.value),
@@ -31,7 +32,7 @@ describe("the breached-password check", () => {
     expect(await response.text()).toContain(
       "0018A45C4D1DEF81644B54AB7F969B88D65"
     );
-    expect(String(upstream.mock.calls[0]?.[0])).toMatch(/range\/21BD1$/u);
+    expect(String(upstream.mock.calls[0]?.[0])).toMatch(RANGE_URL);
   });
 
   test("refuses anything else, and past the limit", async () => {
