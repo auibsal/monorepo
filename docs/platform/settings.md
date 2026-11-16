@@ -78,20 +78,18 @@ Management), DNSSEC, and the CAA records' `iodef`.
 
 **MTA-STS and TLS-RPT** (RFC 8461 and 8460): servers sending to
 @auibsal.org deliver only over TLS to Zoho's MX hosts, and report any
-failure. The policy is the site's (`lib/mta-sts.ts`, served at
-`https://mta-sts.auibsal.org/.well-known/mta-sts.txt`; every other address
-there goes to auibsal.org).
+failure. The policy is served by a Cloudflare Worker at
+`https://mta-sts.auibsal.org/.well-known/mta-sts.txt`, built from
+`infra/mta-sts` (its README has the deploy settings, the DNS records and
+how to change the policy); the site has no copy of it.
 1. Zoho: an alias `tls-reports@auibsal.org` to the web lead (the daily
    reports are JSON; nobody needs them in hello@).
 2. Cloudflare → DNS: TXT `_smtp._tls`, `v=TLSRPTv1;
-   rua=mailto:tls-reports@auibsal.org`.
-3. Vercel → the project → Domains: add `mta-sts.auibsal.org`. Cloudflare →
-   DNS: CNAME `mta-sts` to `cname.vercel-dns.com`, proxied.
-4. Once `https://mta-sts.auibsal.org/.well-known/mta-sts.txt` answers:
-   Cloudflare → DNS, TXT `_mta-sts`, `v=STSv1; id=20261116`.
-5. After two weeks of clean reports: `MTA_STS_MODE` to `enforce` in
-   `lib/mta-sts.ts`, and a new `id` (the date) in `_mta-sts`. Any change to
-   the MX records or the policy needs both.
+   rua=mailto:tls-reports@auibsal.org`, and TXT `_mta-sts`, `v=STSv1;
+   id=…` (the date and time).
+3. After two weeks of clean reports: `mode` to `enforce` in
+   `infra/mta-sts/src/index.js`, and a new `id` in `_mta-sts`. Any change
+   to the MX records or the policy needs both.
 
 **DKIM at 2048 bits:** Zoho signs with the selector `zoho202611`
 (2048-bit; the provider, then the year and month the key was made). Each
@@ -127,8 +125,12 @@ Vercel (Production). The steps, for a new domain or a move:
 
 ## Supabase
 - **Authentication → Sign In / Providers → Email:** Confirm email on;
-  Secure email change on; minimum password length 12; secure password
-  change on. **Attack Protection:** CAPTCHA (Turnstile) on; leaked
+  Secure email change on; minimum password length 12, no required
+  characters; secure password change on; require current password when
+  updating on (Settings asks for it; a reset from the email never does);
+  email OTP length 8, expiry 3600 seconds (decisions.md, Members; the
+  local stack's `config.toml` matches, except the current-password
+  setting, which it has no key for). **Attack Protection:** CAPTCHA (Turnstile) on; leaked
   password protection (a Pro plan setting) on.
 - **Authentication → Sessions:** JWT expiry 3600 seconds (an hour);
   refresh token reuse interval 10 seconds.
@@ -142,6 +144,11 @@ Vercel (Production). The steps, for a new domain or a move:
   → Emails → SMTP Settings** stays empty (Resend's "SMTP" key is deleted),
   so there is one way auth email leaves. The templates in
   `packages/database/supabase/templates` serve only the local stack.
+- **API → Exposed schemas:** `public`, `graphql_public`, `core`, `access`,
+  `membership`, `events`, `journal`, `programmes`, `governance` and
+  `content` (the list in `config.toml`, `[api] schemas`). Without one, every
+  read of that schema fails with PGRST106; the site's published pages
+  then render empty sections and the Diwan cannot load.
 - **Settings → API Keys:** the publishable and secret keys only; **Legacy
   API keys (anon, service_role): disabled**. Nothing reads them, and
   Vercel's `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,

@@ -44,6 +44,18 @@ describe("email helpers", () => {
     expect(toEmailAuthError({ code: undefined, status: 429 })).toBe(
       "rate_limited"
     );
+    expect(
+      toEmailAuthError({
+        code: "current_password_required" as never,
+        status: 400,
+      })
+    ).toBe("current_password_required");
+    expect(
+      toEmailAuthError({
+        code: "current_password_invalid" as never,
+        status: 400,
+      })
+    ).toBe("current_password_invalid");
     expect(toEmailAuthError({ code: "something_new", status: 500 })).toBe(
       "unknown"
     );

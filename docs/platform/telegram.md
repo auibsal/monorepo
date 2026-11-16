@@ -100,7 +100,8 @@ And without commands:
   (decisions.md, The site: no silent failures): a failed or canceled
   deploy (`/api/hooks/vercel`, and the migrate workflow), a failed backup,
   migration or deploy run (`/api/hooks/workflow`, CRON_SECRET), a failed
-  or late scheduled job, a Notion sync with no run in an hour and an email
+  or late scheduled job, a route a job called that failed or ran out of
+  time, a Notion sync with no run in an hour and an email
   waiting over an hour (`private.platform_health()`, hourly). They show on
   the Desk only for those who hold `settings.manage` (the web lead and the
   President).

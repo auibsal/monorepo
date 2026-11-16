@@ -87,11 +87,11 @@ rows in `core.outbox`, written in the same transaction and handed to the API).
 | sal-release-unclaimed | Every 5 minutes | Releases unclaimed places at full events and expires waitlist offers |
 | sal-outbox-drain | Every 10 minutes | Retries any outbox row the insert's call missed |
 | sal-publish | Every 10 minutes | Publishes what was scheduled |
-| sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's groups |
+| sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's groups, within a 40-second budget; what a run can't reach goes first on the next (`lib/api/steps.ts`) |
 | sal-notion-sync | Every 15 minutes | Publishes Notion's documents and minutes, and writes the site's read-only copies into Notion (notion.md) |
 | sal-two-step-from | Hourly at :05 | Turns on two-step sign-in for roles whose date has come |
 | sal-calendar-sync | Hourly at :07 | Refreshes the AUIB campus calendar and the semesters |
-| sal-platform-health | Hourly at :20 | Alerts the web topic and the Desk to a late job, a stalled outbox or Notion sync, a dead email |
+| sal-platform-health | Hourly at :20 | Alerts the web topic and the Desk to a late job, a route a job called that failed or ran out of time (`private.api_calls` with pg_net's answers), a stalled outbox or Notion sync, a dead email |
 | sal-retention | 1:00 | Calls `/api/cron/retention`: the files and accounts first, then every rule of the retention schedule (`retention.md`) |
 | sal-wallet-terms | 3:20 | Refreshes Google Wallet passes when a term or role ends |
 | sal-telegram-tidy | 3:25 | Expired Telegram codes and old posts |

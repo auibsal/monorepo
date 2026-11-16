@@ -1,4 +1,3 @@
-import { project } from "@repo/config";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { env } from "@/env";
@@ -160,19 +159,6 @@ let nextConfig: NextConfig = {
       destination: "/account/settings#password",
       permanent: false,
       source: "/.well-known/change-password",
-    },
-    // mta-sts.auibsal.org serves the MTA-STS policy only (lib/mta-sts.ts);
-    // any other address there is the site's own.
-    {
-      destination: `${project.url}/:path*`,
-      has: [
-        {
-          type: "host" as const,
-          value: `mta-sts.${new URL(project.url).host}`,
-        },
-      ],
-      permanent: true,
-      source: "/:path((?!\\.well-known/mta-sts\\.txt$).*)",
     },
     ...LANGUAGE_PREFIXES.flatMap((prefix) =>
       [...MOVED, ...formRedirects].map(([from, to]) => ({

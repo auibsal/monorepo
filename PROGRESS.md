@@ -12,8 +12,9 @@ Branch: `claude/new-session-qosn60`, one pull request per prompt.
 
 ## Open
 
-- [ ] **MTA-STS:** `MTA_STS_MODE` in `lib/mta-sts.ts` moves to `enforce`
-  on or after Monday, November 30 (docs/platform/settings.md, Email).
+- [ ] **MTA-STS:** the policy's `mode` in `infra/mta-sts/src/index.js`
+  moves to `enforce` on or after Monday, November 30, with a new `id` in
+  `_mta-sts` (infra/mta-sts/README.md).
 - [ ] Events have no short address of their own (decisions.md lists
   /haven, /tour and /join); the kit prints and encodes the event's own
   address, auibsal.org/events/<slug>, until one is decided.

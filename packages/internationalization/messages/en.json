@@ -97,6 +97,8 @@
       "no_account": "No account uses this address. Check it, or create your account if you study at AUIB.",
       "breached_password": "This password has appeared in a data breach elsewhere, so it isn’t safe. Choose another.",
       "reauthentication_needed": "For your security, confirm it’s you first: enter the code we just emailed you.",
+      "current_password_required": "Enter your current password.",
+      "current_password_invalid": "That isn’t your current password. Check it and try again, or reset it from the sign-in page.",
       "age_required": "Answer whether you’re 18 or older. Under 18, give your month and year of birth and a parent’s email."
     },
     "signIn": {
@@ -4734,6 +4736,7 @@
       "declarationsLine": "For officers: what you declare each semester, and anything new.",
       "password": {
         "title": "Password",
+        "current": "Current password",
         "new": "New password",
         "submit": "Change the password",
         "done": "Your password is changed. Use it next time you sign in.",

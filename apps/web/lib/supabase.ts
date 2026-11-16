@@ -3,6 +3,7 @@ import "server-only";
 import { AsyncLocalStorage } from "node:async_hooks";
 import type { Database } from "@repo/database";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { cacheLife, cacheTag } from "next/cache";
 import { env } from "@/env";
 import { setClock } from "@/lib/data";
 import { roughlyNow } from "@/lib/this-year";
@@ -26,6 +27,83 @@ export const cacheTags = [
 ] as const;
 export type CacheTag = (typeof cacheTags)[number];
 
+interface CachedResponse {
+  body: string;
+  headers: [string, string][];
+  status: number;
+  statusText: string;
+}
+
+/** Headers a rebuilt response must not carry (the body is already plain). */
+const DROPPED = new Set([
+  "content-encoding",
+  "content-length",
+  "transfer-encoding",
+]);
+
+/**
+ * One published read's HTTP answer, kept by its address, headers and body
+ * (Cache Components: a `fetch` outside `use cache` is uncached data, and an
+ * error answer is never stored, so one failed read used to stop a page's
+ * prerender and the build). An answer is kept an hour and refreshed on
+ * publish by its tags; an error, or no answer at all, only a minute, so
+ * the page shows the section empty (readPublished) and recovers on its own.
+ */
+const cachedRead = async (
+  url: string,
+  method: string,
+  headers: [string, string][],
+  body: string | null,
+  tags: CacheTag[]
+): Promise<CachedResponse> => {
+  "use cache";
+  cacheTag(...tags);
+  try {
+    const response = await fetch(url, { body, headers, method });
+    const text = await response.text();
+    if (response.ok) {
+      cacheLife("hours");
+    } else {
+      cacheLife("minutes");
+    }
+    return {
+      body: text,
+      headers: [...response.headers].filter(([name]) => !DROPPED.has(name)),
+      status: response.status,
+      statusText: response.statusText,
+    };
+  } catch {
+    cacheLife("minutes");
+    return {
+      body: JSON.stringify({ message: "The database did not answer." }),
+      headers: [["content-type", "application/json"]],
+      status: 503,
+      statusText: "Service Unavailable",
+    };
+  }
+};
+
+/** The published client's fetch: every request through `cachedRead`. */
+const cachedFetch =
+  (tags: CacheTag[]): typeof fetch =>
+  async (input, init) => {
+    const request = new Request(input, init);
+    const body = request.body ? await request.text() : null;
+    const headers = [...request.headers].sort(([a], [b]) => a.localeCompare(b));
+    const answer = await cachedRead(
+      request.url,
+      request.method,
+      headers,
+      body,
+      [...tags].sort()
+    );
+    return new Response(answer.status === 204 ? null : answer.body, {
+      headers: answer.headers,
+      status: answer.status,
+      statusText: answer.statusText,
+    });
+  };
+
 /**
  * Anonymous Supabase client for published reads. The publishable key and
  * RLS mean it can only see public rows; responses are cached by tag and
@@ -42,13 +120,7 @@ const publicClient = (...tags: CacheTag[]): SupabaseClient<Database> | null => {
     env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
       auth: { autoRefreshToken: false, persistSession: false },
-      global: {
-        fetch: (input, init) =>
-          fetch(input, {
-            ...init,
-            next: { revalidate: 3600, tags: [...tags] },
-          }),
-      },
+      global: { fetch: cachedFetch(tags) },
     }
   );
 };
