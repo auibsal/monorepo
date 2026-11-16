@@ -19,6 +19,9 @@ name: Migrate production database
 #   CRON_SECRET            the site's own (as on Vercel): a failed run posts
 #                          an urgent alert to the Diwan group's web topic and
 #                          the Desk (scripts/alert-workflow.sh)
+# Supabase's GitHub integration (Deploy to production, on main) applies
+# the migrations when a pull request merges; this workflow waits until
+# production has them all, applies any it left, and only then deploys.
 # `supabase db push` applies only migrations not yet recorded in
 # supabase_migrations.schema_migrations, in order, and stops at the first error.
 # CI refuses a pull request whose new migration is older than the newest on
@@ -74,10 +77,26 @@ jobs:
         working-directory: packages/database
         # The password comes from SUPABASE_DB_PASSWORD (CLI 3 ignores link --password).
         run: bunx supabase link --project-ref "$PROJECT_REF"
-      - name: Pending migrations
+      # Supabase's GitHub integration applies the migrations on the merge
+      # (the owner, Nov 17, 2026: Deploy to production is on, working
+      # directory packages/database). Wait for it, up to ten minutes, so
+      # the two never push at once.
+      - name: Wait for Supabase's deploy
         working-directory: packages/database
-        run: bunx supabase migration list --password "$SUPABASE_DB_PASSWORD" --remote
-      - name: Apply
+        run: |
+          for i in $(seq 1 20); do
+            if bunx supabase db push --dry-run --password "$SUPABASE_DB_PASSWORD" --remote 2>&1 \
+              | tee /tmp/pending | grep -q "database is up to date"; then
+              echo "Supabase applied every migration."
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "Still pending after ten minutes:"
+          cat /tmp/pending
+      # Anything still pending (Supabase's deploy stopped or never ran):
+      # applied here, in order, stopping at the first error.
+      - name: Apply what is left
         id: apply
         working-directory: packages/database
         # A hosted change: CLI 3 asks first, and --yes is the answer in CI.

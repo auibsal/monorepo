@@ -217,10 +217,12 @@ Supabase's general advice; where they differ, this file wins:
   `.schema("api")`; a name in two schemas takes its schema as a prefix
   (`events_invitations`, `apiName` in `@repo/database`). Nothing goes in
   `public`.
-- **Migrations ship through CI.** Add a file to `supabase/migrations`;
-  after merge, `.github/workflows/migrate.yml` runs `supabase db push`
-  against production once CI passes, then calls Vercel's deploy hook (Git
-  auto-deploy of `main` is off, so the site never runs ahead of its schema).
+- **Migrations ship on merge.** Add a file to `supabase/migrations`; a
+  pull request merges only with CI green, then Supabase's GitHub
+  integration applies it to production. `.github/workflows/migrate.yml`
+  waits until production has every migration (applying any left), then
+  calls Vercel's deploy hook (Git auto-deploy of `main` is off, so the
+  site never runs ahead of its schema).
   Never paste SQL into the production database.
 - **Accounts (decisions.md, Members; NIST SP 800-63B).** Passwords are 12
   characters or more with no composition rules, checked against known
