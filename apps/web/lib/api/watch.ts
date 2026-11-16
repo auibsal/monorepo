@@ -3,7 +3,7 @@ import "server-only";
 import { connect } from "node:tls";
 import { createAdminClient } from "@repo/database/admin";
 import { diwanUrl } from "@repo/internationalization";
-import { baghdadDate, baghdadHour } from "./bot/feeds";
+import { baghdadDate, baghdadHour } from "./bot/posts";
 import { staffAlert } from "./bot/upkeep";
 
 const DOMAIN = "auibsal.org";

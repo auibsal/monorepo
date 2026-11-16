@@ -8,8 +8,10 @@ import { urls } from "../playwright.config";
  * phone on a mobile network (Lighthouse's mobile profile: CPU four times
  * slower, 150 ms round trips, 1.6 Mbit/s down). Only against the built app
  * (E2E_START=start, as CI runs it): dev mode's bundles say nothing.
- * Measured Nov 5, 2026: LCP about 1.1 s, 385–390 kB of JavaScript and
- * 850–920 kB in all on each page; the budget leaves a little room.
+ * Measured Nov 16, 2026, once the error page stopped carrying both
+ * messages files: LCP 0.7–1.8 s, 247–254 kB of JavaScript and 725–840 kB in
+ * all on each page (CI measures about 12 kB more JavaScript). The budget
+ * leaves about a fifth for growth, so a regression shows.
  */
 const BUDGET = {
   /** Cumulative layout shift. */
@@ -17,9 +19,9 @@ const BUDGET = {
   /** Largest contentful paint, in milliseconds. */
   lcp: 2500,
   /** JavaScript sent over the network, compressed, in kilobytes. */
-  scriptKb: 450,
+  scriptKb: 320,
   /** Everything sent over the network, compressed, in kilobytes. */
-  totalKb: 1100,
+  totalKb: 1000,
 } as const;
 
 const PAGES = [

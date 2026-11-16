@@ -176,13 +176,12 @@ const escapeHtml = (text: string) =>
 
 const dropEditorsLines = (html: string) => {
   let rest = html;
-  for (;;) {
-    const first = OPENING_PARAGRAPH.exec(rest);
-    if (!(first && EDITORS_LINE.test(plain(first[1] ?? "")))) {
-      return rest;
-    }
+  let first = OPENING_PARAGRAPH.exec(rest);
+  while (first && EDITORS_LINE.test(plain(first[1] ?? ""))) {
     rest = rest.slice(first[0].length);
+    first = OPENING_PARAGRAPH.exec(rest);
   }
+  return rest;
 };
 
 /**

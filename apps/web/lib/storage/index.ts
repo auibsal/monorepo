@@ -184,8 +184,9 @@ const listFolder = async (
   while (folders.length > 0) {
     const current = folders.pop() as string;
     let offset = 0;
+    let more = true;
 
-    for (;;) {
+    while (more) {
       // biome-ignore lint/performance/noAwaitInLoops: pages are sequential
       const { data, error } = await supabase.storage
         .from(bucket)
@@ -199,9 +200,7 @@ const listFolder = async (
           `${current}/${object.name}`
         );
       }
-      if ((data ?? []).length < LIST_PAGE) {
-        break;
-      }
+      more = (data ?? []).length >= LIST_PAGE;
       offset += LIST_PAGE;
     }
   }
