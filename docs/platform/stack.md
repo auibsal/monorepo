@@ -14,7 +14,7 @@ they move to Society addresses during 2027. What each service holds is in
 
 | Service | What for | Plan | Renews | How to leave |
 |---|---|---|---|---|
-| Vercel | Hosting, Web Analytics, Speed Insights | Hobby (free) | No renewal | The app is plain Next.js: deploy it on any Node host; analytics stop |
+| Vercel | Hosting, Web Analytics, Speed Insights | Pro for now (Hobby is free) | No renewal | The app is plain Next.js: deploy it on any Node host; analytics stop |
 | Supabase | Database, sign-in, files | Free | No renewal | `pg_dump` (the nightly backup) restores into any Postgres; files from Storage's S3 API |
 | Resend | The site's email and the mailing list | Free | No renewal | Any SMTP or API sender: `lib/api` sends through one module; export the audience |
 | Cloudflare | DNS, Turnstile, R2 (second backup) | Free | No renewal | Move the DNS zone; Turnstile has drop-in alternatives |

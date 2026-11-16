@@ -6,12 +6,39 @@ The platform is one repository, [auibsal/monorepo](https://github.com/auibsal/mo
 
 | App | Address | What it does |
 | --- | --- | --- |
-| Public site | [auibsal.org](https://auibsal.org) (`apps/web`, `app/[locale]/(site)`) | Events, news, the Journal, documents, the Warmth Meter; English and Arabic |
-| The Diwan | [auibsal.org/diwan](https://auibsal.org/diwan) (`app/[locale]/diwan`) | The officers' administration, in six sections (the members' pages are at /account); rendered in the browser, with the member's own token |
+| Public site | [auibsal.org](https://auibsal.org) (`apps/web`, `app/[locale]/(site)`) | Events, Qirtas, the Company, Next Stop, Get involved, the Library and About; English and Arabic |
+| Your account | [auibsal.org/account](https://auibsal.org/account) (`app/[locale]/(account)`) | Every member's and guest's own pages: Today, Events, Work, Roles and service, Documents and Settings; rendered in the browser, with the member's own token |
+| The Diwan | [auibsal.org/diwan](https://auibsal.org/diwan) (`app/[locale]/diwan`) | The staff's administration, one section per Council seat (the Desk, the Council, Qirtas, Media, the Company, Events, Partnerships, Membership); rendered in the browser, with the member's own token |
 | API | auibsal.org/api (`app/api`, `lib/api`) | Email, scheduled jobs, calendar feeds, file links, exports, account deletion, Hudhud and the Notion sync; the only code holding the secret key |
 | The design system | [auibsal.org/diwan/media/design](https://auibsal.org/diwan/media/design) (`packages/brand`, built into the site) | SAL-MED-02 in full: the guide, foundations, logos, every component, screen and email in both languages, social and print files; in the Diwan, read-only, not indexed |
 | Officer handbook | The team's Notion workspace (linked from the Desk) | How to run the Society; officers only |
 | These runbooks | `docs/platform` in the repository | How the platform runs, for the web lead |
+
+## How the parts connect
+
+```mermaid
+flowchart LR
+  CF["Cloudflare<br/>DNS · TLS · WAF · bots"]
+  subgraph apps/web · auibsal.org (one Vercel project)
+    W["(site) · public pages<br/>prerendered, cached by tag"]
+    M["(account) · your account<br/>client-rendered"]
+    A["/diwan · the Diwan<br/>client-rendered"]
+    API["/api · route handlers<br/>email · cron · feeds · files · hooks"]
+  end
+  subgraph Supabase
+    AUTH["Auth"]
+    DB[("Postgres + RLS<br/>pg_cron · outbox")]
+    ST["Storage"]
+  end
+  CF --> W & M & A & API
+  W -- "publishable key, published rows" --> DB
+  M & A -- "member's token" --> AUTH & DB & ST
+  M & A -- "member's token" --> API
+  API -- "secret key" --> DB & ST
+  DB -- "pg_net: outbox, cron" --> API
+  AUTH -- "Send Email hook" --> API
+  API --> RESEND["Resend"] & NOTION["Notion"] & TG["Telegram"]
+```
 
 ## How a request flows
 
@@ -30,26 +57,55 @@ The platform is one repository, [auibsal/monorepo](https://github.com/auibsal/mo
 - **Blind review.** Readers never receive an author's identity before a decision; the database withholds it.
 - **Readers read the work, never the file.** A reader signs `confidentiality-agreement`, the Confidentiality pledge, on the reading page itself (in their platform name, kept and emailed like every signed form; `journal.sign_reader_pledge`), then reads a blind entry's text on the page (`journal.entry_text`; the columns aren't selectable by themselves) and a Gallery entry's images as copies marked with their card number and the day (`/api/files/blind`). Selecting, copying, the context menu and printing are off on that page, a speed bump that keeps the keyboard and screen readers working. Originals open only for the writer, the Managing Editor in intake, and the section's editor or the Editor-in-Chief once accepted (`journal.open_original`); every opening shows in the submission's History.
 
+## The data model
+
+Every schema below is exposed to the Data API, with RLS on every table;
+`private` holds the function bodies and is not exposed.
+
+| Schema | What it holds |
+| --- | --- |
+| `core` | profiles, semesters, settings, the activity log, the outbox, announcements and Broadcasts, Notion links, Telegram, devices, problem reports |
+| `access` | permissions, roles and their permissions, role assignments, agreements and checklists, access reviews, two-step recovery |
+| `membership` | memberships and classes, pledges, cards and Wallet passes, guests, invitations and their lists, certificates, service records and letters, requests (Associate, merge, verification) |
+| `events` | events, RSVPs and the waitlist, staff, check-ins, invitations, reminders, debriefs, incident reports, Student Life Week |
+| `journal` | Qirtas: Editions (`issues`) and calls, contributors, pieces and their parts, submissions and files, blind entries and keys, readers' assignments and scores, decisions, the Prize, games |
+| `programmes` | Next Stop's episodes and reels, the Tour (Six Words), needs and shifts, openings and replies, the Company's productions, auditions and rehearsals, Qalam, removal requests |
+| `governance` | the Council's minutes, resolutions and motions, elections, partners and memoranda, forms and signed copies, the Library (`society_documents`), conflict declarations |
+| `content` | the Sunday Paper and its list |
+
+Three designs worth knowing: **blind review** (readers see `journal.blind_entries`
+through their assignments, never the author, until a decision);
+**elections** (`governance.cast_ballot()` writes a receipt and a ballot with no
+shared key, so no one can match them); and the **outbox** (side effects are
+rows in `core.outbox`, written in the same transaction and handed to the API).
+
 ## Scheduled jobs
 
-| Job | Runs | Does |
+| Job | Runs (UTC) | Does |
 | --- | --- | --- |
-| sal-outbox-drain | Every 10 minutes | Retries any outbox row the webhook missed |
-| sal-publish | Every 10 minutes | Publishes scheduled news, issues and pieces |
-| sal-calendar-sync | Hourly at :07 | Refreshes the AUIB campus calendar |
-| sal-daily | 4:45 UTC (7:45 a.m. Baghdad) | Event reminders, agreement reminders, role-ending notices and overdue removal requests |
-| sal-retention | 1:00 UTC | Calls `/api/cron/retention`: the files and accounts first, then every rule of the retention schedule (`docs/platform/retention.md`); a failed rule emails the administrators |
-| sal-sunday-paper | Sundays, 6:00 UTC (sends on the first Sunday of the month) | The Sunday Paper to members and the public list |
-| sal-notion-sync | Every 15 minutes | Mirrors officers and the registry into Notion |
-| sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's group |
-| sal-telegram-tidy | 3:25 UTC | Expired Telegram codes and old posts |
-| sal-wallet-terms | 3:20 UTC | Refreshes Google Wallet passes when a term or role ends |
-| sal-cron-health | 5:35 UTC | Emails the administrators the jobs that failed in the last day; prunes run records older than 30 days |
-| Nightly backup (GitHub Actions) | 23:20 UTC | Encrypted dump of the production database (and Storage on the 1st), kept 30 days, emailed on failure (`docs/platform/backups.md`) |
+| sal-new-devices | Every 5 minutes | Emails a person when a new kind of device signs in |
+| sal-release-unclaimed | Every 5 minutes | Releases unclaimed places at full events and expires waitlist offers |
+| sal-outbox-drain | Every 10 minutes | Retries any outbox row the insert's call missed |
+| sal-publish | Every 10 minutes | Publishes what was scheduled |
+| sal-telegram-posts | Every 10 minutes | Hudhud's posts to the Society's groups |
+| sal-notion-sync | Every 15 minutes | Copies Notion's events, needs and documents to the site, and the site's people back |
+| sal-two-step-from | Hourly at :05 | Turns on two-step sign-in for roles whose date has come |
+| sal-calendar-sync | Hourly at :07 | Refreshes the AUIB campus calendar and the semesters |
+| sal-platform-health | Hourly at :20 | Alerts the web topic and the Desk to a late job, a stalled outbox or Notion sync, a dead email |
+| sal-retention | 1:00 | Calls `/api/cron/retention`: the files and accounts first, then every rule of the retention schedule (`retention.md`) |
+| sal-wallet-terms | 3:20 | Refreshes Google Wallet passes when a term or role ends |
+| sal-telegram-tidy | 3:25 | Expired Telegram codes and old posts |
+| sal-adult-birthdays | 4:35 | Deletes the month and year of birth of members who turned 18 |
+| sal-daily | 4:45 (7:45 a.m. Baghdad) | Event and shift reminders, agreement reminders, role-ending notices |
+| sal-applications | 4:45 | Declines offers for openings that were not answered in time |
+| sal-cron-health | 5:35 | Emails the administrators the jobs that failed in the last day |
+| sal-student-life-week | Wednesdays, 6:00 | Student Life's week of events |
+| sal-daily-updates | 17:00 (8:00 p.m. Baghdad) | Each person's one daily update email |
+| Nightly backup (GitHub Actions) | 23:20 | Encrypted dump of the production database (and Storage on the 1st), kept 30 days, emailed on failure (`backups.md`) |
 
-The first eleven run inside Postgres (pg_cron). The Supabase security and
+All but the backup run inside Postgres (pg_cron). The Supabase security and
 performance advisors are kept at zero findings, and
 `00_advisors.test.sql` fails CI when one would come back: every RPC entry
 point in an exposed schema is a SECURITY INVOKER wrapper around its body in
 the `private` schema, no table has two permissive policies for the same
-role and action, and every foreign key is indexed. The full design, data model and setup steps are in [ARCHITECTURE_AND_INTEGRATIONS.md](https://github.com/auibsal/monorepo/blob/main/ARCHITECTURE_AND_INTEGRATIONS.md); the rules for changing code are in [AGENTS.md](https://github.com/auibsal/monorepo/blob/main/AGENTS.md).
+role and action, and every foreign key is indexed. Every platform setting is in [settings.md](settings.md) and every secret in [secrets.md](secrets.md); the rules for changing code are in [AGENTS.md](https://github.com/auibsal/monorepo/blob/main/AGENTS.md), and the technical decisions in [docs/adr](../adr/README.md).

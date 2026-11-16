@@ -12,7 +12,7 @@ import { log } from "@/lib/observability/log";
 export const maxDuration = 60;
 
 /**
- * Hourly (pg_cron, or Vercel Cron with CRON_SECRET): reads the AUIB public
+ * Hourly (pg_cron, with CRON_SECRET): reads the AUIB public
  * calendar (`campusCalendar` in the project file) into core.external_events,
  * and the semesters it opens and closes into core.semesters (role terms, voting
  * standing and declarations follow them). Events that left the feed are

@@ -9,7 +9,7 @@ sign-in by emailed code).
 
 | Sender | What | From | Templates |
 | --- | --- | --- | --- |
-| **Supabase Auth** (custom SMTP through Resend) | Sign-in links and codes, sign-up confirmation, password reset, email change, security notices | `hello@auibsal.org` | `packages/database/supabase/templates` (pasted into the hosted project) |
+| **Supabase Auth** (its Send Email hook, sent by the site through Resend) | Sign-up confirmation, password reset, email change and their codes, security notices | `hello@auibsal.org` | `authEmail` in `packages/email` (the local stack uses `packages/database/supabase/templates`) |
 | **The site's outbox** (`lib/api/outbox.ts`, Resend API) | Everything else, below | `SENDER` in `packages/email`: AUIB Society of Arts and Letters <hello@auibsal.org> (decisions §6), set in code | `packages/email` (`copy.ts`, `templates/notice.tsx`) |
 
 The domain `auibsal.org` is verified in Resend (DKIM `resend._domainkey`,
@@ -19,25 +19,22 @@ rejected, so every sender must go through Resend.
 
 ## Auth emails (Supabase)
 
-**Through the Send Email hook (preferred).** Supabase hands every sign-in
+**Through the Send Email hook, the one way.** Supabase hands every auth
 email to `/api/hooks/auth-email`, which sends it through Resend from
 hello@ in the Society's template (`authEmail` in `@repo/email/copy`), in
 the person's language only (`user_metadata.locale`), with a subject in
-that language. To turn it on: Supabase → Authentication → Hooks → Send
-Email → HTTPS, URL `https://auibsal.org/api/hooks/auth-email`; copy the
-secret it shows (`v1,whsec_…`) into Vercel as `SEND_EMAIL_HOOK_SECRET`
-(Production). With the hook on, the SMTP settings and the pasted templates
-below are no longer used; they stay as the fallback until the hook is on.
+that language. It is on in production (Supabase → Authentication → Hooks →
+Send Email → HTTPS, URL `https://auibsal.org/api/hooks/auth-email`, its
+secret `v1,whsec_…` in Vercel as `SEND_EMAIL_HOOK_SECRET`). While it is on,
+Supabase never uses SMTP, so the SMTP settings stay empty.
 
-**The fallback (SMTP and pasted templates).** One language per email
-(Arabic when the member signed up in Arabic, `user_metadata.locale`); the
-subjects are in both, since Supabase subjects can't choose. Paste each
-file into **Authentication → Emails** with the subject from
-`templates/subjects.txt`.
+**The local stack** has no hook: Supabase sends its own emails to Mailpit
+from the files in `packages/database/supabase/templates` (one language per
+email; the subjects, which Supabase can't choose, in both).
 
 | Template | When | Notes |
 | --- | --- | --- |
-| Magic link | "Email me a sign-in link" | The link **and a code**: the code works where the link can't be opened (another device, an app's own browser, a mail scanner that used the link) |
+| Magic link | Not offered: the site never sends a sign-in link (AGENTS.md, Auth); a link already sent still opens (`auth-confirm.tsx`) | The link and a code |
 | Confirm signup | A new account | Link and code |
 | Reset password | Forgot password | Link |
 | Change email address | A new sign-in address | Link, sent to the new address |
@@ -171,13 +168,9 @@ are in: the next outbox row or scheduled run calls the route again.
 
 - URL Configuration: Site URL `https://auibsal.org`; Redirect URLs
   `https://auibsal.org/**`.
-- Emails → SMTP: host `smtp.resend.com`, port `465`, user `resend`,
-  password a Resend API key with sending access to `auibsal.org`, sender
-  `hello@auibsal.org`, name "AUIB Society of Arts and Letters". The key must
-  belong to the Resend account where `auibsal.org` is verified now (added
-  again on 2026-10-24): a key from before then sends nothing.
-- Emails → templates: the files above. Security notifications: on.
-- Rate limits: emails per hour at least 60 (custom SMTP starts at 30).
+- Hooks → Send Email: on (above); Emails → SMTP Settings: empty.
+  Security notifications: on.
+- Rate limits: emails per hour at least 60.
 - Attack Protection → CAPTCHA: Turnstile, with the **secret** of the same
   widget whose site key is `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
 
@@ -232,7 +225,8 @@ are in: the next outbox row or scheduled run calls the route again.
 
 1. Resend → Emails: was it sent, delivered, bounced? (A bounce is usually a
    typo in the address.)
-2. Nothing in Resend: Supabase didn't send. Check the SMTP key, the rate
-   limit, and Authentication → Logs.
+2. Nothing in Resend: the email didn't leave. Check Authentication → Logs
+   (the hook's call and the rate limit) and the Vercel runtime log for
+   `/api/hooks/auth-email`.
 3. Delivered but not seen: the spam or "Other" folder; AUIB mail sometimes
    holds new senders. The code in the email works on any device.

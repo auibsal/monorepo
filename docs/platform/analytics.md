@@ -16,7 +16,9 @@ The members' pages and the Diwan are not counted or measured.
 
 ## To turn it on
 
-In Vercel: the project → Analytics → Enable. Speed Insights stays off.
+In Vercel: the project → Analytics → Enable, and Speed Insights → Enable
+(both cookieless; `<Analytics />` and `<SpeedInsights />` are in the public
+site's layout).
 Nothing is set in the environment.
 
 ## The cookies the site sets
