@@ -166,7 +166,8 @@ any schema change. Integration tests run against a local stack with
 ## Supabase's MCP server and skills
 
 `.mcp.json` connects Claude Code to the production project through
-Supabase's MCP server (each person signs in once with `/mcp`). The agent
+Supabase's MCP server, read-only (`read_only=true`; each person signs in
+once with `/mcp`). The agent
 skills under `.agents/skills` (`supabase`, `supabase-postgres-best-practices`,
 pinned in `skills-lock.json`, updated with `npx skills update`) are
 Supabase's general advice; where they differ, this file wins:
