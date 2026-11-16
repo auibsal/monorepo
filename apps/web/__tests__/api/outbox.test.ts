@@ -7,9 +7,8 @@ vi.mock("server-only", () => ({}));
 vi.mock("@/env", () => ({
   env: { NEXT_PUBLIC_SITE_URL: "https://auibsal.org" },
 }));
-vi.mock("@repo/email", () => ({
-  EmailConfigError: class extends Error {},
-  EmailQuotaError: class extends Error {},
+vi.mock("@repo/email", async () => ({
+  ...(await import("@repo/email/errors")),
   sendEmail,
 }));
 

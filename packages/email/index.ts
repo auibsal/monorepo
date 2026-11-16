@@ -1,7 +1,10 @@
 import { project } from "@repo/config";
 import type { ReactElement } from "react";
 import { Resend } from "resend";
+import { EmailConfigError, sendError } from "./errors";
 import { keys } from "./keys";
+
+export { EmailConfigError, EmailQuotaError, sendError } from "./errors";
 
 const { RESEND_BULK_DOMAIN, RESEND_TOKEN } = keys();
 
@@ -36,48 +39,6 @@ type SendEmailOptions = EmailContent & {
   /** Resend tags (letters, digits, "_" and "-"): which journey sent it. */
   tags?: { name: string; value: string }[];
   to: string | string[];
-};
-
-/**
- * The plan's daily or monthly sending limit is spent (the free plan allows
- * 100 a day). Nothing is wrong with the email; send it again after the
- * limit resets.
- */
-export class EmailQuotaError extends Error {
-  override name = "EmailQuotaError";
-}
-
-const QUOTA_ERRORS = new Set([
-  "daily_quota_exceeded",
-  "monthly_quota_exceeded",
-]);
-
-/**
- * The email key or its domain is wrong (a missing, invalid or restricted
- * key, an unverified domain). Nothing is wrong with the email; the outbox
- * keeps it and sends it once the configuration is fixed.
- */
-export class EmailConfigError extends Error {
-  override name = "EmailConfigError";
-}
-
-const CONFIG_ERRORS = new Set([
-  "invalid_api_key",
-  "invalid_from_address",
-  "missing_api_key",
-  "restricted_api_key",
-]);
-const CONFIG_MESSAGE = /api key|domain is not verified|not verified/iu;
-
-/** Which error a failed send is: the plan's limit, the configuration, or the email. */
-export const sendError = (error: { message: string; name: string }) => {
-  if (QUOTA_ERRORS.has(error.name)) {
-    return new EmailQuotaError(error.message);
-  }
-  if (CONFIG_ERRORS.has(error.name) || CONFIG_MESSAGE.test(error.message)) {
-    return new EmailConfigError(error.message);
-  }
-  return new Error(error.message);
 };
 
 /** Sends a transactional email from `SENDER`. Throws on failure. */
