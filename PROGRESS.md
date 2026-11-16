@@ -1007,10 +1007,14 @@ First the second prompt's part 2 (7j), then the rest in place.
   no `private` function is executable through PUBLIC; 93 of 662 carry an
   explicit grant to `anon`, each for a public wrapper or policy, and
   `private` is not an exposed schema.
-- [ ] **The Diwan Telegram group, 7 days after a role ends:** the bot
-  removes the person (today only on leaving the Society).
-- [ ] **The event lead from Notion:** the sync checks Lead but does not
-  store it; the event-lead role scoped to the event should come from it.
+- [x] **The Diwan Telegram group, 7 days after a role ends:** done in
+  `lib/api/bot/titles.ts` (the tag comes off at once; the person is let go
+  7 days after their last role ends, on the Telegram cron's run).
+- [ ] **The event lead from Notion:** the sync now stores Lead
+  (`events.lead_id`). **Owner (a decision):** whether naming the lead in
+  Notion is the appointment, so the site assigns the Event Lead role scoped
+  to the event without an acceptance (decisions.md, Members: a role is
+  assigned on acceptance), or the lead accepts an offer first.
 - [ ] **The team list** as one component: the Council page with covering,
   Our people, the masthead, Next Stop's credits, the Company's playbills,
   an event's lead and team.
