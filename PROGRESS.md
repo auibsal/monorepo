@@ -27,9 +27,10 @@ the live headers, DNS and the outbox). Fixed in #283:
   raised the outbox alarm daily for four emails that gave up in October.
 - [x] Account pages send no more of the Diwan's admin copy than they read:
   sign-in 71 kB compressed (was 99), 83 in Arabic (was 116).
-- [x] The error page no longer puts both messages files in every page's
-  JavaScript: public pages about 250 kB of it (was 440); the budget is now
-  320 kB.
+- [x] The performance budget follows the lighter public pages: about
+  250 kB of JavaScript since #276 stopped the error page carrying both
+  messages files (it was 450), so the budget is 320 kB and a regression
+  fails CI.
 - [x] Scorecard: the migration is called by CI (no `workflow_run` checkout),
   no committed `.pyc` files, SECURITY.md follows SAL-GOV-07
   (security@auibsal.org), and the README's badge uses the repository's new
