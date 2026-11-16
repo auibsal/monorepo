@@ -5,7 +5,11 @@ import { ReviewStep } from "@repo/brand/components/sal/form-flow";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
-import { formatClock, formatLongDate } from "@repo/internationalization/format";
+import {
+  formatClock,
+  formatClockRange,
+  formatLongDate,
+} from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
@@ -50,7 +54,7 @@ const useProductionsData = () => {
         [
           productions.memberProductions(supabase),
           supabase
-            .schema("programmes")
+            .schema("api")
             .from("auditions")
             .select(
               "id, production_id, starts_at, ends_at, location_en, location_ar, prepare_en, prepare_ar"
@@ -58,19 +62,19 @@ const useProductionsData = () => {
             .gte("starts_at", new Date().toISOString())
             .order("starts_at"),
           supabase
-            .schema("programmes")
+            .schema("api")
             .from("audition_signups")
             .select("audition_id, status, interest, reference")
             .eq("user_id", user?.id ?? ""),
           supabase
-            .schema("programmes")
+            .schema("api")
             .from("production_credits")
             .select(
               "id, production_id, department, role_en, role_ar, productions(title_en, title_ar, stage)"
             )
             .eq("user_id", user?.id ?? ""),
           supabase
-            .schema("programmes")
+            .schema("api")
             .from("rehearsals")
             .select(
               "id, production_id, starts_at, ends_at, location_en, location_ar, called"
@@ -227,8 +231,7 @@ export const Productions = () => {
                     <p className="font-medium">
                       {titleOf(r.production_id)} ·{" "}
                       {formatLongDate(r.starts_at, locale)} ·{" "}
-                      {formatClock(r.starts_at, locale)}–
-                      {formatClock(r.ends_at, locale)}
+                      {formatClockRange(r.starts_at, r.ends_at, locale)}
                     </p>
                     <p className="type-caption" dir="auto">
                       {[where, r.called].filter(Boolean).join(" · ")}
@@ -286,8 +289,7 @@ const AuditionSlot = ({
     <li className="border-line grid gap-2 border-t pt-3">
       <p className="font-medium">
         {formatLongDate(audition.starts_at, locale)} ·{" "}
-        {formatClock(audition.starts_at, locale)}–
-        {formatClock(audition.ends_at, locale)}
+        {formatClockRange(audition.starts_at, audition.ends_at, locale)}
         {where ? ` · ${where}` : ""}
       </p>
       {prepare ? (

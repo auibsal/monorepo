@@ -369,7 +369,7 @@ const RoleLine = ({ roleId }: { readonly roleId: string | null }) => {
   const due = useQuery({
     enabled: Boolean(user && roleId),
     queryFn: async () =>
-      unwrap(await supabase.schema("access").rpc("my_handovers_due")) ?? [],
+      unwrap(await supabase.schema("api").rpc("my_handovers_due")) ?? [],
     queryKey: ["account", "roles", "handovers-due", user?.id],
   });
   const row = due.data?.find((d) => d.assignment_id === roleId);
@@ -393,7 +393,7 @@ const useNamedEvent = (slug: string | null) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("id, slug, title_en, title_ar")
           .eq("slug", slug ?? "")
@@ -415,7 +415,7 @@ const useLinkSubject = (formKey: string, link: string | null) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("form_link_subject", { form_key: formKey, token: link ?? "" })
           .maybeSingle()
       ),
@@ -505,7 +505,7 @@ const FormEditor = ({
   const me = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      unwrap(await supabase.schema("core").rpc("my_register_name")),
+      unwrap(await supabase.schema("api").rpc("my_register_name")),
     queryKey: ["forms", "me", user?.id],
   });
   const [data, setData] = useState<Data>({});

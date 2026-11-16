@@ -122,7 +122,7 @@ const useMySent = () => {
       const sealed = (
         unwrap(
           await supabase
-            .schema("governance")
+            .schema("api")
             .from("sealed_signers")
             .select("submission_id")
         ) ?? []
@@ -135,7 +135,7 @@ const useMySent = () => {
       return (
         unwrap(
           await supabase
-            .schema("governance")
+            .schema("api")
             .from("form_submissions")
             .select(
               "id, form_key, status, submitted_at, created_at, submitted_by, subject_user_id"
@@ -214,7 +214,7 @@ export const SignedList = () => {
     queryFn: async (): Promise<Signed[]> =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("form_submissions")
           .select(
             "id, form_key, form_version, reference, verification_code, signed_at"

@@ -16,10 +16,12 @@ import { RecordHistory } from "../record-history";
 import { AccessForm } from "./access-form";
 import { Attendance } from "./attendance";
 import { EventFacts } from "./facts";
+import { EventFeedbackAdmin } from "./feedback";
 import { GuestInvitations } from "./guest-invitations";
 import { Incidents } from "./incidents";
 import { Invitations } from "./invitations";
 import { EventPartsAdmin } from "./parts";
+import { EventProgramAdmin } from "./program";
 import { PromoKit } from "./promo/kit";
 
 interface Question {
@@ -63,7 +65,7 @@ export const EventEditor = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("*")
           .eq("id", eventId ?? "")
@@ -115,6 +117,8 @@ export const EventEditor = () => {
         questions={asQuestions(event.questions)}
         slug={event.slug}
       />
+      <EventProgramAdmin eventId={eventId} />
+      <EventFeedbackAdmin eventId={eventId} />
       <EventPartsAdmin event={event} />
       <PromoKit event={event} />
       <Incidents eventId={eventId} />

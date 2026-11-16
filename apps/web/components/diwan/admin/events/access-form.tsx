@@ -13,6 +13,8 @@ import { ChoiceInput } from "../choice-input";
 import { BilingualField, ErrorLine, SaveButton } from "../kit";
 
 interface GoodToKnowFields {
+  access_detail_ar: string | null;
+  access_detail_en: string | null;
   accommodation_by: string | null;
   allergens: string[];
   content_note_ar: string | null;
@@ -42,6 +44,7 @@ const pair = (en: string | null, ar: string | null) => ({
 
 /** The form's state, from the event's fields. */
 const initial = (event: GoodToKnowFields) => ({
+  accessDetail: pair(event.access_detail_en, event.access_detail_ar),
   accommodationBy: event.accommodation_by ?? "",
   allergens: event.allergens,
   contentNote: pair(event.content_note_en, event.content_note_ar),
@@ -60,6 +63,8 @@ type FormState = ReturnType<typeof initial>;
 const toRow = (f: FormState) => {
   const food = f.servesFood;
   return {
+    access_detail_ar: f.accessDetail.ar || null,
+    access_detail_en: f.accessDetail.en || null,
     accommodation_by: f.accommodationBy || null,
     allergens: food ? f.allergens : [],
     content_note_ar: f.contentNote.ar || null,
@@ -160,7 +165,7 @@ export const AccessForm = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .update(toRow(form))
           .eq("id", eventId)
@@ -215,6 +220,13 @@ export const AccessForm = ({
           <option value="mixed">{tg("access.seating.mixed")}</option>
         </ChoiceInput>
       </div>
+      <BilingualField
+        label={t("accessDetail")}
+        maxLength={200}
+        onChange={(accessDetail) => setForm((f) => ({ ...f, accessDetail }))}
+        value={form.accessDetail}
+      />
+      <p className="type-caption">{t("accessDetailHint")}</p>
       <Field label={t("accommodationBy")}>
         {(fieldId) => (
           <Input

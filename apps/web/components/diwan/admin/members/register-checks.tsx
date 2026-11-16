@@ -28,9 +28,7 @@ export const EnrollmentCheck = () => {
   const check = useMutation({
     mutationFn: async (enrolled: string[]) =>
       unwrap(
-        await supabase
-          .schema("membership")
-          .rpc("enrollment_mismatches", { enrolled })
+        await supabase.schema("api").rpc("enrollment_mismatches", { enrolled })
       ) ?? [],
     // The pasted list is cleared once read: nothing of it is kept.
     onSuccess: () => setList(""),
@@ -103,7 +101,7 @@ export const IncompleteNames = () => {
   const { supabase } = useAuth();
   const list = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("membership").rpc("incomplete_names")) ?? [],
+      unwrap(await supabase.schema("api").rpc("incomplete_names")) ?? [],
     queryKey: ["admin", "incomplete-names"],
   });
   if (!list.data?.length) {
@@ -150,14 +148,14 @@ export const MergeRequests = () => {
   const { supabase } = useAuth();
   const requests = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("membership").rpc("merge_requests")) ?? [],
+      unwrap(await supabase.schema("api").rpc("merge_requests")) ?? [],
     queryKey: ["admin", "merge-requests"],
   });
   const decide = useMutation({
     mutationFn: async ({ approve, id }: { approve: boolean; id: string }) =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .rpc("decide_merge", { approve, request: id })
       ),
     onSuccess: () => requests.refetch(),

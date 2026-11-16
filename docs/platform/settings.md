@@ -78,29 +78,25 @@ Management), DNSSEC, and the CAA records' `iodef`.
 
 **MTA-STS and TLS-RPT** (RFC 8461 and 8460): servers sending to
 @auibsal.org deliver only over TLS to Zoho's MX hosts, and report any
-failure. The policy is the site's (`lib/mta-sts.ts`, served at
-`https://mta-sts.auibsal.org/.well-known/mta-sts.txt`; every other address
-there goes to auibsal.org).
+failure. The policy is served by a Cloudflare Worker at
+`https://mta-sts.auibsal.org/.well-known/mta-sts.txt`, built from
+`infra/mta-sts` (its README has the deploy settings, the DNS records and
+how to change the policy); the site has no copy of it.
 1. Zoho: an alias `tls-reports@auibsal.org` to the web lead (the daily
    reports are JSON; nobody needs them in hello@).
 2. Cloudflare → DNS: TXT `_smtp._tls`, `v=TLSRPTv1;
-   rua=mailto:tls-reports@auibsal.org`.
-3. Vercel → the project → Domains: add `mta-sts.auibsal.org`. Cloudflare →
-   DNS: CNAME `mta-sts` to `cname.vercel-dns.com`, proxied.
-4. Once `https://mta-sts.auibsal.org/.well-known/mta-sts.txt` answers:
-   Cloudflare → DNS, TXT `_mta-sts`, `v=STSv1; id=20261116`.
-5. After two weeks of clean reports: `MTA_STS_MODE` to `enforce` in
-   `lib/mta-sts.ts`, and a new `id` (the date) in `_mta-sts`. Any change to
-   the MX records or the policy needs both.
+   rua=mailto:tls-reports@auibsal.org`, and TXT `_mta-sts`, `v=STSv1;
+   id=…` (the date and time).
+3. After two weeks of clean reports: `mode` to `enforce` in
+   `infra/mta-sts/src/index.js`, and a new `id` in `_mta-sts`. Any change
+   to the MX records or the policy needs both.
 
-**DKIM at 2048 bits:** Zoho's selector `zmail` is 1024-bit; Zoho → Mail
-Admin → Domains → auibsal.org → Email Configuration → DKIM: add a 2048-bit
-selector named `zoho202611` (the provider, then the year and month the key
-was made, so the next rotation is `zoho202711` beside it), publish its TXT
-at `zoho202611._domainkey`, verify, make it the default, and remove
-`zmail` from Zoho and Cloudflare a week later, once mail signed with it
-has arrived (M3AAWG and NIST SP 800-177 recommend 2048 bits and a yearly
-rotation). Resend chooses its own keys.
+**DKIM at 2048 bits:** Zoho signs with the selector `zoho202611`
+(2048-bit; the provider, then the year and month the key was made). Each
+year a new key is added beside it (`zoho202711`), made the default, and
+the old one removed a week later, once mail signed with it has arrived
+(M3AAWG and NIST SP 800-177: 2048 bits, a yearly rotation). Resend chooses
+its own keys.
 
 **BIMI** (the logo beside the Society's mail in inboxes) is not used: Gmail
 and Apple Mail show it only with a paid mark certificate (decisions.md:
@@ -129,9 +125,13 @@ Vercel (Production). The steps, for a new domain or a move:
 
 ## Supabase
 - **Authentication → Sign In / Providers → Email:** Confirm email on;
-  Secure email change on; minimum password length 12; secure password
-  change on. **Attack Protection:** CAPTCHA (Turnstile) on; leaked
-  password protection on once the plan allows it (Pro).
+  Secure email change on; minimum password length 12, no required
+  characters; secure password change on; require current password when
+  updating on (Settings asks for it; a reset from the email never does);
+  email OTP length 8, expiry 3600 seconds (decisions.md, Members; the
+  local stack's `config.toml` matches, except the current-password
+  setting, which it has no key for). **Attack Protection:** CAPTCHA (Turnstile) on; leaked
+  password protection (a Pro plan setting) on.
 - **Authentication → Sessions:** JWT expiry 3600 seconds (an hour);
   refresh token reuse interval 10 seconds.
 - **Database → Network Restrictions:** where the plan allows, only the
@@ -144,6 +144,17 @@ Vercel (Production). The steps, for a new domain or a move:
   → Emails → SMTP Settings** stays empty (Resend's "SMTP" key is deleted),
   so there is one way auth email leaves. The templates in
   `packages/database/supabase/templates` serve only the local stack.
+- **Integrations → Data API:** exposed schemas `api` only (the views and
+  wrappers `private.build_api()` makes; `config.toml`, `[api] schemas`);
+  extra search path `extensions` only; "Automatically expose new tables"
+  off. The data schemas (`core`, `access`, `membership`, `events`,
+  `journal`, `programs`, `governance`, `content`), `public`, `pgmq` and
+  `graphql_public` are not exposed. GraphQL is off (`pg_graphql` is not
+  installed). Without `api`, every read fails with PGRST106: the published
+  pages render empty sections and the Diwan can't load.
+- **Integrations → Queues:** the queue `telegram` (Hudhud's posts), made
+  by its migration; its schema stays unexposed, and only the server's key
+  reaches it, through `api.telegram_*`.
 - **Settings → API Keys:** the publishable and secret keys only; **Legacy
   API keys (anon, service_role): disabled**. Nothing reads them, and
   Vercel's `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
@@ -158,10 +169,9 @@ run from outside. Until it exists, `status` must not point anywhere.
    `https://auibsal.org` and `https://auibsal.org/api/health` every three
    minutes, alerting the web lead.
 2. Then, in Cloudflare, a CNAME `status` to the address the status
-   service gives, DNS only. A CNAME with no status page behind it (as on
-   Nov 16: it led to Better Stack's home page) lets anyone who claims the
-   name on Better Stack show their page at status.auibsal.org; delete it
-   until the page exists.
+   service gives, DNS only. A CNAME with no status page behind it lets
+   anyone who claims the name on that service show their page at
+   status.auibsal.org, so the record exists only while the page does.
 
 ## Telegram
 - Hudhud is an admin in both groups with every right but Remain Anonymous, **Add New Admins included**: it makes the officers admins (`docs/platform/telegram.md`).

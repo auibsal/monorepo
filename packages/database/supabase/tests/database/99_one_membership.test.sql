@@ -96,7 +96,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(32);
+select plan(30);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'membership-om@auib.edu.iq', 'Membership');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'member-om@auib.edu.iq', 'Plain Member');
@@ -162,14 +162,6 @@ values ('guest', 'friend@example.org', '00000000-0000-0000-0000-00000000e001');
 select set_config('test.friend', (select code from governance.partner_invitations where email = 'friend@example.org'), true);
 select set_config('test.assoc', (select code from governance.partner_invitations where email = 'linked@example.org'), true);
 
-select ok(
-  private.sign_up_allowed('friend@example.org', jsonb_build_object('invitation', current_setting('test.friend'))),
-  'The invitation lets its address sign up'
-);
-select ok(
-  not private.sign_up_allowed('other@example.org', jsonb_build_object('invitation', current_setting('test.friend'))),
-  'but not another address'
-);
 
 select pg_temp.login_anon();
 select results_eq(
@@ -216,7 +208,7 @@ select throws_ok(
   '42501', 'one_membership', 'A partner''s Lead cannot also be a guest'
 );
 select throws_ok(
-  $$ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000b1', 'programme_lead') $$,
+  $$ select pg_temp.grant_role('00000000-0000-0000-0000-0000000000b1', 'program_lead') $$,
   '42501', 'one_membership', 'A guest holds none of the Society''s roles'
 );
 
@@ -235,11 +227,11 @@ select results_eq(
 
 -- ── The GetInvolved, read by anyone ───────────────────────────────────────────
 select pg_temp.logout();
-insert into programmes.openings (kind, role, owner, title_en, title_ar)
+insert into programs.openings (kind, role, owner, title_en, title_ar)
 values ('role', 'alumni_lead', 'membership', 'Fair volunteers', 'متطوعو المعرض');
 select pg_temp.login_anon();
 select results_eq(
-  $$ select kind, title_en from programmes.open_places() where title_en = 'Fair volunteers' $$,
+  $$ select kind, title_en from programs.open_places() where title_en = 'Fair volunteers' $$,
   $$ values ('role'::text, 'Fair volunteers'::text) $$,
   'A visitor reads the open roles'
 );
@@ -248,25 +240,25 @@ select results_eq(
 -- auditions are in it, for a public production that is auditioning only.
 select pg_temp.logout();
 -- No rights, no show: the public one has its rights cleared.
-insert into programmes.productions (slug, programme_id, title_en, title_ar, stage, is_public, rights_status,
+insert into programs.productions (slug, program_id, title_en, title_ar, stage, is_public, rights_status,
   script_origin, rights_cleared_by, rights_cleared_at)
 values
-  ('om-open-play', (select id from core.programmes where slug = 'company'), 'Open Play', 'مسرحية مفتوحة', 'auditions', true, 'cleared',
+  ('om-open-play', (select id from core.programs where slug = 'company'), 'Open Play', 'مسرحية مفتوحة', 'auditions', true, 'cleared',
     'public_domain', (select id from auth.users order by created_at limit 1), now());
-insert into programmes.productions (slug, programme_id, title_en, title_ar, stage, is_public, rights_status)
+insert into programs.productions (slug, program_id, title_en, title_ar, stage, is_public, rights_status)
 values
-  ('om-hidden-play', (select id from core.programmes where slug = 'company'), 'Hidden Play', 'مسرحية خفية', 'auditions', false, 'pending');
-insert into programmes.auditions (production_id, starts_at, ends_at)
+  ('om-hidden-play', (select id from core.programs where slug = 'company'), 'Hidden Play', 'مسرحية خفية', 'auditions', false, 'pending');
+insert into programs.auditions (production_id, starts_at, ends_at)
 select id, now() + interval '3 days', now() + interval '3 days 2 hours'
-from programmes.productions where slug in ('om-open-play', 'om-hidden-play');
+from programs.productions where slug in ('om-open-play', 'om-hidden-play');
 select pg_temp.login_anon();
 select results_eq(
-  $$ select kind, title_en from programmes.open_places() where kind = 'audition' and title_en like '%Play' $$,
+  $$ select kind, title_en from programs.open_places() where kind = 'audition' and title_en like '%Play' $$,
   $$ values ('audition'::text, 'Open Play'::text) $$,
   'A public production''s coming audition is among the open places'
 );
 select ok(
-  (select closes_at from programmes.open_places() where title_en = 'Open Play') > now(),
+  (select closes_at from programs.open_places() where title_en = 'Open Play') > now(),
   'and it is listed by its day'
 );
 

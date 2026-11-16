@@ -6,13 +6,12 @@ import { siteUrl } from "@repo/internationalization";
 import type { IcsEvent } from "./ics";
 
 const eventColumns =
-  "id, slug, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, members_only, entry, status, updated_at";
+  "id, slug, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, ends_at, entry, status, updated_at";
 
 interface EventRow {
   ends_at: string | null;
   entry: string;
   id: string;
-  members_only: boolean;
   slug: string;
   starts_at: string;
   status: string;
@@ -45,21 +44,19 @@ const toIcs = (
   tag,
   title: locale === "ar" ? event.title_ar : event.title_en,
   uid: `${event.id}@${project.domain}`,
-  url: event.members_only
-    ? siteUrl(locale, "/account/events")
-    : siteUrl(locale, `/events/${event.slug}`),
+  url: siteUrl(locale, `/events/${event.slug}`),
 });
 
 const since = () => new Date(Date.now() - 90 * 86_400_000).toISOString();
 
-/** Public SAL events (never members-only), for the public feed. */
+/** Public SAL events (never invitation-only ones), for the public feed. */
 export const publicEvents = async (admin: AdminClient, locale: "en" | "ar") => {
   const { data } = await admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select(eventColumns)
     .in("status", ["published", "canceled"])
-    .eq("members_only", false)
+    .neq("entry", "invite")
     .gte("starts_at", since())
     .order("starts_at");
   return (data ?? []).map((event) => toIcs(event, locale));
@@ -72,25 +69,25 @@ export const publicEvent = async (
   locale: "en" | "ar"
 ) => {
   const { data } = await admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select(eventColumns)
     .eq("slug", slug)
     .eq("status", "published")
-    .eq("members_only", false)
+    .neq("entry", "invite")
     .maybeSingle();
   return data ? toIcs(data, locale) : null;
 };
 
 /**
- * A member's private feed: their RSVPs, all public SAL events, members-only
- * events (members only), invitation-only events they are invited to, and
+ * A member's private feed: their RSVPs, every published SAL event,
+ * invitation-only events they are invited to, and
  * the AUIB campus calendar. Found by the secret token in the URL; reset by
  * the member from the Diwan.
  */
 export const memberFeed = async (admin: AdminClient, token: string) => {
   const { data: owner } = await admin
-    .schema("membership")
+    .schema("api")
     .from("calendar_tokens")
     .select("user_id")
     .eq("token", token)
@@ -99,50 +96,42 @@ export const memberFeed = async (admin: AdminClient, token: string) => {
     return null;
   }
 
-  const [
-    { data: profile },
-    { data: isMember },
-    { data: rsvps },
-    { data: invitations },
-  ] = await Promise.all([
-    admin
-      .schema("core")
-      .from("profiles")
-      .select("locale")
-      .eq("id", owner.user_id)
-      .maybeSingle(),
-    admin.schema("membership").rpc("is_member", { uid: owner.user_id }),
-    admin
-      .schema("events")
-      .from("rsvps")
-      .select("event_id")
-      .eq("user_id", owner.user_id)
-      .eq("status", "confirmed"),
-    admin
-      .schema("events")
-      .from("invitations")
-      .select("event_id")
-      .eq("user_id", owner.user_id),
-  ]);
+  const [{ data: profile }, { data: rsvps }, { data: invitations }] =
+    await Promise.all([
+      admin
+        .schema("api")
+        .from("profiles_all")
+        .select("locale")
+        .eq("id", owner.user_id)
+        .maybeSingle(),
+      admin
+        .schema("api")
+        .from("rsvps")
+        .select("event_id")
+        .eq("user_id", owner.user_id)
+        .eq("status", "confirmed"),
+      admin
+        .schema("api")
+        .from("events_invitations")
+        .select("event_id")
+        .eq("user_id", owner.user_id),
+    ]);
   const invited = new Set((invitations ?? []).map((i) => i.event_id));
   const locale = profile?.locale === "ar" ? "ar" : "en";
   const going = new Set((rsvps ?? []).map((r) => r.event_id));
 
-  let query = admin
-    .schema("events")
+  const query = admin
+    .schema("api")
     .from("events")
     .select(eventColumns)
     .in("status", ["published", "canceled"])
     .gte("starts_at", since())
     .order("starts_at");
-  if (!isMember) {
-    query = query.eq("members_only", false);
-  }
   const [{ data: events }, { data: campus }] = await Promise.all([
     query,
     // AUIB's own dates, synced hourly from the University's public calendar.
     admin
-      .schema("core")
+      .schema("api")
       .from("external_events")
       .select("uid, title, location, url, starts_at, ends_at, all_day")
       .eq("source", "auib")

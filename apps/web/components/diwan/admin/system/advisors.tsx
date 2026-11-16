@@ -25,7 +25,7 @@ export const AdvisorFindings = () => {
   const { supabase } = useAuth();
   const findings = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("core").rpc("advisor_findings")) ?? [],
+      unwrap(await supabase.schema("api").rpc("advisor_findings")) ?? [],
     queryKey: ["admin", "advisor-findings"],
   });
   const rows = findings.data ?? [];

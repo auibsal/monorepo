@@ -9,7 +9,6 @@ build/
 *.tsbuildinfo
 next-env.d.ts
 storybook-static/
-packages/database/generated/
 .react-email/
 
 # Tests
@@ -27,7 +26,6 @@ apps/e2e/playwright-report/
 # Logs and caches
 *.log
 .cache/
-.eslintcache
 
 # Editors and systems
 .DS_Store

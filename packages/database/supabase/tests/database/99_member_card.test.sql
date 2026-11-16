@@ -151,8 +151,8 @@ select throws_ok($$ select * from membership.my_card() $$, '42501', null,
 
 -- Check-in by card
 select pg_temp.logout();
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, status) values
-  ('e0000000-0000-0000-0000-0000000000ca', 'card-night', (select id from core.programmes where slug = 'open-pages'),
+insert into events.events (id, slug, program_id, title_en, title_ar, starts_at, status) values
+  ('e0000000-0000-0000-0000-0000000000ca', 'card-night', (select id from core.programs where slug = 'company'),
     'Card Night', 'ليلة البطاقة', now() + interval '1 day', 'published');
 insert into events.event_staff (event_id, user_id) values
   ('e0000000-0000-0000-0000-0000000000ca', '00000000-0000-0000-0000-00000000ca03');

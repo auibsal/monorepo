@@ -6,7 +6,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { createHash, randomBytes } from "node:crypto";
 import { project } from "@repo/config";
 import type { AdminClient } from "@repo/database/admin";
-import { EmailQuotaError, sendEmail } from "@repo/email";
+import { EmailConfigError, EmailQuotaError, sendEmail } from "@repo/email";
 import {
   type ApplicationStep,
   accountDeleted,
@@ -75,6 +75,7 @@ import {
   submissionInReading,
   submissionReceived,
   sundayPaper,
+  thanksForComing,
   twoStepReset,
   verificationDecided,
   type WeekEvent,
@@ -133,6 +134,12 @@ import {
 /** Also in private.queue_revalidation(): a row past it no longer counts as waiting. */
 const MAX_ATTEMPTS = 5;
 
+/** A row tried again after a configuration fix: never waits a second time. */
+const RETRIED_ONCE = "retried once after the configuration was fixed";
+
+/** When an email last went out from this instance: the configuration works. */
+let lastSentAt = 0;
+
 type Lang = CopyLang;
 interface OutboxRow {
   attempts: number;
@@ -189,7 +196,7 @@ const RECEIPT_KINDS = new Set([
   "governance.candidacy_received",
   "journal.submission_received",
   "partners.application_received",
-  // Submit to Qirtas (decisions.md, Qirtas): "received" with its number.
+  // Send your work (decisions.md, Qirtas): "received" with its number.
   "qirtas.submission_received",
 ]);
 
@@ -204,8 +211,8 @@ const DAILY_KINDS = new Set([
   "governance.candidacy_decided",
   "journal.decision",
   "partners.application_decided",
-  "programmes.audition_update",
-  "programmes.reply_update",
+  "programs.audition_update",
+  "programs.reply_update",
   // A writer's later steps (decisions.md, Qirtas): in reading, the
   // decision, edits to approve and published, shown in Your account → Work.
   "qirtas.decision",
@@ -227,8 +234,8 @@ const recipient = async (
   const [{ data: user }, { data: profile }] = await Promise.all([
     admin.auth.admin.getUserById(userId),
     admin
-      .schema("core")
-      .from("profiles")
+      .schema("api")
+      .from("profiles_all")
       .select(
         "locale, notify_email, email_signed_copy, email_receipts, email_daily_updates"
       )
@@ -381,7 +388,7 @@ const heldForRecords = async (
     const block =
       built.blocks.find((b) => b.lang === to.lang) ?? built.blocks[0];
     const { error } = await run.admin
-      .schema("core")
+      .schema("api")
       .from("daily_updates")
       .insert({
         detail: { href: block?.action?.href ?? null, line: built.subject },
@@ -443,7 +450,7 @@ const send = async (
   // An address that bounced or complained is never written to again.
   if (run) {
     const { data: suppressed } = await run.admin
-      .schema("core")
+      .schema("api")
       .from("email_suppressions")
       .select("email")
       .eq("email", to.email.toLowerCase())
@@ -472,6 +479,7 @@ const send = async (
     text: noticeText({ blocks: built.blocks, footer: lines }),
     to: to.email,
   });
+  lastSentAt = Date.now();
   // It never throws: email is the record. A reminder that came this far
   // went by email because Hudhud's reminders are off: no copy there.
   if (run && to.userId && !reminder) {
@@ -486,7 +494,7 @@ const send = async (
 
 const eventInfo = async (admin: AdminClient, eventId: unknown) => {
   const { data } = await admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select("slug, title_en, title_ar, starts_at, venue_en, venue_ar")
     .eq("id", String(eventId))
@@ -497,7 +505,7 @@ const eventInfo = async (admin: AdminClient, eventId: unknown) => {
 /** Whether a submission is read blind (an Edition call) or by name. */
 const submissionDesk = async (admin: AdminClient, submissionId: unknown) => {
   const { data } = await admin
-    .schema("journal")
+    .schema("api")
     .from("submissions")
     .select("call_id")
     .eq("id", String(submissionId))
@@ -508,7 +516,7 @@ const submissionDesk = async (admin: AdminClient, submissionId: unknown) => {
 /** A piece's title in the author's language, and its author. */
 const pieceInfo = async (admin: AdminClient, pieceId: unknown) => {
   const { data } = await admin
-    .schema("journal")
+    .schema("api")
     .from("pieces")
     .select(
       "id, slug, desk, title_en, title_ar, contributor:contributors!pieces_contributor_id_fkey(user_id)"
@@ -535,7 +543,7 @@ const submissionTitle = async (admin: AdminClient, submissionId: unknown) =>
 /** A submission's title and record number (SUB-<year>-<n>). */
 const submissionRecord = async (admin: AdminClient, submissionId: unknown) => {
   const { data } = await admin
-    .schema("journal")
+    .schema("api")
     .from("submissions")
     .select(
       "title, reference, call:calls(issue:issues(number, title_en, title_ar, season_en, season_ar))"
@@ -552,7 +560,7 @@ const holders = async (
   permission: string,
   scope?: { id: unknown; type: string }
 ): Promise<Recipient[]> => {
-  const { data } = await admin.schema("access").rpc("permission_holders", {
+  const { data } = await admin.schema("api").rpc("permission_holders", {
     permission,
     scope_id: typeof scope?.id === "string" ? scope.id : undefined,
     scope_type: scope?.type ?? "global",
@@ -570,7 +578,7 @@ const roleHolders = async (
 ): Promise<Recipient[]> => {
   const now = new Date().toISOString();
   const { data } = await admin
-    .schema("access")
+    .schema("api")
     .from("role_assignments")
     .select("user_id")
     .in("role", roles)
@@ -618,24 +626,24 @@ const sendStaffDigest = async (admin: AdminClient) => {
   const since = new Date(Date.now() - 86_400_000).toISOString();
   const [replies, applied, pending, problems] = await Promise.all([
     admin
-      .schema("programmes")
+      .schema("api")
       .from("opening_replies")
       .select("opening:openings(title_en, title_ar)")
       .gt("submitted_at", since)
       .neq("status", "draft"),
     admin
-      .schema("core")
+      .schema("api")
       .from("outbox")
       .select("payload")
       .eq("kind", "partners.application_received")
       .gt("created_at", since),
     admin
-      .schema("governance")
+      .schema("api")
       .from("pending_actions")
       .select("kind, permission, requested_by")
       .eq("status", "pending"),
     admin
-      .schema("core")
+      .schema("api")
       .from("problem_reports")
       .select("page")
       .eq("status", "open")
@@ -647,7 +655,7 @@ const sendStaffDigest = async (admin: AdminClient) => {
   const partners = agreementIds.length
     ? ((
         await admin
-          .schema("governance")
+          .schema("api")
           .from("partner_agreements")
           .select("partner:partners(name_en, name_ar)")
           .in("id", agreementIds)
@@ -752,8 +760,8 @@ const sendStaffDigest = async (admin: AdminClient) => {
   );
 };
 
-const programmeManagers = (admin: AdminClient, programmeId: unknown) =>
-  holders(admin, "programs.manage", { id: programmeId, type: "programme" });
+const programManagers = (admin: AdminClient, programId: unknown) =>
+  holders(admin, "programs.manage", { id: programId, type: "program" });
 
 const isFailedJob = (x: unknown): x is FailedJob =>
   typeof x === "object" &&
@@ -764,7 +772,7 @@ const isFailedJob = (x: unknown): x is FailedJob =>
 
 const removalInfo = async (admin: AdminClient, requestId: unknown) => {
   const { data } = await admin
-    .schema("programmes")
+    .schema("api")
     .from("removal_requests")
     .select(
       "requester_name, requester_email, requester_lang, content_url, details, due_at, status, action_taken"
@@ -789,8 +797,8 @@ const revalidate = (tags: unknown) => {
 /** A newsletter subscriber (no account), with their unsubscribe token. */
 const subscriber = async (admin: AdminClient, id: unknown) => {
   const { data } = await admin
-    .schema("content")
-    .from("newsletter_subscribers")
+    .schema("api")
+    .from("newsletter_subscribers_all")
     .select("email, lang, status, confirm_token, unsubscribe_token")
     .eq("id", String(id))
     .maybeSingle();
@@ -846,7 +854,7 @@ const paperContents = async (
     { data: draft },
   ] = await Promise.all([
     admin
-      .schema("journal")
+      .schema("api")
       .from("pieces")
       .select("slug, desk, title_en, title_ar, published_at")
       .eq("status", "published")
@@ -855,17 +863,17 @@ const paperContents = async (
       .order("published_at", { ascending: false })
       .limit(20),
     admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .select("slug, title_en, title_ar, starts_at")
       .eq("status", "published")
-      .eq("members_only", false)
+      .neq("entry", "invite")
       .gt("starts_at", now.toISOString())
       .lte("starts_at", new Date(now.getTime() + 31 * 86_400_000).toISOString())
       .order("starts_at")
       .limit(10),
     admin
-      .schema("programmes")
+      .schema("api")
       .from("openings")
       .select("title_en, title_ar")
       .eq("is_open", true)
@@ -875,7 +883,7 @@ const paperContents = async (
     // "From the Society" (decisions.md, Qirtas): the month's notices, sent
     // or posted, one line each.
     admin
-      .schema("core")
+      .schema("api")
       .from("announcements")
       .select("title_en, title_ar, link_path")
       .not("shown_at", "is", null)
@@ -884,7 +892,7 @@ const paperContents = async (
       .order("shown_at", { ascending: false })
       .limit(10),
     admin
-      .schema("content")
+      .schema("api")
       .from("sunday_paper_drafts")
       .select("letter_en, letter_ar")
       .eq("month", month ?? "")
@@ -953,7 +961,7 @@ const applicationStep = async (
   const [to, { data: reply }] = await Promise.all([
     recipient(admin, payload.user_id),
     admin
-      .schema("programmes")
+      .schema("api")
       .from("opening_replies")
       .select("status, talk_at, opening:openings(title_en, title_ar)")
       .eq("opening_id", String(payload.opening_id))
@@ -1010,7 +1018,7 @@ const sendStudentLifeWeek = async (admin: AdminClient) => {
   const weekOf = nextMonday(new Date());
   const from = new Date(`${weekOf}T00:00:00+03:00`);
   const until = new Date(from.getTime() + 7 * DAY_MS);
-  const weeks = admin.schema("events").from("student_life_weeks");
+  const weeks = admin.schema("api").from("student_life_weeks_all");
   const { data: sent } = await weeks
     .select("id")
     .eq("week_of", weekOf)
@@ -1020,13 +1028,12 @@ const sendStudentLifeWeek = async (admin: AdminClient) => {
     return;
   }
   const { data: events } = await admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select(
-      "id, slug, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, image_path"
+      "id, slug, title_en, title_ar, summary_en, summary_ar, venue_en, venue_ar, starts_at, image_path, classes, entry, off_campus"
     )
     .eq("status", "published")
-    .eq("members_only", false)
     .neq("entry", "invite")
     .gte("starts_at", from.toISOString())
     .lt("starts_at", until.toISOString())
@@ -1050,7 +1057,7 @@ const sendStudentLifeWeek = async (admin: AdminClient) => {
     throw error;
   }
   await admin
-    .schema("events")
+    .schema("api")
     .from("student_life_week_events")
     .upsert(
       events.map((e) => ({ event_id: e.id, week_id: week.id })),
@@ -1058,7 +1065,10 @@ const sendStudentLifeWeek = async (admin: AdminClient) => {
     );
   const base = appUrl();
   const listed: WeekEvent[] = events.map((e) => ({
+    classes: e.classes,
+    entry: e.entry,
     image: e.image_path ? getMediaUrl(admin, e.image_path) : null,
+    off_campus: e.off_campus,
     starts_at: e.starts_at,
     summary_ar: e.summary_ar,
     summary_en: e.summary_en,
@@ -1099,7 +1109,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("access")
+        .schema("api")
         .from("role_assignments")
         .select(
           "ends_at, title_en, title_ar, role:roles(name_en, name_ar, requires_mfa, in_notion)"
@@ -1129,7 +1139,7 @@ const handlers: Record<string, Handler> = {
   "access.role_ending": async (admin, payload) => {
     const to = await recipient(admin, payload.user_id);
     const { data } = await admin
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .select("ends_at, title_en, title_ar, role:roles(name_en, name_ar)")
       .eq("id", String(payload.assignment_id))
@@ -1173,7 +1183,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data: updates }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("core")
+        .schema("api")
         .from("daily_updates")
         .select("detail, created_at")
         .in("id", ids)
@@ -1249,15 +1259,15 @@ const handlers: Record<string, Handler> = {
     const purpose = payload.purpose === "merge" ? "merge" : "auib_address";
     const [{ data: pending }, { data: profile }] = await Promise.all([
       admin
-        .schema("core")
+        .schema("api")
         .from("address_codes")
         .select("email, code")
         .eq("user_id", String(payload.user_id))
         .eq("purpose", purpose)
         .maybeSingle(),
       admin
-        .schema("core")
-        .from("profiles")
+        .schema("api")
+        .from("profiles_all")
         .select("locale")
         .eq("id", String(payload.user_id))
         .maybeSingle(),
@@ -1278,7 +1288,7 @@ const handlers: Record<string, Handler> = {
     await pullUnsubscribes(admin);
     const id = String(payload.id ?? "");
     const { data: notice } = await admin
-      .schema("core")
+      .schema("api")
       .from("announcements")
       .select("id, title_en, title_ar, body_en, body_ar, link_path, sent_at")
       .eq("id", id)
@@ -1290,7 +1300,7 @@ const handlers: Record<string, Handler> = {
     revalidate(["journal"]);
     // "Society news and events" (decisions.md, Channels and email).
     const { data: everyone, error } = await admin
-      .schema("core")
+      .schema("api")
       .rpc("mailing_recipients", { topic: "news" });
     if (error) {
       throw error;
@@ -1341,7 +1351,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data: audition }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("programmes")
+        .schema("api")
         .from("auditions")
         .select(
           "starts_at, ends_at, location_en, location_ar, prepare_en, prepare_ar, production:productions(title_en, title_ar)"
@@ -1393,7 +1403,7 @@ const handlers: Record<string, Handler> = {
   "events.incident_reported": async (admin, payload) => {
     const [{ data: event }, people] = await Promise.all([
       admin
-        .schema("events")
+        .schema("api")
         .from("events")
         .select("slug, title_en, title_ar")
         .eq("id", String(payload.event_id))
@@ -1431,7 +1441,7 @@ const handlers: Record<string, Handler> = {
       recipient(admin, payload.user_id),
       eventInfo(admin, payload.event_id),
       admin
-        .schema("events")
+        .schema("api")
         .from("rsvps")
         .select("status")
         .eq("event_id", String(payload.event_id))
@@ -1452,7 +1462,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data: shift }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("programmes")
+        .schema("api")
         .from("shifts")
         .select("role_en, role_ar, location_en, location_ar, starts_at")
         .eq("id", String(payload.shift_id))
@@ -1472,6 +1482,19 @@ const handlers: Record<string, Handler> = {
     }
   },
   "events.student_life_week": (admin) => sendStudentLifeWeek(admin),
+  // The day after, to everyone who checked in (private.thanks_for_coming):
+  // one question on the event's page. A mailing the person can turn off.
+  "events.thanks": async (admin, payload) => {
+    const [to, event] = await Promise.all([
+      recipient(admin, payload.user_id),
+      eventInfo(admin, payload.event_id),
+    ]);
+    if (to && event?.slug) {
+      await send(to, thanksForComing(to.lang, event, appUrl()), {
+        category: "optional",
+      });
+    }
+  },
   "events.waitlist_offered": async (admin, payload) => {
     const [to, event] = await Promise.all([
       recipient(admin, payload.user_id),
@@ -1486,13 +1509,13 @@ const handlers: Record<string, Handler> = {
   "forms.link": async (admin, payload) => {
     const [{ data: link }, { data: type }] = await Promise.all([
       admin
-        .schema("governance")
+        .schema("api")
         .from("form_links")
         .select("sent_to, used_at, expires_at")
         .eq("id", String(payload.link_id))
         .maybeSingle(),
       admin
-        .schema("governance")
+        .schema("api")
         .from("form_types")
         .select("key, title_en")
         .eq("key", String(payload.form_key))
@@ -1511,7 +1534,7 @@ const handlers: Record<string, Handler> = {
     const row = current.getStore()?.row;
     if (row) {
       await admin
-        .schema("core")
+        .schema("api")
         .from("outbox")
         .update({
           payload: {
@@ -1525,7 +1548,7 @@ const handlers: Record<string, Handler> = {
   // A submission (an event pitch, a concern, a motion): received, at once.
   "forms.received": async (admin, payload) => {
     const { data: request } = await admin
-      .schema("governance")
+      .schema("api")
       .from("form_submissions")
       .select("id, form_key, reference, submitted_by")
       .eq("id", String(payload.submission_id))
@@ -1550,7 +1573,7 @@ const handlers: Record<string, Handler> = {
   // the address a signer without an account gave.
   "forms.signed_copy": async (admin, payload) => {
     const { data: row } = await admin
-      .schema("governance")
+      .schema("api")
       .from("form_submissions")
       .select(
         "id, form_key, data, signer_name, signed_at, signer_contact, submitted_by, document_sha256, reference, verification_code, form_types(title_en, title_ar)"
@@ -1569,7 +1592,7 @@ const handlers: Record<string, Handler> = {
       to = { email: String(payload.to), lang: "en" };
     } else if (!to) {
       const { data: link } = await admin
-        .schema("governance")
+        .schema("api")
         .rpc("consent_link", { submission_id: row.id })
         .maybeSingle();
       const contact = (link?.sent_to ?? row.signer_contact ?? "").trim();
@@ -1602,7 +1625,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data: request }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("governance")
+        .schema("api")
         .from("form_submissions")
         .select("id, form_key, status")
         .eq("id", String(payload.submission_id))
@@ -1630,7 +1653,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("governance")
+        .schema("api")
         .from("candidates")
         .select("position:positions(title_en, title_ar)")
         .eq("id", String(payload.candidate_id))
@@ -1655,7 +1678,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("governance")
+        .schema("api")
         .from("candidates")
         .select("position:positions(title_en, title_ar)")
         .eq("id", String(payload.candidate_id))
@@ -1699,7 +1722,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data: election }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("governance")
+        .schema("api")
         .from("elections")
         .select(
           "title_en, title_ar, nominations_open_at, nominations_close_at, voting_opens_at, voting_closes_at"
@@ -1729,8 +1752,8 @@ const handlers: Record<string, Handler> = {
   "invitation.forget": async (admin, payload) => {
     const source = String(payload.source ?? "");
     const { data: rows, error } = await admin
-      .schema("membership")
-      .from("invitations")
+      .schema("api")
+      .from("membership_invitations")
       .select("email")
       .eq("source", source);
     if (error) {
@@ -1739,7 +1762,7 @@ const handlers: Record<string, Handler> = {
     await forgetContacts((rows ?? []).map((r) => r.email));
     await cleanUpSegments(admin);
     const { error: gone } = await admin
-      .schema("membership")
+      .schema("api")
       .rpc("forget_invitation_list", { list_source: source });
     if (gone) {
       throw gone;
@@ -1747,7 +1770,7 @@ const handlers: Record<string, Handler> = {
   },
   "membership.associate_request_received": async (admin, payload) => {
     const { data } = await admin
-      .schema("membership")
+      .schema("api")
       .from("associate_requests")
       .select("email")
       .eq("id", String(payload.request_id))
@@ -1763,7 +1786,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data: certificate }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("membership")
+        .schema("api")
         .from("certificates")
         .select("id, kind, prize_category, citation_en, citation_ar, status")
         .eq("id", String(payload.certificate_id))
@@ -1797,8 +1820,8 @@ const handlers: Record<string, Handler> = {
     await pullUnsubscribes(admin);
     const list = typeof payload.source === "string" ? payload.source : null;
     let query = admin
-      .schema("membership")
-      .from("invitations")
+      .schema("api")
+      .from("membership_invitations")
       .select("email, first_name, kind, station, words, quote_words, pages")
       .not("sent_at", "is", null)
       .is("joined_at", null);
@@ -1889,7 +1912,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data: letter }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("membership")
+        .schema("api")
         .from("service_letters")
         .select("id, role_en, role_ar, revoked_at")
         .eq("id", String(payload.letter_id))
@@ -1924,7 +1947,7 @@ const handlers: Record<string, Handler> = {
     }
     await Promise.all(codes.map((code) => expireWalletPass(code)));
     await admin
-      .schema("membership")
+      .schema("api")
       .from("wallet_passes")
       .update({ state: "expired" })
       .in("code", codes);
@@ -1973,7 +1996,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data: partner }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("governance")
+        .schema("api")
         .from("partners")
         .select("name_en, name_ar")
         .eq("id", String(payload.partner_id))
@@ -1994,7 +2017,7 @@ const handlers: Record<string, Handler> = {
   // it waits.
   "partners.application_received": async (admin, payload) => {
     const { data: agreement } = await admin
-      .schema("governance")
+      .schema("api")
       .from("partner_agreements")
       .select("partner:partners(name_en, name_ar)")
       .eq("id", String(payload.agreement_id))
@@ -2015,7 +2038,7 @@ const handlers: Record<string, Handler> = {
   // in the inviter's language: the link is the invitation (/invite/<code>).
   "partners.invitation": async (admin, payload) => {
     const { data: invitation } = await admin
-      .schema("governance")
+      .schema("api")
       .from("partner_invitations")
       .select(
         "email, code, kind, created_by, accepted_at, revoked_at, partner_id, lang"
@@ -2028,15 +2051,15 @@ const handlers: Record<string, Handler> = {
     const [{ data: partner }, { data: inviter }] = await Promise.all([
       invitation.partner_id
         ? admin
-            .schema("governance")
+            .schema("api")
             .from("partners")
             .select("name_en, name_ar")
             .eq("id", invitation.partner_id)
             .maybeSingle()
         : Promise.resolve({ data: null }),
       admin
-        .schema("core")
-        .from("profiles")
+        .schema("api")
+        .from("profiles_all")
         .select("locale")
         .eq("id", invitation.created_by ?? "")
         .maybeSingle(),
@@ -2068,7 +2091,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data: partner }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("governance")
+        .schema("api")
         .from("partners")
         .select("name_en, name_ar")
         .eq("id", String(payload.partner_id))
@@ -2090,13 +2113,13 @@ const handlers: Record<string, Handler> = {
     const [{ data: partner }, { data: leads }, person, { data: profile }] =
       await Promise.all([
         admin
-          .schema("governance")
+          .schema("api")
           .from("partners")
           .select("name_en, name_ar")
           .eq("id", String(payload.partner_id))
           .maybeSingle(),
         admin
-          .schema("access")
+          .schema("api")
           .from("role_assignments")
           .select("user_id")
           .eq("role", "partner_lead")
@@ -2106,8 +2129,8 @@ const handlers: Record<string, Handler> = {
           .or(`ends_at.is.null,ends_at.gt.${now}`),
         recipient(admin, payload.user_id),
         admin
-          .schema("core")
-          .from("profiles")
+          .schema("api")
+          .from("profiles_all")
           .select("full_name_en, full_name_ar")
           .eq("id", String(payload.user_id))
           .maybeSingle(),
@@ -2153,13 +2176,13 @@ const handlers: Record<string, Handler> = {
     const [{ data: partner }, { data: leads }, { data: applicants }] =
       await Promise.all([
         admin
-          .schema("governance")
+          .schema("api")
           .from("partners")
           .select("name_en, name_ar")
           .eq("id", id)
           .maybeSingle(),
         admin
-          .schema("access")
+          .schema("api")
           .from("role_assignments")
           .select("user_id")
           .eq("role", "partner_lead")
@@ -2168,7 +2191,7 @@ const handlers: Record<string, Handler> = {
           .lte("starts_at", now)
           .or(`ends_at.is.null,ends_at.gt.${now}`),
         admin
-          .schema("governance")
+          .schema("api")
           .from("partner_agreements")
           .select("applied_by")
           .eq("partner_id", id)
@@ -2205,14 +2228,14 @@ const handlers: Record<string, Handler> = {
   "personal_email.confirm": async (admin, payload) => {
     const [{ data: pending }, { data: profile }] = await Promise.all([
       admin
-        .schema("core")
+        .schema("api")
         .from("personal_email_requests")
         .select("email, token")
         .eq("user_id", String(payload.user_id))
         .maybeSingle(),
       admin
-        .schema("core")
-        .from("profiles")
+        .schema("api")
+        .from("profiles_all")
         .select("locale")
         .eq("id", String(payload.user_id))
         .maybeSingle(),
@@ -2274,7 +2297,7 @@ const handlers: Record<string, Handler> = {
     const [to, { data: call }] = await Promise.all([
       recipient(admin, payload.user_id),
       admin
-        .schema("journal")
+        .schema("api")
         .from("calls")
         .select("title_en, title_ar, closes_at")
         .eq("id", String(payload.call_id))
@@ -2292,7 +2315,7 @@ const handlers: Record<string, Handler> = {
     if (to && work && payload.decision === "revise") {
       // The editor's note is the one the writer reads on the work's page.
       const { data } = await admin
-        .schema("journal")
+        .schema("api")
         .from("submissions")
         .select("intake_note")
         .eq("id", String(payload.submission_id))
@@ -2428,7 +2451,7 @@ const handlers: Record<string, Handler> = {
   "removal.overdue": async (admin, payload) => {
     const [request, managers] = await Promise.all([
       removalInfo(admin, payload.request_id),
-      programmeManagers(admin, payload.programme_id),
+      programManagers(admin, payload.program_id),
     ]);
     if (request) {
       await Promise.all(
@@ -2443,7 +2466,7 @@ const handlers: Record<string, Handler> = {
   "removal.requested": async (admin, payload) => {
     const [request, managers] = await Promise.all([
       removalInfo(admin, payload.request_id),
-      programmeManagers(admin, payload.programme_id),
+      programManagers(admin, payload.program_id),
     ]);
     if (!request) {
       return;
@@ -2494,7 +2517,7 @@ const handlers: Record<string, Handler> = {
     await pullUnsubscribes(admin);
     // "The Sunday Paper" topic (decisions.md, Channels and email).
     const { data: everyone, error } = await admin
-      .schema("core")
+      .schema("api")
       .rpc("mailing_recipients", { topic: "paper" });
     if (error) {
       throw error;
@@ -2553,7 +2576,7 @@ const handlers: Record<string, Handler> = {
     }
     // Out by email: Hudhud brings it to members' chats (one notices model).
     await admin
-      .schema("content")
+      .schema("api")
       .from("sunday_paper_drafts")
       .update({ sent_at: new Date().toISOString() })
       .eq("month", month)
@@ -2598,7 +2621,7 @@ const handlers: Record<string, Handler> = {
       return;
     }
     const { data: row } = await admin
-      .schema("membership")
+      .schema("api")
       .rpc("wallet_card", { uid: payload.user_id })
       .maybeSingle();
     if (row) {
@@ -2640,12 +2663,13 @@ const NON_ESSENTIAL = new Set([
   "qirtas.piece_note",
   "events.reminder",
   "events.shift_reminder",
+  "events.thanks",
   "get_involved.replies_digest",
 ]);
 
 const essentialOnly = async (admin: AdminClient) => {
   const { data } = await admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .select("value")
     .eq("key", "email.essential_only")
@@ -2657,9 +2681,9 @@ const essentialOnly = async (admin: AdminClient) => {
 /** Claims and processes one row; true when it is done (or not ours to do). */
 export const processRow = async (admin: AdminClient, id: number) => {
   const { data: row } = await admin
-    .schema("core")
+    .schema("api")
     .from("outbox")
-    .select("id, kind, payload, attempts")
+    .select("id, kind, payload, attempts, last_error")
     .eq("id", id)
     .is("processed_at", null)
     .lt("attempts", MAX_ATTEMPTS)
@@ -2673,7 +2697,7 @@ export const processRow = async (admin: AdminClient, id: number) => {
   }
   const previousAttempts = row.attempts;
   const claimed = await admin
-    .schema("core")
+    .schema("api")
     .from("outbox")
     .update({ attempts: row.attempts + 1 })
     .eq("id", id)
@@ -2702,7 +2726,7 @@ export const processRow = async (admin: AdminClient, id: number) => {
       );
     }
     await admin
-      .schema("core")
+      .schema("api")
       .from("outbox")
       .update({
         last_error: skipped ?? (handler ? null : "no handler"),
@@ -2711,32 +2735,155 @@ export const processRow = async (admin: AdminClient, id: number) => {
       .eq("id", id);
     return true;
   } catch (error) {
-    const quota = error instanceof EmailQuotaError;
-    // A Broadcast whose contact import is still running carries on at the
-    // next drain, without spending a try.
-    const pending = error instanceof BroadcastPending;
-    await admin
-      .schema("core")
-      .from("outbox")
-      .update({
-        // A spent sending limit is not the row's fault: give the try back.
-        ...(quota || pending ? { attempts: previousAttempts } : {}),
-        last_error: String(
-          error instanceof Error ? error.message : error
-        ).slice(0, 1000),
-      })
-      .eq("id", id);
-    if (quota) {
+    await recordFailure(admin, { ...row, attempts: previousAttempts }, error);
+    if (error instanceof EmailQuotaError) {
       throw error;
     }
     return false;
   }
 };
 
+/** Keeps a failed row's error, and whether the try counts. */
+const recordFailure = async (
+  admin: AdminClient,
+  row: { attempts: number; id: number; last_error: string | null },
+  error: unknown
+) => {
+  const quota = error instanceof EmailQuotaError;
+  // The key or its domain is wrong: the row waits for the fix
+  // (retryAfterFix), its tries spent like any other failure.
+  const config =
+    error instanceof EmailConfigError && row.last_error !== RETRIED_ONCE;
+  // A Broadcast whose contact import is still running carries on at the
+  // next drain, without spending a try.
+  const pending = error instanceof BroadcastPending;
+  await admin
+    .schema("api")
+    .from("outbox")
+    .update({
+      // A spent sending limit is not the row's fault: give the try back.
+      ...(quota || pending ? { attempts: row.attempts } : {}),
+      ...(config ? { waits_for_fix: true } : {}),
+      last_error: String(error instanceof Error ? error.message : error).slice(
+        0,
+        1000
+      ),
+    })
+    .eq("id", row.id);
+};
+
+const RETRY_WITHIN_MS = 7 * 86_400_000;
+
+/**
+ * Whether a waiting row's link has expired: an address confirmation's
+ * request is gone or older than its 7 days, a parent's link past its date, a
+ * held place past its hold. Other emails carry no link that expires.
+ */
+const linkExpired = async (
+  admin: AdminClient,
+  row: { kind: string; payload: Record<string, unknown> },
+  now: number
+) => {
+  if (row.kind === "personal_email.confirm") {
+    const { data } = await admin
+      .schema("api")
+      .from("personal_email_requests")
+      .select("requested_at")
+      .eq("user_id", String(row.payload.user_id))
+      .maybeSingle();
+    // The link works for 7 days (private.confirm_personal_email).
+    return (
+      !data || new Date(data.requested_at).getTime() < now - RETRY_WITHIN_MS
+    );
+  }
+  if (row.kind === "forms.link") {
+    const { data } = await admin
+      .schema("api")
+      .from("form_links")
+      .select("expires_at, used_at")
+      .eq("id", String(row.payload.link_id))
+      .maybeSingle();
+    return (
+      !data ||
+      data.used_at !== null ||
+      new Date(data.expires_at).getTime() < now
+    );
+  }
+  if (row.kind === "events.waitlist_offered") {
+    return (
+      typeof row.payload.until !== "string" ||
+      new Date(row.payload.until).getTime() < now
+    );
+  }
+  return false;
+};
+
+/**
+ * Once an email sends again, each row that failed for a configuration
+ * reason is tried once more (decisions.md, The site: no silent failures),
+ * unless it is older than 7 days or its link has expired: those are
+ * closed with the reason.
+ */
+export const retryAfterFix = async (admin: AdminClient, now = Date.now()) => {
+  const { data: waiting } = await admin
+    .schema("api")
+    .from("outbox")
+    .select("id, kind, payload, created_at")
+    .eq("waits_for_fix", true)
+    .is("processed_at", null)
+    .limit(200);
+  const settled = await Promise.all(
+    (waiting ?? []).map((row) =>
+      settleAfterFix(
+        admin,
+        { ...row, payload: row.payload as Record<string, unknown> },
+        now
+      )
+    )
+  );
+  return settled.filter(Boolean).length;
+};
+
+/** One waiting row: tried once more, or closed with the reason. */
+const settleAfterFix = async (
+  admin: AdminClient,
+  row: {
+    created_at: string;
+    id: number;
+    kind: string;
+    payload: Record<string, unknown>;
+  },
+  now: number
+) => {
+  const old = new Date(row.created_at).getTime() < now - RETRY_WITHIN_MS;
+  const expired = old || (await linkExpired(admin, row, now));
+  await admin
+    .schema("api")
+    .from("outbox")
+    .update(
+      expired
+        ? {
+            last_error: old
+              ? "expired: older than 7 days when the configuration was fixed"
+              : "expired: its link expired before the configuration was fixed",
+            processed_at: new Date(now).toISOString(),
+            waits_for_fix: false,
+          }
+        : {
+            attempts: MAX_ATTEMPTS - 1,
+            last_error: RETRIED_ONCE,
+            waits_for_fix: false,
+          }
+    )
+    .eq("id", row.id);
+  return !expired;
+};
+
 /** Pending rows older than two minutes (the trigger handles fresh ones). */
 export const drain = async (admin: AdminClient, limit = 50) => {
+  const started = Date.now();
   const { data: pending } = await admin
-    .schema("core")
+    .schema("api")
     .from("outbox")
     .select("id, payload")
     .is("processed_at", null)
@@ -2763,6 +2910,9 @@ export const drain = async (admin: AdminClient, limit = 50) => {
       }
       throw error;
     }
+  }
+  if (lastSentAt >= started) {
+    await retryAfterFix(admin);
   }
   return { done, quotaReached: false, seen: rows.length };
 };

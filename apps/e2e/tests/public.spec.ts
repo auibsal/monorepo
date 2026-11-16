@@ -50,6 +50,68 @@ test.describe("public site", () => {
     await expectAccessible(page);
   });
 
+  // Both editions render "Good to know" from the same fields (decisions.md,
+  // Events): who can come and how, the language, the access with its
+  // detail; the time range keeps its order in Arabic; no stray line sits
+  // between the date and the place; the footer's Qirtas link is "Send your
+  // work".
+  for (const edition of [
+    {
+      access: "Not step-free · Seated.",
+      detail: "Every seat is up steps",
+      language: "English and Arabic",
+      locale: "en",
+      title: "Good to know",
+      who: "Everyone · Booking required",
+      work: "Send your work",
+    },
+    {
+      access: "فيه درج · الحضور جلوسًا.",
+      detail: "كل المقاعد فوق الدرج",
+      language: "العربية والإنجليزية",
+      locale: "ar",
+      title: "معلومات مفيدة",
+      who: "الجميع · الحجز مطلوب",
+      work: "أرسل عملك",
+    },
+  ] as const) {
+    test(`the event page's ${edition.locale} edition shows every Good to know row`, async ({
+      page,
+    }) => {
+      const prefix = edition.locale === "ar" ? "/ar" : "";
+      await page.goto(`${urls.web}${prefix}/events/${event.slug}`);
+      const good = page.getByRole("region", { name: edition.title });
+      await expect(good).toContainText(edition.who);
+      await expect(good).toContainText(edition.language);
+      await expect(good).toContainText(edition.access);
+      await expect(good).toContainText(edition.detail);
+      const header = page.locator("article header");
+      await expect(
+        header.getByText(/^(Book a place|احجز مكانًا)$/u)
+      ).toHaveCount(0);
+      const range = await header
+        .locator("p.type-caption span")
+        .nth(1)
+        .textContent();
+      if (edition.locale === "ar") {
+        expect(range?.startsWith("\u2066")).toBe(true);
+        expect(range?.trimEnd().endsWith("\u2069")).toBe(true);
+      } else {
+        expect(range).toMatch(
+          /\d{1,2}:\d\d( [ap]\.m\.)?–\d{1,2}:\d\d [ap]\.m\./u
+        );
+      }
+      const footer = page.getByRole("contentinfo");
+      await expect(footer).not.toContainText(
+        /Submit to Qirtas|أرسل إلى قرطاس/u
+      );
+      await expect(
+        footer.getByRole("link", { name: edition.work })
+      ).toBeVisible();
+      await expectAccessible(page);
+    });
+  }
+
   test("Events shows the event in its month and is accessible", async ({
     page,
   }) => {

@@ -30,7 +30,7 @@ export const usePieceRecord = (pieceId: string | null) => {
     enabled: Boolean(pieceId),
     queryFn: async () => {
       const id = pieceId ?? "";
-      const j = supabase.schema("journal");
+      const j = supabase.schema("api");
       const [piece, body, approvals, media, credits, corrections, readiness] =
         await Promise.all([
           j
@@ -123,7 +123,7 @@ const useMove = () => {
       name: string;
     }) => {
       const { error } = await supabase
-        .schema("journal")
+        .schema("api")
         .rpc(name as never, args as never);
       if (error) {
         throw error;
@@ -342,7 +342,7 @@ const Dated = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("piece_dates")
           .select("id, dated_at, set_at")
           .eq("piece_id", piece.id)
@@ -605,9 +605,7 @@ export const Thread = ({ pieceId }: { pieceId: string }) => {
   const thread = useQuery({
     queryFn: async () =>
       unwrap(
-        await supabase
-          .schema("journal")
-          .rpc("piece_thread", { piece_id: pieceId })
+        await supabase.schema("api").rpc("piece_thread", { piece_id: pieceId })
       ) ?? [],
     queryKey: ["journal", "thread", pieceId],
   });
@@ -638,7 +636,7 @@ export const Thread = ({ pieceId }: { pieceId: string }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("piece_notes")
           .insert({ body: body.trim(), piece_id: pieceId })
       ),
@@ -708,7 +706,7 @@ export const Corrections = ({ record }: { record: PieceRecord }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("corrections")
           .insert({
             note_ar: note.ar.trim() || null,

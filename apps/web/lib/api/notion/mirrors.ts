@@ -29,9 +29,17 @@ export interface Row {
 }
 
 interface MirrorOptions {
+  /**
+   * When a record goes, its row is ticked Archived and kept, never
+   * deleted (the copies made from Nov 16, 2026: copies.ts).
+   */
+  archive?: boolean;
   /** Whether the database has a Synced date (the officers' and Qirtas's). */
   synced?: boolean;
 }
+
+/** The hash an archived row keeps, so it is archived once. */
+const ARCHIVED = "archived";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -67,6 +75,31 @@ const writeRow = async (
   const page = await ctx.notion.createPage(dataSourceId, props);
   await saveLink(ctx, kind, page.id, row.key, contentHash);
   count(ctx, `${kind}.created`);
+};
+
+/** Ticks Archived on the copy of a record that is gone; the row stays. */
+const archiveRow = async (
+  ctx: SyncContext,
+  kind: LinkKind,
+  key: string,
+  link: Link
+) => {
+  if (link.content_hash === ARCHIVED) {
+    return;
+  }
+  try {
+    await ctx.notion.updatePage(link.notion_page_id, {
+      Archived: prop.checkbox(true),
+    });
+    await saveLink(ctx, kind, link.notion_page_id, key, ARCHIVED);
+    count(ctx, `${kind}.archived`);
+  } catch (error) {
+    if (isGone(error)) {
+      await dropLink(ctx, link.notion_page_id);
+      return;
+    }
+    problem(ctx, `${kind} ${key}: ${(error as Error).message}`);
+  }
 };
 
 /** Removes the copy of a record that no longer exists in the Diwan. */
@@ -115,7 +148,7 @@ export const mirror = async (
       continue;
     }
     // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
-    await removeRow(ctx, kind, key, link);
+    await (options.archive ? archiveRow : removeRow)(ctx, kind, key, link);
   }
 };
 
@@ -156,7 +189,7 @@ export const mirrorOfficers = async (
   people: ReadonlyMap<string, string>
 ) => {
   const { data, error } = await ctx.admin
-    .schema("access")
+    .schema("api")
     .rpc("officer_directory");
   if (error) {
     throw error;
@@ -206,7 +239,7 @@ const STAGES = [
 export const mirrorJournal = async (ctx: SyncContext) => {
   const since = new Date(Date.now() - 90 * 86_400_000).toISOString();
   const { data: calls, error } = await ctx.admin
-    .schema("journal")
+    .schema("api")
     .from("calls")
     .select("id, title_en, closes_at")
     .gte("closes_at", since);
@@ -217,7 +250,7 @@ export const mirrorJournal = async (ctx: SyncContext) => {
   for (const call of calls ?? []) {
     // biome-ignore lint/performance/noAwaitInLoops: a few calls at most
     const { data: subs } = await ctx.admin
-      .schema("journal")
+      .schema("api")
       .from("submissions")
       .select("status")
       .eq("call_id", call.id);
@@ -244,11 +277,11 @@ export const mirrorJournal = async (ctx: SyncContext) => {
   // pieces by stage of the newsroom (counts only; no titles or names).
   const [{ data: named }, { data: pieces }] = await Promise.all([
     ctx.admin
-      .schema("journal")
+      .schema("api")
       .from("submissions")
       .select("desk, status")
       .is("call_id", null),
-    ctx.admin.schema("journal").from("pieces").select("desk, status"),
+    ctx.admin.schema("api").from("pieces").select("desk, status"),
   ]);
   for (const desk of ["news", "voices", "video", "games"] as const) {
     const tally = new Map<string, number>();

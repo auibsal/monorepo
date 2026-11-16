@@ -5,7 +5,7 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
-import { localized, programmes, unwrap } from "@/lib/data";
+import { localized, programs, unwrap } from "@/lib/data";
 import { DiwanSection, RowList } from "../page";
 
 /**
@@ -19,7 +19,7 @@ export const SixWords = () => {
   const { supabase, user } = useAuth();
   const pages = useQuery({
     enabled: Boolean(user),
-    queryFn: () => programmes.mySixWords(supabase),
+    queryFn: () => programs.mySixWords(supabase),
     queryKey: ["my-six-words", user?.id],
   });
   const eventIds = [
@@ -32,7 +32,7 @@ export const SixWords = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("id, title_en, title_ar, starts_at")
           .in("id", eventIds)

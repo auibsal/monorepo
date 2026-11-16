@@ -57,7 +57,7 @@ const Restored = () => {
   const restored = useQuery({
     enabled: Boolean(user),
     queryFn: async () => {
-      const { data } = await supabase.schema("core").rpc("restore_account");
+      const { data } = await supabase.schema("api").rpc("restore_account");
       return data === true;
     },
     queryKey: ["restore-account", user?.id ?? ""],

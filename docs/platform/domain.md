@@ -68,9 +68,10 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   valid 14 days and revocable, sent by the Director of Membership
   (classes), a Partner Lead (the team, its guests) or an event's lead
   (guests); no shareable links and no invitation ever grants a role.
-  Sign-up takes an AUIB address only, unless the account comes from an
-  invitation, applies to partner or signs up as a guest
-  (`private.sign_up_allowed`). A student who leaves AUIB says so in
+  Any address may sign up, on one page for everyone; the class follows
+  the address, and an invitation counts only if it is real, still usable
+  and for that address (`private.invited_sign_up`; redeemed by
+  `accept_partner_invitation`, which refuses another address). A student who leaves AUIB says so in
   Settings (`core.report_leaving`) or is recorded by Membership on their
   Diwan page (`membership.record_departure`), whichever comes first:
   graduated or not, they become an Associate Member with the same number,
@@ -228,7 +229,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   pages, and each is a signature record like the rest
   (`private.record_signing`): its AGR number, its check at /verify, and
   the signed copy in Your account → Documents. Where the site already
-  does the job (joining, RSVPs, Submit to Qirtas, Get involved,
+  does the job (joining, RSVPs, Send your work, Get involved,
   elections), the form is that page. Members never see the word "form" or
   a form code; the requests they can start are plain actions where they
   belong (`StartLinks`).
@@ -254,15 +255,25 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   (`events.events.lead_id`, from the register) and a confirmed place (the
   database refuses otherwise). Notion's Events database is a read-only copy
   the site writes (decisions.md, Where things live). Each new event gets the
-  standard shifts: check-in for two, the membership table for one and
-  refreshments for two when food is served (`private.default_shifts`).
+  standard shifts: check-in for two, the membership table for one,
+  refreshments for two when food is served, and for a screening or a
+  performance (`format`) Projection and sound and Photos, one each
+  (`private.default_shifts`); Hudhud's morning brief flags an event within
+  five days with a shift still empty.
   Hudhud announces it once in the members' group, three weeks ahead at
   most (`announced_at`), and Student Life gets next week's public events
   each Wednesday by the secure link (`events.student_life_weeks`). Every event has
   the one page on the site (`EventView` with `EventParts`) and in the
   Diwan (`EventEditor` with `EventPartsAdmin`), with only the standard
-  parts: its access (`events.events.entry`: `open`, `rsvp`, `members` or
-  `invite` (Private); `members_only` is derived from it), RSVP and
+  parts: its access, two settings (decisions.md, Events: Access): who
+  can come (`events.events.classes`, any of the four classes, all four
+  being Everyone, or Invited only, `entry = 'invite'`) and how (`entry`:
+  `open` or `rsvp`, Booking required). On campus a Guest always books, even
+  for an Open event, until 14 days before (`private.guests_book_by`), when
+  the names go to Security through Student Life; whoever's class isn't
+  ticked sees whom the event is for (`events.booking_terms`). The event's
+  page shows every published event but the invitation-only ones. Then
+  RSVP and
   check-in (the booking asks only about accessibility needs, and diet
   when `serves_food`; a released place is held for the next on the
   waitlist for 12 hours or until two hours before the start, whichever is
@@ -287,41 +298,53 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   sign the trip consent, `trip-consent`. Nothing is built for one event or one kind
   of event. An event that recurs is made again for each date; there are
   no series and no programs (the code keeps its identifiers: the
-  `programmes` schema, `programme_id`, `programs.manage`; copy says
+  `programs` schema, `program_id`, `programs.manage`; copy says
   "event" or "event lead"). Minutes and resolutions are governance records
   pointing at their meeting's event (`governance.minutes.event_id`).
+- **After an event** (decisions.md, Events): its page asks "How was it?"
+  (`events.feedback`: five choices and an optional comment, once per
+  person, from the end for 14 days; `/events/<slug>#feedback`), and at
+  9:00 a.m. Baghdad time the next day "Thanks for coming" goes to everyone
+  who checked in (`private.thanks_for_coming`, `events.thanks`). The
+  event's team reads the count, the average and the comments, never names
+  (`events.feedback_summary`), on its Diwan page, which the debrief links.
+- **The Program** (`events.program_items`): the works a screening, reading
+  or performance shows, each with its credit line (an outside work's,
+  typed; the Society's people are picked from the register), year, length,
+  a line and an award in both languages, and a still. The event's page
+  lists them; the promo kit draws a card for each.
 - **Events is one calendar page**: `/events`, a month at
   `/events?month=<yyyy-mm>`, the Company's dates at `/events?host=company`,
-  each event at `/events/<slug>`. The public calendar shows members-only
-  events as teasers; SECURITY DEFINER code checks visibility with
+  each event at `/events/<slug>`, which says who can come. SECURITY
+  DEFINER code checks visibility with
   `private.can_see_event_id`. AUIB's own calendar is one link, not dates
   beside the Society's.
-- **Event leads.** `programme_lead` (Event Lead) is scoped to one event
+- **Event leads.** `program_lead` (Event Lead) is scoped to one event
   (scope `event`): they edit it, keep its shifts and needs, see its
   bookings and run its door (`private.leads_event`). The Director of
   Events (or the President, covering) picks them.
 - **The Typewriter Tour** belongs to membership: `/join/typewriter-tour`,
-  with the Six Words wall (`programmes.six_words_wall()`) and a typewriter
+  with the Six Words wall (`programs.six_words_wall()`) and a typewriter
   to try (`TypingToy`, silent until the key sound is turned on). Whoever
   runs the Tour (`tour.run`: the Director of Membership, the General
   Secretary and the Tour Lead) records pages in the Diwan (Membership →
   Typewriter Tour) and attaches each to its writer's account. At the
   Tour's station (decisions §12; `/account/station`), a volunteer the
-  event lead confirmed on a station shift (`programmes.shifts.station`)
+  event lead confirmed on a station shift (`programs.shifts.station`)
   may, while the shift runs and only then (`private.my_station_shift`),
   photograph a typed page and attach it to a live card, a Member's or a
-  Guest's (`/api/tour/station`, `programmes.station_attach`; the photo in
+  Guest's (`/api/tour/station`, `programs.station_attach`; the photo in
   the private `tour-pages` bucket, read through `/api/tour/photo`), or
   keep it against a pending "Request Associate membership"
   (`membership.associate_requests`, from `/join#associate`): attached
   when the Director of Membership approves (a named invitation) and the
   account accepts, deleted if declined. Every station page is logged;
   photographed pages show nowhere until whoever runs the Tour types their
-  words (`programmes.transcribe_page`). Six Words
+  words (`programs.transcribe_page`). Six Words
   are not part of Qirtas: they are Tour pages, private by default, shown
   on the writer's profile or the Tour's page only by their choice
-  (`programmes.six_words.visibility`). Spring 2026 pages arrive by the
-  one import (`programmes.import_tour`); pages with no email stay private
+  (`programs.six_words.visibility`). Spring 2026 pages arrive by the
+  one import (`programs.import_tour`); pages with no email stay private
   and editors-only until a writer claims one through Help Desk. The
   one-time invitations (`membership.invitations`) come in lists
   (`membership.invitation_lists`: the Tour's import, the club fair's
@@ -329,7 +352,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   tested on the President first and goes only when the President says
   go (`membership.send_invitations(list)`), as one Broadcast, and is
   deleted thirty days after its own send.
-- **Get involved** (`/get-involved`, `programmes.open_places()`) lists open
+- **Get involved** (`/get-involved`, `programs.open_places()`) lists open
   roles only, soonest first: Council and team roles, an event's lead
   (one place; the rest of the night are shifts), Qalam mentors,
   auditions. Members reply "I'm interested" in one step;
@@ -401,7 +424,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **Money: none.** No budgets, costs, prices, spending limits, ledgers,
   claims, reimbursements, payments or ads anywhere; sponsors give in kind
   only. Every event, Qirtas and the Tour keep a needs list
-  (`programmes.needs`: item, quantity, date needed, purpose), and the
+  (`programs.needs`: item, quantity, date needed, purpose), and the
   Secretary sends each request to Student Life and logs what was
   provided (Council → Requests), and by whom: Student Life, or a partner
   in kind (`needs.given_by`, picked from the register); whom the event's
@@ -526,14 +549,14 @@ disagrees; the conventions for every change are in `AGENTS.md`.
 - **Qalam**, Qirtas's summer program for high school students. The
   school gives the parents' addresses with its application; Qalam's staff
   send the consent (`qalam-parent-consent`) to each parent through their
-  own single-use link (`programmes.qalam_consent_link`), and the teacher
+  own single-use link (`programs.qalam_consent_link`), and the teacher
   gets a copy of each signed consent (`form_links.copy_to`). Signing makes
   the parent's guest account with the Parent role on their child and the
   student's guest account with the "Qalam student" role
-  (`programmes.qalam_enroll`, from `/api/forms/sign`): the names and
+  (`programs.qalam_enroll`, from `/api/forms/sign`): the names and
   addresses on it become the accounts' own. The site writes to the parent
   and the teacher, never to the student. The roster is the list of those
-  accounts (`programmes.qalam_roster`), staff only (`/diwan/qirtas/qalam`,
+  accounts (`programs.qalam_roster`), staff only (`/diwan/qirtas/qalam`,
   `qalam.manage`), never in Notion, deleted three years on; the student's
   role and the parent's Qalam role end when the student finishes,
   withdraws or is declined, and the guest accounts stay. The publishing
@@ -542,25 +565,25 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   and last initial, "Guest · Qalam student", and the school and summer.
 - **Next Stop** is the Director of Media's video show at `/next-stop`
   (its promise at `/next-stop/care`), not part of Qirtas. Episodes are
-  `programmes.episodes`, edited in the Diwan (Media → Next Stop): number,
+  `programs.episodes`, edited in the Diwan (Media → Next Stop): number,
   title and description in both languages, one YouTube video per language
   edition (or one with both caption tracks), release date, chapters,
   WebVTT captions and a thumbnail. Each has its page at
   `/next-stop/episodes/<slug>` with a click-to-load player on
   youtube-nocookie.com, TVEpisode JSON-LD, and a place in the sitemap.
-  Everyone on camera is listed (`programmes.episode_on_camera`, Media only)
+  Everyone on camera is listed (`programs.episode_on_camera`, Media only)
   and signs `media-release` by a single-use link to their address
-  (`programmes.episode_release_link`); an episode can't be published until
+  (`programs.episode_release_link`); an episode can't be published until
   all have signed (`private.episode_releases_signed`). Credits come from
   Next Stop crew roles scoped to the episode, each with its `credit`
-  (`programmes.credit_episode`), plus guests and the standing producer and
-  host, in the American order (`programmes.episode_credits`). A removal
+  (`programs.credit_episode`), plus guests and the standing producer and
+  host, in the American order (`programs.episode_credits`). A removal
   request naming an episode's address hides it at once. The kit's video
   files are in the private `brand-kit` bucket, listed in
   `packages/brand/assets/video/manifest.json`, uploaded by Media and
   downloaded by staff through `/api/brand-kit/<file>`. Guest ideas, people
   the show might invite, are a private list in Media → Next Stop
-  (`programmes.next_stop_guest_ideas`, `media.guest_ideas`: the Director of
+  (`programs.next_stop_guest_ideas`, `media.guest_ideas`: the Director of
   Media, the producer and the host), never in Notion.
 - **The mailing list** (decisions.md, Channels and email): one audience
   with two topics, "The Sunday Paper" (`paper`) and "Society news and

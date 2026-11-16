@@ -30,7 +30,7 @@ export const ServiceLetter = () => {
         return null;
       }
       const { data: holder } = await supabase
-        .schema("core")
+        .schema("api")
         .from("profiles")
         .select("full_name_en, full_name_ar")
         .eq("id", row.user_id)

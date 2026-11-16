@@ -41,7 +41,7 @@ export const POST = async (request: Request) => {
   }
 
   const { data: production } = await session.supabase
-    .schema("programmes")
+    .schema("api")
     .from("productions")
     .select("rights_document_path")
     .eq("id", parsed.data.id)

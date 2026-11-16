@@ -33,7 +33,7 @@ export const eventText = (lang: Lang, event: EventRow, withSummary = true) => {
     `<b>${escapeHtml(pick(lang, event.title_en, event.title_ar))}</b>`,
     when(lang, event.starts_at),
     venue ? escapeHtml(venue) : null,
-    event.members_only ? t.membersOnly : null,
+    event.classes.includes("guest") ? null : t.membersOnly,
   ];
   if (withSummary && summary) {
     lines.push("", escapeHtml(summary));

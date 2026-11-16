@@ -45,7 +45,7 @@ export const attachFile = async (
   const stored = await uploadSubmissionFile(supabase, submissionId, file);
   try {
     unwrap(
-      await supabase.schema("journal").from("submission_files").insert({
+      await supabase.schema("api").from("submission_files").insert({
         kind,
         mime_type: file.type,
         size_bytes: file.size,
@@ -65,7 +65,7 @@ export const detachFile = async (
 ) => {
   unwrap(
     await supabase
-      .schema("journal")
+      .schema("api")
       .from("submission_files")
       .delete()
       .eq("id", file.id)

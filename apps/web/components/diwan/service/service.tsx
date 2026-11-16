@@ -52,16 +52,16 @@ export const Service = () => {
     queryFn: () => recognition.myService(supabase),
     queryKey: [...KEY, "records"],
   });
-  const programmes = useQuery({
+  const programs = useQuery({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
-          .from("programmes")
+          .schema("api")
+          .from("programs")
           .select("id, name_en, name_ar")
           .order("sort")
       ) ?? [],
-    queryKey: [...KEY, "programmes"],
+    queryKey: [...KEY, "programs"],
   });
 
   const letters = useQuery({
@@ -73,7 +73,7 @@ export const Service = () => {
     mutationFn: async (recordId: string) =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("service_records")
           .delete()
           .eq("id", recordId)
@@ -82,8 +82,8 @@ export const Service = () => {
   });
 
   const total = hours.data ?? 0;
-  const programmeName = (programmeId: string | null) => {
-    const row = programmes.data?.find((p) => p.id === programmeId);
+  const programName = (programId: string | null) => {
+    const row = programs.data?.find((p) => p.id === programId);
     return row ? localized(row, "name", locale) : "";
   };
 
@@ -128,7 +128,7 @@ export const Service = () => {
                 </span>
                 <span className="type-caption">
                   {formatLongDate(r.occurred_on, locale, true)}
-                  {r.programme_id ? ` · ${programmeName(r.programme_id)}` : ""}
+                  {r.program_id ? ` · ${programName(r.program_id)}` : ""}
                   {" · "}
                   {t(`statuses.${r.status as RecordStatus}`)}
                   {r.reject_reason ? ` · ${r.reject_reason}` : ""}
@@ -191,21 +191,21 @@ const LogHours = ({ onDone }: { readonly onDone: () => void }) => {
     activity: "",
     hours: "",
     occurred_on: today(),
-    programme_id: "",
+    program_id: "",
     what: "",
   };
   const [form, setForm] = useState(empty);
 
-  const programmes = useQuery({
+  const programs = useQuery({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
-          .from("programmes")
+          .schema("api")
+          .from("programs")
           .select("id, name_en, name_ar")
           .order("sort")
       ) ?? [],
-    queryKey: [...KEY, "programmes"],
+    queryKey: [...KEY, "programs"],
   });
 
   const log = useMutation({
@@ -214,7 +214,7 @@ const LogHours = ({ onDone }: { readonly onDone: () => void }) => {
         activity: form.activity,
         hours: Number(form.hours),
         occurred_on: form.occurred_on,
-        programme_id: form.programme_id || null,
+        program_id: form.program_id || null,
         what: form.what,
       }),
     onSuccess: async () => {
@@ -258,16 +258,16 @@ const LogHours = ({ onDone }: { readonly onDone: () => void }) => {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor={`${id}-programme`}>{t("programme")}</Label>
+          <Label htmlFor={`${id}-program`}>{t("program")}</Label>
           <SelectInput
-            id={`${id}-programme`}
+            id={`${id}-program`}
             onChange={(e) =>
-              setForm((f) => ({ ...f, programme_id: e.target.value }))
+              setForm((f) => ({ ...f, program_id: e.target.value }))
             }
-            value={form.programme_id}
+            value={form.program_id}
           >
-            <option value="">{t("noProgramme")}</option>
-            {(programmes.data ?? []).map((p) => (
+            <option value="">{t("noProgram")}</option>
+            {(programs.data ?? []).map((p) => (
               <option key={p.id} value={p.id}>
                 {localized(p, "name", locale)}
               </option>

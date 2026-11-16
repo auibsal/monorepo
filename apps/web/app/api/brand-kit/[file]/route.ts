@@ -30,7 +30,7 @@ export const GET = async (
   }
   const session = await authenticateCookies(request);
   const { data: me } = session
-    ? await session.supabase.schema("membership").rpc("my_membership")
+    ? await session.supabase.schema("api").rpc("my_membership")
     : { data: null };
   const row = Array.isArray(me) ? me[0] : me;
   if (row?.staff !== true) {

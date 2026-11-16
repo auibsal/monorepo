@@ -119,7 +119,9 @@ export type EmailAuthErrorCode =
   | "invalid_code"
   | "weak_password"
   | "breached_password"
-  | "reauthentication_needed";
+  | "reauthentication_needed"
+  | "current_password_required"
+  | "current_password_invalid";
 
 export type AuthResult<T = undefined> =
   | { ok: true; value: T }
@@ -137,6 +139,15 @@ export const toEmailAuthError = (
   // reports it as a failure to save the user.
   if (error?.message?.includes("Database error saving new user")) {
     return "email_reserved";
+  }
+  // "Require current password when updating" answers with codes the
+  // client's types don't list yet.
+  const code: string | undefined = error?.code;
+  if (
+    code === "current_password_required" ||
+    code === "current_password_invalid"
+  ) {
+    return code;
   }
   switch (error?.code) {
     case "captcha_failed":

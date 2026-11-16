@@ -97,7 +97,7 @@ const NewRound = ({ onDone }: { onDone: () => void }) => {
       const y = Number(year);
       return unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("prize_rounds")
           .insert({
             period_from: `${y - 1}-04-01`,
@@ -174,7 +174,7 @@ const RoundDates = ({ round }: { round: Round }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("prize_rounds")
           .update({
             awarded_on: awarded || null,
@@ -242,11 +242,7 @@ const Shortlist = ({
   const drop = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
-        await supabase
-          .schema("journal")
-          .from("prize_entries")
-          .delete()
-          .eq("id", id)
+        await supabase.schema("api").from("prize_entries").delete().eq("id", id)
       ),
     onSuccess: refresh,
   });
@@ -255,7 +251,7 @@ const Shortlist = ({
     mutationFn: async ({ id, named }: { id: string; named: boolean }) =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("prize_entries")
           .update({ winner_named: named })
           .eq("id", id)
@@ -267,7 +263,7 @@ const Shortlist = ({
     mutationFn: async (id: string) =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("prize_recusals")
           .insert({ entry_id: id })
       ),
@@ -387,7 +383,7 @@ const JudgeScore = ({ entry }: { entry: Entry }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("prize_entries")
           .update({ judge_score: score === "" ? null : Number(score) })
           .eq("id", entry.id)
@@ -434,7 +430,7 @@ const AddPiece = ({ onDone, round }: { onDone: () => void; round: Round }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("pieces")
           .select("id, title_en, title_ar")
           .eq("status", "published")
@@ -449,7 +445,7 @@ const AddPiece = ({ onDone, round }: { onDone: () => void; round: Round }) => {
   const add = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("journal").from("prize_entries").insert({
+        await supabase.schema("api").from("prize_entries").insert({
           category: "qirtas",
           piece_id: piece,
           round_id: round.id,
@@ -509,7 +505,7 @@ const AddQalamWork = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("prize_entries")
           .insert({
             category: "qalam",
@@ -579,7 +575,7 @@ const Count = ({ round }: { round: Round }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .rpc("check_prize_count", { round_id: round.id })
       ),
     onSuccess: refresh,
@@ -588,7 +584,7 @@ const Count = ({ round }: { round: Round }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("prize_rounds")
           .update({ results_published: true })
           .eq("id", round.id)

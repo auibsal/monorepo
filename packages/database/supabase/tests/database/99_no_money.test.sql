@@ -113,8 +113,8 @@ select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a1', 'salon.lead@aui
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a2', 'gs-nm@auib.edu.iq', 'Secretary');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a3', 'member-nm@auib.edu.iq', 'Member');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000b0a4', 'editor-nm@auib.edu.iq', 'Editor');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000b0a1', 'programme_lead', 'programme',
-  (select id from core.programmes where slug = 'typewriter-tour'));
+select pg_temp.grant_role('00000000-0000-0000-0000-00000000b0a1', 'program_lead', 'program',
+  (select id from core.programs where slug = 'typewriter-tour'));
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000b0a2', 'general_secretary');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000b0a4', 'eic');
 
@@ -122,41 +122,41 @@ select pg_temp.grant_role('00000000-0000-0000-0000-00000000b0a4', 'eic');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b0a1');
 select lives_ok(
-  $$ insert into programmes.needs (id, programme_id, item, quantity, needed_by, purpose)
-     values ('0ee00000-0000-0000-0000-0000000000a1', (select id from core.programmes where slug = 'typewriter-tour'),
+  $$ insert into programs.needs (id, program_id, item, quantity, needed_by, purpose)
+     values ('0ee00000-0000-0000-0000-0000000000a1', (select id from core.programs where slug = 'typewriter-tour'),
        'Tea urn', 1, '2026-12-01', 'Tea for the Salon') $$,
   'A program''s lead lists what it needs'
 );
 select throws_ok(
-  $$ insert into programmes.needs (programme_id, item, quantity, needed_by, purpose)
-     values ((select id from core.programmes where slug = 'company'), 'Lights', 2, '2026-12-01', 'Stage') $$,
+  $$ insert into programs.needs (program_id, item, quantity, needed_by, purpose)
+     values ((select id from core.programs where slug = 'company'), 'Lights', 2, '2026-12-01', 'Stage') $$,
   '42501', null, 'but only for their own program'
 );
 select throws_ok(
-  $$ update programmes.needs set status = 'requested', requested_on = current_date
+  $$ update programs.needs set status = 'requested', requested_on = current_date
      where id = '0ee00000-0000-0000-0000-0000000000a1' $$,
   '42501', null, 'Only the Secretary sends a request to Student Life'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b0a3');
-select is((select count(*)::integer from programmes.needs), 0, 'Members do not see the needs lists');
+select is((select count(*)::integer from programs.needs), 0, 'Members do not see the needs lists');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b0a4');
 select lives_ok(
-  $$ insert into programmes.needs (programme_id, item, quantity, needed_by, purpose)
-     values ((select id from core.programmes where slug = 'waraq'), 'Printing of the Edition', 100, '2027-02-15', 'Edition 1') $$,
+  $$ insert into programs.needs (program_id, item, quantity, needed_by, purpose)
+     values ((select id from core.programs where slug = 'qirtas'), 'Printing of the Edition', 100, '2027-02-15', 'Edition 1') $$,
   'The Editor lists the paper''s needs'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000b0a2');
-select is((select count(*)::integer from programmes.needs), 2, 'The Secretary sees every list');
+select is((select count(*)::integer from programs.needs), 2, 'The Secretary sees every list');
 select lives_ok(
-  $$ update programmes.needs set status = 'requested', requested_on = current_date
+  $$ update programs.needs set status = 'requested', requested_on = current_date
      where id = '0ee00000-0000-0000-0000-0000000000a1' $$,
   'and logs what was asked'
 );
 select lives_ok(
-  $$ update programmes.needs set status = 'provided', provided_on = current_date, provided_note = 'From Student Life'
+  $$ update programs.needs set status = 'provided', provided_on = current_date, provided_note = 'From Student Life'
      where id = '0ee00000-0000-0000-0000-0000000000a1' $$,
   'and what was provided, and when'
 );

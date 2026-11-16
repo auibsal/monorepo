@@ -10,7 +10,7 @@ import { ErrorLine, RecordList } from "@/components/diwan/admin/kit";
 import { DiwanSection, RowList } from "@/components/diwan/page";
 import { EmptyLine, SectionSpinner } from "@/components/diwan/states";
 import { useAuth } from "@/lib/auth/provider";
-import { localized, programmes, unwrap } from "@/lib/data";
+import { localized, programs, unwrap } from "@/lib/data";
 import { StatusLine } from "./flow";
 
 /**
@@ -26,13 +26,13 @@ export const Applications = () => {
   const key = ["applications", user?.id ?? ""];
   const list = useQuery({
     enabled: Boolean(user),
-    queryFn: () => programmes.myApplications(supabase, user?.id ?? ""),
+    queryFn: () => programs.myApplications(supabase, user?.id ?? ""),
     queryKey: key,
   });
   const refresh = () => queryClient.invalidateQueries({ queryKey: key });
   const withdraw = useMutation({
     mutationFn: (openingId: string) =>
-      programmes.withdrawApplication(supabase, openingId),
+      programs.withdrawApplication(supabase, openingId),
     onSuccess: refresh,
   });
   const answer = useMutation({
@@ -42,7 +42,7 @@ export const Applications = () => {
     }: {
       accept: boolean;
       openingId: string;
-    }) => programmes.answerOffer(supabase, openingId, accept),
+    }) => programs.answerOffer(supabase, openingId, accept),
     onSuccess: refresh,
   });
   return (
@@ -83,9 +83,7 @@ export const Applications = () => {
   );
 };
 
-type Application = Awaited<
-  ReturnType<typeof programmes.myApplications>
->[number];
+type Application = Awaited<ReturnType<typeof programs.myApplications>>[number];
 
 /** One application's row: where it stands and what can be done now. */
 const ApplicationRow = ({
@@ -106,7 +104,7 @@ const ApplicationRow = ({
   const t = useTranslations("diwan.getInvolved.applications");
   const locale = useLocale() as Locale;
 
-  const status = a.status as programmes.ApplicationStatus;
+  const status = a.status as programs.ApplicationStatus;
   const opening = a.opening as {
     title_ar: string;
     title_en: string;
@@ -201,7 +199,7 @@ export const MyAuditions = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("audition_signups")
           .select(
             "audition_id, status, reference, audition:auditions(starts_at, production:productions(title_en, title_ar))"

@@ -52,7 +52,7 @@ const useNotices = () => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("announcements")
           .select(
             "id, title_en, title_ar, body_en, body_ar, link_path, tested_at, sent_at, shown_at, instagram_done_at"
@@ -79,7 +79,7 @@ const Editor = ({
   const save = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("core").rpc("save_announcement", {
+        await supabase.schema("api").rpc("save_announcement", {
           body_ar: form.body_ar,
           body_en: form.body_en,
           id: form.id ?? undefined,
@@ -202,9 +202,7 @@ const Sending = ({
   const send = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase
-          .schema("core")
-          .rpc("send_announcement", { id: notice.id })
+        await supabase.schema("api").rpc("send_announcement", { id: notice.id })
       ),
     onSuccess: async () => {
       setConfirming(false);
@@ -288,7 +286,7 @@ const Instagram = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .rpc("announcement_instagram_done", { id: notice.id })
       ),
     onSuccess: refresh,
@@ -337,7 +335,7 @@ const Stream = ({
     mutationFn: async (at: string | null) =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .rpc("post_notice", { id: notice.id, shown_at: at as string })
       ),
     onSuccess: refresh,

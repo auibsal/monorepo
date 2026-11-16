@@ -34,7 +34,7 @@ export const castBallot = async (
   ballot: Ballot
 ) =>
   unwrap(
-    await client.schema("governance").rpc("cast_ballot", {
+    await client.schema("api").rpc("cast_ballot", {
       choices: ballotSchema.parse(ballot),
       election_id: electionId,
     })
@@ -45,13 +45,13 @@ export const castBallot = async (
  * holds it (none while open).
  */
 export const councilSeats = async (client: Client) =>
-  unwrap(await client.schema("governance").rpc("council_seats")) ?? [];
+  unwrap(await client.schema("api").rpc("council_seats")) ?? [];
 
 /** Resolutions the Council or a members’ meeting adopted, newest first. */
 export const adoptedResolutions = async (client: Client) =>
   unwrap(
     await client
-      .schema("governance")
+      .schema("api")
       .from("resolutions")
       .select(
         "id, code, title_en, title_ar, body, adopted_on, votes_for, votes_against, votes_abstain"
@@ -63,5 +63,4 @@ export const adoptedResolutions = async (client: Client) =>
 
 /** Who was elected in each published election (no other candidates). */
 export const publicElectionResults = async (client: Client) =>
-  unwrap(await client.schema("governance").rpc("public_election_results")) ??
-  [];
+  unwrap(await client.schema("api").rpc("public_election_results")) ?? [];

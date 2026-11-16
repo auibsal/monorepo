@@ -31,7 +31,7 @@ const text = (form: FormData, key: string) => {
  * shift, while it runs, sends the photographed page with a live card's
  * code and digits, or with the address of a pending Associate request.
  * The photo goes to the private tour-pages bucket; the database
- * (`programmes.station_attach`, under the volunteer's own claims) decides
+ * (`programs.station_attach`, under the volunteer's own claims) decides
  * and keeps the page, private, and logs it. A refused page's photo is
  * removed at once.
  */
@@ -44,7 +44,7 @@ export const POST = async (request: Request) => {
     return json({ error: "unauthorized" }, 401);
   }
   const { data: shift } = await session.supabase
-    .schema("programmes")
+    .schema("api")
     .rpc("my_station_shift");
   if (!shift) {
     return json({ error: "station_closed" }, 403);
@@ -78,7 +78,7 @@ export const POST = async (request: Request) => {
   }
 
   const { data: reference, error } = await session.supabase
-    .schema("programmes")
+    .schema("api")
     .rpc("station_attach", {
       card_code: cardCode ?? "",
       digits: text(form, "digits") ?? "",

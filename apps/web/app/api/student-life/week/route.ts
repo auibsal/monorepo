@@ -41,8 +41,8 @@ export const POST = async (request: Request) => {
   }
   const admin = createAdminClient();
   const { data: week } = await admin
-    .schema("events")
-    .from("student_life_weeks")
+    .schema("api")
+    .from("student_life_weeks_all")
     .select("id, week_of, sent_at")
     .eq("token_hash", hashOf(parsed.data.token))
     .maybeSingle();
@@ -50,7 +50,7 @@ export const POST = async (request: Request) => {
   if (!week || Date.now() - sent > VALID_FOR_MS) {
     return json({ error: "invalid_token" }, 400);
   }
-  const items = admin.schema("events").from("student_life_week_events");
+  const items = admin.schema("api").from("student_life_week_events");
   const { answer } = parsed.data;
   if (answer) {
     const now = new Date().toISOString();
@@ -63,8 +63,8 @@ export const POST = async (request: Request) => {
       return json({ error: "not_found" }, 404);
     }
     await admin
-      .schema("events")
-      .from("student_life_weeks")
+      .schema("api")
+      .from("student_life_weeks_all")
       .update({ answered_at: now })
       .eq("id", week.id);
   }

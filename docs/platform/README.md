@@ -14,6 +14,8 @@ under Account); the Society's documents are on
 - [Retention](retention.md)
 - [Vendors](vendors.md)
 - [Secrets by environment](secrets.md)
+- [Platform settings (Cloudflare, Vercel, Supabase, Resend, GitHub)](settings.md)
+- [Architecture decisions](../adr/README.md)
 - [API routes](api.md)
 - [When something breaks](incidents.md)
 - [Notifications](notifications.md)

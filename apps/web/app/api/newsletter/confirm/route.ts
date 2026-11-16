@@ -26,7 +26,7 @@ export const POST = async (request: Request) => {
     return json({ error: "invalid_token" }, 400);
   }
   const admin = createAdminClient();
-  const table = admin.schema("content").from("newsletter_subscribers");
+  const table = admin.schema("api").from("newsletter_subscribers_all");
   const { data: row } = await table
     .select("id, confirm_sent_at")
     .eq("confirm_token", parsed.data.token)

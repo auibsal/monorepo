@@ -31,7 +31,7 @@ Records (minutes, reports, the Founding Proposal) carry no code.
 
 Forms are digital by default. Every form is in the Leadership Handbook's register as **SAL-EXB-01 · F-xx**, and each says where it is filled.
 
-- **On the site:** members, guests, parents, partners and contributors fill a form on one standard page, auibsal.org/forms/F-xx, and sign by typing their name; the site keeps the signed copy. Where the site already does the job (joining, RSVPs, Submit to Qirtas, Get involved, elections, staff hours), the form is part of that page.
+- **On the site:** members, guests, parents, partners and contributors fill a form on one standard page, auibsal.org/forms/F-xx, and sign by typing their name; the site keeps the signed copy. Where the site already does the job (joining, RSVPs, Send your work, Get involved, elections, staff hours), the form is part of that page.
 - **In Notion:** staff forms are templates (meetings and minutes, debriefs, needs, handover).
 - **On paper, only as a backup:** a printed copy of the same form, photographed into the record the same day, and the two-person cash count at a charity collection.
 

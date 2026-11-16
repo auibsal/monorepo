@@ -93,40 +93,31 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(12);
+select plan(10);
 
 select is(
-  (select array_agg(slug order by sort) from core.programmes where is_active),
+  (select array_agg(slug order by sort) from core.programs where is_active),
   array['typewriter-tour', 'company'],
   'No series (decisions.md): only the Tour''s row (membership) and the Company stay active'
 );
 select ok(
-  not exists (select 1 from core.programmes where is_active and (rhythm_en is null or rhythm_ar is null)),
+  not exists (select 1 from core.programs where is_active and (rhythm_en is null or rhythm_ar is null)),
   'Each active row shows its rhythm in one line, in both languages'
 );
-select is(
-  (select name_en || ' / ' || name_ar from core.programmes where slug = 'salon'),
-  'The Salon / الصالون',
-  'The Majlis is the Salon'
-);
-select is(
-  (select summary_en from core.programmes where slug = 'salon'),
-  'A guest, three readings, tea and conversation. Once a term, from fall 2027, a debate.',
-  'The Salon''s summary'
+select ok(
+  not exists (select 1 from core.programs
+    where slug in ('majlis', 'munazara', 'mutanabbi-friday', 'bad-poetry-night', 'salon',
+      'book-circle', 'gallery-wall', 'listening-room', 'open-pages', 'waraq')),
+  'The retired series are removed, and Qirtas''s row has its own name'
 );
 select ok(
-  not exists (select 1 from core.programmes
-    where slug in ('majlis', 'munazara', 'mutanabbi-friday', 'bad-poetry-night')),
-  'Munazara, Mutanabbi Friday and Bad Poetry Night are folded and removed'
-);
-select ok(
-  exists (select 1 from core.programmes where slug = 'next-stop' and not is_active),
+  exists (select 1 from core.programs where slug = 'next-stop' and not is_active),
   'Next Stop is Qirtas''s video show: its program row is unpublished, not deleted'
 );
 select hasnt_table('events', 'series_rules', 'No repeat rules: the term calendar is plain events (decisions.md)');
 select is(
   (select count(*)::integer from events.events e
-    where e.programme_id is null and e.status = 'published'
+    where e.program_id is null and e.status = 'published'
       and e.slug ~ '^(writing-workshop|reading-with-a-guest|book-discussion|listening-session|founding-meeting)-'
       and (e.starts_at at time zone 'Asia/Baghdad')::time = '16:00'
       and extract(isodow from e.starts_at at time zone 'Asia/Baghdad') = 2),

@@ -171,23 +171,23 @@ select ok(access.has_permission('roles.assign'), 'The bootstrapped founder can a
 
 select lives_ok(
   $$ select access.assign_role(
-       '00000000-0000-0000-0000-0000000000a1', 'programme_lead', 'programme',
-       (select id from core.programmes where slug = 'company'),
+       '00000000-0000-0000-0000-0000000000a1', 'program_lead', 'program',
+       (select id from core.programs where slug = 'company'),
        now() - interval '1 day') $$,
-  'The founder assigns a programme-scoped role'
+  'The founder assigns a program-scoped role'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 
 select ok(
-  access.has_permission('events.manage', 'programme', (select id from core.programmes where slug = 'company')),
-  'A programme-scoped grant covers that programme'
+  access.has_permission('events.manage', 'program', (select id from core.programs where slug = 'company')),
+  'A program-scoped grant covers that program'
 );
 select ok(
-  not access.has_permission('events.manage', 'programme', (select id from core.programmes where slug = 'journal')),
-  'A programme-scoped grant does not cover another programme'
+  not access.has_permission('events.manage', 'program', (select id from core.programs where slug = 'journal')),
+  'A program-scoped grant does not cover another program'
 );
-select ok(not access.has_permission('events.manage'), 'A programme-scoped grant is not global');
+select ok(not access.has_permission('events.manage'), 'A program-scoped grant is not global');
 select ok(access.has_permission_anywhere('events.manage'), 'has_permission_anywhere sees scoped grants');
 select is(
   (select count(*) from access.my_permissions() where permission = 'events.manage')::integer,

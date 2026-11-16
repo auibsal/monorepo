@@ -9,7 +9,7 @@ import { groupLang, isStaff, replyHere } from "./common";
 /** A week between the warning and the removal (decisions.md). */
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-const members = () => db().schema("core").from("telegram_members");
+const members = () => db().schema("api").from("telegram_members");
 
 /**
  * Whether this person stays without an account (decisions §6): a linked
@@ -23,7 +23,7 @@ const exempt = async (api: Api, chatId: number, telegramId: number) => {
     return true;
   }
   const { data: listed } = await db()
-    .schema("core")
+    .schema("api")
     .from("telegram_exempt")
     .select("telegram_id")
     .eq("telegram_id", telegramId)

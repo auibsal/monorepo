@@ -58,7 +58,7 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
       })
     );
 
-    const journal = admin.schema("journal");
+    const journal = admin.schema("api");
     const issue = await journal
       .from("issues")
       .insert({
@@ -86,7 +86,7 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
     callId = call.data?.id ?? "";
 
     await admin
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .insert([
         {
@@ -103,7 +103,7 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
         },
       ]);
     await admin
-      .schema("membership")
+      .schema("api")
       .from("pledges")
       .insert([
         {
@@ -118,7 +118,7 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
   test("the reader's responses carry no author identity", async () => {
     const author = await as(people.author.email);
     const submission = await author
-      .schema("journal")
+      .schema("api")
       .from("submissions")
       .insert({
         body_html: "<p>A first poem</p>",
@@ -135,7 +135,7 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
     const submissionId = submission.data?.id ?? "";
 
     const manager = await as(people.manager.email);
-    const journal = manager.schema("journal");
+    const journal = manager.schema("api");
     await journal.rpc("transition_submission", {
       id: submissionId,
       to_status: "intake_check",
@@ -158,10 +158,11 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
     expect(assigned.error).toBeNull();
 
     const reader = await as(people.reader.email);
-    const rj = reader.schema("journal");
+    const rj = reader.schema("api");
     // The text is not a column readers select; it comes after the pledge.
+    // Through api it isn't even in their view (42703, no such column).
     const closed = await rj.from("blind_entries").select("body_html");
-    expect(closed.error?.code).toBe("42501");
+    expect(closed.error?.code).toBe("42703");
     const beforePledge = await rj.rpc("entry_text", { entry: entryId });
     expect(beforePledge.error?.hint).toBe("reader_pledge");
     expect(
@@ -178,7 +179,7 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
       rj.from("status_history").select("*"),
       rj.from("submission_files").select("*"),
       rj.rpc("entry_author", { blind_entry_id: entryId }),
-      reader.schema("core").from("activity_log").select("*"),
+      reader.schema("api").from("activity_log").select("*"),
     ]);
 
     const blind = responses[0].data ?? [];

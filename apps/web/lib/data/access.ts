@@ -56,7 +56,7 @@ export const assignRole = async (
 ) => {
   const a = roleAssignmentSchema.parse(input);
   return unwrap(
-    await client.schema("access").rpc("assign_role", {
+    await client.schema("api").rpc("assign_role", {
       ends_at: a.ends_at ?? undefined,
       exception_resolution: a.exception_resolution ?? undefined,
       note: a.note || undefined,
@@ -74,7 +74,7 @@ export const assignRole = async (
 export const endRoleAssignment = async (client: Client, assignmentId: string) =>
   unwrap(
     await client
-      .schema("access")
+      .schema("api")
       .rpc("end_role_assignment", { assignment_id: assignmentId })
   );
 
@@ -84,7 +84,7 @@ export const endRoleAssignment = async (client: Client, assignmentId: string) =>
 export const confirmAssignment = async (client: Client, assignmentId: string) =>
   unwrap(
     await client
-      .schema("access")
+      .schema("api")
       .rpc("confirm_assignment", { assignment_id: assignmentId })
   );
 
@@ -96,14 +96,14 @@ export const recordSeatCheck = async (
 ) =>
   unwrap(
     await client
-      .schema("access")
+      .schema("api")
       .rpc("record_seat_check", { assignment_id: assignmentId, eligible })
   );
 
 export const roles = async (client: Client) =>
   unwrap(
     await client
-      .schema("access")
+      .schema("api")
       .from("roles")
       .select("key, name_en, name_ar, is_council, sort, retired, kind")
       .order("sort")
@@ -113,7 +113,7 @@ export const roles = async (client: Client) =>
 export const assignmentsFor = async (client: Client, userId: string) =>
   unwrap(
     await client
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .select(
         "id, role, scope_type, scope_id, title_en, title_ar, starts_at, ends_at, note, created_at, confirmed_at, student_life_answer, recovery_by"

@@ -6,35 +6,61 @@ import { siteUrl } from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { type Client, events } from "@/lib/data";
+import { acknowledged } from "@/lib/institutions";
 import { mediaUrl } from "@/lib/media";
 import { DiwanSection, RowList } from "../../../page";
-import type { Art, Content, Faces, Lang, Layout } from "./draw";
+import type { Art, Content, Faces, Lang, Layout, Sign } from "./draw";
+import { goodToKnowLines, KIT_WORDS, type KitFacts } from "./words";
 
 /** The drawing code, the QR and the PDF writer load only when a kit is built. */
 type Tools = Awaited<ReturnType<typeof loadTools>>;
 const loadTools = async () => {
-  const [{ drawCard }, { PDFDocument }] = await Promise.all([
+  const [
+    { drawCard, drawProgram, drawSign, drawTent },
+    { PDFDocument },
+    { accessSentence },
+  ] = await Promise.all([
     import("./draw"),
     import("pdf-lib"),
+    import("@repo/email/copy"),
   ]);
-  return { drawCard, PDFDocument };
+  return {
+    accessSentence,
+    drawCard,
+    drawProgram,
+    drawSign,
+    drawTent,
+    PDFDocument,
+  };
 };
 
 /**
  * The promo kit (decisions.md, Events): one button on the event's page in
- * the Diwan builds, from the event's own fields and image, in English and
- * Arabic: the A3 poster and the A4 two-sided handout (PDF, a 10 mm margin
- * and the QR to the event's address), the Instagram carousel (an English
- * slide, an Arabic slide, and one per item when the description has a
- * list), the story (text clear of the top 220 and bottom 400 pixels), the
- * Telegram image (no QR), the page and link-preview image, and the
- * captions, English then Arabic. Each file downloads on its own. Media
- * posts them; nothing is uploaded.
+ * the Diwan builds everything from the event's own fields, image and
+ * Program, and the brand kit's templates, in English and Arabic:
+ * - the Instagram carousel: a cover, one card per work in the Program
+ *   (its still, or its number when it has none) and "Good to know";
+ * - the stories: the cover, one per work, "Tomorrow" and "Today" (text
+ *   clear of the top 220 and bottom 400 pixels);
+ * - the A3 poster and an A1 for easels (a 10 mm white margin and the QR to
+ *   the event's page), the A4 two-sided handout, and a 1920 × 1080 version
+ *   for campus screens;
+ * - the A5 program, one page per language, and an A4 sheet with two
+ *   programs, printed double-sided (English, then Arabic);
+ * - the check-in and join table tents (folded A4);
+ * - the door signs: in progress, photos and the content note;
+ * - the "Thanks for coming" card, with the co-sponsors' logos;
+ * - the Telegram image, the link preview and the captions.
+ * Each file downloads on its own. Media posts them; nothing is uploaded.
  */
 
-export interface PromoEvent {
+export interface PromoEvent extends KitFacts {
   body_ar: string | null;
   body_en: string | null;
+  ends_at: string | null;
+  id: string;
   image_path: string | null;
   slug: string;
   starts_at: string;
@@ -51,22 +77,30 @@ interface KitFile {
   name: string;
 }
 
-/** 200 dots per inch for print: mm to pixels. */
-const PX_PER_MM = 200 / 25.4;
-const mm = (n: number) => Math.round(n * PX_PER_MM);
+/** 200 dots per inch for print (100 for the A1, read from afar): mm to pixels. */
+const mm = (n: number, dpi = 200) => Math.round((n * dpi) / 25.4);
 const PT_PER_MM = 72 / 25.4;
 
-const print = (wmm: number, hmm: number): Layout => ({
-  height: mm(hmm),
+const print = (wmm: number, hmm: number, dpi = 200): Layout => ({
+  height: mm(hmm, dpi),
   imageShare: 0.42,
-  margin: mm(10),
+  margin: mm(10, dpi),
   qr: true,
   safeBottom: 0,
   safeTop: 0,
-  width: mm(wmm),
+  width: mm(wmm, dpi),
+});
+
+/** A poster with its 10 mm white margin and the type set 10 mm inside it. */
+const poster = (wmm: number, hmm: number, dpi = 200): Layout => ({
+  ...print(wmm, hmm, dpi),
+  border: mm(10, dpi),
+  margin: mm(12, dpi),
 });
 
 const LAYOUTS = {
+  a1: poster(594, 841, 100),
+  a5: print(148, 210),
   carousel: {
     height: 1350,
     imageShare: 0.42,
@@ -76,8 +110,9 @@ const LAYOUTS = {
     safeTop: 0,
     width: 1080,
   },
+  door: print(210, 297),
   handout: print(210, 297),
-  poster: print(297, 420),
+  poster: poster(297, 420),
   preview: {
     height: 630,
     imageShare: 0.45,
@@ -86,6 +121,16 @@ const LAYOUTS = {
     safeBottom: 0,
     safeTop: 0,
     width: 1200,
+  },
+  screen: {
+    height: 1080,
+    imageShare: 0.45,
+    margin: 80,
+    qr: true,
+    qrWide: true,
+    safeBottom: 0,
+    safeTop: 0,
+    width: 1920,
   },
   story: {
     height: 1920,
@@ -99,6 +144,16 @@ const LAYOUTS = {
   telegram: {
     height: 1350,
     imageShare: 0.42,
+    margin: 80,
+    qr: false,
+    safeBottom: 0,
+    safeTop: 0,
+    width: 1080,
+  },
+  tent: print(297, 210),
+  thanks: {
+    height: 1350,
+    imageShare: 0,
     margin: 80,
     qr: false,
     safeBottom: 0,
@@ -229,13 +284,114 @@ const pdf = async (
 
 const LANG_TAG = { ar: "AR", en: "EN" } as const;
 
+interface Extras {
+  /** The co-sponsors' logos, for the thank-you card. */
+  logos: (CanvasImageSource & { height: number; width: number })[];
+  /** The Program's works, with their stills (or none). */
+  program: {
+    item: events.ProgramItem;
+    still: (CanvasImageSource & { height: number; width: number }) | null;
+  }[];
+}
+
+/** A work's facts in one line: credit, year and length. */
+const facts = (item: events.ProgramItem, lang: Lang) =>
+  [
+    item.credit,
+    item.year ? String(item.year) : null,
+    item.length_minutes ? KIT_WORDS[lang].minutes(item.length_minutes) : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+const own = (
+  item: events.ProgramItem,
+  field: "award" | "line" | "title",
+  lang: Lang
+) =>
+  (lang === "ar" ? item[`${field}_ar`] : item[`${field}_en`]) ||
+  (field === "title" ? item.title_en || item.title_ar : "") ||
+  "";
+
+const paintSign = (
+  tools: Tools,
+  layout: Layout,
+  sign: Sign,
+  art: Art,
+  lang: Lang,
+  tent = false
+) => {
+  const canvas = document.createElement("canvas");
+  canvas.width = layout.width;
+  canvas.height = layout.height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("canvas");
+  }
+  (tent ? tools.drawTent : tools.drawSign)(ctx, layout, sign, art, lang);
+  return canvas;
+};
+
+const paintProgram = (
+  tools: Tools,
+  event: PromoEvent,
+  extras: Extras,
+  art: Art,
+  lang: Lang
+) => {
+  const layout = LAYOUTS.a5;
+  const canvas = document.createElement("canvas");
+  canvas.width = layout.width;
+  canvas.height = layout.height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("canvas");
+  }
+  const c = contentFor(event, lang);
+  tools.drawProgram(
+    ctx,
+    layout,
+    {
+      date: c.date,
+      items: extras.program.map(({ item }) => ({
+        facts: facts(item, lang),
+        line: [own(item, "line", lang), own(item, "award", lang)]
+          .filter(Boolean)
+          .join(" "),
+        title: own(item, "title", lang),
+      })),
+      title: c.title,
+      venue: c.venue,
+    },
+    art,
+    lang
+  );
+  return canvas;
+};
+
+/** Two A5 programs side by side on one A4 sheet (landscape). */
+const twoUp = (program: HTMLCanvasElement) => {
+  const canvas = document.createElement("canvas");
+  canvas.width = program.width * 2;
+  canvas.height = program.height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("canvas");
+  }
+  ctx.drawImage(program, 0, 0);
+  ctx.drawImage(program, program.width, 0);
+  return canvas;
+};
+
 /** Every file of the kit for one language. */
 const filesFor = async (
   tools: Tools,
   event: PromoEvent,
   lang: Lang,
-  art: Art
+  art: Art,
+  extras: Extras
 ): Promise<KitFile[]> => {
+  const words = KIT_WORDS[lang];
   const c = contentFor(event, lang);
   const base = `${event.slug}-${LANG_TAG[lang]}`;
   const detail = {
@@ -244,12 +400,83 @@ const filesFor = async (
   };
   const noImage = { ...art, image: null };
   const items = listItems(lang === "ar" ? event.body_ar : event.body_en);
+  // A work's card: its still, or its number; the facts in the date's place.
+  const works = extras.program.map(({ item, still }, i) => ({
+    art: { ...art, image: still },
+    content: {
+      ...c,
+      date: facts(item, lang),
+      number: still ? undefined : String(i + 1),
+      summary: [own(item, "line", lang), own(item, "award", lang)]
+        .filter(Boolean)
+        .join(" "),
+      title: own(item, "title", lang),
+      venue: "",
+    },
+  }));
+  const goodToKnow: Content = {
+    ...c,
+    lines: goodToKnowLines(event, lang, tools.accessSentence(event, lang)),
+    title: words.goodToKnow,
+  };
+  const time = formatClock(event.starts_at, lang);
   const slides = [
     paint(tools, LAYOUTS.carousel, c, art, lang),
-    ...items.map((item) =>
-      paint(tools, LAYOUTS.carousel, { ...c, item }, noImage, lang)
+    ...works.map((w) => paint(tools, LAYOUTS.carousel, w.content, w.art, lang)),
+    // Without a Program, a list in the description still gets its slides.
+    ...(works.length === 0
+      ? items.map((item) =>
+          paint(tools, LAYOUTS.carousel, { ...c, item }, noImage, lang)
+        )
+      : []),
+    paint(tools, LAYOUTS.carousel, goodToKnow, noImage, lang),
+  ];
+  const stories = [
+    paint(tools, LAYOUTS.story, c, art, lang),
+    ...works.map((w) => paint(tools, LAYOUTS.story, w.content, w.art, lang)),
+    paint(
+      tools,
+      LAYOUTS.story,
+      { ...c, date: `${words.tomorrow} · ${time}` },
+      art,
+      lang
+    ),
+    paint(
+      tools,
+      LAYOUTS.story,
+      { ...c, date: `${words.today} · ${time}` },
+      art,
+      lang
     ),
   ];
+  const note = lang === "ar" ? event.content_note_ar : event.content_note_en;
+  const doors: [string, Sign][] = [
+    [
+      "door-in-progress",
+      { heading: words.inProgress, text: words.inProgressText },
+    ],
+    ...(event.no_photos
+      ? []
+      : ([
+          ["door-photos", { heading: words.photos, text: words.photosText }],
+        ] as [string, Sign][])),
+    ...(note
+      ? ([
+          ["door-content-note", { heading: words.contentNote, text: note }],
+        ] as [string, Sign][])
+      : []),
+  ];
+  const program =
+    extras.program.length > 0
+      ? paintProgram(tools, event, extras, art, lang)
+      : null;
+  const pngs = (list: HTMLCanvasElement[], name: string) =>
+    Promise.all(
+      list.map(async (canvas, i) => ({
+        blob: await png(canvas),
+        name: `${base}-${name}-${i + 1}.png`,
+      }))
+    );
   return [
     {
       blob: await pdf(
@@ -263,6 +490,15 @@ const filesFor = async (
     {
       blob: await pdf(
         tools,
+        [paint(tools, LAYOUTS.a1, c, art, lang)],
+        594,
+        841
+      ),
+      name: `${base}-poster-A1.pdf`,
+    },
+    {
+      blob: await pdf(
+        tools,
         [
           paint(tools, LAYOUTS.handout, c, art, lang),
           paint(tools, LAYOUTS.handout, detail, noImage, lang),
@@ -272,15 +508,86 @@ const filesFor = async (
       ),
       name: `${base}-handout-A4.pdf`,
     },
+    ...(program
+      ? [
+          {
+            blob: await pdf(tools, [program], 148, 210),
+            name: `${base}-program-A5.pdf`,
+          },
+        ]
+      : []),
+    ...(await pngs(slides, "carousel")),
+    ...(await pngs(stories, "story")),
+    {
+      blob: await png(paint(tools, LAYOUTS.screen, c, art, lang)),
+      name: `${base}-screen-1920x1080.png`,
+    },
+    {
+      blob: await pdf(
+        tools,
+        [
+          paintSign(
+            tools,
+            LAYOUTS.tent,
+            { heading: words.checkIn, text: words.checkInText },
+            art,
+            lang,
+            true
+          ),
+        ],
+        297,
+        210
+      ),
+      name: `${base}-tent-check-in.pdf`,
+    },
+    {
+      blob: await pdf(
+        tools,
+        [
+          paintSign(
+            tools,
+            LAYOUTS.tent,
+            {
+              heading: words.join,
+              qr: siteUrl(lang, "/join"),
+              text: words.joinText,
+            },
+            art,
+            lang,
+            true
+          ),
+        ],
+        297,
+        210
+      ),
+      name: `${base}-tent-join.pdf`,
+    },
     ...(await Promise.all(
-      slides.map(async (canvas, i) => ({
-        blob: await png(canvas),
-        name: `${base}-carousel-${i + 1}.png`,
+      doors.map(async ([name, sign]) => ({
+        blob: await pdf(
+          tools,
+          [paintSign(tools, LAYOUTS.door, sign, art, lang)],
+          210,
+          297
+        ),
+        name: `${base}-${name}.pdf`,
       }))
     )),
     {
-      blob: await png(paint(tools, LAYOUTS.story, c, art, lang)),
-      name: `${base}-story.png`,
+      blob: await png(
+        paintSign(
+          tools,
+          LAYOUTS.thanks,
+          {
+            heading: words.thanks,
+            logos: extras.logos,
+            text: `${c.title}. ${words.thanksText}`,
+          },
+          art,
+          lang
+        )
+      ),
+      name: `${base}-thank-you.png`,
     },
     {
       blob: await png(paint(tools, LAYOUTS.telegram, c, art, lang)),
@@ -293,27 +600,86 @@ const filesFor = async (
   ];
 };
 
-const buildKit = async (event: PromoEvent): Promise<KitFile[]> => {
-  const [faces, tools] = await Promise.all([facesOf(), loadTools()]);
-  const imageUrl = mediaUrl(event.image_path);
-  const [image, lockupEn, lockupAr] = await Promise.all([
-    imageUrl ? loadImage(imageUrl).catch(() => null) : Promise.resolve(null),
+const maybeImage = (src: string | null) =>
+  src ? loadImage(src).catch(() => null) : Promise.resolve(null);
+
+const buildKit = async (
+  event: PromoEvent,
+  client: Client
+): Promise<KitFile[]> => {
+  const [faces, tools, program, withOrgs] = await Promise.all([
+    facesOf(),
+    loadTools(),
+    events.programItems(client, event.id),
+    events.eventOrganizations(client, event.slug),
+  ]);
+  const [image, lockupEn, lockupAr, stills, sponsorLogos] = await Promise.all([
+    maybeImage(mediaUrl(event.image_path)),
     loadImage(logos.horizontal.onLight),
     loadImage(logos["horizontal-ar"].onLight),
+    Promise.all(program.map((item) => maybeImage(mediaUrl(item.still_path)))),
+    Promise.all(
+      withOrgs
+        .filter((o) => o.line === "cosponsor")
+        .map((o) => maybeImage(acknowledged(o, "en").logo?.src ?? null))
+    ),
   ]);
-  const en = await filesFor(tools, event, "en", {
-    faces,
-    image,
-    lockup: lockupEn,
-  });
-  const ar = await filesFor(tools, event, "ar", {
-    faces,
-    image,
-    lockup: lockupAr,
-  });
+  const extras: Extras = {
+    logos: sponsorLogos.filter((l): l is HTMLImageElement => l !== null),
+    program: program.map((item, i) => ({ item, still: stills[i] ?? null })),
+  };
+  const en = await filesFor(
+    tools,
+    event,
+    "en",
+    { faces, image, lockup: lockupEn },
+    extras
+  );
+  const ar = await filesFor(
+    tools,
+    event,
+    "ar",
+    { faces, image, lockup: lockupAr },
+    extras
+  );
+  // The A4 sheet of two programs, double-sided: English, then Arabic.
+  const sheets =
+    program.length > 0
+      ? [
+          {
+            blob: await pdf(
+              tools,
+              [
+                twoUp(
+                  paintProgram(
+                    tools,
+                    event,
+                    extras,
+                    { faces, image, lockup: lockupEn },
+                    "en"
+                  )
+                ),
+                twoUp(
+                  paintProgram(
+                    tools,
+                    event,
+                    extras,
+                    { faces, image, lockup: lockupAr },
+                    "ar"
+                  )
+                ),
+              ],
+              296,
+              210
+            ),
+            name: `${event.slug}-programs-A4-double-sided.pdf`,
+          },
+        ]
+      : [];
   return [
     ...en,
     ...ar,
+    ...sheets,
     {
       blob: new Blob([captions(event)], { type: "text/plain;charset=utf-8" }),
       name: `${event.slug}-captions.txt`,
@@ -338,12 +704,13 @@ const FileLink = ({ file }: { readonly file: KitFile }) => {
 
 export const PromoKit = ({ event }: { readonly event: PromoEvent }) => {
   const t = useTranslations("diwan.admin.event.promo");
+  const { supabase } = useAuth();
   const [files, setFiles] = useState<KitFile[] | null>(null);
   const [state, setState] = useState<"idle" | "busy" | "failed">("idle");
   const build = async () => {
     setState("busy");
     try {
-      setFiles(await buildKit(event));
+      setFiles(await buildKit(event, supabase));
       setState("idle");
     } catch {
       setState("failed");

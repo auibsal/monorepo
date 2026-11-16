@@ -17,8 +17,8 @@ export type HistoryTable =
   | "journal.issues"
   | "journal.calls"
   | "journal.award_rounds"
-  | "programmes.productions"
-  | "programmes.episodes"
+  | "programs.productions"
+  | "programs.episodes"
   | "governance.partners"
   | "governance.partner_agreements"
   | "governance.elections"
@@ -85,7 +85,7 @@ export const RecordHistory = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .rpc("record_history", { record_id: id ?? "", record_table: table })
       ) ?? [],
     queryKey: ["admin", "history", table, id],

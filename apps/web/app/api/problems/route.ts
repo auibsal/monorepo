@@ -54,7 +54,7 @@ export const POST = async (request: Request) => {
     return json({ error: "human_check_failed" }, 403);
   }
   const { error } = await createAdminClient()
-    .schema("core")
+    .schema("api")
     .from("problem_reports")
     .insert({
       lang,

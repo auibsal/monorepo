@@ -1,5 +1,5 @@
 import { RequireModule } from "@/components/diwan/admin/admin-shell";
-import { MediaAdmin } from "@/components/diwan/admin/programmes/admin";
+import { MediaAdmin } from "@/components/diwan/admin/programs/admin";
 import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>

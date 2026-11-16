@@ -35,7 +35,7 @@ export const AccessReview = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("access")
+          .schema("api")
           .from("access_reviews")
           .select("id, reviewed_at, holders, note")
           .order("reviewed_at", { ascending: false })
@@ -48,7 +48,7 @@ export const AccessReview = () => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("access")
+          .schema("api")
           .rpc("record_access_review", { note: note || undefined })
       ),
     onSuccess: async () => {

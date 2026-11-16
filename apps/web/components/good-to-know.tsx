@@ -6,20 +6,25 @@ import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { env } from "@/env";
 import { events } from "@/lib/data";
+import { classesText } from "./event-classes";
 import { PlacesLeft } from "./places-left";
 
 const DAY = 86_400_000;
 
 interface GoodToKnowEvent {
+  access_detail_ar: string | null;
+  access_detail_en: string | null;
   accommodation_by: string | null;
   allergens: string[];
   capacity: number | null;
+  classes: string[];
   content_note_ar: string | null;
   content_note_en: string | null;
   entry: string;
   id: string;
   language: string | null;
   no_photos: boolean;
+  off_campus: boolean;
   other_allergens_ar: string | null;
   other_allergens_en: string | null;
   seating: string | null;
@@ -37,14 +42,7 @@ interface Row {
   text: ReactNode;
 }
 
-const WHO: Record<string, "everyone" | "members" | "invite"> = {
-  invite: "invite",
-  members: "members",
-  open: "everyone",
-  rsvp: "everyone",
-};
-
-type Pair = "content_note" | "other_allergens" | "served";
+type Pair = "access_detail" | "content_note" | "other_allergens" | "served";
 
 /** A field in the page's own language only (one language per page). */
 const own = (event: GoodToKnowEvent, field: Pair, locale: Locale) =>
@@ -96,14 +94,43 @@ const accessText = async (event: GoodToKnowEvent, locale: Locale) => {
   const ask = t("accommodation", {
     date: formatLongDate(accommodationDay(event), locale),
   });
+  const detail = own(event, "access_detail", locale);
   return (
     <>
       {parts.length > 0 ? `${parts.join(" · ")}. ` : null}
+      {detail ? `${detail} ` : null}
       <a className="link" href={`mailto:${project.mailboxes.hello}`}>
         {ask}
       </a>
     </>
   );
+};
+
+/**
+ * Who can come and how (decisions.md, Events: Access): "Everyone",
+ * "Members only" or the classes ticked, or "Invited only"; then Open or
+ * Booking required; and, on campus when Guests may come, the day their
+ * booking closes.
+ */
+const whoCanCome = async (event: GoodToKnowEvent, locale: Locale) => {
+  const t = await getTranslations({
+    locale,
+    namespace: "web.events.goodToKnow.who",
+  });
+  if (event.entry === "invite") {
+    return t("invite");
+  }
+  const how = t(event.entry === "open" ? "how.open" : "how.rsvp");
+  const guestsBy = events.guestsBookBy(event);
+  return [
+    await classesText(event.classes, locale, "only"),
+    how,
+    guestsBy && event.classes.includes("guest")
+      ? t("guestsBy", { date: formatLongDate(guestsBy, locale) })
+      : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 };
 
 /** Places left, where the event has a capacity and the site its keys. */
@@ -133,20 +160,18 @@ const rowsFor = async (event: GoodToKnowEvent, locale: Locale) => {
     namespace: "web.events.goodToKnow",
   });
   const rows: Row[] = [];
-  const who = WHO[event.entry];
-  if (who) {
-    rows.push({
-      icon: "users",
-      key: "who",
-      label: t("who.label"),
-      text: (
-        <>
-          {t(`who.${who}`)}
-          <Places capacity={event.capacity} eventId={event.id} />
-        </>
-      ),
-    });
-  }
+  const who = await whoCanCome(event, locale);
+  rows.push({
+    icon: "users",
+    key: "who",
+    label: t("who.label"),
+    text: (
+      <>
+        {who}
+        <Places capacity={event.capacity} eventId={event.id} />
+      </>
+    ),
+  });
   if (
     event.language === "en" ||
     event.language === "ar" ||

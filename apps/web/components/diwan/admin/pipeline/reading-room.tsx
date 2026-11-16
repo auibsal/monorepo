@@ -28,8 +28,8 @@ const usePledge = () => {
   const { supabase } = useAuth();
   return useQuery({
     queryFn: async () =>
-      (unwrap(await supabase.schema("journal").rpc("my_reader_pledge")) ??
-        [])[0] ?? null,
+      (unwrap(await supabase.schema("api").rpc("my_reader_pledge")) ?? [])[0] ??
+      null,
     queryKey: [...pipelineKey, "pledge"],
   });
 };
@@ -48,7 +48,7 @@ const Pledge = () => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .rpc("sign_reader_pledge", { esign_agreed: agreed })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: pipelineKey }),
@@ -177,7 +177,7 @@ export const ReadingRoom = ({
     enabled: pledged,
     queryFn: async () =>
       (unwrap(
-        await supabase.schema("journal").rpc("entry_text", { entry: entryId })
+        await supabase.schema("api").rpc("entry_text", { entry: entryId })
       ) ?? [])[0] ?? null,
     queryKey: [...pipelineKey, "entry-text", entryId],
   });

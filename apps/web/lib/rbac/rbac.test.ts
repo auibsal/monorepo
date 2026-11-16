@@ -21,10 +21,16 @@ const migrations = join(
 // access.role_permissions where role = '...' and permission = '...'`. A
 // renamed permission moves its grants with `update access.role_permissions
 // set permission = 'new' where permission = 'old'`.
+/** Migrations before 20261116001200_programs.sql, as it renamed them. */
+const american = (file: string, text: string) =>
+  file < "20261116001200"
+    ? text.replace(/programme(?!s\.manage)/gu, "program")
+    : text;
+
 const sql = readdirSync(migrations)
   .filter((f) => f.endsWith(".sql"))
   .sort()
-  .map((f) => readFileSync(join(migrations, f), "utf8"))
+  .map((f) => american(f, readFileSync(join(migrations, f), "utf8")))
   .join("\n");
 
 /** Every `insert into <table> (...) values ...;` statement: body and place. */
@@ -198,17 +204,13 @@ describe("mirror of the reference data in the migrations", () => {
 
 describe("hasPermission mirror", () => {
   const grants = [
-    { permission: "events.manage", scope_id: "p1", scope_type: "programme" },
+    { permission: "events.manage", scope_id: "p1", scope_type: "program" },
     { permission: "audit.read", scope_id: null, scope_type: "global" },
   ];
 
   test("scoped grants cover only their scope", () => {
-    expect(hasPermission(grants, "events.manage", "programme", "p1")).toBe(
-      true
-    );
-    expect(hasPermission(grants, "events.manage", "programme", "p2")).toBe(
-      false
-    );
+    expect(hasPermission(grants, "events.manage", "program", "p1")).toBe(true);
+    expect(hasPermission(grants, "events.manage", "program", "p2")).toBe(false);
     expect(hasPermission(grants, "events.manage")).toBe(false);
     expect(hasPermissionAnywhere(grants, "events.manage")).toBe(true);
   });
@@ -216,7 +218,7 @@ describe("hasPermission mirror", () => {
   test("global grants cover every scope", () => {
     expect(hasPermission(grants, "audit.read", "issue", "i1")).toBe(true);
     expect(scopesFor(grants, "audit.read", "issue")).toBe("all");
-    expect(scopesFor(grants, "events.manage", "programme")).toEqual(["p1"]);
+    expect(scopesFor(grants, "events.manage", "program")).toEqual(["p1"]);
   });
 
   test("no grants, no access", () => {

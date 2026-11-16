@@ -26,5 +26,5 @@ bun run check:i18n  # no hard-coded UI text outside the messages files
 - Never authorize with `user_metadata`; it is editable by the user.
 - Database changes go through migrations and need RLS policies plus tests.
 
-See `AGENTS.md` for the rules in short, and `ARCHITECTURE_AND_INTEGRATIONS.md`
-for the architecture and how to set up each integration.
+See `AGENTS.md` for the rules in short, `docs/platform/overview.md` for the
+architecture, and `docs/platform/settings.md` for each platform's settings.

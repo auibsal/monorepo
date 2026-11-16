@@ -106,7 +106,7 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000fa001', 'events_direct
 
 insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
 values ('e0000000-0000-0000-0000-0000000fa0e1', 'alert-night', 'Alert Night', 'ليلة', now(), 'published', 'open');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000fa002', 'programme_lead', 'event', 'e0000000-0000-0000-0000-0000000fa0e1');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000fa002', 'program_lead', 'event', 'e0000000-0000-0000-0000-0000000fa0e1');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000fa003');
 select throws_ok(

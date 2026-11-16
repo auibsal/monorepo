@@ -35,7 +35,7 @@ const Clip = ({ record }: { record: PieceRecord }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("pieces")
           .select("id, title_en, title_ar")
           .eq("desk", "video")
@@ -49,7 +49,7 @@ const Clip = ({ record }: { record: PieceRecord }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("pieces")
           .update({ clip_id: clipId || null })
           .eq("id", piece?.id ?? "")
@@ -115,7 +115,7 @@ const ReadingFile = ({ record }: { record: PieceRecord }) => {
   const setPath = async (next: string | null) =>
     unwrap(
       await supabase
-        .schema("journal")
+        .schema("api")
         .from("pieces")
         .update({ reading_path: next })
         .eq("id", piece?.id ?? "")

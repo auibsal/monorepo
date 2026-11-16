@@ -14,7 +14,7 @@ const useAnswer = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (agree: boolean) =>
-      unwrap(await supabase.schema("core").rpc("answer_esign", { agree })),
+      unwrap(await supabase.schema("api").rpc("answer_esign", { agree })),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["account", "esign"] }),
   });

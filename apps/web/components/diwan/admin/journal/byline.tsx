@@ -19,7 +19,7 @@ const useBylines = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("contributors")
           .select("id, name_en, name_ar, is_pen_name")
           .order("name_en")
@@ -45,7 +45,7 @@ const useBylineFor = () => {
       person: Person;
     }) => {
       const id = unwrap(
-        await supabase.schema("journal").rpc("byline_for", {
+        await supabase.schema("api").rpc("byline_for", {
           pen_name: penName?.trim() || undefined,
           person: person.id,
         })

@@ -33,7 +33,7 @@ export const Notices = () => {
       (
         unwrap(
           await supabase
-            .schema("journal")
+            .schema("api")
             .from("agreements")
             .select("submission_id")
             .in("submission_id", accepted)
@@ -46,7 +46,7 @@ export const Notices = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("opening_replies")
           .select("opening_id, openings(title_en, title_ar)")
           .eq("user_id", user?.id ?? "")

@@ -105,7 +105,7 @@ select ok(
 select pg_temp.login_anon();
 
 select lives_ok(
-  $$ select count(*) from core.programmes $$,
+  $$ select count(*) from core.programs $$,
   'Visitors read the programs'
 );
 select lives_ok(

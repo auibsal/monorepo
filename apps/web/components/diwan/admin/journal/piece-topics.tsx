@@ -33,7 +33,7 @@ const NewTopic = ({ onDone }: { readonly onDone: (id: string) => void }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("topics")
           .insert({
             name_ar: name.ar.trim(),
@@ -82,7 +82,7 @@ export const PieceTopics = ({ pieceId }: { readonly pieceId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("topics")
           .select("id, slug, name_en, name_ar")
           .order("name_en")
@@ -94,7 +94,7 @@ export const PieceTopics = ({ pieceId }: { readonly pieceId: string }) => {
       (
         unwrap(
           await supabase
-            .schema("journal")
+            .schema("api")
             .from("piece_topics")
             .select("topic_id")
             .eq("piece_id", pieceId)
@@ -107,7 +107,7 @@ export const PieceTopics = ({ pieceId }: { readonly pieceId: string }) => {
     mutationFn: async (topicId: string) =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("piece_topics")
           .insert({ piece_id: pieceId, topic_id: topicId })
       ),
@@ -117,7 +117,7 @@ export const PieceTopics = ({ pieceId }: { readonly pieceId: string }) => {
     mutationFn: async (topicId: string) =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("piece_topics")
           .delete()
           .eq("piece_id", pieceId)

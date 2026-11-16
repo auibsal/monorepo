@@ -103,7 +103,7 @@ select pg_temp.make_user('00000000-0000-0000-0000-00000002b003', 'visitor.g@gmai
 
 insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
 values ('00000000-0000-0000-0000-00000002b101', 'g-reading', 'Reading', 'قراءة', now() + interval '5 days', 'published', 'rsvp');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000002b001', 'programme_lead', 'event',
+select pg_temp.grant_role('00000000-0000-0000-0000-00000002b001', 'program_lead', 'event',
   '00000000-0000-0000-0000-00000002b101');
 
 insert into membership.guests (user_id) values ('00000000-0000-0000-0000-00000002b003');

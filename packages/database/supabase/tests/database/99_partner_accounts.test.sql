@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 
-select plan(43);
+select plan(39);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'director-pa@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-pa@auib.edu.iq');
@@ -256,7 +256,7 @@ select ok(core.is_partner_guest(), 'A verified guest is a partner''s guest');
 select pg_temp.logout();
 insert into events.events (id, slug, title_en, title_ar, starts_at, capacity, status, entry)
 values ('e0000000-0000-0000-0000-0000000000f1', 'guest-reading', 'Reading', 'قراءة',
-  now() + interval '3 days', 10, 'published', 'rsvp');
+  now() + interval '20 days', 10, 'published', 'rsvp');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select is(events.rsvp('e0000000-0000-0000-0000-0000000000f1'), 'confirmed',
   'and books a place at an event');
@@ -311,18 +311,8 @@ select lives_ok(
 
 -- An outside address signs up as a guest; membership is for AUIB addresses.
 select pg_temp.logout();
-select ok(private.sign_up_allowed('someone@gmail.com', '{}'),
-  'An outside address signs up on its own, as a guest');
 insert into governance.partner_invitations (partner_id, kind, email)
 values ((select id from governance.partners where slug = 'poetry-club'), 'guest', 'friend@gmail.com');
-select ok(private.sign_up_allowed('friend@gmail.com',
-  jsonb_build_object('invitation',
-    (select code from governance.partner_invitations where email = 'friend@gmail.com'))),
-  'but can with a partner''s invitation');
-select ok(private.sign_up_allowed('club@example.org', '{"partner_applicant":"true"}'),
-  'or to apply as a partner');
-select ok(private.sign_up_allowed('student.2025@auib.edu.iq', '{}'),
-  'and an AUIB address always can');
 
 select pg_temp.logout();
 set local role service_role;

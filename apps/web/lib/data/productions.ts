@@ -64,7 +64,7 @@ const optionalText = (max: number) =>
 export const productionSchema = z.object({
   kind: z.enum(productionKinds),
   playwright: optionalText(200),
-  programme_id: z.uuid().nullable().optional(),
+  program_id: z.uuid().nullable().optional(),
   script_origin: z.enum(scriptOrigins),
   slug: z.string().trim().regex(SLUG).max(80),
   summary_ar: optionalText(1000),
@@ -110,9 +110,9 @@ export const createProduction = async (
   const p = productionSchema.parse(input);
   return unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .from("productions")
-      .insert({ ...p, programme_id: p.programme_id ?? null })
+      .insert({ ...p, program_id: p.program_id ?? null })
       .select("id")
       .single()
   );
@@ -121,7 +121,7 @@ export const createProduction = async (
 export const clearRights = async (client: Client, productionId: string) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .rpc("clear_production_rights", { production_id: productionId })
   );
 
@@ -132,7 +132,7 @@ export const saveReport = async (
 ) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .from("productions")
       .update(reportSchema.parse(input))
       .eq("id", productionId)
@@ -141,7 +141,7 @@ export const saveReport = async (
 export const signReport = async (client: Client, productionId: string) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .rpc("sign_production_report", { production_id: productionId })
   );
 
@@ -153,7 +153,7 @@ export const addCredit = async (
   const c = creditSchema.parse(input);
   return unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .from("production_credits")
       .insert({
         department: c.department,
@@ -170,7 +170,7 @@ export const addCredit = async (
 // ── Members ─────────────────────────────────────────────────────────────────
 
 export const memberProductions = async (client: Client) =>
-  unwrap(await client.schema("programmes").rpc("member_productions")) ?? [];
+  unwrap(await client.schema("api").rpc("member_productions")) ?? [];
 
 export const signUpForAudition = async (
   client: Client,
@@ -178,7 +178,7 @@ export const signUpForAudition = async (
   interest?: string
 ) =>
   unwrap(
-    await client.schema("programmes").rpc("sign_up_for_audition", {
+    await client.schema("api").rpc("sign_up_for_audition", {
       audition_id: auditionId,
       interest: interest?.trim() || undefined,
     })
@@ -187,7 +187,7 @@ export const signUpForAudition = async (
 export const cancelAudition = async (client: Client, auditionId: string) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .rpc("cancel_audition", { audition_id: auditionId })
   );
 
@@ -195,7 +195,7 @@ export const cancelAudition = async (client: Client, auditionId: string) =>
 export const publicProductions = async (client: Client) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .from("productions")
       .select(
         "id, slug, kind, stage, title_en, title_ar, summary_en, summary_ar, playwright"
@@ -212,6 +212,6 @@ export const publicProductions = async (client: Client) =>
 export const playbill = async (client: Client, productionId: string) =>
   unwrap(
     await client
-      .schema("programmes")
+      .schema("api")
       .rpc("production_playbill", { production: productionId })
   ) ?? [];

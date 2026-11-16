@@ -56,7 +56,7 @@ const MeetingsList = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("minutes")
           .select(
             "id, body, meeting_on, title_en, title_ar, status, adopted_on"
@@ -148,13 +148,13 @@ const useMeeting = (meetingId: string) => {
     queryFn: async () => {
       const [meeting, resolutions] = await Promise.all([
         supabase
-          .schema("governance")
+          .schema("api")
           .from("minutes")
           .select("id, body, meeting_on, title_en, title_ar")
           .eq("id", meetingId)
           .maybeSingle(),
         supabase
-          .schema("governance")
+          .schema("api")
           .from("resolutions")
           .select("*")
           .eq("minutes_id", meetingId)
@@ -344,7 +344,7 @@ const ResolutionEditor = ({
         votes_against: toCount(form.votes.against),
         votes_for: toCount(form.votes.for),
       };
-      const table = supabase.schema("governance").from("resolutions");
+      const table = supabase.schema("api").from("resolutions");
       unwrap(
         form.id
           ? await table.update(row).eq("id", form.id)

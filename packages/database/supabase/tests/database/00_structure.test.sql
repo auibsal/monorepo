@@ -13,7 +13,7 @@ select is_empty(
     join pg_namespace n on n.oid = c.relnamespace
     where c.relkind in ('r', 'p')
       and n.nspname in ('public', 'core', 'access', 'membership', 'events',
-        'journal', 'programmes', 'governance', 'content', 'private')
+        'journal', 'programs', 'governance', 'content', 'private')
       and not c.relrowsecurity
   $$,
   'Every table in a SAL schema has Row Level Security enabled'
@@ -28,7 +28,7 @@ select is_empty(
     join pg_namespace n on n.oid = c.relnamespace
     where c.relkind in ('r', 'p')
       and n.nspname in ('core', 'access', 'membership', 'events', 'journal',
-        'programmes', 'governance', 'content')
+        'programs', 'governance', 'content')
       and not exists (select 1 from pg_policy p where p.polrelid = c.oid)
       and (n.nspname || '.' || c.relname) not in (
         'core.outbox', 'governance.ballots'

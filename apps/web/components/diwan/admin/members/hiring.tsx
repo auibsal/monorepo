@@ -8,10 +8,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { localized, type programmes, unwrap } from "@/lib/data";
+import { localized, type programs, unwrap } from "@/lib/data";
 import { useGrants } from "@/lib/diwan/queries";
 import { type Grant, hasPermission } from "@/lib/rbac";
-import { useProgrammeOptions } from "../events/data";
+import { useProgramOptions } from "../events/data";
 import {
   BilingualField,
   DateTimeField,
@@ -35,18 +35,18 @@ const owners = [
 ] as const;
 export type Owner = (typeof owners)[number];
 
-type Status = programmes.ApplicationStatus;
+type Status = programs.ApplicationStatus;
 
 /** Mirrors private.picks_opening: who picks the person for an opening. */
 export const picks = (
   grants: readonly Grant[] | undefined,
   owner: string,
-  programmeId: string | null
+  programId: string | null
 ) => {
   switch (owner) {
     case "program":
-      return programmeId
-        ? hasPermission(grants, "programs.manage", "programme", programmeId)
+      return programId
+        ? hasPermission(grants, "programs.manage", "program", programId)
         : hasPermission(grants, "programs.manage");
     case "qirtas":
       return hasPermission(grants, "journal.manage");
@@ -99,7 +99,7 @@ export const Application = ({
   readonly canPick: boolean;
   readonly director?: boolean;
   readonly name: string;
-  readonly questions?: readonly programmes.Question[];
+  readonly questions?: readonly programs.Question[];
   readonly reply: Reply;
   readonly runs: boolean;
 }) => {
@@ -157,7 +157,7 @@ const Steps = ({
     mutationFn: async (change: { status: Status; talk_at?: string | null }) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("opening_replies")
           .update(change)
           .eq("opening_id", reply.opening_id)
@@ -220,7 +220,7 @@ const ApplicationDetails = ({
   reply,
 }: {
   readonly director?: boolean;
-  readonly questions?: readonly programmes.Question[];
+  readonly questions?: readonly programs.Question[];
   readonly reply: Reply;
 }) => {
   const t = useTranslations("diwan.admin.hiring");
@@ -303,7 +303,7 @@ const DirectorSteps = ({
   const studentLife = useMutation({
     mutationFn: async (eligible: boolean) =>
       unwrap(
-        await supabase.schema("programmes").rpc("record_student_life_answer", {
+        await supabase.schema("api").rpc("record_student_life_answer", {
           eligible,
           opening_id: reply.opening_id,
           user_id: reply.user_id,
@@ -314,7 +314,7 @@ const DirectorSteps = ({
   const appoint = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("programmes").rpc("appoint_director", {
+        await supabase.schema("api").rpc("appoint_director", {
           opening_id: reply.opening_id,
           resolution,
           user_id: reply.user_id,
@@ -391,7 +391,7 @@ const Reviews = ({ reply }: { readonly reply: Reply }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("application_reviews")
           .select("reviewer, recused, score, notes")
           .eq("opening_id", reply.opening_id)
@@ -406,7 +406,7 @@ const Reviews = ({ reply }: { readonly reply: Reply }) => {
     mutationFn: async (recused: boolean) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("application_reviews")
           .upsert({
             applicant: reply.user_id,
@@ -499,7 +499,7 @@ const Interviews = ({ reply }: { readonly reply: Reply }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("interview_records")
           .select("id, interviewer, held_at, notes, recommendation")
           .eq("opening_id", reply.opening_id)
@@ -513,7 +513,7 @@ const Interviews = ({ reply }: { readonly reply: Reply }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("interview_records")
           .insert({
             applicant: reply.user_id,
@@ -600,7 +600,7 @@ const useHiredRoles = () => {
       (
         unwrap(
           await supabase
-            .schema("access")
+            .schema("api")
             .from("roles")
             .select("key, name_en, name_ar, hiring_owner, sort")
             .not("hiring_owner", "is", null)
@@ -624,12 +624,12 @@ export const NewRole = ({ onDone }: { readonly onDone: () => void }) => {
   const { supabase } = useAuth();
   const grants = useGrants();
   const queryClient = useQueryClient();
-  const programs = useProgrammeOptions("programs.manage");
+  const programOptions = useProgramOptions("programs.manage");
   const roles = useHiredRoles();
   const blank = {
     body: { ar: "", en: "" },
     closes_at: null as string | null,
-    programme_id: "",
+    program_id: "",
     role: "",
     title: { ar: "", en: "" },
   };
@@ -643,7 +643,7 @@ export const NewRole = ({ onDone }: { readonly onDone: () => void }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("openings")
           .insert({
             body_ar: form.body.ar || null,
@@ -652,9 +652,9 @@ export const NewRole = ({ onDone }: { readonly onDone: () => void }) => {
             kind: "role",
             // The role decides the owner (private.opening_role).
             owner: role?.owner ?? "program",
-            programme_id:
+            program_id:
               role?.owner === "program"
-                ? form.programme_id || programs.options[0]?.id || null
+                ? form.program_id || programOptions.options[0]?.id || null
                 : null,
             role: role?.key ?? null,
             // Empty: the role's own name.
@@ -704,11 +704,11 @@ export const NewRole = ({ onDone }: { readonly onDone: () => void }) => {
             <SelectInput
               id={id}
               onChange={(e) =>
-                setForm((f) => ({ ...f, programme_id: e.target.value }))
+                setForm((f) => ({ ...f, program_id: e.target.value }))
               }
-              value={form.programme_id || programs.options[0]?.id || ""}
+              value={form.program_id || programOptions.options[0]?.id || ""}
             >
-              {programs.options.map((p) => (
+              {programOptions.options.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.label}
                 </option>

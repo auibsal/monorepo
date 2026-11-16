@@ -1,12 +1,14 @@
 "use client";
 
 import { Button } from "@repo/brand/components/ui/button";
+import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
+import { Label } from "@repo/brand/components/ui/label";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { sanitizeRichText, unwrap } from "@/lib/data";
+import { events, sanitizeRichText, unwrap } from "@/lib/data";
 import { useRouter } from "@/lib/diwan/navigation";
 import { RichTextEditor } from "../../editor/rich-text";
 import { DiwanSection } from "../../page";
@@ -35,8 +37,10 @@ export interface EventFactsRow {
   body_ar: string | null;
   body_en: string | null;
   capacity: number | null;
+  classes: string[];
   ends_at: string | null;
   entry: string;
+  format: string | null;
   id: string;
   image_path: string | null;
   lead_id: string | null;
@@ -52,7 +56,7 @@ export interface EventFactsRow {
   venue_en: string | null;
 }
 
-const ENTRIES = ["open", "rsvp", "members", "invite"] as const;
+const FORMATS = ["screening", "performance"] as const;
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 const NOT_LATIN = /[^a-z0-9]+/gu;
 const EDGE_HYPHENS = /^-+|-+$/gu;
@@ -77,8 +81,10 @@ const pair = (en: string | null, ar: string | null) => ({
 const initial = (event: EventFactsRow | null) => ({
   body: pair(event?.body_en ?? null, event?.body_ar ?? null),
   capacity: event?.capacity ? String(event.capacity) : "",
+  classes: event?.classes ?? [...events.CLASSES],
   endsAt: event?.ends_at ?? null,
   entry: event?.entry ?? "rsvp",
+  format: event?.format ?? "",
   image: event?.image_path ?? null,
   lead: event?.lead_id ?? null,
   partner: event?.partner_id ?? "",
@@ -100,8 +106,10 @@ const toRow = (f: Form) => ({
   body_ar: html(f.body.ar),
   body_en: html(f.body.en),
   capacity: f.capacity ? Number(f.capacity) : null,
+  classes: f.classes.length > 0 ? f.classes : [...events.CLASSES],
   ends_at: f.endsAt,
   entry: f.entry,
+  format: f.format || null,
   image_path: f.image,
   lead_id: f.lead,
   partner_id: f.partner || null,
@@ -122,7 +130,7 @@ const usePartners = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partners")
           .select("id, name_en, name_ar")
           .eq("status", "active")
@@ -152,6 +160,82 @@ const LeadField = ({
       />
       <p className="type-caption">{t("leadHint")}</p>
     </div>
+  );
+};
+
+/**
+ * Access, two settings (decisions.md, Events: Access): who can come (the
+ * classes ticked, all four being "Everyone", or Invited only) and how
+ * (Open, or Booking required).
+ */
+const AccessSettings = ({
+  classes,
+  entry,
+  onClasses,
+  onEntry,
+}: {
+  readonly classes: string[];
+  readonly entry: string;
+  readonly onClasses: (classes: string[]) => void;
+  readonly onEntry: (entry: string) => void;
+}) => {
+  const t = useTranslations("diwan.admin.event");
+  const tw = useTranslations("web.events.goodToKnow.who");
+  const id = useId();
+  const invited = entry === "invite";
+  const toggle = (c: events.EventClass, on: boolean) =>
+    onClasses(
+      on
+        ? events.CLASSES.filter((x) => x === c || classes.includes(x))
+        : classes.filter((x) => x !== c)
+    );
+  return (
+    <>
+      <fieldset className="grid gap-2">
+        <legend className="type-label mb-2">{tw("label")}</legend>
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {events.CLASSES.map((c) => (
+            <li className="flex items-center gap-2" key={c}>
+              <Checkbox
+                checked={!invited && classes.includes(c)}
+                disabled={invited || (classes.length === 1 && classes[0] === c)}
+                id={`${id}-${c}`}
+                onCheckedChange={(v) => toggle(c, v === true)}
+              />
+              <Label htmlFor={`${id}-${c}`}>{tw(`classes.${c}`)}</Label>
+            </li>
+          ))}
+          <li className="flex items-center gap-2">
+            <Checkbox
+              checked={invited}
+              id={`${id}-invite`}
+              onCheckedChange={(v) => onEntry(v === true ? "invite" : "rsvp")}
+            />
+            <Label htmlFor={`${id}-invite`}>{tw("invite")}</Label>
+          </li>
+        </ul>
+        <p className="type-caption">
+          {invited ? t("entryHint.invite") : t("classesHint")}
+        </p>
+      </fieldset>
+      {invited ? null : (
+        <Field
+          hint={t(`entryHint.${entry === "open" ? "open" : "rsvp"}`)}
+          label={t("entry")}
+        >
+          {(fieldId) => (
+            <ChoiceInput
+              id={fieldId}
+              onChange={(e) => onEntry(e.target.value)}
+              value={entry}
+            >
+              <option value="open">{tw("how.open")}</option>
+              <option value="rsvp">{tw("how.rsvp")}</option>
+            </ChoiceInput>
+          )}
+        </Field>
+      )}
+    </>
   );
 };
 
@@ -216,16 +300,23 @@ const Fields = ({
         onChange={(v) => set("venue", v)}
         value={form.venue}
       />
-      <Field hint={t(`entryHint.${form.entry as "open"}`)} label={t("entry")}>
+      <AccessSettings
+        classes={form.classes}
+        entry={form.entry}
+        onClasses={(v) => set("classes", v)}
+        onEntry={(v) => set("entry", v)}
+      />
+      <Field hint={t("formatHint")} label={t("format")}>
         {(id) => (
           <ChoiceInput
             id={id}
-            onChange={(e) => set("entry", e.target.value)}
-            value={form.entry}
+            onChange={(e) => set("format", e.target.value)}
+            value={form.format}
           >
-            {ENTRIES.map((entry) => (
-              <option key={entry} value={entry}>
-                {t(`entries.${entry}`)}
+            <option value="">{t("formats.none")}</option>
+            {FORMATS.map((format) => (
+              <option key={format} value={format}>
+                {t(`formats.${format}`)}
               </option>
             ))}
           </ChoiceInput>
@@ -294,13 +385,14 @@ const isNeedsLead = (error: unknown) =>
 /** The event's debrief (a Notion page), linked for its staff only. */
 const DebriefField = ({ eventId }: { readonly eventId: string }) => {
   const tf = useTranslations("diwan.admin.event.facts");
+  const te = useTranslations("diwan.admin.event");
   const { supabase } = useAuth();
   const client = useQueryClient();
   const debrief = useQuery({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("debriefs")
           .select("url")
           .eq("event_id", eventId)
@@ -312,7 +404,7 @@ const DebriefField = ({ eventId }: { readonly eventId: string }) => {
   const value = url ?? debrief.data?.url ?? "";
   const save = useMutation({
     mutationFn: async () => {
-      const table = supabase.schema("events").from("debriefs");
+      const table = supabase.schema("api").from("debriefs");
       unwrap(
         value
           ? await table.upsert({
@@ -353,6 +445,10 @@ const DebriefField = ({ eventId }: { readonly eventId: string }) => {
         )}
       </Field>
       <SaveButton pending={save.isPending} quiet success={save.isSuccess} />
+      {/* The debrief draws on the answers (decisions.md, Events). */}
+      <a className="link type-body" href="#how-was-it">
+        {te("feedback.seeAnswers")}
+      </a>
       <ErrorLine error={save.error} />
     </form>
   );
@@ -372,7 +468,7 @@ const StatusActions = ({
     mutationFn: async (status: "canceled" | "draft" | "published") => {
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .update({
             status,
@@ -453,7 +549,7 @@ export const EventFacts = ({
 
   const save = useMutation({
     mutationFn: async () => {
-      const table = supabase.schema("events").from("events");
+      const table = supabase.schema("api").from("events");
       if (event) {
         unwrap(await table.update(row).eq("id", event.id));
         return row.slug;

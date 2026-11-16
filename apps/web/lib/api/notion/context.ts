@@ -7,31 +7,47 @@ import { bareId, type Notion, NotionError } from "./client";
 export type Admin = ReturnType<typeof createAdminClient>;
 
 export type LinkKind =
+  | "announcement"
   | "document"
+  | "edition"
+  | "episode"
   | "event"
   | "event_ar"
   | "journal_stage"
+  | "measure"
   | "minutes"
   | "need"
   | "news"
   | "officer"
+  | "opening"
+  | "organization"
   | "piece"
   | "piece_ar"
-  | "programme"
-  | "programme_ar";
+  | "production"
+  | "program"
+  | "program_ar"
+  | "resolution";
 
 /** The workspace's data sources (core.settings `notion.data_sources`). */
 export interface Sources {
   documents: string;
+  /** The copies added Nov 16, 2026 (copies.ts); each optional. */
+  editions?: string;
   events: string;
   journal: string;
+  measures?: string;
   /** Work, Meetings: minutes written there go to the Diwan (Nov 4, 2026). */
   meetings?: string;
   /** Needs: moved to the site (Nov 16, 2026); a read-only copy since. */
   needs?: string;
   news: string;
   officers: string;
-  programmes: string;
+  openings?: string;
+  organizations?: string;
+  productions?: string;
+  programs: string;
+  /** Announcements and resolutions. */
+  records?: string;
 }
 
 export interface SyncContext {
@@ -65,7 +81,7 @@ export interface Link {
 
 export const linksOf = async (ctx: SyncContext, kind: LinkKind) => {
   const { data, error } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("notion_links")
     .select("notion_page_id, record_key, content_hash")
     .eq("kind", kind);
@@ -82,7 +98,7 @@ export const recordFor = async (
   pageId: string
 ) => {
   const { data } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("notion_links")
     .select("record_key")
     .eq("kind", kind)
@@ -100,14 +116,14 @@ export const saveLink = async (
 ) => {
   // One page per record: drop any older page for this record first.
   await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("notion_links")
     .delete()
     .eq("kind", kind)
     .eq("record_key", recordKey)
     .neq("notion_page_id", bareId(pageId));
   const { error } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("notion_links")
     .upsert({
       content_hash: contentHash,
@@ -123,7 +139,7 @@ export const saveLink = async (
 
 export const dropLink = (ctx: SyncContext, pageId: string) =>
   ctx.admin
-    .schema("core")
+    .schema("api")
     .from("notion_links")
     .delete()
     .eq("notion_page_id", bareId(pageId));

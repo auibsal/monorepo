@@ -62,7 +62,7 @@ const SignUps = ({ list, refresh }: { list: List; refresh: Refresh }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .rpc("invitation_list", { list: list.source })
       ) ?? [],
     queryKey: [...listsKey, list.source, "people"],
@@ -72,7 +72,7 @@ const SignUps = ({ list, refresh }: { list: List; refresh: Refresh }) => {
       const rows = parseSignUps(text);
       const added = unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .rpc("add_invitations", { list: list.source, people: rows })
       );
       return { added: Number(added ?? 0), typed: rows.length };
@@ -86,7 +86,7 @@ const SignUps = ({ list, refresh }: { list: List; refresh: Refresh }) => {
     mutationFn: async (email: string) =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .rpc("remove_invitation", { address: email })
       ),
     onSuccess: refresh,
@@ -187,7 +187,7 @@ const Sending = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .rpc("send_invitations", { list: list.source })
       ),
     onSuccess: async () => {
@@ -266,7 +266,7 @@ const ListCard = ({ canSend, list }: { canSend: boolean; list: List }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .rpc("invitations_waiting", { list: list.source })
       ) as Counts | null,
     queryKey: [...listsKey, list.source, "counts"],
@@ -331,7 +331,7 @@ export const InvitationLists = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("invitation_lists")
           .select("source, title_en, title_ar, tested_at, sent_at")
           .order("created_at", { ascending: false })

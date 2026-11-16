@@ -33,7 +33,7 @@ export const redeemLink = async (ctx: BotContext, payload: string) => {
     return false;
   }
   const { data: userId } = await db()
-    .schema("core")
+    .schema("api")
     .rpc("telegram_redeem_link", {
       code,
       telegram_id: ctx.from.id,
@@ -134,7 +134,7 @@ const meView = async (ctx: BotContext) => {
   ];
   // The same switches as Notices in Your account (one notices model).
   const { data: prefs } = await db()
-    .schema("core")
+    .schema("api")
     .from("telegram_accounts")
     .select("paper, news, reminders")
     .eq("telegram_id", ctx.from.id)
@@ -202,7 +202,7 @@ dm.callbackQuery(
       Record<"daily_word" | "news" | "notify" | "paper" | "reminders", boolean>
     > = { [column]: on };
     await db()
-      .schema("core")
+      .schema("api")
       .from("telegram_accounts")
       .update(change)
       .eq("telegram_id", ctx.from.id);
@@ -222,7 +222,7 @@ dm.callbackQuery(
 dm.callbackQuery("unlink", async (ctx) => {
   await ctx.account();
   await db()
-    .schema("core")
+    .schema("api")
     .from("telegram_accounts")
     .delete()
     .eq("telegram_id", ctx.from.id);

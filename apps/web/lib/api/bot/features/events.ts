@@ -58,12 +58,10 @@ const cardKeyboard = (ctx: BotContext, event: EventRow) => {
     }
     keyboard.row();
   }
-  if (!event.members_only) {
-    keyboard
-      .url(ctx.t.buttons.details, eventPage(ctx.lang, event.slug))
-      .url(ctx.t.buttons.calendar, eventCalendar(ctx.lang, event.slug))
-      .row();
-  }
+  keyboard
+    .url(ctx.t.buttons.details, eventPage(ctx.lang, event.slug))
+    .url(ctx.t.buttons.calendar, eventCalendar(ctx.lang, event.slug))
+    .row();
   return keyboard.text(ctx.t.buttons.back, "evs");
 };
 
@@ -145,7 +143,7 @@ dm.callbackQuery(new RegExp(`^(rsvp|unrsvp):(${UUID})$`, "u"), async (ctx) => {
   let booked = false;
   if (ctx.match[1] === "rsvp") {
     const { data, error } = await db()
-      .schema("core")
+      .schema("api")
       .rpc("telegram_rsvp", params);
     notice = error
       ? rsvpError(ctx, error)
@@ -157,7 +155,7 @@ dm.callbackQuery(new RegExp(`^(rsvp|unrsvp):(${UUID})$`, "u"), async (ctx) => {
     booked = !error && data === "confirmed";
   } else {
     const { error } = await db()
-      .schema("core")
+      .schema("api")
       .rpc("telegram_cancel_rsvp", params);
     notice = error ? rsvpError(ctx, error) : ctx.t.rsvpCancelled;
   }

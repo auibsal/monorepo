@@ -137,7 +137,7 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("id, title_en, title_ar, starts_at")
           .or(
@@ -167,7 +167,7 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
       const pieceId = piece
         ? piece.id
         : ((unwrap(
-            await supabase.schema("journal").rpc("create_staff_piece", {
+            await supabase.schema("api").rpc("create_staff_piece", {
               category: form.category,
               contributor_id: form.contributor_id,
               issue_id: form.issue_id || undefined,
@@ -178,7 +178,7 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
           ) ?? "") as string);
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("pieces")
           .update({
             category: form.category,
@@ -204,7 +204,7 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
       );
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("piece_bodies")
           .update({
             body_ar: sanitizeRichText(form.body.ar) || null,
@@ -461,7 +461,7 @@ const Media = ({ record }: { record: PieceRecord }) => {
           const stored = await uploadMedia(supabase, `qirtas/${pieceId}`, file);
           unwrap(
             await supabase
-              .schema("journal")
+              .schema("api")
               .from("piece_media")
               .insert({
                 height: size.height,
@@ -485,7 +485,7 @@ const Media = ({ record }: { record: PieceRecord }) => {
     }) =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("piece_media")
           .update({
             alt_ar: row.alt_ar,
@@ -506,7 +506,7 @@ const Media = ({ record }: { record: PieceRecord }) => {
     mutationFn: async (mediaId: string) =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("piece_media")
           .delete()
           .eq("id", mediaId)
@@ -640,7 +640,7 @@ const Credits = ({ record }: { record: PieceRecord }) => {
   const add = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("journal").from("piece_credits").insert({
+        await supabase.schema("api").from("piece_credits").insert({
           contributor_id: contributorId,
           piece_id: pieceId,
           role,
@@ -656,7 +656,7 @@ const Credits = ({ record }: { record: PieceRecord }) => {
     mutationFn: async (c: { contributor_id: string; role: string }) =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("piece_credits")
           .delete()
           .eq("piece_id", pieceId)

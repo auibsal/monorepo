@@ -1,7 +1,10 @@
 import { project } from "@repo/config";
 import type { ReactElement } from "react";
 import { Resend } from "resend";
+import { EmailConfigError, sendError } from "./errors";
 import { keys } from "./keys";
+
+export { EmailConfigError, EmailQuotaError, sendError } from "./errors";
 
 const { RESEND_BULK_DOMAIN, RESEND_TOKEN } = keys();
 
@@ -38,20 +41,6 @@ type SendEmailOptions = EmailContent & {
   to: string | string[];
 };
 
-/**
- * The plan's daily or monthly sending limit is spent (the free plan allows
- * 100 a day). Nothing is wrong with the email; send it again after the
- * limit resets.
- */
-export class EmailQuotaError extends Error {
-  override name = "EmailQuotaError";
-}
-
-const QUOTA_ERRORS = new Set([
-  "daily_quota_exceeded",
-  "monthly_quota_exceeded",
-]);
-
 /** Sends a transactional email from `SENDER`. Throws on failure. */
 export const sendEmail = async ({
   to,
@@ -63,7 +52,7 @@ export const sendEmail = async ({
   ...content
 }: SendEmailOptions) => {
   if (!resend) {
-    throw new Error("Email is not configured: set RESEND_TOKEN.");
+    throw new EmailConfigError("Email is not configured: set RESEND_TOKEN.");
   }
 
   const { data, error } = await resend.emails.send(
@@ -82,9 +71,7 @@ export const sendEmail = async ({
   );
 
   if (error) {
-    throw QUOTA_ERRORS.has(error.name)
-      ? new EmailQuotaError(error.message)
-      : new Error(error.message);
+    throw sendError(error);
   }
 
   return data;

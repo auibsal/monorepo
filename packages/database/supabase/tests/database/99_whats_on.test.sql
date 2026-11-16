@@ -100,14 +100,14 @@ select plan(17);
 select pg_temp.make_user('00000000-0000-0000-0000-0000000057a1', 'whats.on@auib.edu.iq', 'Whats On');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000057a2', 'invited@auib.edu.iq', 'Invited');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000057a3', 'events.lead@auib.edu.iq', 'Events Lead');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000057a3', 'programme_lead');
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000057a3', 'program_lead');
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, rsvp_enabled, entry, status) values
-  ('e0000000-0000-0000-0000-0000000057e1', 'open-night', (select id from core.programmes where slug = 'open-pages'),
+insert into events.events (id, slug, program_id, title_en, title_ar, starts_at, rsvp_enabled, entry, status) values
+  ('e0000000-0000-0000-0000-0000000057e1', 'open-night', (select id from core.programs where slug = 'company'),
     'Open Night', 'ليلة مفتوحة', now() + interval '1 day', true, 'open', 'published'),
-  ('e0000000-0000-0000-0000-0000000057e2', 'members-night', (select id from core.programmes where slug = 'open-pages'),
-    'Members Night', 'ليلة الأعضاء', now() + interval '2 days', true, 'members', 'published'),
-  ('e0000000-0000-0000-0000-0000000057e3', 'invited-night', (select id from core.programmes where slug = 'open-pages'),
+  ('e0000000-0000-0000-0000-0000000057e2', 'members-night', (select id from core.programs where slug = 'company'),
+    'Members Night', 'ليلة الأعضاء', now() + interval '2 days', true, 'rsvp', 'published'),
+  ('e0000000-0000-0000-0000-0000000057e3', 'invited-night', (select id from core.programs where slug = 'company'),
     'Invited Night', 'ليلة المدعوين', now() + interval '3 days', true, 'invite', 'published');
 insert into events.events (id, slug, title_en, title_ar, starts_at, rsvp_enabled, status) values
   ('e0000000-0000-0000-0000-0000000057e4', 'old-writer', 'Old Writer', 'كاتب قديم', now() + interval '4 days', false, 'published');
@@ -117,8 +117,9 @@ select is((select rsvp_enabled from events.events where id = 'e0000000-0000-0000
 select is((select entry from events.events where id = 'e0000000-0000-0000-0000-0000000057e4'), 'open',
   'Turning bookings off makes an event open');
 
-select ok((select members_only from events.events where id = 'e0000000-0000-0000-0000-0000000057e3'),
-  'An invitation-only event is never public');
+update events.events set classes = array['member'] where id = 'e0000000-0000-0000-0000-0000000057e2';
+select ok((select entry = 'invite' from events.events where id = 'e0000000-0000-0000-0000-0000000057e3'),
+  'Invited only is its own access');
 
 -- The public calendar
 select pg_temp.login_anon();
@@ -126,21 +127,21 @@ select is(
   (select array_agg(slug order by starts_at) from events.calendar(now(), now() + interval '30 days')
     where slug like '%-night'),
   array['open-night', 'members-night'],
-  'The public calendar shows members-only events, and never invitation-only ones'
+  'The public calendar shows Members-only events, and never invitation-only ones'
 );
 select ok(
-  (select teaser and venue_en is null and summary_en is null
+  (select classes = array['member']
     from events.calendar(now(), now() + interval '30 days') where slug = 'members-night'),
-  'A members-only event is only a teaser for the public'
+  'in full, with whom each is for'
 );
-select is((select count(*)::integer from events.events where slug = 'members-night'), 0,
-  'and the table itself still hides it');
+select is((select count(*)::integer from events.events where slug = 'members-night'), 1,
+  'and its page reads like any other');
 
 -- A member
 select pg_temp.login_as('00000000-0000-0000-0000-0000000057a1');
 select ok(
-  (select not teaser from events.calendar(now(), now() + interval '30 days') where slug = 'members-night'),
-  'A member sees members-only events in full'
+  exists (select 1 from events.calendar(now(), now() + interval '30 days') where slug = 'members-night'),
+  'A member sees Members-only events'
 );
 select is((select count(*)::integer from events.events where slug = 'invited-night'), 0,
   'An invitation-only event is invisible to members not invited');

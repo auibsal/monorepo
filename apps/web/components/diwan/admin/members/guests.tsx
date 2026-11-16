@@ -40,7 +40,7 @@ export const SocietyGuests = () => {
       const rows =
         unwrap(
           await supabase
-            .schema("membership")
+            .schema("api")
             .from("guests")
             .select("user_id, created_at")
             .is("ended_at", null)
@@ -52,7 +52,7 @@ export const SocietyGuests = () => {
       const profiles =
         unwrap(
           await supabase
-            .schema("core")
+            .schema("api")
             .from("profiles")
             .select("id, full_name_en, full_name_ar")
             .in(
@@ -78,7 +78,7 @@ export const SocietyGuests = () => {
     mutationFn: async (userId: string) =>
       unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("guests")
           .update({ ended_at: new Date().toISOString() })
           .eq("user_id", userId)

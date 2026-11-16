@@ -35,7 +35,7 @@ export const StaffAlerts = () => {
       const since = new Date(Date.now() - SINCE_DAYS * 864e5).toISOString();
       return (unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("staff_alerts")
           .select("id, team, urgent, text_en, text_ar, link, created_at")
           .gte("created_at", since)

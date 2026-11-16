@@ -246,7 +246,7 @@ const ProfileForm = ({ row }: { row: PartnerRow }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_listing_changes")
           .select("description_en, description_ar, url")
           .eq("partner_id", row.id)
@@ -262,7 +262,7 @@ const ProfileForm = ({ row }: { row: PartnerRow }) => {
   const save = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("governance").rpc("propose_partner_listing", {
+        await supabase.schema("api").rpc("propose_partner_listing", {
           description_ar: form.description.ar,
           description_en: form.description.en,
           partner: row.id,
@@ -340,7 +340,7 @@ const Memoranda = ({ partnerId }: { partnerId: string }) => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_agreements")
           .select(
             "id, purpose_en, partner_will, sal_will, grants, asked_grants, status, partner_signatory, society_signatory, signed_at"
@@ -452,7 +452,7 @@ const AskForGrants = ({
   const ask = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("governance").rpc("ask_for_grants", {
+        await supabase.schema("api").rpc("ask_for_grants", {
           agreement_id: agreement.id,
           grants: chosen,
         })
@@ -532,7 +532,7 @@ const ProfileLoader = ({ id }: { id: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partners")
           .select(
             "id, name_en, name_ar, url, description_en, description_ar, logo_path, logo_pending_path"
@@ -578,7 +578,7 @@ const JointEvents = ({ checklists }: { checklists: boolean }) => {
   const { supabase } = useAuth();
   const events = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("events").rpc("my_joint_events")) ?? [],
+      unwrap(await supabase.schema("api").rpc("my_joint_events")) ?? [],
     queryKey: [...KEY, "joint-events"],
   });
   if (events.isPending) {
@@ -654,7 +654,7 @@ const Guests = ({ partnerId }: { partnerId: string }) => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("partner_guests", { partner: partnerId })
       ) ?? []) as Guest[],
     queryKey: [...KEY, "guests", partnerId],
@@ -669,7 +669,7 @@ const Guests = ({ partnerId }: { partnerId: string }) => {
     }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_affiliations")
           .update({ status })
           .eq("id", id)
@@ -788,7 +788,7 @@ const InviteByEmail = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_invitations")
           .insert({ email: email.trim(), kind, lang, partner_id: partnerId })
       ),
@@ -855,7 +855,7 @@ export const OpenInvitations = ({
   const open = useQuery({
     queryFn: async () => {
       const query = supabase
-        .schema("governance")
+        .schema("api")
         .from("partner_invitations")
         .select("id, kind, email, code, created_at, expires_at");
       return (unwrap(
@@ -876,7 +876,7 @@ export const OpenInvitations = ({
     mutationFn: async (id: string) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("partner_invitations")
           .update({ revoked_at: new Date().toISOString() })
           .eq("id", id)
@@ -1023,7 +1023,7 @@ const TeamDomain = ({ partnerId }: { partnerId: string }) => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("partner_team_domain", { partner: partnerId })
       ) ?? [])[0] ?? null,
     queryKey: [...KEY, "domain", partnerId],
@@ -1031,7 +1031,7 @@ const TeamDomain = ({ partnerId }: { partnerId: string }) => {
   const set = useMutation({
     mutationFn: async (opening: boolean) =>
       unwrap(
-        await supabase.schema("governance").rpc("set_partner_team_domain", {
+        await supabase.schema("api").rpc("set_partner_team_domain", {
           open: opening,
           partner: partnerId,
         })
@@ -1084,7 +1084,7 @@ const JoinRequests = ({ partnerId }: { partnerId: string }) => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("partner_join_requests", { partner: partnerId })
       ) ?? []) as JoinRequest[],
     queryKey: [...KEY, "join-requests", partnerId],
@@ -1093,7 +1093,7 @@ const JoinRequests = ({ partnerId }: { partnerId: string }) => {
     mutationFn: async ({ approve, id }: { approve: boolean; id: string }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("decide_partner_join_request", { approve, request: id })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
@@ -1151,9 +1151,7 @@ const Team = ({ partnerId }: { partnerId: string }) => {
   const team = useQuery({
     queryFn: async () =>
       (unwrap(
-        await supabase
-          .schema("governance")
-          .rpc("partner_team", { partner: partnerId })
+        await supabase.schema("api").rpc("partner_team", { partner: partnerId })
       ) ?? []) as Teammate[],
     queryKey: [...KEY, "team", partnerId],
   });
@@ -1162,7 +1160,7 @@ const Team = ({ partnerId }: { partnerId: string }) => {
     mutationFn: async (member: string) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("remove_partner_teammate", { member, partner: partnerId })
       ),
     onSuccess: done,
@@ -1171,7 +1169,7 @@ const Team = ({ partnerId }: { partnerId: string }) => {
     mutationFn: async ({ member, on }: { member: string; on: boolean }) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("set_partner_lead", { lead: on, member, partner: partnerId })
       ),
     onSuccess: done,

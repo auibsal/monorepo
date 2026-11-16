@@ -4,14 +4,14 @@ import { corsHeaders, preflight } from "@/lib/api/cors";
 import { respond } from "@/lib/api/problem";
 import { withinRateLimit } from "@/lib/api/rate-limit";
 import { isHuman } from "@/lib/api/turnstile";
-import { programmes } from "@/lib/data";
+import { programs } from "@/lib/data";
 import { parseError } from "@/lib/observability/error";
 import { log } from "@/lib/observability/log";
 
 export const OPTIONS = preflight;
 
-const requestSchema = programmes.removalRequestSchema.extend({
-  programme: z.enum(["next-stop"]).optional(),
+const requestSchema = programs.removalRequestSchema.extend({
+  program: z.enum(["next-stop"]).optional(),
   requester_lang: z.enum(["en", "ar"]).optional(),
   /** Left empty by people; filled by bots (the form hides it). */
   /** Cloudflare Turnstile's token (none locally). */
@@ -40,7 +40,7 @@ export const POST = async (request: Request) => {
   if (!parsed.success) {
     return json({ error: "invalid_request" }, 400);
   }
-  const { programme, requester_lang, token, website, ...fields } = parsed.data;
+  const { program, requester_lang, token, website, ...fields } = parsed.data;
   if (website) {
     // Pretend success so the bot learns nothing.
     return json({ ok: true });
@@ -56,7 +56,7 @@ export const POST = async (request: Request) => {
   const admin = createAdminClient();
   const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
   const { count } = await admin
-    .schema("programmes")
+    .schema("api")
     .from("removal_requests")
     .select("id", { count: "exact", head: true })
     .eq("requester_email", fields.requester_email)
@@ -65,20 +65,20 @@ export const POST = async (request: Request) => {
     return json({ error: "rate_limited" }, 429);
   }
 
-  const { data: programmeRow } = await admin
-    .schema("core")
-    .from("programmes")
+  const { data: programRow } = await admin
+    .schema("api")
+    .from("programs")
     .select("id")
-    .eq("slug", programme ?? "next-stop")
+    .eq("slug", program ?? "next-stop")
     .maybeSingle();
 
   const { data, error } = await admin
-    .schema("programmes")
+    .schema("api")
     .from("removal_requests")
     .insert({
       content_url: fields.content_url || null,
       details: fields.details,
-      programme_id: programmeRow?.id ?? null,
+      program_id: programRow?.id ?? null,
       requester_email: fields.requester_email,
       requester_lang: requester_lang ?? "en",
       requester_name: fields.requester_name,

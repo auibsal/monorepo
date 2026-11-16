@@ -41,7 +41,7 @@ const useElections = () => {
       const elections =
         unwrap(
           await supabase
-            .schema("governance")
+            .schema("api")
             .from("elections")
             .select(
               "id, title_en, title_ar, status, nominations_open_at, nominations_close_at, voting_opens_at, voting_closes_at, voting_point_en, voting_point_ar, voting_point_at, runoff_of, forum_event_id, positions!positions_election_id_fkey(id, title_en, title_ar, sort, candidates(id, user_id, status, statement_en, statement_ar, reference))"
@@ -60,17 +60,17 @@ const useElections = () => {
       ];
       const [voters, receipts, results, people] = await Promise.all([
         supabase
-          .schema("governance")
+          .schema("api")
           .from("voters")
           .select("election_id")
           .in("election_id", ids),
         supabase
-          .schema("governance")
+          .schema("api")
           .from("ballot_receipts")
           .select("election_id")
           .in("election_id", ids),
         supabase
-          .schema("governance")
+          .schema("api")
           .from("election_results")
           .select(
             "election_id, position_id, winner_candidate_id, ron_won, runoff_candidate_ids, decided_by_lot"
@@ -78,7 +78,7 @@ const useElections = () => {
           .in("election_id", ids),
         userIds.length
           ? supabase
-              .schema("core")
+              .schema("api")
               .from("profiles")
               .select("id, full_name_en, full_name_ar")
               .in("id", userIds)
@@ -154,7 +154,7 @@ const Nominate = ({
   const nominate = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("governance").rpc("nominate", {
+        await supabase.schema("api").rpc("nominate", {
           gpa_consent: form.consent,
           position_id: position.id,
           statement_ar: form.ar.trim() || undefined,
@@ -620,7 +620,7 @@ const ForumLine = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("slug, title_en, title_ar, starts_at")
           .eq("id", eventId)

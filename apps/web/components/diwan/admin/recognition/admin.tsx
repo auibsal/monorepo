@@ -67,7 +67,7 @@ const PendingHours = () => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("service_records")
           .select("id, user_id, occurred_on, activity, what, hours")
           .eq("status", "pending")
@@ -289,8 +289,7 @@ const useFinishedStudents = (enabled: boolean) => {
     // The roster names each student from their account.
     queryFn: async () =>
       (
-        unwrap(await supabase.schema("programmes").rpc("qalam_roster", {})) ??
-        []
+        unwrap(await supabase.schema("api").rpc("qalam_roster", {})) ?? []
       ).filter((s) => s.status === "accepted" || s.status === "finished"),
     queryKey: [...key, "qalam-students"],
   });
@@ -332,9 +331,7 @@ const PrepareForm = ({ onDone }: { onDone: () => void }) => {
             : (students.data?.find((s) => s.id === form.student)?.user_id ??
               null),
       });
-      unwrap(
-        await supabase.schema("membership").from("certificates").insert(row)
-      );
+      unwrap(await supabase.schema("api").from("certificates").insert(row));
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
@@ -484,7 +481,7 @@ const Certificates = () => {
     queryFn: async () =>
       (unwrap(
         await supabase
-          .schema("membership")
+          .schema("api")
           .from("certificates")
           .select(
             "id, user_id, qalam_student_id, kind, lang, prize_category, status, serial, issued_at, first_signed_by, second_signed_by"
@@ -516,11 +513,7 @@ const Certificates = () => {
   const remove = useMutation({
     mutationFn: async (id: string) =>
       unwrap(
-        await supabase
-          .schema("membership")
-          .from("certificates")
-          .delete()
-          .eq("id", id)
+        await supabase.schema("api").from("certificates").delete().eq("id", id)
       ),
     onSuccess: invalidate,
   });

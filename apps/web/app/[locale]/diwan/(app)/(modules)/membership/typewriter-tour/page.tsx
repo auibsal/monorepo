@@ -1,6 +1,6 @@
 import { RequireModule } from "@/components/diwan/admin/admin-shell";
-import { TourCards } from "@/components/diwan/admin/programmes/six-words";
-import { TourImport } from "@/components/diwan/admin/programmes/tour-import";
+import { TourCards } from "@/components/diwan/admin/programs/six-words";
+import { TourImport } from "@/components/diwan/admin/programs/tour-import";
 import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>

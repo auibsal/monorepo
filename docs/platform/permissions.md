@@ -38,7 +38,7 @@ personal data). A passkey sign-in counts.
 | Editor-in-Chief | `eic` | global | yes | yes | `certificates.prepare`, `certificates.sign`, `journal.approve`, `journal.decide`, `journal.frontpage`, `journal.manage`, `journal.prize`, `journal.publish`, `library.read`, `qalam.manage` |
 | Elections Committee | `elections_committee` | global |  | yes | `elections.manage` |
 | Event Coordinator | `events_lead` | issue |  | yes | `events.checkin`, `events.manage`, `library.read` |
-| Event Lead | `programme_lead` | programme |  | yes | `content.manage`, `events.checkin`, `events.manage`, `library.read`, `programs.manage` |
+| Event Lead | `program_lead` | program |  | yes | `content.manage`, `events.checkin`, `events.manage`, `library.read`, `programs.manage` |
 | Faculty Advisor | `faculty_advisor` | global |  | yes | `audit.read`, `concerns.about_president`, `concerns.about_vp`, `concerns.handle`, `library.council`, `library.read` |
 | Front-of-house manager | `front_of_house_manager` | production |  |  | none |
 | Gallery Editor | `gallery_editor` | global |  |  | `journal.decide`, `journal.edit.gallery`, `journal.manage`, `library.read` |

@@ -37,7 +37,7 @@ export const env = withPresets(
       VERCEL_WEBHOOK_SECRET: process.env.VERCEL_WEBHOOK_SECRET,
     },
     server: {
-      // Shared secret Vercel Cron sends as a Bearer token. Generate with
+      // Shared secret pg_cron sends as a Bearer token. Generate with
       // `openssl rand -hex 32`. Cron routes reject every request when unset.
       CRON_SECRET: z.string().min(32).optional(),
       // Sent by the Supabase database webhook (outbox) as a Bearer token.

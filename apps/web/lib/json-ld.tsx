@@ -41,6 +41,8 @@ export const organization = (): Thing => ({
 export const eventLd = (
   locale: string,
   e: {
+    /** Who can come, in words ("Everyone", "Members only"); null when invited only. */
+    audience?: string | null;
     ends_at: string | null;
     image?: string | null;
     name: string;
@@ -52,6 +54,9 @@ export const eventLd = (
   }
 ): Thing => ({
   "@type": "Event",
+  audience: e.audience
+    ? { "@type": "Audience", audienceType: e.audience }
+    : undefined,
   description: e.summary ?? undefined,
   endDate: e.ends_at ?? undefined,
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
@@ -61,6 +66,7 @@ export const eventLd = (
       : "https://schema.org/EventScheduled",
   image: e.image ?? undefined,
   inLanguage: locale,
+  // The Society has no money (decisions.md, Money): every event is free.
   isAccessibleForFree: true,
   location: {
     "@type": "Place",

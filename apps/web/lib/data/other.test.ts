@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { announcementSchema, pageSchema } from "./content";
 import { ballotSchema } from "./governance";
 import { profileSchema, wordCount } from "./membership";
-import { isReelUrl, sixWordsSchema, timeLeft, youtubeId } from "./programmes";
+import { isReelUrl, sixWordsSchema, timeLeft, youtubeId } from "./programs";
 
 const id = (n: number) => `00000000-0000-4000-8000-00000000000${n}`;
 

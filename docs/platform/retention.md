@@ -15,8 +15,8 @@ happen shows in the platform's health check. `99_retention.test.sql` tests each 
 
 | Record | Kept | Deleted by |
 | --- | --- | --- |
-| Unpublished Submit to Qirtas submissions, with their files | 12 months after the decision | the route |
-| Submit to Qirtas drafts | 12 months after the last change | `purge_stale_drafts` |
+| Unpublished submissions to Qirtas, with their files | 12 months after the decision | the route |
+| Drafts of work for Qirtas | 12 months after the last change | `purge_stale_drafts` |
 | Blind copies, assignments, scores and decisions of deleted submissions | 12 months | `purge_blind_entries` |
 | Invitation lists (the Tour's, the club fair's) | 30 days after the list is sent (the Tour list on December 7, 2026) | `purge_tour_lists` |
 | Unclaimed spring 2026 Tour pages, with their photographs | Until the spring 2027 Tour (`tour.unclaimed_until`, seeded June 30, 2027) | the route, then `purge_unclaimed_tour_pages` |

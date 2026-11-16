@@ -68,7 +68,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   // The Council adopts its resolution at a meeting (its minutes and
   // resolution, as the Diwan keeps them); the site numbers it on adoption.
   const { data: minutes } = await db
-    .schema("governance")
+    .schema("api")
     .from("minutes")
     .insert({
       adopted_on: new Date().toISOString().slice(0, 10),
@@ -81,7 +81,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     .select("id")
     .single();
   const resolved = await db
-    .schema("governance")
+    .schema("api")
     .from("resolutions")
     .insert({
       adopted_on: new Date().toISOString().slice(0, 10),
@@ -162,7 +162,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await applicant.getByRole("button", { name: "Invite a guest" }).click();
   await expect(applicant.getByText("Invitation sent.")).toBeVisible();
   const { data: invitation } = await db
-    .schema("governance")
+    .schema("api")
     .from("partner_invitations")
     .select("code")
     .eq("email", guestEmail)
@@ -223,7 +223,7 @@ test("a member who leads their club's partnership stays a member", async ({
   ).toBeVisible();
 
   const { data: partner } = await db
-    .schema("governance")
+    .schema("api")
     .from("partners")
     .select("id")
     .eq("name_en", organization)
@@ -233,7 +233,7 @@ test("a member who leads their club's partnership stays a member", async ({
     // The Council's vote, as the queue records it: the partner turns active
     // and whoever applied leads it.
     const { data: agreement } = await db
-      .schema("governance")
+      .schema("api")
       .from("partner_agreements")
       .select("id")
       .eq("partner_id", partnerId)
@@ -241,17 +241,17 @@ test("a member who leads their club's partnership stays a member", async ({
     const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
     const memberId = users.users.find((u) => u.email === member.email)?.id;
     await db
-      .schema("governance")
+      .schema("api")
       .from("partner_agreements")
       .update({ signed_at: new Date().toISOString(), status: "signed" })
       .eq("id", agreement?.id ?? "");
     await db
-      .schema("governance")
+      .schema("api")
       .from("partners")
       .update({ status: "active" })
       .eq("id", partnerId);
     const assigned = await db
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .insert({
         role: "partner_lead",
@@ -281,10 +281,10 @@ test("a member who leads their club's partnership stays a member", async ({
     ).toBeVisible();
   } finally {
     await db
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .delete()
       .eq("scope_id", partnerId);
-    await db.schema("governance").from("partners").delete().eq("id", partnerId);
+    await db.schema("api").from("partners").delete().eq("id", partnerId);
   }
 });

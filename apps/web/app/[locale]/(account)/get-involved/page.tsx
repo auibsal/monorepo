@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { GetInvolvedLinks } from "@/components/account/get-involved-links";
 import { OpenPlaces } from "@/components/account/open-places";
 import { DiwanPage } from "@/components/diwan/page";
-import { programmes } from "@/lib/data";
+import { programs } from "@/lib/data";
 import { titleFrom } from "@/lib/diwan/metadata";
 import { readPublished } from "@/lib/supabase";
 
@@ -29,8 +29,8 @@ const GetInvolvedPage = async ({ params }: PageProps) => {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "diwan.getInvolved" });
   const places = await readPublished(
-    ["programmes"],
-    (client) => programmes.openPlaces(client),
+    ["programs"],
+    (client) => programs.openPlaces(client),
     []
   );
   return (

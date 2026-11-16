@@ -33,9 +33,7 @@ export const POST = async (request: Request) => {
   if (!session) {
     return json({ error: "unauthorized" }, 401);
   }
-  const { data } = await session.supabase
-    .schema("membership")
-    .rpc("my_membership");
+  const { data } = await session.supabase.schema("api").rpc("my_membership");
   const row = Array.isArray(data) ? data[0] : data;
   if (row?.staff !== true) {
     return json({ error: "forbidden" }, 403);

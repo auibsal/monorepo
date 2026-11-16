@@ -107,11 +107,11 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000057a3', 'membership_di
 
 insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
 values ('e0000000-0000-0000-0000-0000000057a0', 'tour-dec-1', 'Typewriter Tour', 'جولة الآلة الكاتبة', now(), 'published', 'open');
-insert into programmes.shifts (id, event_id, role_en, role_ar, starts_at, ends_at, station) values
+insert into programs.shifts (id, event_id, role_en, role_ar, starts_at, ends_at, station) values
   ('5f000000-0000-0000-0000-0000000057a1', 'e0000000-0000-0000-0000-0000000057a0', 'Station', 'المحطة', now() - interval '1 hour', now() + interval '1 hour', true),
   ('5f000000-0000-0000-0000-0000000057a2', 'e0000000-0000-0000-0000-0000000057a0', 'Door', 'الباب', now() - interval '1 hour', now() + interval '1 hour', false),
   ('5f000000-0000-0000-0000-0000000057a3', 'e0000000-0000-0000-0000-0000000057a0', 'Station later', 'المحطة لاحقًا', now() + interval '2 hours', now() + interval '3 hours', true);
-insert into programmes.shift_signups (shift_id, user_id, status) values
+insert into programs.shift_signups (shift_id, user_id, status) values
   ('5f000000-0000-0000-0000-0000000057a1', '00000000-0000-0000-0000-0000000057a1', 'confirmed'),
   ('5f000000-0000-0000-0000-0000000057a2', '00000000-0000-0000-0000-0000000057a4', 'confirmed'),
   ('5f000000-0000-0000-0000-0000000057a1', '00000000-0000-0000-0000-0000000057a4', 'signed_up');
@@ -127,43 +127,43 @@ values ('a5500000-0000-0000-0000-0000000057a1', 'Faculty Friend', 'friend@auib.e
 
 -- Who has the station
 select pg_temp.login_as('00000000-0000-0000-0000-0000000057a4');
-select is(programmes.my_station_shift(), null, 'A volunteer on another shift, or not yet confirmed, has no station');
+select is(programs.my_station_shift(), null, 'A volunteer on another shift, or not yet confirmed, has no station');
 select throws_ok(
-  $$ select programmes.station_attach((select code from live), (select digits from live), null, 'station/00000000-0000-0000-0000-000000000001.jpg') $$,
+  $$ select programs.station_attach((select code from live), (select digits from live), null, 'station/00000000-0000-0000-0000-000000000001.jpg') $$,
   '42501', 'station_closed', 'and cannot attach a page'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000057a1');
-select is(programmes.my_station_shift(), '5f000000-0000-0000-0000-0000000057a1'::uuid, 'A confirmed volunteer has the station while the shift runs');
+select is(programs.my_station_shift(), '5f000000-0000-0000-0000-0000000057a1'::uuid, 'A confirmed volunteer has the station while the shift runs');
 select throws_ok(
-  $$ select programmes.station_attach((select code from live), '00000000', null, 'station/00000000-0000-0000-0000-000000000001.jpg') $$,
+  $$ select programs.station_attach((select code from live), '00000000', null, 'station/00000000-0000-0000-0000-000000000001.jpg') $$,
   '22023', 'card_not_live', 'A card that is not live is refused'
 );
 select throws_ok(
-  $$ select programmes.station_attach((select code from live), (select digits from live), null, null) $$,
+  $$ select programs.station_attach((select code from live), (select digits from live), null, null) $$,
   '22023', 'photo_required', 'A page needs its photograph'
 );
 select matches(
-  programmes.station_attach((select code from live), (select digits from live), null, 'station/00000000-0000-0000-0000-000000000001.jpg'),
+  programs.station_attach((select code from live), (select digits from live), null, 'station/00000000-0000-0000-0000-000000000001.jpg'),
   '^TOUR-\d{4}-\d{3,}$', 'A live card takes the page, numbered'
 );
 select is(
-  programmes.station_attach(null, null, 'Friend@AUIB.edu.iq', 'station/00000000-0000-0000-0000-000000000002.jpg') is not null,
+  programs.station_attach(null, null, 'Friend@AUIB.edu.iq', 'station/00000000-0000-0000-0000-000000000002.jpg') is not null,
   true, 'A pending Associate request takes a page too'
 );
 select throws_ok(
-  $$ select programmes.station_attach(null, null, 'nobody@auib.edu.iq', 'station/00000000-0000-0000-0000-000000000003.jpg') $$,
+  $$ select programs.station_attach(null, null, 'nobody@auib.edu.iq', 'station/00000000-0000-0000-0000-000000000003.jpg') $$,
   'P0002', 'no_pending_request', 'but only a request that is pending'
 );
-select programmes.station_attach(null, null, 'alum@example.com', 'station/00000000-0000-0000-0000-000000000004.jpg');
+select programs.station_attach(null, null, 'alum@example.com', 'station/00000000-0000-0000-0000-000000000004.jpg');
 select pg_temp.logout();
 
 select is(
-  (select user_id::text || ':' || visibility from programmes.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg'),
+  (select user_id::text || ':' || visibility from programs.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg'),
   '00000000-0000-0000-0000-0000000057a2:private', 'The page is the card holder''s, private by default'
 );
 select ok(
-  (select user_id is null and visibility = 'private' from programmes.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000002.jpg'),
+  (select user_id is null and visibility = 'private' from programs.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000002.jpg'),
   'A page against a request waits, private, on no account'
 );
 select ok(
@@ -172,10 +172,10 @@ select ok(
 );
 
 -- The shift ends: so does the station.
-update programmes.shifts set ends_at = now() - interval '1 minute', starts_at = now() - interval '2 hours'
+update programs.shifts set ends_at = now() - interval '1 minute', starts_at = now() - interval '2 hours'
 where id = '5f000000-0000-0000-0000-0000000057a1';
 select pg_temp.login_as('00000000-0000-0000-0000-0000000057a1');
-select is(programmes.my_station_shift(), null, 'The station ends with the shift');
+select is(programs.my_station_shift(), null, 'The station ends with the shift');
 
 -- The Director of Membership decides.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000057a3');
@@ -187,7 +187,7 @@ select membership.decide_associate_request('a5500000-0000-0000-0000-0000000057a2
 select membership.decide_associate_request('a5500000-0000-0000-0000-0000000057a1', true);
 select pg_temp.logout();
 select is(
-  (select count(*)::integer from programmes.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000004.jpg'),
+  (select count(*)::integer from programs.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000004.jpg'),
   0, 'Declined: the page is deleted'
 );
 select is(
@@ -200,24 +200,24 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000057a5', 'friend@auib.ed
 update governance.partner_invitations set accepted_by = '00000000-0000-0000-0000-0000000057a5', accepted_at = now()
 where id = (select invitation_id from membership.associate_requests where id = 'a5500000-0000-0000-0000-0000000057a1');
 select is(
-  (select user_id from programmes.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000002.jpg'),
+  (select user_id from programs.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000002.jpg'),
   '00000000-0000-0000-0000-0000000057a5'::uuid, 'Approved: the page is attached to the account that accepts'
 );
 
 -- Photographed pages show nowhere until whoever runs the Tour transcribes them.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000057a2');
-update programmes.six_words set visibility = 'tour' where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg';
-select is((select count(*)::integer from programmes.my_six_words() where text is null), 0,
+update programs.six_words set visibility = 'tour' where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg';
+select is((select count(*)::integer from programs.my_six_words() where text is null), 0,
   'A photographed page waits for its words before it shows');
 select throws_ok(
-  $$ select programmes.transcribe_page((select id from programmes.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg'), 'Six words typed on the Tour today', 'en') $$,
+  $$ select programs.transcribe_page((select id from programs.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg'), 'Six words typed on the Tour today', 'en') $$,
   '42501', null, 'The writer does not type them on the site'
 );
 select pg_temp.logout();
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000057a1', 'tour_lead');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000057a1');
-select programmes.transcribe_page((select id from programmes.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg'), 'Six words typed on the Tour today', 'en');
-select ok((select pages from programmes.six_words_counts()) >= 1,
+select programs.transcribe_page((select id from programs.six_words where photo_path = 'station/00000000-0000-0000-0000-000000000001.jpg'), 'Six words typed on the Tour today', 'en');
+select ok((select pages from programs.six_words_counts()) >= 1,
   'Transcribed by whoever runs the Tour, it is counted on the Tour''s page');
 
 select * from finish();

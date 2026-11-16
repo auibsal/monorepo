@@ -35,7 +35,7 @@ const useEntry = (id: string | null) => {
     queryFn: async () => {
       const [entry, decision] = await Promise.all([
         supabase
-          .schema("journal")
+          .schema("api")
           .from("blind_entries")
           .select(
             "id, blind_id, call_id, issue_id, category, language, title, status, editor_notes, flagged, flag_note, created_at, updated_at, desk, revision_requested_at, assignments(id, read_number, reader_id, score:scores(total, craft, voice, depth, archive_factor, comment))"
@@ -43,7 +43,7 @@ const useEntry = (id: string | null) => {
           .eq("id", id ?? "")
           .maybeSingle(),
         supabase
-          .schema("journal")
+          .schema("api")
           .from("decisions")
           .select("decision, notes, decided_at")
           .eq("blind_entry_id", id ?? "")
@@ -189,7 +189,7 @@ const EditorPanel = ({ entry }: { entry: EntryData }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("blind_entries")
           .update({
             editor_notes: form.editor_notes || null,
@@ -303,7 +303,7 @@ const DecisionPanel = ({
   const decide = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("journal").rpc("decide", {
+        await supabase.schema("api").rpc("decide", {
           blind_entry_id: entryId,
           decision,
           notes: notes.trim(),

@@ -20,7 +20,7 @@ export const presidentId = async (
 ): Promise<string | null> => {
   const now = new Date().toISOString();
   const { data: seat } = await admin
-    .schema("access")
+    .schema("api")
     .from("role_assignments")
     .select("user_id")
     .eq("role", "president")
@@ -42,13 +42,13 @@ export const presidentSigner = async (
   }
   const [{ data: profile }, { data: card }] = await Promise.all([
     admin
-      .schema("core")
-      .from("profiles")
+      .schema("api")
+      .from("profiles_all")
       .select("full_name_en, title_form")
       .eq("id", userId)
       .maybeSingle(),
     admin
-      .schema("membership")
+      .schema("api")
       .from("cards")
       .select("number")
       .eq("user_id", userId)

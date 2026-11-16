@@ -31,6 +31,7 @@ const THINGS = {
   "events.event_organizations": "events",
   "events.events": "events",
   "events.joint_tasks": "events",
+  "events.program_items": "events",
   "events.session_links": "events",
   "governance.candidates": "council",
   "governance.election_results": "council",
@@ -55,16 +56,16 @@ const THINGS = {
   "membership.memberships": "membership",
   "membership.service_records": "membership",
   "membership.verification_requests": "membership",
-  "programmes.episode_on_camera": "qirtas",
-  "programmes.episodes": "qirtas",
-  "programmes.needs": "events",
-  "programmes.opening_replies": "membership",
-  "programmes.production_credits": "company",
-  "programmes.production_events": "company",
-  "programmes.productions": "company",
-  "programmes.reels": "qirtas",
-  "programmes.removal_requests": "qirtas",
-  "programmes.six_words": "events",
+  "programs.episode_on_camera": "qirtas",
+  "programs.episodes": "qirtas",
+  "programs.needs": "events",
+  "programs.opening_replies": "membership",
+  "programs.production_credits": "company",
+  "programs.production_events": "company",
+  "programs.productions": "company",
+  "programs.reels": "qirtas",
+  "programs.removal_requests": "qirtas",
+  "programs.six_words": "events",
 } as const;
 
 /**
@@ -136,7 +137,7 @@ const useActivity = (area: "" | Area, limit = PAGE) => {
       );
       const schemas = [...new Set(tables.map((t) => t.split(".")[0] ?? ""))];
       let query = supabase
-        .schema("core")
+        .schema("api")
         .from("activity_log")
         .select(
           "id, table_schema, table_name, operation, actor_id, old_row, new_row, occurred_at"
@@ -181,7 +182,7 @@ const Feed = ({ entries }: { readonly entries: readonly Entry[] }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("access")
+          .schema("api")
           .from("roles")
           .select("key, name_en, name_ar")
       ) ?? [],

@@ -99,19 +99,19 @@ select plan(4);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000c7a1', 'company-director@auib.edu.iq', 'Stage Director');
 
-insert into programmes.productions (id, slug, title_en, title_ar, kind, stage, script_origin, rights_status)
+insert into programs.productions (id, slug, title_en, title_ar, kind, stage, script_origin, rights_status)
 values ('00000000-0000-0000-0000-00000000c7b1', 'majnun-layla', 'Majnun Layla', 'مجنون ليلى',
   'staged_reading', 'approved', 'public_domain', 'pending');
 
 select throws_ok(
-  $$ update programmes.productions set is_public = true where id = '00000000-0000-0000-0000-00000000c7b1' $$,
+  $$ update programs.productions set is_public = true where id = '00000000-0000-0000-0000-00000000c7b1' $$,
   '23514', 'rights_not_cleared', 'No rights, no show: an uncleared production stays off the site');
 
-update programmes.productions
+update programs.productions
 set rights_status = 'cleared', rights_cleared_by = '00000000-0000-0000-0000-00000000c7a1', rights_cleared_at = now()
 where id = '00000000-0000-0000-0000-00000000c7b1';
 select lives_ok(
-  $$ update programmes.productions set is_public = true where id = '00000000-0000-0000-0000-00000000c7b1' $$,
+  $$ update programs.productions set is_public = true where id = '00000000-0000-0000-0000-00000000c7b1' $$,
   'Once cleared, it is shown');
 
 insert into access.role_assignments (user_id, role, scope_type, scope_id)
@@ -120,10 +120,10 @@ values ('00000000-0000-0000-0000-00000000c7a1', 'production_director', 'producti
 
 select pg_temp.login_anon();
 select is(
-  (select name_en from programmes.production_playbill('00000000-0000-0000-0000-00000000c7b1') where role_key = 'production_director'),
+  (select name_en from programs.production_playbill('00000000-0000-0000-0000-00000000c7b1') where role_key = 'production_director'),
   'Stage Director', 'The playbill names the director from their role');
 select is(
-  (select count(*)::int from programmes.production_playbill('00000000-0000-0000-0000-0000000000ff')), 0,
+  (select count(*)::int from programs.production_playbill('00000000-0000-0000-0000-0000000000ff')), 0,
   'An unknown production has no playbill');
 
 select * from finish();

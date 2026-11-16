@@ -6,6 +6,7 @@ import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { hasSessionCookie } from "@/lib/auth/session-cookie";
+import type { BookingTerms } from "@/lib/data/events";
 
 type Status = "booked" | "held" | "waiting" | "reminded" | "none";
 
@@ -26,13 +27,19 @@ type Notice = "booked" | "waitlisted" | "cancelled" | "reminded" | "failed";
  * booking after the first render, and the database decides (events.rsvp).
  */
 export const EventBooking = ({
+  entry,
   eventId,
-  open,
+  forClasses,
+  guestsBy,
   slug,
 }: {
+  /** How (decisions.md, Events: Access): open, rsvp or invite. */
+  readonly entry: string;
   readonly eventId: string;
-  /** An open event: no booking, only "Remind me". */
-  readonly open: boolean;
+  /** "This event is for Members.", for anyone whose class isn't ticked. */
+  readonly forClasses: string;
+  /** On campus, the day Guests' booking closes. */
+  readonly guestsBy: string | null;
   readonly slug: string;
 }) => {
   const t = useTranslations("web.events");
@@ -40,6 +47,7 @@ export const EventBooking = ({
   const calendar = `${localizedPath(locale, "/account/events")}#${slug}`;
   const [signedIn, setSignedIn] = useState(false);
   const [status, setStatus] = useState<Status | null>(null);
+  const [terms, setTerms] = useState<BookingTerms | null>(null);
   const [asks, setAsks] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -47,8 +55,9 @@ export const EventBooking = ({
   const [heldUntil, setHeldUntil] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    const supabase = (await loadClient()).schema("events");
-    const [rsvp, waiting, reminder, event] = await Promise.all([
+    const client = await loadClient();
+    const supabase = client.schema("api");
+    const [rsvp, waiting, reminder, event, standing] = await Promise.all([
       supabase
         .from("rsvps")
         .select("id")
@@ -71,7 +80,9 @@ export const EventBooking = ({
         .select("questions")
         .eq("id", eventId)
         .maybeSingle(),
+      (await loadEvents()).bookingTerms(client, eventId),
     ]);
+    setTerms(standing);
     // Only a required question sends the member to the calendar; the
     // booking's own questions (accessibility, diet) are optional.
     setAsks(
@@ -138,8 +149,34 @@ export const EventBooking = ({
       return on ? "reminded" : "cancelled";
     });
 
-  // Signed out, still loading, or a required question: the calendar asks.
-  if (!signedIn || status === null || (asks && !open && status === "none")) {
+  // An Open event takes no booking, except from a Guest on campus.
+  const open = terms ? !terms.books : entry === "open";
+
+  // Signed out: the one line under the button (decisions.md, Events).
+  if (!signedIn) {
+    return (
+      <>
+        <Button asChild>
+          <a href={calendar}>{entry === "open" ? t("remind") : t("rsvp")}</a>
+        </Button>
+        <span className="type-caption">{t("rsvpHint")}</span>
+      </>
+    );
+  }
+  // Their class isn't ticked: whom it is for, in place of the button.
+  if (terms && !terms.eligible) {
+    return <p className="type-body">{forClasses}</p>;
+  }
+  // A Guest after the 14 days before an event on campus.
+  if (terms?.guests_closed && guestsBy && status === "none") {
+    return (
+      <p className="type-body">
+        {t("guestsClosed", { date: formatLongDate(guestsBy, locale) })}
+      </p>
+    );
+  }
+  // Still loading, or a required question: the calendar asks.
+  if (status === null || (asks && !open && status === "none")) {
     return (
       <Button asChild>
         <a href={calendar}>{open ? t("remind") : t("rsvp")}</a>

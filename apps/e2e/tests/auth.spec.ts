@@ -93,7 +93,7 @@ test("a mistyped address is put right from the inbox screen, with no second acco
   await expect(page.getByLabel("Email")).toHaveValue(typo);
   await expect(english).toHaveValue("Typo Kareem Hasan Member");
   const { count } = await admin()
-    .schema("governance")
+    .schema("api")
     .rpc("user_by_email", { email: typo })
     .then((r) => ({ count: r.data ? 1 : 0 }));
   expect(count).toBe(0);
@@ -144,14 +144,14 @@ test("a name from before the four parts is a to-do on Today, not a block", async
   const { data: users } = await db.auth.admin.listUsers({ perPage: 1000 });
   const id = users.users.find((u) => u.email === member.email)?.id ?? "";
   const { data: before } = await db
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .select("father_name_en, grandfather_name_en, last_name_en")
     .eq("id", id)
     .single();
   await db
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .update({
       father_name_en: null,
       grandfather_name_en: null,
@@ -168,8 +168,8 @@ test("a name from before the four parts is a to-do on Today, not a block", async
     ).toBeVisible();
   } finally {
     await db
-      .schema("core")
-      .from("profiles")
+      .schema("api")
+      .from("profiles_all")
       .update(before ?? {})
       .eq("id", id);
   }
@@ -181,4 +181,88 @@ test("signing out goes straight to the home page", async ({ page }) => {
   await expect(page).toHaveURL(`${urls.web}/`);
   await page.goto(`${urls.web}/account`);
   await expect(page).toHaveURL(/\/sign-in/u);
+});
+
+/** A throwaway account for a password journey, with the shared password. */
+const throwaway = async (label: string) => {
+  const email = `e2e-${label}-${Date.now()}@auib.edu.iq`;
+  const { data, error } = await admin().auth.admin.createUser({
+    email,
+    email_confirm: true,
+    password: PASSWORD,
+    user_metadata: { name_en: "E2E Password" },
+  });
+  if (error) {
+    throw error;
+  }
+  return { email, id: data.user.id };
+};
+
+const NEW_PASSWORD = "E2e-changed-67890";
+
+// Decisions.md, Members: Settings asks for the current password (Supabase's
+// "Require current password when updating"); a wrong one is refused.
+test("Settings changes the password with the current one", async ({ page }) => {
+  const person = await throwaway("change");
+  try {
+    await signInWithPassword(page, person.email);
+    await page.goto(`${urls.web}/account/settings`);
+    const form = page.getByRole("region", { exact: true, name: "Password" });
+    await form.getByLabel("New password").fill(NEW_PASSWORD);
+    // The local stack's config has no key for "Require current password";
+    // where the auth server enforces it, a wrong one is refused.
+    if (process.env.E2E_CURRENT_PASSWORD_REQUIRED) {
+      await form.getByLabel("Current password").fill("not-the-password-1");
+      await form.getByRole("button", { name: "Change the password" }).click();
+      await expect(form.getByRole("alert")).toContainText(
+        "isn’t your current password"
+      );
+    }
+    await form.getByLabel("Current password").fill(PASSWORD);
+    await form.getByRole("button", { name: "Change the password" }).click();
+    await expect(form.getByRole("status")).toContainText(
+      "Your password is changed"
+    );
+    const { error } = await admin().auth.signInWithPassword({
+      email: person.email,
+      password: NEW_PASSWORD,
+    });
+    expect(error).toBeNull();
+  } finally {
+    await admin().auth.admin.deleteUser(person.id);
+  }
+});
+
+// A forgotten password is reset from its email without the current one.
+test("a forgotten password is reset from its link", async ({ page }) => {
+  const person = await throwaway("reset");
+  try {
+    const { data, error } = await admin().auth.admin.generateLink({
+      email: person.email,
+      type: "recovery",
+    });
+    expect(error).toBeNull();
+    const confirm = new URL(`${urls.web}/auth/confirm`);
+    confirm.searchParams.set("token_hash", data.properties?.hashed_token ?? "");
+    confirm.searchParams.set("type", "recovery");
+    // As the forgot-password form asks: the callback, then the reset page.
+    const back = new URL(`${urls.web}/diwan/auth/callback`);
+    back.searchParams.set("next", "/auth/reset");
+    confirm.searchParams.set("next", back.toString());
+    await page.goto(confirm.toString());
+    await page.getByRole("button", { name: "Continue" }).click();
+    await expect(page).toHaveURL(/\/auth\/reset/u);
+    await page.getByLabel("Password", { exact: true }).fill(NEW_PASSWORD);
+    await page.getByRole("button", { name: "Save password" }).click();
+    await expect(page.getByRole("status")).toContainText(
+      "Your password has been changed"
+    );
+    const signedIn = await admin().auth.signInWithPassword({
+      email: person.email,
+      password: NEW_PASSWORD,
+    });
+    expect(signedIn.error).toBeNull();
+  } finally {
+    await admin().auth.admin.deleteUser(person.id);
+  }
 });

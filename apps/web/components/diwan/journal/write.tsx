@@ -841,7 +841,7 @@ const useSavedDraft = (draftId: string | undefined) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("submission_drafts")
           .select("id, category, content")
           .eq("id", draftId ?? "")
@@ -875,7 +875,7 @@ const useDraft = (
       if (savedId) {
         unwrap(
           await supabase
-            .schema("journal")
+            .schema("api")
             .from("submission_drafts")
             .update(row)
             .eq("id", savedId)
@@ -884,7 +884,7 @@ const useDraft = (
       }
       const created = unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("submission_drafts")
           .insert(row)
           .select("id")
@@ -910,7 +910,7 @@ const useDraft = (
     }
     unwrap(
       await supabase
-        .schema("journal")
+        .schema("api")
         .from("submission_drafts")
         .delete()
         .eq("id", savedId)

@@ -12,7 +12,7 @@ import { log } from "@/lib/observability/log";
 export const maxDuration = 60;
 
 /**
- * Hourly (pg_cron, or Vercel Cron with CRON_SECRET): reads the AUIB public
+ * Hourly (pg_cron, with CRON_SECRET): reads the AUIB public
  * calendar (`campusCalendar` in the project file) into core.external_events,
  * and the semesters it opens and closes into core.semesters (role terms, voting
  * standing and declarations follow them). Events that left the feed are
@@ -51,7 +51,7 @@ const sync = async (request: Request) => {
   }
   const syncedAt = new Date().toISOString();
   const { error: storeError } = await admin
-    .schema("core")
+    .schema("api")
     .from("external_events")
     .upsert(
       events.map((e) => ({
@@ -75,7 +75,7 @@ const sync = async (request: Request) => {
   const earliest =
     events.map((e) => e.start).toSorted()[0] ?? new Date().toISOString();
   await admin
-    .schema("core")
+    .schema("api")
     .from("external_events")
     .delete()
     .eq("source", "auib")
@@ -86,7 +86,7 @@ const sync = async (request: Request) => {
   const stored = await Promise.all(
     termsFromFeed(events).map(async (term) => {
       const { error } = await admin
-        .schema("core")
+        .schema("api")
         .from("semesters")
         .upsert(term, { onConflict: "code" });
       if (error) {

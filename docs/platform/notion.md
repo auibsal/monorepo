@@ -19,9 +19,32 @@ read-only view.
 | The handbook and the internal documents | Certificates, staff hours, Qalam's roster, the Prize's shortlists and votes |
 | | Adopted minutes (the official copy, locked) |
 
-**From the site (read-only)** holds the copies the platform writes for
-planning: **Officers** and **Qirtas pipeline** (counts only; review is
-blind). Edit them on the site; each row links there.
+**From the site (read-only)** holds every copy the platform writes for
+planning, so plans, tasks and minutes can link to them (decisions.md,
+Where things live). Each has one row per record, written only by the site
+with a **Diwan** link back, updated by the sync within 15 minutes, never
+read back; edit the record in the Diwan.
+
+| Copy | Columns | Code |
+| --- | --- | --- |
+| Officers | the Council's seats and their holders | `mirrors.ts` |
+| Qirtas pipeline | counts per stage only (review is blind) | `mirrors.ts` |
+| Events | title, dates, venue, status, access, lead, public page; an English and an Arabic row | `events.ts` |
+| Needs | item, quantity, date, what it is for, status | `needs.ts` |
+| Editions | number, titles, season, call opens and closes, publication date, status, public page; ↔ Events (the launch) | `copies.ts` |
+| Productions | the Company's productions and Next Stop's episodes: title, kind (reading, production, episode, special), season or episode code, key dates, status, public page; ↔ Events | `copies.ts` |
+| Openings | role, seat, opens, closes, status; never applicants or counts of people | `copies.ts` |
+| Organizations | names, kind, listed, public link; ↔ Events (hosted and co-sponsored); never their people, contacts or memoranda | `copies.ts` |
+| Announcements and resolutions | title, kind, date, RES number, public link; never a resolution about a person (a role exception) | `copies.ts` |
+| Measures | the five measures, written on the first of each month from the site's records (counts only) | `copies.ts` |
+
+The copies made on Nov 16, 2026 tick **Archived** when their record goes
+and keep the row; nothing is deleted. Never copied: anything about a
+person (beyond the Council's seats), Qirtas's pieces and the Sunday Paper.
+Each copy reads only the columns in `COPY_COLUMNS` (`copies.ts`), and a
+test keeps them free of personal fields. The weekly scan (`scan.ts`) reads
+every copy, the officers aside, beside the documents. Tasks and Projects
+may link to any copy.
 
 **Events are the site's** (decisions.md, Events; Where things live, Nov
 16, 2026). They are made and edited only in the Diwan (Events, New event),

@@ -81,9 +81,8 @@ hand. The nightly backup and how to restore it: `docs/platform/backups.md`.
 - `claude/decisions.md` and `claude/glossary_ar.md`: the owner’s decisions and the Arabic glossary, a read-only mirror of the Claude project’s copies (replaced whole, never edited here)
 - `AGENTS.md`: the code conventions for people and AI agents
 - `packages/brand/BRAND-BOOK.md`: the brand rules
-- `ARCHITECTURE_AND_INTEGRATIONS.md`: how the pieces fit together
 - `docs/adr/`: the technical decisions and why
-- `docs/platform/`: the runbooks (email, backups, retention, secrets, vendors, releases, incidents)
+- `docs/platform/`: the runbooks, starting with how the platform works (`overview.md`), and every platform setting (`settings.md`)
 - `PROGRESS.md`: what is done and what is open
 
 ## Contributing

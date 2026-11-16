@@ -63,7 +63,20 @@ const DiwanLayout = async ({ children, params }: DiwanLayoutProperties) => {
   // feels like one place.
   return (
     <NextIntlClientProvider
-      messages={{ auth, common, diwan, web: { nav: web.nav } }}
+      messages={{
+        auth,
+        common,
+        diwan,
+        // "Good to know" and "How was it?" read the same in the event
+        // editor as on the event's page.
+        web: {
+          events: {
+            feedback: { ratings: web.events.feedback.ratings },
+            goodToKnow: web.events.goodToKnow,
+          },
+          nav: web.nav,
+        },
+      }}
     >
       <AppProviders>
         <div className="flex min-h-svh flex-col">

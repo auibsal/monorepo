@@ -36,7 +36,7 @@ export const POST = async (request: Request) => {
   const at = new Date(event.expTimeMillis).toISOString();
   const state = event.eventType === "save" ? "saved" : "removed";
   const { data: pass } = await admin
-    .schema("membership")
+    .schema("api")
     .from("wallet_passes")
     .select("state, event_at")
     .eq("code", code)
@@ -51,7 +51,7 @@ export const POST = async (request: Request) => {
       return NextResponse.json({ ok: true });
     }
     await admin
-      .schema("membership")
+      .schema("api")
       .from("wallet_passes")
       .update({ event_at: at, state })
       .eq("code", code);
@@ -60,14 +60,14 @@ export const POST = async (request: Request) => {
 
   // A pass issued before the site kept track: only a current card counts.
   const { data: card } = await admin
-    .schema("membership")
+    .schema("api")
     .from("cards")
     .select("user_id")
     .eq("code", code)
     .maybeSingle();
   if (card) {
     await admin
-      .schema("membership")
+      .schema("api")
       .from("wallet_passes")
       .insert({ code, event_at: at, state, user_id: card.user_id });
   }

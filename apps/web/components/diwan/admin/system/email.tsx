@@ -23,7 +23,7 @@ export const EmailDelivery = () => {
   const { supabase } = useAuth();
   const health = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("core").rpc("outbox_health"))?.[0] ?? null,
+      unwrap(await supabase.schema("api").rpc("outbox_health"))?.[0] ?? null,
     queryKey: ["admin", "outbox-health"],
   });
   const h = health.data;

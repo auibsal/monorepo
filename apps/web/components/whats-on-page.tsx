@@ -4,7 +4,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { getTranslations } from "next-intl/server";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader } from "@/components/section";
-import { loadProgramme } from "@/components/series";
+import { loadProgram } from "@/components/series";
 import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
 import { events } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
@@ -50,13 +50,13 @@ export const WhatsOn = async ({
 }) => {
   const now = new Date(await roughlyNow());
   const t = await getTranslations({ locale, namespace: "web.events" });
-  const hostId = host ? (await loadProgramme(host))?.id : undefined;
+  const hostId = host ? (await loadProgram(host))?.id : undefined;
   const all = await readPublished(
     ["events"],
     (c) => events.calendar(c, month.from, month.to),
     []
   );
-  const rows = hostId ? all.filter((row) => row.programme_id === hostId) : all;
+  const rows = hostId ? all.filter((row) => row.program_id === hostId) : all;
   const upcoming = rows.length === 0 ? await nextAfter(month, hostId) : null;
   const feed = `${project.url.replace(HTTP_SCHEME, "webcal:")}/calendar.ics?lang=${locale}`;
   const href = (next: Month) => whatsOnPath(next, host);

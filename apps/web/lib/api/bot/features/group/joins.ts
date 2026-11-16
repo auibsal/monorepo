@@ -30,7 +30,7 @@ import { connectPage, rulesPage } from "../../links";
 export const joins = new Composer<BotContext>();
 
 // Requests waiting for an admin, so linking later can let the person in.
-const waiting = () => db().schema("core").from("telegram_members");
+const waiting = () => db().schema("api").from("telegram_members");
 
 const forget = (chatId: number, telegramId: number) =>
   waiting().delete().eq("chat_id", chatId).eq("telegram_id", telegramId);

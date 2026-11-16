@@ -29,13 +29,13 @@ export const CreditedNames = () => {
   const [ar, setAr] = useState("");
   const list = useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("programmes").rpc("credited_names")) ?? [],
+      unwrap(await supabase.schema("api").rpc("credited_names")) ?? [],
     queryKey: KEY,
   });
   const save = useMutation({
     mutationFn: async (input: { ar: string; en: string; member: string }) =>
       unwrap(
-        await supabase.schema("programmes").rpc("set_credited_name", {
+        await supabase.schema("api").rpc("set_credited_name", {
           member: input.member,
           name_ar: input.ar,
           name_en: input.en,

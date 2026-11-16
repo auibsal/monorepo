@@ -30,7 +30,7 @@ export const POST = async (request: Request) => {
   }
 
   const { data: agreement } = await session.supabase
-    .schema("governance")
+    .schema("api")
     .from("partner_agreements")
     .select("signed_document_path")
     .eq("id", parsed.data.id)

@@ -15,7 +15,7 @@ import { ErrorLine } from "@/components/diwan/admin/kit";
 import { DiwanSection } from "@/components/diwan/page";
 import { SectionSpinner } from "@/components/diwan/states";
 import { useAuth } from "@/lib/auth/provider";
-import { programmes } from "@/lib/data";
+import { programs } from "@/lib/data";
 import { useMyMembership } from "@/lib/diwan/queries";
 import { FlowReceipt, StatusLine, useReviewWords } from "./flow";
 
@@ -77,7 +77,7 @@ const ApplicationEditor = ({
   readonly closesAt: string | null;
   readonly director: boolean;
   readonly openingId: string;
-  readonly questions: readonly programmes.Question[];
+  readonly questions: readonly programs.Question[];
 }) => {
   const t = useTranslations("diwan.getInvolved.apply");
   const tf = useTranslations("diwan.flow");
@@ -91,7 +91,7 @@ const ApplicationEditor = ({
   const signer = useQuery({
     queryFn: async () => {
       const { data, error } = await supabase
-        .schema("core")
+        .schema("api")
         .rpc("my_register_name");
       if (error) {
         throw error;
@@ -127,8 +127,7 @@ const ApplicationEditor = ({
     .map((l) => l.trim())
     .filter(Boolean);
   const linksOk =
-    links.length <= MAX_LINKS &&
-    links.every((l) => programmes.WORK_LINK.test(l));
+    links.length <= MAX_LINKS && links.every((l) => programs.WORK_LINK.test(l));
   const input = {
     accommodation: form.accommodation,
     answers: form.answers,
@@ -139,10 +138,10 @@ const ApplicationEditor = ({
     openingId,
   };
   const autosave = useMutation({
-    mutationFn: () => programmes.saveApplication(supabase, input, false),
+    mutationFn: () => programs.saveApplication(supabase, input, false),
   });
   const send = useMutation({
-    mutationFn: () => programmes.saveApplication(supabase, input, true),
+    mutationFn: () => programs.saveApplication(supabase, input, true),
     onSuccess: async () => {
       onSent();
       await queryClient.invalidateQueries({ queryKey: key });
@@ -300,7 +299,7 @@ const ApplicationEditor = ({
   );
 };
 
-type Existing = Awaited<ReturnType<typeof programmes.myApplications>>[number];
+type Existing = Awaited<ReturnType<typeof programs.myApplications>>[number];
 
 /** One application once sent: the receipt the first time, then where it stands. */
 const SentApplication = ({
@@ -350,7 +349,7 @@ export const ApplyForm = (props: {
   readonly closesAt: string | null;
   readonly director: boolean;
   readonly openingId: string;
-  readonly questions: readonly programmes.Question[];
+  readonly questions: readonly programs.Question[];
 }) => {
   const { openingId } = props;
   const t = useTranslations("diwan.getInvolved.apply");
@@ -359,7 +358,7 @@ export const ApplyForm = (props: {
   const [justSent, setJustSent] = useState(false);
   const applications = useQuery({
     enabled: Boolean(user),
-    queryFn: () => programmes.myApplications(supabase, user?.id ?? ""),
+    queryFn: () => programs.myApplications(supabase, user?.id ?? ""),
     queryKey: ["applications", user?.id ?? ""],
   });
   const existing = applications.data?.find((a) => a.opening_id === openingId);

@@ -9,7 +9,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
-import { type events, localized, unwrap } from "@/lib/data";
+import { events, localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { DiwanSection } from "../../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../../states";
@@ -30,7 +30,7 @@ const useEventRows = (tab: Kind) => {
     queryFn: async () => {
       const now = new Date().toISOString();
       let query = supabase
-        .schema("events")
+        .schema("api")
         .from("events")
         .select(adminEventColumns);
       if (tab === "drafts") {
@@ -52,7 +52,7 @@ const useEventRows = (tab: Kind) => {
       const rsvps = ids.length
         ? (unwrap(
             await supabase
-              .schema("events")
+              .schema("api")
               .from("rsvps")
               .select("event_id")
               .eq("status", "confirmed")
@@ -77,7 +77,7 @@ type Row = NonNullable<ReturnType<typeof useEventRows>["data"]>[number];
 export const EventsList = () => {
   const t = useTranslations("diwan.admin.events");
   const ts = useTranslations("diwan.admin.kit.statuses");
-  const te = useTranslations("diwan.admin.event");
+  const tw = useTranslations("web.events.goodToKnow.who");
   const tk = useTranslations("diwan.admin.kit");
   const locale = useLocale() as Locale;
   const upcoming = useEventRows("upcoming");
@@ -108,7 +108,20 @@ export const EventsList = () => {
       key: "when",
     },
     {
-      cell: (e) => te(`entries.${e.entry as events.Entry}`),
+      cell: (e) =>
+        e.entry === "invite"
+          ? tw("invite")
+          : `${events.classesLabel(e.classes, {
+              everyone: tw("everyone"),
+              locale: locale === "ar" ? "ar" : "en",
+              names: {
+                associate: tw("classes.associate"),
+                guest: tw("classes.guest"),
+                honorary: tw("classes.honorary"),
+                member: tw("classes.member"),
+              },
+              only: (name) => tw("only", { classes: name }),
+            })} · ${tw(e.entry === "open" ? "how.open" : "how.rsvp")}`,
       header: t("columns.access"),
       key: "access",
     },

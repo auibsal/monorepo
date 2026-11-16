@@ -32,16 +32,16 @@ export const POST = async (request: Request) => {
   const admin = createAdminClient();
   try {
     const cleared = await admin
-      .schema("access")
-      .from("recovery_codes")
+      .schema("api")
+      .from("recovery_codes_all")
       .delete()
       .eq("user_id", session.userId);
     if (cleared.error) {
       throw cleared.error;
     }
     const stored = await admin
-      .schema("access")
-      .from("recovery_codes")
+      .schema("api")
+      .from("recovery_codes_all")
       .insert(
         codes.map((code) => ({
           code_hash: hashRecoveryCode(code),

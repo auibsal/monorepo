@@ -14,7 +14,7 @@ export const GET = async (): Promise<Response> => {
   const commit = process.env.VERCEL_GIT_COMMIT_SHA ?? null;
   try {
     const { error } = await createAdminClient()
-      .schema("core")
+      .schema("api")
       .from("settings")
       .select("key", { count: "exact", head: true })
       .limit(1);

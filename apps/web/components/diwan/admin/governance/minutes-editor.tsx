@@ -38,7 +38,7 @@ export const MinutesEditor = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("minutes")
           .select("*")
           .eq("id", minutesId ?? "")
@@ -51,7 +51,7 @@ export const MinutesEditor = () => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("minutes")
           .update({ adopted_on: adoptedOn, status: "approved" })
           .eq("id", minutesId ?? "")

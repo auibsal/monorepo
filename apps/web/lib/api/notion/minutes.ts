@@ -40,7 +40,7 @@ const BODIES: Record<string, governance.MeetingBody> = {
 };
 
 const publisherFor = async (ctx: SyncContext, email: string) => {
-  const { data } = await ctx.admin.schema("access").rpc("notion_publisher", {
+  const { data } = await ctx.admin.schema("api").rpc("notion_publisher", {
     email,
     permission: "governance.manage",
     scope_type: "global",
@@ -76,9 +76,9 @@ const eventFacts = async (ctx: SyncContext, eventId: string | null) => {
     return null;
   }
   const { data } = await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("events")
-    .select("starts_at, entry")
+    .select("starts_at, entry, classes")
     .eq("id", eventId)
     .maybeSingle();
   return data
@@ -86,7 +86,11 @@ const eventFacts = async (ctx: SyncContext, eventId: string | null) => {
         day: new Date(data.starts_at).toLocaleDateString("en-CA", {
           timeZone: "Asia/Baghdad",
         }),
-        entry: data.entry,
+        // Members only: the one class, and not Invited only.
+        membersOnly:
+          data.entry !== "invite" &&
+          data.classes.length === 1 &&
+          data.classes[0] === "member",
       }
     : null;
 };
@@ -130,9 +134,9 @@ const readDraft = async (
   const facts = await eventFacts(ctx, eventId);
   // Council meetings are Members events: members may observe them, with
   // the closed session held apart (decisions.md, Events: Access).
-  if (body === "council" && facts && facts.entry !== "members") {
+  if (body === "council" && facts && !facts.membersOnly) {
     problems.push(
-      "A Council meeting's event takes Access: Members (members may observe it)."
+      "A Council meeting's event is for Members only (members may observe it): set Who can come in the Diwan."
     );
   }
   // One home for the date (decisions.md, Where things live): the event's
@@ -187,11 +191,11 @@ const sendMinutes = async (
   const publisher = await publisherFor(ctx, email);
   if (!publisher) {
     await refuse(ctx, page, [
-      `${email} does not hold governance.manage in the Diwan. Ask the Secretary to set Minutes in the Diwan.`,
+      "Whoever set it does not hold governance.manage in the Diwan. Ask the Secretary to set Minutes in the Diwan.",
     ]);
     return;
   }
-  const minutes = ctx.admin.schema("governance").from("minutes");
+  const minutes = ctx.admin.schema("api").from("minutes");
   const { data, error } = existing
     ? await minutes.update(draft).eq("id", existing.id).select("id").single()
     : await minutes
@@ -244,7 +248,7 @@ const handleMeeting = async (
   const { data: existing } =
     link && UUID.test(link.key)
       ? await ctx.admin
-          .schema("governance")
+          .schema("api")
           .from("minutes")
           .select("id, status, adopted_on")
           .eq("id", link.key)

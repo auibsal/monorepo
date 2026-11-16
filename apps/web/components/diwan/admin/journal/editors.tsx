@@ -133,7 +133,7 @@ export const IssueEditor = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("issues")
           .select("*")
           .eq("id", issueId ?? "")
@@ -169,7 +169,7 @@ export const IssueEditor = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("id, title_en, title_ar, starts_at")
           .or(
@@ -212,7 +212,7 @@ export const IssueEditor = () => {
         title_en: form.title.en.trim() || null,
         volume: Number(form.volume),
       };
-      const table = supabase.schema("journal").from("issues");
+      const table = supabase.schema("api").from("issues");
       if (issueId) {
         unwrap(await table.update(row).eq("id", issueId));
         return issueId;

@@ -21,12 +21,12 @@ export const Renewal = () => {
   const queryClient = useQueryClient();
   const due = useQuery({
     queryFn: async () =>
-      Boolean(unwrap(await supabase.schema("membership").rpc("renewal_due"))),
+      Boolean(unwrap(await supabase.schema("api").rpc("renewal_due"))),
     queryKey: KEY,
   });
   const renew = useMutation({
     mutationFn: async () =>
-      unwrap(await supabase.schema("membership").rpc("renew_membership")),
+      unwrap(await supabase.schema("api").rpc("renew_membership")),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
   });
   if (renew.isSuccess) {

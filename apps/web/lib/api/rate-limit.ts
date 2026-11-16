@@ -108,7 +108,7 @@ export const withinRateLimit = async (
     .update(`${form}|${key ?? visitorOf(request)}`)
     .digest("hex");
   const { data, error } = await createAdminClient()
-    .schema("core")
+    .schema("api")
     .rpc("take_rate", {
       bucket,
       max_hits: max,

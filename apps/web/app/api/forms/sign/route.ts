@@ -60,7 +60,7 @@ export const POST = async (request: Request) => {
   }
 
   const { data, error } = await createAdminClient()
-    .schema("governance")
+    .schema("api")
     .rpc("sign_form", {
       anonymous: input.anonymous,
       data: input.data as never,
@@ -111,9 +111,7 @@ const guestAccount = async (
   email: string,
   metadata: Record<string, string>
 ) => {
-  const found = await admin
-    .schema("governance")
-    .rpc("user_by_email", { email });
+  const found = await admin.schema("api").rpc("user_by_email", { email });
   if (found.data) {
     return { existing: true, id: found.data };
   }
@@ -145,7 +143,7 @@ const makeQalamAccounts = async (
 ) => {
   const admin = createAdminClient();
   const link = await admin
-    .schema("governance")
+    .schema("api")
     .rpc("consent_link", { submission_id: submissionId })
     .maybeSingle();
   const parentEmail = link.data?.sent_to ?? "";
@@ -162,7 +160,7 @@ const makeQalamAccounts = async (
     first_name_en: first,
     last_name_en: last,
   });
-  const enrolled = await admin.schema("programmes").rpc("qalam_enroll", {
+  const enrolled = await admin.schema("api").rpc("qalam_enroll", {
     parent: parent.id,
     student: student.id,
     submission_id: submissionId,
@@ -171,7 +169,7 @@ const makeQalamAccounts = async (
     throw enrolled.error;
   }
   await admin
-    .schema("core")
+    .schema("api")
     .from("outbox")
     .insert({
       kind: "membership.parent_account",
@@ -188,7 +186,7 @@ const makeQalamAccounts = async (
 const makeParent = async (submissionId: string, signerName: string) => {
   const admin = createAdminClient();
   const link = await admin
-    .schema("governance")
+    .schema("api")
     .rpc("parent_link", { submission_id: submissionId })
     .maybeSingle();
   const email = link.data?.sent_to;
@@ -199,13 +197,13 @@ const makeParent = async (submissionId: string, signerName: string) => {
     full_name_en: signerName.trim(),
   });
   const made = await admin
-    .schema("governance")
+    .schema("api")
     .rpc("make_parent", { parent: parent.id, submission_id: submissionId });
   if (made.error) {
     throw made.error;
   }
   await admin
-    .schema("core")
+    .schema("api")
     .from("outbox")
     .insert({
       kind: "membership.parent_account",

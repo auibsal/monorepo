@@ -33,7 +33,7 @@ export const POST = async (request: Request) => {
   }
 
   const { data: path, error } = await session.supabase
-    .schema("journal")
+    .schema("api")
     .rpc("open_original", { file: parsed.data.id });
   if (error || !path) {
     return error?.code === "42501"

@@ -37,8 +37,8 @@ interface Need {
   item: string;
   needed_by: string;
   /** Where the need is from: Qirtas's row, or the event's title. */
-  programme: { name_ar: string; name_en: string } | null;
-  programme_id: string | null;
+  program: { name_ar: string; name_en: string } | null;
+  program_id: string | null;
   provided_note: string | null;
   provided_on: string | null;
   purpose: string;
@@ -59,7 +59,7 @@ const usePartnerNames = () => {
   const { supabase } = useAuth();
   return useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [],
+      unwrap(await supabase.schema("api").rpc("partner_names")) ?? [],
     queryKey: ["admin", "partner-names"],
   });
 };
@@ -81,7 +81,7 @@ const RequestActions = ({ need }: { readonly need: Need }) => {
     mutationFn: async (status: Need["status"]) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("needs")
           .update(
             status === "requested"
@@ -182,11 +182,7 @@ const NeedRow = ({
   const remove = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase
-          .schema("programmes")
-          .from("needs")
-          .delete()
-          .eq("id", need.id)
+        await supabase.schema("api").from("needs").delete().eq("id", need.id)
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
   });
@@ -200,8 +196,8 @@ const NeedRow = ({
   const facts = [
     t("quantity", { count: formatNumber(need.quantity, locale) }),
     t("neededBy", { date: formatLongDate(need.needed_by, locale) }),
-    showProgram && need.programme
-      ? localized(need.programme, "name", locale)
+    showProgram && need.program
+      ? localized(need.program, "name", locale)
       : null,
   ].filter(Boolean);
 
@@ -239,7 +235,7 @@ const NeedRow = ({
 /** Whose list a need is on: an event's (decisions.md) or Qirtas's row. */
 type NeedOwner =
   | { readonly column: "event_id"; readonly id: string }
-  | { readonly column: "programme_id"; readonly id: string };
+  | { readonly column: "program_id"; readonly id: string };
 
 const NewNeed = ({
   onDone,
@@ -262,14 +258,14 @@ const NewNeed = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("needs")
           .insert({
             item: form.item.trim(),
             needed_by: form.needed_by,
             ...(owner.column === "event_id"
               ? { event_id: owner.id }
-              : { programme_id: owner.id }),
+              : { program_id: owner.id }),
             purpose: form.purpose.trim(),
             quantity: Number(form.quantity),
           })
@@ -358,16 +354,16 @@ const NewNeed = ({
  */
 export const Needs = ({
   eventId,
-  programmeId,
+  programId,
 }: {
   readonly eventId?: string;
-  readonly programmeId?: string;
+  readonly programId?: string;
 }) => {
   let owner: NeedOwner | null = null;
   if (eventId) {
     owner = { column: "event_id", id: eventId };
-  } else if (programmeId) {
-    owner = { column: "programme_id", id: programmeId };
+  } else if (programId) {
+    owner = { column: "program_id", id: programId };
   }
   const t = useTranslations("diwan.admin.needs");
   const { supabase } = useAuth();
@@ -375,10 +371,10 @@ export const Needs = ({
   const needs = useQuery({
     queryFn: async () => {
       let query = supabase
-        .schema("programmes")
+        .schema("api")
         .from("needs")
         .select(
-          "id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note, given_by, programme_id, event_id"
+          "id, item, quantity, needed_by, purpose, status, requested_on, provided_on, provided_note, given_by, program_id, event_id"
         )
         .order("needed_by");
       if (owner) {
@@ -388,15 +384,13 @@ export const Needs = ({
       // The programs live in another schema (core), which the Data API
       // can't embed across; read their names beside the needs.
       const ids = [
-        ...new Set(
-          rows.flatMap((r) => (r.programme_id ? [r.programme_id] : []))
-        ),
+        ...new Set(rows.flatMap((r) => (r.program_id ? [r.program_id] : []))),
       ];
-      const programmes = ids.length
+      const programs = ids.length
         ? (unwrap(
             await supabase
-              .schema("core")
-              .from("programmes")
+              .schema("api")
+              .from("programs")
               .select("id, name_en, name_ar, slug")
               .in("id", ids)
           ) ?? [])
@@ -407,7 +401,7 @@ export const Needs = ({
       const eventRows = eventIds.length
         ? (unwrap(
             await supabase
-              .schema("events")
+              .schema("api")
               .from("events")
               .select("id, title_en, title_ar")
               .in("id", eventIds)
@@ -417,8 +411,8 @@ export const Needs = ({
         const event = eventRows.find((e) => e.id === r.event_id);
         return {
           ...r,
-          programme:
-            programmes.find((p) => p.id === r.programme_id) ??
+          program:
+            programs.find((p) => p.id === r.program_id) ??
             (event
               ? { name_ar: event.title_ar ?? "", name_en: event.title_en ?? "" }
               : null),

@@ -181,6 +181,31 @@ export const eventReminder = (
     ],
   }));
 
+/**
+ * "Thanks for coming" (decisions.md, Channels and email: Events), at 9:00
+ * a.m. Baghdad time the day after, to everyone who checked in: one
+ * question, "How was it?", on the event's page, open for 14 days.
+ */
+export const thanksForComing = (lang: Lang, e: EventInfo, app: string) =>
+  build(lang, (l) => ({
+    action: {
+      href: `${app}${localizedPath(l, `/events/${e.slug ?? ""}`)}#feedback`,
+      label: l === "ar" ? "أجب عن سؤال واحد" : "Answer one question",
+    },
+    heading:
+      l === "ar"
+        ? `شكرًا لحضورك: ${title(e, l)}`
+        : `Thanks for coming: ${title(e, l)}`,
+    paragraphs: [
+      l === "ar"
+        ? "سعدنا بوجودك. سؤال واحد: كيف كانت؟"
+        : "We were glad to have you. One question: how was it?",
+      l === "ar"
+        ? "يصل جوابك إلى فريق الفعالية دون اسمك، ويبقى السؤال مفتوحًا 14 يومًا."
+        : "Your answer reaches the event’s team without your name. The question stays open for 14 days.",
+    ],
+  }));
+
 /** Letters and Gallery are read blind; News, Video and Voices by name. */
 export type DeskKind = "blind" | "named";
 
@@ -192,7 +217,7 @@ const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
     ],
     en: [
       "Your work is read blind: readers and editors never see your name until a decision is made.",
-      "Every author hears by the announced date, either way. You can follow its progress on Submit to Qirtas.",
+      "Every author hears by the announced date, either way. You can follow its progress in your account, under Work.",
     ],
   },
   named: {
@@ -202,7 +227,7 @@ const RECEIVED: Record<DeskKind, Record<Lang, string[]>> = {
     ],
     en: [
       "The desk editor will read it and work with you by name on the edit and the facts.",
-      "You can follow its progress on Submit to Qirtas.",
+      "You can follow its progress in your account, under Work.",
     ],
   },
 };
@@ -423,11 +448,11 @@ const callClosing = (closesAt: string, l: Lang) => {
   if (!callHasDeadline(closesAt)) {
     return l === "ar"
       ? "لم يُحدَّد موعد الإغلاق بعد. أرسل عملك من صفحة الكتابة لقرطاس."
-      : "Its closing date is still to be set. Send yours from Submit to Qirtas.";
+      : "Its closing date is still to be set. Send yours from its page: Send your work.";
   }
   return l === "ar"
     ? `تستقبل الدعوة الأعمال حتى ${formatLongDate(closesAt, l)}. أرسل عملك من صفحة الكتابة لقرطاس.`
-    : `It takes work until ${formatLongDate(closesAt, l)}. Send yours from Submit to Qirtas.`;
+    : `It takes work until ${formatLongDate(closesAt, l)}. Send yours from its page: Send your work.`;
 };
 
 /** "Tell me when": a Qirtas call has opened. */
@@ -921,7 +946,7 @@ const PAPER_TITLES = {
     places: "أدوار مفتوحة في «شارك معنا»",
     society: "من الجمعية",
     write: "أرسل عملك إلى قرطاس",
-    writeTitle: "أرسل إلى قرطاس",
+    writeTitle: "أرسل عملك",
   },
   en: {
     events: "Events this month",
@@ -932,7 +957,7 @@ const PAPER_TITLES = {
     places: "Open on Get involved",
     society: "From the Society",
     write: "Send your work to Qirtas",
-    writeTitle: "Submit to Qirtas",
+    writeTitle: "Send your work",
   },
 } as const;
 
@@ -955,7 +980,7 @@ export const sundayPaper = (
     pieces: SundayItem[];
     /** "From the Society": the notices sent this month (decisions §5). */
     society?: SocietyItem[];
-    /** Submit to Qirtas. */
+    /** Send your work (Qirtas's button). */
     write?: string;
   }
 ) =>
@@ -1112,7 +1137,12 @@ export const incidentReported = (
 
 /** One of next week's public events, for Student Life's weekly email. */
 export interface WeekEvent {
+  /** Who can come (decisions.md, Events: Access): the classes ticked. */
+  classes: string[];
+  /** How: open, rsvp (Booking required) or invite. */
+  entry: string;
   image: string | null;
+  off_campus: boolean;
   starts_at: string;
   summary_ar: string | null;
   summary_en: string | null;
@@ -1123,6 +1153,52 @@ export interface WeekEvent {
   venue_ar: string | null;
   venue_en: string | null;
 }
+
+const CLASS_ORDER = ["member", "associate", "honorary", "guest"] as const;
+const CLASS_WORDS: Record<
+  (typeof CLASS_ORDER)[number],
+  Record<Lang, string>
+> = {
+  associate: { ar: "الأعضاء المنتسبين", en: "Associate Members" },
+  guest: { ar: "الضيوف", en: "Guests" },
+  honorary: { ar: "الأعضاء الفخريين", en: "Honorary Members" },
+  member: { ar: "الأعضاء", en: "Members" },
+};
+
+/**
+ * Who can come and how, in a sentence (decisions.md, Events: Access):
+ * "Open to everyone; booking required." On campus, the day Guests' booking
+ * closes, 14 days before.
+ */
+export const accessSentence = (
+  e: Pick<WeekEvent, "classes" | "entry" | "off_campus" | "starts_at">,
+  l: Lang
+) => {
+  const named = CLASS_ORDER.filter((c) => e.classes.includes(c)).map(
+    (c) => CLASS_WORDS[c][l]
+  );
+  const list = new Intl.ListFormat(l === "ar" ? "ar" : "en-US", {
+    type: "conjunction",
+  }).format(named);
+  const everyone = named.length === CLASS_ORDER.length;
+  const whoAr = everyone ? "مفتوحة للجميع" : `يحضرها ${list}`;
+  const who = l === "ar" ? whoAr : `Open to ${everyone ? "everyone" : list}`;
+  const how =
+    e.entry === "open"
+      ? { ar: "بلا حجز", en: "no booking needed" }
+      : { ar: "والحجز مطلوب", en: "booking required" };
+  const guestsBy =
+    !e.off_campus && e.classes.includes("guest")
+      ? formatLongDate(
+          new Date(new Date(e.starts_at).getTime() - 14 * 86_400_000),
+          l
+        )
+      : null;
+  if (l === "ar") {
+    return `${who}، ${how.ar}.${guestsBy ? ` يحجز الضيوف قبل ${guestsBy}.` : ""}`;
+  }
+  return `${who}; ${how.en}.${guestsBy ? ` Guests book by ${guestsBy}.` : ""}`;
+};
 
 /**
  * The event's ready-to-paste paragraph, in one language: what, when,
@@ -1136,6 +1212,7 @@ const weekParagraph = (e: WeekEvent, l: Lang) => {
       `${e.title_ar}.`,
       e.summary_ar,
       `${at}${place ? `، ${place}` : ""}.`,
+      accessSentence(e, "ar"),
       `التفاصيل: ⁦${e.url_ar}⁩`,
     ]
       .filter(Boolean)
@@ -1145,6 +1222,7 @@ const weekParagraph = (e: WeekEvent, l: Lang) => {
     `${e.title_en}.`,
     e.summary_en,
     `${at}${e.venue_en ? `, ${e.venue_en}` : ""}.`,
+    accessSentence(e, "en"),
     `Details: ${e.url_en}`,
   ]
     .filter(Boolean)

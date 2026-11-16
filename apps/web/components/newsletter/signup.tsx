@@ -67,7 +67,7 @@ export const NewsletterSignup = ({
     // Only for someone signed in, and loaded then: visitors never fetch it.
     import("@/lib/diwan/supabase")
       .then(({ getSupabase }) =>
-        getSupabase().schema("membership").rpc("my_membership")
+        getSupabase().schema("api").rpc("my_membership")
       )
       .then(({ data }) => {
         const row = (Array.isArray(data) ? data[0] : data) as {

@@ -1013,6 +1013,7 @@ export type Database = {
           last_error: string | null;
           payload: NonNullable<Json>;
           processed_at: string | null;
+          waits_for_fix: boolean;
         };
         ComputedFields: never;
         Insert: {
@@ -1023,6 +1024,7 @@ export type Database = {
           last_error?: string | null;
           payload?: NonNullable<Json>;
           processed_at?: string | null;
+          waits_for_fix?: boolean;
         };
         Update: {
           attempts?: number;
@@ -1032,6 +1034,7 @@ export type Database = {
           last_error?: string | null;
           payload?: NonNullable<Json>;
           processed_at?: string | null;
+          waits_for_fix?: boolean;
         };
         Relationships: [];
       };
@@ -1252,7 +1255,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      programmes: {
+      programs: {
         Row: {
           created_at: string;
           id: string;
@@ -1734,13 +1737,6 @@ export type Database = {
           asked_at: string;
         }[];
       };
-      my_minor_status: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          consent_pending: boolean;
-          minor: boolean;
-        }[];
-      };
       my_name_parts: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1849,24 +1845,6 @@ export type Database = {
         }[];
       };
       post_notice: { Args: { id: string; shown_at: string }; Returns: string };
-      previous_semester: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          code: string;
-          created_at: string;
-          ends_on: string;
-          id: string;
-          name_ar: string;
-          name_en: string;
-          starts_on: string;
-        };
-        SetofOptions: {
-          from: "*";
-          to: "semesters";
-          isOneToOne: true;
-          isSetofReturn: false;
-        };
-      };
       prove_merge: { Args: { code: string }; Returns: string };
       record_history: {
         Args: { record_id: string; record_table: string };
@@ -1922,6 +1900,7 @@ export type Database = {
         Args: { news: boolean; paper: boolean };
         Returns: undefined;
       };
+      society_measures: { Args: { month_start: string }; Returns: Json };
       society_notices: {
         Args: { max_results?: number };
         Returns: {
@@ -1952,6 +1931,8 @@ export type Database = {
         Args: { event_id: string; telegram_id: number };
         Returns: undefined;
       };
+      telegram_done: { Args: { msg_id: number }; Returns: boolean };
+      telegram_enqueue: { Args: { messages: Json[] }; Returns: number };
       telegram_event_summaries: {
         Args: { since: string; until: string };
         Returns: Json;
@@ -1988,6 +1969,14 @@ export type Database = {
         Returns: undefined;
       };
       telegram_link_code: { Args: Record<PropertyKey, never>; Returns: string };
+      telegram_read: {
+        Args: { hidden_for: number; how_many: number };
+        Returns: {
+          message: Json;
+          msg_id: number;
+          read_ct: number;
+        }[];
+      };
       telegram_redeem_link: {
         Args: { code: string; telegram_id: number; username?: string };
         Returns: string;
@@ -2021,6 +2010,7 @@ export type Database = {
         Args: { event_id: string; telegram_id: number };
         Returns: string;
       };
+      telegram_set_aside: { Args: { msg_id: number }; Returns: boolean };
       telegram_staff_brief: { Args: { at?: string }; Returns: Json };
       telegram_tickets_soon: {
         Args: Record<PropertyKey, never>;
@@ -2038,6 +2028,7 @@ export type Database = {
         }[];
       };
       telegram_whoami: { Args: { telegram_id: number }; Returns: Json };
+      update_my_profile: { Args: { change: Json }; Returns: undefined };
       withdraw_merge: { Args: Record<PropertyKey, never>; Returns: undefined };
     };
     Enums: {
@@ -2184,29 +2175,32 @@ export type Database = {
       };
       events: {
         Row: {
+          access_detail_ar: string | null;
+          access_detail_en: string | null;
           accommodation_by: string | null;
           allergens: string[];
           announced_at: string | null;
           body_ar: string | null;
           body_en: string | null;
           capacity: number | null;
+          classes: string[];
           content_note_ar: string | null;
           content_note_en: string | null;
           created_at: string;
           created_by: string | null;
           ends_at: string | null;
           entry: string;
+          format: string | null;
           id: string;
           image_path: string | null;
           language: string | null;
           lead_id: string | null;
-          members_only: boolean;
           no_photos: boolean;
           off_campus: boolean;
           other_allergens_ar: string | null;
           other_allergens_en: string | null;
           partner_id: string | null;
-          programme_id: string | null;
+          program_id: string | null;
           published_at: string | null;
           questions: NonNullable<Json>;
           rsvp_enabled: boolean;
@@ -2231,29 +2225,32 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          access_detail_ar?: string | null;
+          access_detail_en?: string | null;
           accommodation_by?: string | null;
           allergens?: string[];
           announced_at?: string | null;
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
+          classes?: string[];
           content_note_ar?: string | null;
           content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
           ends_at?: string | null;
           entry?: string;
+          format?: string | null;
           id?: string;
           image_path?: string | null;
           language?: string | null;
           lead_id?: string | null;
-          members_only?: never;
           no_photos?: boolean;
           off_campus?: boolean;
           other_allergens_ar?: string | null;
           other_allergens_en?: string | null;
           partner_id?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
@@ -2277,29 +2274,32 @@ export type Database = {
           venue_en?: string | null;
         };
         Update: {
+          access_detail_ar?: string | null;
+          access_detail_en?: string | null;
           accommodation_by?: string | null;
           allergens?: string[];
           announced_at?: string | null;
           body_ar?: string | null;
           body_en?: string | null;
           capacity?: number | null;
+          classes?: string[];
           content_note_ar?: string | null;
           content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
           ends_at?: string | null;
           entry?: string;
+          format?: string | null;
           id?: string;
           image_path?: string | null;
           language?: string | null;
           lead_id?: string | null;
-          members_only?: never;
           no_photos?: boolean;
           off_campus?: boolean;
           other_allergens_ar?: string | null;
           other_allergens_en?: string | null;
           partner_id?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
@@ -2323,6 +2323,42 @@ export type Database = {
           venue_en?: string | null;
         };
         Relationships: [];
+      };
+      feedback: {
+        Row: {
+          comment: string | null;
+          created_at: string;
+          event_id: string;
+          id: string;
+          rating: number;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          comment?: string | null;
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          rating: number;
+          user_id?: string;
+        };
+        Update: {
+          comment?: string | null;
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          rating?: number;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "feedback_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       incident_reports: {
         Row: {
@@ -2437,6 +2473,66 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "joint_tasks_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      program_items: {
+        Row: {
+          award_ar: string | null;
+          award_en: string | null;
+          created_at: string;
+          credit: string | null;
+          event_id: string;
+          id: string;
+          length_minutes: number | null;
+          line_ar: string | null;
+          line_en: string | null;
+          position: number;
+          still_path: string | null;
+          title_ar: string;
+          title_en: string;
+          year: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          award_ar?: string | null;
+          award_en?: string | null;
+          created_at?: string;
+          credit?: string | null;
+          event_id: string;
+          id?: string;
+          length_minutes?: number | null;
+          line_ar?: string | null;
+          line_en?: string | null;
+          position?: number;
+          still_path?: string | null;
+          title_ar?: string;
+          title_en?: string;
+          year?: number | null;
+        };
+        Update: {
+          award_ar?: string | null;
+          award_en?: string | null;
+          created_at?: string;
+          credit?: string | null;
+          event_id?: string;
+          id?: string;
+          length_minutes?: number | null;
+          line_ar?: string | null;
+          line_en?: string | null;
+          position?: number;
+          still_path?: string | null;
+          title_ar?: string;
+          title_en?: string;
+          year?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "program_items_event_id_fkey";
             columns: ["event_id"];
             isOneToOne: false;
             referencedRelation: "events";
@@ -2667,22 +2763,22 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      booking_terms: { Args: { event_id: string }; Returns: Json };
       calendar: {
         Args: { from_at: string; to_at: string };
         Returns: {
           capacity: number;
+          classes: string[];
           ends_at: string;
           entry: string;
           id: string;
           image_path: string;
-          members_only: boolean;
-          programme_id: string;
+          program_id: string;
           slug: string;
           starts_at: string;
           status: string;
           summary_ar: string;
           summary_en: string;
-          teaser: boolean;
           title_ar: string;
           title_en: string;
           venue_ar: string;
@@ -2735,6 +2831,7 @@ export type Database = {
           url: string;
         }[];
       };
+      feedback_summary: { Args: { event_id: string }; Returns: Json };
       find_attendee: {
         Args: { event_id: string; query: string };
         Returns: {
@@ -2975,34 +3072,6 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
-      };
-      council_terms: {
-        Row: {
-          created_at: string;
-          ends_on: string;
-          id: string;
-          name_ar: string;
-          name_en: string;
-          starts_on: string;
-        };
-        ComputedFields: never;
-        Insert: {
-          created_at?: string;
-          ends_on: string;
-          id?: string;
-          name_ar: string;
-          name_en: string;
-          starts_on: string;
-        };
-        Update: {
-          created_at?: string;
-          ends_on?: string;
-          id?: string;
-          name_ar?: string;
-          name_en?: string;
-          starts_on?: string;
-        };
-        Relationships: [];
       };
       election_results: {
         Row: {
@@ -6616,14 +6685,6 @@ export type Database = {
         Returns: string;
       };
       sign_reader_pledge: { Args: { esign_agreed: boolean }; Returns: string };
-      submission_partners: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          id: string;
-          name_ar: string;
-          name_en: string;
-        }[];
-      };
       transition_submission: {
         Args: {
           id: string;
@@ -7178,7 +7239,7 @@ export type Database = {
           hours: number;
           id: string;
           occurred_on: string;
-          programme_id: string | null;
+          program_id: string | null;
           reject_reason: string | null;
           source: string;
           source_id: string | null;
@@ -7196,7 +7257,7 @@ export type Database = {
           hours: number;
           id?: string;
           occurred_on: string;
-          programme_id?: string | null;
+          program_id?: string | null;
           reject_reason?: string | null;
           source?: string;
           source_id?: string | null;
@@ -7213,7 +7274,7 @@ export type Database = {
           hours?: number;
           id?: string;
           occurred_on?: string;
-          programme_id?: string | null;
+          program_id?: string | null;
           reject_reason?: string | null;
           source?: string;
           source_id?: string | null;
@@ -7612,7 +7673,7 @@ export type Database = {
       [_ in never]: never;
     };
   };
-  programmes: {
+  programs: {
     Tables: {
       application_reviews: {
         Row: {
@@ -7866,7 +7927,7 @@ export type Database = {
           duration_seconds: number | null;
           id: string;
           number: number | null;
-          programme_id: string;
+          program_id: string;
           published_at: string | null;
           released_on: string | null;
           season: number | null;
@@ -7890,7 +7951,7 @@ export type Database = {
           duration_seconds?: number | null;
           id?: string;
           number?: number | null;
-          programme_id: string;
+          program_id: string;
           published_at?: string | null;
           released_on?: string | null;
           season?: number | null;
@@ -7913,7 +7974,7 @@ export type Database = {
           duration_seconds?: number | null;
           id?: string;
           number?: number | null;
-          programme_id?: string;
+          program_id?: string;
           published_at?: string | null;
           released_on?: string | null;
           season?: number | null;
@@ -7986,7 +8047,7 @@ export type Database = {
           item: string;
           needed_by: string | null;
           production_id: string | null;
-          programme_id: string | null;
+          program_id: string | null;
           provided_note: string | null;
           provided_on: string | null;
           purpose: string;
@@ -8006,7 +8067,7 @@ export type Database = {
           item: string;
           needed_by?: string | null;
           production_id?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           provided_note?: string | null;
           provided_on?: string | null;
           purpose?: string;
@@ -8025,7 +8086,7 @@ export type Database = {
           item?: string;
           needed_by?: string | null;
           production_id?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           provided_note?: string | null;
           provided_on?: string | null;
           purpose?: string;
@@ -8191,7 +8252,7 @@ export type Database = {
           kind: string;
           owner: string;
           places: number | null;
-          programme_id: string | null;
+          program_id: string | null;
           questions: NonNullable<Json>;
           role: string | null;
           second_reviewer: string | null;
@@ -8217,7 +8278,7 @@ export type Database = {
           kind?: string;
           owner?: string;
           places?: number | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           questions?: NonNullable<Json>;
           role?: string | null;
           second_reviewer?: string | null;
@@ -8242,7 +8303,7 @@ export type Database = {
           kind?: string;
           owner?: string;
           places?: number | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           questions?: NonNullable<Json>;
           role?: string | null;
           second_reviewer?: string | null;
@@ -8333,7 +8394,7 @@ export type Database = {
           kind: string;
           playwright: string | null;
           poster_path: string | null;
-          programme_id: string | null;
+          program_id: string | null;
           report_lessons: string | null;
           report_people_reached: number | null;
           report_repeat: string | null;
@@ -8364,7 +8425,7 @@ export type Database = {
           kind?: string;
           playwright?: string | null;
           poster_path?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           report_lessons?: string | null;
           report_people_reached?: number | null;
           report_repeat?: string | null;
@@ -8394,7 +8455,7 @@ export type Database = {
           kind?: string;
           playwright?: string | null;
           poster_path?: string | null;
-          programme_id?: string | null;
+          program_id?: string | null;
           report_lessons?: string | null;
           report_people_reached?: number | null;
           report_repeat?: string | null;
@@ -8478,7 +8539,7 @@ export type Database = {
           episode_id: string | null;
           id: string;
           platform: string;
-          programme_id: string;
+          program_id: string;
           published_at: string | null;
           url: string;
         };
@@ -8490,7 +8551,7 @@ export type Database = {
           episode_id?: string | null;
           id?: string;
           platform: string;
-          programme_id: string;
+          program_id: string;
           published_at?: string | null;
           url: string;
         };
@@ -8501,7 +8562,7 @@ export type Database = {
           episode_id?: string | null;
           id?: string;
           platform?: string;
-          programme_id?: string;
+          program_id?: string;
           published_at?: string | null;
           url?: string;
         };
@@ -8573,7 +8634,7 @@ export type Database = {
           hidden_kind: string | null;
           hidden_was: string | null;
           id: string;
-          programme_id: string | null;
+          program_id: string | null;
           requester_email: string;
           requester_lang: string;
           requester_name: string;
@@ -8592,7 +8653,7 @@ export type Database = {
           hidden_kind?: string | null;
           hidden_was?: string | null;
           id?: string;
-          programme_id?: string | null;
+          program_id?: string | null;
           requester_email: string;
           requester_lang?: string;
           requester_name: string;
@@ -8610,7 +8671,7 @@ export type Database = {
           hidden_kind?: string | null;
           hidden_was?: string | null;
           id?: string;
-          programme_id?: string | null;
+          program_id?: string | null;
           requester_email?: string;
           requester_lang?: string;
           requester_name?: string;
@@ -8962,22 +9023,6 @@ export type Database = {
           url: string;
         }[];
       };
-      public_productions: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          first_performance: string;
-          id: string;
-          kind: string;
-          playwright: string;
-          poster_path: string;
-          slug: string;
-          stage: string;
-          summary_ar: string;
-          summary_en: string;
-          title_ar: string;
-          title_en: string;
-        }[];
-      };
       qalam_consent_link: {
         Args: { note?: string; parent_email: string; teacher_email: string };
         Returns: string;
@@ -9309,7 +9354,7 @@ export const Constants = {
       tier: ["member", "associate", "honorary"],
     },
   },
-  programmes: {
+  programs: {
     Enums: {},
   },
   public: {

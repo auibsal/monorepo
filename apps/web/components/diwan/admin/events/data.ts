@@ -8,27 +8,27 @@ import { useGrants } from "@/lib/diwan/queries";
 import { scopesFor } from "@/lib/rbac";
 
 /** Programs, limited to the ones a permission covers (all for a global grant). */
-export const useProgrammeOptions = (
+export const useProgramOptions = (
   permission: "events.manage" | "programs.manage" | null = "events.manage"
 ) => {
   const { supabase } = useAuth();
   const locale = useLocale();
   const grants = useGrants();
-  const programmes = useQuery({
+  const programs = useQuery({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
-          .from("programmes")
+          .schema("api")
+          .from("programs")
           .select("id, slug, name_en, name_ar, is_active")
           .order("sort")
       ) ?? [],
-    queryKey: ["admin", "programmes"],
+    queryKey: ["admin", "programs"],
   });
   const scopes = permission
-    ? scopesFor(grants.data, permission, "programme")
+    ? scopesFor(grants.data, permission, "program")
     : ("all" as const);
-  const options = (programmes.data ?? [])
+  const options = (programs.data ?? [])
     .filter((p) => scopes === "all" || scopes.includes(p.id))
     .map((p) => ({
       id: p.id,
@@ -38,11 +38,11 @@ export const useProgrammeOptions = (
     }));
   return {
     canChooseNone: scopes === "all",
-    isPending: programmes.isPending || grants.isPending,
+    isPending: programs.isPending || grants.isPending,
     label: (id: string | null) =>
-      (programmes.data ?? []).some((p) => p.id === id)
+      (programs.data ?? []).some((p) => p.id === id)
         ? localized(
-            (programmes.data ?? []).find((p) => p.id === id) as Record<
+            (programs.data ?? []).find((p) => p.id === id) as Record<
               string,
               unknown
             >,
@@ -55,4 +55,4 @@ export const useProgrammeOptions = (
 };
 
 export const adminEventColumns =
-  "id, slug, programme_id, title_en, title_ar, starts_at, ends_at, members_only, entry, capacity, rsvp_enabled, status";
+  "id, slug, program_id, title_en, title_ar, starts_at, ends_at, classes, entry, capacity, rsvp_enabled, status";

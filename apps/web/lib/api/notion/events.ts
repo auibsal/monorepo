@@ -40,7 +40,7 @@ export interface Imported {
 
 export const importedState = async (ctx: SyncContext): Promise<Imported> => {
   const { data } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .select("value")
     .eq("key", IMPORTED)
@@ -51,7 +51,7 @@ export const importedState = async (ctx: SyncContext): Promise<Imported> => {
 export const markImported = async (ctx: SyncContext, part: keyof Imported) => {
   const now = await importedState(ctx);
   const { error } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .upsert({
       description:
@@ -67,19 +67,42 @@ export const markImported = async (ctx: SyncContext, part: keyof Imported) => {
 
 // ── Reading a row ────────────────────────────────────────────────────────────
 
+/** Notion's old Access, read once at the import (Members became Members only). */
 const WAYS_IN = {
-  Members: "members",
+  Members: "rsvp",
   Open: "open",
   Private: "invite",
   RSVP: "rsvp",
 } as const;
 type Entry = (typeof WAYS_IN)[keyof typeof WAYS_IN];
 
-const ACCESS: Record<string, string> = {
-  invite: "Private",
-  members: "Members",
-  open: "Open",
-  rsvp: "RSVP",
+const CLASS_ORDER = ["member", "associate", "honorary", "guest"] as const;
+const CLASS_NAMES: Record<(typeof CLASS_ORDER)[number], string> = {
+  associate: "Associate Members",
+  guest: "Guests",
+  honorary: "Honorary Members",
+  member: "Members",
+};
+
+/**
+ * Access as the copy shows it (decisions.md, Events: Access): "Invited
+ * only", or who can come and how ("Everyone · Booking required", "Members
+ * only · Open").
+ */
+export const accessLabel = (event: { classes: string[]; entry: string }) => {
+  if (event.entry === "invite") {
+    return "Invited only";
+  }
+  const how = event.entry === "open" ? "Open" : "Booking required";
+  const names = CLASS_ORDER.filter((c) => event.classes.includes(c)).map(
+    (c) => CLASS_NAMES[c]
+  );
+  const list = new Intl.ListFormat("en-US", { type: "conjunction" });
+  if (names.length === CLASS_ORDER.length) {
+    return `Everyone · ${how}`;
+  }
+  const who = names.length === 1 ? `${names[0]} only` : list.format(names);
+  return `${who} · ${how}`;
 };
 
 const STATUS: Record<string, string> = {
@@ -92,6 +115,8 @@ const THE_SOCIETY = /^the society$/iu;
 
 export interface RowValues {
   capacity: number | null;
+  /** Who can come: Notion's Members became Members only. */
+  classes: string[] | null;
   debrief: string | null;
   ends_at: string | null;
   entry: Entry;
@@ -136,6 +161,10 @@ export const rowValues = (
   const debrief = read.url(page, "Debrief");
   return {
     capacity: wholeNumber(read.number(page, "Capacity")),
+    classes:
+      (read.select(page, "Access") ?? read.select(page, "Way in")) === "Members"
+        ? ["member"]
+        : null,
     debrief: debrief?.startsWith("https://") ? debrief : null,
     ends_at: endsAt && endsAt > startsAt ? endsAt : null,
     entry: entryOf(page),
@@ -170,7 +199,7 @@ const leadOf = async (
     return null;
   }
   const { data } = await ctx.admin
-    .schema("governance")
+    .schema("api")
     .rpc("user_by_email", { email });
   return (data as string | null) ?? null;
 };
@@ -180,7 +209,7 @@ const partnerNamed = async (ctx: SyncContext, name: string | null) => {
     return null;
   }
   const { data } = await ctx.admin
-    .schema("governance")
+    .schema("api")
     .from("partners")
     .select("id, name_en, name_ar")
     .eq("status", "active");
@@ -194,7 +223,7 @@ const partnerNamed = async (ctx: SyncContext, name: string | null) => {
 
 const slugFree = async (ctx: SyncContext, slug: string) => {
   const { data } = await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select("slug")
     .like("slug", `${slug}%`);
@@ -215,7 +244,7 @@ const keepDebrief = async (
     return;
   }
   await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("debriefs")
     .upsert(
       { event_id: eventId, updated_at: new Date().toISOString(), url },
@@ -232,7 +261,7 @@ const completeExisting = async (
 ) => {
   if (lead) {
     await ctx.admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .update({ lead_id: lead })
       .eq("id", eventId)
@@ -256,13 +285,14 @@ const makeDraft = async (
     partnerNamed(ctx, v.host),
   ]);
   const { data, error } = await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .insert({
       body_en: body,
       capacity: v.capacity,
       ends_at: v.ends_at,
       entry: v.entry,
+      ...(v.classes ? { classes: v.classes } : {}),
       image_path: image ?? null,
       lead_id: lead,
       off_campus: v.off_campus,
@@ -338,7 +368,7 @@ const fillArabic = async (
   page: NotionPage
 ) => {
   const { data: event } = await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select("title_en, title_ar, summary_ar, venue_ar, body_ar")
     .eq("id", eventId)
@@ -357,7 +387,7 @@ const fillArabic = async (
   };
   if (Object.keys(update).length > 0) {
     const { error } = await ctx.admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .update(update)
       .eq("id", eventId);
@@ -393,13 +423,13 @@ const importArabic = async (
     eventId = await makeDraft(ctx, page, v, await leadOf(ctx, page, addresses));
     // That link was the English one; the row is the Arabic edition.
     await ctx.admin
-      .schema("core")
+      .schema("api")
       .from("notion_links")
       .delete()
       .eq("kind", "event")
       .eq("notion_page_id", bareId(page.id));
     await ctx.admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .update({ body_en: null, summary_en: null, venue_en: null })
       .eq("id", eventId);
@@ -456,6 +486,7 @@ export const importEvents = async (ctx: SyncContext, users: NotionUser[]) => {
 // ── The read-only copy ───────────────────────────────────────────────────────
 
 interface SiteEvent {
+  classes: string[];
   ends_at: string | null;
   entry: string;
   id: string;
@@ -497,7 +528,7 @@ export const copyProps = (
   const arabic = lang === "ar";
   const live = event.status === "published";
   return {
-    Access: prop.select(ACCESS[event.entry] ?? "RSVP"),
+    Access: prop.select(accessLabel(event)),
     Diwan: prop.url(`${ctx.appUrl}/events/${event.slug}`),
     "Diwan ID": prop.text(event.id),
     Language: prop.select(arabic ? "Arabic" : "English"),
@@ -523,10 +554,10 @@ export const copyEvents = async (ctx: SyncContext, users: NotionUser[]) => {
     return;
   }
   const { data, error } = await ctx.admin
-    .schema("events")
+    .schema("api")
     .from("events")
     .select(
-      "id, slug, title_en, title_ar, venue_en, venue_ar, starts_at, ends_at, status, entry, lead_id"
+      "id, slug, title_en, title_ar, venue_en, venue_ar, starts_at, ends_at, status, entry, classes, lead_id"
     )
     .order("starts_at");
   if (error) {

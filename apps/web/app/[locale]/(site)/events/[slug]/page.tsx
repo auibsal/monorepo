@@ -6,13 +6,20 @@ import { ActionBar } from "@repo/brand/components/sal/action-bar";
 import { Icon } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import { apiPath, getDirection } from "@repo/internationalization";
-import { formatClock, formatLongDate } from "@repo/internationalization/format";
+import {
+  formatClock,
+  formatClockRange,
+  formatLongDate,
+} from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EventBooking } from "@/components/event-booking";
+import { classesText } from "@/components/event-classes";
+import { EventFeedback } from "@/components/event-feedback";
 import { EventParts } from "@/components/event-parts";
+import { EventProgram } from "@/components/event-program";
 import { GoodToKnow } from "@/components/good-to-know";
 import { ManageLinks } from "@/components/manage-links";
 import { events, localized, sanitizeRichText } from "@/lib/data";
@@ -104,12 +111,19 @@ const EventView = async ({
   );
   const rowOf = (line: string) =>
     withOrgs.filter((o) => o.line === line).map((o) => acknowledged(o, locale));
-  const upcoming = new Date(event.starts_at).getTime() > (await roughlyNow());
+  const now = await roughlyNow();
+  const upcoming = new Date(event.starts_at).getTime() > now;
+  // "How was it?" from the end for 14 days (decisions.md, Events).
+  const asking = !cancelled && events.feedbackOpen(event, now);
 
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-16">
       <JsonLd
         data={eventLd(locale, {
+          audience:
+            event.entry === "invite"
+              ? null
+              : await classesText(event.classes, locale, "list"),
           ends_at: event.ends_at,
           image,
           name: localized(event, "title", locale),
@@ -140,12 +154,10 @@ const EventView = async ({
           </span>
           <span className="inline-flex items-center gap-1.5">
             <Icon name="clock" />
-            {formatClock(event.starts_at, locale)}
-            {event.ends_at ? ` – ${formatClock(event.ends_at, locale)}` : ""}
+            {event.ends_at
+              ? formatClockRange(event.starts_at, event.ends_at, locale)
+              : formatClock(event.starts_at, locale)}
           </span>
-        </p>
-        <p className="type-body">
-          {t(`ways.${event.entry === "open" ? "open" : "rsvp"}`)}
         </p>
         <ManageLinks
           diwan={`/events/${event.slug}`}
@@ -163,8 +175,12 @@ const EventView = async ({
       {cancelled || !upcoming ? null : (
         <ActionBar>
           <EventBooking
+            entry={event.entry}
             eventId={event.id}
-            open={event.entry === "open"}
+            forClasses={t("forClasses", {
+              classes: await classesText(event.classes, locale, "list"),
+            })}
+            guestsBy={events.guestsBookBy(event)}
             slug={event.slug}
           />
           <a
@@ -175,11 +191,6 @@ const EventView = async ({
           </a>
         </ActionBar>
       )}
-      {upcoming && !cancelled ? (
-        <p className="type-caption">
-          {event.entry === "open" ? t("remindHint") : t("rsvpHint")}
-        </p>
-      ) : null}
       {cancelled ? (
         <p
           className="type-body border-line border-s-4 border-t p-4"
@@ -202,6 +213,19 @@ const EventView = async ({
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
       ) : null}
+      {asking ? (
+        <EventFeedback
+          closes={formatLongDate(
+            new Date(events.feedbackWindow(event).closes).toISOString(),
+            locale
+          )}
+          endsAt={event.ends_at}
+          eventId={event.id}
+          slug={event.slug}
+          startsAt={event.starts_at}
+        />
+      ) : null}
+      <EventProgram eventId={event.id} locale={locale} />
       <EventParts event={event} locale={locale} />
       <CoSponsoredBy
         className="border-line pt-space-4 border-t"

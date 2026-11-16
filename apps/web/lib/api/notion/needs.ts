@@ -22,11 +22,11 @@ import { prop, read } from "./props";
  * the database becomes a read-only copy the site writes.
  */
 
-/** Notion's "For", as the site's standing activities (core.programmes). */
+/** Notion's "For", as the site's standing activities (core.programs). */
 const FOR_SLUG: Record<string, string> = {
   "Next Stop": "next-stop",
-  Qalam: "waraq",
-  Qirtas: "waraq",
+  Qalam: "qirtas",
+  Qirtas: "qirtas",
   "Second Chapter": "second-chapter",
   "The Company": "company",
   "Typewriter Tour": "typewriter-tour",
@@ -85,10 +85,10 @@ export const needValues = (page: NotionPage): NeedValues | null => {
   };
 };
 
-const programmeIds = async (ctx: SyncContext) => {
+const programIds = async (ctx: SyncContext) => {
   const { data } = await ctx.admin
-    .schema("core")
-    .from("programmes")
+    .schema("api")
+    .from("programs")
     .select("id, slug");
   return new Map((data ?? []).map((p) => [p.slug, p.id]));
 };
@@ -96,7 +96,7 @@ const programmeIds = async (ctx: SyncContext) => {
 const importNeed = async (
   ctx: SyncContext,
   page: NotionPage,
-  programmes: Map<string, string>
+  programs: Map<string, string>
 ) => {
   if (await recordFor(ctx, "need", page.id)) {
     return;
@@ -112,13 +112,13 @@ const importNeed = async (
   const slug = v.for ? FOR_SLUG[v.for] : undefined;
   const provided = v.status === "provided" || v.status === "partly_provided";
   const { data, error } = await ctx.admin
-    .schema("programmes")
+    .schema("api")
     .from("needs")
     .insert({
       event_id: eventId,
       item: v.item,
       needed_by: v.needed_by,
-      programme_id: eventId ? null : (slug && programmes.get(slug)) || null,
+      program_id: eventId ? null : (slug && programs.get(slug)) || null,
       provided_note: v.provided_note,
       provided_on: provided
         ? (v.requested_on ?? day(page.last_edited_time))
@@ -143,9 +143,9 @@ export const importNeeds = async (ctx: SyncContext) => {
   if (!(ctx.sources.needs && state.events) || state.needs) {
     return;
   }
-  const [rows, programmes] = await Promise.all([
+  const [rows, programs] = await Promise.all([
     ctx.notion.query(ctx.sources.needs),
-    programmeIds(ctx),
+    programIds(ctx),
   ]);
   const before = ctx.problems.length;
   for (const page of rows) {
@@ -154,7 +154,7 @@ export const importNeeds = async (ctx: SyncContext) => {
     }
     try {
       // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
-      await importNeed(ctx, page, programmes);
+      await importNeed(ctx, page, programs);
     } catch (error) {
       problem(
         ctx,
@@ -172,8 +172,8 @@ interface SiteNeed {
   id: string;
   item: string;
   needed_by: string | null;
-  /** The standing activity's slug (core.programmes), when it is for one. */
-  programme: string | null;
+  /** The standing activity's slug (core.programs), when it is for one. */
+  program: string | null;
   provided_note: string | null;
   purpose: string;
   quantity: number;
@@ -188,7 +188,7 @@ export const needProps = (
 ): Record<string, object> => {
   const forName = need.event_id
     ? "Event"
-    : (SLUG_FOR[need.programme ?? ""] ?? null);
+    : (SLUG_FOR[need.program ?? ""] ?? null);
   return {
     Answer: prop.text(need.provided_note),
     Event: prop.relation(eventPage ? [eventPage] : []),
@@ -208,26 +208,26 @@ export const copyNeeds = async (ctx: SyncContext) => {
   if (!(ctx.sources.needs && state.needs)) {
     return;
   }
-  // The standing activities are in core, the needs in programmes: no join
+  // The standing activities are in core, the needs in programs: no join
   // across the two schemas, so their slugs come from a second read.
-  const [{ data, error }, events, programmes] = await Promise.all([
+  const [{ data, error }, events, programs] = await Promise.all([
     ctx.admin
-      .schema("programmes")
+      .schema("api")
       .from("needs")
       .select(
-        "id, item, quantity, needed_by, purpose, status, requested_on, provided_note, event_id, programme_id"
+        "id, item, quantity, needed_by, purpose, status, requested_on, provided_note, event_id, program_id"
       ),
     linksOf(ctx, "event"),
-    programmeIds(ctx),
+    programIds(ctx),
   ]);
   if (error) {
     throw error;
   }
-  const slugOf = new Map([...programmes].map(([slug, id]) => [id, slug]));
+  const slugOf = new Map([...programs].map(([slug, id]) => [id, slug]));
   const rows: Row[] = (data ?? []).map((n) => ({
     key: n.id,
     props: needProps(
-      { ...n, programme: slugOf.get(n.programme_id ?? "") ?? null },
+      { ...n, program: slugOf.get(n.program_id ?? "") ?? null },
       events.get(n.event_id ?? "")?.notion_page_id
     ),
   }));

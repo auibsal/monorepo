@@ -3,7 +3,7 @@ import { formatNumber } from "@repo/internationalization/format";
 import { getTranslations } from "next-intl/server";
 import { Section } from "@/components/section";
 import { TypingToy } from "@/components/typing-toy";
-import { programmes } from "@/lib/data";
+import { programs } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 
 /**
@@ -18,8 +18,8 @@ export const TypewriterTourWall = async ({
 }) => {
   const t = await getTranslations({ locale, namespace: "web.tour" });
   const counts = await readPublished(
-    ["programmes"],
-    (c) => programmes.sixWordsCounts(c),
+    ["programs"],
+    (c) => programs.sixWordsCounts(c),
     { pages: 0, writers: 0 }
   );
   return (

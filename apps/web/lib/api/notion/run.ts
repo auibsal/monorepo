@@ -8,6 +8,14 @@ import { parseError } from "@/lib/observability/error";
 import { log } from "@/lib/observability/log";
 import { createNotion, type Notion, type NotionUser } from "./client";
 import type { Admin, Sources, SyncContext } from "./context";
+import {
+  copyEditions,
+  copyMeasures,
+  copyOpenings,
+  copyOrganizations,
+  copyProductions,
+  copyRecords,
+} from "./copies";
 import { publishDocuments, syncAdoptionRecords } from "./documents";
 import { copyEvents, importEvents, lockEvents } from "./events";
 import { sendMinutesToDiwan } from "./minutes";
@@ -22,12 +30,23 @@ const SOURCE_KEYS = [
   "journal",
   "news",
   "officers",
-  "programmes",
+  "programs",
+] as const;
+
+const OPTIONAL_SOURCES = [
+  "editions",
+  "measures",
+  "meetings",
+  "needs",
+  "openings",
+  "organizations",
+  "productions",
+  "records",
 ] as const;
 
 const setting = async (admin: Admin, key: string) => {
   const { data } = await admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .select("value")
     .eq("key", key)
@@ -45,8 +64,12 @@ const sourcesFrom = (value: unknown): Sources | null => {
   }
   return {
     ...(v as unknown as Sources),
-    meetings: typeof v.meetings === "string" ? v.meetings : undefined,
-    needs: typeof v.needs === "string" ? v.needs : undefined,
+    ...Object.fromEntries(
+      OPTIONAL_SOURCES.map((k) => [
+        k,
+        typeof v[k] === "string" ? v[k] : undefined,
+      ])
+    ),
   };
 };
 
@@ -82,6 +105,12 @@ const steps: [
   ["needs import", (ctx) => importNeeds(ctx)],
   ["events copy", (ctx, users) => copyEvents(ctx, users)],
   ["needs copy", (ctx) => copyNeeds(ctx)],
+  ["editions copy", (ctx) => copyEditions(ctx)],
+  ["productions copy", (ctx) => copyProductions(ctx)],
+  ["openings copy", (ctx) => copyOpenings(ctx)],
+  ["organizations copy", (ctx) => copyOrganizations(ctx)],
+  ["records copy", (ctx) => copyRecords(ctx)],
+  ["measures", (ctx) => copyMeasures(ctx)],
   ["events lock", (ctx) => lockEvents(ctx)],
   ["needs lock", (ctx) => lockNeeds(ctx)],
   // Last, in whatever time is left: the weekly scan of the documents.
@@ -150,7 +179,7 @@ export const runNotionSync = async (
     problems: ctx.problems.slice(0, 20),
   };
   await admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .update({ value: state as never })
     .eq("key", "notion.sync_state");
@@ -179,9 +208,9 @@ export const accessLists = async (notion: Notion): Promise<AccessLists> => {
   const admin = createAdminClient();
   const now = new Date().toISOString();
   const [{ data: officers, error }, held, users] = await Promise.all([
-    admin.schema("access").rpc("officer_directory"),
+    admin.schema("api").rpc("officer_directory"),
     admin
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .select("user_id, roles!inner(in_notion)")
       .eq("roles.in_notion", true)

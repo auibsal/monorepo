@@ -24,7 +24,7 @@ const useWaitingApplication = () => {
     enabled: Boolean(user),
     queryFn: async () => {
       const row = ((unwrap(
-        await supabase.schema("governance").rpc("my_partner_application")
+        await supabase.schema("api").rpc("my_partner_application")
       ) ?? [])[0] ?? null) as Application | null;
       return row?.partner_status === "prospect" ? row : null;
     },
@@ -41,7 +41,7 @@ const useSocietyGuest = () => {
       (
         unwrap(
           await supabase
-            .schema("membership")
+            .schema("api")
             .from("guests")
             .select("ended_at")
             .eq("user_id", user?.id ?? "")

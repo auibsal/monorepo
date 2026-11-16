@@ -14,7 +14,7 @@ const body = z.object({ id: z.uuid() });
 /**
  * A five-minute link to a Tour page as the station photographed it, for
  * its writer and whoever runs the Tour: the caller's own read of
- * programmes.six_words decides, under RLS.
+ * programs.six_words decides, under RLS.
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);
@@ -29,7 +29,7 @@ export const POST = async (request: Request) => {
     return json({ error: "invalid_request" }, 400);
   }
   const { data: page } = await session.supabase
-    .schema("programmes")
+    .schema("api")
     .from("six_words")
     .select("photo_path")
     .eq("id", parsed.data.id)

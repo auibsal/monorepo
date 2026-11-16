@@ -34,7 +34,7 @@ export const RecentDrafts = () => {
     let live = true;
     import("@/lib/auth/client").then(async ({ createClient }) => {
       const { data } = await createClient()
-        .schema("journal")
+        .schema("api")
         .from("submission_drafts")
         .select("id, category, title, updated_at, path:content->>path")
         .order("updated_at", { ascending: false })

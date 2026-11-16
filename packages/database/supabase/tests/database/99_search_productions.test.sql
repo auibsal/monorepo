@@ -98,7 +98,7 @@ $$;
 select plan(2);
 
 set local session_replication_role = replica;
-insert into programmes.productions (slug, title_en, title_ar, stage, is_public) values
+insert into programs.productions (slug, title_en, title_ar, stage, is_public) values
   ('lanterns-search', 'Lanterns of Karrada', 'فوانيس الكرادة', 'rehearsals', true),
   ('lanterns-proposal', 'Lanterns Proposal', 'مقترح الفوانيس', 'proposal', true),
   ('lanterns-private', 'Lanterns Private', 'الفوانيس الخاصة', 'rehearsals', false);

@@ -38,7 +38,7 @@ export const CandidatesForum = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("events")
           .select("id, title_en, title_ar, starts_at")
           .neq("status", "draft")
@@ -52,7 +52,7 @@ export const CandidatesForum = ({
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("elections")
           .update({ forum_event_id: chosen || null })
           .eq("id", election.id)

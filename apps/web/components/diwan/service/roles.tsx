@@ -29,7 +29,7 @@ export const MyRoles = () => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("access")
+          .schema("api")
           .from("role_assignments")
           .select("id, role, starts_at, ends_at, roles(name_en, name_ar)")
           .eq("user_id", user?.id ?? "")
@@ -87,15 +87,14 @@ export const Handovers = () => {
   const due = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      unwrap(await supabase.schema("access").rpc("my_handovers_due")) ?? [],
+      unwrap(await supabase.schema("api").rpc("my_handovers_due")) ?? [],
     queryKey: [...KEY, "handovers-due", user?.id],
   });
   const toCountersign = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      unwrap(
-        await supabase.schema("governance").rpc("handovers_to_countersign")
-      ) ?? [],
+      unwrap(await supabase.schema("api").rpc("handovers_to_countersign")) ??
+      [],
     queryKey: [...KEY, "to-countersign", user?.id],
   });
   const rows = [
@@ -145,21 +144,20 @@ export const Countersign = () => {
   const list = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      unwrap(
-        await supabase.schema("governance").rpc("handovers_to_countersign")
-      ) ?? [],
+      unwrap(await supabase.schema("api").rpc("handovers_to_countersign")) ??
+      [],
     queryKey: [...KEY, "to-countersign", user?.id],
   });
   const me = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      unwrap(await supabase.schema("core").rpc("my_register_name")),
+      unwrap(await supabase.schema("api").rpc("my_register_name")),
     queryKey: ["forms", "me", user?.id],
   });
   const sign = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase.schema("governance").rpc("second_sign_form", {
+        await supabase.schema("api").rpc("second_sign_form", {
           signer_name: me.data ?? "",
           submission_id: id,
         })

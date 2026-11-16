@@ -26,7 +26,7 @@ const syncHeld = async (userId: string, code: string) => {
   }
   const admin = createAdminClient();
   const { data: recorded } = await admin
-    .schema("membership")
+    .schema("api")
     .from("wallet_passes")
     .select("state")
     .eq("code", code)
@@ -34,7 +34,7 @@ const syncHeld = async (userId: string, code: string) => {
   const state = held ? "saved" : "removed";
   if (!recorded && held) {
     await admin
-      .schema("membership")
+      .schema("api")
       .from("wallet_passes")
       .insert({ code, state, user_id: userId });
   } else if (
@@ -44,7 +44,7 @@ const syncHeld = async (userId: string, code: string) => {
     (held || recorded.state === "saved")
   ) {
     await admin
-      .schema("membership")
+      .schema("api")
       .from("wallet_passes")
       .update({ event_at: new Date().toISOString(), state })
       .eq("code", code);
@@ -90,7 +90,7 @@ export const POST = async (request: Request) => {
   }
   const admin = createAdminClient();
   const { data: row } = await admin
-    .schema("membership")
+    .schema("api")
     .rpc("wallet_card", { uid: session.userId })
     .maybeSingle();
   if (!row) {
@@ -99,19 +99,19 @@ export const POST = async (request: Request) => {
   const pass = walletCardFrom(row);
 
   const { data: recorded } = await admin
-    .schema("membership")
+    .schema("api")
     .from("wallet_passes")
     .select("state")
     .eq("code", card.code)
     .maybeSingle();
   if (!recorded) {
     await admin
-      .schema("membership")
+      .schema("api")
       .from("wallet_passes")
       .insert({ code: card.code, user_id: session.userId });
   } else if (recorded.state === "expired") {
     await admin
-      .schema("membership")
+      .schema("api")
       .from("wallet_passes")
       .update({ state: "issued" })
       .eq("code", card.code);

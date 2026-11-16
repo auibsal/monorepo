@@ -158,7 +158,7 @@ export const pullUnsubscribes = async (admin: AdminClient) => {
     return 0;
   }
   const { error } = await admin
-    .schema("core")
+    .schema("api")
     .rpc("apply_broadcast_unsubscribes", { emails: gone });
   if (error) {
     throw error;
@@ -186,7 +186,7 @@ const save = async (
   values: Partial<Row> & { recipients?: number }
 ) => {
   const { error } = await admin
-    .schema("core")
+    .schema("api")
     .from("broadcasts")
     .update({ ...values, updated_at: new Date().toISOString() })
     .eq("key", key);
@@ -201,7 +201,7 @@ const save = async (
  */
 export const cleanUpSegments = async (admin: AdminClient) => {
   const { data } = await admin
-    .schema("core")
+    .schema("api")
     .from("broadcasts")
     .select("key, segment_id, broadcast_id")
     .eq("stage", "sent");
@@ -269,7 +269,7 @@ const withoutSuppressed = async (
   const found = await Promise.all(
     chunks.map((chunk) =>
       admin
-        .schema("core")
+        .schema("api")
         .from("email_suppressions")
         .select("email")
         .in("email", chunk)
@@ -283,14 +283,14 @@ const withoutSuppressed = async (
 
 export const runBroadcast = async (admin: AdminClient, job: BroadcastJob) => {
   await admin
-    .schema("core")
+    .schema("api")
     .from("broadcasts")
     .upsert(
       { key: job.key, kind: job.kind, lang: job.lang },
       { ignoreDuplicates: true, onConflict: "key" }
     );
   const { data: found } = await admin
-    .schema("core")
+    .schema("api")
     .from("broadcasts")
     .select("key, stage, segment_id, import_id, broadcast_id")
     .eq("key", job.key)

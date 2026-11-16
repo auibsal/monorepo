@@ -97,7 +97,7 @@ export const findIn = (
 
 const readState = async (ctx: SyncContext) => {
   const { data } = await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .select("value")
     .eq("key", STATE)
@@ -107,7 +107,7 @@ const readState = async (ctx: SyncContext) => {
 
 const saveState = async (ctx: SyncContext, state: ScanState) => {
   await ctx.admin
-    .schema("core")
+    .schema("api")
     .from("settings")
     .upsert({
       description:
@@ -121,8 +121,8 @@ const saveState = async (ctx: SyncContext, state: ScanState) => {
 /** Full names in the Register, two words or more (no single first names). */
 const registerNames = async (ctx: SyncContext) => {
   const { data } = await ctx.admin
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .select("full_name_en, full_name_ar")
     .not("verified_at", "is", null);
   const names = (data ?? []).flatMap((p) => [p.full_name_en, p.full_name_ar]);
@@ -142,6 +142,39 @@ const pageText = async (ctx: SyncContext, page: NotionPage) =>
     )
     .join(" ");
 
+/**
+ * A copy's row: the words of its properties (copies have no body). Dates,
+ * numbers, people and relations hold no words to check.
+ */
+const rowText = (page: NotionPage) =>
+  Object.values(page.properties)
+    .flatMap((p) => [
+      ...(p.title ?? []).map((t) => t.plain_text),
+      ...(p.rich_text ?? []).map((t) => t.plain_text),
+      p.select?.name ?? "",
+      p.status?.name ?? "",
+      ...(p.multi_select ?? []).map((m) => m.name),
+      p.email ?? "",
+    ])
+    .filter(Boolean)
+    .join(" ");
+
+/**
+ * The copies the site writes (decisions.md, Where things live), read by
+ * the scan beside the documents. Not the officers: they are the Council's
+ * seats, which the Council page names publicly.
+ */
+const COPY_SOURCES = [
+  "events",
+  "needs",
+  "editions",
+  "productions",
+  "openings",
+  "organizations",
+  "records",
+  "measures",
+] as const;
+
 /** A new scan starts each Monday; until it is done, each run reads on. */
 const due = (state: ScanState | null, now: Date) =>
   !state ||
@@ -150,7 +183,7 @@ const due = (state: ScanState | null, now: Date) =>
     : true);
 
 const finish = async (ctx: SyncContext, state: ScanState) => {
-  const table = ctx.admin.schema("core").from("document_scan_hits");
+  const table = ctx.admin.schema("api").from("document_scan_hits");
   const { error } = await table.delete().gte("scanned_at", "1970-01-01");
   if (error) {
     throw error;
@@ -173,10 +206,16 @@ export const scanDocuments = async (ctx: SyncContext, now = new Date()) => {
   if (!state || state.finished_at) {
     state = { done: [], hits: [], started_at: now.toISOString() };
   }
-  const [rows, names] = await Promise.all([
+  const copies = COPY_SOURCES.map((key) => ctx.sources[key]).filter(
+    (id): id is string => Boolean(id)
+  );
+  const [documents, names, ...copied] = await Promise.all([
     ctx.notion.query(ctx.sources.documents),
     registerNames(ctx),
+    ...copies.map((id) => ctx.notion.query(id)),
   ]);
+  const isCopy = new Set(copied.flat().map((page) => bareId(page.id)));
+  const rows = [...documents, ...copied.flat()];
   const done = new Set(state.done);
   let stopped = false;
   for (const page of rows) {
@@ -190,7 +229,7 @@ export const scanDocuments = async (ctx: SyncContext, now = new Date()) => {
     }
     try {
       // biome-ignore lint/performance/noAwaitInLoops: rate-limited, sequential
-      const text = await pageText(ctx, page);
+      const text = isCopy.has(id) ? rowText(page) : await pageText(ctx, page);
       const title = read.text(page, "Title") || id;
       for (const hit of findIn(text, names)) {
         state.hits.push({

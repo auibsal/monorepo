@@ -29,7 +29,7 @@ export const EsignToDo = () => {
   const esign = useEsign();
   const answer = useMutation({
     mutationFn: async (agree: boolean) =>
-      unwrap(await supabase.schema("core").rpc("answer_esign", { agree })),
+      unwrap(await supabase.schema("api").rpc("answer_esign", { agree })),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["account", "esign"] }),
   });
@@ -75,10 +75,8 @@ export const ArabicFormToDo = () => {
   const save = useMutation({
     mutationFn: async (form: "masculine" | "feminine") => {
       const { error } = await supabase
-        .schema("core")
-        .from("profiles")
-        .update({ title_form: form })
-        .eq("id", user?.id ?? "");
+        .schema("api")
+        .rpc("update_my_profile", { change: { title_form: form } });
       if (error) {
         throw error;
       }
@@ -188,8 +186,8 @@ export const OrganizationToDo = () => {
   const org = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      ((unwrap(await supabase.schema("core").rpc("my_organization")) ??
-        [])[0] ?? null) as Organization | null,
+      ((unwrap(await supabase.schema("api").rpc("my_organization")) ?? [])[0] ??
+        null) as Organization | null,
     queryKey: key,
   });
   const [dismissed, setDismissed] = useState(false);
@@ -197,17 +195,13 @@ export const OrganizationToDo = () => {
   const ask = useMutation({
     mutationFn: async (partner: string) =>
       unwrap(
-        await supabase
-          .schema("governance")
-          .rpc("ask_to_join_partner", { partner })
+        await supabase.schema("api").rpc("ask_to_join_partner", { partner })
       ),
     onSuccess: done,
   });
   const withdraw = useMutation({
     mutationFn: async () =>
-      unwrap(
-        await supabase.schema("governance").rpc("withdraw_partner_join_request")
-      ),
+      unwrap(await supabase.schema("api").rpc("withdraw_partner_join_request")),
     onSuccess: done,
   });
   const { data } = org;
@@ -297,9 +291,8 @@ export const AssociateRequestToDo = () => {
   const request = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      (unwrap(
-        await supabase.schema("membership").rpc("my_associate_request")
-      ) ?? [])[0] ?? null,
+      (unwrap(await supabase.schema("api").rpc("my_associate_request")) ??
+        [])[0] ?? null,
     queryKey: ["account", "associate-request", user?.id],
   });
   const status = request.data?.status;

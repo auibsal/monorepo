@@ -51,7 +51,7 @@ export const NoticeGrid = () => {
   const notices = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      (unwrap(await supabase.schema("core").rpc("my_notices"))?.[0] ??
+      (unwrap(await supabase.schema("api").rpc("my_notices"))?.[0] ??
         null) as Notices | null,
     queryKey: key,
   });
@@ -62,7 +62,7 @@ export const NoticeGrid = () => {
       topic: Topic;
     }) =>
       unwrap(
-        await supabase.schema("core").rpc("set_my_notice", {
+        await supabase.schema("api").rpc("set_my_notice", {
           channel: change.channel,
           topic: change.topic,
           turn_on: change.on,

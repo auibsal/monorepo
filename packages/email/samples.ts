@@ -49,6 +49,7 @@ import {
   submissionInReading,
   submissionReceived,
   sundayPaper,
+  thanksForComing,
   twoStepReset,
   verificationDecided,
   waitlistOffered,
@@ -283,7 +284,10 @@ export const samples = {
       l,
       [
         {
+          classes: ["member", "associate", "honorary", "guest"],
+          entry: "rsvp",
           image: null,
+          off_campus: false,
           starts_at: "2026-11-24T15:00:00Z",
           summary_ar: "اكتب قصيدة واحدة في ساعة.",
           summary_en: "Write one poem in an hour.",
@@ -317,6 +321,7 @@ export const samples = {
       ],
       places: [{ title_ar: "مصوّر", title_en: "Photographer" }],
     }),
+  ThanksForComing: (l) => thanksForComing(l, event, APP),
   TourInvitation: (l) =>
     invitation(
       l,

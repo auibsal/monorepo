@@ -106,29 +106,30 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000a4', 'four@auib.edu.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000b1', 'guest@gmail.com', 'Guest');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000c1', 'staff@auib.edu.iq', 'Staff');
 
-insert into events.events (id, slug, programme_id, title_en, title_ar, starts_at, capacity, status, entry) values
-  ('e0000000-0000-0000-0000-000000000001', 'open-pages-night', (select id from core.programmes where slug = 'open-pages'),
+insert into events.events (id, slug, program_id, title_en, title_ar, starts_at, capacity, status, entry) values
+  ('e0000000-0000-0000-0000-000000000001', 'open-pages-night', (select id from core.programs where slug = 'company'),
     'Open Pages', 'صفحات مفتوحة', now() + interval '3 days', 2, 'published', 'rsvp'),
-  ('e0000000-0000-0000-0000-000000000002', 'members-majlis', (select id from core.programmes where slug = 'salon'),
-    'Members Majlis', 'مجلس الأعضاء', now() + interval '4 days', null, 'published', 'members'),
-  ('e0000000-0000-0000-0000-000000000003', 'draft-night', (select id from core.programmes where slug = 'salon'),
+  ('e0000000-0000-0000-0000-000000000002', 'members-majlis', (select id from core.programs where slug = 'company'),
+    'Members Majlis', 'مجلس الأعضاء', now() + interval '4 days', null, 'published', 'rsvp'),
+  ('e0000000-0000-0000-0000-000000000003', 'draft-night', (select id from core.programs where slug = 'company'),
     'Draft', 'مسودة', now() + interval '5 days', null, 'draft', 'rsvp');
+update events.events set classes = array['member'] where id = 'e0000000-0000-0000-0000-000000000002';
 
 -- ── Visibility ──────────────────────────────────────────────────────────────
 
 select pg_temp.login_anon();
-select is((select array_agg(slug order by slug) from events.events where id::text like 'e0000000-%'), array['open-pages-night'],
-  'Anonymous visitors see only published public events');
+select is((select array_agg(slug order by slug) from events.events where id::text like 'e0000000-%'), array['members-majlis', 'open-pages-night'],
+  'Anonymous visitors see published events, a Members-only one too (decisions.md, Events: Access), never drafts');
 select is(
-  (select count(*) from content.search('Majlis'))::integer, 0,
-  'Search never returns members-only events'
+  (select count(*) from content.search('Majlis'))::integer, 1,
+  'Search finds a Members-only event: its page says whom it is for'
 );
 select is(events.confirmed_count('e0000000-0000-0000-0000-000000000002'), 0,
-  'Counts for members-only events are hidden from visitors');
+  'Its count reads like any other');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
-select is((select array_agg(slug order by slug) from events.events where id::text like 'e0000000-%'), array['open-pages-night'],
-  'Unverified accounts do not see members-only events');
+select is((select array_agg(slug order by slug) from events.events where id::text like 'e0000000-%'), array['members-majlis', 'open-pages-night'],
+  'Unverified accounts see the published events too');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
 select is((select array_agg(slug order by slug) from events.events where id::text like 'e0000000-%'), array['members-majlis', 'open-pages-night'],

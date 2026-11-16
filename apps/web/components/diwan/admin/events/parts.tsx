@@ -10,7 +10,7 @@ import { hasPermissionAnywhere, type Permission } from "@/lib/rbac";
 import { DiwanSection, RowList } from "../../page";
 import { EmptyLine } from "../../states";
 import { Needs } from "../needs";
-import { Shifts } from "../programmes/admin";
+import { Shifts } from "../programs/admin";
 import { EventOrganizations, EventPartner } from "./joint";
 import { EventOffCampus } from "./off-campus";
 import { SessionLinks } from "./session-links";
@@ -64,7 +64,7 @@ const EventMinutes = ({ eventId }: { readonly eventId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("minutes")
           .select("id, title_en, title_ar, status")
           .eq("event_id", eventId)

@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { episodeTitle } from "@/components/next-stop";
 import { NextStopPlayer } from "@/components/next-stop-player";
-import { localized, programmes } from "@/lib/data";
+import { localized, programs } from "@/lib/data";
 import { episodeLd, JsonLd } from "@/lib/json-ld";
 import { mediaUrl } from "@/lib/media";
 import { localizedMetadata } from "@/lib/metadata";
@@ -23,11 +23,11 @@ interface EpisodeProps {
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
 
-type Episode = programmes.PublicEpisode;
+type Episode = programs.PublicEpisode;
 
 const load = (slug: string): Promise<Episode | null> =>
   SLUG.test(slug)
-    ? readPublished(["journal"], (c) => programmes.publicEpisode(c, slug), null)
+    ? readPublished(["journal"], (c) => programs.publicEpisode(c, slug), null)
     : Promise.resolve(null);
 
 export const generateMetadata = async ({
@@ -56,7 +56,7 @@ const EpisodePage = async ({ params }: EpisodeProps) => {
   const t = await getTranslations({ locale, namespace: "web.journal" });
   const credits = await readPublished(
     ["journal"],
-    (c) => programmes.episodeCredits(c, episode.id),
+    (c) => programs.episodeCredits(c, episode.id),
     []
   );
   const title = episodeTitle(episode, locale);
@@ -67,8 +67,8 @@ const EpisodePage = async ({ params }: EpisodeProps) => {
       ? episode.youtube_id_ar
       : episode.youtube_id;
   const image = mediaUrl(episode.thumbnail_path);
-  const chapters = programmes.chaptersOf(episode.chapters);
-  const byCredit = programmes.CREDITS.flatMap((credit) => {
+  const chapters = programs.chaptersOf(episode.chapters);
+  const byCredit = programs.CREDITS.flatMap((credit) => {
     const names = credits
       .filter((c) => c.credit === credit)
       .map((c) => (locale === "ar" ? c.name_ar || c.name_en : c.name_en))
@@ -130,7 +130,7 @@ const EpisodePage = async ({ params }: EpisodeProps) => {
                   href={`https://www.youtube.com/watch?v=${videoId}&t=${chapter.at}s`}
                   rel="noopener"
                 >
-                  {programmes.clockOf(chapter.at)}
+                  {programs.clockOf(chapter.at)}
                 </a>
                 <span>{localized(chapter, "title", locale)}</span>
               </li>

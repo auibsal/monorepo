@@ -104,7 +104,7 @@ select ok(
 );
 select ok(
   exists (select 1 from access.role_permissions where role = 'eic' and permission = 'journal.prize')
-  and not exists (select 1 from programmes.openings where title_en = 'Awards Coordinator'),
+  and not exists (select 1 from programs.openings where title_en = 'Awards Coordinator'),
   'The Editor-in-Chief runs the Prize, and no opening names the old seat'
 );
 

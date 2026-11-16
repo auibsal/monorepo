@@ -103,45 +103,45 @@ select pg_temp.make_user('00000000-0000-0000-0000-00000000d5a3', 'ns-member@auib
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000d5a1', 'media_director');
 select pg_temp.grant_role('00000000-0000-0000-0000-00000000d5a2', 'next_stop_host');
 
-insert into programmes.episodes (id, programme_id, slug, number, title_en, title_ar, youtube_id)
+insert into programs.episodes (id, program_id, slug, number, title_en, title_ar, youtube_id)
 select '00000000-0000-0000-0000-00000000e501', id, 'pilot', 1, 'The pilot', 'الحلقة التجريبية', 'abcdefghijk'
-from core.programmes where slug = 'next-stop';
+from core.programs where slug = 'next-stop';
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d5a1');
 select throws_ok(
-  $$ update programmes.episodes set published_at = now() where id = '00000000-0000-0000-0000-00000000e501' $$,
+  $$ update programs.episodes set published_at = now() where id = '00000000-0000-0000-0000-00000000e501' $$,
   '23514', 'releases_missing', 'An episode with no one on camera is not published');
 
 select lives_ok(
-  $$ insert into programmes.episode_on_camera (id, episode_id, user_id)
+  $$ insert into programs.episode_on_camera (id, episode_id, user_id)
      values ('00000000-0000-0000-0000-00000000e5c1', '00000000-0000-0000-0000-00000000e501',
        '00000000-0000-0000-0000-00000000d5a2') $$,
   'Media lists the host on camera');
 -- No typed names (the third prompt, §1): a guest from outside is invited
 -- by email, and their name is the one they sign the release with.
 select throws_ok(
-  $$ insert into programmes.episode_on_camera (episode_id, guest_name_en, is_guest)
+  $$ insert into programs.episode_on_camera (episode_id, guest_name_en, is_guest)
      values ('00000000-0000-0000-0000-00000000e501', 'Typed Name', true) $$,
   '22023', 'invite_by_email_first', 'A guest''s name is not typed');
 select lives_ok(
-  $$ select programmes.invite_on_camera('00000000-0000-0000-0000-00000000e501', 'guest@example.org') $$,
+  $$ select programs.invite_on_camera('00000000-0000-0000-0000-00000000e501', 'guest@example.org') $$,
   'and a guest is invited by email');
 select pg_temp.logout();
-update programmes.episode_on_camera set id = '00000000-0000-0000-0000-00000000e5c2'
+update programs.episode_on_camera set id = '00000000-0000-0000-0000-00000000e5c2'
 where episode_id = '00000000-0000-0000-0000-00000000e501' and user_id is null;
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d5a1');
 select isnt(
-  (select programmes.episode_release_link('00000000-0000-0000-0000-00000000e5c1')), null,
+  (select programs.episode_release_link('00000000-0000-0000-0000-00000000e5c1')), null,
   'A release link goes to the member''s own address');
 select throws_ok(
-  $$ update programmes.episodes set published_at = now() where id = '00000000-0000-0000-0000-00000000e501' $$,
+  $$ update programs.episodes set published_at = now() where id = '00000000-0000-0000-0000-00000000e501' $$,
   '23514', 'releases_missing', 'Unsigned releases keep it off the site');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d5a3');
-select is((select count(*)::int from programmes.episode_on_camera), 0,
+select is((select count(*)::int from programs.episode_on_camera), 0,
   'Nobody outside Media sees who is on camera');
 select throws_ok(
-  $$ select programmes.episode_release_link('00000000-0000-0000-0000-00000000e5c2', 'guest@example.org') $$,
+  $$ select programs.episode_release_link('00000000-0000-0000-0000-00000000e5c2', 'guest@example.org') $$,
   '42501', null, 'Only Media sends release links');
 
 -- Both sign: the links are used.
@@ -150,34 +150,34 @@ insert into governance.form_submissions (id, form_key, data, status, submitted_a
 values ('00000000-0000-0000-0000-00000000e5f1', 'media-release', '{}', 'submitted', now(), 1, 'Show Host', now()),
        ('00000000-0000-0000-0000-00000000e5f2', 'media-release', '{}', 'submitted', now(), 1, 'Guest Speaker', now());
 update governance.form_links set submission_id = '00000000-0000-0000-0000-00000000e5f1', used_at = now()
-where id = (select form_link_id from programmes.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c1');
+where id = (select form_link_id from programs.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c1');
 select is(
-  (select release_id from programmes.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c1'),
+  (select release_id from programs.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c1'),
   '00000000-0000-0000-0000-00000000e5f1'::uuid, 'A used link records the release');
 update governance.form_links set submission_id = '00000000-0000-0000-0000-00000000e5f2', used_at = now()
-where id = (select form_link_id from programmes.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c2');
+where id = (select form_link_id from programs.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c2');
 select is(
-  (select guest_name_en from programmes.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c2'),
+  (select guest_name_en from programs.episode_on_camera where id = '00000000-0000-0000-0000-00000000e5c2'),
   'Guest Speaker', 'The guest''s name is the one they signed with');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000d5a1');
 select lives_ok(
-  $$ update programmes.episodes set published_at = now() - interval '1 minute'
+  $$ update programs.episodes set published_at = now() - interval '1 minute'
      where id = '00000000-0000-0000-0000-00000000e501' $$,
   'With every release signed, it is published');
 
 -- Media names the director; the credits run in order, for anyone.
 select isnt(
-  (select programmes.credit_episode('00000000-0000-0000-0000-00000000e501',
+  (select programs.credit_episode('00000000-0000-0000-0000-00000000e501',
     '00000000-0000-0000-0000-00000000d5a3', 'directed_by')), null,
   'Media credits the crew of an episode');
 select pg_temp.login_anon();
 select is(
-  (select array_agg(credit order by credit_order) from programmes.episode_credits('00000000-0000-0000-0000-00000000e501')),
+  (select array_agg(credit order by credit_order) from programs.episode_credits('00000000-0000-0000-0000-00000000e501')),
   array['directed_by', 'host', 'guests'],
   'Credits run Directed by, Host, Guests (the standing host when none is named)');
 select is(
-  (select name_en from programmes.episode_credits('00000000-0000-0000-0000-00000000e501') where credit = 'directed_by'),
+  (select name_en from programs.episode_credits('00000000-0000-0000-0000-00000000e501') where credit = 'directed_by'),
   'Plain Member', 'A director is credited by name only');
 
 select * from finish();

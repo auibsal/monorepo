@@ -66,16 +66,14 @@ export const Invite = ({ code }: { code: string }) => {
   const invitation = useQuery({
     queryFn: async () =>
       ((unwrap(
-        await supabase.schema("governance").rpc("partner_invitation", { code })
+        await supabase.schema("api").rpc("partner_invitation", { code })
       ) ?? [])[0] ?? null) as Invitation | null,
     queryKey: ["partner-invitation", code],
   });
   const accept = useMutation({
     mutationFn: async () =>
       unwrap(
-        await supabase
-          .schema("governance")
-          .rpc("accept_partner_invitation", { code })
+        await supabase.schema("api").rpc("accept_partner_invitation", { code })
       ),
     onSuccess: async (kind) => {
       await queryClient.invalidateQueries();

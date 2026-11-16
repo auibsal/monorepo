@@ -7,21 +7,25 @@ vi.mock("server-only", () => ({}));
 vi.mock("@/env", () => ({
   env: { NEXT_PUBLIC_SITE_URL: "https://auibsal.org" },
 }));
-vi.mock("@repo/email", () => ({
-  EmailQuotaError: class extends Error {},
+vi.mock("@repo/email", async () => ({
+  ...(await import("@repo/email/errors")),
   sendEmail,
 }));
 
-const { EmailQuotaError } = await import("@repo/email");
-const { drain, isDeferred, processRow } = await import("@/lib/api/outbox");
+const { EmailConfigError, EmailQuotaError } = await import("@repo/email");
+const { drain, isDeferred, processRow, retryAfterFix } = await import(
+  "@/lib/api/outbox"
+);
 
 interface Row {
   attempts: number;
+  created_at?: string;
   id: number;
   kind: string;
   last_error?: string | null;
   payload: Record<string, unknown>;
   processed_at?: string | null;
+  waits_for_fix?: boolean;
 }
 
 /** A tiny stand-in for the admin client: just the calls the outbox makes. */
@@ -163,6 +167,79 @@ describe("outbox and the email sending limit", () => {
     expect(await processRow(fakeAdmin(rows), 3)).toBe(false);
     expect(rows.at(0)?.attempts).toBe(1);
     expect(rows.at(0)?.last_error).toBe("invalid address");
+  });
+});
+
+describe("a configuration failure waits for the fix", () => {
+  beforeEach(() => {
+    sendEmail.mockReset();
+  });
+
+  test("a send refused for the key or its domain is marked to wait", async () => {
+    sendEmail.mockRejectedValue(new EmailConfigError("domain is not verified"));
+    const rows = [submissionRow(5)];
+    expect(await processRow(fakeAdmin(rows), 5)).toBe(false);
+    expect(rows.at(0)?.waits_for_fix).toBe(true);
+  });
+
+  test("once an email sends again, each is tried once more, never past 7 days", async () => {
+    const now = Date.parse("2026-11-20T00:00:00Z");
+    const rows: Row[] = [
+      {
+        ...submissionRow(6),
+        attempts: 5,
+        created_at: "2026-11-18T00:00:00Z",
+        waits_for_fix: true,
+      },
+      {
+        ...submissionRow(7),
+        attempts: 5,
+        created_at: "2026-11-01T00:00:00Z",
+        waits_for_fix: true,
+      },
+    ];
+    expect(await retryAfterFix(fakeAdmin(rows), now)).toBe(1);
+    expect(rows.at(0)).toMatchObject({ attempts: 4, waits_for_fix: false });
+    expect(rows.at(1)?.processed_at).toBeTruthy();
+    expect(rows.at(1)?.last_error).toContain("older than 7 days");
+  });
+
+  test("a held place whose hold has passed is closed, not retried", async () => {
+    const now = Date.parse("2026-11-20T00:00:00Z");
+    const rows: Row[] = [
+      {
+        attempts: 5,
+        created_at: "2026-11-19T00:00:00Z",
+        id: 9,
+        kind: "events.waitlist_offered",
+        payload: { until: "2026-11-19T12:00:00Z" },
+        waits_for_fix: true,
+      },
+      {
+        attempts: 5,
+        created_at: "2026-11-19T00:00:00Z",
+        id: 10,
+        kind: "events.waitlist_offered",
+        payload: { until: "2026-11-21T12:00:00Z" },
+        waits_for_fix: true,
+      },
+    ];
+    expect(await retryAfterFix(fakeAdmin(rows), now)).toBe(1);
+    expect(rows.at(0)?.last_error).toContain("link expired");
+    expect(rows.at(1)?.attempts).toBe(4);
+  });
+
+  test("a row tried after the fix never waits a second time", async () => {
+    sendEmail.mockRejectedValue(new EmailConfigError("domain is not verified"));
+    const rows = [
+      {
+        ...submissionRow(8),
+        attempts: 4,
+        last_error: "retried once after the configuration was fixed",
+      },
+    ];
+    await processRow(fakeAdmin(rows), 8);
+    expect(rows.at(0)?.waits_for_fix).toBeUndefined();
   });
 });
 

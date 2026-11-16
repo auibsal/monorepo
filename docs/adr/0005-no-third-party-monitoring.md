@@ -1,6 +1,6 @@
 # 0005. No third-party monitoring, analytics cookies or protection
 
-Status: Accepted (November 7, 2026)
+Status: Accepted (November 7, 2026); amended by [0009](0009-cloudflare-first-at-the-edge.md) (November 16, 2026): what Cloudflare does at the edge, it does.
 
 ## Context
 

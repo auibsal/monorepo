@@ -181,9 +181,9 @@ select ok(
 );
 
 -- 6. A removal request done tells its requester.
-insert into programmes.removal_requests (id, requester_name, requester_email, details, requester_lang)
+insert into programs.removal_requests (id, requester_name, requester_email, details, requester_lang)
 values ('0e000000-0000-0000-0000-0000000e0f01', 'Someone', 'someone@example.com', 'My photo', 'ar');
-update programmes.removal_requests set status = 'removed', action_taken = 'Taken down'
+update programs.removal_requests set status = 'removed', action_taken = 'Taken down'
 where id = '0e000000-0000-0000-0000-0000000e0f01';
 select ok(
   exists (select 1 from core.outbox where kind = 'removal.done'
@@ -192,12 +192,12 @@ select ok(
 );
 
 -- 7. An audition time booked confirms.
-insert into programmes.productions (id, slug, title_en, title_ar)
+insert into programs.productions (id, slug, title_en, title_ar)
 values ('0e000000-0000-0000-0000-0000000e1001', 'mail-play', 'A play', 'مسرحية');
-insert into programmes.auditions (id, production_id, starts_at, ends_at)
+insert into programs.auditions (id, production_id, starts_at, ends_at)
 values ('0e000000-0000-0000-0000-0000000e1101', '0e000000-0000-0000-0000-0000000e1001',
   now() + interval '5 days', now() + interval '5 days 2 hours');
-insert into programmes.audition_signups (audition_id, user_id, status)
+insert into programs.audition_signups (audition_id, user_id, status)
 values ('0e000000-0000-0000-0000-0000000e1101', '00000000-0000-0000-0000-0000000e0a01', 'signed_up');
 select ok(
   pg_temp.queued('company.audition_update', '00000000-0000-0000-0000-0000000e0a01'),
@@ -230,12 +230,12 @@ select is(
 insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
 values ('0e000000-0000-0000-0000-0000000e1201', 'the-fair-ej', 'The book fair', 'معرض الكتب',
   now() + interval '1 day', 'published', 'open');
-insert into programmes.shifts (id, event_id, role_en, role_ar, starts_at, ends_at)
+insert into programs.shifts (id, event_id, role_en, role_ar, starts_at, ends_at)
 values ('0e000000-0000-0000-0000-0000000e1301', '0e000000-0000-0000-0000-0000000e1201',
   'Welcome desk', 'الاستقبال',
   ((now() at time zone 'Asia/Baghdad')::date + 1 + time '10:00') at time zone 'Asia/Baghdad',
   ((now() at time zone 'Asia/Baghdad')::date + 1 + time '12:00') at time zone 'Asia/Baghdad');
-insert into programmes.shift_signups (shift_id, user_id, status)
+insert into programs.shift_signups (shift_id, user_id, status)
 values ('0e000000-0000-0000-0000-0000000e1301', '00000000-0000-0000-0000-0000000e0a01', 'signed_up');
 select ok(private.daily_notices() >= 1, 'The daily notices run');
 select ok(

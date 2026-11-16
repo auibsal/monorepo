@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(5);
+select plan(8);
 
 -- Under 13 this month, and 13 from the end of the birth month.
 select throws_ok(
@@ -129,6 +129,34 @@ select lives_ok(
   'Birth details that are not numbers are left to the form');
 select ok(not private.under_minimum_age('{"birth_month":"1","birth_year":"2000"}'),
   'An adult sign-up is never under the minimum age');
+
+-- An invitation counts only if it is real and for this address.
+insert into governance.partner_invitations (kind, email, code)
+values ('associate', '2560301@auib.edu.iq', 'real-code-for-2560301');
+select throws_ok(
+  format($$ insert into auth.users (id, email, raw_user_meta_data, aud, role)
+     values ('a1300000-0000-0000-0000-000000000005', '2560305@auib.edu.iq',
+       %L, 'authenticated', 'authenticated') $$,
+    jsonb_build_object('adult', 'false', 'birth_month', '1',
+      'birth_year', (extract(year from now())::int - 10)::text,
+      'invitation', 'made-up')),
+  '42501', 'under_minimum_age', 'A made-up invitation does not pass the minimum age');
+select throws_ok(
+  format($$ insert into auth.users (id, email, raw_user_meta_data, aud, role)
+     values ('a1300000-0000-0000-0000-000000000006', '2560306@auib.edu.iq',
+       %L, 'authenticated', 'authenticated') $$,
+    jsonb_build_object('adult', 'false', 'birth_month', '1',
+      'birth_year', (extract(year from now())::int - 10)::text,
+      'invitation', 'real-code-for-2560301')),
+  '42501', 'under_minimum_age', 'nor one sent to another address');
+select lives_ok(
+  format($$ insert into auth.users (id, email, raw_user_meta_data, aud, role)
+     values ('a1300000-0000-0000-0000-000000000007', '2560301@auib.edu.iq',
+       %L, 'authenticated', 'authenticated') $$,
+    jsonb_build_object('adult', 'false', 'birth_month', '1',
+      'birth_year', (extract(year from now())::int - 10)::text,
+      'invitation', 'real-code-for-2560301')),
+  'The invitation sent to this address brings its own consent');
 
 select * from finish();
 rollback;

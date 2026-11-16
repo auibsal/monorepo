@@ -9,7 +9,7 @@ import { unwrap } from "@/lib/data";
 type NotionKind =
   | "event"
   | "news"
-  | "programme"
+  | "program"
   | "document"
   | "minutes"
   | "officer";
@@ -35,7 +35,7 @@ export const NotionManaged = ({
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("notion_links")
           .select("notion_page_id")
           .eq("kind", kind)

@@ -102,7 +102,8 @@ select has_column('events', 'events', 'off_campus', 'Off campus is a detail any 
 
 insert into events.events (id, slug, title_en, title_ar, starts_at, status, entry)
 values ('00000000-0000-0000-0000-0000000e9101', 'council-e9', 'Council meeting', 'اجتماع المجلس',
-  '2027-02-10 12:00+00', 'published', 'invite');
+  '2027-02-10 12:00+00', 'published', 'rsvp');
+update events.events set classes = array['member'] where id = '00000000-0000-0000-0000-0000000e9101';
 insert into governance.minutes (id, body, meeting_on, title_en, text_en, status, event_id)
 values ('00000000-0000-0000-0000-0000000e9201', 'council', '2000-01-01', 'Minutes', 'Text.', 'draft',
   '00000000-0000-0000-0000-0000000e9101');
@@ -113,8 +114,8 @@ select is(
   'A meeting''s minutes take its day from its event'
 );
 select ok(
-  (select entry = 'invite' and members_only from events.events where id = '00000000-0000-0000-0000-0000000e9101'),
-  'A Council meeting is a private event, made like any other'
+  (select classes = array['member'] from events.events where id = '00000000-0000-0000-0000-0000000e9101'),
+  'A Council meeting is for Members (decisions.md, Events: Access), made like any other'
 );
 
 select * from finish();

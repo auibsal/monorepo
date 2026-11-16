@@ -54,7 +54,7 @@ const JoinGroups = () => {
   const links = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      unwrap(await supabase.schema("core").rpc("telegram_join_links")) ?? [],
+      unwrap(await supabase.schema("api").rpc("telegram_join_links")) ?? [],
     queryKey: ["telegram", "join-links", user?.id],
   });
   if (!links.data?.length) {
@@ -91,13 +91,13 @@ export const TelegramLink = () => {
     queryFn: async () => {
       const [setting, account] = await Promise.all([
         supabase
-          .schema("core")
+          .schema("api")
           .from("settings")
           .select("value")
           .eq("key", "telegram.bot_username")
           .maybeSingle(),
         supabase
-          .schema("core")
+          .schema("api")
           .from("telegram_accounts")
           .select("username, notify")
           .maybeSingle(),
@@ -128,7 +128,7 @@ export const TelegramLink = () => {
       }
       // Telegram's login isn't set up: the bot's one-time code instead.
       const code = unwrap(
-        await supabase.schema("core").rpc("telegram_link_code")
+        await supabase.schema("api").rpc("telegram_link_code")
       );
       return `https://t.me/${status.data?.bot}?start=link_${code}`;
     },
@@ -174,7 +174,7 @@ export const TelegramLink = () => {
     mutationFn: async (on: boolean) =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("telegram_accounts")
           .update({ notify: on })
           .eq("user_id", user?.id ?? "")
@@ -185,7 +185,7 @@ export const TelegramLink = () => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("core")
+          .schema("api")
           .from("telegram_accounts")
           .delete()
           .eq("user_id", user?.id ?? "")

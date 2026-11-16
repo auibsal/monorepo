@@ -202,7 +202,7 @@ select is((select count(*)::int from core.daily_updates where user_id = '0000000
 select pg_temp.make_user('00000000-0000-0000-0000-000000091006', 'media.n9@auib.edu.iq', 'Media');
 select pg_temp.grant_role('00000000-0000-0000-0000-000000091006', 'media_director');
 select pg_temp.login_as('00000000-0000-0000-0000-000000091006', '{"aal":"aal2"}');
-select lives_ok($$ select programmes.set_credited_name('00000000-0000-0000-0000-000000091001', 'Sam Hadi', 'سام هادي') $$,
+select lives_ok($$ select programs.set_credited_name('00000000-0000-0000-0000-000000091001', 'Sam Hadi', 'سام هادي') $$,
   'Media sets a credited name, used only in credits, captions and playbills');
 
 -- ── Tenth prompt: a received email; incidents; no push ──

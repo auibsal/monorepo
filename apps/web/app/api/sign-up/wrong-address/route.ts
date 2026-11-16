@@ -37,7 +37,7 @@ export const POST = async (request: Request) => {
     return json({ error: "invalid" }, 400);
   }
   const { data, error } = await createAdminClient()
-    .schema("core")
+    .schema("api")
     .rpc("drop_unconfirmed_sign_up", {
       email: parsed.data.email,
       sign_up_key: parsed.data.key,

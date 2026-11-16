@@ -145,7 +145,7 @@ describe.skipIf(!enabled)("two-step recovery", () => {
       ids[data.user.email ?? ""] = data.user.id;
     }
     await admin
-      .schema("access")
+      .schema("api")
       .from("role_assignments")
       .insert({
         role: "president",
@@ -187,13 +187,13 @@ describe.skipIf(!enabled)("two-step recovery", () => {
     ).toBe(400);
 
     const { data: resets } = await admin
-      .schema("access")
+      .schema("api")
       .from("two_step_resets")
       .select("via, reset_by")
       .eq("user_id", idOf(officer));
     expect(resets).toEqual([{ reset_by: null, via: "recovery_code" }]);
     const { count } = await admin
-      .schema("core")
+      .schema("api")
       .from("outbox")
       .select("id", { count: "exact", head: true })
       .eq("kind", "access.two_step_reset")
@@ -227,8 +227,8 @@ describe.skipIf(!enabled)("two-step recovery", () => {
     ).toBe(200);
     expect(await factors(idOf(officer))).toHaveLength(0);
     const { count } = await admin
-      .schema("access")
-      .from("recovery_codes")
+      .schema("api")
+      .from("recovery_codes_all")
       .select("id", { count: "exact", head: true })
       .eq("user_id", idOf(officer));
     expect(count).toBe(0);

@@ -158,12 +158,9 @@ describe.skipIf(!enabled)("Hudhud", () => {
     });
     expect(error).toBeNull();
     userId = created.user?.id ?? "";
-    await admin
-      .schema("membership")
-      .from("memberships")
-      .insert({ user_id: userId });
+    await admin.schema("api").from("memberships").insert({ user_id: userId });
     const { data: event } = await admin
-      .schema("events")
+      .schema("api")
       .from("events")
       .insert({
         capacity: 5,
@@ -183,11 +180,11 @@ describe.skipIf(!enabled)("Hudhud", () => {
       return;
     }
     await admin
-      .schema("core")
-      .from("telegram_groups")
+      .schema("api")
+      .from("telegram_groups_all")
       .delete()
       .eq("chat_id", chatId);
-    await admin.schema("events").from("events").delete().eq("id", eventId);
+    await admin.schema("api").from("events").delete().eq("id", eventId);
     await admin.auth.admin.deleteUser(userId);
   });
 
@@ -196,13 +193,11 @@ describe.skipIf(!enabled)("Hudhud", () => {
       auth: { persistSession: false },
     });
     await member.auth.signInWithPassword({ email, password });
-    const { data: code } = await member
-      .schema("core")
-      .rpc("telegram_link_code");
+    const { data: code } = await member.schema("api").rpc("telegram_link_code");
     await bot.handleUpdate(message(`/start link_${code}`));
     expect(lastText()).toContain("Linked");
     const { data: link } = await admin
-      .schema("core")
+      .schema("api")
       .from("telegram_accounts")
       .select("user_id")
       .eq("telegram_id", tgUser)
@@ -240,7 +235,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
       "You're in"
     );
     const { data: rsvp } = await admin
-      .schema("events")
+      .schema("api")
       .from("rsvps")
       .select("status")
       .eq("event_id", eventId)
@@ -265,7 +260,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
   test("connects a group, sets a topic and posts there once", async () => {
     const code = "c".repeat(32);
     await admin
-      .schema("core")
+      .schema("api")
       .from("telegram_codes")
       .insert({
         code_hash: createHash("sha256").update(code).digest("hex"),
@@ -278,8 +273,8 @@ describe.skipIf(!enabled)("Hudhud", () => {
 
     // Topics are chosen in the Diwan (Media → Channels), not in the chat.
     await admin
-      .schema("core")
-      .from("telegram_groups")
+      .schema("api")
+      .from("telegram_groups_all")
       .update({ topics: { events: 5 } })
       .eq("chat_id", chatId);
 
@@ -365,7 +360,7 @@ describe.skipIf(!enabled)("Hudhud", () => {
     // Not yet a week: nobody is removed.
     expect(await runRemovals(bot.api as never)).toBe(0);
     await admin
-      .schema("core")
+      .schema("api")
       .from("telegram_members")
       .update({
         warned_at: new Date(Date.now() - 8 * 86_400_000).toISOString(),
@@ -381,8 +376,8 @@ describe.skipIf(!enabled)("Hudhud", () => {
     // Who a group is for is set in the Diwan (Media → Channels).
     const audience = (value: "members" | "staff") =>
       admin
-        .schema("core")
-        .from("telegram_groups")
+        .schema("api")
+        .from("telegram_groups_all")
         .update({ audience: value })
         .eq("chat_id", chatId);
     await audience("staff");

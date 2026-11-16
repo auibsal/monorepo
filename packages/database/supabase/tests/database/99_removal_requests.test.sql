@@ -105,25 +105,25 @@ insert into journal.pieces (id, slug, category, language, title_en, title_ar, st
 values ('00000000-0000-0000-0000-0000000e0b01', 'fair-photos', 'photography', 'en', 'Fair photos', 'صور', 'published',
   now() - interval '1 day', '00000000-0000-0000-0000-0000000e0b03');
 
-insert into programmes.removal_requests (id, requester_name, requester_email, content_url, details)
+insert into programs.removal_requests (id, requester_name, requester_email, content_url, details)
 values ('00000000-0000-0000-0000-0000000e0b02', 'Someone', 'someone@example.com',
   'https://auibsal.org/qirtas/gallery/fair-photos?x=1', 'I am in the second photo.');
 
 select is((select status from journal.pieces where id = '00000000-0000-0000-0000-0000000e0b01'), 'unpublished',
   'What the request points to is hidden as it arrives');
-select is((select hidden_kind from programmes.removal_requests where id = '00000000-0000-0000-0000-0000000e0b02'), 'piece',
+select is((select hidden_kind from programs.removal_requests where id = '00000000-0000-0000-0000-0000000e0b02'), 'piece',
   'and the request records what it hid');
 select is(extract(dow from private.add_business_days('2026-11-12 09:00+03', 2) at time zone 'Asia/Baghdad')::integer, 1,
   'Two business days from a Thursday end on the Monday (Friday and Saturday are off)');
-select ok((select due_at > now() from programmes.removal_requests where id = '00000000-0000-0000-0000-0000000e0b02'),
+select ok((select due_at > now() from programs.removal_requests where id = '00000000-0000-0000-0000-0000000e0b02'),
   'The request is due within two business days');
 
-update programmes.removal_requests set status = 'declined', action_taken = 'Not the requester in the photo.'
+update programs.removal_requests set status = 'declined', action_taken = 'Not the requester in the photo.'
 where id = '00000000-0000-0000-0000-0000000e0b02';
 select is((select status from journal.pieces where id = '00000000-0000-0000-0000-0000000e0b01'), 'published',
   'A declined request brings it back');
 
-insert into programmes.removal_requests (requester_name, requester_email, content_url, details)
+insert into programs.removal_requests (requester_name, requester_email, content_url, details)
 values ('Someone', 'someone@example.com', 'https://www.instagram.com/p/abc', 'On Instagram.');
 select is((select status from journal.pieces where id = '00000000-0000-0000-0000-0000000e0b01'), 'published',
   'An address off the site hides nothing here');

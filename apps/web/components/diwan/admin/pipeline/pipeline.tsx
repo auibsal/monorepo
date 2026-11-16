@@ -44,7 +44,7 @@ const MyReads = ({ issueId }: { issueId: string }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("assignments")
           .select(
             "id, read_number, entry:blind_entries!inner(id, blind_id, title, category, status, issue_id), score:scores(total)"

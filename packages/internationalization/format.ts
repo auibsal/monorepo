@@ -241,6 +241,48 @@ export const formatClock = (
   return chicagoTime(time, locale);
 };
 
+const LRI = "\u2066";
+const PDI = "\u2069";
+
+/**
+ * A range kept left to right in Arabic: inside right-to-left text the dash
+ * between two numbers flips them («4:00–2:00»), so every Arabic time and
+ * date range sits in a left-to-right isolate (Unicode's LRI … PDI, which
+ * works in pages, plain text and email alike). English needs none.
+ */
+export const isolateRange = (text: string, locale: Locale = defaultLocale) =>
+  locale === "ar" ? `${LRI}${text}${PDI}` : text;
+
+/**
+ * "2:00–4:00 p.m." / «2:00–4:00 م»: one meridiem when both share it
+ * (Chicago 10.41 and 6.83), each its own otherwise ("11:00 a.m.–1:00
+ * p.m."); isolated in Arabic.
+ */
+export const formatClockRange = (
+  start: DateInput,
+  end: DateInput,
+  locale: Locale = defaultLocale
+) => {
+  const from = formatClock(start, locale);
+  const to = formatClock(end, locale);
+  const meridiem = (clock: string) => clock.slice(clock.indexOf(" ") + 1);
+  const shared = from.includes(" ") && meridiem(from) === meridiem(to);
+  const head = shared ? from.slice(0, from.indexOf(" ")) : from;
+  return isolateRange(`${head}–${to}`, locale);
+};
+
+/** "Sunday, November 22 – Monday, November 23", isolated in Arabic. */
+export const formatDateRange = (
+  start: DateInput,
+  end: DateInput,
+  locale: Locale = defaultLocale,
+  withYear = false
+) =>
+  isolateRange(
+    `${formatLongDate(start, locale, withYear)} – ${formatLongDate(end, locale, withYear)}`,
+    locale
+  );
+
 /**
  * A date for the dated lists: the day ("25") and a short weekday and
  * month ("Sun", "Oct"), in Baghdad and with Latin digits.

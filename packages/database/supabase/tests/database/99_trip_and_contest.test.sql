@@ -106,7 +106,7 @@ values ('00000000-0000-0000-0000-0000000e7101', 'bc-e7-trip',
   'Book Circle on al-Mutanabbi Street', 'حلقة الكتاب في شارع المتنبي',
   now() + interval '30 days', 'draft', 'rsvp', '00000000-0000-0000-0000-0000000e7001',
   'Al-Mutanabbi Street');
-select pg_temp.grant_role('00000000-0000-0000-0000-0000000e7001', 'programme_lead', 'event',
+select pg_temp.grant_role('00000000-0000-0000-0000-0000000e7001', 'program_lead', 'event',
   '00000000-0000-0000-0000-0000000e7101');
 
 select is(

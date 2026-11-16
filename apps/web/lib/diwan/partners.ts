@@ -18,7 +18,7 @@ export const useMyPartners = () => {
   return useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      (unwrap(await supabase.schema("governance").rpc("my_partners")) ??
+      (unwrap(await supabase.schema("api").rpc("my_partners")) ??
         []) as MyPartner[],
     queryKey: ["partner-desk", "mine", user?.id ?? ""],
   });
@@ -42,7 +42,7 @@ export const useGuestOf = () => {
       const rows =
         unwrap(
           await supabase
-            .schema("governance")
+            .schema("api")
             .from("partner_affiliations")
             .select("status, partner_id")
             .eq("user_id", user?.id ?? "")
@@ -52,7 +52,7 @@ export const useGuestOf = () => {
         return [] as GuestOf[];
       }
       const names =
-        unwrap(await supabase.schema("governance").rpc("partner_names")) ?? [];
+        unwrap(await supabase.schema("api").rpc("partner_names")) ?? [];
       return rows.map((row) => {
         const partner = names.find((n) => n.id === row.partner_id);
         return {

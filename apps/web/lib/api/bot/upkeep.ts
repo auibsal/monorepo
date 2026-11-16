@@ -13,6 +13,7 @@ import { pick, when } from "./format";
 import { eventPage, web } from "./links";
 import { baghdadDate, baghdadHour, copyFor, once } from "./posts";
 import { qrPng } from "./qr";
+import { whenBlocked } from "./queue";
 
 /** How long after an issue goes out Hudhud keeps bringing it to chats. */
 const PAPER_DAYS = 3;
@@ -69,7 +70,7 @@ const paperPage = (lang: Lang, month: string) =>
 const recentIssues = async (now: Date) => {
   const since = new Date(now.getTime() - PAPER_DAYS * 864e5).toISOString();
   const { data, error } = await db()
-    .schema("content")
+    .schema("api")
     .from("sunday_paper_drafts")
     .select("month")
     .gte("sent_at", since);
@@ -87,7 +88,7 @@ const bringPaper = async (
   lang: Lang
 ) => {
   const { data: claimed } = await db()
-    .schema("core")
+    .schema("api")
     .from("paper_deliveries")
     .upsert(
       { month, telegram_id: chat },
@@ -98,25 +99,27 @@ const bringPaper = async (
     return false;
   }
   try {
-    await api.sendMessage(chat, copy[lang].paperOut, {
-      parse_mode: "HTML",
-      reply_markup: new InlineKeyboard().url(
-        copy[lang].buttons.readPaper,
-        paperPage(lang, month)
-      ),
-    });
+    await whenBlocked({ notify: false, paper: false }, () =>
+      api.sendMessage(chat, copy[lang].paperOut, {
+        parse_mode: "HTML",
+        reply_markup: new InlineKeyboard().url(
+          copy[lang].buttons.readPaper,
+          paperPage(lang, month)
+        ),
+      })
+    );
     return true;
   } catch (error) {
     if (error instanceof GrammyError && error.error_code === 403) {
       await db()
-        .schema("core")
+        .schema("api")
         .from("telegram_accounts")
         .update({ notify: false, paper: false })
         .eq("telegram_id", chat);
       return false;
     }
     await db()
-      .schema("core")
+      .schema("api")
       .from("paper_deliveries")
       .delete()
       .eq("month", month)
@@ -137,13 +140,13 @@ export const runPaper = async (api: Api, now = new Date()) => {
     return 0;
   }
   const { data: linked } = await db()
-    .schema("core")
+    .schema("api")
     .from("telegram_accounts")
     .select("telegram_id, user_id")
     .eq("paper", true);
   const { data: profiles } = await db()
-    .schema("core")
-    .from("profiles")
+    .schema("api")
+    .from("profiles_all")
     .select("id, locale")
     .in(
       "id",
@@ -215,7 +218,7 @@ const NUDGES_PER_RUN = 25;
 /** Claims a private reminder so it goes once; false when already sent. */
 const claimNudge = async (telegramId: number, kind: string, ref: string) => {
   const { data } = await db()
-    .schema("core")
+    .schema("api")
     .from("telegram_nudges")
     .upsert(
       { kind, ref, telegram_id: telegramId },
@@ -227,7 +230,7 @@ const claimNudge = async (telegramId: number, kind: string, ref: string) => {
 
 const releaseNudge = (telegramId: number, kind: string, ref: string) =>
   db()
-    .schema("core")
+    .schema("api")
     .from("telegram_nudges")
     .delete()
     .eq("telegram_id", telegramId)
@@ -245,12 +248,12 @@ const sendNudge = async (
     return false;
   }
   try {
-    await send();
+    await whenBlocked({ reminders: false }, send);
     return true;
   } catch (error) {
     if (error instanceof GrammyError && error.error_code === 403) {
       await db()
-        .schema("core")
+        .schema("api")
         .from("telegram_accounts")
         .update({ reminders: false })
         .eq("telegram_id", telegramId);
@@ -280,9 +283,7 @@ interface TicketRow {
  * when they keep Hudhud's reminders on.
  */
 export const runTickets = async (api: Api) => {
-  const { data, error } = await db()
-    .schema("core")
-    .rpc("telegram_tickets_soon");
+  const { data, error } = await db().schema("api").rpc("telegram_tickets_soon");
   if (error) {
     throw error;
   }
@@ -345,7 +346,7 @@ export const runRoleTodos = async (api: Api, now = new Date()) => {
   if (weekday.format(now) !== "Mon" || baghdadHour(now) < TODO_HOUR) {
     return 0;
   }
-  const { data, error } = await db().schema("core").rpc("telegram_role_todos");
+  const { data, error } = await db().schema("api").rpc("telegram_role_todos");
   if (error) {
     throw error;
   }
@@ -411,7 +412,7 @@ export const staffAlert = async (alert: {
   urgent?: boolean;
 }) => {
   await db()
-    .schema("core")
+    .schema("api")
     .from("staff_alerts")
     .upsert(
       {
@@ -449,7 +450,7 @@ const teamPost = (api: Api, group: Group, team: Team, text: string) => {
 export const runAlerts = async (api: Api, now = new Date()) => {
   const staffGroups = (await groups()).filter((g) => g.audience === "staff");
   const { data, error } = await db()
-    .schema("core")
+    .schema("api")
     .from("staff_alerts")
     .select("id, team, urgent, text_en, text_ar, link")
     .is("posted_at", null)
@@ -477,7 +478,7 @@ export const runAlerts = async (api: Api, now = new Date()) => {
     )
   );
   await db()
-    .schema("core")
+    .schema("api")
     .from("staff_alerts")
     .update({ posted_at: now.toISOString() })
     .in(

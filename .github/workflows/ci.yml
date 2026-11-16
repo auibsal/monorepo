@@ -213,7 +213,7 @@ jobs:
         run: bunx supabase test db
       - name: Generated types are up to date
         run: |
-          (cd packages/database && bunx supabase gen types typescript --schema public,core,access,membership,events,journal,programmes,governance,content) \
+          (cd packages/database && bunx supabase gen types typescript --schema public,core,access,membership,events,journal,programs,governance,content) \
             | bunx biome format --stdin-file-path=packages/database/types.ts > "$RUNNER_TEMP/types.ts"
           diff -u packages/database/types.ts "$RUNNER_TEMP/types.ts" \
             || (echo "Run 'bun run db:types' and commit the result." && exit 1)

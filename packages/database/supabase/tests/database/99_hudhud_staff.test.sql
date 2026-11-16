@@ -119,7 +119,7 @@ insert into core.telegram_accounts (user_id, telegram_id) values
 
 delete from events.events;
 insert into events.events (id, slug, title_en, title_ar, starts_at, ends_at, capacity, status, entry) values
-  ('e0000000-0000-0000-0000-0000000008e1', 'st-today', 'Today', 'اليوم', now() + interval '1 minute', now() + interval '2 minutes', 10, 'published', 'members'),
+  ('e0000000-0000-0000-0000-0000000008e1', 'st-today', 'Today', 'اليوم', now() + interval '1 minute', now() + interval '2 minutes', 10, 'published', 'rsvp'),
   ('e0000000-0000-0000-0000-0000000008e2', 'st-past', 'Past', 'مضى', now() - interval '3 hours', now() - interval '30 minutes', 10, 'published', 'rsvp');
 insert into events.rsvps (event_id, user_id, status) values
   ('e0000000-0000-0000-0000-0000000008e2', '00000000-0000-0000-0000-0000000008a1', 'confirmed'),
@@ -139,7 +139,7 @@ select ok(not core.telegram_is_staff(802), 'a linked member without a role is no
 select ok(not core.telegram_is_staff(803), 'and an unlinked account is not');
 select ok(
   (select bool_or(e->>'slug' = 'st-today') from jsonb_array_elements(core.telegram_staff_brief()->'events') e),
-  'The brief lists today''s events, members-only ones too'
+  'The brief lists today''s events'
 );
 select ok(core.telegram_staff_brief()->'waiting' ? 'partner_applications',
   'and what waits in the Diwan');

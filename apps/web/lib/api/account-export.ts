@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { Database } from "@repo/database";
+import { type Database, type Schema, serverName } from "@repo/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 type Client = SupabaseClient<Database>;
@@ -46,12 +46,12 @@ const TABLES: readonly (readonly [string, string, string])[] = [
   ["membership", "service_records", "user_id"],
   ["membership", "verification_requests", "user_id"],
   ["membership", "wallet_passes", "user_id"],
-  ["programmes", "audition_notes", "author_id"],
-  ["programmes", "audition_signups", "user_id"],
-  ["programmes", "opening_replies", "user_id"],
-  ["programmes", "production_credits", "user_id"],
-  ["programmes", "shift_signups", "user_id"],
-  ["programmes", "six_words", "user_id"],
+  ["programs", "audition_notes", "author_id"],
+  ["programs", "audition_signups", "user_id"],
+  ["programs", "opening_replies", "user_id"],
+  ["programs", "production_credits", "user_id"],
+  ["programs", "shift_signups", "user_id"],
+  ["programs", "six_words", "user_id"],
 ];
 
 /** Columns never exported: they would let someone act as the person. */
@@ -63,13 +63,13 @@ const withoutSecrets = (row: Record<string, unknown>) =>
 export const exportAccount = async (admin: Client, userId: string) => {
   const [{ data: user }, { data: profile }] = await Promise.all([
     admin.auth.admin.getUserById(userId),
-    admin.schema("core").from("profiles").select("*").eq("id", userId),
+    admin.schema("api").from("profiles_all").select("*").eq("id", userId),
   ]);
   const tables = await Promise.all(
     TABLES.map(async ([schema, table, column]) => {
       const { data } = await admin
-        .schema(schema as "core")
-        .from(table as "profiles")
+        .schema("api")
+        .from(serverName(schema as Schema, table) as "profiles")
         .select("*")
         .eq(column as "id", userId);
       return [

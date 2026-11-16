@@ -26,7 +26,7 @@ export const StudentLifeWeekPanel = () => {
     queryFn: async () => {
       const latest = unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("student_life_weeks")
           .select("id, week_of, sent_at")
           .not("sent_at", "is", null)
@@ -39,7 +39,7 @@ export const StudentLifeWeekPanel = () => {
       }
       const rows = (unwrap(
         await supabase
-          .schema("events")
+          .schema("api")
           .from("student_life_week_events")
           .select("included, event:events(title_en, title_ar)")
           .eq("week_id", latest.id)

@@ -72,7 +72,7 @@ const AboutPage = async ({ params }: LocaleParams) => {
     ["about"],
     async (c) => {
       const { data } = await c
-        .schema("content")
+        .schema("api")
         .rpc("society_numbers", undefined, { get: true });
       return data?.[0] ?? null;
     },

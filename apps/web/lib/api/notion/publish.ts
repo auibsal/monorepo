@@ -48,14 +48,27 @@ export const editorEmail = async (ctx: SyncContext, page: NotionPage) => {
 export const NO_EMAIL =
   "The platform could not see who set the status. In Notion, open Settings, Connections, SAL Platform, and allow it to read user information including email addresses.";
 
-export const publisherName = async (ctx: SyncContext, userId: string) => {
+/**
+ * Who published, as their seat ("the President"), never their name: no
+ * personal data in Notion (decisions.md, Where things live). The first of
+ * their current roles in the Council's order; "an officer" otherwise.
+ */
+export const publisherSeat = async (ctx: SyncContext, userId: string) => {
+  const now = new Date().toISOString();
   const { data } = await ctx.admin
-    .schema("core")
-    .from("profiles")
-    .select("full_name_en")
-    .eq("id", userId)
-    .maybeSingle();
-  return data?.full_name_en?.trim() || "an officer";
+    .schema("api")
+    .from("role_assignments")
+    .select("ends_at, starts_at, role:roles(name_en, sort, retired)")
+    .eq("user_id", userId)
+    .or(`ends_at.is.null,ends_at.gt.${now}`);
+  const [seat] = (data ?? [])
+    .filter((a) => a.starts_at <= now)
+    .map((a) => a.role)
+    .filter((r): r is { name_en: string; retired: boolean; sort: number } =>
+      Boolean(r && !r.retired)
+    )
+    .sort((a, b) => a.sort - b.sort);
+  return seat ? `the ${seat.name_en}` : "an officer";
 };
 
 /** The page's first image, copied to the public media bucket. */

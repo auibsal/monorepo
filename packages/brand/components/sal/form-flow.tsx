@@ -7,7 +7,7 @@ import { Icon } from "./icon";
 
 /**
  * One form flow (decisions.md, The site): every form people send to the
- * Society (Submit to Qirtas, an opening's application, an audition, a
+ * Society (Send your work, an opening's application, an audition, a
  * nomination, the partner application) uses these pieces. They take their
  * words as props, like the rest of the kit.
  */

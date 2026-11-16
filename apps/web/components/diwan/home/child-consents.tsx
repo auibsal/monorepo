@@ -27,15 +27,14 @@ export const ChildConsents = () => {
   const consents = useQuery({
     enabled: Boolean(user),
     queryFn: async () =>
-      unwrap(await supabase.schema("governance").rpc("my_children_consents")) ??
-      [],
+      unwrap(await supabase.schema("api").rpc("my_children_consents")) ?? [],
     queryKey: [...KEY, user?.id ?? ""],
   });
   const withdraw = useMutation({
     mutationFn: async (submissionId: string) =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .rpc("parent_withdraw_consent", { submission_id: submissionId })
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),

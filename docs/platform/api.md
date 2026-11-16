@@ -36,7 +36,7 @@ the secret is unset.
 | `/api/qirtas/images` | POST | A Qirtas editor (a piece accepted from a submission takes the writer’s images, metadata stripped) | Member (the piece’s editor, under RLS) | — |
 | `/api/forms/sign` | POST | Anyone signing without an account; anonymous concerns | Turnstile, or a single-use form link | per address |
 | `/api/health` | GET | Uptime checks | Public (`no-store`) | — |
-| `/api/hooks/outbox` | POST | The Supabase database webhook on `core.outbox` | `DATABASE_WEBHOOK_SECRET` Bearer | — |
+| `/api/hooks/outbox` | POST | The database, on each `core.outbox` insert (`private.call_api`, pg_net) and every 10 minutes (pg_cron's drain) | `DATABASE_WEBHOOK_SECRET` Bearer | — |
 | `/api/hooks/telegram` | POST | Telegram (Hudhud’s webhook) | `TELEGRAM_WEBHOOK_SECRET` header | — |
 | `/api/hooks/wallet` | POST | Google Wallet (a pass saved or removed) | Google’s signed message | — |
 | `/api/hooks/notion` | POST | Notion (a page changed: starts the sync, once a minute at most) | `X-Notion-Signature` HMAC (`NOTION_WEBHOOK_SECRET`) | one a minute |

@@ -45,7 +45,7 @@ export const useTwoStep = () => {
     enabled: Boolean(user),
     queryFn: async () => {
       const [needs, level, factors] = await Promise.all([
-        supabase.schema("access").rpc("needs_two_step"),
+        supabase.schema("api").rpc("needs_two_step"),
         supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
         supabase.auth.mfa.listFactors(),
       ]);

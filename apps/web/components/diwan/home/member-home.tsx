@@ -14,7 +14,7 @@ import { MembershipCard } from "./membership-card";
 import { NextEvents } from "./next-events";
 import { Notices } from "./notices";
 import { OtherHome } from "./other-home";
-import { MyProgrammes } from "./programmes";
+import { MyPrograms } from "./programs";
 import { Renewal } from "./renewal";
 import { RoleChecklist, UnsignedRoleAgreements } from "./role-checklist";
 import {
@@ -124,7 +124,7 @@ export const MemberHome = () => {
           <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
             <Notices />
             <NextEvents />
-            <MyProgrammes />
+            <MyPrograms />
             <JournalSection />
             <Motions />
             <VotingEligibility />

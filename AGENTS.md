@@ -93,6 +93,9 @@ media do.
     The bot acts for a member only through the `core.telegram_*`
     functions, which run the Diwan functions under the member's claims so
     RLS still decides. Bot copy is in `lib/api/bot/copy.ts`.
+    Outbound work runs through Supabase Queues (decisions.md, The site:
+    Background jobs): Hudhud's scheduled posts are planned onto the queue
+    `telegram` and sent a batch at a time (`lib/api/bot/queue.ts`).
   - `lib/` holds the app's own code that is not a page or a component:
     `lib/auth` (sign-in, sessions, passkeys), `lib/rbac` (permission
     keys, role bundles, modules and sections, the client mirror of
@@ -179,11 +182,23 @@ any schema change. Integration tests run against a local stack with
   `app_metadata`.
 - **Atomic multi-step operations are Postgres functions** called by RPC.
   The body is a SECURITY DEFINER function in `private` that checks
-  permissions itself; the name the apps call, in an exposed schema, is a
+  permissions itself; the name the apps call, in a data schema, is a
   SECURITY INVOKER wrapper with the same signature. The Supabase advisors
   stay at zero findings (`00_advisors.test.sql`: one permissive policy per
   role and action, every foreign key indexed, no exposed SECURITY DEFINER
   function).
+- **One schema for the Data API (`api`).** The data lives in its schemas
+  (`core`, `access`, `membership`, `events`, `journal`, `programs`,
+  `governance`, `content`); none is exposed. The Data API serves only
+  `api`: a view with `security_invoker` for each table a client role
+  reaches and a SECURITY INVOKER wrapper for each function it calls, so
+  RLS and the grants decide as the caller. `private.build_api()` makes it
+  from the catalog; a migration that adds or changes a table, a column, a
+  grant or a function ends with `select private.build_api();`
+  (`99_api_schema.test.sql` fails without it). Clients always query
+  `.schema("api")`; a name in two schemas takes its schema as a prefix
+  (`events_invitations`, `apiName` in `@repo/database`). Nothing goes in
+  `public`.
 - **Migrations ship through CI.** Add a file to `supabase/migrations`;
   after merge, `.github/workflows/migrate.yml` runs `supabase db push`
   against production once CI passes, then calls Vercel's deploy hook (Git
@@ -253,11 +268,11 @@ any schema change. Integration tests run against a local stack with
   `apps/web/.env.example`.
 - **Personal data lives only on the site.** Never in Notion, in git or in
   a migration: imports of personal data (such as the spring 2026 Tour,
-  `programmes.import_tour`) go from the officer's browser straight to the
+  `programs.import_tour`) go from the officer's browser straight to the
   database. The Register is private (the Executive Board and the
   Director of Membership), with no bulk export. Nothing about members is
   public: no directory, no contributor pages, no wall of names; credits
-  show the name each person chose (`programmes.credited_names()`). The
+  show the name each person chose (`programs.credited_names()`). The
   site keeps only what it
   needs: no optional profile details or demographic reports. An account
   is for people 13 or older (an invitation aside). A member
@@ -293,7 +308,7 @@ any schema change. Integration tests run against a local stack with
 the Council and the first semester, members and classes, names and titles,
 the card, numbers and codes, forms and signatures, events and the
 calendar, the Typewriter Tour, partners, guests, governance, Qirtas
-(Submit to Qirtas, the Newsroom, reading, Editions, Games, the Prize,
+(Send your work, the Newsroom, reading, Editions, Games, the Prize,
 Qalam, the Sunday Paper), and Notion, documents, Hudhud and email. Read
 the section for the domain you are changing first. Four rules hold
 everywhere:
@@ -367,8 +382,9 @@ everywhere:
   Merriam-Webster), no exceptions, in UI copy, emails, comments, commits,
   docs and the database's text: curly quotes and apostrophes, the serial
   comma, en dashes for ranges, the ellipsis character, sentence case for
-  interface labels. Code identifiers may stay (`programmes`,
-  `cancelled`).
+  interface labels. Code identifiers, schemas, tables and columns follow
+  it too (`programs`, `program_id`); the one exception left is the status
+  value `cancelled`.
 - **Arabic:** Modern Standard Arabic for the site, your account, the
   Diwan, emails, documents, certificates and Qirtas, written by Claude
   with no native-review gate; Iraqi Arabic (with گ، چ، پ) only where the
@@ -453,6 +469,15 @@ everywhere:
 - **shadcn/ui:** files in `packages/brand/components/ui` are generated;
   update them with the shadcn CLI where possible. SAL components live in
   `packages/brand/components/sal`.
+- **The owner's tasks live in Notion** (Work › Tasks; decisions.md, Where
+  things live: Tasks and to-dos), kept by the co-pilot chat. `PROGRESS.md`
+  keeps only open code work. List what you need from the owner under "For
+  the owner" in each pull request's report; never as a checklist here.
+- **Nothing public describes a weakness.** No line in the public
+  repository (`PROGRESS.md`, docs, commits, pull request descriptions)
+  describes a security setting that is off or a weakness not yet fixed:
+  tell the owner in chat instead. `docs/platform/settings.md` may still
+  describe the settings as they are meant to be.
 - **Activity log.** It reads as sentences
   (`components/diwan/admin/system/activity.tsx`); a new logged table needs
   its line there, and a new record table with history its entry in

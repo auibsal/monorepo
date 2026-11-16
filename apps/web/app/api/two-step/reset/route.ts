@@ -44,15 +44,15 @@ export const POST = async (request: Request) => {
   try {
     await removeAuthenticators(admin, userId);
     const cleared = await admin
-      .schema("access")
-      .from("recovery_codes")
+      .schema("api")
+      .from("recovery_codes_all")
       .delete()
       .eq("user_id", userId);
     if (cleared.error) {
       throw cleared.error;
     }
     const recorded = await admin
-      .schema("access")
+      .schema("api")
       .from("two_step_resets")
       .insert({ reset_by: session.userId, user_id: userId, via: "officer" });
     if (recorded.error) {

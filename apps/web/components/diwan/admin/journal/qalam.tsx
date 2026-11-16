@@ -39,8 +39,7 @@ const roster = (supabase: ReturnType<typeof useAuth>["supabase"]) => ({
   // The roster is the students' accounts, made by the parent's consent
   // (qalam-parent-consent); each name comes from the account.
   list: async (year: number) =>
-    unwrap(await supabase.schema("programmes").rpc("qalam_roster", { year })) ??
-    [],
+    unwrap(await supabase.schema("api").rpc("qalam_roster", { year })) ?? [],
 });
 
 type Student = Awaited<ReturnType<ReturnType<typeof roster>["list"]>>[number];
@@ -147,7 +146,7 @@ const ParentLinks = ({ students }: { students: Student[] }) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("governance")
+          .schema("api")
           .from("form_links")
           .select(
             "id, form_key, sent_to, note, created_at, expires_at, used_at"
@@ -238,13 +237,13 @@ const SendLink = ({
       const sent = await Promise.all(
         addresses.map((parent) =>
           form === "qalam-publishing-consent"
-            ? supabase.schema("programmes").rpc("qalam_release_link", {
+            ? supabase.schema("api").rpc("qalam_release_link", {
                 note,
                 parent_email: parent,
                 student_row: student,
                 teacher_email: teacher.trim(),
               })
-            : supabase.schema("programmes").rpc("qalam_consent_link", {
+            : supabase.schema("api").rpc("qalam_consent_link", {
                 note,
                 parent_email: parent,
                 teacher_email: teacher.trim(),
@@ -346,7 +345,7 @@ const StatusCell = ({ student }: { student: Student }) => {
     mutationFn: async (status: Status) =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("qalam_students")
           .update({ status })
           .eq("id", student.id)
@@ -379,7 +378,7 @@ const Attendance = ({ student }: { student: Student }) => {
     mutationFn: async () =>
       unwrap(
         await supabase
-          .schema("programmes")
+          .schema("api")
           .from("qalam_students")
           .update({ sessions_attended: student.sessions_attended + 1 })
           .eq("id", student.id)

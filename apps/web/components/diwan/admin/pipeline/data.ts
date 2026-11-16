@@ -15,7 +15,7 @@ export const usePipelineIssues = () => {
   const { supabase } = useAuth();
   return useQuery({
     queryFn: async () =>
-      unwrap(await supabase.schema("journal").rpc("pipeline_issues")) ?? [],
+      unwrap(await supabase.schema("api").rpc("pipeline_issues")) ?? [],
     queryKey: [...pipelineKey, "issues"],
   });
 };
@@ -32,7 +32,7 @@ export const useBlindEntries = (issueId: string, enabled = true) => {
     queryFn: async () =>
       unwrap(
         await supabase
-          .schema("journal")
+          .schema("api")
           .from("blind_entries")
           .select(
             "id, blind_id, title, category, language, status, flagged, flag_note, updated_at, assignments(id, reader_id, read_number, score:scores(total))"
