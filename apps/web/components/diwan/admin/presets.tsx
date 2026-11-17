@@ -51,7 +51,7 @@ const linesOf = (value: unknown): Line[] =>
   Array.isArray(value) ? (value as Line[]) : [];
 
 /** A kind's presets, in their order. */
-export const usePresets = (kind: PresetKind) => {
+const usePresets = (kind: PresetKind) => {
   const { supabase } = useAuth();
   return useQuery({
     queryFn: async () =>
