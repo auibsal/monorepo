@@ -92,10 +92,12 @@ Read `AGENTS.md` and `.github/CONTRIBUTING.md`. Work on a branch, open a
 pull request with the template, and run `check`, `typecheck` and `test`
 (and `db:test` for a schema change) before pushing.
 
-## Security
+## Report a problem
 
-Report a vulnerability privately to hello@auibsal.org (see
-`.github/SECURITY.md` and `/.well-known/security.txt`), never in an issue.
+Something on the site not working? Use <https://auibsal.org/help/report>.
+Report a vulnerability privately to security@auibsal.org or through
+GitHub's private vulnerability reporting (`.github/SECURITY.md`), never in
+an issue.
 
 ## License
 
