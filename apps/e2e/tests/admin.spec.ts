@@ -106,7 +106,9 @@ test("the media library lists every upload, filtered in the address", async ({
   await expect(
     page.getByRole("heading", { level: 1, name: "Library" })
   ).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Where files live" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Where files live" })
+  ).toBeVisible();
   await expectAccessible(page);
 });
 
