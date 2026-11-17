@@ -6,8 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
-import { RowList } from "../../page";
-import { SectionSpinner } from "../../states";
+import { DiwanSection, RowList } from "../../page";
 
 const SINCE_DAYS = 14;
 
@@ -45,35 +44,38 @@ export const StaffAlerts = () => {
     },
     queryKey: ["admin", "staff-alerts"],
   });
-  if (alerts.isPending) {
-    return <SectionSpinner />;
-  }
+  // The Desk shows the section only when there is an alert (decisions.md,
+  // The site: "Nothing empty, nothing zero").
   if (!alerts.data?.length) {
-    return <p className="type-body text-text-secondary">{t("none")}</p>;
+    return null;
   }
   return (
-    <RowList>
-      {alerts.data.map((a) => (
-        <li className="grid gap-1" key={a.id}>
-          <p className="type-label">
-            {a.urgent ? `${t("urgent")} · ` : ""}
-            {t(`teams.${a.team as "council"}`)}
-          </p>
-          <p className="type-body">{locale === "ar" ? a.text_ar : a.text_en}</p>
-          <p className="type-caption">
-            {formatLongDate(a.created_at, locale)} ·{" "}
-            {formatClock(a.created_at, locale)}
-            {a.link ? (
-              <>
-                {" · "}
-                <a className="link" href={a.link}>
-                  {t("open")}
-                </a>
-              </>
-            ) : null}
-          </p>
-        </li>
-      ))}
-    </RowList>
+    <DiwanSection id="alerts" title={t("title")}>
+      <RowList>
+        {alerts.data.map((a) => (
+          <li className="grid gap-1" key={a.id}>
+            <p className="type-label">
+              {a.urgent ? `${t("urgent")} · ` : ""}
+              {t(`teams.${a.team as "council"}`)}
+            </p>
+            <p className="type-body">
+              {locale === "ar" ? a.text_ar : a.text_en}
+            </p>
+            <p className="type-caption">
+              {formatLongDate(a.created_at, locale)} ·{" "}
+              {formatClock(a.created_at, locale)}
+              {a.link ? (
+                <>
+                  {" · "}
+                  <a className="link" href={a.link}>
+                    {t("open")}
+                  </a>
+                </>
+              ) : null}
+            </p>
+          </li>
+        ))}
+      </RowList>
+    </DiwanSection>
   );
 };

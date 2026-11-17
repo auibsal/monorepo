@@ -95,7 +95,7 @@ export const SundayPaperComposer = () => {
 
   return (
     <div className="grid gap-8">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <AdminHeading title={t("title")} />
       <Field label={t("month")}>
         {(id) => (
           <Input

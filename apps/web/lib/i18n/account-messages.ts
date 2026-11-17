@@ -23,6 +23,7 @@ export const ACCOUNT_ADMIN_MESSAGES = [
   "partners.agreements.grants",
   "partners.register",
   "picker",
+  "pipeline.pledge",
   "qirtas",
   "sections",
 ] as const;

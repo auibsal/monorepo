@@ -20,6 +20,7 @@ type Holder =
 /** The station's refusals it can explain. */
 const KNOWN = new Set([
   "card_not_live",
+  "has_location",
   "no_pending_request",
   "station_closed",
   "too_large",
@@ -93,7 +94,7 @@ export const TourStation = () => {
       : null;
 
   return (
-    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+    <DiwanPage narrow title={t("title")}>
       <div className="grid gap-6">
         <section className="grid gap-3">
           <h2 className="type-subheading">{t("step1")}</h2>

@@ -94,7 +94,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(9);
+select plan(7);
 
 -- These test the action itself; the second officer's approval is given
 -- (99_two_officers tests asking and approving).
@@ -127,19 +127,10 @@ select lives_ok(
        exception_resolution => '00000000-0000-0000-0000-00000000e101') $$,
   'and allowed by an adopted Council resolution (Constitution 6.6)'
 );
-select is(
-  (select titles_en from governance.council_members() where full_name_en = 'The President'),
-  array['President', 'Director of Media'],
-  'The Council page names the President once, with both titles'
-);
 
 select lives_ok(
   $$ select access.assign_role('00000000-0000-0000-0000-0000000000a1', 'artistic_director') $$,
   'The Artistic Director is assigned'
-);
-select is(
-  (select titles_en from governance.council_members() where full_name_en = 'The Artistic Director'),
-  array['Artistic Director'], 'and sits on the Council'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');

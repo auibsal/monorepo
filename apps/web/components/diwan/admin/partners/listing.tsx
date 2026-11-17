@@ -3,7 +3,6 @@
 import { OrganizationLogo } from "@repo/brand/components/sal/acknowledgment";
 import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
@@ -78,7 +77,7 @@ export const PartnerPeople = ({
     return <SectionSpinner />;
   }
   return (
-    <DiwanSection description={t("peopleLede")} id="people" title={t("people")}>
+    <DiwanSection id="people" title={t("people")}>
       {(people.data ?? []).length === 0 ? (
         <p className="type-body">{t("noPeople")}</p>
       ) : (
@@ -161,13 +160,7 @@ export const PendingListing = ({
     [t("url"), current.url ?? "—", pending.url ?? "—"],
   ];
   return (
-    <DiwanSection
-      description={t("lede", {
-        date: formatLongDate(pending.proposed_at, locale, true),
-      })}
-      id="pending-listing"
-      title={t("title")}
-    >
+    <DiwanSection id="pending-listing" title={t("title")}>
       <div className="flex flex-wrap items-center gap-4">
         <Button
           disabled={decide.isPending}
@@ -271,7 +264,7 @@ export const PartnerLinking = ({
     return null;
   }
   return (
-    <DiwanSection description={t("lede")} id="linking" title={t("title")}>
+    <DiwanSection id="linking" title={t("title")}>
       <RowList>
         {matches.data.map((match) => (
           <li

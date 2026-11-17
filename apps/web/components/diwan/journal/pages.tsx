@@ -10,6 +10,7 @@ import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { Agreement as SignAgreement } from "@/components/agreement";
 import { MySignature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { journal, localized, unwrap } from "@/lib/data";
@@ -357,26 +358,15 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
       ),
     queryKey: ["agreement", submissionId],
   });
-  const sign = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase.schema("api").rpc("sign_agreement", {
-          signer_name: name,
-          submission_id: submissionId,
-        })
-      ),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["agreement", submissionId] }),
-  });
 
   if (agreement.isPending) {
     return <SectionSpinner />;
   }
   return (
-    <section className="border-line grid max-w-3xl gap-3 border-t p-4">
-      <h2 className="type-subheading">{t("title")}</h2>
+    <section className="grid max-w-3xl gap-3">
       {agreement.data ? (
         <>
+          <h2 className="type-subheading">{t("title")}</h2>
           <p>
             {t("signed", {
               date: formatLongDate(agreement.data.signed_at, locale),
@@ -389,30 +379,29 @@ export const Agreement = ({ submissionId }: { submissionId: string }) => {
           />
         </>
       ) : (
-        <form
-          className="grid gap-3"
-          onSubmit={(event) => {
-            event.preventDefault();
-            sign.mutate();
+        <SignAgreement
+          full={<p className="whitespace-pre-wrap">{t("body")}</p>}
+          onSigned={() =>
+            queryClient.invalidateQueries({
+              queryKey: ["agreement", submissionId],
+            })
+          }
+          sign={async () => {
+            unwrap(
+              await supabase.schema("api").rpc("sign_agreement", {
+                signer_name: name,
+                submission_id: submissionId,
+              })
+            );
+            return null;
           }}
-        >
-          <p className="whitespace-pre-wrap">{t("body")}</p>
-          <p className="type-caption">
-            {t("signAs", {
-              date: formatLongDate(new Date(), locale, true),
-              name,
-            })}
-          </p>
-          <MySignature label={t("signAsLabel")} />
-          <Button
-            className="justify-self-start"
-            disabled={!name || sign.isPending}
-            type="submit"
-          >
-            {t("sign")}
-          </Button>
-          <ErrorLine error={sign.error} />
-        </form>
+          summary={[
+            t("summary.own"),
+            t("summary.license"),
+            t("summary.credit"),
+          ]}
+          title={t("title")}
+        />
       )}
     </section>
   );
@@ -544,8 +533,7 @@ export const MySubmission = () => {
   return (
     <RecordView
       back={back}
-      lede={tj(`categories.${row.category}`)}
-      status={t(`flow.${journal.writerStatus(row.status)}`)}
+      status={`${tj(`categories.${row.category}`)} · ${t(`flow.${journal.writerStatus(row.status)}`)}`}
       title={row.title}
     >
       {row.status === "intake_check" && row.intake_returned_at ? (

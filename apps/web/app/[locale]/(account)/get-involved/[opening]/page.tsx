@@ -39,12 +39,12 @@ const OpeningPage = async ({ params }: PageProps) => {
   const row: Record<string, unknown> = { ...place };
   return (
     <DiwanPage
-      lede={
+      narrow
+      sentence={
         place.closes_at
           ? t("closes", { date: formatLongDate(place.closes_at, lang) })
           : undefined
       }
-      narrow
       title={localized(row, "title", lang)}
     >
       {localized(row, "body", lang) ? (

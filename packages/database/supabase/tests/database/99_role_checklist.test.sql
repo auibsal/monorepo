@@ -110,8 +110,8 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000c4102', 'other@auib.edu
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000c4101', 'design_lead');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000c4101');
-select is((select count(*)::integer from access.my_role_checklist()), 7,
-  'A team role''s checklist has seven steps (no seat mailbox or Notion step)');
+select is((select count(*)::integer from access.my_role_checklist()), 8,
+  'A team role''s checklist has eight steps (no seat mailbox or Notion step, no confidentiality agreement)');
 select ok((select done from access.my_role_checklist() where step = 'email'),
   'The role email is done when the role is given');
 select ok(not (select done from access.my_role_checklist() where step = 'handover'),
@@ -127,7 +127,7 @@ select throws_ok(
 create temp table mine as select assignment_id from access.my_role_checklist() limit 1;
 grant select on mine to authenticated;
 select pg_temp.login_as('00000000-0000-0000-0000-0000000c4102');
-select throws_ok($$ select access.tick_role_step((select assignment_id from mine), 'pages') $$,
+select throws_ok($$ select access.tick_role_step((select assignment_id from mine), 'handover') $$,
   '42501', null, 'No one else ticks a holder''s steps');
 
 select * from finish();

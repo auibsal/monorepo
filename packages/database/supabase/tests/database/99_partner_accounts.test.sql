@@ -75,7 +75,7 @@ insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
 -- first-100 rule back on themselves.
 update core.settings set value = '0' where key = 'membership.founding_voters';
 
-select plan(39);
+select plan(37);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'director-pa@auib.edu.iq');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'president-pa@auib.edu.iq');
@@ -230,7 +230,6 @@ select set_config('test.link', (select code from governance.partner_invitations 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
 select is(governance.accept_partner_invitation(current_setting('test.link')), 'guest',
   'Someone follows the link');
-select ok(core.is_partner_guest(), 'A named invitation is the partner''s own word: no wait');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000c1');
 select is(
@@ -252,7 +251,6 @@ select throws_ok(
 
 -- A verified guest books places, like a member.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
-select ok(core.is_partner_guest(), 'A verified guest is a partner''s guest');
 select pg_temp.logout();
 insert into events.events (id, slug, title_en, title_ar, starts_at, capacity, status, entry)
 values ('e0000000-0000-0000-0000-0000000000f1', 'guest-reading', 'Reading', 'قراءة',

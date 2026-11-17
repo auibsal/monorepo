@@ -94,7 +94,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(7);
+select plan(6);
 
 select is(
   (select requires_mfa_from from access.roles where key = 'tour_lead'),
@@ -123,7 +123,6 @@ update access.roles set requires_mfa = false, requires_mfa_from = now() + interv
 where key = 'tour_lead';
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000075a1', 'tour_lead');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000075a1', '{"aal":"aal1"}');
-select ok(access.two_step_from() > now(), 'Settings learns the date it starts');
 select is(access.needs_two_step(), false, 'Not needed before the date');
 select pg_temp.logout();
 

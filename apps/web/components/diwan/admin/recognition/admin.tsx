@@ -188,7 +188,6 @@ const PendingHours = () => {
   }
   return (
     <div className="grid gap-4">
-      <p className="type-body">{t("lede")}</p>
       <ErrorLine error={decide.error ?? confirmAll.error} />
       <SelectableTable
         actions={(chosen, clear) => (
@@ -243,7 +242,6 @@ const Totals = () => {
   }
   return (
     <div className="grid gap-4">
-      <p className="type-body">{t("lede")}</p>
       <DataTable
         columns={columns}
         empty={t("empty")}
@@ -650,7 +648,6 @@ const Certificates = () => {
   }
   return (
     <div className="grid gap-6">
-      <p className="type-body">{t("lede")}</p>
       {canPrepare ? (
         <NewLink href="/qirtas/certificates/new">{t("prepare")}</NewLink>
       ) : null}
@@ -749,7 +746,7 @@ export const RecognitionAdmin = ({
 
   return (
     <div className="grid gap-6">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <AdminHeading title={t("title")} />
       <SectionTabs
         label={t("title")}
         tabs={allowed.map((view) => ({

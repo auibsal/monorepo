@@ -56,7 +56,7 @@ export const PrizeAdmin = () => {
     rounds.data.find((r) => r.id === chosen) ?? rounds.data[0] ?? null;
   return (
     <div className="grid gap-10">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <AdminHeading title={t("title")} />
       {rounds.data.length > 1 ? (
         <Field label={t("round")}>
           {(id) => (

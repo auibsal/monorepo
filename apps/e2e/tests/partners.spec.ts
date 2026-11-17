@@ -133,10 +133,14 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   await expect(
     applicant.getByRole("heading", { level: 1, name: organization })
   ).toBeVisible();
-  // Five tabs (decisions.md, The site): Events, Checklist, Guests, Team,
+  // Five pages in the one side menu (decisions.md, The site): Events
+  // (the page shown, named and not a link), Checklist, Guests, Team and
   // Memorandum.
   const tabs = applicant.getByRole("navigation", { name: "Partner" });
-  for (const name of ["Events", "Checklist", "Guests", "Team", "Memorandum"]) {
+  await expect(
+    tabs.locator('[aria-current="page"]:visible', { hasText: "Events" })
+  ).toBeVisible();
+  for (const name of ["Checklist", "Guests", "Team", "Memorandum"]) {
     await expect(tabs.getByRole("link", { name })).toBeVisible();
   }
   // A partner turns on what it runs with the Society by asking; the

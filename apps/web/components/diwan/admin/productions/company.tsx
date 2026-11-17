@@ -143,7 +143,6 @@ export const AuditionsTab = ({ production }: { production: ProductionRow }) => {
 
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
-      <p className="type-body">{t("lede")}</p>
       {production.stage === "auditions" ? null : (
         <p className="type-caption">{t("openWhen")}</p>
       )}
@@ -455,7 +454,6 @@ export const CreditsTab = ({ production }: { production: ProductionRow }) => {
   });
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
-      <p className="type-body">{t("lede")}</p>
       <AddInPlace label={t("add")}>
         {(close) => <NewCredit onDone={close} production={production} />}
       </AddInPlace>
@@ -539,7 +537,6 @@ export const RehearsalsTab = ({
 
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
-      <p className="type-body">{t("lede")}</p>
       <AddInPlace label={t("add")}>
         {(close) => <NewRehearsal onDone={close} production={production} />}
       </AddInPlace>

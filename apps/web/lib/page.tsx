@@ -13,11 +13,16 @@ type SectionNamespace =
   | "web.contact"
   | "web.credits"
   | "web.governance"
+  | "web.history"
+  | "web.howRun"
   | "web.join"
+  | "web.join.otherWays"
   | "web.join.tour"
   | "web.mediaKit"
   | "web.openData"
-  | "web.partners";
+  | "web.partners"
+  | "web.people"
+  | "web.sustainability";
 
 /** Metadata for a simple section page: its `title` and `lede` messages. */
 export const sectionMetadata =

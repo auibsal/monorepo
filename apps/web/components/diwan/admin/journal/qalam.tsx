@@ -67,7 +67,7 @@ export const QalamRoster = () => {
   );
   return (
     <div className="grid gap-10">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <AdminHeading title={t("title")} />
       <Field label={t("year")}>
         {(id) => (
           <SelectInput
@@ -167,7 +167,6 @@ const ParentLinks = ({ students }: { students: Student[] }) => {
   return (
     <section className="grid gap-4">
       <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-caption">{t("lede")}</p>
       <AddInPlace label={t("send")}>
         {(close) => (
           <SendLink

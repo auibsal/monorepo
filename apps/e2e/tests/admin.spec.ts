@@ -3,6 +3,9 @@ import { admin, editor, editor2, event, PASSWORD } from "../fixtures";
 import { urls } from "../playwright.config";
 import { expectAccessible, setUpTwoStep, signInWithPassword } from "./helpers";
 
+const SIGN_AS = /^Sign as /u;
+const ESIGN = /I agree to sign electronically/u;
+
 test("a News desk editor starts a piece, and it waits in Editing, unpublished", async ({
   page,
 }) => {
@@ -259,10 +262,16 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
   ).toBeVisible();
   await expect(page.getByText("The kettle keeps")).toHaveCount(0);
   await expectAccessible(page);
-  // Signed in their platform name, after agreeing to sign electronically.
-  const sign = page.getByRole("button", { name: "Sign the agreement" });
-  await expect(sign).toBeDisabled();
-  await page.getByLabel(/I agree to sign electronically/u).check();
+  // One "Sign as …" in their platform name (the one agreement pattern),
+  // after agreeing to sign electronically.
+  const sign = page.getByRole("button", { name: SIGN_AS });
+  await expect(sign).toBeVisible();
+  // Consent to sign electronically is asked once for the account.
+  const esign = page.getByLabel(ESIGN);
+  if (await esign.isVisible()) {
+    await expect(sign).toBeDisabled();
+    await esign.check();
+  }
   await sign.click();
 
   const text = page.getByText("The kettle keeps its counsel on the stove.");

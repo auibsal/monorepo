@@ -139,7 +139,6 @@ export const PieceTopics = ({ pieceId }: { readonly pieceId: string }) => {
   return (
     <section className="grid gap-4">
       <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-body text-text-secondary">{t("lede")}</p>
       {publishes ? (
         <AddInPlace label={t("new")}>
           {(close) => (

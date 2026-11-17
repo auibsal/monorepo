@@ -204,11 +204,7 @@ export const TelegramLink = () => {
     connect.isError || finish.isError || notify.isError || unlink.isError;
 
   return (
-    <DiwanSection
-      description={t("description")}
-      id="telegram"
-      title={t("title")}
-    >
+    <DiwanSection id="telegram" title={t("title")}>
       <div className="grid gap-3" id="telegram">
         {account ? (
           <>

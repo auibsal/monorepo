@@ -183,7 +183,6 @@ export const Incidents = ({ eventId }: { readonly eventId: string }) => {
   return (
     <section className="border-line grid gap-4 border-t pt-8">
       <h2 className="type-heading">{t("title")}</h2>
-      <p className="type-body text-text-secondary max-w-3xl">{t("lede")}</p>
       <AddInPlace label={t("add")}>
         {(close) => <NewIncident eventId={eventId} onDone={close} />}
       </AddInPlace>

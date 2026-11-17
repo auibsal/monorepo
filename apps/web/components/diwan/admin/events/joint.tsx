@@ -60,7 +60,6 @@ const PartnerForm = ({ event }: { readonly event: JointEvent }) => {
   };
   return (
     <DiwanSection id="partner" title={t("title")}>
-      <p className="type-body text-text-secondary">{t("lede")}</p>
       <form className="grid gap-4" onSubmit={submit}>
         <Field label={t("partner")}>
           {(id) => (
@@ -160,7 +159,6 @@ export const EventOrganizations = ({
   const taken = new Set((chosen.data ?? []).map((c) => c.partner_id));
   return (
     <DiwanSection id="organizations" title={t("title")}>
-      <p className="type-body text-text-secondary">{t("lede")}</p>
       {LINES.map((line) => {
         const here = (chosen.data ?? []).filter((c) => c.line === line);
         const options = (register.data ?? []).filter(

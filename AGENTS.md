@@ -34,9 +34,9 @@ media do.
     flow (`formPaths` in `lib/data/forms.ts`: `/about/contact/concern`,
     `/consent/<kind>` …; every old `/forms` address redirects),
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for
-    members, everything under `/account`, in tabs shown by class and role
-    (decisions.md, The site; `useAccountLinks` in
-    `components/account/member-shell.tsx`), six tabs: Today (`/account`:
+    members, everything under `/account`, in the side menu shown by class
+    and role (decisions.md, The site; `useAccountLinks` in
+    `components/account/member-shell.tsx`), six pages: Today (`/account`:
     the live card, the to-dos, an open election and motions), Events
     (`/events`), Work (`/work`: drafts, submissions at
     `/work/submissions/<id>`, pieces at `/work/<id>`), Roles and service
@@ -62,7 +62,7 @@ media do.
   - `app/[locale]/diwan`: **the Diwan**, auibsal.org/diwan, the staff's
     administration only (anyone holding a role, `RequireStaff`), one
     section per Council seat (decisions.md, The site; `adminSections` in
-    `lib/rbac`; `DiwanNav` and `SectionTabs` in `admin-shell.tsx`): the
+    `lib/rbac`; `useDiwanMenu` in `admin-shell.tsx`, drawn by `SideMenu`): the
     Desk (`/diwan`: what needs you, quick actions, Waiting, what happened,
     the Connected panel for Notion and email); the Council
     (`/diwan/council`: meetings and their resolutions, requests to Student
@@ -149,6 +149,7 @@ bun run test                # Vitest in every workspace
 bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
 bun run check:i18n          # UI text not in the messages files; the language standard
+bun run check:copy          # say it once, say it short (--report for the totals)
 bun run check:forms         # the register's kinds against SAL-EXB-01, by name (needs NOTION_TOKEN)
 bun run check:pdf           # every PDF the site makes is tagged for PDF/UA (lib/pdf-ua.ts)
 bun run check:unused        # unused files and dependencies (Knip)
@@ -378,8 +379,16 @@ everywhere:
   pages take the four-column footer (`Footer`; Qirtas's pages add its
   line); your account, the partner dashboard and the Diwan take the slim
   one (`SlimFooter`; the Diwan's shows the version and build), chosen by
-  address (`FooterSwitch`). The Diwan's seats are a side list on a
-  computer and a row on a phone (`DiwanNav`). One main menu:
+  address (`FooterSwitch`). One navigation standard: the header is the
+  only menu across the top; your account, the Diwan and the partner
+  dashboard share one side menu (`SideMenu` in `components/side-menu.tsx`:
+  a vertical list on a computer, behind a Menu button on a phone, the page
+  shown named with `aria-current` and never a link to itself, the open
+  Diwan seat's views under it); a record's own page (`RecordView`, which
+  marks it deep through `lib/deep-page.tsx`) hides the side menu and shows
+  a breadcrumb and a link back; tabs (`SectionTabs`, `RecordTabs`) are
+  only for the views of one record or list and scroll sideways on a
+  phone. One main menu:
   Events, Qirtas, The Company, Next Stop, Get involved and About, with
   a Join button (signed in,
   the end of the line opens Membership; the Diwan under it for staff, the
@@ -390,6 +399,18 @@ everywhere:
   `AdminHeading`. Every empty state offers one next action. Nothing a
   member does lives in the Diwan. The Diwan's find line (`FindPanel`)
   opens in place with "/" or Ctrl+K.
+- **Autosave and live.** A form people fill over time keeps a draft as
+  it is typed (`useAutosave` and `DraftOffer` in `lib/diwan/autosave.tsx`,
+  `api.drafts`, deleted on Save, Send, Discard or after 30 days); nothing
+  goes live until Save. Realtime only where people share a screen
+  (`useLive` in `lib/diwan/live.ts`; a record page's `room` for who is
+  editing and stale saves, `lib/diwan/room.tsx`): private channels that
+  `private.can_edit_room` admits, fed by triggers with ids and counts
+  only. Public pages never subscribe; everywhere else refreshes on focus
+  and after each save.
+- **Photos.** Originals are kept byte for byte; a photo carrying its
+  location is refused and Content Credentials are recorded
+  (`lib/storage/photo-metadata.ts`, `content.media_items.content_credentials`).
 - **Shelves and motion.** A row of things to browse is `Shelf`, always
   with the same items as a plain list at its own path. Movement follows
   the brand book's Motion section (native CSS, the duration and easing

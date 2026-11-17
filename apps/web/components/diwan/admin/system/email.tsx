@@ -51,7 +51,6 @@ export const EmailDelivery = () => {
   return (
     <SalCard>
       <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-body">{t("lede")}</p>
       {line ? (
         <p className="type-caption" role="status">
           {line}

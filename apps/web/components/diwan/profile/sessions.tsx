@@ -38,7 +38,7 @@ export const Sessions = () => {
   });
   const rows = sessions.data ?? [];
   return (
-    <DiwanSection description={t("lede")} id="sessions" title={t("title")}>
+    <DiwanSection id="sessions" title={t("title")}>
       {rows.length > 1 ? (
         <Button
           className="justify-self-start"

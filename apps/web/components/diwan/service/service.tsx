@@ -88,7 +88,7 @@ export const Service = () => {
   };
 
   return (
-    <DiwanPage lede={t("rolesLede")} narrow title={t("rolesTitle")}>
+    <DiwanPage narrow title={t("rolesTitle")}>
       <Applications />
       <MyAuditions />
       <MyRoles />
@@ -103,7 +103,6 @@ export const Service = () => {
       </SalCard>
 
       <DiwanSection id="logtitle" title={t("logTitle")}>
-        <p className="type-body">{t("logLede")}</p>
         <AddInPlace label={t("log")}>
           {(close) => <LogHours onDone={close} />}
         </AddInPlace>
@@ -324,7 +323,7 @@ export const DocumentsPage = () => {
     queryKey: [...KEY, "certificates"],
   });
   return (
-    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+    <DiwanPage narrow title={t("title")}>
       <DiwanSection id="signed" title={t("signedTitle")}>
         <SignedList />
       </DiwanSection>

@@ -255,7 +255,7 @@ export const EventProgramAdmin = ({
   });
   const list = items.data ?? [];
   return (
-    <DiwanSection description={t("lede")} id="program" title={t("title")}>
+    <DiwanSection id="program" title={t("title")}>
       {list.length > 0 ? (
         <ol className="grid gap-3">
           {list.map((item) => (

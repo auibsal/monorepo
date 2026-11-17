@@ -51,11 +51,7 @@ export const DeleteAccount = () => {
     remove.error instanceof ApiError && remove.error.code === "reauthenticate";
 
   return (
-    <DiwanSection
-      description={t("description")}
-      id="delete-account"
-      title={t("title")}
-    >
+    <DiwanSection id="delete-account" title={t("title")}>
       {confirming ? (
         <div className="border-line grid max-w-xl gap-3 border-t pt-4">
           <Label htmlFor={id}>{t("prompt", { phrase })}</Label>

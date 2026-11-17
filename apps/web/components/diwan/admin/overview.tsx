@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
+import { liveTopics, useLive } from "@/lib/diwan/live";
 import { Link } from "@/lib/diwan/navigation";
 import { useNotionHandbook, useTeamWorkspace } from "@/lib/diwan/notion";
 import { useGrants } from "@/lib/diwan/queries";
@@ -440,6 +441,8 @@ const dueFigures = (
 
 export const AdminOverview = () => {
   const t = useTranslations("diwan.admin.overview");
+  // The Desk's counts move as requests come in (decisions.md, The site).
+  useLive(liveTopics.desk(), [["admin", "overview"]]);
   const tc = useTranslations("diwan.admin.calendar");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -500,9 +503,6 @@ export const AdminOverview = () => {
         <AdminHeading actions={<QuickActions />} title={t("title")} />
         <PaperLinks />
       </div>
-      {figures.length === 0 ? (
-        <p className="type-body text-text-secondary">{t("nothing")}</p>
-      ) : null}
       {figures.length > 0 ? (
         <div className="gap-space-3 sm:gap-space-4 grid grid-cols-2 xl:grid-cols-3">
           {figures.map((figure) => (
@@ -512,10 +512,8 @@ export const AdminOverview = () => {
       ) : null}
       <Handover />
       <SecondOfficer />
-      <DiwanSection id="alerts" title={t("alerts.title")}>
-        <StaffAlerts />
-        <ScanFindings />
-      </DiwanSection>
+      <StaffAlerts />
+      <ScanFindings />
       {can("events.manage") || can("governance.manage") ? (
         <DiwanSection id="student-life" title={t("studentLife.title")}>
           <StudentLifeWeekPanel />
@@ -534,7 +532,6 @@ export const AdminOverview = () => {
       ) : null}
       {can("settings.manage") ? (
         <DiwanSection id="connected" title={t("connected")}>
-          <p className="type-body">{t("connectedLede")}</p>
           <NotionWorkspace />
           <p className="type-body">
             {t("hudhudMoved")}{" "}

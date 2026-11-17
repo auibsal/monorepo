@@ -35,7 +35,7 @@ const Minutes = () => {
   });
 
   return (
-    <SocietySection id="minutes" lede={t("lede")} title={t("title")}>
+    <SocietySection id="minutes" title={t("title")}>
       {minutes.isPending ? <SectionSpinner /> : null}
       {minutes.isError ? (
         <ErrorState onRetry={() => minutes.refetch()} />
@@ -105,7 +105,7 @@ const Resolutions = () => {
   });
 
   return (
-    <SocietySection id="resolutions" lede={t("lede")} title={t("title")}>
+    <SocietySection id="resolutions" title={t("title")}>
       {resolutions.isPending ? <SectionSpinner /> : null}
       {resolutions.isError ? (
         <ErrorState onRetry={() => resolutions.refetch()} />

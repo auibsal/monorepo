@@ -2,6 +2,7 @@ import type { Api } from "grammy";
 import type { BotCommand } from "grammy/types";
 import { allowedUpdates } from "./bot";
 import { type Copy, copy, type Lang } from "./copy";
+import { telegramSignal } from "./membership";
 
 /**
  * Tells Telegram about the bot: where to deliver updates, the commands in
@@ -24,38 +25,89 @@ const PRIVATE: (keyof Copy["commands"])[] = [
 const GROUP: (keyof Copy["commands"])[] = ["events", "help"];
 const ADMINS: (keyof Copy["commands"])[] = [...GROUP, "setup"];
 
+/**
+ * Each call runs side by side with its own timeout; the result names the
+ * steps that failed (the webhook, a language's commands or texts) instead
+ * of one call holding the rest.
+ */
 export const configure = async (
   api: Api,
-  { secretToken, url }: { secretToken?: string; url: string }
+  {
+    secretToken,
+    timeoutMs,
+    url,
+  }: { secretToken?: string; timeoutMs: number; url: string }
 ) => {
-  await api.setWebhook(url, {
-    allowed_updates: [...allowedUpdates],
-    max_connections: 40,
-    secret_token: secretToken,
-  });
+  const signal = () => telegramSignal(timeoutMs);
   // English is the default; Arabic for Telegram apps set to Arabic.
   const langs: (Lang | undefined)[] = [undefined, "ar"];
-  await Promise.all(
-    langs.flatMap((lang) => {
+  const steps: [string, () => Promise<unknown>][] = [
+    [
+      "webhook",
+      () =>
+        api.setWebhook(
+          url,
+          {
+            allowed_updates: [...allowedUpdates],
+            max_connections: 40,
+            secret_token: secretToken,
+          },
+          signal()
+        ),
+    ],
+    ...langs.flatMap((lang): [string, () => Promise<unknown>][] => {
       const t = copy[lang ?? "en"];
       const language_code = lang;
+      const tag = lang ?? "en";
       return [
-        api.setMyCommands(list(t, PRIVATE), {
-          language_code,
-          scope: { type: "all_private_chats" },
-        }),
-        api.setMyCommands(list(t, GROUP), {
-          language_code,
-          scope: { type: "all_group_chats" },
-        }),
-        api.setMyCommands(list(t, ADMINS), {
-          language_code,
-          scope: { type: "all_chat_administrators" },
-        }),
-        api.setMyDescription(t.description, { language_code }),
-        api.setMyShortDescription(t.shortDescription, { language_code }),
+        [
+          `commands.private.${tag}`,
+          () =>
+            api.setMyCommands(
+              list(t, PRIVATE),
+              { language_code, scope: { type: "all_private_chats" } },
+              signal()
+            ),
+        ],
+        [
+          `commands.groups.${tag}`,
+          () =>
+            api.setMyCommands(
+              list(t, GROUP),
+              { language_code, scope: { type: "all_group_chats" } },
+              signal()
+            ),
+        ],
+        [
+          `commands.admins.${tag}`,
+          () =>
+            api.setMyCommands(
+              list(t, ADMINS),
+              { language_code, scope: { type: "all_chat_administrators" } },
+              signal()
+            ),
+        ],
+        [
+          `description.${tag}`,
+          () =>
+            api.setMyDescription(t.description, { language_code }, signal()),
+        ],
+        [
+          `shortDescription.${tag}`,
+          () =>
+            api.setMyShortDescription(
+              t.shortDescription,
+              { language_code },
+              signal()
+            ),
+        ],
       ];
-    })
-  );
-  return api.getWebhookInfo();
+    }),
+  ];
+  const results = await Promise.allSettled(steps.map(([, run]) => run()));
+  const failed = steps
+    .filter((_, i) => results[i]?.status === "rejected")
+    .map(([name]) => name);
+  const info = await api.getWebhookInfo(signal()).catch(() => null);
+  return { failed, info };
 };

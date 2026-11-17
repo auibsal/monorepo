@@ -1,7 +1,5 @@
 import { SectionHead } from "@repo/brand/components/sal/section-head";
-import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
-import { localizedPath } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
@@ -35,7 +33,6 @@ const Home = async ({ params }: HomeProps) => {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "web.home" });
   const tj = await getTranslations({ locale, namespace: "web.journal" });
-  const join = localizedPath(locale, "/sign-up");
 
   const [nextEvents, calls, edition, front, news, episodes, places] =
     await Promise.all([
@@ -73,12 +70,8 @@ const Home = async ({ params }: HomeProps) => {
         <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-16 sm:py-24">
           <div className="grid gap-6">
             <h1 className="type-display-xl max-w-4xl">{t("title")}</h1>
+            {/* Join is the header's (decisions.md, The site: one place for each link). */}
             <p className="type-lede max-w-[34ch]">{t("lede")}</p>
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-2">
-              <Button asChild>
-                <a href={join}>{t("join")}</a>
-              </Button>
-            </div>
           </div>
         </div>
       </section>

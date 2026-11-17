@@ -184,7 +184,7 @@ export const EventsList = () => {
   // draft and past events, kept in the query string.
   return (
     <div className="grid gap-10">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <AdminHeading title={t("title")} />
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         <NewLink href="/events/new">{t("new")}</NewLink>
         <Link className="link" href="/presets/event">

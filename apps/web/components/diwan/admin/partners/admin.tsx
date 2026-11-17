@@ -281,7 +281,6 @@ const OwnedListing = ({ row }: { readonly row: PartnerRow }) => {
   const locale = useLocale() as Locale;
   return (
     <section className="grid gap-3">
-      <p className="type-caption">{t("ownedLede")}</p>
       <dl className="grid gap-2 sm:grid-cols-[10rem_1fr]">
         <dt className="type-label">{t("name")}</dt>
         <dd className="type-body">
@@ -335,7 +334,6 @@ const TypedContact = ({ row }: { readonly row: PartnerRow }) => {
       <p className="type-body">
         <bdi>{parts.join(" · ")}</bdi>
       </p>
-      <p className="type-caption">{t("typedContactLede")}</p>
     </div>
   );
 };
@@ -611,7 +609,6 @@ const Register = () => {
 
   return (
     <div className="grid gap-6">
-      <p className="type-body">{t("lede")}</p>
       <AddOrganization />
       <RecordList
         archived={(row) => row.status === "ended"}
@@ -774,7 +771,7 @@ const PendingLogo = ({
     onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
   });
   return (
-    <DiwanSection description={t("lede")} id="pending-logo" title={t("title")}>
+    <DiwanSection id="pending-logo" title={t("title")}>
       {/* biome-ignore lint/performance/noImgElement: a partner logo from the media bucket, any size */}
       <img
         alt=""
@@ -1180,7 +1177,6 @@ const Agreements = () => {
 
   return (
     <div className="grid gap-6">
-      <p className="type-body">{t("lede")}</p>
       {due.length > 0 ? (
         <SalCard>
           <h3 className="type-subheading">{t("renewalsDue")}</h3>
@@ -1376,7 +1372,6 @@ const Affiliations = ({ partnerId }: { partnerId: string }) => {
   }
   return (
     <div className="grid gap-4">
-      <p className="type-body">{t("lede")}</p>
       <ErrorLine error={decide.error} />
       <DataTable
         columns={columns}
@@ -1556,7 +1551,7 @@ export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
 
   return (
     <div className="grid gap-6">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <AdminHeading title={t("title")} />
       <SectionTabs
         label={t("title")}
         tabs={shown.map((v) => ({ href: viewPath(v), label: t(`tabs.${v}`) }))}

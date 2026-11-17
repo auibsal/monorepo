@@ -1,20 +1,18 @@
 "use client";
 
-import { Icon } from "@repo/brand/components/sal/icon";
-import { cn } from "@repo/brand/lib/utils";
 import { Link, usePathname } from "@repo/internationalization/navigation";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
 import { useVisibleModules } from "@/components/diwan/admin/admin-shell";
 import { useTwoStep } from "@/components/diwan/auth/two-step";
+import { Breadcrumb, type MenuItem, SideMenu } from "@/components/side-menu";
 import { useAuth } from "@/lib/auth/provider";
+import { DeepPageProvider, useIsDeepPage } from "@/lib/deep-page";
 import { useMyPartners } from "@/lib/diwan/partners";
 import { useMemberStatus, useMyMembership } from "@/lib/diwan/queries";
 import { rememberWays, type Ways } from "@/lib/staff";
 
 interface AccountLink {
-  /** Pages that count as this link's own (Settings holds Profile and Requests). */
-  readonly also?: readonly string[];
   readonly href: string;
   readonly key:
     | "today"
@@ -24,14 +22,6 @@ interface AccountLink {
     | "documents"
     | "settings";
 }
-
-/** Whether a link is the current page: Today only on itself. */
-const isCurrent = (pathname: string, link: AccountLink) =>
-  [link.href, ...(link.also ?? [])].some((href) =>
-    href === "/account"
-      ? pathname === href
-      : pathname === href || pathname.startsWith(`${href}/`)
-  );
 
 /**
  * Where the signed-in person goes beyond the public site (decisions.md): Membership for members, Account for everyone else, the Diwan for
@@ -70,7 +60,7 @@ export const useWays = (): Ways => {
 export const useIsStaff = () => useWays().diwan;
 
 /**
- * The account's own pages, in one row under the site's header (decisions.md,
+ * The account's own pages, in its side menu (decisions.md,
  * The site: "Your account"): Today · Events · Work · Roles · Documents ·
  * Settings. Today holds the live card and an open election; Roles holds
  * applications too. Guests have Today, Events, Work, Documents and
@@ -80,13 +70,10 @@ export const useIsStaff = () => useWays().diwan;
 const useAccountLinks = (): AccountLink[] => {
   const kind = useMyMembership().data?.kind ?? null;
   const today: AccountLink = {
-    // A partner's documents open from Today.
-    also: kind === "partner" ? ["/account/documents"] : [],
     href: "/account",
     key: "today",
   };
   const settings: AccountLink = {
-    also: ["/account/requests"],
     href: "/account/settings",
     key: "settings",
   };
@@ -111,94 +98,86 @@ const useAccountLinks = (): AccountLink[] => {
     : [today, settings];
 };
 
-/** The account's links (signing out is in the header's account menu). */
-const AccountNav = () => {
+/** The account's side menu: its links, What you sent under Settings. */
+const useAccountMenu = (): MenuItem[] => {
+  const t = useTranslations("diwan.nav");
+  return useAccountLinks().map((link) => ({
+    href: link.href,
+    items:
+      link.key === "settings"
+        ? [
+            { href: link.href, key: "settings", label: t("settings") },
+            {
+              href: "/account/requests",
+              key: "requests",
+              label: t("requests"),
+            },
+          ]
+        : undefined,
+    key: link.key,
+    label: t(link.key),
+  }));
+};
+
+/** Pages that show the account's side menu. */
+const ACCOUNT_PAGES = /^\/account(\/|$)/u;
+
+const AccountFrame = ({ children }: { children: ReactNode }) => {
   const t = useTranslations("diwan.nav");
   const pathname = usePathname();
-  const links = useAccountLinks();
-
-  const current = links.find((link) => isCurrent(pathname, link));
+  const items = useAccountMenu();
+  const deep = useIsDeepPage();
   return (
-    <nav
-      aria-label={t("account")}
-      className="border-line border-b print:hidden"
-    >
-      {/* Phones: one line naming the page, opening the full list. */}
-      <details
-        className="group mx-auto w-full max-w-6xl px-4 md:hidden"
-        // A new page closes the list.
-        key={pathname}
-      >
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
-          <span>{t(current?.key ?? "today")}</span>
-          <Icon
-            className="size-4 transition-transform group-open:rotate-180"
-            name="chevron-down"
+    <div className="mx-auto w-full max-w-6xl flex-1 px-4 lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-10">
+      {deep ? (
+        <div className="hidden lg:block" />
+      ) : (
+        <SideMenu
+          items={items}
+          label={t("account")}
+          link={Link}
+          pathname={pathname}
+          root="/account"
+        />
+      )}
+      <div className="min-w-0">
+        {deep ? (
+          <Breadcrumb
+            items={items}
+            link={Link}
+            pathname={pathname}
+            root="/account"
           />
-        </summary>
-        <ul className="divide-line border-line grid divide-y border-t">
-          {links.map((link) => (
-            <li key={link.href}>
-              <Link
-                aria-current={isCurrent(pathname, link) ? "page" : undefined}
-                className={cn(
-                  "hover:text-accent block py-3 text-sm",
-                  isCurrent(pathname, link)
-                    ? "text-accent font-medium"
-                    : "text-text"
-                )}
-                href={link.href}
-              >
-                {t(link.key)}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </details>
-      {/* Wider screens: the links in one row. */}
-      <div className="mx-auto hidden w-full max-w-6xl items-center gap-x-6 px-4 md:flex">
-        <ul className="flex min-w-0 gap-x-6 overflow-x-auto">
-          {links.map((link) => {
-            const here = isCurrent(pathname, link);
-            return (
-              <li className="shrink-0" key={link.href}>
-                <Link
-                  aria-current={here ? "page" : undefined}
-                  className={cn(
-                    "hover:text-accent block border-b-[1.5px] py-3 text-sm font-medium whitespace-nowrap",
-                    here
-                      ? "border-accent text-text"
-                      : "text-text-secondary border-transparent"
-                  )}
-                  href={link.href}
-                >
-                  {t(link.key)}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        ) : null}
+        <main className="min-w-0 pt-12 pb-20 sm:pt-16 sm:pb-24" id="main">
+          {children}
+        </main>
       </div>
-    </nav>
+    </div>
   );
 };
 
-/** Pages that show the account's row of links. */
-const ACCOUNT_PAGES = /^\/account(\/|$)/u;
-
-/** The members' pages: the account row where it belongs, then the page. */
+/**
+ * The members' pages: Your account's side menu beside the page (decisions.md,
+ * The site: one navigation standard), or the way back on a record's own
+ * page; the other members' pages (sign-in, forms) stand alone.
+ */
 export const MemberShell = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const { user } = useAuth();
+  if (user && ACCOUNT_PAGES.test(pathname)) {
+    return (
+      <DeepPageProvider>
+        <AccountFrame>{children}</AccountFrame>
+      </DeepPageProvider>
+    );
+  }
   return (
-    <>
-      {user && ACCOUNT_PAGES.test(pathname) ? <AccountNav /> : null}
-      <main
-        className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"
-        id="main"
-      >
-        {children}
-      </main>
-    </>
+    <main
+      className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"
+      id="main"
+    >
+      {children}
+    </main>
   );
 };

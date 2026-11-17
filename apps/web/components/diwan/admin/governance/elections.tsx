@@ -1,10 +1,10 @@
 "use client";
 
-import { SalCard } from "@repo/brand/components/sal/card";
 import { Button } from "@repo/brand/components/ui/button";
 import type { Locale } from "@repo/internationalization";
 import {
   formatDateTime,
+  formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,7 +12,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { governance, localized, unwrap } from "@/lib/data";
-import { useRouter } from "@/lib/diwan/navigation";
+import { Link, useRouter } from "@/lib/diwan/navigation";
+import { RowList } from "../../page";
 import { SectionSpinner } from "../../states";
 import {
   BilingualField,
@@ -22,10 +23,12 @@ import {
   ExportButton,
   NewLink,
   RecordPage,
+  RecordView,
   SaveButton,
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { RecordHistory } from "../record-history";
 import { CandidatesForum } from "./forum";
 
 const key = ["admin", "governance", "elections"];
@@ -93,27 +96,25 @@ const useElection = (electionId: string) => {
   });
 };
 
-const ElectionCard = ({
-  election,
-}: {
-  election: {
-    id: string;
-    status: string;
-    title_ar: string;
-    title_en: string;
-    eligible_count: number | null;
-    forum_event_id: string | null;
-    notice_given_at: string | null;
-    runoff_of: string | null;
-    voting_point_ar: string | null;
-    voting_point_at: string | null;
-    voting_point_en: string | null;
-    voting_closes_at: string;
-    voting_opens_at: string;
-    nominations_open_at: string;
-    nominations_close_at: string;
-  };
-}) => {
+interface ElectionRow {
+  eligible_count: number | null;
+  forum_event_id: string | null;
+  id: string;
+  nominations_close_at: string;
+  nominations_open_at: string;
+  notice_given_at: string | null;
+  runoff_of: string | null;
+  status: string;
+  title_ar: string;
+  title_en: string;
+  voting_closes_at: string;
+  voting_opens_at: string;
+  voting_point_ar: string | null;
+  voting_point_at: string | null;
+  voting_point_en: string | null;
+}
+
+const ElectionCard = ({ election }: { election: ElectionRow }) => {
   const t = useTranslations("diwan.admin.governance.elections");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
@@ -254,13 +255,7 @@ const ElectionCard = ({
   };
 
   return (
-    <SalCard>
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h3 className="type-subheading">
-          {localized(election, "title", locale)}
-        </h3>
-        <p className="text-text font-medium">{t(`statuses.${status}`)}</p>
-      </div>
+    <div className="grid gap-4">
       <p className="type-caption">
         {t("nominationsOpen")}:{" "}
         {formatDateTime(election.nominations_open_at, locale)} ·{" "}
@@ -501,7 +496,7 @@ const ElectionCard = ({
           addPositions.error
         }
       />
-    </SalCard>
+    </div>
   );
 };
 
@@ -654,10 +649,9 @@ const ElectionResult = ({
   );
 };
 
-export const Elections = () => {
-  const t = useTranslations("diwan.admin.governance.elections");
+const useElections = () => {
   const { supabase } = useAuth();
-  const elections = useQuery({
+  return useQuery({
     queryFn: async () =>
       unwrap(
         await supabase
@@ -668,13 +662,31 @@ export const Elections = () => {
       ) ?? [],
     queryKey: key,
   });
+};
 
+/** The elections, each opening its own record page. */
+export const Elections = () => {
+  const t = useTranslations("diwan.admin.governance.elections");
+  const locale = useLocale() as Locale;
+  const elections = useElections();
   return (
     <div className="grid gap-6">
       {elections.isPending ? <SectionSpinner /> : null}
-      {elections.data?.map((election) => (
-        <ElectionCard election={election} key={election.id} />
-      ))}
+      <RowList>
+        {(elections.data ?? []).map((election) => (
+          <li className="grid gap-1" key={election.id}>
+            <Link
+              className="hover:text-accent type-body font-medium"
+              href={`/council/elections/${election.id}`}
+            >
+              {localized(election, "title", locale)}
+            </Link>
+            <span className="type-caption text-text-secondary">
+              {formatLongDate(election.voting_opens_at, locale)}
+            </span>
+          </li>
+        ))}
+      </RowList>
       <div className="flex flex-wrap gap-3">
         <NewLink href="/council/elections/new">{t("new")}</NewLink>
         <ExportButton
@@ -684,6 +696,35 @@ export const Elections = () => {
         />
       </div>
     </div>
+  );
+};
+
+/** One election's record page (decisions.md, The site: "One record page"). */
+export const ElectionRecord = ({ id }: { readonly id: string }) => {
+  const t = useTranslations("diwan.admin.governance.elections");
+  const tk = useTranslations("diwan.admin.kit");
+  const locale = useLocale() as Locale;
+  const elections = useElections();
+  if (elections.isPending) {
+    return <SectionSpinner />;
+  }
+  const election = elections.data?.find((e) => e.id === id);
+  if (!election) {
+    return <p className="type-body">{t("notFound")}</p>;
+  }
+  return (
+    <RecordView
+      back={
+        <Link className="link" href="/council/elections">
+          {tk("back")}
+        </Link>
+      }
+      history={<RecordHistory id={election.id} table="governance.elections" />}
+      status={t(`statuses.${election.status as ElectionStatus}`)}
+      title={localized(election, "title", locale)}
+    >
+      <ElectionCard election={election} />
+    </RecordView>
   );
 };
 

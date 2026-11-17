@@ -45,11 +45,7 @@ export const SixWords = () => {
   const eventOf = (id: string | null) =>
     events.data?.find((e) => e.id === id) ?? null;
   return (
-    <DiwanSection
-      description={t("description")}
-      id="six-words"
-      title={t("title")}
-    >
+    <DiwanSection id="six-words" title={t("title")}>
       <RowList>
         {pages.data.map((page) => {
           const event = eventOf(page.event_id);

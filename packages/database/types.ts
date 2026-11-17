@@ -440,7 +440,6 @@ export type Database = {
         Args: { assignment_id: string; step: string };
         Returns: boolean;
       };
-      two_step_from: { Args: Record<PropertyKey, never>; Returns: string };
     };
     Enums: {
       [_ in never]: never;
@@ -608,6 +607,7 @@ export type Database = {
           bytes: number | null;
           caption_ar: string | null;
           caption_en: string | null;
+          content_credentials: boolean;
           created_at: string;
           credit: string | null;
           deleted_at: string | null;
@@ -633,6 +633,7 @@ export type Database = {
           bytes?: number | null;
           caption_ar?: string | null;
           caption_en?: string | null;
+          content_credentials?: boolean;
           created_at?: string;
           credit?: string | null;
           deleted_at?: string | null;
@@ -657,6 +658,7 @@ export type Database = {
           bytes?: number | null;
           caption_ar?: string | null;
           caption_en?: string | null;
+          content_credentials?: boolean;
           created_at?: string;
           credit?: string | null;
           deleted_at?: string | null;
@@ -1115,6 +1117,28 @@ export type Database = {
           scanned_at?: string;
           title?: string;
           url?: string;
+        };
+        Relationships: [];
+      };
+      drafts: {
+        Row: {
+          data: NonNullable<Json>;
+          record_key: string;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          data: NonNullable<Json>;
+          record_key: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          data?: NonNullable<Json>;
+          record_key?: string;
+          updated_at?: string;
+          user_id?: string;
         };
         Relationships: [];
       };
@@ -1855,6 +1879,36 @@ export type Database = {
           },
         ];
       };
+      telegram_memberships: {
+        Row: {
+          chat_id: number;
+          checked_at: string;
+          status: string;
+          telegram_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          chat_id: number;
+          checked_at?: string;
+          status: string;
+          telegram_id: number;
+        };
+        Update: {
+          chat_id?: number;
+          checked_at?: string;
+          status?: string;
+          telegram_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "telegram_memberships_chat_id_fkey";
+            columns: ["chat_id"];
+            isOneToOne: false;
+            referencedRelation: "telegram_groups";
+            referencedColumns: ["chat_id"];
+          },
+        ];
+      };
       telegram_nudges: {
         Row: {
           kind: string;
@@ -1985,16 +2039,6 @@ export type Database = {
           isSetofReturn: false;
         };
       };
-      current_term: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          code: string;
-          ends_on: string;
-          name_ar: string;
-          name_en: string;
-          starts_on: string;
-        }[];
-      };
       drop_unconfirmed_sign_up: {
         Args: { email: string; sign_up_key: string };
         Returns: boolean;
@@ -2008,7 +2052,6 @@ export type Database = {
           waiting: number;
         }[];
       };
-      is_partner_guest: { Args: Record<PropertyKey, never>; Returns: boolean };
       mailing_recipients: {
         Args: { topic: string };
         Returns: {
@@ -2129,13 +2172,6 @@ export type Database = {
           ref: string;
         }[];
       };
-      my_topics: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          news: boolean;
-          paper: boolean;
-        }[];
-      };
       notion_to_invite: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -2144,6 +2180,17 @@ export type Database = {
           name_en: string;
           roles: string[];
           user_id: string;
+        }[];
+      };
+      open_role_manual: {
+        Args: { assignment_id: string };
+        Returns: {
+          body_ar: string;
+          body_en: string;
+          code: string;
+          slug: string;
+          title_ar: string;
+          title_en: string;
         }[];
       };
       outbox_health: {
@@ -2158,13 +2205,6 @@ export type Database = {
           waiting: number;
         }[];
       };
-      pledge_versions: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          key: string;
-          value: Json;
-        }[];
-      };
       post_notice: { Args: { id: string; shown_at: string }; Returns: string };
       prove_merge: { Args: { code: string }; Returns: string };
       recently_deleted: {
@@ -2176,6 +2216,10 @@ export type Database = {
           title_ar: string;
           title_en: string;
         }[];
+      };
+      record_brand_opened: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
       };
       record_history: {
         Args: { record_id: string; record_table: string };
@@ -3873,7 +3917,7 @@ export type Database = {
           body: string;
           created_at: string;
           created_by: string | null;
-          event_id: string | null;
+          event_id: string;
           id: string;
           meeting_on: string;
           status: string;
@@ -3889,7 +3933,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           created_by?: string | null;
-          event_id?: string | null;
+          event_id: string;
           id?: string;
           meeting_on: string;
           status?: string;
@@ -3904,7 +3948,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           created_by?: string | null;
-          event_id?: string | null;
+          event_id?: string;
           id?: string;
           meeting_on?: string;
           status?: string;
@@ -4778,15 +4822,6 @@ export type Database = {
           sent_to: string;
         }[];
       };
-      council_members: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          full_name_ar: string;
-          full_name_en: string;
-          titles_ar: string[];
-          titles_en: string[];
-        }[];
-      };
       council_seats: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -5164,6 +5199,17 @@ export type Database = {
           subject_id?: string;
         };
         Returns: string;
+      };
+      society_people: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          name_ar: string;
+          name_en: string;
+          role: string;
+          seat: string;
+          title_ar: string;
+          title_en: string;
+        }[];
       };
       spend_export: {
         Args: { name: string; params: Json; who: string };
@@ -6868,20 +6914,6 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      accepted_unplaced: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          agreement_signed: boolean;
-          blind_entry_id: string;
-          blind_id: string;
-          category: Database["journal"]["Enums"]["category"];
-          decided_at: string;
-          decision: string;
-          issue_id: string;
-          language: Database["journal"]["Enums"]["language"];
-          title: string;
-        }[];
-      };
       answer_credit: {
         Args: { accept: boolean; contributor: string; piece: string };
         Returns: undefined;
@@ -7048,10 +7080,6 @@ export type Database = {
       };
       is_current_category: {
         Args: { category: Database["journal"]["Enums"]["category"] };
-        Returns: boolean;
-      };
-      is_edition_desk: {
-        Args: { desk: Database["journal"]["Enums"]["desk"] };
         Returns: boolean;
       };
       masthead: {
@@ -9653,13 +9681,6 @@ export type Database = {
       set_credited_name: {
         Args: { member: string; name_ar: string; name_en: string };
         Returns: undefined;
-      };
-      shift_places: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          shift_id: string;
-          taken: number;
-        }[];
       };
       sign_production_report: {
         Args: { production_id: string };

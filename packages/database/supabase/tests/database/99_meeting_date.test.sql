@@ -1,5 +1,3 @@
--- The Council page from roles (migration 20261030000600): each holder of a
--- Council role once, with every title they hold.
 begin;
 -- <preamble>
 -- Shared pgTAP preamble. Each test file includes a copy (pg_prove runs files
@@ -94,44 +92,42 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(6);
 
-select pg_temp.make_user('00000000-0000-0000-0000-00000000c001', 'c1@auib.edu.iq', 'Council One');
-select pg_temp.make_user('00000000-0000-0000-0000-00000000c002', 'c2@auib.edu.iq', 'Council Two');
-select pg_temp.make_user('00000000-0000-0000-0000-00000000c003', 'c3@auib.edu.iq', 'Not Council');
+-- A meeting's date in one place (decisions.md, Where things live): its
+-- event's. A meeting without one is given one; the event moving moves it.
+select plan(4);
 
--- The President also covers Media: two Council roles, one person.
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000c001', 'president');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000c001', 'media_director');
-insert into access.role_assignments (user_id, role, scope_type, title_en, title_ar)
-values ('00000000-0000-0000-0000-00000000c002', 'artistic_director', 'global', 'Artistic Director of the Company', 'المدير الفني للفرقة');
-select pg_temp.grant_role('00000000-0000-0000-0000-00000000c003', 'reader');
+insert into governance.minutes (id, title_en, text_en, meeting_on, body)
+values ('00000000-0000-0000-0000-0000000f7001', 'Council meeting', '<p>Minutes.</p>', date '2090-10-06', 'council');
 
-select pg_temp.login_anon();
+select isnt(
+  (select event_id from governance.minutes where id = '00000000-0000-0000-0000-0000000f7001'),
+  null,
+  'A meeting without an event is given its event'
+);
+select is(
+  (select (e.starts_at at time zone 'Asia/Baghdad')::date from events.events e
+   join governance.minutes m on m.event_id = e.id
+   where m.id = '00000000-0000-0000-0000-0000000f7001'),
+  date '2090-10-06',
+  'on the day it was held'
+);
 
+update events.events set starts_at = timestamptz '2090-10-08 18:00+03'
+where id = (select event_id from governance.minutes where id = '00000000-0000-0000-0000-0000000f7001');
 select is(
-  (select count(*)::int from governance.council_members() where full_name_en = 'Council One'),
-  1, 'Someone holding two Council roles is named once'
+  (select meeting_on from governance.minutes where id = '00000000-0000-0000-0000-0000000f7001'),
+  date '2090-10-08',
+  'Moving the event moves the meeting'
 );
+
+update governance.minutes set meeting_on = date '2090-01-01'
+where id = '00000000-0000-0000-0000-0000000f7001';
 select is(
-  (select titles_en from governance.council_members() where full_name_en = 'Council One'),
-  array['President', 'Director of Media'],
-  'with both titles, in the Council''s order'
+  (select meeting_on from governance.minutes where id = '00000000-0000-0000-0000-0000000f7001'),
+  date '2090-10-08',
+  'and nothing else sets it'
 );
-select is(
-  (select titles_ar from governance.council_members() where full_name_en = 'Council Two'),
-  array['المدير الفني للفرقة'],
-  'An assignment''s display title is used over the role''s name'
-);
-select is(
-  (select count(*)::int from governance.council_members() where full_name_en = 'Not Council'),
-  0, 'Roles outside the Council are not listed'
-);
-select is(
-  (select full_name_en from governance.council_members() limit 1),
-  'Council One', 'The officers come first'
-);
-select hasnt_table('governance', 'council_seats', 'The hand-kept seats are gone');
 
 select * from finish();
 rollback;

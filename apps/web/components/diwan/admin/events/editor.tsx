@@ -419,6 +419,7 @@ export const EventEditor = () => {
           ) : null}
         </>
       }
+      room={{ id: event.id, kind: "event" }}
       status={`${tk("status")}: ${tk(`statuses.${event.status as "draft"}`)}`}
       tabs={[
         {

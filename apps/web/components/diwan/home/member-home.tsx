@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
+import { liveTopics, useLive } from "@/lib/diwan/live";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 import { DiwanPage } from "../page";
 import { Handovers } from "../service/roles";
@@ -13,7 +14,6 @@ import { Elections } from "../society/elections";
 import { Motions } from "../society/motions";
 import { PrizeVote } from "../society/prize-vote";
 import { ChildConsents } from "./child-consents";
-import { JournalSection } from "./journal";
 import { MembershipCard } from "./membership-card";
 import { AssignmentsToDo, CreditsToDo } from "./newsroom-todos";
 import { NextEvents } from "./next-events";
@@ -30,7 +30,6 @@ import {
   OrganizationToDo,
   PersonalEmailToDo,
 } from "./to-dos";
-import { VotingEligibility } from "./voting";
 
 type Greeting = "morning" | "afternoon" | "evening" | "late" | "friday";
 
@@ -79,11 +78,12 @@ const ToDoCount = () => {
     return null;
   }
   const count = todos.data.length;
+  if (count === 0) {
+    return null;
+  }
   return (
     <p className="type-body text-text-secondary" role="status">
-      {count === 0
-        ? t("toDoNone")
-        : t("toDoCount", { count, countText: formatNumber(count) })}
+      {t("toDoCount", { count, countText: formatNumber(count) })}
     </p>
   );
 };
@@ -102,11 +102,17 @@ const useGreeting = () => {
 
 /**
  * Today (decisions.md, The site): the first screen after signing in, for
- * everyone. The live card at the top with Add to Wallet, then the to-dos
- * to sign or finish, an open election as a card while it's open, and
- * what's next. Today's to-dos are the only guidance: no walkthroughs.
+ * everyone, showing only what needs the person. In order: the live card
+ * with Add to Wallet; the to-dos, one line and one button each; an open
+ * election (or Prize vote, or motion) while it's open; then their next
+ * events, shifts and new notices, each only when there are some. A section
+ * with nothing in it doesn't appear; empty states live on each list's own
+ * page.
  */
 export const MemberHome = () => {
+  const { user: me } = useAuth();
+  // Today's counts move as things happen (decisions.md, The site).
+  useLive(me ? liveTopics.me(me.id) : null, [["home"], ["account"]]);
   const t = useTranslations("diwan.home");
   const locale = useLocale();
   const profile = useProfile();
@@ -155,13 +161,11 @@ export const MemberHome = () => {
         <>
           <Elections />
           <PrizeVote />
+          <Motions />
           <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
-            <Notices />
             <NextEvents />
             <MyPrograms />
-            <JournalSection />
-            <Motions />
-            <VotingEligibility />
+            <Notices />
           </div>
         </>
       ) : null}

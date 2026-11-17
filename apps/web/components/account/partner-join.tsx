@@ -495,8 +495,6 @@ const ApplicationStanding = ({
 }) => {
   const t = useTranslations("diwan.partnerJoin");
   const tr = useTranslations("diwan.flow.reply");
-  const locale = useLocale() as Locale;
-  const name = localized(current, "name", locale);
   const waiting = current.partner_status === "prospect";
   if (waiting && justSent) {
     return (
@@ -511,16 +509,6 @@ const ApplicationStanding = ({
   }
   return (
     <DiwanPage
-      lede={
-        waiting
-          ? t("waiting", {
-              date: current.applied_at
-                ? formatLongDate(current.applied_at, locale)
-                : "",
-              name,
-            })
-          : t("partnered", { name })
-      }
       narrow
       title={waiting ? t("receivedTitle") : t("partneredTitle")}
     >
@@ -571,7 +559,7 @@ export const PartnerJoin = () => {
   const guest = mine.data?.kind === "guest";
   if (guest && guestOf.data?.length) {
     return (
-      <DiwanPage lede={t("lede")} narrow title={t("title")}>
+      <DiwanPage narrow title={t("title")}>
         <p className="type-body">{t("oneMembership")}</p>
       </DiwanPage>
     );
@@ -581,7 +569,7 @@ export const PartnerJoin = () => {
     return <ApplicationStanding current={current} justSent={justSent} />;
   }
   return (
-    <DiwanPage lede={t("lede")} title={t("title")}>
+    <DiwanPage title={t("title")}>
       <p className="type-label">{t("stepTwo")}</p>
       {current ? <p className="type-body">{t("declined")}</p> : null}
       {guest ? (

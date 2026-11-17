@@ -413,7 +413,7 @@ export const ContentCalendar = () => {
     }
   ).format(new Date(`${month}-01T00:00:00Z`));
   return (
-    <DiwanSection description={t("lede")} id="calendar" title={t("title")}>
+    <DiwanSection id="calendar" title={t("title")}>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         <button className="link" onClick={() => move(-1)} type="button">
           {t("previous")}

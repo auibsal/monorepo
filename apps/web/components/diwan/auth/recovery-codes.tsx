@@ -58,11 +58,7 @@ export const RecoveryCodes = () => {
       setCopied(true);
     };
     return (
-      <DiwanSection
-        description={t("saveBody")}
-        id="recovery-codes"
-        title={t("saveTitle")}
-      >
+      <DiwanSection id="recovery-codes" title={t("saveTitle")}>
         <ol
           className="grid max-w-md grid-cols-2 gap-x-6 gap-y-2 font-mono text-lg tracking-wider"
           dir="ltr"
@@ -95,12 +91,12 @@ export const RecoveryCodes = () => {
 
   return (
     <DiwanSection
-      description={
+      id="recovery-codes"
+      meta={
         left.data === 0
           ? t("noneBody")
           : t("fewBody", { count: formatNumber(left.data, locale) })
       }
-      id="recovery-codes"
       title={left.data === 0 ? t("noneTitle") : t("fewTitle")}
     >
       <div className="grid gap-2">

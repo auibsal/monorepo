@@ -65,11 +65,7 @@ export const DownloadData = () => {
     },
   });
   return (
-    <DiwanSection
-      description={t("description")}
-      id="download-data"
-      title={t("title")}
-    >
+    <DiwanSection id="download-data" title={t("title")}>
       <div className="flex flex-wrap gap-x-6 gap-y-2">
         <Button
           className="px-0"

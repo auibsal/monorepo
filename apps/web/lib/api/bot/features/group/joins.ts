@@ -11,6 +11,7 @@ import {
   whoami,
 } from "../../db";
 import { connectPage, rulesPage } from "../../links";
+import { recordMembership } from "../../membership";
 
 /**
  * Join requests to a connected group ("Approve new members" on the invite
@@ -44,7 +45,10 @@ const approve = async (api: Api, chatId: number, telegramId: number) => {
       throw error;
     }
   }
-  await forget(chatId, telegramId);
+  await Promise.all([
+    forget(chatId, telegramId),
+    recordMembership(chatId, telegramId, "member"),
+  ]);
 };
 
 /** Whether this linked person may come straight in. */
@@ -70,9 +74,12 @@ joins.on("chat_join_request", async (ctx) => {
     return;
   }
   if (me && (await mayEnter(group, person.id, me))) {
-    await (request.query_id
-      ? answer("approve")
-      : approve(ctx.api, group.chat_id, person.id));
+    if (request.query_id) {
+      await answer("approve");
+      await recordMembership(group.chat_id, person.id, "member");
+    } else {
+      await approve(ctx.api, group.chat_id, person.id);
+    }
     return;
   }
   await answer("queue");
@@ -125,7 +132,16 @@ export const admitPending = async (api: Api, telegramId: number) => {
 joins.on("chat_member", async (ctx) => {
   const update = ctx.chatMember;
   const person = update.new_chat_member.user;
-  if (["left", "kicked"].includes(update.new_chat_member.status)) {
+  // The membership record follows every change (lib/api/bot/membership.ts).
+  const member = update.new_chat_member;
+  if (!person.is_bot) {
+    await recordMembership(
+      update.chat.id,
+      person.id,
+      member.status === "restricted" && !member.is_member ? null : member.status
+    );
+  }
+  if (["left", "kicked"].includes(member.status)) {
     await forget(update.chat.id, person.id);
     return;
   }

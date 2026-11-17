@@ -1864,7 +1864,6 @@ const Removals = () => {
     .slice(0, 20);
   return (
     <div className="grid gap-4">
-      <p className="type-body text-text-secondary">{t("lede")}</p>
       {requests.isPending ? <SectionSpinner /> : null}
       {requests.data && open.length === 0 ? (
         <p className="type-body text-text-secondary">{t("empty")}</p>
@@ -1900,11 +1899,7 @@ export const ProgramPitches = () => {
     return null;
   }
   return (
-    <DiwanSection
-      description={t("pitches.lede")}
-      id="pitches"
-      title={t("pitches.title")}
-    >
+    <DiwanSection id="pitches" title={t("pitches.title")}>
       <RequestQueue base="/events/proposals" keys={["event-pitch"]} />
     </DiwanSection>
   );

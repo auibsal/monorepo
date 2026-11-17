@@ -60,7 +60,7 @@ export const ProblemReports = () => {
   }
   const rows = reports.data ?? [];
   return (
-    <DiwanSection description={t("lede")} id="problems" title={t("title")}>
+    <DiwanSection id="problems" title={t("title")}>
       {reports.isSuccess && rows.length === 0 ? (
         <EmptyLine>{t("empty")}</EmptyLine>
       ) : null}

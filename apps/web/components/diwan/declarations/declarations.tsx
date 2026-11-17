@@ -112,7 +112,7 @@ export const Declarations = () => {
   };
 
   return (
-    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+    <DiwanPage narrow title={t("title")}>
       <p className="type-body">{t("definition")}</p>
 
       <form className="grid gap-5" id="declare" onSubmit={onSubmit}>

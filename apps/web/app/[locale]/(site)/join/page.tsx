@@ -7,8 +7,13 @@ import { type LocaleParams, sectionMetadata } from "@/lib/page";
 
 export const generateMetadata = sectionMetadata("web.join", "/join");
 
+/*
+ * Join (decisions.md, The site): one sentence and Sign up, three steps,
+ * what membership gives (a line each), the Typewriter Tour's line and one
+ * line to the other ways in.
+ */
+
 const STEPS = ["register", "commonRoom", "twoThings"] as const;
-const TIERS = ["member", "voting", "associate", "honorary"] as const;
 /** What membership gives (the design review C5, Nov 4, 2026). */
 const GIVES = ["card", "record", "vote"] as const;
 
@@ -55,77 +60,19 @@ const JoinPage = async ({ params }: LocaleParams) => {
         />
       </Section>
 
-      <Section id="tiers" title={t("tiersTitle")}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-start">
-            <thead>
-              <tr className="border-text border-b">
-                <th className="type-label py-2 pe-4 text-start" scope="col">
-                  {t("tiersYou")}
-                </th>
-                <th className="type-label py-2 pe-4 text-start" scope="col">
-                  {t("tiersIf")}
-                </th>
-                <th className="type-label py-2 text-start" scope="col">
-                  {t("tiersCan")}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {TIERS.map((key) => (
-                <tr className="border-line border-b align-top" key={key}>
-                  <th
-                    className="py-4 pe-4 text-start text-xl font-normal"
-                    scope="row"
-                  >
-                    {t(`tiers.${key}.name`)}
-                  </th>
-                  <td className="text-text-secondary py-4 pe-4">
-                    {t(`tiers.${key}.if`)}
-                  </td>
-                  <td className="text-text-secondary py-4">
-                    {t(`tiers.${key}.can`)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {/* Not at AUIB (decisions.md): a guest's membership, by
-            invitation, or a partner's, by applying. */}
-        <p className="type-body text-text-secondary max-w-[60ch]">
-          {t("others")}{" "}
-          <Link className="link" href="/partners">
-            {t("othersLink")}
-          </Link>
-        </p>
-      </Section>
-
-      {/* One sign-up for everyone (decisions.md, Members): the address
-          says which class; /join explains and links to it. */}
-      <Section id="associate" title={t("associateRequest.title")}>
-        <p className="type-body max-w-[60ch]">{t("associateRequest.lede")}</p>
-        <p>
-          <a className="link" href={localizedPath(locale, "/sign-up")}>
-            {t("cta")}
-          </a>
-        </p>
-      </Section>
-
-      <Section id="first-month" title={t("firstMonthTitle")}>
-        <p className="type-lede max-w-[60ch]">{t("firstMonth")}</p>
+      <div className="grid gap-3">
         {/* The Typewriter Tour belongs to membership (decisions.md). */}
         <p className="type-body">
           <Link className="link" href="/join/typewriter-tour">
             {t("tourLine")}
           </Link>
         </p>
-      </Section>
-      <p>
-        <a className="link" href={localizedPath(locale, "/sign-up")}>
-          {t("cta")}
-        </a>
-      </p>
+        <p className="type-body">
+          <Link className="link" href="/join/other-ways">
+            {t("otherWaysLine")}
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

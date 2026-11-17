@@ -184,10 +184,6 @@ export const Countersign = () => {
   }
   return (
     <DiwanPage
-      lede={t("countersignLede", {
-        date: formatLongDate(row.signed_at, locale, true),
-        name: row.outgoing,
-      })}
       narrow
       title={t("countersignTitle", {
         role: pick(locale, row.role_en, row.role_ar),

@@ -278,12 +278,8 @@ export const Forms = () => {
   const none = types.data && types.data.filter(mayStart).length === 0;
 
   return (
-    <DiwanPage lede={t("lede")} narrow title={t("title")}>
-      <DiwanSection
-        description={t("concern.lede")}
-        id="concern"
-        title={t("concern.title")}
-      >
+    <DiwanPage narrow title={t("title")}>
+      <DiwanSection id="concern" title={t("concern.title")}>
         <StartLinks keys={["concern"]} />
       </DiwanSection>
       <DiwanSection id="sent" title={t("mine")}>

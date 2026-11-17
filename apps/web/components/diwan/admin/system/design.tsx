@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { DiwanPage } from "@/components/diwan/page";
 import { SectionSpinner } from "@/components/diwan/states";
 import { useAuth } from "@/lib/auth/provider";
+import { unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
@@ -184,7 +185,25 @@ const Canvas = ({ entry, kit }: { entry: Entry; kit: string }) => {
   );
 };
 
+/**
+ * Brand essentials opened (decisions.md, Members: "A new role holder"):
+ * the page records the checklist step for the holder's roles as it loads.
+ */
+const useRecordBrandOpened = () => {
+  const { supabase, user } = useAuth();
+  useQuery({
+    enabled: Boolean(user),
+    queryFn: async () => {
+      unwrap(await supabase.schema("api").rpc("record_brand_opened"));
+      return true;
+    },
+    queryKey: ["admin", "brand-opened", user?.id],
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+};
+
 export const DesignSystem = ({ entryId }: { entryId: string | null }) => {
+  useRecordBrandOpened();
   const t = useTranslations("diwan.admin.design");
   const locale = useLocale();
   const kit = localizedPath(locale, diwanPath(KIT));
@@ -204,7 +223,7 @@ export const DesignSystem = ({ entryId }: { entryId: string | null }) => {
   const first = (g: Group) => all.find((e) => groupOf(e) === g);
 
   return (
-    <DiwanPage lede={t("lede")} title={t("title")}>
+    <DiwanPage title={t("title")}>
       {entries.isPending ? <SectionSpinner /> : null}
       {entries.isPending || all.length > 0 ? null : (
         <p className="type-caption">{t("notBuilt")}</p>

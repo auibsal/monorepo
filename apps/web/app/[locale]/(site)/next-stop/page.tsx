@@ -6,6 +6,7 @@ import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EpisodeCard, loadEpisodes } from "@/components/next-stop";
+import { TeamList } from "@/components/team-list";
 import { journal, localized } from "@/lib/data";
 import { localizedMetadata } from "@/lib/metadata";
 import { readPublished } from "@/lib/supabase";
@@ -103,35 +104,33 @@ const NextStopPage = async ({ params }: NextStopProps) => {
           <h2 className="type-heading" id="crew">
             {t("nextStop.team")}
           </h2>
-          <ul className="border-line grid border-b sm:grid-cols-2 sm:gap-x-10">
-            {team.map((person) => (
-              <li
-                className="border-line grid gap-1 border-t py-3"
-                key={`${person.full_name_en}-${person.title_en}`}
-              >
-                <span className="type-subheading">
-                  {localized(
+          <TeamList
+            groups={[
+              {
+                key: "team",
+                members: team.map((person) => ({
+                  key: `${person.full_name_en}-${person.title_en}`,
+                  name: localized(
                     {
                       full_name_ar: person.full_name_ar ?? "",
                       full_name_en: person.full_name_en ?? "",
                     },
                     "full_name",
                     locale
-                  )}
-                </span>
-                <span className="type-caption text-text-secondary">
-                  {localized(
+                  ),
+                  title: localized(
                     {
                       title_ar: person.title_ar ?? "",
                       title_en: person.title_en ?? "",
                     },
                     "title",
                     locale
-                  )}
-                </span>
-              </li>
-            ))}
-          </ul>
+                  ),
+                })),
+              },
+            ]}
+            open=""
+          />
         </section>
       ) : null}
 

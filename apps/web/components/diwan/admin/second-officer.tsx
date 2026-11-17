@@ -117,7 +117,6 @@ export const SecondOfficer = () => {
 
   return (
     <DiwanSection id="second-officer" title={t("title")}>
-      <p className="type-body max-w-[60ch]">{t("lede")}</p>
       <RowList>
         {rows.map((a) => {
           const subject = nameOf(

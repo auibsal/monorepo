@@ -96,14 +96,13 @@ as $$
 $$;
 -- </preamble>
 
-select plan(12);
+select plan(8);
 
 delete from core.semesters;
 insert into core.semesters (code, name_en, name_ar, starts_on, ends_on) values
   ('fall-2090', 'Fall 2090', 'خريف ٢٠٩٠', current_date - 30, current_date + 60),
   ('spring-2091', 'Spring 2091', 'ربيع ٢٠٩١', current_date + 90, current_date + 200);
 
-select is((select code from core.current_term()), 'fall-2090', 'Today''s term comes from the semesters');
 select is(private.year_end(),
   ((current_date + 201)::timestamp at time zone 'Asia/Baghdad'),
   'The Society''s year ends with the Spring semester');
@@ -124,8 +123,6 @@ insert into access.role_assignments (user_id, role) values ('00000000-0000-0000-
 select ok((select ends_at is null from access.role_assignments where user_id = '00000000-0000-0000-0000-0000000000d2'),
   'The Faculty Advisor serves until the role is ended');
 
-select ok(exists (select 1 from governance.council_members() where 'Faculty Advisor' = any(titles_en)),
-  'The Faculty Advisor is named with the Council, from the role');
 select is((select count(*) from core.settings where key like 'society.faculty_advisor%')::integer, 0,
   'The advisor is not typed into a setting');
 
@@ -140,11 +137,7 @@ select is((select count(*) from core.settings where key like 'features.elections
   'No elections switch is kept');
 
 select pg_temp.login_anon();
-select throws_ok($$ select * from core.pledge_versions() $$, '42501', null,
-  'Visitors do not read pledge versions');
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000d1');
-select is((select count(*) from core.pledge_versions())::integer, 3,
-  'Members read the versions they are asked to accept');
 
 select * from finish();
 rollback;

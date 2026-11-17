@@ -52,9 +52,10 @@ const MemberCardPage = async ({ params, searchParams }: CardParams) => {
   const tk = await getTranslations({ locale, namespace: "diwan.home.kinds" });
   const valid = membership.CARD_CODE.test(code);
   if (valid && !(await pageWithinRateLimit("verify", VERIFY_LIMIT))) {
+    const tv = await getTranslations({ locale, namespace: "web.verify" });
     return (
       <div className="mx-auto grid w-full max-w-xl gap-6 px-4 py-16">
-        <PageHeader lede={t("tooMany")} title={t("title")} />
+        <PageHeader lede={tv("tooMany")} title={t("title")} />
       </div>
     );
   }

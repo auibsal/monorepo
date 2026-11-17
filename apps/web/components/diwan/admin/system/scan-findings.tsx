@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
-import { RowList } from "../../page";
+import { DiwanSection, RowList } from "../../page";
 
 interface Hit {
   found: string;
@@ -41,8 +41,7 @@ export const ScanFindings = () => {
     return null;
   }
   return (
-    <div className="grid gap-3">
-      <p className="type-body">{t("lede")}</p>
+    <DiwanSection id="scan" title={t("title")}>
       <RowList>
         {hits.data.map((h) => (
           <li className="grid gap-1" key={h.id}>
@@ -60,6 +59,6 @@ export const ScanFindings = () => {
           </li>
         ))}
       </RowList>
-    </div>
+    </DiwanSection>
   );
 };

@@ -244,11 +244,7 @@ export const RecentlyDeleted = ({ kind }: { readonly kind: TrashKind }) => {
     return null;
   }
   return (
-    <DiwanSection
-      description={t("lede")}
-      id="recently-deleted"
-      title={t("title")}
-    >
+    <DiwanSection id="recently-deleted" title={t("title")}>
       <RowList>
         {rows.data.map((row) => (
           <li

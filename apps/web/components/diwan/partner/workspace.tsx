@@ -4,13 +4,11 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
-import { cn } from "@repo/brand/lib/utils";
 import type { Locale } from "@repo/internationalization";
 import {
   formatDateTime,
   formatLongDate,
 } from "@repo/internationalization/format";
-import { Link, usePathname } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
@@ -21,6 +19,7 @@ import { callApiForm } from "@/lib/diwan/api";
 import { type MyPartner, useMyPartners } from "@/lib/diwan/partners";
 import { getMediaUrl } from "@/lib/storage";
 import { logoTallEnough } from "@/lib/storage/image-size";
+import { hasLocation } from "@/lib/storage/photo-metadata";
 import {
   type InviteeLanguage,
   InviteeLanguageField,
@@ -33,7 +32,7 @@ import { ErrorState, SectionSpinner } from "../states";
 
 const KEY = ["partner-desk"] as const;
 
-const TABS = [
+export const PARTNER_PAGES = [
   { href: "/partners/dashboard", key: "events" },
   { href: "/partners/dashboard/checklist", key: "checklist" },
   { href: "/partners/dashboard/guests", key: "guests" },
@@ -43,8 +42,8 @@ const TABS = [
 
 /**
  * The partner's dashboard (decisions.md: one fixed address,
- * /partners/dashboard): its title and its five tabs (decisions.md, The
- * site): Events, Checklist, Guests, Team and Memorandum.
+ * /partners/dashboard): its title over the page; its five pages (Events,
+ * Checklist, Guests, Team and Memorandum) are in the side menu.
  * Someone on two partners' teams keeps the first.
  */
 const PartnerFrame = ({
@@ -54,7 +53,6 @@ const PartnerFrame = ({
 }) => {
   const t = useTranslations("diwan.partnerDesk");
   const locale = useLocale() as Locale;
-  const pathname = usePathname();
   const mine = useMyPartners();
   if (mine.isPending) {
     return <SectionSpinner />;
@@ -69,35 +67,8 @@ const PartnerFrame = ({
   return (
     <DiwanPage
       actions={partner.is_listed ? <OnTheSite href="/partners" /> : null}
-      lede={t("lede")}
       title={localized(partner, "name", locale)}
     >
-      <nav
-        aria-label={t("tabsLabel")}
-        className="border-line overflow-x-auto border-b"
-      >
-        <ul className="flex gap-x-6">
-          {TABS.map((tab) => {
-            const here = pathname === tab.href;
-            return (
-              <li className="shrink-0" key={tab.href}>
-                <Link
-                  aria-current={here ? "page" : undefined}
-                  className={cn(
-                    "hover:text-accent block border-b-[1.5px] py-3 text-sm font-medium whitespace-nowrap",
-                    here
-                      ? "border-accent text-text"
-                      : "text-text-secondary border-transparent"
-                  )}
-                  href={tab.href}
-                >
-                  {t(`tabs.${tab.key}`)}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
       {children(partner)}
     </DiwanPage>
   );
@@ -155,6 +126,9 @@ const PartnerLogo = ({ row }: { row: PartnerRow }) => {
       if (!(await logoTallEnough(file))) {
         throw new Error("logo_too_small");
       }
+      if (hasLocation(new Uint8Array(await file.arrayBuffer()))) {
+        throw new Error("has_location");
+      }
       const body = new FormData();
       body.set("partner", row.id);
       body.set("logo", file);
@@ -168,7 +142,6 @@ const PartnerLogo = ({ row }: { row: PartnerRow }) => {
   return (
     <div className="grid gap-4">
       <h3 className="type-subheading">{t("title")}</h3>
-      <p className="type-caption">{t("lede")}</p>
       <div className="flex flex-wrap items-end gap-8">
         {row.logo_path ? (
           <figure className="grid gap-2">
@@ -1216,11 +1189,7 @@ export const PartnerGuests = () => {
   return (
     <PartnerFrame>
       {(partner) => (
-        <DiwanSection
-          description={t("guests.lede")}
-          id="guests"
-          title={t("guests.title")}
-        >
+        <DiwanSection id="guests" title={t("guests.title")}>
           <Guests partnerId={partner.id} />
           <InviteByEmail kind="guest" partnerId={partner.id} />
           <OpenInvitations kind="guest" partnerId={partner.id} />
@@ -1240,11 +1209,7 @@ export const PartnerTeam = () => {
     <PartnerFrame>
       {(partner) => (
         <>
-          <DiwanSection
-            description={t("team.lede")}
-            id="team"
-            title={t("team.title")}
-          >
+          <DiwanSection id="team" title={t("team.title")}>
             <Team partnerId={partner.id} />
           </DiwanSection>
           <DiwanSection id="profile" title={t("profile.title")}>

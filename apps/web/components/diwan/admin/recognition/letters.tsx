@@ -54,7 +54,6 @@ export const ServiceLetters = () => {
   }
   return (
     <div className="grid gap-6">
-      <p className="type-body">{t("lede")}</p>
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
         <AddInPlace label={t("write")}>
           {(close) => <WriteLetter onDone={close} />}

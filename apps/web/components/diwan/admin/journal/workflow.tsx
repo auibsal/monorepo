@@ -722,7 +722,6 @@ export const Corrections = ({ record }: { record: PieceRecord }) => {
   return (
     <section className="grid gap-4">
       <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-caption">{t("lede")}</p>
       <ul className="grid gap-2">
         {record.corrections.map((c) => (
           <li key={c.id}>

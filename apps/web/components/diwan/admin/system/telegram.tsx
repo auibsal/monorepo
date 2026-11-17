@@ -98,7 +98,6 @@ export const TelegramBot = () => {
   return (
     <SalCard>
       <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-body">{t("lede")}</p>
       <div className="grid gap-2">
         <h3 className="type-body font-medium">{t("botTitle")}</h3>
         {statusLine ? (

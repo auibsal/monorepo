@@ -101,9 +101,7 @@ const Editions = () => {
           </Link>
         }
         title={tt("editions")}
-      >
-        {t("editionsLede")}
-      </AdminHeading>
+      />
       {issues.data ? (
         <DataTable
           columns={columns}
@@ -539,7 +537,6 @@ const Desks = ({ desk }: { readonly desk?: journal.Desk }) => {
   return (
     <section className="grid gap-4">
       <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-caption">{t("lede")}</p>
       <ul className="grid gap-4">
         {rows.map((item) => (
           <QueueItem item={item} key={item.submission_id} />
@@ -619,7 +616,6 @@ const FrontPage = () => {
   ];
   return (
     <div className="grid gap-4">
-      <p className="type-caption">{t("frontLede")}</p>
       {pieces.data ? (
         <DataTable
           columns={columns}

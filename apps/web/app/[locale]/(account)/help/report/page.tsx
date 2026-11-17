@@ -17,7 +17,7 @@ const ReportPage = async ({ params }: PageProps) => {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "diwan.report" });
   return (
-    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+    <DiwanPage narrow sentence={t("sentence")} title={t("title")}>
       <Suspense>
         <ReportProblem />
       </Suspense>

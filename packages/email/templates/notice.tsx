@@ -108,9 +108,26 @@ const NAME = {
  * CAN-SPAM asks; every email carries the same foot).
  */
 const FOOTER = {
-  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية، auibsal.org. الأصل عندنا: بلا ورق، ونطبع لغاية. جمعية الفنون والآداب في الجامعة الأمريكية، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في بغداد، طريق المطار، بغداد، العراق.",
-  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org. Paperless by default. Printed with purpose. AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq.",
+  ar: {
+    address:
+      "جمعية الفنون والآداب في الجامعة الأمريكية، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في بغداد، طريق المطار، بغداد، العراق.",
+    paperless: "الأصل عندنا: بلا ورق، ونطبع لغاية.",
+    sent: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية، auibsal.org.",
+  },
+  en: {
+    address:
+      "AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq.",
+    paperless: "Paperless by default. Printed with purpose.",
+    sent: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org.",
+  },
 };
+
+/** The slogan links to the Sustainability page (decisions.md, Sustainability). */
+const sustainability = (lang: "ar" | "en") =>
+  siteUrl(lang, "/about/sustainability");
+
+const footerText = (lang: "ar" | "en") =>
+  `${FOOTER[lang].sent} ${FOOTER[lang].paperless} (${sustainability(lang)}) ${FOOTER[lang].address}`;
 
 /**
  * The same notice as plain text, sent beside the HTML: some mail apps and
@@ -154,7 +171,7 @@ export const noticeText = ({
     ...footer.map((line) =>
       line.href ? `${line.text} ${line.link ?? ""}: ${line.href}` : line.text
     ),
-    ...blocks.map((block) => FOOTER[block.lang]),
+    ...blocks.map((block) => footerText(block.lang)),
   ].join("\n");
 
 const Block = ({ block }: { block: NoticeBlock }) => {
@@ -368,7 +385,14 @@ export const Notice = ({
                 textAlign: block.lang === "ar" ? "right" : "left",
               }}
             >
-              {FOOTER[block.lang]}
+              {FOOTER[block.lang].sent}{" "}
+              <Link
+                href={sustainability(block.lang)}
+                style={{ color: ASH, textDecoration: "underline" }}
+              >
+                {FOOTER[block.lang].paperless}
+              </Link>{" "}
+              {FOOTER[block.lang].address}
             </Text>
           ))}
         </Container>

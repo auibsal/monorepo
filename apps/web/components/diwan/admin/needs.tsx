@@ -425,9 +425,6 @@ export const Needs = ({
 
   return (
     <div className="grid gap-6">
-      <p className="type-body max-w-[60ch]">
-        {owner ? t("lede") : t("logLede")}
-      </p>
       {needs.isPending ? <SectionSpinner /> : null}
       {needs.data?.length === 0 ? <EmptyLine>{t("empty")}</EmptyLine> : null}
       <ul className="grid">

@@ -4,9 +4,9 @@ import {
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { CouncilSeats } from "@/components/council";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader, Section } from "@/components/section";
+import { TeamList } from "@/components/team-list";
 import { governance, localized } from "@/lib/data";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
@@ -75,16 +75,29 @@ const GovernancePage = async ({ params }: LocaleParams) => {
         {council.length === 0 ? (
           <p className="type-body">{t("councilEmpty")}</p>
         ) : (
-          <CouncilSeats
-            feminineTitles={Object.fromEntries(
-              SEATS.map((key) => [key, t(`seatsFeminine.${key}`)])
-            )}
-            locale={locale}
+          <TeamList
+            groups={[
+              {
+                key: "council",
+                members: SEATS.map((key) => {
+                  const seat = council.find((row) => row.seat === key);
+                  const holders =
+                    (locale === "ar" ? seat?.holders_ar : seat?.holders_en) ??
+                    [];
+                  return {
+                    key,
+                    name:
+                      holders.length > 0
+                        ? holders.join(locale === "ar" ? "، " : ", ")
+                        : null,
+                    title: seat?.feminine
+                      ? t(`seatsFeminine.${key}`)
+                      : t(`seats.${key}`),
+                  };
+                }),
+              },
+            ]}
             open={t("seatOpen")}
-            seats={council}
-            titles={Object.fromEntries(
-              SEATS.map((key) => [key, t(`seats.${key}`)])
-            )}
           />
         )}
       </Section>

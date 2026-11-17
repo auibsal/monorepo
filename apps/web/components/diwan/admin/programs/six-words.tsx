@@ -164,8 +164,6 @@ export const TourCards = () => {
 
   return (
     <div className="grid gap-8">
-      <p className="type-body text-text-secondary max-w-3xl">{t("lede")}</p>
-
       <section className="grid max-w-2xl gap-3">
         <h3 className="type-subheading">{t("transcribe")}</h3>
         <label className="type-caption" htmlFor={fieldId}>

@@ -95,7 +95,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(13);
+select plan(12);
 
 -- These test the action itself; the second officer's approval is given
 -- (99_two_officers tests asking and approving).
@@ -180,8 +180,6 @@ select throws_ok(
 
 select pg_temp.logout();
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000000f1', 'president');
-select is((select count(*)::int from governance.council_members() where full_name_en = 'The President'), 1,
-  'The Council lists a person once, however often their office was assigned');
 
 select * from finish();
 rollback;

@@ -46,7 +46,7 @@ export const Applications = () => {
     onSuccess: refresh,
   });
   return (
-    <DiwanSection description={t("lede")} id="applications" title={t("title")}>
+    <DiwanSection id="applications" title={t("title")}>
       {list.isPending ? <SectionSpinner /> : null}
       {list.data ? (
         <RecordList

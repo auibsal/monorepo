@@ -88,7 +88,7 @@ export const SocietyGuests = () => {
 
   return (
     <div className="grid gap-14">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <AdminHeading title={t("title")} />
       <DiwanSection id="guests" title={t("current")}>
         {guests.isPending ? <SectionSpinner /> : null}
         {guests.isError ? (

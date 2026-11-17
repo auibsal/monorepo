@@ -89,7 +89,6 @@ export const PerformancesTab = ({
     <div className="grid max-w-3xl gap-8 pt-4">
       <section className="grid gap-3">
         <h3 className="type-subheading">{t("title")}</h3>
-        <p className="type-body">{t("lede")}</p>
         {cleared ? null : <p className="type-caption">{t("rightsFirst")}</p>}
         {linked.length === 0 ? (
           <p className="type-caption">{t("none")}</p>
@@ -200,7 +199,6 @@ export const ReportTab = ({ production }: { production: ProductionRow }) => {
 
   return (
     <div className="grid max-w-3xl gap-8 pt-4">
-      <p className="type-body">{t("lede")}</p>
       <form
         className="grid gap-4"
         onSubmit={(event) => {

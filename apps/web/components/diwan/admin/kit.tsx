@@ -36,7 +36,9 @@ import { createPortal } from "react-dom";
 import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
 import { DataError } from "@/lib/data";
+import { useMarkDeepPage } from "@/lib/deep-page";
 import { ApiError, callApiText } from "@/lib/diwan/api";
+import { RecordRoom, type RoomKind } from "@/lib/diwan/room";
 import { useQueryState } from "@/lib/diwan/use-query-param";
 import { useAppLink } from "@/lib/link-context";
 import { ChoiceInput } from "./choice-input";
@@ -47,7 +49,6 @@ import { useSectionForm } from "./section-form";
 
 interface AdminHeadingProps {
   readonly actions?: ReactNode;
-  readonly children?: ReactNode;
   /** A record's status, under its title ("Status: Published"). */
   readonly status?: ReactNode;
   readonly title: string;
@@ -58,20 +59,10 @@ interface AdminHeadingProps {
  * "Pages and actions"): its title, one sentence, its main action, then
  * everything else.
  */
-export const AdminHeading = ({
-  actions,
-  children,
-  status,
-  title,
-}: AdminHeadingProps) => (
+export const AdminHeading = ({ actions, status, title }: AdminHeadingProps) => (
   <header className="grid gap-3">
     <h1 className="type-title font-light text-balance">{title}</h1>
     {status ? <p className="type-label">{status}</p> : null}
-    {children ? (
-      <div className="type-lede text-text-secondary max-w-[60ch]">
-        {children}
-      </div>
-    ) : null}
     {actions ? (
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         {actions}
@@ -172,9 +163,9 @@ export const RecordView = ({
   back,
   children,
   history,
-  lede,
   menu,
   narrow = false,
+  room,
   status,
   tabs,
   title,
@@ -189,16 +180,20 @@ export const RecordView = ({
   readonly children: ReactNode;
   /** The record's History, its last tab. */
   readonly history?: ReactNode;
-  readonly lede?: ReactNode;
   /** Everything but the main action, under More. */
   readonly menu?: ReactNode;
   readonly narrow?: boolean;
+  /** The record's room: who is editing which section, and saves. */
+  readonly room?: { readonly id: string; readonly kind: RoomKind };
   readonly status?: ReactNode;
   /** The record's other tabs, between Overview and History. */
   readonly tabs?: readonly RecordTab[];
   readonly title: string;
 }) => {
   const t = useTranslations("diwan.admin.kit.record");
+  // A record's page is a deep page: the shell shows the way back instead
+  // of the side menu (decisions.md, The site).
+  useMarkDeepPage();
   const tabbed = Boolean(history || tabs?.length);
   const readOnly = (content: ReactNode) =>
     archived ? (
@@ -208,7 +203,7 @@ export const RecordView = ({
     ) : (
       content
     );
-  return (
+  const page = (
     <div className={cn("grid gap-10", narrow && "max-w-3xl")}>
       <div className="grid gap-3">
         {back ? <div className="type-caption">{back}</div> : null}
@@ -223,9 +218,7 @@ export const RecordView = ({
           }
           status={status}
           title={title}
-        >
-          {lede}
-        </AdminHeading>
+        />
         {archived ? <p className="type-caption">{t("archived")}</p> : null}
       </div>
       {tabbed ? (
@@ -251,6 +244,13 @@ export const RecordView = ({
       )}
     </div>
   );
+  return room ? (
+    <RecordRoom id={room.id} kind={room.kind}>
+      {page}
+    </RecordRoom>
+  ) : (
+    page
+  );
 };
 
 /**
@@ -261,13 +261,11 @@ export const RecordPage = ({
   back,
   backLabel,
   children,
-  lede,
   title,
 }: {
   readonly back: string;
   readonly backLabel: string;
   readonly children: ReactNode;
-  readonly lede?: ReactNode;
   readonly title: string;
 }) => {
   const AppLink = useAppLink();
@@ -278,7 +276,6 @@ export const RecordPage = ({
           {backLabel}
         </AppLink>
       }
-      lede={lede}
       narrow
       title={title}
     >
@@ -583,6 +580,10 @@ const namedReason = (error: unknown, code: string) => {
   // An organization's logo is at least 600 pixels high (decisions.md, Partners).
   if (error.message.includes("logo_too_small")) {
     return "logoTooSmall" as const;
+  }
+  // A photo that carries its location (decisions.md, Media).
+  if (error.message.includes("has_location")) {
+    return "hasLocation" as const;
   }
   return null;
 };

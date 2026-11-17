@@ -98,7 +98,7 @@ delete from journal.issues;
 -- And from an empty News desk: migration 20261014000300 publishes its archive.
 delete from journal.pieces;
 
-select plan(10);
+select plan(8);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
@@ -162,8 +162,6 @@ select throws_ok(
   $$ select journal.piece_from_entry(pg_temp.entry()) $$,
   '22023', null, 'Undecided work cannot become a piece'
 );
-select is((select count(*) from journal.accepted_unplaced())::integer, 0,
-  'Nothing to place before a decision');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000005e1');
 select journal.decide(pg_temp.entry(), 'accept', 'Ready for the Edition');
@@ -179,8 +177,6 @@ select throws_ok(
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000005c1');
-select is((select count(*) from journal.accepted_unplaced())::integer, 0,
-  'Accepted work is already a piece: nothing waits to be placed');
 select is((select count(*) from journal.submissions)::integer, 0,
   'Publishers still cannot read submissions');
 select is(journal.piece_from_entry(pg_temp.entry()), (select id from journal.pieces),

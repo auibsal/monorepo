@@ -90,7 +90,6 @@ export const TourImport = () => {
   return (
     <section className="grid max-w-3xl gap-4">
       <h3 className="type-subheading">{t("title")}</h3>
-      <p className="type-body text-text-secondary">{t("lede")}</p>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-2" htmlFor={pagesId}>
           <span className="type-label">{t("pages")}</span>

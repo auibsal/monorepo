@@ -4,7 +4,7 @@ import { urls } from "../playwright.config";
 import { expectAccessible } from "./helpers";
 
 test.describe("public site", () => {
-  test("the footer's paperless line opens About's sustainability note", async ({
+  test("the footer's paperless line opens the Sustainability page", async ({
     page,
   }) => {
     await page.goto(`${urls.web}/about`);
@@ -14,11 +14,14 @@ test.describe("public site", () => {
         name: "Paperless by default. Printed with purpose.",
       })
       .click();
-    await expect(page).toHaveURL(/\/about#sustainability$/u);
+    await expect(page).toHaveURL(/\/about\/sustainability$/u);
     await expect(
       page.getByRole("heading", { name: "Sustainability" })
     ).toBeVisible();
-    await expect(page.getByText("Documents signed on the site")).toBeVisible();
+    // The counts show once they are more than zero; the practices always.
+    await expect(
+      page.getByRole("heading", { name: "The green-event checklist" })
+    ).toBeVisible();
     await expectAccessible(page);
   });
 

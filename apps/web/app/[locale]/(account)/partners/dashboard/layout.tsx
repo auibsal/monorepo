@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { RequireAuth, RequirePartner } from "@/components/diwan/gates";
+import { PartnerShell } from "@/components/diwan/partner/partner-shell";
 
 /**
  * A partner's dashboard (decisions.md: /partners/dashboard, in the
@@ -11,14 +12,11 @@ const PartnerDashboardLayout = ({
 }: {
   readonly children: ReactNode;
 }) => (
-  <main
-    className="mx-auto w-full max-w-6xl flex-1 px-4 pt-12 pb-20 sm:pt-16 sm:pb-24"
-    id="main"
-  >
+  <PartnerShell>
     <RequireAuth>
       <RequirePartner>{children}</RequirePartner>
     </RequireAuth>
-  </main>
+  </PartnerShell>
 );
 
 export default PartnerDashboardLayout;

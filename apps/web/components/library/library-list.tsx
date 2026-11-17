@@ -25,7 +25,7 @@ interface LibraryListProps {
 
 /**
  * The Library's documents grouped by who they are for (decisions.md),
- * each with its code, keeper, status and a two-line summary, and a find
+ * each with its code, keeper, status and its whole summary, and a find
  * line over titles, codes and summaries. The list is rendered on the
  * server first; finding only hides what doesn't match.
  */
@@ -97,7 +97,7 @@ export const LibraryList = ({
                       .join(" · ")}
                   </p>
                   {doc.summary ? (
-                    <p className="type-body text-text-secondary line-clamp-2">
+                    <p className="type-body text-text-secondary">
                       {doc.summary}
                     </p>
                   ) : null}

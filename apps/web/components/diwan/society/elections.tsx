@@ -300,7 +300,6 @@ export const StandForOffice = ({
   return (
     <DiwanPage
       actions={back}
-      lede={localized(election, "title", locale)}
       narrow
       title={t("standFor", { position: localized(position, "title", locale) })}
     >
@@ -590,7 +589,7 @@ export const Elections = () => {
   }
 
   return (
-    <SocietySection id="elections" lede={t("lede")} title={t("title")}>
+    <SocietySection id="elections" title={t("title")}>
       {elections.data?.elections.map((election) => (
         <ElectionCard
           data={elections.data}

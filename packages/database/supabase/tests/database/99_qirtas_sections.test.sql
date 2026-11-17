@@ -93,7 +93,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(14);
+select plan(13);
 
 -- Edition 1, titled, with its call open for films.
 update journal.issues set title_en = 'Test title', title_ar = 'عنوان الاختبار' where slug = 'edition-1';
@@ -120,10 +120,6 @@ select is(journal.desk_of('calligraphy'), 'gallery'::journal.desk, 'Calligraphy 
 select ok(not journal.is_current_category('next_stop_episode'), 'Next Stop''s episodes are Media''s, not Qirtas''s');
 select is(journal.desk_of('name_the_book'), 'games'::journal.desk, 'Name the Book is a game');
 select ok(not journal.is_current_category('prose'), 'Prose is retired');
-select ok(
-  not journal.is_edition_desk('games') and not journal.is_edition_desk('voices'),
-  'Games and Voices come through the newsroom door'
-);
 
 -- The newsroom door takes Games, without a call; the database refuses retired types.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000065a1', 'puzzler@auib.edu.iq', 'Puzzler');

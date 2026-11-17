@@ -3,6 +3,7 @@
 import { cn } from "@repo/brand/lib/utils";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
+import type { MenuItem } from "@/components/side-menu";
 import { Link, usePathname } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import {
@@ -43,58 +44,33 @@ const useVisibleSections = () => {
 };
 
 /**
- * The Diwan's row (the overhaul, Oct 30, 2026), like the members' own:
- * Desk · Events · Qirtas · The Company · People · Society, only those
- * the officer's roles reach. On phones, one line naming the section opens
- * the list.
+ * The Diwan's side menu (decisions.md, The site: one navigation standard):
+ * the seats the officer's roles reach, the Desk first, each opening on the
+ * first of its views, and the open seat's views under it.
  */
-export const DiwanNav = ({ side = false }: { readonly side?: boolean }) => {
+export const useDiwanMenu = (): MenuItem[] => {
   const t = useTranslations("diwan.admin.sections");
-  const pathname = usePathname();
-  const { sections } = useVisibleSections();
-  if (sections.length === 0) {
-    return null;
-  }
-  const current = sectionOfPath(pathname);
-  const links = sections.map((section) => {
-    const here = section.key === current;
-    return (
-      <li className={side ? undefined : "shrink-0"} key={section.key}>
-        <Link
-          aria-current={here ? "page" : undefined}
-          className={cn(
-            "hover:text-accent block text-sm font-medium whitespace-nowrap",
-            side ? "border-s-[1.5px] py-2 ps-3" : "border-b-[1.5px] py-3",
-            here
-              ? "border-accent text-text"
-              : "text-text-secondary border-transparent"
-          )}
-          href={section.path}
-        >
-          {t(section.key)}
-        </Link>
-      </li>
-    );
+  const tv = useTranslations("diwan.admin.sections.tabs");
+  const { grants, visible } = useVisibleModules();
+  const keys = new Set<string>(visible.map((m) => m.key));
+  return adminSections.flatMap((section) => {
+    const views = allowedViews(section.key, keys, grants.data);
+    const [first] = views;
+    return first
+      ? [
+          {
+            href: first.href,
+            items: views.map((view) => ({
+              href: view.href,
+              key: view.key,
+              label: tv(view.key as never),
+            })),
+            key: section.key,
+            label: t(section.key),
+          },
+        ]
+      : [];
   });
-  // A computer: a side list, the Desk first; a phone: one row across the
-  // top (decisions.md, The site).
-  return side ? (
-    <nav
-      aria-label={t("label")}
-      className="sticky top-6 hidden self-start pt-12 sm:pt-16 lg:block print:hidden"
-    >
-      <ul className="grid gap-1">{links}</ul>
-    </nav>
-  ) : (
-    <nav
-      aria-label={t("label")}
-      className="border-line border-b lg:hidden print:hidden"
-    >
-      <ul className="mx-auto flex w-full max-w-6xl min-w-0 gap-x-6 overflow-x-auto px-4">
-        {links}
-      </ul>
-    </nav>
-  );
 };
 
 export interface SectionTab {
@@ -220,7 +196,7 @@ export const RequireModule = ({
     const elsewhere = here ?? sections[0];
     return (
       <div className="grid gap-6">
-        <AdminHeading title={t("noAccessTitle")}>{t("noAccess")}</AdminHeading>
+        <AdminHeading title={t("noAccessTitle")} />
         {elsewhere ? (
           <p>
             <Link className="link" href={elsewhere.path}>

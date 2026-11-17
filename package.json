@@ -13,6 +13,7 @@
     "boundaries": "turbo boundaries",
     "build": "turbo build",
     "check": "ultracite check",
+    "check:copy": "bun scripts/check-copy.ts",
     "check:credits": "bun scripts/credits.ts --check",
     "check:decisions": "bun scripts/check-decisions.ts",
     "check:forms": "bun scripts/check-forms-register.ts",
