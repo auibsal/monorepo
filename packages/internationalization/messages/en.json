@@ -666,7 +666,7 @@
       "setupTitle": "Set up two-step sign-in",
       "setupBody": "Your role reaches members’ personal data, the Society’s records or votes, so it needs a second step at sign-in: a six-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or similar), or a sign-in with a passkey. It takes a minute and you do it once.",
       "verifyTitle": "Enter your sign-in code",
-      "verifyBody": "Open your authenticator app and enter the six-digit code for SAL. Your administration tools open once it’s accepted.",
+      "verifyBody": "Open your authenticator app and enter the six-digit code for SAL, or use a passkey instead. Your administration tools open once it’s accepted.",
       "start": "Set up my authenticator",
       "qrAlt": "QR code to add SAL to an authenticator app",
       "manual": "Can’t scan it? Enter this key in the app instead:",
@@ -683,10 +683,12 @@
       "settingsOn": "On. You enter a code from your authenticator app after your password.",
       "settingsOnNextTime": "On. You’ll enter a code from your authenticator app where a page needs it.",
       "passkeyFirst": "A passkey on this device",
-      "passkeyBody": "Quickest: add a passkey, then sign out and sign in with it. A passkey counts as two steps on its own.",
+      "passkeyBody": "Quickest: add a passkey, then use it. A passkey counts as two steps on its own.",
+      "passkeyStep": "Use a passkey",
+      "passkeyStepPending": "Waiting for your passkey…",
       "orAuthenticator": "Or an authenticator app",
       "againTitle": "Your second step again",
-      "againPasskey": "The Diwan asks for the second step again 12 hours after you last gave it. You signed in with a passkey: sign in with it again.",
+      "againPasskey": "The Diwan asks for the second step again 12 hours after you last gave it. You signed in with a passkey: use it again.",
       "againSignIn": "Sign in again"
     },
     "journal": {

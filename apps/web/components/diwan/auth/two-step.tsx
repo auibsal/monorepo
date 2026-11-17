@@ -6,12 +6,22 @@ import { Label } from "@repo/brand/components/ui/label";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { type FormEvent, lazy, Suspense, useState } from "react";
+import {
+  type FormEvent,
+  lazy,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { passkeysSupported, signInWithPasskey } from "@/lib/auth/passkeys";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
+import { usePasskeyError } from "@/lib/diwan/auth-messages";
 import { DiwanSection } from "../page";
 import { SectionSpinner } from "../states";
+import { useHumanCheck } from "./human-check";
 
 // Loaded only when the panel offers it: the gates share this module, and
 // the sign-in page must stay light.
@@ -246,6 +256,65 @@ const SetupSteps = ({
 };
 
 /**
+ * The second step with a passkey, in place: signing in with it again gives
+ * a session that counts as two steps (private.session_two_step), so the
+ * Diwan opens without the authenticator's code.
+ */
+const PasskeyStep = () => {
+  const t = useTranslations("diwan.twoStep");
+  const errorText = usePasskeyError();
+  const { supabase } = useAuth();
+  const queryClient = useQueryClient();
+  const human = useHumanCheck("two-step");
+  const [supported, setSupported] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string>();
+  const inFlight = useRef<boolean>(false);
+  // Checked after mount: the server has no browser.
+  useEffect(() => setSupported(passkeysSupported()), []);
+  if (!supported) {
+    return null;
+  }
+  const use = async () => {
+    if (inFlight.current) {
+      return;
+    }
+    inFlight.current = true;
+    setPending(true);
+    setError(undefined);
+    const result = await signInWithPasskey(supabase, human.token);
+    inFlight.current = false;
+    human.reset();
+    setPending(false);
+    if (result.ok) {
+      // The session now counts as two steps: every permission check changes.
+      await queryClient.invalidateQueries();
+    } else {
+      setError(errorText(result.code));
+    }
+  };
+  return (
+    <div className="grid gap-3">
+      {human.element}
+      <Button
+        className="justify-self-start"
+        disabled={pending || !human.ready}
+        onClick={use}
+        type="button"
+        variant="outline"
+      >
+        {human.label(pending, t("passkeyStep"), t("passkeyStepPending"))}
+      </Button>
+      {error ? (
+        <p className="type-body font-medium" role="alert">
+          {error}
+        </p>
+      ) : null}
+    </div>
+  );
+};
+
+/**
  * Stands in the way of a page that needs two steps now: set up the app, or
  * enter its code after signing in, or use a recovery code.
  */
@@ -281,6 +350,7 @@ export const TwoStepPanel = () => {
       <section className="border-line pt-space-4 grid max-w-xl gap-4 border-t">
         <h2 className="type-heading">{t("againTitle")}</h2>
         <p className="type-body">{t("againPasskey")}</p>
+        <PasskeyStep />
         <Link className="link justify-self-start" href="/sign-out">
           {t("againSignIn")}
         </Link>
@@ -311,10 +381,14 @@ export const TwoStepPanel = () => {
           <Suspense fallback={null}>
             <Passkeys />
           </Suspense>
+          <PasskeyStep />
           <h3 className="type-subheading">{t("orAuthenticator")}</h3>
         </>
       )}
       <SetupSteps factorId={factorId} setup={setup} />
+      {/* Or a passkey instead of the code (decisions.md, Members: a
+          passkey sign-in is two factors on its own). */}
+      {factorId && !setup.enrolling ? <PasskeyStep /> : null}
       {factorId && !setup.enrolling ? (
         <RecoveryCodeForm
           failed={recover.isError}
