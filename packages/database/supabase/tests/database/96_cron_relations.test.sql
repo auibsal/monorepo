@@ -97,11 +97,12 @@ select plan(1);
 -- Every scheduled job names only tables, views and functions that exist
 -- (a job that deleted from a dropped table failed each night until it was
 -- fixed). Each schema-qualified name in a job's command must resolve as a
--- relation or a function.
+-- relation or a function; quoted text (a queue's message name) is not a
+-- name.
 select is(
   (select coalesce(array_agg(j.jobname || ': ' || m[1] || '.' || m[2] order by j.jobname), '{}')
    from cron.job j,
-     regexp_matches(j.command, '\m(core|access|membership|events|journal|programs|governance|content|private|api|cron|net|pgmq|vault|auth|storage)\.([a-z_][a-z0-9_]*)\M', 'g') m
+     regexp_matches(regexp_replace(j.command, '''[^'']*''', '', 'g'), '\m(core|access|membership|events|journal|programs|governance|content|private|api|cron|net|pgmq|vault|auth|storage)\.([a-z_][a-z0-9_]*)\M', 'g') m
    where to_regclass(m[1] || '.' || m[2]) is null
      and not exists (
        select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace

@@ -20,6 +20,7 @@ import {
   NewLink,
   RecordList,
 } from "../kit";
+import { RecentlyDeleted } from "../recently-deleted";
 import { adminEventColumns } from "./data";
 
 type Kind = "upcoming" | "past" | "drafts";
@@ -222,6 +223,7 @@ export const EventsList = () => {
           }}
         </RecordList>
       )}
+      <RecentlyDeleted kind="event" />
     </div>
   );
 };

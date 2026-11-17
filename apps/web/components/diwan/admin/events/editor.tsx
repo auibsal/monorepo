@@ -6,12 +6,13 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { useAuth } from "@/lib/auth/provider";
 import { type events, localized, unwrap } from "@/lib/data";
-import { Link } from "@/lib/diwan/navigation";
+import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
 import { RecordView } from "../kit";
 import { NotionManaged } from "../notion-managed";
+import { DeleteRecord } from "../recently-deleted";
 import { RecordHistory } from "../record-history";
 import { AccessForm } from "./access-form";
 import { Attendance } from "./attendance";
@@ -56,6 +57,7 @@ const PublicPage = ({
 export const EventEditor = () => {
   const t = useTranslations("diwan.admin.event");
   const tk = useTranslations("diwan.admin.kit");
+  const router = useRouter();
   const locale = useLocale() as Locale;
   const eventId = useQueryParam("id");
   const { supabase } = useAuth();
@@ -122,6 +124,13 @@ export const EventEditor = () => {
       <EventPartsAdmin event={event} />
       <PromoKit event={event} />
       <Incidents eventId={eventId} />
+      {event.status === "draft" ? (
+        <DeleteRecord
+          id={eventId}
+          kind="event"
+          onDeleted={() => router.push("/events")}
+        />
+      ) : null}
     </RecordView>
   );
 };

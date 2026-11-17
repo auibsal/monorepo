@@ -1846,6 +1846,16 @@ export type Database = {
       };
       post_notice: { Args: { id: string; shown_at: string }; Returns: string };
       prove_merge: { Args: { code: string }; Returns: string };
+      recently_deleted: {
+        Args: { kind: string };
+        Returns: {
+          deleted_at: string;
+          id: string;
+          purges_at: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       record_history: {
         Args: { record_id: string; record_table: string };
         Returns: {
@@ -1855,6 +1865,7 @@ export type Database = {
           operation: string;
         }[];
       };
+      record_uses: { Args: { kind: string; record_id: string }; Returns: Json };
       remove_personal_email: {
         Args: Record<PropertyKey, never>;
         Returns: undefined;
@@ -1864,6 +1875,10 @@ export type Database = {
       request_merge: { Args: { email: string }; Returns: undefined };
       request_personal_email: { Args: { email: string }; Returns: undefined };
       restore_account: { Args: Record<PropertyKey, never>; Returns: boolean };
+      restore_record: {
+        Args: { kind: string; record_id: string };
+        Returns: undefined;
+      };
       retention_due: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -2028,6 +2043,10 @@ export type Database = {
         }[];
       };
       telegram_whoami: { Args: { telegram_id: number }; Returns: Json };
+      trash_record: {
+        Args: { kind: string; record_id: string };
+        Returns: undefined;
+      };
       update_my_profile: { Args: { change: Json }; Returns: undefined };
       withdraw_merge: { Args: Record<PropertyKey, never>; Returns: undefined };
     };
@@ -2188,6 +2207,8 @@ export type Database = {
           content_note_en: string | null;
           created_at: string;
           created_by: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
           ends_at: string | null;
           entry: string;
           format: string | null;
@@ -2238,6 +2259,8 @@ export type Database = {
           content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           ends_at?: string | null;
           entry?: string;
           format?: string | null;
@@ -2287,6 +2310,8 @@ export type Database = {
           content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           ends_at?: string | null;
           entry?: string;
           format?: string | null;
@@ -3879,6 +3904,8 @@ export type Database = {
           contact_name: string | null;
           contact_role: string | null;
           created_at: string;
+          deleted_at: string | null;
+          deleted_by: string | null;
           description_ar: string | null;
           description_en: string | null;
           id: string;
@@ -3910,6 +3937,8 @@ export type Database = {
           contact_name?: string | null;
           contact_role?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           description_ar?: string | null;
           description_en?: string | null;
           id?: string;
@@ -3940,6 +3969,8 @@ export type Database = {
           contact_name?: string | null;
           contact_role?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           description_ar?: string | null;
           description_en?: string | null;
           id?: string;

@@ -47,6 +47,7 @@ import {
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { VerificationQueue } from "../members/verification";
+import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
 import { RecordHistory } from "../record-history";
 import { CouncilVote } from "./council-vote";
 import {
@@ -853,6 +854,7 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
   const t = useTranslations("diwan.admin.partners.register");
   const locale = useLocale() as Locale;
   const register = usePartners();
+  const router = useRouter();
   if (register.isPending) {
     return <SectionSpinner />;
   }
@@ -887,6 +889,11 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
           <Affiliations partnerId={row.id} />
         </DiwanSection>
       ) : null}
+      <DeleteRecord
+        id={row.id}
+        kind="partner"
+        onDeleted={() => router.push("/partnerships")}
+      />
     </RecordView>
   );
 };
@@ -1483,6 +1490,9 @@ export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
         <VerificationQueue />
       ) : null}
       {here === "register" && canManage ? <Register /> : null}
+      {here === "register" && canManage ? (
+        <RecentlyDeleted kind="partner" />
+      ) : null}
       {here === "agreements" ? <Agreements /> : null}
     </div>
   );

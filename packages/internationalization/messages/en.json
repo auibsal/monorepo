@@ -1125,6 +1125,27 @@
           "label": "Web address",
           "made": "Made from the English title; fixed once published, since the address will be shared.",
           "fixed": "Fixed: it’s published, and the address has been shared."
+        },
+        "trash": {
+          "delete": "Delete",
+          "cancel": "Cancel",
+          "confirmYes": "Delete it",
+          "confirm": "Delete “{name}”? It waits 30 days in Recently deleted, where you can restore it.",
+          "blocked": {
+            "unpublish_first": "“{name}” is published. Unpublish it first, then delete it.",
+            "unlist_first": "“{name}” is listed on the site. Unlist it first, then delete it.",
+            "in_use": "“{name}” is still used here. Remove it from these first:"
+          },
+          "uses": {
+            "event": "The event “{title}”",
+            "memorandum": "The memorandum {title}"
+          },
+          "deleted": "Deleted. It waits 30 days in Recently deleted.",
+          "undo": "Undo",
+          "title": "Recently deleted",
+          "lede": "Restore anything deleted in the last 30 days. After that it is removed for good.",
+          "purges": "Removed on {date}",
+          "restore": "Restore"
         }
       },
       "overview": {
