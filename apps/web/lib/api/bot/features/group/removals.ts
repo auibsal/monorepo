@@ -4,6 +4,7 @@ import type { BotContext } from "../../context";
 import { copy } from "../../copy";
 import { db, isStaffAccount, group as loadGroup, whoami } from "../../db";
 import { connectPage } from "../../links";
+import { recordMembership } from "../../membership";
 import { groupLang, isStaff, replyHere } from "./common";
 
 /** A week between the warning and the removal (decisions.md). */
@@ -118,10 +119,14 @@ const removeOne = async (api: Api, chatId: number, telegramId: number) => {
     }
     throw failure;
   }
-  await members()
-    .update({ removed_at: new Date().toISOString() })
-    .eq("chat_id", chatId)
-    .eq("telegram_id", telegramId);
+  await Promise.all([
+    members()
+      .update({ removed_at: new Date().toISOString() })
+      .eq("chat_id", chatId)
+      .eq("telegram_id", telegramId),
+    // Out of the group: the membership record goes with them.
+    recordMembership(chatId, telegramId, null),
+  ]);
   return true;
 };
 

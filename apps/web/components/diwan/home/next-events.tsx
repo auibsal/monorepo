@@ -24,12 +24,11 @@ import { useAuth } from "@/lib/auth/provider";
 import { events, localized, unwrap } from "@/lib/data";
 import { queryKeys, useMyRsvps, useMyWaitlist } from "@/lib/diwan/queries";
 import { RowList } from "../page";
-import { EmptyLine, ErrorState, SectionSpinner } from "../states";
+import { ErrorState, SectionSpinner } from "../states";
 import { Section } from "./section";
 
 export const NextEvents = () => {
   const t = useTranslations("diwan.home.events");
-  const ta = useTranslations("diwan.next");
   const tc = useTranslations("common");
   const locale = useLocale() as "en" | "ar";
   const { supabase, user } = useAuth();
@@ -59,6 +58,14 @@ export const NextEvents = () => {
       (a.event?.starts_at ?? "").localeCompare(b.event?.starts_at ?? "")
     );
 
+  // On Today only when there is something booked (decisions.md, The site).
+  if (
+    rsvps.data &&
+    upcoming.length === 0 &&
+    (waitlist.data ?? []).length === 0
+  ) {
+    return null;
+  }
   return (
     <Section
       action={
@@ -73,15 +80,6 @@ export const NextEvents = () => {
     >
       {rsvps.isPending ? <SectionSpinner /> : null}
       {rsvps.isError ? <ErrorState onRetry={() => rsvps.refetch()} /> : null}
-      {rsvps.data &&
-      upcoming.length === 0 &&
-      (waitlist.data ?? []).length === 0 ? (
-        <EmptyLine
-          action={{ href: "/account/events", label: ta("browseEvents") }}
-        >
-          {t("empty")}
-        </EmptyLine>
-      ) : null}
       <RowList>
         {upcoming.map((rsvp) =>
           rsvp.event ? (

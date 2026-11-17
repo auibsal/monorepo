@@ -41,6 +41,10 @@ export const Motions = () => {
       ),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEY }),
   });
+  // On Today only while there is one to support (decisions.md, The site).
+  if (!motions.data?.length) {
+    return null;
+  }
   return (
     <Section
       action={

@@ -500,9 +500,6 @@ export const AdminOverview = () => {
         <AdminHeading actions={<QuickActions />} title={t("title")} />
         <PaperLinks />
       </div>
-      {figures.length === 0 ? (
-        <p className="type-body text-text-secondary">{t("nothing")}</p>
-      ) : null}
       {figures.length > 0 ? (
         <div className="gap-space-3 sm:gap-space-4 grid grid-cols-2 xl:grid-cols-3">
           {figures.map((figure) => (
@@ -512,10 +509,8 @@ export const AdminOverview = () => {
       ) : null}
       <Handover />
       <SecondOfficer />
-      <DiwanSection id="alerts" title={t("alerts.title")}>
-        <StaffAlerts />
-        <ScanFindings />
-      </DiwanSection>
+      <StaffAlerts />
+      <ScanFindings />
       {can("events.manage") || can("governance.manage") ? (
         <DiwanSection id="student-life" title={t("studentLife.title")}>
           <StudentLifeWeekPanel />

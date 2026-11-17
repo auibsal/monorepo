@@ -358,7 +358,6 @@
       },
       "events": {
         "title": "My next events",
-        "empty": "You haven’t booked anything yet.",
         "browse": "Browse events",
         "ticket": "Ticket",
         "waitlist": "Waitlist place {position}",
@@ -374,17 +373,8 @@
         "history": "Activity history",
         "noHistory": "No activities recorded yet. Checking in at an event counts."
       },
-      "journal": {
-        "title": "Qirtas",
-        "openCall": "{call} closes {date}",
-        "openCallNoDate": "{call} is open; its closing date is still to be set",
-        "daysLeft": "{days, plural, one {{daysText} day left} other {{daysText} days left}}",
-        "submit": "Send your work",
-        "none": "No Edition’s call is open. Qirtas takes work all year."
-      },
       "programs": {
         "title": "My events",
-        "empty": "You haven’t signed up for a shift yet.",
         "confirm": "Confirm",
         "swap": "Ask to swap"
       },
@@ -432,11 +422,17 @@
           "pledge": "Sign the role agreement",
           "declaration": "Make your conflict-of-interest declaration",
           "two_step": "Set up two-step sign-in or a passkey",
-          "diwan_group": "Join the Diwan group through Hudhud",
-          "pages": "Open your role’s manual and Brand essentials",
+          "diwan_group": "Join the Diwan group",
           "handover": "Read and countersign the handover",
           "mailbox": "Open the seat’s mailbox",
-          "notion": "Open Notion"
+          "notion": "Open Notion",
+          "confidentiality": "Sign the confidentiality agreement",
+          "manual": "Open your role’s manual",
+          "brand": "Open Brand essentials"
+        },
+        "diwanGroup": {
+          "link": "Link Telegram",
+          "join": "Join the Diwan group"
         }
       },
       "renewal": {
@@ -499,7 +495,6 @@
           "decline": "Decline"
         }
       },
-      "toDoNone": "Nothing to do. You’re all set.",
       "toDoCount": "{count, plural, one {{countText} thing to do} other {{countText} things to do}}"
     },
     "events": {
@@ -1209,7 +1204,6 @@
         "verificationPending": "Waiting for verification",
         "upcomingRsvps": "Bookings for upcoming events",
         "openSubmissions": "Open Qirtas submissions",
-        "nothing": "Your roles don’t include any of the overview figures.",
         "membersDetail": "{count, plural, =0 {None are Voting Members yet (two events or general meetings in the last 12 months).} one {{n} is a Voting Member (two events or general meetings in the last 12 months).} other {{n} are Voting Members (two events or general meetings in the last 12 months).}}",
         "verificationDetail": "The oldest has waited since {date}.",
         "verificationNone": "No one is waiting.",
@@ -1269,7 +1263,6 @@
         "hudhudOpen": "Open Channels",
         "alerts": {
           "title": "Alerts",
-          "none": "Nothing in the last two weeks.",
           "urgent": "Urgent",
           "open": "Open",
           "teams": {
@@ -1300,12 +1293,12 @@
           "waiting": "Not marked yet"
         },
         "scan": {
-          "lede": "The weekly scan of Notion’s documents found these. Fix each in Notion; it goes at the next scan.",
           "kinds": {
             "retired_name": "A retired name",
             "term": "A term to check",
             "personal_data": "Personal data"
-          }
+          },
+          "title": "Found in Notion"
         }
       },
       "members": {
@@ -4294,6 +4287,10 @@
           "ready": "Ready",
           "published": "Published"
         }
+      },
+      "manual": {
+        "title": "Your manual",
+        "notYet": "Your seat’s manual isn’t on the site yet."
       }
     },
     "editor": {

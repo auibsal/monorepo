@@ -1,29 +1,19 @@
 "use client";
 
-import { Button } from "@repo/brand/components/ui/button";
-import { Checkbox } from "@repo/brand/components/ui/checkbox";
-import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
 import { dirOf } from "@repo/internationalization/config";
 import { formatLongDate } from "@repo/internationalization/format";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type ReactNode, useEffect, useRef, useState } from "react";
-import { MySignature } from "@/components/signature";
+import { type ReactNode, useEffect, useRef } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
+import { ConfidentialityAgreement } from "../../agreements/confidentiality";
 import { SectionSpinner } from "../../states";
 import { ErrorLine } from "../kit";
 import { pipelineKey } from "./data";
 import { TextView } from "./text-view";
-
-const PLEDGE_POINTS = [
-  "confidential",
-  "noCopies",
-  "noSharing",
-  "stepAside",
-] as const;
 
 const usePledge = () => {
   const { supabase } = useAuth();
@@ -33,57 +23,6 @@ const usePledge = () => {
       null,
     queryKey: [...pipelineKey, "pledge"],
   });
-};
-
-/**
- * The readers' pledge is confidentiality-agreement, the Confidentiality pledge, signed here in
- * the reader's name on the platform (once, and again for a new version).
- */
-const Pledge = () => {
-  const t = useTranslations("diwan.admin.pipeline.pledge");
-  const tf = useTranslations("diwan.forms");
-  const { supabase } = useAuth();
-  const queryClient = useQueryClient();
-  const [agreed, setAgreed] = useState(false);
-  const sign = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("api")
-          .rpc("sign_reader_pledge", { esign_agreed: agreed })
-      ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: pipelineKey }),
-  });
-  return (
-    <section className="border-line grid max-w-2xl gap-3 border-t pt-4">
-      <h2 className="type-subheading">{t("title")}</h2>
-      <p>{t("intro")}</p>
-      <ul className="grid list-disc gap-1 ps-5">
-        {PLEDGE_POINTS.map((point) => (
-          <li key={point}>{t(`points.${point}`)}</li>
-        ))}
-      </ul>
-      <MySignature />
-      <div className="flex items-start gap-2">
-        <Checkbox
-          checked={agreed}
-          id="pledge-esign"
-          onCheckedChange={(checked) => setAgreed(checked === true)}
-        />
-        <Label className="font-normal" htmlFor="pledge-esign">
-          {tf("esignAgree")}
-        </Label>
-      </div>
-      <Button
-        className="justify-self-start"
-        disabled={!agreed || sign.isPending}
-        onClick={() => sign.mutate()}
-      >
-        {t("agree")}
-      </Button>
-      <ErrorLine error={sign.error} />
-    </section>
-  );
 };
 
 const STOPPED = ["contextmenu", "copy", "cut", "dragstart"] as const;
@@ -172,6 +111,7 @@ export const ReadingRoom = ({
   const t = useTranslations("diwan.admin.pipeline");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
+  const queryClient = useQueryClient();
   const pledge = usePledge();
   const pledged = Boolean(pledge.data?.current);
   const text = useQuery({
@@ -195,7 +135,13 @@ export const ReadingRoom = ({
     return <SectionSpinner />;
   }
   if (!pledged) {
-    return <Pledge />;
+    return (
+      <ConfidentialityAgreement
+        onSigned={() =>
+          queryClient.invalidateQueries({ queryKey: pipelineKey })
+        }
+      />
+    );
   }
   if (text.isPending) {
     return <SectionSpinner />;

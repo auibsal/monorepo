@@ -1855,6 +1855,36 @@ export type Database = {
           },
         ];
       };
+      telegram_memberships: {
+        Row: {
+          chat_id: number;
+          checked_at: string;
+          status: string;
+          telegram_id: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          chat_id: number;
+          checked_at?: string;
+          status: string;
+          telegram_id: number;
+        };
+        Update: {
+          chat_id?: number;
+          checked_at?: string;
+          status?: string;
+          telegram_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "telegram_memberships_chat_id_fkey";
+            columns: ["chat_id"];
+            isOneToOne: false;
+            referencedRelation: "telegram_groups";
+            referencedColumns: ["chat_id"];
+          },
+        ];
+      };
       telegram_nudges: {
         Row: {
           kind: string;
@@ -2146,6 +2176,17 @@ export type Database = {
           user_id: string;
         }[];
       };
+      open_role_manual: {
+        Args: { assignment_id: string };
+        Returns: {
+          body_ar: string;
+          body_en: string;
+          code: string;
+          slug: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       outbox_health: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -2176,6 +2217,10 @@ export type Database = {
           title_ar: string;
           title_en: string;
         }[];
+      };
+      record_brand_opened: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
       };
       record_history: {
         Args: { record_id: string; record_table: string };

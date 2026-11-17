@@ -8,40 +8,48 @@ import { useLocale, useTranslations } from "next-intl";
 import { MySignature } from "@/components/signature";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
+import { callApi } from "@/lib/diwan/api";
+import { TELEGRAM_LINK_PAGE } from "@/lib/telegram";
+import { ConfidentialityAgreement } from "../agreements/confidentiality";
 import { RowList } from "../page";
 import { Section } from "./section";
 
 type StepKey =
+  | "brand"
+  | "confidentiality"
   | "declaration"
   | "diwan_group"
   | "email"
   | "handover"
   | "mailbox"
+  | "manual"
   | "notion"
-  | "pages"
   | "pledge"
   | "two_step";
 
-/** Where each step is done, when it is done on the site. */
-const WHERE: Partial<Record<StepKey, string>> = {
-  declaration: "/account/settings/disclosures/declare",
-  diwan_group: "/account/settings",
-  handover: "/account/roles",
-  pages: "/library",
-  two_step: "/account/settings",
+/**
+ * Where each step is done, when it is done on the site. The manual and
+ * Brand essentials are recorded by their own pages as they load
+ * (core.open_role_manual, core.record_brand_opened), never by a click.
+ */
+export const STEP_PAGES: Partial<
+  Record<StepKey, (assignmentId: string) => string>
+> = {
+  brand: () => "/diwan/media/design",
+  declaration: () => "/account/settings/disclosures/declare",
+  manual: (assignmentId) => `/diwan/manual/${assignmentId}`,
+  two_step: () => "/account/settings",
 };
 
 /**
  * Steps the site can't see done (decisions.md, Where things live: To-dos):
  * each is a link that counts as done once opened, never "Mark as done".
- * Opening the library, the handover, the seat's mailbox or Notion is the
- * step.
+ * Opening the handover, the seat's mailbox or Notion is the step.
  */
 const DONE_ON_OPEN: Partial<Record<StepKey, string>> = {
   handover: "/account/roles",
   mailbox: "https://mail.zoho.com",
   notion: "https://www.notion.so",
-  pages: "/library",
 };
 
 interface Step {
@@ -226,6 +234,17 @@ const StepAction = ({
     onSuccess: onDone,
   });
   const label = t(`actions.${step}`);
+  if (step === "diwan_group") {
+    return <DiwanGroupStep onDone={onDone} />;
+  }
+  if (step === "confidentiality") {
+    return (
+      <div className="grid basis-full gap-2">
+        <span>{label}</span>
+        <ConfidentialityAgreement onSigned={onDone} />
+      </div>
+    );
+  }
   if (step === "pledge") {
     return (
       <div className="grid basis-full gap-2">
@@ -253,13 +272,68 @@ const StepAction = ({
       </Link>
     );
   }
-  const where = WHERE[step];
+  const where = STEP_PAGES[step]?.(assignmentId);
   return where ? (
     <Link className="link" href={where}>
       {label}
     </Link>
   ) : (
     <span>{label}</span>
+  );
+};
+
+interface JoinLink {
+  audience: string;
+  invite_link: string | null;
+}
+
+/**
+ * "Join the Diwan group", asked of Telegram itself (decisions.md, Where
+ * things live: "checked against the thing itself"): Today asks once, with
+ * a short timeout, and the step clears for someone already in the group.
+ * Its one button: Link Telegram, then the join-request link Hudhud
+ * approves for role holders.
+ */
+const DiwanGroupStep = ({ onDone }: { readonly onDone: () => void }) => {
+  const t = useTranslations("diwan.home.roleChecklist.diwanGroup");
+  const { supabase, user } = useAuth();
+  const asked = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () => {
+      const answer = await callApi<{
+        groups: { audience: string; in: boolean | null }[];
+        linked: boolean;
+      }>(supabase, "/telegram/membership", {});
+      if (answer.groups.some((g) => g.audience === "staff" && g.in)) {
+        onDone();
+      }
+      return answer;
+    },
+    queryKey: ["home", "telegram-membership", user?.id],
+    retry: false,
+    staleTime: 60_000,
+  });
+  const links = useQuery({
+    enabled: Boolean(asked.data?.linked),
+    queryFn: async () =>
+      (unwrap(await supabase.schema("api").rpc("telegram_join_links")) ??
+        []) as JoinLink[],
+    queryKey: ["telegram", "join-links", user?.id],
+  });
+  if (asked.data && !asked.data.linked) {
+    return (
+      <Link className="link" href={TELEGRAM_LINK_PAGE}>
+        {t("link")}
+      </Link>
+    );
+  }
+  const staff = links.data?.find((l) => l.audience === "staff")?.invite_link;
+  return staff ? (
+    <a className="link" href={staff} rel="noopener" target="_blank">
+      {t("join")}
+    </a>
+  ) : (
+    <span>{t("join")}</span>
   );
 };
 

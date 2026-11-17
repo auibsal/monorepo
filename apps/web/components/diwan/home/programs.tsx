@@ -8,12 +8,10 @@ import { useAuth } from "@/lib/auth/provider";
 import { localized } from "@/lib/data";
 import { queryKeys, useMyShifts } from "@/lib/diwan/queries";
 import { RowList } from "../page";
-import { EmptyLine } from "../states";
 import { Section } from "./section";
 
 export const MyPrograms = () => {
   const t = useTranslations("diwan.home.programs");
-  const ta = useTranslations("diwan.next");
   const locale = useLocale() as "en" | "ar";
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
@@ -43,13 +41,12 @@ export const MyPrograms = () => {
       }),
   });
 
+  // On Today only when there is a shift (decisions.md, The site).
+  if (!shifts.data?.length) {
+    return null;
+  }
   return (
     <Section id="programs" title={t("title")}>
-      {shifts.data?.length === 0 ? (
-        <EmptyLine action={{ href: "/get-involved", label: ta("openShifts") }}>
-          {t("empty")}
-        </EmptyLine>
-      ) : null}
       <RowList>
         {shifts.data?.map((signup) =>
           signup.shift ? (

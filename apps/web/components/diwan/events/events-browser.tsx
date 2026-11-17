@@ -32,6 +32,7 @@ import {
 } from "@/lib/diwan/queries";
 import { CalendarFeed } from "../home/calendar-feed";
 import { SixWords } from "../home/six-words";
+import { VotingEligibility } from "../home/voting";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
 
@@ -404,6 +405,8 @@ export const EventsBrowser = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Two events make a voting member: the count lives with the events. */}
+      <VotingEligibility />
       <SixWords />
       <CalendarFeed />
     </DiwanPage>
