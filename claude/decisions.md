@@ -1,4 +1,4 @@
-# SAL: current decisions (source of truth, Tuesday, November 17, 2026, night)
+# SAL: current decisions (source of truth, Tuesday, November 17, 2026)
 
 Every chat in this project follows this file. Where an older document, project doc or chat disagrees, this file wins. Every Society document is **Version 1**: there are no earlier versions, no change histories and no old names.
 
