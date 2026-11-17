@@ -100,6 +100,7 @@ rows in `core.outbox`, written in the same transaction and handed to the API).
 | sal-applications | 4:45 | Declines offers for openings that were not answered in time |
 | sal-cron-health | 5:35 | Emails the administrators the jobs that failed in the last day |
 | sal-thanks-for-coming | 6:00 (9:00 a.m. Baghdad) | "Thanks for coming" to everyone who checked in yesterday, with "How was it?" |
+| sal-cron-history | 12:00 | Deletes the scheduled jobs' run history older than 7 days |
 | sal-student-life-week | Wednesdays, 6:00 | Student Life's week of events |
 | sal-daily-updates | 17:00 (8:00 p.m. Baghdad) | Each person's one daily update email |
 | Nightly backup (GitHub Actions) | 23:20 | Encrypted dump of the production database (and Storage on the 1st), kept 30 days, emailed on failure (`backups.md`) |

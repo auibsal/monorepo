@@ -18,3 +18,12 @@ than the newest on `main`, so pushes need no `--include-all`.
 
 Production's schema always matches the repository. A red `main` holds the
 migrations back, so `main` must stay green.
+
+## Amendment (November 17, 2026)
+
+The owner turned on Supabase's GitHub integration (Deploy to production,
+`main`, working directory `packages/database`). It applies a merged pull
+request's migrations itself; `migrate.yml` now waits for production to
+have them all, applies any left, and only then deploys the site. Pull
+requests still merge only with CI green, so a migration reaches
+production only once tested.

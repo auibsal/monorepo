@@ -103,8 +103,8 @@ select lives_ok(
   'Queuing still works when dispatch is not configured'
 );
 
-select is((select count(*)::integer from cron.job where jobname like 'sal-%'), 19,
-  'The nineteen scheduled jobs exist (platform health hourly; "Thanks for coming" each morning; Student Life''s week on Wednesdays; the Sunday Paper is sent by hand; retention is one job; unclaimed places are released every five minutes; updates go in one daily email)');
+select is((select count(*)::integer from cron.job where jobname like 'sal-%'), 20,
+  'The twenty scheduled jobs exist (platform health hourly; run history kept 7 days; "Thanks for coming" each morning; Student Life''s week on Wednesdays; the Sunday Paper is sent by hand; retention is one job; unclaimed places are released every five minutes; updates go in one daily email)');
 
 -- Scheduled publishing.
 insert into journal.issues (volume, number, slug, title_en, title_ar, status, publish_at) values

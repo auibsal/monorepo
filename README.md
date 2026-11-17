@@ -71,9 +71,10 @@ tests run with `SUPABASE_INTEGRATION=1`, as in `.github/workflows/ci.yml`.
 
 ## Deploy
 
-A pull request runs CI. When it merges to `main`, CI runs again, then
-`migrate.yml` applies the new migrations to production (`supabase db
-push`), and Vercel deploys `main`. Nothing is applied to production by
+A pull request runs CI. When it merges to `main`, Supabase's GitHub
+integration applies the new migrations to production; CI runs again,
+`migrate.yml` waits until production has them all, and Vercel deploys
+`main`. Nothing is applied to production by
 hand. The nightly backup and how to restore it: `docs/platform/backups.md`.
 
 ## Docs

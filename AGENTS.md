@@ -163,6 +163,24 @@ Run `check`, `typecheck` and `test` before every commit, and `db:test` for
 any schema change. Integration tests run against a local stack with
 `SUPABASE_INTEGRATION=1` (see `.github/workflows/ci.yml`).
 
+## Supabase's MCP server and skills
+
+`.mcp.json` connects Claude Code to the production project through
+Supabase's MCP server, read-only (`read_only=true`; each person signs in
+once with `/mcp`). The agent
+skills under `.agents/skills` (`supabase`, `supabase-postgres-best-practices`,
+pinned in `skills-lock.json`, updated with `npx skills update`) are
+Supabase's general advice; where they differ, this file wins:
+
+- The MCP server reaches production: read with it (SELECTs, logs,
+  advisors, docs), never change anything with it. No `execute_sql` that
+  writes, no `apply_migration`, no edge function or branch from it.
+  Schema changes are migrations written by hand, tested locally
+  (`db:reset`, `db:test`) and shipped through CI.
+- Roles live in `access.role_assignments`, never in `app_metadata`.
+- The private SECURITY DEFINER body with a SECURITY INVOKER wrapper in
+  `api` is the house pattern (Security and data), not a mistake to undo.
+
 ## Security and data
 
 - **RLS first.** Postgres Row Level Security is the security boundary for
@@ -199,10 +217,12 @@ any schema change. Integration tests run against a local stack with
   `.schema("api")`; a name in two schemas takes its schema as a prefix
   (`events_invitations`, `apiName` in `@repo/database`). Nothing goes in
   `public`.
-- **Migrations ship through CI.** Add a file to `supabase/migrations`;
-  after merge, `.github/workflows/migrate.yml` runs `supabase db push`
-  against production once CI passes, then calls Vercel's deploy hook (Git
-  auto-deploy of `main` is off, so the site never runs ahead of its schema).
+- **Migrations ship on merge.** Add a file to `supabase/migrations`; a
+  pull request merges only with CI green, then Supabase's GitHub
+  integration applies it to production. `.github/workflows/migrate.yml`
+  waits until production has every migration (applying any left), then
+  calls Vercel's deploy hook (Git auto-deploy of `main` is off, so the
+  site never runs ahead of its schema).
   Never paste SQL into the production database.
 - **Accounts (decisions.md, Members; NIST SP 800-63B).** Passwords are 12
   characters or more with no composition rules, checked against known
