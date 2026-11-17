@@ -54,6 +54,7 @@ import {
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { ProblemReports } from "../problem-reports";
+import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
 import { RecordHistory } from "../record-history";
 
 const invalidateKey = ["admin", "programs-module"];
@@ -258,7 +259,14 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
           {t("back")}
         </Link>
       }
-      history={<RecordHistory id={e.id} table="programs.episodes" />}
+      history={
+        <RecordHistory
+          id={e.id}
+          table="programs.episodes"
+          versions="programs.episodes"
+        />
+      }
+      menu={<DeleteRecord id={e.id} kind="episode" then="/media" />}
       narrow
       tabs={[
         {
@@ -1895,6 +1903,7 @@ export const MediaAdmin = () => {
         </>
       ) : null}
       <CreditedNames />
+      <RecentlyDeleted kind="episode" />
       <DiwanSection id="removals" title={t("removalsTitle")}>
         <Removals />
       </DiwanSection>

@@ -25,8 +25,10 @@ import {
   SaveButton,
 } from "../kit";
 import { MemberPicker, type Person, useMemberNames } from "../member-picker";
+import { DeleteRecord } from "../recently-deleted";
 import { EditableSection, Fact, Facts } from "../record";
-import type { openingKinds } from "./openings";
+import { RecordHistory } from "../record-history";
+import { openingArchived, type openingKinds } from "./openings";
 
 /** The appointed director seats: they open after the Executive Board's approval. */
 const DIRECTOR_ROLES = new Set([
@@ -370,13 +372,30 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
   return (
     <RecordView
       actions={openToggle}
+      archived={opening.data ? openingArchived(opening.data) : false}
       back={
         <Link className="link" href={back}>
           {t("back")}
         </Link>
       }
+      history={
+        row?.id ? (
+          <RecordHistory
+            id={row.id}
+            table="programs.openings"
+            versions="programs.openings"
+          />
+        ) : undefined
+      }
       // Where everyone reads it: Get involved.
-      menu={<OnTheSite href="/get-involved" />}
+      menu={
+        <>
+          <OnTheSite href="/get-involved" />
+          {row.id ? (
+            <DeleteRecord id={row.id} kind="opening" then={back} />
+          ) : null}
+        </>
+      }
       narrow
       status={[t(`kinds.${kind}`), row.is_open ? t("open") : t("closed")].join(
         " · "

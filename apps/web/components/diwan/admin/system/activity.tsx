@@ -26,6 +26,7 @@ type Operation = "INSERT" | "UPDATE" | "DELETE";
 const THINGS = {
   "access.role_assignments": "membership",
   "access.two_step_resets": "membership",
+  "core.announcements": "council",
   "core.profiles": "membership",
   "events.check_ins": "events",
   "events.event_organizations": "events",
@@ -60,6 +61,7 @@ const THINGS = {
   "programs.episodes": "qirtas",
   "programs.needs": "events",
   "programs.opening_replies": "membership",
+  "programs.openings": "membership",
   "programs.production_credits": "company",
   "programs.production_events": "company",
   "programs.productions": "company",

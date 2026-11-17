@@ -61,6 +61,16 @@ test("a section's board takes a pitch into Pitched", async ({ page }) => {
   await expectAccessible(page);
 });
 
+test("finished records wait in the Archive, found and read-only", async ({
+  page,
+}) => {
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/events`);
+  await page.getByRole("button", { name: "Archive" }).click();
+  await expect(page).toHaveURL(/[?&]view=archive/u);
+  await expectAccessible(page);
+});
+
 test("each event has its own check-in, and the Desk opens the next one", async ({
   page,
 }) => {

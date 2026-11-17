@@ -35,6 +35,7 @@ import {
 } from "../kit";
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
+import { DeleteRecord } from "../recently-deleted";
 import { EditableSection } from "../record";
 import { RecordHistory } from "../record-history";
 import { useIssues } from "./admin";
@@ -790,8 +791,19 @@ export const QirtasPieceEditor = () => {
         ) : undefined
       }
       back={back(tk("back"))}
-      history={<RecordHistory id={piece.id} table="journal.pieces" />}
+      history={
+        <RecordHistory
+          id={piece.id}
+          table="journal.pieces"
+          versions="journal.piece_bodies"
+        />
+      }
       lede={`${tj(`desks.${piece.desk as journal.Desk}`)} · ${tj(`categories.${category}`)}`}
+      menu={
+        piece.status === "published" ? undefined : (
+          <DeleteRecord id={piece.id} kind="piece" then="/qirtas" />
+        )
+      }
       tabs={[
         {
           content: (

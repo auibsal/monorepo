@@ -25,6 +25,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
 import { RecordHistory } from "../record-history";
 import { type ProductionTab, productionTabs } from "../tabs";
 import { AuditionsTab, CreditsTab, RehearsalsTab } from "./company";
@@ -35,6 +36,17 @@ import { type ProductionRow, productionsKey } from "./shared";
 type Stage = productions.ProductionStage;
 type Kind = productions.ProductionKind;
 type Origin = productions.ScriptOrigin;
+
+/**
+ * A production is in the Archive once canceled, or closed with its report
+ * signed (decisions.md, The site: "Archive").
+ */
+const productionArchived = (p: {
+  readonly report_signed_at: string | null;
+  readonly stage: string;
+}) =>
+  p.stage === "canceled" ||
+  (p.stage === "closed" && Boolean(p.report_signed_at));
 
 const useProductionList = () => {
   const { supabase } = useAuth();
@@ -238,6 +250,7 @@ export const ProductionsAdmin = () => {
       {list.isPending ? <SectionSpinner /> : null}
       {list.data ? (
         <RecordList
+          archived={productionArchived}
           empty={
             <EmptyLine
               action={
@@ -269,6 +282,7 @@ export const ProductionsAdmin = () => {
         </RecordList>
       ) : null}
       {canPropose ? <CreditedNames /> : null}
+      <RecentlyDeleted kind="production" />
     </div>
   );
 };
@@ -321,10 +335,14 @@ export const ProductionPage = ({
   return (
     <RecordView
       actions={production.is_public ? <OnTheSite href={base} /> : undefined}
+      archived={productionArchived(production)}
       back={
         <Link className="link" href="/company">
           {t("back")}
         </Link>
+      }
+      menu={
+        <DeleteRecord id={production.id} kind="production" then="/company" />
       }
       title={localized(production, "title", locale)}
     >
@@ -345,7 +363,11 @@ export const ProductionPage = ({
       ) : null}
       {tab === "report" ? <ReportTab production={production} /> : null}
       {tab === "history" ? (
-        <RecordHistory id={production.id} table="programs.productions" />
+        <RecordHistory
+          id={production.id}
+          table="programs.productions"
+          versions="programs.productions"
+        />
       ) : null}
     </RecordView>
   );

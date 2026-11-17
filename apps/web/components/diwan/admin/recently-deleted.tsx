@@ -8,11 +8,21 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
+import { useRouter } from "@/lib/diwan/navigation";
 import { DiwanSection, RowList } from "../page";
 import { ErrorLine } from "./kit";
 
 /** The records with a Recently deleted (decisions.md, The site). */
-export type TrashKind = "event" | "media" | "partner";
+export type TrashKind =
+  | "announcement"
+  | "edition"
+  | "episode"
+  | "event"
+  | "media"
+  | "opening"
+  | "partner"
+  | "piece"
+  | "production";
 
 /** How long Undo stays on the page after a delete. */
 const UNDO_SECONDS = 10;
@@ -31,7 +41,14 @@ interface Use {
 }
 
 interface Uses {
-  readonly blocked: "in_use" | "unlist_first" | "unpublish_first" | null;
+  readonly blocked:
+    | "cancel_first"
+    | "close_first"
+    | "in_use"
+    | "sent"
+    | "unlist_first"
+    | "unpublish_first"
+    | null;
   readonly title_ar: string | null;
   readonly title_en: string | null;
   readonly uses: readonly Use[];
@@ -48,11 +65,14 @@ export const DeleteRecord = ({
   id,
   kind,
   onDeleted,
+  then,
 }: {
   readonly id: string;
   readonly kind: TrashKind;
   /** Called once Undo has gone: back to the list. */
-  readonly onDeleted: () => void;
+  readonly onDeleted?: () => void;
+  /** Or the list to go back to, a Diwan path. */
+  readonly then?: string;
 }) => {
   const t = useTranslations("diwan.admin.kit.trash");
   const locale = useLocale() as Locale;
@@ -60,8 +80,15 @@ export const DeleteRecord = ({
   const queryClient = useQueryClient();
   const [stage, setStage] = useState<"idle" | "asking" | "deleted">("idle");
   const [left, setLeft] = useState(UNDO_SECONDS);
-  const done = useRef(onDeleted);
-  done.current = onDeleted;
+  const router = useRouter();
+  const done = useRef<() => void>(() => undefined);
+  done.current = () => {
+    if (onDeleted) {
+      onDeleted();
+    } else if (then) {
+      router.push(then);
+    }
+  };
 
   const uses = useQuery({
     enabled: stage === "asking",

@@ -168,6 +168,7 @@ export const AddInPlace = ({
  */
 export const RecordView = ({
   actions,
+  archived = false,
   back,
   children,
   history,
@@ -180,6 +181,8 @@ export const RecordView = ({
 }: {
   /** The one main action, then any link out ("On the site"). */
   readonly actions?: ReactNode;
+  /** A finished record, in the Archive: shown read-only. */
+  readonly archived?: boolean;
   /** The way back to its list, a link. */
   readonly back?: ReactNode;
   /** The record's Overview. */
@@ -197,6 +200,14 @@ export const RecordView = ({
 }) => {
   const t = useTranslations("diwan.admin.kit.record");
   const tabbed = Boolean(history || tabs?.length);
+  const readOnly = (content: ReactNode) =>
+    archived ? (
+      <fieldset className="contents" disabled>
+        {content}
+      </fieldset>
+    ) : (
+      content
+    );
   return (
     <div className={cn("grid gap-10", narrow && "max-w-3xl")}>
       <div className="grid gap-3">
@@ -215,20 +226,28 @@ export const RecordView = ({
         >
           {lede}
         </AdminHeading>
+        {archived ? <p className="type-caption">{t("archived")}</p> : null}
       </div>
       {tabbed ? (
         <RecordTabs
           label={t("tabsLabel")}
           tabs={[
-            { content: children, id: "overview", label: t("overview") },
-            ...(tabs ?? []),
+            {
+              content: readOnly(children),
+              id: "overview",
+              label: t("overview"),
+            },
+            ...(tabs ?? []).map((tab) => ({
+              ...tab,
+              content: readOnly(tab.content),
+            })),
             ...(history
               ? [{ content: history, id: "history", label: t("history") }]
               : []),
           ]}
         />
       ) : (
-        children
+        readOnly(children)
       )}
     </div>
   );
@@ -268,6 +287,43 @@ export const RecordPage = ({
   );
 };
 
+type ListView = "all" | "archive" | "needs";
+
+const VIEW_LABELS = {
+  all: "all",
+  archive: "archive",
+  needs: "needsYou",
+} as const;
+
+/** The rows a list's view shows, in its order. */
+const listFor = <T,>(
+  view: ListView,
+  items: readonly T[],
+  needsYou:
+    | {
+        readonly date: (item: T) => string | null | undefined;
+        readonly test: (item: T) => boolean;
+      }
+    | undefined,
+  archived: ((item: T) => boolean) | undefined
+): readonly T[] => {
+  const byDate = (direction: 1 | -1) => (x: T, y: T) =>
+    direction *
+    String(needsYou?.date(x) ?? "").localeCompare(
+      String(needsYou?.date(y) ?? "")
+    );
+  if (view === "archive") {
+    return items.filter((item) => archived?.(item));
+  }
+  const current = archived ? items.filter((item) => !archived(item)) : items;
+  if (!needsYou) {
+    return current;
+  }
+  return view === "needs"
+    ? current.filter(needsYou.test).sort(byDate(1))
+    : [...current].sort(byDate(-1));
+};
+
 /**
  * One list (decisions.md, The site: "One list") for every list of records
  * in Your account and the Diwan: a find line kept in the query string
@@ -275,6 +331,7 @@ export const RecordPage = ({
  * empty state with one next action.
  */
 export const RecordList = <T,>({
+  archived,
   children,
   empty,
   filters,
@@ -282,6 +339,12 @@ export const RecordList = <T,>({
   matches,
   needsYou,
 }: {
+  /**
+   * A finished record (a past event, a closed opening, an ended partner)
+   * leaves the active lists for the Archive: still found, opened read-only
+   * (decisions.md, The site: "Archive").
+   */
+  readonly archived?: (item: T) => boolean;
   /** The rows found, drawn by the page (a RowList or a DataTable). */
   readonly children: (found: readonly T[]) => ReactNode;
   /** What shows when nothing is there or nothing is found. */
@@ -304,34 +367,30 @@ export const RecordList = <T,>({
   const id = useId();
   const [query, setQuery] = useQueryState("q");
   const [kept, keep] = useQueryState("view");
-  const [view, setView] = useState(kept === "all" ? "all" : "needs");
+  const views: ListView[] = [
+    ...(needsYou ? (["needs"] as const) : []),
+    "all",
+    ...(archived ? (["archive"] as const) : []),
+  ];
+  const [view, setView] = useState<ListView>(
+    views.find((v) => v === kept) ?? views[0] ?? "all"
+  );
   const [typed, setTyped] = useState(query);
   const needle = typed.trim().toLowerCase();
-  const byDate = (direction: 1 | -1) => (x: T, y: T) =>
-    direction *
-    String(needsYou?.date(x) ?? "").localeCompare(
-      String(needsYou?.date(y) ?? "")
-    );
+  const listed = listFor(view, items, needsYou, archived);
   const waiting = needsYou ? items.filter(needsYou.test) : [];
-  let listed = items;
-  if (needsYou) {
-    listed =
-      view === "needs"
-        ? [...waiting].sort(byDate(1))
-        : [...items].sort(byDate(-1));
-  }
   const found = needle
     ? listed.filter((item) => matches(item, needle))
     : listed;
-  const choose = (next: "all" | "needs") => {
+  const choose = (next: ListView) => {
     setView(next);
-    keep(next === "all" ? "all" : "");
+    keep(next === views[0] ? "" : next);
   };
   return (
     <div className="grid gap-5">
-      {needsYou ? (
+      {views.length > 1 ? (
         <div className="border-line flex flex-wrap gap-x-6 border-b">
-          {(["needs", "all"] as const).map((v) => (
+          {views.map((v) => (
             <button
               aria-pressed={view === v}
               className={cn(
@@ -344,7 +403,7 @@ export const RecordList = <T,>({
               onClick={() => choose(v)}
               type="button"
             >
-              {v === "needs" ? t("needsYou") : t("all")}
+              {t(VIEW_LABELS[v])}
               {v === "needs" && waiting.length > 0 ? (
                 <span className="text-accent ms-1.5">
                   {formatNumber(waiting.length)}

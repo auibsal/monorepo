@@ -14,6 +14,7 @@ import { callApi } from "@/lib/diwan/api";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermission } from "@/lib/rbac";
 import { AdminHeading, DateTimeField, ErrorLine } from "../kit";
+import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
 
 const key = ["admin", "council", "announcements"];
 
@@ -460,11 +461,17 @@ export const Announcements = () => {
                 ) : null}
                 <Stream notice={notice} refresh={refresh} />
                 <Instagram notice={notice} refresh={refresh} />
+                <DeleteRecord
+                  id={notice.id}
+                  kind="announcement"
+                  onDeleted={refresh}
+                />
               </>
             )}
           </li>
         ))}
       </ul>
+      <RecentlyDeleted kind="announcement" />
     </div>
   );
 };

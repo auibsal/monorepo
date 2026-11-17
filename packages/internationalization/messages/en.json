@@ -1154,7 +1154,10 @@
           "blocked": {
             "unpublish_first": "“{name}” is published. Unpublish it first, then delete it.",
             "unlist_first": "“{name}” is listed on the site. Unlist it first, then delete it.",
-            "in_use": "“{name}” is still used here. Remove it from these first:"
+            "in_use": "“{name}” is still used here. Remove it from these first:",
+            "cancel_first": "“{name}” is under way. Cancel it first, then delete it.",
+            "close_first": "“{name}” is open. Close it first, then delete it.",
+            "sent": "“{name}” was sent, so it stays on the record."
           },
           "uses": {
             "event": "The event “{title}”",
@@ -1193,9 +1196,11 @@
           "yes": "Yes",
           "no": "No",
           "membership": "Membership",
-          "roles": "Roles"
+          "roles": "Roles",
+          "archived": "In the Archive: finished, kept to read. Nothing here can be changed."
         },
-        "needsYou": "Needs you"
+        "needsYou": "Needs you",
+        "archive": "Archive"
       },
       "overview": {
         "title": "Desk",
@@ -3774,7 +3779,9 @@
           "events_event_organizations": "who an event is with",
           "events_joint_tasks": "a joint event’s checklist item",
           "core_profiles": "a member’s name",
-          "events_program_items": "a work in an event’s program"
+          "events_program_items": "a work in an event’s program",
+          "core_announcements": "the announcement",
+          "programs_openings": "the opening"
         },
         "roleFor": "{role} for {person}"
       },
@@ -3820,6 +3827,13 @@
           "is_public": "who sees it",
           "image": "image",
           "other": "other details"
+        },
+        "versions": {
+          "title": "Earlier versions",
+          "lede": "Each save keeps the words it replaced. Restore one to save it again; the text it replaces is kept here too.",
+          "replaced": "Replaced {date} by {who}",
+          "someone": "the platform",
+          "restore": "Restore this version"
         }
       },
       "prize": {

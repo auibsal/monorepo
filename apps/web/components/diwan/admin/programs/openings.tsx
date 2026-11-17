@@ -38,6 +38,7 @@ import {
   type Reply,
 } from "../members/hiring";
 import { usePresets } from "../presets";
+import { RecentlyDeleted } from "../recently-deleted";
 
 /**
  * What an opening offers (decisions.md: open roles only): a team role
@@ -278,6 +279,7 @@ export const OpeningsAdmin = () => {
       {list.isPending ? <SectionSpinner /> : null}
       {list.data ? (
         <RecordList
+          archived={openingArchived}
           empty={
             <EmptyLine
               action={{ href: "/membership/openings/new", label: t("new") }}
@@ -327,6 +329,7 @@ export const OpeningsAdmin = () => {
           )}
         </RecordList>
       ) : null}
+      <RecentlyDeleted kind="opening" />
     </div>
   );
 };
@@ -524,3 +527,14 @@ export const NewOpeningPage = () => {
     </RecordPage>
   );
 };
+
+/**
+ * An opening is in the Archive a month after it closed, once its replies
+ * have had their answer (decisions.md, The site: "Archive").
+ */
+export const openingArchived = (
+  o: { readonly closes_at: string | null; readonly is_open: boolean },
+  now = Date.now()
+) =>
+  !o.is_open &&
+  now - new Date(o.closes_at ?? 0).getTime() > 30 * 24 * 60 * 60 * 1000;

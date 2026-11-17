@@ -31,6 +31,7 @@ import { RecordHistory } from "../record-history";
 import { AccessForm } from "./access-form";
 import { Attendance } from "./attendance";
 import { EventChecklist, RunOfShow } from "./checklist";
+import { eventArchived } from "./data";
 import { DebriefField, EventFacts, StatusActions } from "./facts";
 import { EventFeedbackAdmin } from "./feedback";
 import { GuestInvitations } from "./guest-invitations";
@@ -390,12 +391,19 @@ export const EventEditor = () => {
   return (
     <RecordView
       actions={<StatusActions event={event} onDone={refresh} />}
+      archived={eventArchived(event)}
       back={
         <Link className="link" href="/events">
           {tk("back")}
         </Link>
       }
-      history={<RecordHistory id={eventId} table="events.events" />}
+      history={
+        <RecordHistory
+          id={eventId}
+          table="events.events"
+          versions="events.events"
+        />
+      }
       menu={
         <>
           <PublicPage slug={event.slug} status={event.status} />

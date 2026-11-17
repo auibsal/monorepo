@@ -614,6 +614,7 @@ const Register = () => {
       <p className="type-body">{t("lede")}</p>
       <AddOrganization />
       <RecordList
+        archived={(row) => row.status === "ended"}
         empty={
           <EmptyLine action={{ href: "/partnerships", label: tk("showAll") }}>
             {t("empty")}
@@ -925,12 +926,19 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
   return (
     <RecordView
       actions={row.is_listed ? <OnTheSite href="/partners" /> : undefined}
+      archived={row.status === "ended"}
       back={
         <Link className="link" href="/partnerships">
           {t("back")}
         </Link>
       }
-      history={<RecordHistory id={row.id} table="governance.partners" />}
+      history={
+        <RecordHistory
+          id={row.id}
+          table="governance.partners"
+          versions="governance.partners"
+        />
+      }
       menu={
         <DeleteRecord
           id={row.id}

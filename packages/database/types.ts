@@ -938,6 +938,8 @@ export type Database = {
           body_en: string;
           created_at: string;
           created_by: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
           id: string;
           instagram_done_at: string | null;
           link_path: string | null;
@@ -954,6 +956,8 @@ export type Database = {
           body_en: string;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           id?: string;
           instagram_done_at?: string | null;
           link_path?: string | null;
@@ -969,6 +973,8 @@ export type Database = {
           body_en?: string;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           id?: string;
           instagram_done_at?: string | null;
           link_path?: string | null;
@@ -1564,6 +1570,34 @@ export type Database = {
           summary_ar?: string | null;
           summary_en?: string | null;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      record_versions: {
+        Row: {
+          fields: NonNullable<Json>;
+          id: number;
+          record_id: string;
+          record_table: string;
+          saved_at: string;
+          saved_by: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          fields: NonNullable<Json>;
+          id?: never;
+          record_id: string;
+          record_table: string;
+          saved_at?: string;
+          saved_by?: string | null;
+        };
+        Update: {
+          fields?: NonNullable<Json>;
+          id?: never;
+          record_id?: string;
+          record_table?: string;
+          saved_at?: string;
+          saved_by?: string | null;
         };
         Relationships: [];
       };
@@ -5670,6 +5704,8 @@ export type Database = {
         Row: {
           cover_path: string | null;
           created_at: string;
+          deleted_at: string | null;
+          deleted_by: string | null;
           editors_note_ar: string | null;
           editors_note_en: string | null;
           id: string;
@@ -5698,6 +5734,8 @@ export type Database = {
         Insert: {
           cover_path?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           editors_note_ar?: string | null;
           editors_note_en?: string | null;
           id?: string;
@@ -5725,6 +5763,8 @@ export type Database = {
         Update: {
           cover_path?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           editors_note_ar?: string | null;
           editors_note_en?: string | null;
           id?: string;
@@ -6091,6 +6131,8 @@ export type Database = {
           dated_at: string | null;
           deck_ar: string | null;
           deck_en: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
           desk: Database["journal"]["Enums"]["desk"] | null;
           edit_note: string | null;
           event_id: string | null;
@@ -6133,6 +6175,8 @@ export type Database = {
           dated_at?: string | null;
           deck_ar?: string | null;
           deck_en?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           desk?: never;
           edit_note?: string | null;
           event_id?: string | null;
@@ -6174,6 +6218,8 @@ export type Database = {
           dated_at?: string | null;
           deck_ar?: string | null;
           deck_en?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           desk?: never;
           edit_note?: string | null;
           event_id?: string | null;
@@ -8413,6 +8459,8 @@ export type Database = {
           captions_en_path: string | null;
           chapters: NonNullable<Json>;
           created_at: string;
+          deleted_at: string | null;
+          deleted_by: string | null;
           duration_seconds: number | null;
           id: string;
           number: number | null;
@@ -8437,6 +8485,8 @@ export type Database = {
           captions_en_path?: string | null;
           chapters?: NonNullable<Json>;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           duration_seconds?: number | null;
           id?: string;
           number?: number | null;
@@ -8460,6 +8510,8 @@ export type Database = {
           captions_en_path?: string | null;
           chapters?: NonNullable<Json>;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           duration_seconds?: number | null;
           id?: string;
           number?: number | null;
@@ -8731,6 +8783,8 @@ export type Database = {
           closes_at: string | null;
           created_at: string;
           created_by: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
           eb_approved_at: string | null;
           eb_resolution: string | null;
           eligibility_ar: string | null;
@@ -8757,6 +8811,8 @@ export type Database = {
           closes_at?: string | null;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           eb_approved_at?: string | null;
           eb_resolution?: string | null;
           eligibility_ar?: string | null;
@@ -8782,6 +8838,8 @@ export type Database = {
           closes_at?: string | null;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           eb_approved_at?: string | null;
           eb_resolution?: string | null;
           eligibility_ar?: string | null;
@@ -8878,6 +8936,8 @@ export type Database = {
         Row: {
           created_at: string;
           created_by: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
           id: string;
           is_public: boolean;
           kind: string;
@@ -8909,6 +8969,8 @@ export type Database = {
         Insert: {
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           id?: string;
           is_public?: boolean;
           kind?: string;
@@ -8939,6 +9001,8 @@ export type Database = {
         Update: {
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           id?: string;
           is_public?: boolean;
           kind?: string;

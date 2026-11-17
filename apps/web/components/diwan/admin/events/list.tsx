@@ -194,6 +194,9 @@ export const EventsList = () => {
       {failed ? <ErrorState onRetry={() => failed.refetch()} /> : null}
       {loading || failed ? null : (
         <RecordList
+          archived={({ kind, row }) =>
+            kind === "past" || row.status === "canceled"
+          }
           empty={
             <EmptyLine action={{ href: "/events", label: tk("showAll") }}>
               {tk("noMatches")}

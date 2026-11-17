@@ -26,6 +26,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { DeleteRecord } from "../recently-deleted";
 import { RecordHistory } from "../record-history";
 import { EditionCalls, EditionContents } from "./edition-calls";
 
@@ -429,6 +430,9 @@ export const IssueEditor = () => {
       }
       back={back(tk("back"))}
       history={<RecordHistory id={issueId} table="journal.issues" />}
+      menu={
+        <DeleteRecord id={issueId} kind="edition" then="/qirtas/editions" />
+      }
       status={statusLine}
       tabs={[
         {
