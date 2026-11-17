@@ -11,6 +11,8 @@ export const productionTabs = [
   "rehearsals",
   "performances",
   "report",
+  // History is last on every record page (decisions.md, The site).
+  "history",
 ] as const;
 export type ProductionTab = (typeof productionTabs)[number];
 

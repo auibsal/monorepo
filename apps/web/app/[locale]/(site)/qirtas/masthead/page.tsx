@@ -1,4 +1,5 @@
 import type { Locale } from "@repo/internationalization";
+import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { journal, localized } from "@/lib/data";
@@ -74,6 +75,9 @@ const MastheadPage = async ({ params }: MastheadProps) => {
           ))}
         </dl>
       )}
+      <Link className="link justify-self-start" href="/qirtas/transparency">
+        {t("transparency.link")}
+      </Link>
     </div>
   );
 };

@@ -110,6 +110,7 @@ export const Type: Story = {
               {(group.styles as TypeStyle[]).map((s) => (
                 <li className="border-line border-t py-5" key={s.name}>
                   <p
+                    dir={ar ? "rtl" : undefined}
                     lang={ar ? "ar" : undefined}
                     style={{
                       fontFamily:

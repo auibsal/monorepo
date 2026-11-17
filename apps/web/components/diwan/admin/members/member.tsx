@@ -1,6 +1,5 @@
 "use client";
 
-import { SalCard } from "@repo/brand/components/sal/card";
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
@@ -25,7 +24,6 @@ import { NamePartsFields } from "../../name-parts-fields";
 import { ErrorState, SectionSpinner } from "../../states";
 import {
   AddInPlace,
-  AdminHeading,
   BilingualField,
   type Column,
   ConfirmAction,
@@ -33,10 +31,12 @@ import {
   DateTimeField,
   ErrorLine,
   Field,
+  RecordView,
   SaveButton,
   SelectInput,
 } from "../kit";
 import { NotionManaged } from "../notion-managed";
+import { Fact, Facts } from "../record";
 import { memberName, ShortNames, useDirectory } from "./directory";
 
 // ── Scope options (series, events, Editions, productions) ────────
@@ -1057,10 +1057,34 @@ const MemberLine = ({ row }: { readonly row: membership.DirectoryRow }) => {
   );
 };
 
+/** Membership's own changes to a person's record (Director of Membership). */
+const MembershipTab = ({
+  canGovern,
+  name,
+  row,
+  self,
+  userId,
+}: {
+  readonly canGovern: boolean;
+  readonly name: string;
+  readonly row: Parameters<typeof MemberLine>[0]["row"];
+  readonly self: boolean;
+  readonly userId: string;
+}) => (
+  <>
+    {row.tier ? <TierForm tier={row.tier} userId={userId} /> : null}
+    <NameCorrection userId={userId} />
+    {isAuibEmail(row.email) ? null : <AuibAddressSet userId={userId} />}
+    {row.tier === "member" ? <Departure name={name} userId={userId} /> : null}
+    {canGovern && row.tier && !self ? <Removal userId={userId} /> : null}
+  </>
+);
+
 export const MemberDetail = () => {
   const t = useTranslations("diwan.admin.member");
   const tm = useTranslations("diwan.admin.members");
   const tk = useTranslations("diwan.admin.kit");
+  const tr = useTranslations("diwan.admin.kit.record");
   const th = useTranslations("diwan.home");
   const locale = useLocale() as Locale;
   const userId = useQueryParam("id");
@@ -1084,67 +1108,64 @@ export const MemberDetail = () => {
   const canAssign = hasPermission(grants.data, "roles.assign");
 
   return (
-    <div className="grid gap-10">
-      <AdminHeading
-        actions={
-          <Link
-            className="text-sm underline underline-offset-4"
-            href="/membership"
-          >
-            {tk("back")}
-          </Link>
-        }
-        title={name}
-      >
-        <MemberLine row={row} />
-      </AdminHeading>
-      <NotionManaged kind="officer" recordId={userId} />
-      <SalCard>
-        <dl className="grid gap-3 sm:grid-cols-4">
-          <div>
-            <dt className="type-label">{tm("columns.since")}</dt>
-            <dd>
-              {row.member_since
-                ? formatLongDate(row.member_since, locale, true)
-                : "—"}
-            </dd>
-          </div>
-          <div>
-            <dt className="type-label">{tm("columns.status")}</dt>
-            <dd>{row.verified_at ? tm("verified") : tm("unverified")}</dd>
-          </div>
-          <div>
-            <dt className="type-label">{tm("columns.activities")}</dt>
-            <dd className="tabular-nums">{formatNumber(row.activities)}</dd>
-          </div>
-          <div>
-            <dt className="type-label">{tm("columns.voting")}</dt>
-            <dd>
-              {row.voting_member ? th("card.voting") : th("card.notVoting")}
-            </dd>
-          </div>
-        </dl>
-      </SalCard>
-      {canManage && row.tier ? (
-        <TierForm tier={row.tier} userId={userId} />
-      ) : null}
-      {canManage ? <NameCorrection userId={userId} /> : null}
-      {canManage && !isAuibEmail(row.email) ? (
-        <AuibAddressSet userId={userId} />
-      ) : null}
+    <RecordView
+      back={
+        <Link className="link" href="/membership">
+          {tk("back")}
+        </Link>
+      }
+      lede={<MemberLine row={row} />}
+      tabs={[
+        ...(canManage
+          ? [
+              {
+                content: (
+                  <MembershipTab
+                    canGovern={hasPermission(grants.data, "governance.manage")}
+                    name={name}
+                    row={row}
+                    self={userId === user?.id}
+                    userId={userId}
+                  />
+                ),
+                id: "membership",
+                label: tr("membership"),
+              },
+            ]
+          : []),
+        {
+          content: (
+            <>
+              <RolesSection name={name} userId={userId} />
+              {canAssign && userId !== user?.id ? (
+                <TwoStepReset name={name} userId={userId} />
+              ) : null}
+            </>
+          ),
+          id: "roles",
+          label: tr("roles"),
+        },
+      ]}
+      title={name}
+    >
+      <Facts>
+        <Fact label={tm("columns.since")}>
+          {row.member_since
+            ? formatLongDate(row.member_since, locale, true)
+            : "—"}
+        </Fact>
+        <Fact label={tm("columns.status")}>
+          {row.verified_at ? tm("verified") : tm("unverified")}
+        </Fact>
+        <Fact label={tm("columns.activities")}>
+          {formatNumber(row.activities)}
+        </Fact>
+        <Fact label={tm("columns.voting")}>
+          {row.voting_member ? th("card.voting") : th("card.notVoting")}
+        </Fact>
+      </Facts>
       {canManage ? <ActivitySection userId={userId} /> : null}
-      {canManage && row.tier === "member" ? (
-        <Departure name={name} userId={userId} />
-      ) : null}
-      {hasPermission(grants.data, "governance.manage") &&
-      row.tier &&
-      userId !== user?.id ? (
-        <Removal userId={userId} />
-      ) : null}
-      <RolesSection name={name} userId={userId} />
-      {canAssign && userId !== user?.id ? (
-        <TwoStepReset name={name} userId={userId} />
-      ) : null}
-    </div>
+      <NotionManaged kind="officer" recordId={userId} />
+    </RecordView>
   );
 };

@@ -13,6 +13,7 @@ import {
   Text,
 } from "@react-email/components";
 import { siteUrl } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 
 // Brand colors (packages/brand/assets/tokens.json). Email clients need inline styles.
 const CRIMSON = "#9c213e";
@@ -107,8 +108,8 @@ const NAME = {
  * CAN-SPAM asks; every email carries the same foot).
  */
 const FOOTER = {
-  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية، auibsal.org. الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني». جمعية الفنون والآداب في الجامعة الأمريكية، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في بغداد، طريق المطار، بغداد، العراق.",
-  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org. Paperless by default. Books reused through Second Chapter. AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq.",
+  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية، auibsal.org. الأصل عندنا: بلا ورق، ونطبع لغاية. جمعية الفنون والآداب في الجامعة الأمريكية، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في بغداد، طريق المطار، بغداد، العراق.",
+  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org. Paperless by default. Printed with purpose. AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq.",
 };
 
 /**
@@ -302,7 +303,7 @@ export const Notice = ({
     textAlign: first === "ar" ? ("right" as const) : ("left" as const),
   };
   return (
-    <Html dir={first === "ar" ? "rtl" : "ltr"} lang={first}>
+    <Html dir={dirOf(first)} lang={first}>
       <Head>
         {/* The brand is white paper: dark-mode mail apps leave it as it is. */}
         <meta content="light only" name="color-scheme" />

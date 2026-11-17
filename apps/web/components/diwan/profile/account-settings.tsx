@@ -2,6 +2,7 @@
 
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Label } from "@repo/brand/components/ui/label";
+import { dirOf } from "@repo/internationalization/config";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
@@ -59,7 +60,7 @@ export const OfficialName = () => {
     <div className="grid gap-2">
       <p className="type-label">{t("officialName")}</p>
       {(["en", "ar"] as const).map((lang) => (
-        <p dir={lang === "ar" ? "rtl" : "ltr"} key={lang} lang={lang}>
+        <p dir={dirOf(lang)} key={lang} lang={lang}>
           {full(lang) || "—"}
         </p>
       ))}

@@ -7,6 +7,15 @@
  *   bun run check:rtl         # report
  *   bun run check:rtl --fix   # rewrite to logical utilities
  *
+ * It also enforces decisions.md, Standards: "Mixed scripts on screen":
+ * - an element given another language (`lang`) also carries its `dir`;
+ * - a raw text field (<input>, <textarea>) says its `dir` (the brand's
+ *   Input and Textarea default to `dir="auto"`, so what people type shows
+ *   in its own direction);
+ * - in the Arabic messages, a Latin run filled in at a placeholder (an
+ *   email, a domain, an address, a link, a code, a record number) is
+ *   isolated (U+2066 … U+2069), the plain-text form of <bdi>.
+ *
  * Not flagged: centering (left-1/2 with a translate is direction-neutral),
  * classes keyed to a side or direction (data-[side=left]:…, rtl:…), lines
  * marked with an `rtl-ignore` comment and files containing `rtl-ignore-file`
@@ -154,6 +163,59 @@ for (const path of files) {
   if (fix && rewritten.join("\n") !== source) {
     await writeFile(path, rewritten.join("\n"));
   }
+}
+
+// ── Mixed scripts ────────────────────────────────────────────────────────
+
+const ELEMENT =
+  /<([a-z][\w]*)\b((?:\{[^{}]*(?:\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}[^{}]*)*\}|[^<>{}])*?)>/gsu;
+const TEXT_TYPES =
+  /\btype=["{](?:"?(?:checkbox|radio|file|hidden|submit|button|range|color|image|reset)"?)/u;
+const mixed: string[] = [];
+for (const path of files) {
+  if (extname(path) !== ".tsx") {
+    continue;
+  }
+  // biome-ignore lint/performance/noAwaitInLoops: sequential IO keeps memory flat
+  const source = await readFile(path, "utf8");
+  if (source.includes("rtl-ignore-file")) {
+    continue;
+  }
+  for (const match of source.matchAll(ELEMENT)) {
+    const [whole, tag = "", attrs = ""] = match;
+    if (tag === "html" || whole.includes("rtl-ignore")) {
+      continue;
+    }
+    const at = `${relative(root, path)}:${source.slice(0, match.index).split("\n").length}`;
+    if (/\slang=/u.test(attrs) && !/\sdir=/u.test(attrs)) {
+      mixed.push(`${at}  <${tag} lang> without dir`);
+    }
+    if (
+      (tag === "input" || tag === "textarea") &&
+      !/\sdir=/u.test(attrs) &&
+      !TEXT_TYPES.test(attrs)
+    ) {
+      mixed.push(`${at}  <${tag}> without dir (use the brand's field, or dir)`);
+    }
+  }
+}
+const LATIN_RUN =
+  /(?<!\u2066)\{(email|domain|url|code|reference|address)\}(?!\u2069)/gu;
+const arabic = await readFile(
+  join(root, "packages/internationalization/messages/ar.json"),
+  "utf8"
+);
+for (const match of arabic.matchAll(LATIN_RUN)) {
+  mixed.push(
+    `packages/internationalization/messages/ar.json:${arabic.slice(0, match.index).split("\n").length}  {${match[1]}} not isolated (⁦…⁩)`
+  );
+}
+if (mixed.length > 0) {
+  console.error("Mixed scripts on screen (decisions.md, Standards):");
+  for (const line of mixed) {
+    console.error(`  ${line}`);
+  }
+  process.exit(1);
 }
 
 if (findings.length === 0) {

@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
 import { events, localized, unwrap } from "@/lib/data";
+import { eventArchived } from "@/lib/data/archive";
 import { Link } from "@/lib/diwan/navigation";
 import { DiwanSection } from "../../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../../states";
@@ -20,6 +21,7 @@ import {
   NewLink,
   RecordList,
 } from "../kit";
+import { RecentlyDeleted } from "../recently-deleted";
 import { adminEventColumns } from "./data";
 
 type Kind = "upcoming" | "past" | "drafts";
@@ -79,6 +81,7 @@ export const EventsList = () => {
   const ts = useTranslations("diwan.admin.kit.statuses");
   const tw = useTranslations("web.events.goodToKnow.who");
   const tk = useTranslations("diwan.admin.kit");
+  const tp = useTranslations("diwan.admin.presets");
   const locale = useLocale() as Locale;
   const upcoming = useEventRows("upcoming");
   const drafts = useEventRows("drafts");
@@ -182,11 +185,17 @@ export const EventsList = () => {
   return (
     <div className="grid gap-10">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
-      <NewLink href="/events/new">{t("new")}</NewLink>
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <NewLink href="/events/new">{t("new")}</NewLink>
+        <Link className="link" href="/presets/event">
+          {tp("open")}
+        </Link>
+      </div>
       {loading ? <SectionSpinner /> : null}
       {failed ? <ErrorState onRetry={() => failed.refetch()} /> : null}
       {loading || failed ? null : (
         <RecordList
+          archived={({ row }) => eventArchived(row)}
           empty={
             <EmptyLine action={{ href: "/events", label: tk("showAll") }}>
               {tk("noMatches")}
@@ -222,6 +231,7 @@ export const EventsList = () => {
           }}
         </RecordList>
       )}
+      <RecentlyDeleted kind="event" />
     </div>
   );
 };

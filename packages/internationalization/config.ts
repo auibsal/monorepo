@@ -32,6 +32,15 @@ export const isLocale = (value: unknown): value is Locale =>
 export const getDirection = (locale: string): Direction =>
   isLocale(locale) ? localeDefinitions[locale].dir : "ltr";
 
+/**
+ * The direction for a block in a given language, or none when the language
+ * isn't known (decisions.md, Standards: "Mixed scripts on screen": a block
+ * in the other language carries its own lang and dir).
+ */
+export const dirOf = (
+  lang: string | null | undefined
+): Direction | undefined => (lang ? getDirection(lang) : undefined);
+
 export const getLocaleLabel = (locale: Locale) =>
   localeDefinitions[locale].label;
 

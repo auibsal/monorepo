@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth/provider";
 import { getMediaUrl, uploadMedia } from "@/lib/storage";
 import { StorageError } from "@/lib/storage/files";
 import { logoTallEnough } from "@/lib/storage/image-size";
+import { LibraryPicker } from "./media/library";
 
 interface ImageFieldProps {
   /** Folder in the public media bucket, e.g. "events". */
@@ -26,8 +27,10 @@ interface ImageFieldProps {
 }
 
 /**
- * Uploads a published image to the public media bucket (the bucket policy
- * decides who may) and keeps its path. Our own consented photos only.
+ * The one file field (decisions.md, The site: "One media library"): the
+ * current file, Remove, "Choose from library" and Upload. An upload goes to
+ * the media bucket (the bucket policy decides who may) and into the
+ * library; the field keeps its path. Our own consented photos only.
  */
 export const ImageField = ({
   area,
@@ -108,6 +111,14 @@ export const ImageField = ({
           </Button>
         </div>
       ) : null}
+      <LibraryPicker
+        kinds={
+          kind === "logo"
+            ? ["logo"]
+            : [kind === "pdf" ? "pdf" : "image", "promo"]
+        }
+        onChoose={onChange}
+      />
       <FileInput
         accept={
           kind === "pdf" ? "application/pdf" : "image/jpeg,image/png,image/webp"

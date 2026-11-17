@@ -5,11 +5,13 @@ import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { FileInput } from "@/components/fields/file-input";
+import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { journal, localized, sanitizeRichText, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
@@ -21,6 +23,7 @@ import { getMediaUrl, uploadMedia } from "@/lib/storage";
 import { RichTextEditor } from "../../editor/rich-text";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
+import { AddressLine } from "../address-line";
 import {
   AdminHeading,
   BilingualField,
@@ -30,8 +33,11 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { useMemberNames } from "../member-picker";
+import { memberName } from "../members/directory";
+import { DeleteRecord } from "../recently-deleted";
+import { EditableSection } from "../record";
 import { RecordHistory } from "../record-history";
-import { slugify } from "../slug";
 import { useIssues } from "./admin";
 import { BylinePicker } from "./byline";
 import { PieceExtras } from "./piece-extras";
@@ -103,7 +109,6 @@ const formFrom = (record: PieceRecord | null, desk: journal.Desk) => {
       journal.deskCategories(desk)[0] ??
       "report") as journal.Category,
     contributor_id: p?.contributor_id ?? "",
-    credit: { ar: p?.credit_ar ?? "", en: p?.credit_en ?? "" },
     deck: { ar: p?.deck_ar ?? "", en: p?.deck_en ?? "" },
     event_id: p?.event_id ?? "",
     issue_id: p?.issue_id ?? "",
@@ -118,7 +123,6 @@ const formFrom = (record: PieceRecord | null, desk: journal.Desk) => {
 const PieceForm = ({ record }: { record: PieceRecord | null }) => {
   const t = useTranslations("diwan.admin.qirtas");
   const tj = useTranslations("diwan.admin.journal");
-  const tk = useTranslations("diwan.admin.kit");
   const tc = useTranslations("diwan.admin.content");
   const locale = useLocale() as Locale;
   const id = useId();
@@ -153,6 +157,8 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
   });
   const desk = journal.deskOf(form.category);
   const needs = journal.typeNeeds(form.category);
+  // Published once means shared: the address stays (decisions.md, The site).
+  const pieceFixed = Boolean(piece?.published_at);
 
   useEffect(() => {
     if (record) {
@@ -183,19 +189,17 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
           .update({
             category: form.category,
             contributor_id: form.contributor_id,
-            credit_ar: form.credit.ar.trim() || null,
-            credit_en: form.credit.en.trim() || null,
             deck_ar: form.deck.ar.trim() || null,
             deck_en: form.deck.en.trim() || null,
             event_id: form.event_id || null,
             issue_id: form.issue_id || null,
             language: form.language,
             members_only: form.members_only,
-            slug:
-              form.slug.trim() ||
-              slugify(form.title.en || form.title.ar) ||
-              piece?.slug ||
-              "",
+            slug: pieceFixed
+              ? (piece?.slug ?? "")
+              : slugFromTitle(form.title.en, form.title.ar) ||
+                piece?.slug ||
+                "",
             title_ar: form.title.ar.trim() || null,
             title_en: form.title.en.trim() || null,
             video_url: form.video_url.trim() || null,
@@ -357,24 +361,11 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
           onChange={(contributor) => set("contributor_id", contributor)}
           value={form.contributor_id}
         />
-        <Field hint={tk("slugHint")} label={tk("slug")}>
-          {(fieldId) => (
-            <Input
-              dir="ltr"
-              id={fieldId}
-              maxLength={80}
-              onChange={(e) => set("slug", e.target.value)}
-              value={form.slug}
-            />
-          )}
-        </Field>
+        <AddressLine
+          fixed={pieceFixed}
+          path={`/qirtas/${desk}/${pieceFixed ? (piece?.slug ?? "") : slugFromTitle(form.title.en, form.title.ar)}`}
+        />
       </div>
-      <BilingualField
-        label={tj("piece.credit")}
-        maxLength={300}
-        onChange={(credit) => set("credit", credit)}
-        value={form.credit}
-      />
       {needs.video ? (
         <Field hint={t("videoHint")} label={t("video")}>
           {(fieldId) => (
@@ -627,6 +618,42 @@ const Media = ({ record }: { record: PieceRecord }) => {
 };
 
 /** Reporters, photographers, illustrators and translators on the piece. */
+/**
+ * Who edited, copy edited and checked the piece, from the work itself (the
+ * approvals and the fact check), never typed (decisions.md, Qirtas:
+ * "Credits are never typed").
+ */
+const WorkCredits = ({ record }: { readonly record: PieceRecord }) => {
+  const t = useTranslations("diwan.admin.qirtas.credits");
+  const tw = useTranslations("diwan.admin.qirtas.approvals");
+  const locale = useLocale() as Locale;
+  const checker = record.piece?.checked_by ?? null;
+  const names = useMemberNames([
+    ...record.approvals.map((a) => a.approved_by),
+    checker,
+  ]);
+  const nameOf = (id: string | null) => {
+    const person = names.data?.find((p) => p.id === id);
+    return person ? memberName(person, locale) : "";
+  };
+  if (record.approvals.length === 0 && !checker) {
+    return null;
+  }
+  return (
+    <section className="grid gap-2">
+      <h3 className="type-label">{t("byTheWork")}</h3>
+      <ul className="type-body grid gap-1">
+        {record.approvals.map((a) => (
+          <li key={a.kind}>
+            {`${tw(a.kind as "desk")}: ${nameOf(a.approved_by)}`}
+          </li>
+        ))}
+        {checker ? <li>{`${t("factCheck")}: ${nameOf(checker)}`}</li> : null}
+      </ul>
+    </section>
+  );
+};
+
 const Credits = ({ record }: { record: PieceRecord }) => {
   const t = useTranslations("diwan.admin.qirtas.credits");
   const locale = useLocale() as Locale;
@@ -679,6 +706,7 @@ const Credits = ({ record }: { record: PieceRecord }) => {
             </span>
             <span className="type-caption">
               {t(`roles.${c.role as (typeof CREDIT_ROLES)[number]}`)}
+              {c.accepted_at ? null : ` · ${t("waiting")}`}
             </span>
             <Button
               disabled={remove.isPending}
@@ -732,6 +760,7 @@ export const QirtasPieceEditor = () => {
   const t = useTranslations("diwan.admin.qirtas");
   const tj = useTranslations("diwan.admin.journal");
   const tk = useTranslations("diwan.admin.kit");
+  const tp = useTranslations("diwan.admin.qirtas.pieceTabs");
   const locale = useLocale() as Locale;
   const pieceId = useQueryParam("id");
   const record = usePieceRecord(pieceId);
@@ -753,6 +782,7 @@ export const QirtasPieceEditor = () => {
   }
   const category = piece.category as journal.Category;
   const needs = journal.typeNeeds(category);
+  const media = needs.media || piece.desk === "news";
   return (
     <RecordView
       actions={
@@ -761,29 +791,127 @@ export const QirtasPieceEditor = () => {
         ) : undefined
       }
       back={back(tk("back"))}
-      history={<RecordHistory id={piece.id} table="journal.pieces" />}
+      history={
+        <RecordHistory
+          id={piece.id}
+          table="journal.pieces"
+          versions="journal.piece_bodies"
+        />
+      }
       lede={`${tj(`desks.${piece.desk as journal.Desk}`)} · ${tj(`categories.${category}`)}`}
+      menu={
+        piece.status === "published" ? undefined : (
+          <DeleteRecord id={piece.id} kind="piece" then="/qirtas" />
+        )
+      }
+      tabs={[
+        {
+          content: (
+            <>
+              <EditableSection
+                form={<PieceForm record={record.data} />}
+                id="writing"
+                title={tp("writing")}
+              >
+                <PieceReading record={record.data} />
+              </EditableSection>
+              {category === "translation" ? (
+                <PieceOriginal
+                  key={record.data.body?.original_lang ?? ""}
+                  record={record.data}
+                />
+              ) : null}
+              {piece.desk === "video" ? null : (
+                <PieceExtras record={record.data} />
+              )}
+            </>
+          ),
+          id: "writing",
+          label: tp("writing"),
+        },
+        ...(media || category === "explainer"
+          ? [
+              {
+                content: (
+                  <>
+                    {media ? <Media record={record.data} /> : null}
+                    {category === "explainer" ? (
+                      <PieceFigures pieceId={piece.id} />
+                    ) : null}
+                  </>
+                ),
+                id: "media",
+                label: tp("media"),
+              },
+            ]
+          : []),
+        {
+          content: (
+            <>
+              <Credits record={record.data} />
+              <WorkCredits record={record.data} />
+              <PieceTopics pieceId={piece.id} />
+            </>
+          ),
+          id: "credits",
+          label: tp("credits"),
+        },
+        ...(piece.status === "published"
+          ? [
+              {
+                content: <Corrections record={record.data} />,
+                id: "corrections",
+                label: tp("corrections"),
+              },
+            ]
+          : []),
+      ]}
       title={localized(piece, "title", locale) || t("untitled")}
     >
       <Workflow record={record.data} />
-      <PieceForm record={record.data} />
-      {needs.media || piece.desk === "news" ? (
-        <Media record={record.data} />
-      ) : null}
-      {category === "translation" ? (
-        <PieceOriginal
-          key={record.data.body?.original_lang ?? ""}
-          record={record.data}
-        />
-      ) : null}
-      {piece.desk === "video" ? null : <PieceExtras record={record.data} />}
-      {category === "explainer" ? <PieceFigures pieceId={piece.id} /> : null}
-      <PieceTopics pieceId={piece.id} />
-      <Credits record={record.data} />
-      {piece.status === "published" ? (
-        <Corrections record={record.data} />
-      ) : null}
       <Thread pieceId={piece.id} />
     </RecordView>
+  );
+};
+
+/** The piece as written, read on its page until Edit opens the form. */
+const PieceReading = ({ record }: { readonly record: PieceRecord }) => {
+  const t = useTranslations("diwan.admin.qirtas");
+  const { piece } = record;
+  const languages = (["en", "ar"] as const).filter(
+    (lang) => piece?.[`title_${lang}`] || record.body?.[`body_${lang}`]
+  );
+  if (languages.length === 0) {
+    return <p className="type-body text-text-secondary">{t("notWritten")}</p>;
+  }
+  return (
+    <div className="grid gap-10">
+      {languages.map((lang) => (
+        <article
+          className="grid gap-3"
+          dir={dirOf(lang)}
+          key={lang}
+          lang={lang}
+        >
+          <h3 className="type-heading font-light">
+            {piece?.[`title_${lang}`]}
+          </h3>
+          {piece?.[`deck_${lang}`] ? (
+            <p className="type-lede text-text-secondary">
+              {piece[`deck_${lang}`]}
+            </p>
+          ) : null}
+          {record.body?.[`body_${lang}`] ? (
+            <div
+              className="reading prose max-w-[65ch]"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized rich text
+              dangerouslySetInnerHTML={{
+                __html: sanitizeRichText(record.body[`body_${lang}`] ?? ""),
+              }}
+            />
+          ) : null}
+        </article>
+      ))}
+    </div>
   );
 };

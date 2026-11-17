@@ -225,7 +225,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   and checklists keep their names but are templates or records, in the
   templates index (`docs/platform/agreements.md`). The Code of Conduct
   (`code-of-conduct`, on joining), the role agreement (`role-agreement`),
-  the readers' pledge and the publication agreement are signed on their own
+  the confidentiality agreement and the publication agreement are signed on their own
   pages, and each is a signature record like the rest
   (`private.record_signing`): its AGR number, its check at /verify, and
   the signed copy in Your account → Documents. Where the site already

@@ -32,6 +32,7 @@ type ViewKey =
   | "certificates"
   | "nextStop"
   | "design"
+  | "mediaLibrary"
   | "members"
   | "invitations"
   | "openings"
@@ -101,6 +102,7 @@ export const sectionViews: Record<AdminSection, readonly SectionView[]> = {
         "mailing.read",
       ],
     },
+    { href: "/media/library", key: "mediaLibrary", module: "*" },
     { href: "/media/design", key: "design", module: "*" },
   ],
   membership: [

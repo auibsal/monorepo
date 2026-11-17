@@ -84,6 +84,9 @@ const useMyPieces = () => {
               "contributor_id",
               mine.map((c) => c.id)
             )
+            // A staff piece is newsroom work, not a submission (decisions.md,
+            // Qirtas): it shows here only once it runs.
+            .or("submission_id.not.is.null,status.eq.published")
             .order("updated_at", { ascending: false })
         ) ?? []
       );

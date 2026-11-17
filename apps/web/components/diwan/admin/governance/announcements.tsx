@@ -14,6 +14,7 @@ import { callApi } from "@/lib/diwan/api";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermission } from "@/lib/rbac";
 import { AdminHeading, DateTimeField, ErrorLine } from "../kit";
+import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
 
 const key = ["admin", "council", "announcements"];
 
@@ -104,7 +105,7 @@ const Editor = ({
       }}
     >
       <div className="grid gap-5 md:grid-cols-2">
-        <div className="grid content-start gap-4" lang="en">
+        <div className="grid content-start gap-4" dir="ltr" lang="en">
           <Field label={t("titleEn")}>
             {(id) => (
               <Input
@@ -129,7 +130,7 @@ const Editor = ({
             )}
           </Field>
         </div>
-        <div className="grid content-start gap-4" lang="ar">
+        <div className="grid content-start gap-4" dir="rtl" lang="ar">
           <Field label={t("titleAr")}>
             {(id) => (
               <Input
@@ -460,11 +461,17 @@ export const Announcements = () => {
                 ) : null}
                 <Stream notice={notice} refresh={refresh} />
                 <Instagram notice={notice} refresh={refresh} />
+                <DeleteRecord
+                  id={notice.id}
+                  kind="announcement"
+                  onDeleted={refresh}
+                />
               </>
             )}
           </li>
         ))}
       </ul>
+      <RecentlyDeleted kind="announcement" />
     </div>
   );
 };

@@ -47,6 +47,30 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
   await expect(page.getByText(title)).toHaveCount(0);
 });
 
+test("a section's board takes a pitch into Pitched", async ({ page }) => {
+  const angle = `A pitch ${Date.now()}`;
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/qirtas/news`);
+  await expect(page.getByRole("heading", { name: "Board" })).toBeVisible();
+  await page.getByRole("button", { name: "Pitch a story" }).click();
+  await page.getByLabel("The story").fill(angle);
+  await page.getByRole("button", { name: "Save" }).first().click();
+  await expect(
+    page.getByRole("region", { name: /^Pitched/u }).getByText(angle)
+  ).toBeVisible();
+  await expectAccessible(page);
+});
+
+test("finished records wait in the Archive, found and read-only", async ({
+  page,
+}) => {
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/events`);
+  await page.getByRole("button", { name: "Archive" }).click();
+  await expect(page).toHaveURL(/[?&]view=archive/u);
+  await expectAccessible(page);
+});
+
 test("each event has its own check-in, and the Desk opens the next one", async ({
   page,
 }) => {
@@ -71,6 +95,59 @@ test("a record in the Diwan opens its own page, one step under its list", async 
   await expect(
     page.getByRole("heading", { level: 1, name: event.title })
   ).toBeVisible();
+  await expectAccessible(page);
+});
+
+// decisions.md, The site: "One record page": tabs with Overview first and
+// History last, each section read as text with its own Edit, and one Save.
+test("an event's page is the one record page", async ({ page }) => {
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/events/${event.slug}`);
+  const tabs = page.getByRole("tablist", { name: "Sections of this record" });
+  await expect(tabs.getByRole("tab").first()).toHaveText("Overview");
+  await expect(tabs.getByRole("tab").last()).toHaveText("History");
+  await tabs.getByRole("tab", { name: "Details" }).click();
+  await expect(page).toHaveURL(/[?&]tab=details/u);
+  // Read as text; no Save until Edit.
+  await expect(page.getByRole("button", { name: "Save" })).toHaveCount(0);
+  await page
+    .getByRole("tabpanel")
+    .getByRole("button", { name: "Edit" })
+    .first()
+    .click();
+  await expect(page.getByRole("button", { name: "Save" })).toHaveCount(1);
+  await page.getByRole("button", { exact: true, name: "Cancel" }).click();
+  await expect(page.getByRole("button", { name: "Save" })).toHaveCount(0);
+  await expectAccessible(page);
+});
+
+// decisions.md, The site: "One media library".
+test("the media library lists every upload, filtered in the address", async ({
+  page,
+}) => {
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/media/library?use=unused`);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Library" })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Where files live" })
+  ).toBeVisible();
+  await expectAccessible(page);
+});
+
+// decisions.md, Posting and Presets.
+test("the content calendar plans the days marked; presets are kept as data", async ({
+  page,
+}) => {
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/media/channels?month=2027-02`);
+  await expect(
+    page.getByRole("heading", { name: "Content calendar" })
+  ).toBeVisible();
+  await expectAccessible(page);
+  await page.goto(`${urls.app}/presets/event`);
+  await expect(page.getByText("A writing workshop")).toBeVisible();
   await expectAccessible(page);
 });
 
@@ -158,7 +235,7 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
       { blind_entry_id: entryId, read_number: 1, reader_id: readerId },
       { onConflict: "blind_entry_id,reader_id" }
     );
-  // A reader who hasn't signed confidentiality-agreement, the readers' pledge.
+  // A reader who hasn't signed confidentiality-agreement.
   await db
     .schema("api")
     .from("form_submissions")
@@ -178,12 +255,12 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
   await signInWithPassword(page, editor.email);
   await page.goto(`${urls.app}/qirtas/entries/${entryId}`);
   await expect(
-    page.getByRole("heading", { name: "The readers’ pledge" })
+    page.getByRole("heading", { name: "The confidentiality agreement" })
   ).toBeVisible();
   await expect(page.getByText("The kettle keeps")).toHaveCount(0);
   await expectAccessible(page);
   // Signed in their platform name, after agreeing to sign electronically.
-  const sign = page.getByRole("button", { name: "Sign the pledge" });
+  const sign = page.getByRole("button", { name: "Sign the agreement" });
   await expect(sign).toBeDisabled();
   await page.getByLabel(/I agree to sign electronically/u).check();
   await sign.click();
@@ -242,6 +319,8 @@ test("an officer who manages members corrects a member's name to the official on
   await signInWithPassword(page, editor2.email);
   await page.goto(`${urls.app}/membership/${memberId}`);
   await setUpTwoStep(page);
+  // Membership's changes are in the record's Membership tab.
+  await page.getByRole("tab", { name: "Membership" }).click();
   await expect(page.getByRole("heading", { name: "Their name" })).toBeVisible();
 
   const english = page.getByRole("group", { name: "In English" });
@@ -296,4 +375,47 @@ test("an officer who manages members corrects a member's name to the official on
     second.getByText("Waiting for another officer.").first()
   ).toBeVisible();
   await expectAccessible(page);
+});
+
+// decisions.md, Documents and forms: the signature block shows the whole
+// name, never cut, with room for the script's strokes, in both languages,
+// on a 360 px phone.
+test("a long name signs whole on a phone, in both languages", async ({
+  page,
+}) => {
+  await signInWithPassword(page, editor.email);
+  await page.setViewportSize({ height: 800, width: 360 });
+  await page.goto(
+    `${urls.web}/diwan/media/design/kit/iframe.html?id=components-brand--signature-longest-name&viewMode=story`
+  );
+  const names = page.locator("[data-signature-script]");
+  await expect(names).toHaveCount(2);
+  // Measured in the signature faces, not the fallback shown while they load.
+  await page.evaluate(() => document.fonts.ready);
+  for (const name of await names.all()) {
+    const fits = await name.evaluate((el) => {
+      const box = el.getBoundingClientRect();
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const text = range.getBoundingClientRect();
+      const style = getComputedStyle(el);
+      const lines = Math.round(
+        text.height / Number.parseFloat(style.lineHeight)
+      );
+      return {
+        clipped: el.scrollWidth > el.clientWidth + 1,
+        ellipsis: style.textOverflow === "ellipsis",
+        inside:
+          text.top >= box.top - 1 &&
+          text.bottom <= box.bottom + 1 &&
+          text.left >= box.left - 1 &&
+          text.right <= box.right + 1,
+        lines,
+      };
+    });
+    expect(fits.ellipsis).toBe(false);
+    expect(fits.clipped).toBe(false);
+    expect(fits.inside).toBe(true);
+    expect(fits.lines).toBeLessThanOrEqual(2);
+  }
 });

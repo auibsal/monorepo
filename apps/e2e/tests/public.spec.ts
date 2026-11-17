@@ -4,6 +4,24 @@ import { urls } from "../playwright.config";
 import { expectAccessible } from "./helpers";
 
 test.describe("public site", () => {
+  test("the footer's paperless line opens About's sustainability note", async ({
+    page,
+  }) => {
+    await page.goto(`${urls.web}/about`);
+    await page
+      .getByRole("contentinfo")
+      .getByRole("link", {
+        name: "Paperless by default. Printed with purpose.",
+      })
+      .click();
+    await expect(page).toHaveURL(/\/about#sustainability$/u);
+    await expect(
+      page.getByRole("heading", { name: "Sustainability" })
+    ).toBeVisible();
+    await expect(page.getByText("Documents signed on the site")).toBeVisible();
+    await expectAccessible(page);
+  });
+
   for (const locale of ["en", "ar"] as const) {
     test(`home renders in ${locale} and is accessible`, async ({ page }) => {
       await page.goto(`${urls.web}/${locale}`);

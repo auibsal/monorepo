@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@repo/brand/components/ui/button";
+import { formatNumber } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -21,9 +22,6 @@ type StepKey =
   | "pledge"
   | "two_step";
 
-/** The steps a person ticks; the site marks the rest itself. */
-const TICKED = new Set<StepKey>(["pages", "handover", "mailbox", "notion"]);
-
 /** Where each step is done, when it is done on the site. */
 const WHERE: Partial<Record<StepKey, string>> = {
   declaration: "/account/settings/disclosures/declare",
@@ -31,6 +29,19 @@ const WHERE: Partial<Record<StepKey, string>> = {
   handover: "/account/roles",
   pages: "/library",
   two_step: "/account/settings",
+};
+
+/**
+ * Steps the site can't see done (decisions.md, Where things live: To-dos):
+ * each is a link that counts as done once opened, never "Mark as done".
+ * Opening the library, the handover, the seat's mailbox or Notion is the
+ * step.
+ */
+const DONE_ON_OPEN: Partial<Record<StepKey, string>> = {
+  handover: "/account/roles",
+  mailbox: "https://mail.zoho.com",
+  notion: "https://www.notion.so",
+  pages: "/library",
 };
 
 interface Step {
@@ -116,17 +127,24 @@ export const RoleChecklist = () => {
         []) as Step[],
     queryKey: key,
   });
-  const tick = useMutation({
-    mutationFn: async ({ id, step }: { id: string; step: string }) =>
-      unwrap(
-        await supabase
-          .schema("api")
-          .rpc("tick_role_step", { assignment_id: id, step })
+  // A role whose agreement is its own to-do (UnsignedRoleAgreements) leaves
+  // the signing step out here, so it never shows twice (core.my_todos).
+  const unsigned = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      new Set(
+        (
+          (unwrap(
+            await supabase.schema("api").rpc("my_unsigned_role_agreements")
+          ) ?? []) as Unsigned[]
+        ).map((r) => r.assignment_id)
       ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: key }),
+    queryKey: ["home", "unsigned-role-agreements", "ids", user?.id],
   });
   const byRole = new Map<string, Step[]>();
-  for (const step of steps.data ?? []) {
+  for (const step of (steps.data ?? []).filter(
+    (s) => !(s.step === "pledge" && unsigned.data?.has(s.assignment_id))
+  )) {
     byRole.set(step.assignment_id, [
       ...(byRole.get(step.assignment_id) ?? []),
       step,
@@ -145,57 +163,103 @@ export const RoleChecklist = () => {
           "role",
           locale
         );
+        const done = list.filter((s) => s.done).length;
+        // Today lists only what's left; the count says how far along.
+        const left = list.filter((s) => !s.done);
         return (
           <Section
-            description={t("lede")}
+            description={t("progress", {
+              done: formatNumber(done),
+              total: formatNumber(list.length),
+            })}
             id={`role-${first.assignment_id}`}
             key={first.assignment_id}
             title={t("title", { role })}
           >
             <RowList>
-              {list.map((s) => {
-                const where = WHERE[s.step];
-                return (
-                  <li
-                    className="flex flex-wrap items-baseline gap-x-4 gap-y-1"
-                    key={s.step}
-                  >
-                    <span className={s.done ? "text-text-secondary" : ""}>
-                      {`${s.done ? t("done") : t("todo")} ${t(`steps.${s.step}`)}`}
-                    </span>
-                    {!s.done && where ? (
-                      <Link className="link text-sm" href={where}>
-                        {t("go")}
-                      </Link>
-                    ) : null}
-                    {!s.done && s.step === "pledge" ? (
-                      <RoleAgreement
-                        assignmentId={s.assignment_id}
-                        onSigned={() =>
-                          queryClient.invalidateQueries({ queryKey: key })
-                        }
-                      />
-                    ) : null}
-                    {!s.done && TICKED.has(s.step) ? (
-                      <Button
-                        disabled={tick.isPending}
-                        onClick={() =>
-                          tick.mutate({ id: s.assignment_id, step: s.step })
-                        }
-                        size="sm"
-                        variant="ghost"
-                      >
-                        {t("tick")}
-                      </Button>
-                    ) : null}
-                  </li>
-                );
-              })}
+              {left.map((s) => (
+                <li
+                  className="flex flex-wrap items-baseline gap-x-4 gap-y-1"
+                  key={s.step}
+                >
+                  <StepAction
+                    assignmentId={s.assignment_id}
+                    onDone={() =>
+                      queryClient.invalidateQueries({ queryKey: key })
+                    }
+                    step={s.step}
+                  />
+                </li>
+              ))}
             </RowList>
           </Section>
         );
       })}
     </>
+  );
+};
+
+/**
+ * One step's one action, named for what it does: a link where the step is
+ * done on the site, a link that counts once opened where the site can't
+ * see it, the role agreement to sign, or (for what only others do, such as
+ * the role email) a line that clears by itself.
+ */
+const StepAction = ({
+  assignmentId,
+  onDone,
+  step,
+}: {
+  assignmentId: string;
+  onDone: () => void;
+  step: StepKey;
+}) => {
+  const t = useTranslations("diwan.home.roleChecklist");
+  const { supabase } = useAuth();
+  const tick = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("api")
+          .rpc("tick_role_step", { assignment_id: assignmentId, step })
+      ),
+    onSuccess: onDone,
+  });
+  const label = t(`actions.${step}`);
+  if (step === "pledge") {
+    return (
+      <div className="grid basis-full gap-2">
+        <span>{label}</span>
+        <RoleAgreement assignmentId={assignmentId} onSigned={onDone} />
+      </div>
+    );
+  }
+  const opens = DONE_ON_OPEN[step];
+  if (opens) {
+    const external = opens.startsWith("https://");
+    return external ? (
+      <a
+        className="link"
+        href={opens}
+        onClick={() => tick.mutate()}
+        rel="noopener"
+        target="_blank"
+      >
+        {label}
+      </a>
+    ) : (
+      <Link className="link" href={opens} onClick={() => tick.mutate()}>
+        {label}
+      </Link>
+    );
+  }
+  const where = WHERE[step];
+  return where ? (
+    <Link className="link" href={where}>
+      {label}
+    </Link>
+  ) : (
+    <span>{label}</span>
   );
 };
 

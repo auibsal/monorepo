@@ -98,12 +98,12 @@ $$;
 
 select plan(10);
 
-select is((select count(*)::integer from governance.form_types), 43,
-  'Agreements and consents, templates and records: 43 kinds, by name');
+select is((select count(*)::integer from governance.form_types), 16,
+  'Agreements and consents, and the three sent kinds: 16 kinds, by name');
 select is((select count(*)::integer from governance.form_types where legacy_number in ('F-08', 'F-22', 'F-31', 'F-42', 'F-44')), 0,
   'The retired numbers have no kind');
-select is((select title_en from governance.form_types where key = 'role-holder-checklist'), 'New role holder’s checklist',
-  'The role holder''s checklist goes by its name');
+select is((select count(*)::integer from governance.form_types where key = 'role-holder-checklist'), 0,
+  'The role holder''s checklist is a checklist in the account, not a kind');
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000c4101', 'new@auib.edu.iq', 'New Holder');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000c4102', 'other@auib.edu.iq', 'Someone Else');

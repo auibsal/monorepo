@@ -55,7 +55,11 @@ one toggle per kind, headed "<name> · <Title>", titles in sentence case
 ## The templates index
 
 Letters, notices, minutes, score sheets, reports, lists and checklists
-keep stable names too but are templates or records, never in the register.
+keep stable names too but are templates or records, never in the register:
+`governance.form_types` holds only the 13 kinds above and the three sent
+on the same page (a concern, an event pitch, a members' meeting motion),
+and an old F-number of a template still resolves through `legacyNumbers`
+(`apps/web/lib/data/form-paths.ts`).
 
 | Name | Title | Old number | Kept |
 |---|---|---|---|

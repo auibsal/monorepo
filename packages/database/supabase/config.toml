@@ -230,6 +230,10 @@ double_confirm_changes = true
 enable_confirmations = true
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = true
+# Asks for the current password to change it, as production does (Authentication
+# → Email: "Require current password when updating"); a reset from the email
+# needs none.
+require_current_password = true
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
 max_frequency = "60s"
 # Number of characters used in the email OTP (decisions.md, Members: eight

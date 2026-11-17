@@ -49,7 +49,7 @@ export const AccountLanguage = () => {
             onChange={(e) => save.mutate(e.target.value === "ar" ? "ar" : "en")}
             value={value}
           >
-            <option lang="en" value="en">
+            <option dir="ltr" lang="en" value="en">
               {localeDefinitions.en.label}
             </option>
             <option dir="rtl" lang="ar" value="ar">

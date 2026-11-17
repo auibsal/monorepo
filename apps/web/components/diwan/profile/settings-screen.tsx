@@ -104,9 +104,9 @@ export const SettingsScreen = () => {
         <Passkeys />
         <Sessions />
         <RecoveryCodes />
-        <EsignSettings />
       </DiwanSection>
       <DiwanSection id="your-data" title={t("sections.data")}>
+        <EsignSettings />
         <DownloadData />
         <DeleteAccount />
       </DiwanSection>

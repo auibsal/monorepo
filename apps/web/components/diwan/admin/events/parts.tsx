@@ -5,58 +5,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
-import { useGrants } from "@/lib/diwan/queries";
-import { hasPermissionAnywhere, type Permission } from "@/lib/rbac";
 import { DiwanSection, RowList } from "../../page";
 import { EmptyLine } from "../../states";
-import { Needs } from "../needs";
-import { Shifts } from "../programs/admin";
-import { EventOrganizations, EventPartner } from "./joint";
-import { EventOffCampus } from "./off-campus";
-import { SessionLinks } from "./session-links";
-
-interface PartsEvent {
-  readonly id: string;
-  readonly off_campus: boolean;
-  readonly partner_id: string | null;
-  readonly status: string;
-  readonly student_life_approved_by: string | null;
-  readonly student_life_approved_on: string | null;
-}
-
-/**
- * The standard parts of every event (decisions.md: one standard page,
- * standard parts only, no add-ons): off campus with Student Life's approval,
- * a partner and its checklist, needs, volunteer shifts and links; a
- * meeting's minutes for those who keep them. Booking and check-in are on
- * the event's bookings and its door.
- */
-export const EventPartsAdmin = ({ event }: { readonly event: PartsEvent }) => {
-  const t = useTranslations("diwan.admin.event.parts");
-  const grants = useGrants();
-  const can = (permission: Permission) =>
-    hasPermissionAnywhere(grants.data, permission);
-  return (
-    <>
-      <EventOffCampus event={event} />
-      <EventPartner event={event} />
-      <EventOrganizations eventId={event.id} />
-      <DiwanSection id="needs" title={t("needs")}>
-        <Needs eventId={event.id} />
-      </DiwanSection>
-      <DiwanSection id="shifts" title={t("shifts")}>
-        <Shifts eventId={event.id} />
-      </DiwanSection>
-      <SessionLinks eventId={event.id} />
-      {can("governance.manage") || can("governance.minutes.write") ? (
-        <EventMinutes eventId={event.id} />
-      ) : null}
-    </>
-  );
-};
 
 /** A meeting's minutes and resolutions, kept in Society, pointing here. */
-const EventMinutes = ({ eventId }: { readonly eventId: string }) => {
+export const EventMinutes = ({ eventId }: { readonly eventId: string }) => {
   const t = useTranslations("diwan.admin.event.parts");
   const locale = useLocale() as "en" | "ar";
   const { supabase } = useAuth();

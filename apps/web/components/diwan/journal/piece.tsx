@@ -1,5 +1,7 @@
 "use client";
 
+import { dirOf } from "@repo/internationalization/config";
+
 import { Link } from "@repo/internationalization/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -68,7 +70,7 @@ export const PieceReader = () => {
           className="prose max-w-none"
           // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(text.html) }}
-          dir={text.lang === "ar" ? "rtl" : "ltr"}
+          dir={dirOf(text.lang)}
           key={text.lang}
           lang={text.lang}
         />

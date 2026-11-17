@@ -1,7 +1,7 @@
 "use client";
 
 import QRCode from "react-qr-code";
-import { cn } from "../../lib/utils";
+import { cn, dirOf } from "../../lib/utils";
 import { BrandLogo } from "../brand-logo";
 import { Guilloche } from "./guilloche";
 
@@ -78,6 +78,7 @@ export const MembershipCard = ({
       className
     )}
     data-theme="light"
+    dir={dirOf(locale)}
     lang={locale}
   >
     <div className="pointer-events-none absolute start-1/4 top-1/2 size-[26rem] -translate-x-1/2 -translate-y-1/2 rtl:translate-x-1/2">

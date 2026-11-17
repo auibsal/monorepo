@@ -136,7 +136,7 @@ media do.
 - `docs/platform`: the platform runbooks (Markdown). There is no separate
   docs site.
 - `scripts/`: `check-placeholders.ts`, `check-rtl.ts`, `check-i18n.ts`,
-  `check-language.ts`, `check-forms-register.ts`.
+  `check-language.ts`, `check-forms-register.ts`, `check-pdf.ts`.
 
 ## Commands
 
@@ -150,6 +150,7 @@ bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
 bun run check:i18n          # UI text not in the messages files; the language standard
 bun run check:forms         # the register's kinds against SAL-EXB-01, by name (needs NOTION_TOKEN)
+bun run check:pdf           # every PDF the site makes is tagged for PDF/UA (lib/pdf-ua.ts)
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)
@@ -304,8 +305,8 @@ Supabase's general advice; where they differ, this file wins:
 - **Blind review.** Readers never receive an author's identity before a
   decision; verify against network responses, not the UI. Clients never
   read `contributors.user_id`, so a pen name can't be traced. Readers
-  read the work, never the file: after signing `confidentiality-agreement` (the readers'
-  pledge) on the reading page, the text on
+  read the work, never the file: after signing `confidentiality-agreement` (the
+  confidentiality agreement) on the reading page, the text on
   the page (`journal.entry_text`) and images marked with their card
   number (`/api/files/blind`); originals open by role through
   `journal.open_original`, each opening kept.
@@ -354,8 +355,9 @@ everywhere:
   strings (`/events?month=`, `/qirtas/archive?month=&section=`,
   `/search?q=`). Links point at the current address. An address that was
   shared (in an email, a post, a poster or a QR code) and then changes
-  gets a permanent redirect (308, `MOVED` in `apps/web/next.config.ts`);
-  one never shared simply changes. The address decides the language
+  gets a permanent redirect (308, `MOVED` in
+  `apps/web/lib/next-config/moved.ts`, each with its reason); one never
+  shared simply changes. The address decides the language
   (`localeDetection: false`), except a person's first visit, which
   follows the browser (`lib/i18n/first-visit.ts`).
 - **Big records get pages; small rows are edited in place.** A record
@@ -425,7 +427,7 @@ everywhere:
   first formal use, then "the Society" or "SAL", never "the club". The
   motto "The paper and the pen." is the short line; the endorsement line
   is "a Society of Arts and Letters program". Every email and the footer
-  carry "Paperless by default. Books reused through Second Chapter."
+  carry "Paperless by default. Printed with purpose.", linked on the site to About's sustainability note.
 - **Content.** Don't invent names, dates, figures or quotes. Missing text
   is a `TODO(content): …` placeholder listed in `PROGRESS.md`.
 - **Formats.** Dates as "Tuesday, October 13", times as "6:00 p.m.": use

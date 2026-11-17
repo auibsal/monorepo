@@ -673,6 +673,11 @@ const Certificates = () => {
             String(v).toLowerCase().includes(q)
           )
         }
+        // A draft waits for its two signatures.
+        needsYou={{
+          date: (row) => row.issued_at,
+          test: (row) => row.status === "draft",
+        }}
       >
         {(found) => (
           <DataTable

@@ -224,6 +224,7 @@ export const ChoiceInput = ({
     <input
       aria-hidden
       className="pointer-events-none absolute start-0 bottom-0 h-px w-px opacity-0"
+      dir="auto"
       disabled={disabled}
       name={name}
       onChange={() => undefined}

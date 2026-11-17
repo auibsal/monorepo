@@ -1,7 +1,11 @@
 "use client";
 
+import { formatNumber } from "@repo/internationalization/format";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth/provider";
+import { unwrap } from "@/lib/data";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 import { DiwanPage } from "../page";
 import { Handovers } from "../service/roles";
@@ -11,6 +15,7 @@ import { PrizeVote } from "../society/prize-vote";
 import { ChildConsents } from "./child-consents";
 import { JournalSection } from "./journal";
 import { MembershipCard } from "./membership-card";
+import { AssignmentsToDo, CreditsToDo } from "./newsroom-todos";
 import { NextEvents } from "./next-events";
 import { Notices } from "./notices";
 import { OtherHome } from "./other-home";
@@ -57,6 +62,32 @@ export const greetingFor = (at: Date): Greeting => {
   return "evening";
 };
 
+/**
+ * How many to-dos are left (decisions.md, To-dos): the length of the one
+ * list, core.my_todos(), so the count is always the list's.
+ */
+const ToDoCount = () => {
+  const t = useTranslations("diwan.home");
+  const { supabase, user } = useAuth();
+  const todos = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      unwrap(await supabase.schema("api").rpc("my_todos")) ?? [],
+    queryKey: ["home", "my-todos", user?.id],
+  });
+  if (!todos.data) {
+    return null;
+  }
+  const count = todos.data.length;
+  return (
+    <p className="type-body text-text-secondary" role="status">
+      {count === 0
+        ? t("toDoNone")
+        : t("toDoCount", { count, countText: formatNumber(count) })}
+    </p>
+  );
+};
+
 /** The greeting, kept current while the page stays open. */
 const useGreeting = () => {
   const [greeting, setGreeting] = useState<Greeting | null>(null);
@@ -100,6 +131,7 @@ export const MemberHome = () => {
       }
     >
       <MembershipCard />
+      <ToDoCount />
       {/* The to-dos: each shows only while there is something to do. */}
       <div className="grid gap-x-16 gap-y-14 lg:grid-cols-2">
         <EsignToDo />
@@ -114,6 +146,8 @@ export const MemberHome = () => {
             <UnsignedRoleAgreements />
             <Handovers />
             <RoleChecklist />
+            <AssignmentsToDo />
+            <CreditsToDo />
           </>
         ) : null}
       </div>

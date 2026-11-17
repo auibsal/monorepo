@@ -22,8 +22,14 @@ import {
   useId,
   useState,
 } from "react";
+import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, programs, unwrap } from "@/lib/data";
+import {
+  type CaptionProblem,
+  captionProblems,
+  MAX_LINE,
+} from "@/lib/data/captions";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermissionAnywhere } from "@/lib/rbac";
@@ -31,6 +37,7 @@ import { uploadMedia } from "@/lib/storage";
 import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
+import { AddressLine } from "../address-line";
 import { CreditedNames } from "../credited-names";
 import { useProgramOptions } from "../events/data";
 import { RequestQueue } from "../forms/admin";
@@ -45,13 +52,15 @@ import {
   Field,
   NewLink,
   RecordPage,
+  RecordView,
   SaveButton,
   SelectInput,
 } from "../kit";
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { ProblemReports } from "../problem-reports";
-import { slugify } from "../slug";
+import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
+import { RecordHistory } from "../record-history";
 
 const invalidateKey = ["admin", "programs-module"];
 
@@ -66,6 +75,8 @@ interface EpisodeForm {
   captionsAr: string | null;
   captionsEn: string | null;
   chapters: ChapterRow[];
+  /** Published once, so its address no longer moves. */
+  fixed: boolean;
   id: string | null;
   number: string;
   releasedOn: string;
@@ -83,6 +94,7 @@ const blankEpisode: EpisodeForm = {
   captionsAr: null,
   captionsEn: null,
   chapters: [],
+  fixed: false,
   id: null,
   number: "",
   releasedOn: "",
@@ -185,6 +197,7 @@ const Episodes = ({ programId }: { programId: string }) => {
 /** One Next Stop episode on its own page, by its slug; new for a blank one. */
 export const EpisodePage = ({ slug }: { readonly slug: string }) => {
   const t = useTranslations("diwan.admin.programs.episodes");
+  const tr = useTranslations("diwan.admin.kit.record");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const options = useProgramOptions(null);
@@ -222,6 +235,7 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
           time: programs.clockOf(c.at),
           title: { ar: c.title_ar, en: c.title_en },
         })),
+        fixed: Boolean(e.published_at),
         id: e.id,
         number: e.number ? String(e.number) : "",
         releasedOn: e.released_on ?? "",
@@ -235,23 +249,46 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
         youtubeAr: e.youtube_id_ar ?? "",
       }
     : blankEpisode;
+  if (!e) {
+    return (
+      <RecordPage back={back} backLabel={t("back")} title={t("new")}>
+        <EpisodeEditor initial={initial} programId={programId} />
+      </RecordPage>
+    );
+  }
   return (
-    <div className="grid max-w-3xl gap-8">
-      <AdminHeading
-        actions={
-          <>
-            <Link className="link" href={back}>
-              {t("back")}
-            </Link>
-            {e?.published_at ? <OnTheSite href="/next-stop" /> : null}
-          </>
-        }
-        title={e ? localized(e, "title", locale) : t("new")}
-      />
+    <RecordView
+      actions={e.published_at ? <OnTheSite href="/next-stop" /> : undefined}
+      back={
+        <Link className="link" href={back}>
+          {t("back")}
+        </Link>
+      }
+      history={
+        <RecordHistory
+          id={e.id}
+          table="programs.episodes"
+          versions="programs.episodes"
+        />
+      }
+      menu={<DeleteRecord id={e.id} kind="episode" then="/media" />}
+      narrow
+      tabs={[
+        {
+          content: (
+            <>
+              <OnCamera episodeId={e.id} />
+              <EpisodeCredits episodeId={e.id} />
+            </>
+          ),
+          id: "people",
+          label: tr("people"),
+        },
+      ]}
+      title={localized(e, "title", locale)}
+    >
       <EpisodeEditor initial={initial} programId={programId} />
-      {e ? <OnCamera episodeId={e.id} /> : null}
-      {e ? <EpisodeCredits episodeId={e.id} /> : null}
-    </div>
+    </RecordView>
   );
 };
 
@@ -263,7 +300,6 @@ const EpisodeEditor = ({
   readonly programId: string;
 }) => {
   const t = useTranslations("diwan.admin.programs.episodes");
-  const tk = useTranslations("diwan.admin.kit");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -302,7 +338,9 @@ const EpisodeEditor = ({
         released_on: form.releasedOn || null,
         season: form.season ? Number(form.season) : null,
         segment: form.segment.trim() || null,
-        slug: form.slug || slugify(form.title.en),
+        slug: form.fixed
+          ? form.slug
+          : slugFromTitle(form.title.en, form.title.ar),
         summary_ar: form.summary.ar || null,
         summary_en: form.summary.en || null,
         thumbnail_path: form.thumbnail,
@@ -417,18 +455,10 @@ const EpisodeEditor = ({
           />
         )}
       </Field>
-      <Field hint={tk("slugHint")} label={tk("slug")}>
-        {(id) => (
-          <Input
-            dir="ltr"
-            id={id}
-            maxLength={80}
-            onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-            placeholder={slugify(form.title.en)}
-            value={form.slug}
-          />
-        )}
-      </Field>
+      <AddressLine
+        fixed={form.fixed}
+        path={`/next-stop/episodes/${form.fixed ? form.slug : slugFromTitle(form.title.en, form.title.ar)}`}
+      />
       <ImageField
         area="next-stop"
         label={t("thumbnail")}
@@ -559,10 +589,22 @@ const CaptionsField = ({
   const t = useTranslations("diwan.admin.programs.episodes");
   const { supabase } = useAuth();
   const id = useId();
+  const [problems, setProblems] = useState<CaptionProblem[]>([]);
   const upload = useMutation({
-    mutationFn: async (file: File) =>
-      (await uploadMedia(supabase, "next-stop", file)).path,
-    onSuccess: onChange,
+    mutationFn: async (file: File) => {
+      // The DCMP Captioning Key's line rules, checked before the upload.
+      const found = captionProblems(await file.text());
+      setProblems(found);
+      if (found.length > 0) {
+        return null;
+      }
+      return (await uploadMedia(supabase, "next-stop", file)).path;
+    },
+    onSuccess: (path) => {
+      if (path) {
+        onChange(path);
+      }
+    },
   });
   return (
     <div className="grid gap-2">
@@ -590,6 +632,23 @@ const CaptionsField = ({
         }}
         type="file"
       />
+      {problems.length > 0 ? (
+        <div className="grid gap-1" role="alert">
+          <p className="type-body text-accent">
+            {t("captions.problems", { max: formatNumber(MAX_LINE) })}
+          </p>
+          <ul className="type-caption grid gap-0.5">
+            {problems.slice(0, 10).map((p) => (
+              <li dir="auto" key={`${p.cue}-${p.kind}-${p.text}`}>
+                {t(`captions.${p.kind}`, {
+                  cue: formatNumber(p.cue),
+                  text: p.text,
+                })}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <ErrorLine error={upload.error} />
     </div>
   );
@@ -1878,6 +1937,7 @@ export const MediaAdmin = () => {
         </>
       ) : null}
       <CreditedNames />
+      <RecentlyDeleted kind="episode" />
       <DiwanSection id="removals" title={t("removalsTitle")}>
         <Removals />
       </DiwanSection>

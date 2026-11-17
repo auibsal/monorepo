@@ -153,7 +153,7 @@ select is((select count(*)::int from core.outbox where kind = 'forms.signed_copy
 
 -- The Code of Conduct is not signed: it is accepted by the sign-up line,
 -- logged on the account.
-select is((select filled from governance.form_types where key = 'code-of-conduct'), 'removed',
+select is((select count(*)::int from governance.form_types where key = 'code-of-conduct'), 0,
   'The Code of Conduct is no signed kind');
 select is((select count(*)::int from membership.pledges where user_id = '00000000-0000-0000-0000-0000000ab002'), 0,
   'and no pledge is asked of a member');

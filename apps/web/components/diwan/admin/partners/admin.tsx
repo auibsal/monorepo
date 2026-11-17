@@ -14,6 +14,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, partners, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
@@ -26,6 +27,7 @@ import { buckets, getMediaUrl } from "@/lib/storage";
 import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
+import { AddressLine } from "../address-line";
 import { SectionTabs } from "../admin-shell";
 import { ImageField } from "../image-field";
 import {
@@ -45,6 +47,8 @@ import {
 import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { VerificationQueue } from "../members/verification";
+import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
+import { EditableSection, Fact, Facts } from "../record";
 import { RecordHistory } from "../record-history";
 import { CouncilVote } from "./council-vote";
 import {
@@ -450,18 +454,7 @@ const SocietyFields = ({
   const t = useTranslations("diwan.admin.partners.register");
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <Field hint={t("slugHint")} label={t("slug")}>
-        {(id) => (
-          <Input
-            dir="ltr"
-            id={id}
-            onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-            pattern="[a-z0-9]+(-[a-z0-9]+)*"
-            required
-            value={form.slug}
-          />
-        )}
-      </Field>
+      <AddressLine fixed path={`/diwan/partnerships/${form.slug}`} />
       {owned || form.relation === "partner" ? null : (
         <Field hint={t("relationHint")} label={t("relation")}>
           {(id) => (
@@ -621,6 +614,7 @@ const Register = () => {
       <p className="type-body">{t("lede")}</p>
       <AddOrganization />
       <RecordList
+        archived={(row) => row.status === "ended"}
         empty={
           <EmptyLine action={{ href: "/partnerships", label: tk("showAll") }}>
             {t("empty")}
@@ -655,6 +649,11 @@ const Register = () => {
               .includes(q)
           )
         }
+        // A logo waiting for Partnerships.
+        needsYou={{
+          date: (row) => String(row.updated_at ?? row.created_at ?? ""),
+          test: (row) => Boolean(row.logo_pending_path),
+        }}
       >
         {(found) => (
           <DataTable
@@ -667,9 +666,6 @@ const Register = () => {
     </div>
   );
 };
-
-const SLUG_RUNS = /[^a-z0-9]+/gu;
-const SLUG_ENDS = /^-+|-+$/gu;
 
 /**
  * A campus partner or a sponsor in kind, added in place (decisions.md,
@@ -684,10 +680,7 @@ const AddOrganization = () => {
   const [name, setName] = useState({ ar: "", en: "" });
   const add = useMutation({
     mutationFn: async () => {
-      const slug = name.en
-        .toLowerCase()
-        .replace(SLUG_RUNS, "-")
-        .replace(SLUG_ENDS, "");
+      const slug = slugFromTitle(name.en, name.ar);
       unwrap(
         await supabase
           .schema("api")
@@ -828,13 +821,11 @@ const partnerRef = (row: PartnerRow) => String(row.slug || row.id);
  * possible match), then the form; on a partner's own entry, its people
  * from their accounts.
  */
-const PartnerPageBody = ({ row }: { readonly row: PartnerRow }) => {
-  const router = useRouter();
+const PartnerOverview = ({ row }: { readonly row: PartnerRow }) => {
   const owned = usePartnerOwned(row.id);
   if (owned.isPending) {
     return <SectionSpinner />;
   }
-  const isOwned = owned.data === true;
   return (
     <>
       <RegisterLogo
@@ -844,7 +835,7 @@ const PartnerPageBody = ({ row }: { readonly row: PartnerRow }) => {
       {row.logo_pending_path ? (
         <PendingLogo partnerId={row.id} path={String(row.logo_pending_path)} />
       ) : null}
-      {isOwned ? (
+      {owned.data === true ? (
         <PendingListing
           current={{
             description_ar: (row.description_ar as string | null) ?? null,
@@ -854,20 +845,70 @@ const PartnerPageBody = ({ row }: { readonly row: PartnerRow }) => {
           partnerId={row.id}
         />
       ) : null}
-      <PartnerForm
-        initial={row}
-        onDone={() => router.push("/partnerships")}
-        owned={isOwned}
-      />
-      {isOwned ? <PartnerPeople partnerId={row.id} /> : null}
+    </>
+  );
+};
+
+/** The entry's details, read as text, with Edit opening the form. */
+const PartnerDetails = ({ row }: { readonly row: PartnerRow }) => {
+  const t = useTranslations("diwan.admin.partners.register");
+  const tr = useTranslations("diwan.admin.kit.record");
+  const owned = usePartnerOwned(row.id);
+  const text = (column: string) => (row[column] as string | null) ?? "";
+  return (
+    <EditableSection
+      form={
+        <PartnerForm
+          initial={row}
+          onDone={() => undefined}
+          owned={owned.data === true}
+        />
+      }
+      id="details"
+      title={tr("details")}
+    >
+      <Facts>
+        <Fact label={t("name")}>
+          <span className="block" dir="ltr" lang="en">
+            {text("name_en")}
+          </span>
+          {text("name_ar") ? (
+            <span className="block" dir="rtl" lang="ar">
+              {text("name_ar")}
+            </span>
+          ) : null}
+        </Fact>
+        <Fact label={t("url")}>
+          {text("url") ? <bdi dir="ltr">{text("url")}</bdi> : t("no")}
+        </Fact>
+        <Fact label={t("listedShort")}>
+          {row.is_listed ? t("yes") : t("no")}
+        </Fact>
+      </Facts>
+    </EditableSection>
+  );
+};
+
+/** On a partner's own entry, its people from their accounts; its guests. */
+const PartnerPeopleTab = ({ row }: { readonly row: PartnerRow }) => {
+  const t = useTranslations("diwan.admin.partners.register");
+  const owned = usePartnerOwned(row.id);
+  return (
+    <>
+      {owned.data === true ? <PartnerPeople partnerId={row.id} /> : null}
+      <DiwanSection id="guests" title={t("guests")}>
+        <Affiliations partnerId={row.id} />
+      </DiwanSection>
     </>
   );
 };
 
 export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
   const t = useTranslations("diwan.admin.partners.register");
+  const tr = useTranslations("diwan.admin.kit.record");
   const locale = useLocale() as Locale;
   const register = usePartners();
+  const router = useRouter();
   if (register.isPending) {
     return <SectionSpinner />;
   }
@@ -884,24 +925,42 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
   }
   return (
     <RecordView
-      actions={row?.is_listed ? <OnTheSite href="/partners" /> : undefined}
+      actions={row.is_listed ? <OnTheSite href="/partners" /> : undefined}
+      archived={row.status === "ended"}
       back={
         <Link className="link" href="/partnerships">
           {t("back")}
         </Link>
       }
       history={
-        row ? <RecordHistory id={row.id} table="governance.partners" /> : null
+        <RecordHistory
+          id={row.id}
+          table="governance.partners"
+          versions="governance.partners"
+        />
       }
-      narrow
+      menu={
+        <DeleteRecord
+          id={row.id}
+          kind="partner"
+          onDeleted={() => router.push("/partnerships")}
+        />
+      }
+      tabs={[
+        {
+          content: <PartnerDetails row={row} />,
+          id: "details",
+          label: tr("details"),
+        },
+        {
+          content: <PartnerPeopleTab row={row} />,
+          id: "people",
+          label: tr("people"),
+        },
+      ]}
       title={localized(row, "name", locale)}
     >
-      <PartnerPageBody row={row} />
-      {row ? (
-        <DiwanSection id="guests" title={t("guests")}>
-          <Affiliations partnerId={row.id} />
-        </DiwanSection>
-      ) : null}
+      <PartnerOverview row={row} />
     </RecordView>
   );
 };
@@ -1179,15 +1238,23 @@ export const AgreementPage = ({ id }: { id: string }) => {
     ? partnerName(agreement.data.partner_id)
     : t("missing");
   return (
-    <div className="grid max-w-3xl gap-8">
-      <AdminHeading
-        actions={
-          <Link className="link" href={back}>
-            {t("back")}
-          </Link>
-        }
-        title={title}
-      />
+    <RecordView
+      back={
+        <Link className="link" href={back}>
+          {t("back")}
+        </Link>
+      }
+      history={
+        agreement.data ? (
+          <RecordHistory
+            id={agreement.data.id}
+            table="governance.partner_agreements"
+          />
+        ) : undefined
+      }
+      narrow
+      title={title}
+    >
       {agreement.data?.status === "draft" ? (
         <CouncilVote
           agreementId={agreement.data.id}
@@ -1195,7 +1262,7 @@ export const AgreementPage = ({ id }: { id: string }) => {
           onDone={done}
         />
       ) : null}
-    </div>
+    </RecordView>
   );
 };
 
@@ -1498,6 +1565,9 @@ export const PartnersAdmin = ({ view }: { view?: PartnerView }) => {
         <VerificationQueue />
       ) : null}
       {here === "register" && canManage ? <Register /> : null}
+      {here === "register" && canManage ? (
+        <RecentlyDeleted kind="partner" />
+      ) : null}
       {here === "agreements" ? <Agreements /> : null}
     </div>
   );

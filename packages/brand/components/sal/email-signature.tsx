@@ -1,4 +1,4 @@
-import { cn } from "../../lib/utils";
+import { cn, dirOf } from "../../lib/utils";
 
 /**
  * The email signature for hello@auibsal.org and officers' Society email
@@ -10,14 +10,13 @@ const EMAIL_SIGNATURE = {
   ar: {
     links: "auibsal.org · @auibsal",
     motto: "والقرطاسُ والقلمُ.",
-    paperless:
-      "الأصل عندنا: بلا ورق. والكتب يُعاد استخدامها عبر «الفصل الثاني».",
+    paperless: "الأصل عندنا: بلا ورق، ونطبع لغاية.",
     society: "جمعية الفنون والآداب في الجامعة الأمريكية",
   },
   en: {
     links: "auibsal.org · @auibsal",
     motto: "The paper and the pen.",
-    paperless: "Paperless by default. Books reused through Second Chapter.",
+    paperless: "Paperless by default. Printed with purpose.",
     society: "AUIB Society of Arts and Letters",
   },
 } as const;
@@ -66,7 +65,7 @@ export const EmailSignature = ({
   return (
     <div
       className={cn("grid max-w-md gap-3 text-sm leading-relaxed", className)}
-      dir={lang === "ar" ? "rtl" : "ltr"}
+      dir={dirOf(lang)}
       lang={lang}
     >
       <div>

@@ -94,10 +94,16 @@ as $$
   returning id;
 $$;
 -- </preamble>
+-- The view log, counted as the database owner (readers can't read it).
+create function pg_temp.reading_views_of(entry uuid) returns integer
+language sql security definer as $$
+  select count(*)::integer from journal.reading_views where entry_id = entry $$;
+grant execute on function pg_temp.reading_views_of(uuid) to public;
+
 
 delete from journal.issues;
 
-select plan(18);
+select plan(19);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
 select access.bootstrap_founder('founder@auib.edu.iq');
@@ -176,6 +182,9 @@ select is(
 );
 select is((select body_html from journal.entry_text((select id from journal.blind_entries))),
   '<p>The text</p>', 'After the pledge, the reader reads the text');
+-- decisions.md, Qirtas: "Reading copies": every view is logged.
+select is(pg_temp.reading_views_of((select id from journal.blind_entries)), 1,
+  'and the view is logged');
 select is((select current from journal.my_reader_pledge()), true, 'The pledge is the current one');
 select is((select count(*)::integer from journal.original_openings), 0, 'Readers see no openings');
 

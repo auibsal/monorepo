@@ -32,6 +32,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
 import { DataError } from "@/lib/data";
@@ -39,6 +40,8 @@ import { ApiError, callApiText } from "@/lib/diwan/api";
 import { useQueryState } from "@/lib/diwan/use-query-param";
 import { useAppLink } from "@/lib/link-context";
 import { ChoiceInput } from "./choice-input";
+import { RecordMenu, type RecordTab, RecordTabs } from "./record";
+import { useSectionForm } from "./section-form";
 
 // ── Page heading ────────────────────────────────────────────────────────────
 
@@ -165,37 +168,90 @@ export const AddInPlace = ({
  */
 export const RecordView = ({
   actions,
+  archived = false,
   back,
   children,
   history,
   lede,
+  menu,
   narrow = false,
   status,
+  tabs,
   title,
 }: {
-  /** The main action, then any link out ("On the site"). */
+  /** The one main action, then any link out ("On the site"). */
   readonly actions?: ReactNode;
+  /** A finished record, in the Archive: shown read-only. */
+  readonly archived?: boolean;
   /** The way back to its list, a link. */
   readonly back?: ReactNode;
+  /** The record's Overview. */
   readonly children: ReactNode;
-  /** The record's History, shown last. */
+  /** The record's History, its last tab. */
   readonly history?: ReactNode;
   readonly lede?: ReactNode;
+  /** Everything but the main action, under More. */
+  readonly menu?: ReactNode;
   readonly narrow?: boolean;
   readonly status?: ReactNode;
+  /** The record's other tabs, between Overview and History. */
+  readonly tabs?: readonly RecordTab[];
   readonly title: string;
-}) => (
-  <div className={cn("grid gap-10", narrow && "max-w-3xl")}>
-    <div className="grid gap-3">
-      {back ? <div className="type-caption">{back}</div> : null}
-      <AdminHeading actions={actions} status={status} title={title}>
-        {lede}
-      </AdminHeading>
+}) => {
+  const t = useTranslations("diwan.admin.kit.record");
+  const tabbed = Boolean(history || tabs?.length);
+  const readOnly = (content: ReactNode) =>
+    archived ? (
+      <fieldset className="contents" disabled>
+        {content}
+      </fieldset>
+    ) : (
+      content
+    );
+  return (
+    <div className={cn("grid gap-10", narrow && "max-w-3xl")}>
+      <div className="grid gap-3">
+        {back ? <div className="type-caption">{back}</div> : null}
+        <AdminHeading
+          actions={
+            actions || menu ? (
+              <>
+                {actions}
+                {menu ? <RecordMenu>{menu}</RecordMenu> : null}
+              </>
+            ) : undefined
+          }
+          status={status}
+          title={title}
+        >
+          {lede}
+        </AdminHeading>
+        {archived ? <p className="type-caption">{t("archived")}</p> : null}
+      </div>
+      {tabbed ? (
+        <RecordTabs
+          label={t("tabsLabel")}
+          tabs={[
+            {
+              content: readOnly(children),
+              id: "overview",
+              label: t("overview"),
+            },
+            ...(tabs ?? []).map((tab) => ({
+              ...tab,
+              content: readOnly(tab.content),
+            })),
+            ...(history
+              ? [{ content: history, id: "history", label: t("history") }]
+              : []),
+          ]}
+        />
+      ) : (
+        readOnly(children)
+      )}
     </div>
-    {children}
-    {history}
-  </div>
-);
+  );
+};
 
 /**
  * A new or edited record's own page: the same record page, with the way
@@ -231,6 +287,43 @@ export const RecordPage = ({
   );
 };
 
+type ListView = "all" | "archive" | "needs";
+
+const VIEW_LABELS = {
+  all: "all",
+  archive: "archive",
+  needs: "needsYou",
+} as const;
+
+/** The rows a list's view shows, in its order. */
+const listFor = <T,>(
+  view: ListView,
+  items: readonly T[],
+  needsYou:
+    | {
+        readonly date: (item: T) => string | null | undefined;
+        readonly test: (item: T) => boolean;
+      }
+    | undefined,
+  archived: ((item: T) => boolean) | undefined
+): readonly T[] => {
+  const byDate = (direction: 1 | -1) => (x: T, y: T) =>
+    direction *
+    String(needsYou?.date(x) ?? "").localeCompare(
+      String(needsYou?.date(y) ?? "")
+    );
+  if (view === "archive") {
+    return items.filter((item) => archived?.(item));
+  }
+  const current = archived ? items.filter((item) => !archived(item)) : items;
+  if (!needsYou) {
+    return current;
+  }
+  return view === "needs"
+    ? current.filter(needsYou.test).sort(byDate(1))
+    : [...current].sort(byDate(-1));
+};
+
 /**
  * One list (decisions.md, The site: "One list") for every list of records
  * in Your account and the Diwan: a find line kept in the query string
@@ -238,12 +331,20 @@ export const RecordPage = ({
  * empty state with one next action.
  */
 export const RecordList = <T,>({
+  archived,
   children,
   empty,
   filters,
   items,
   matches,
+  needsYou,
 }: {
+  /**
+   * A finished record (a past event, a closed opening, an ended partner)
+   * leaves the active lists for the Archive: still found, opened read-only
+   * (decisions.md, The site: "Archive").
+   */
+  readonly archived?: (item: T) => boolean;
   /** The rows found, drawn by the page (a RowList or a DataTable). */
   readonly children: (found: readonly T[]) => ReactNode;
   /** What shows when nothing is there or nothing is found. */
@@ -252,15 +353,66 @@ export const RecordList = <T,>({
   readonly items: readonly T[];
   /** Whether a row matches the find line (already lowercased). */
   readonly matches: (item: T, query: string) => boolean;
+  /**
+   * The list opens on "Needs you": what waits on this person or seat,
+   * oldest first; "All" shows everything, newest first (decisions.md, The
+   * site: "One list").
+   */
+  readonly needsYou?: {
+    readonly date: (item: T) => string | null | undefined;
+    readonly test: (item: T) => boolean;
+  };
 }) => {
   const t = useTranslations("diwan.admin.kit");
   const id = useId();
   const [query, setQuery] = useQueryState("q");
+  const [kept, keep] = useQueryState("view");
+  const views: ListView[] = [
+    ...(needsYou ? (["needs"] as const) : []),
+    "all",
+    ...(archived ? (["archive"] as const) : []),
+  ];
+  const [view, setView] = useState<ListView>(
+    views.find((v) => v === kept) ?? views[0] ?? "all"
+  );
   const [typed, setTyped] = useState(query);
   const needle = typed.trim().toLowerCase();
-  const found = needle ? items.filter((item) => matches(item, needle)) : items;
+  const listed = listFor(view, items, needsYou, archived);
+  const waiting = needsYou ? items.filter(needsYou.test) : [];
+  const found = needle
+    ? listed.filter((item) => matches(item, needle))
+    : listed;
+  const choose = (next: ListView) => {
+    setView(next);
+    keep(next === views[0] ? "" : next);
+  };
   return (
     <div className="grid gap-5">
+      {views.length > 1 ? (
+        <div className="border-line flex flex-wrap gap-x-6 border-b">
+          {views.map((v) => (
+            <button
+              aria-pressed={view === v}
+              className={cn(
+                "hover:text-accent border-b-[1.5px] py-3 text-sm font-medium whitespace-nowrap",
+                view === v
+                  ? "border-accent text-text"
+                  : "text-text-secondary border-transparent"
+              )}
+              key={v}
+              onClick={() => choose(v)}
+              type="button"
+            >
+              {t(VIEW_LABELS[v])}
+              {v === "needs" && waiting.length > 0 ? (
+                <span className="text-accent ms-1.5">
+                  {formatNumber(waiting.length)}
+                </span>
+              ) : null}
+            </button>
+          ))}
+        </div>
+      ) : null}
       <div className="flex flex-wrap items-end gap-4">
         <div className="grid gap-2">
           <Label htmlFor={`${id}-q`}>{t("find")}</Label>
@@ -523,11 +675,43 @@ export const SaveButton = ({
   success = false,
 }: SaveButtonProps) => {
   const t = useTranslations("common");
+  const section = useSectionForm();
+  const anchor = useRef<HTMLSpanElement>(null);
+  const wasSaving = useRef(false);
+  // Inside a section being edited, a finished save closes the form.
+  useEffect(() => {
+    if (pending) {
+      wasSaving.current = true;
+    } else if (success && wasSaving.current) {
+      wasSaving.current = false;
+      section?.saved();
+    }
+  }, [pending, success, section]);
   let label = t("save");
   if (pending) {
     label = t("saving");
   } else if (success) {
     label = t("saved");
+  }
+  if (section) {
+    // The one Save, in the section's sticky bar; it submits this form.
+    return (
+      <>
+        <span hidden ref={anchor} />
+        {section.bar
+          ? createPortal(
+              <Button
+                disabled={disabled || pending}
+                onClick={() => anchor.current?.closest("form")?.requestSubmit()}
+                type="button"
+              >
+                {label}
+              </Button>,
+              section.bar
+            )
+          : null}
+      </>
+    );
   }
   return (
     <Button

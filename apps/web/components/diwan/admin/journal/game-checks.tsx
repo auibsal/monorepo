@@ -2,6 +2,7 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
+import { dirOf } from "@repo/internationalization/config";
 import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -94,7 +95,7 @@ export const GameChecks = () => {
                 </p>
                 <dl
                   className="grid gap-1 text-sm"
-                  dir={lang === "ar" ? "rtl" : "ltr"}
+                  dir={dirOf(lang)}
                   lang={lang}
                 >
                   <div>

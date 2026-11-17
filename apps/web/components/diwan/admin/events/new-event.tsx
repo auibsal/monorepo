@@ -3,11 +3,12 @@
 import { useTranslations } from "next-intl";
 import { RequireModule } from "../admin-shell";
 import { RecordPage } from "../kit";
-import { EventFacts } from "./facts";
+import { NewEventSteps } from "./facts";
 
 /**
- * A new event, made in the Diwan (decisions.md, Events): saved as a draft
- * with the standard shifts, then finished and published on its own page.
+ * A new event, made in the Diwan (decisions.md, Events) in a few steps:
+ * saved as a draft with the standard shifts, then finished and published
+ * on its own page.
  */
 export const NewEvent = () => {
   const t = useTranslations("diwan.admin.event.facts");
@@ -20,7 +21,7 @@ export const NewEvent = () => {
         lede={t("newLede")}
         title={t("newTitle")}
       >
-        <EventFacts event={null} />
+        <NewEventSteps />
       </RecordPage>
     </RequireModule>
   );

@@ -3,6 +3,7 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 import {
   formatLongDate,
   formatNumber,
@@ -28,6 +29,8 @@ import {
 import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
+import { RecentlyDeleted } from "../recently-deleted";
+import { DeskBoard } from "./board";
 import { GameChecks } from "./game-checks";
 import { FrontRank } from "./workflow";
 
@@ -291,6 +294,7 @@ const QueueWork = ({ item }: { item: QueueRow }) => {
           dangerouslySetInnerHTML={{
             __html: sanitizeRichText(work.data.body_html),
           }}
+          dir={dirOf(item.language)}
           lang={item.language === "ar" ? "ar" : "en"}
         />
       ) : null}
@@ -718,8 +722,17 @@ export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
     <div className="grid gap-14">
       <AdminHeading title={desk ? tj(`desks.${desk}`) : tt("newsroom")} />
       <SectionsNav />
+      {desk && desk !== "games" ? (
+        <DeskBoard
+          desk={desk}
+          edits={
+            has(`journal.edit.${desk}` as Permission) || has("journal.approve")
+          }
+        />
+      ) : null}
       {reads ? <Desks desk={desk} /> : null}
       {writes ? <Newsroom desk={desk} /> : null}
+      {writes && desk === undefined ? <RecentlyDeleted kind="piece" /> : null}
       {desk === "games" && puzzles ? <GameChecks /> : null}
       {desk === undefined && has("journal.frontpage") ? <FrontPage /> : null}
       {desk === undefined && has("journal.manage") ? <QirtasNeeds /> : null}
@@ -752,6 +765,7 @@ export const QirtasEditions = () => {
     <div className="grid gap-14">
       {reads ? <PipelineAdmin embedded /> : null}
       <Editions />
+      <RecentlyDeleted kind="edition" />
     </div>
   );
 };

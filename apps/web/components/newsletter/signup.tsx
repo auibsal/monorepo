@@ -186,7 +186,13 @@ export const NewsletterSignup = ({
       <div aria-hidden className="hidden">
         <label>
           {t("website")}
-          <input autoComplete="off" name="website" tabIndex={-1} type="text" />
+          <input
+            autoComplete="off"
+            dir="auto"
+            name="website"
+            tabIndex={-1}
+            type="text"
+          />
         </label>
       </div>
       {state === "invalid_email" ||

@@ -217,6 +217,7 @@ export const CrosswordGame = ({
                       k === active.cell && "ring-accent ring-2 ring-inset",
                       wrong(k, sq.letter) && "text-text line-through"
                     )}
+                    dir="auto"
                     maxLength={2}
                     onChange={(event) => onInput(k, event)}
                     onClick={() =>

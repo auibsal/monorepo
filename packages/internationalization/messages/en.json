@@ -417,22 +417,6 @@
       },
       "roleChecklist": {
         "title": "Your first steps as {role}",
-        "lede": "The new role holder’s checklist. The site marks what it can see; tick the rest when it’s done.",
-        "done": "Done:",
-        "todo": "To do:",
-        "go": "Go there",
-        "tick": "Mark as done",
-        "steps": {
-          "email": "The role email, with what the role does and who it works with",
-          "pledge": "The role agreement signed: the Code of Conduct and the license for work made in the role (for Qirtas, the readers’ pledge too)",
-          "declaration": "The conflict-of-interest declaration",
-          "two_step": "Two-step sign-in or a passkey set up",
-          "diwan_group": "In the Diwan group on Telegram, through Hudhud",
-          "pages": "The role’s manual, Brand essentials and the role’s Diwan pages opened",
-          "handover": "The previous holder’s handover read and countersigned (Roles and service)",
-          "mailbox": "The seat’s mailbox received, with its password and two-step backup reset",
-          "notion": "Invited to Notion by the Secretary"
-        },
         "agreement": {
           "conduct": "The role agreement: you will keep the Code of Conduct in this role.",
           "readConduct": "Read the Code of Conduct",
@@ -441,7 +425,19 @@
           "failed": "It wasn’t signed. Try again in a moment.",
           "signAsLabel": "Sign as"
         },
-        "signAgreement": "Sign the role agreement: {role}"
+        "signAgreement": "Sign the role agreement: {role}",
+        "progress": "{done} of {total} done",
+        "actions": {
+          "email": "The role email arrives from the seat’s officer",
+          "pledge": "Sign the role agreement",
+          "declaration": "Make your conflict-of-interest declaration",
+          "two_step": "Set up two-step sign-in or a passkey",
+          "diwan_group": "Join the Diwan group through Hudhud",
+          "pages": "Open your role’s manual and Brand essentials",
+          "handover": "Read and countersign the handover",
+          "mailbox": "Open the seat’s mailbox",
+          "notion": "Open Notion"
+        }
       },
       "renewal": {
         "title": "I’m still here",
@@ -483,8 +479,28 @@
           "pendingBody": "You told us you studied at AUIB. The Director of Membership approves Associate membership for alumni 18 or older, and you’ll hear by email. Until then, your account is a guest’s.",
           "declinedTitle": "Your request for Associate membership was declined",
           "declinedBody": "The Director of Membership could not confirm that you studied at AUIB, and your account stays a guest’s. If you think this is a mistake, write to <email>{address}</email>."
+        },
+        "assignment": {
+          "title": "An assignment",
+          "due": "Due {date}",
+          "accept": "Accept",
+          "decline": "Decline",
+          "start": "Start writing",
+          "kinds": {
+            "writing": "Writing",
+            "photos": "Photos",
+            "art": "Art"
+          }
+        },
+        "credit": {
+          "title": "A credit to accept",
+          "line": "{role} on “{title}”",
+          "accept": "Accept the credit",
+          "decline": "Decline"
         }
-      }
+      },
+      "toDoNone": "Nothing to do. You’re all set.",
+      "toDoCount": "{count, plural, one {{countText} thing to do} other {{countText} things to do}}"
     },
     "events": {
       "title": "Events",
@@ -1124,7 +1140,67 @@
         "exportAsked": "Asked. Download the list once a second officer approves it on the Desk.",
         "find": "Find",
         "findPlaceholder": "Find a title, a name or a number",
-        "showAll": "Show everything"
+        "showAll": "Show everything",
+        "address": {
+          "label": "Web address",
+          "made": "Made from the English title; fixed once published, since the address will be shared.",
+          "fixed": "Fixed: it’s published, and the address has been shared."
+        },
+        "trash": {
+          "delete": "Delete",
+          "cancel": "Cancel",
+          "confirmYes": "Delete it",
+          "confirm": "Delete “{name}”? It waits 30 days in Recently deleted, where you can restore it.",
+          "blocked": {
+            "unpublish_first": "“{name}” is published. Unpublish it first, then delete it.",
+            "unlist_first": "“{name}” is listed on the site. Unlist it first, then delete it.",
+            "in_use": "“{name}” is still used here. Remove it from these first:",
+            "cancel_first": "“{name}” is under way. Cancel it first, then delete it.",
+            "close_first": "“{name}” is open. Close it first, then delete it.",
+            "sent": "“{name}” was sent, so it stays on the record."
+          },
+          "uses": {
+            "event": "The event “{title}”",
+            "memorandum": "The memorandum {title}",
+            "partner": "The partner “{title}”",
+            "edition": "The Edition “{title}”",
+            "piece": "The piece “{title}”",
+            "episode": "The episode “{title}”",
+            "production": "The production “{title}”"
+          },
+          "deleted": "Deleted. It waits 30 days in Recently deleted.",
+          "undo": "Undo",
+          "title": "Recently deleted",
+          "lede": "Restore anything deleted in the last 30 days. After that it is removed for good.",
+          "purges": "Removed on {date}",
+          "restore": "Restore"
+        },
+        "record": {
+          "edit": "Edit",
+          "cancel": "Cancel",
+          "discard": "Discard changes",
+          "discardAsk": "Your changes aren’t saved. Discard them?",
+          "keepEditing": "Keep editing",
+          "more": "More",
+          "stepOf": "Step {step} of {count}:",
+          "create": "Create",
+          "creating": "Creating…",
+          "next": "Next",
+          "back": "Back",
+          "review": "Review",
+          "tabsLabel": "Sections of this record",
+          "overview": "Overview",
+          "history": "History",
+          "details": "Details",
+          "people": "People",
+          "yes": "Yes",
+          "no": "No",
+          "membership": "Membership",
+          "roles": "Roles",
+          "archived": "In the Archive: finished, kept to read. Nothing here can be changed."
+        },
+        "needsYou": "Needs you",
+        "archive": "Archive"
       },
       "overview": {
         "title": "Desk",
@@ -1133,10 +1209,6 @@
         "verificationPending": "Waiting for verification",
         "upcomingRsvps": "Bookings for upcoming events",
         "openSubmissions": "Open Qirtas submissions",
-        "campaigns": "Funds counted, active campaigns",
-        "counted": "{amount} counted",
-        "pending": "{amount} waiting for sign-off",
-        "noCampaigns": "No active campaign.",
         "nothing": "Your roles don’t include any of the overview figures.",
         "membersDetail": "{count, plural, =0 {None are Voting Members yet (two events or general meetings in the last 12 months).} one {{n} is a Voting Member (two events or general meetings in the last 12 months).} other {{n} are Voting Members (two events or general meetings in the last 12 months).}}",
         "verificationDetail": "The oldest has waited since {date}.",
@@ -1639,7 +1711,7 @@
           "theSociety": "The Society",
           "image": "Image",
           "slug": "Web address",
-          "slugHint": "Latin letters, digits and hyphens. Left empty, it is made from the title and the date.",
+          "slugHint": "Made from the English title and the day; fixed once the event is published.",
           "slugFixed": "Fixed once the event is published, since the address has been shared.",
           "slugInvalid": "The web address takes only Latin letters, digits and hyphens.",
           "debrief": "Debrief (its page in Notion)",
@@ -1650,14 +1722,25 @@
           "backToDraft": "Make it a draft again",
           "needsLead": "An event is published only with a lead and a confirmed place: pick the lead and set the venue, then publish.",
           "newTitle": "New event",
-          "newLede": "Saved as a draft with the standard volunteer shifts (check-in, the membership table, and refreshments when food is served). Finish it on its page, then publish."
+          "newLede": "Saved as a draft with the standard volunteer shifts (check-in, the membership table, and refreshments when food is served). Finish it on its page, then publish.",
+          "noVenue": "No place yet",
+          "notWritten": "Not written yet",
+          "hasImage": "An image is set",
+          "noImage": "No image yet",
+          "noLimit": "No limit",
+          "noLead": "No lead yet",
+          "preset": "What kind of event",
+          "presetHint": "Its format from the Events Manual fills the duration, access, shifts, run of show and checklist. You can change anything after.",
+          "noPreset": "None of these",
+          "presetStep": "Kind"
         },
         "promo": {
           "title": "Promo kit",
           "lede": "Built from this event’s fields, image and Program, in English and Arabic: the Instagram carousel (a cover, a card for each work and Good to know) and the stories (the cover, each work, Tomorrow and Today); the A3 poster and an A1 for easels, the A4 handout and a 1920 × 1080 version for campus screens; the A5 program and an A4 sheet of two, printed double-sided; the check-in and join table tents; the door signs; the thank-you card with the co-sponsors’ logos; the Telegram image, the link preview and the captions. Save each file you need; Media posts them.",
           "build": "Build the promo kit",
           "building": "Building…",
-          "failed": "The kit could not be built. Check the event’s image, then try again."
+          "failed": "The kit could not be built. Check the event’s image, then try again.",
+          "savedToLibrary": "Saved to the media library under this event, with its captions."
         },
         "classesHint": "Tick all four for Everyone. Anyone whose class isn’t ticked sees whom the event is for.",
         "format": "Kind",
@@ -1692,6 +1775,45 @@
           "edit": "Edit",
           "done": "Done",
           "remove": "Remove"
+        },
+        "tabs": {
+          "overview": "Overview",
+          "details": "Details",
+          "access": "Access",
+          "people": "People",
+          "program": "Program",
+          "promotion": "Promotion",
+          "after": "After",
+          "history": "History"
+        },
+        "checkIn": "Check-in at the door",
+        "debriefTitle": "Debrief",
+        "openPromo": "Open the promo kit",
+        "checklist": {
+          "title": "Checklist",
+          "progress": "{done} of {total} done",
+          "empty": "No checklist yet. Add an item below.",
+          "add": "Add an item",
+          "when": "When",
+          "item": "The item",
+          "phases": {
+            "before": "Before",
+            "night": "On the night",
+            "after": "After"
+          },
+          "sources": {
+            "access": "Accessible event (ADA National Network)",
+            "green": "Green event"
+          }
+        },
+        "runOfShow": {
+          "title": "Run of show",
+          "empty": "No run of show yet.",
+          "minutes": "{count} min",
+          "total": "{count} minutes in all",
+          "part": "Part {n}",
+          "length": "Minutes",
+          "addPart": "Add a part"
         }
       },
       "checkIn": {
@@ -1793,7 +1915,10 @@
           "captions": {
             "en": "English captions (WebVTT)",
             "ar": "Arabic captions (WebVTT)",
-            "remove": "Remove"
+            "remove": "Remove",
+            "problems": "These captions break the DCMP Captioning Key: at most two lines at once, each of at most {max} characters. Fix the file and choose it again.",
+            "long_line": "Caption {cue}: a line is too long (“{text}”).",
+            "too_many_lines": "Caption {cue}: more than two lines at once (“{text}”)."
           },
           "onCamera": {
             "title": "On camera",
@@ -2525,7 +2650,7 @@
           "title": "A call"
         },
         "pledge": {
-          "title": "The readers’ pledge",
+          "title": "The confidentiality agreement",
           "intro": "Before you read work sent to Qirtas, you agree that:",
           "points": {
             "confidential": "What you read here is confidential until it is published, and so is everything said about it.",
@@ -2533,7 +2658,7 @@
             "noSharing": "You don’t share, describe, or discuss it with anyone outside the review.",
             "stepAside": "If you know or can tell whose work it is, you step aside from it and tell the Editor-in-Chief."
           },
-          "agree": "Sign the pledge"
+          "agree": "Sign the agreement"
         },
         "room": {
           "note": "Read it here only. Your card number and today’s date are set across the work.",
@@ -2931,7 +3056,8 @@
           "credits": "Company",
           "rehearsals": "Rehearsals",
           "performances": "Performances",
-          "report": "Report"
+          "report": "Report",
+          "history": "History"
         },
         "rightsTab": {
           "lede": "Record what the right to perform the script rests on. Someone other than whoever records it clears it.",
@@ -3063,12 +3189,6 @@
         "overdue": "{count, plural, one {{countText} overdue} other {{countText} overdue}}",
         "filterForm": "Form",
         "allForms": "All forms",
-        "filterShow": "Show",
-        "show": {
-          "open": "Open",
-          "closed": "Closed",
-          "all": "All"
-        },
         "saveOffice": "Save office use",
         "acknowledge": "Acknowledge",
         "takeUp": "Mark as being handled",
@@ -3263,7 +3383,10 @@
           "person": "Person",
           "choose": "Choose…",
           "role": "Role",
-          "add": "Add the credit"
+          "add": "Add the credit",
+          "waiting": "waiting for them to accept",
+          "byTheWork": "By the work they did",
+          "factCheck": "Fact-checked"
         },
         "queue": {
           "lede": "Work a section editor took up by name before October 31, until it is decided. Everything sent since is read blind above.",
@@ -3402,7 +3525,14 @@
           "edit": "Edit",
           "remove": "Remove",
           "removeConfirm": "Remove this figure? A paragraph naming it in the text will show nothing."
-        }
+        },
+        "pieceTabs": {
+          "writing": "Writing",
+          "media": "Images and video",
+          "credits": "Credits and topics",
+          "corrections": "Corrections"
+        },
+        "notWritten": "Nothing written yet"
       },
       "needs": {
         "lede": "What this event needs from Student Life: the item, how many, by when and what for. No costs. The Secretary sends each request and records what was provided.",
@@ -3548,7 +3678,8 @@
           "invitations": "Invitations",
           "announcements": "Announcements",
           "sundayPaper": "The Sunday Paper",
-          "channels": "Channels"
+          "channels": "Channels",
+          "mediaLibrary": "Library"
         },
         "council": "The Council",
         "media": "Media",
@@ -3641,7 +3772,9 @@
           "events_event_organizations": "who an event is with",
           "events_joint_tasks": "a joint event’s checklist item",
           "core_profiles": "a member’s name",
-          "events_program_items": "a work in an event’s program"
+          "events_program_items": "a work in an event’s program",
+          "core_announcements": "the announcement",
+          "programs_openings": "the opening"
         },
         "roleFor": "{role} for {person}"
       },
@@ -3687,6 +3820,13 @@
           "is_public": "who sees it",
           "image": "image",
           "other": "other details"
+        },
+        "versions": {
+          "title": "Earlier versions",
+          "lede": "Each save keeps the words it replaced. Restore one to save it again; the text it replaces is kept here too.",
+          "replaced": "Replaced {date} by {who}",
+          "someone": "the platform",
+          "restore": "Restore this version"
         }
       },
       "prize": {
@@ -4005,6 +4145,155 @@
         "call": "Call",
         "callLede": "This Edition’s one call, its reading period for Letters, Gallery and Video. It opens the day the previous Edition’s call closes, so one call is always open; work sent after its deadline goes to the next Edition. Its title is the Edition’s, and it can’t be published until the Edition has its title.",
         "addCall": "Open this Edition’s call"
+      },
+      "media": {
+        "title": "Library",
+        "lede": "Every file uploaded on the site: its words, where it’s used, and the files no record uses, for the yearly audit.",
+        "find": "Find",
+        "kind": "Kind",
+        "use": "Use",
+        "allKinds": "All kinds",
+        "allUses": "In use or not",
+        "inUse": "In use",
+        "unusedFilter": "Not used",
+        "unused": "Not used anywhere",
+        "empty": "Nothing here yet.",
+        "emptyKind": "The library has no file of this kind yet. Upload one below.",
+        "noAlt": "No alt text yet",
+        "altEn": "Alt text in English",
+        "altAr": "Alt text in Arabic",
+        "altHint": "What the picture shows, for people who can’t see it.",
+        "credit": "Credit",
+        "license": "License or release",
+        "describe": "Describe",
+        "replace": "Replace the file everywhere it’s used",
+        "replacing": "Replacing…",
+        "choose": "Choose from library",
+        "whereTitle": "Where files live",
+        "where": "Uploads (images, partners’ logos, covers, photos and PDFs that belong to records) are kept here, in the site’s storage, as JPG, PNG, WebP or PDF, never SVG. The Society’s own logos, icons, fonts and templates are in the design system. Video and audio masters stay on the Society’s drives.",
+        "kinds": {
+          "image": "Image",
+          "logo": "Logo",
+          "pdf": "PDF",
+          "captions": "Captions",
+          "promo": "Promo kit"
+        },
+        "licenses": {
+          "own": "Our own",
+          "release": "Under a media release",
+          "partner": "A partner’s",
+          "licensed": "Licensed",
+          "public_domain": "Public domain"
+        },
+        "uses": {
+          "event": "Event",
+          "partner": "Partner",
+          "edition": "Edition",
+          "piece": "Piece",
+          "episode": "Episode",
+          "production": "Production",
+          "memorandum": "Memorandum"
+        }
+      },
+      "presets": {
+        "title": "Presets",
+        "lede": "New records start from these. Change them as the way of working changes; records already made keep what they have.",
+        "back": "Back to the list",
+        "list": "Presets",
+        "empty": "No presets yet.",
+        "edit": "Edit",
+        "add": "Add a preset",
+        "name": "Name",
+        "duration": "Length in minutes",
+        "runOfShow": "Run of show",
+        "shifts": "Shifts",
+        "checklist": "Checklist",
+        "body": "Text",
+        "line": "Line {n}",
+        "minutes": "Minutes",
+        "addLine": "Add a line",
+        "removeLine": "Remove this line",
+        "titles": {
+          "event": "Event presets",
+          "opening": "Opening presets",
+          "call": "Edition call presets",
+          "announcement": "Announcement presets",
+          "letter": "Letter presets"
+        },
+        "open": "Presets",
+        "start": "Start from a preset",
+        "none": "Start blank",
+        "standardNote": "Every event, whatever its preset, also carries the Events Manual’s standard items, the accessible-event checklist and the green-event checklist."
+      },
+      "calendar": {
+        "title": "Content calendar",
+        "lede": "What goes out where and when: each post with its image, captions and alt text. Mark a post posted with its link. Telegram’s posts go out on their own and aren’t listed here.",
+        "previous": "Previous month",
+        "next": "Next month",
+        "plan": "Plan {year}",
+        "planned": "{count, plural, one {{countText} entry added} other {{countText} entries added}}",
+        "empty": "Nothing planned this month.",
+        "copied": "Copied",
+        "copyEn": "Copy the English caption",
+        "copyAr": "Copy the Arabic caption",
+        "postUrl": "Link to the post",
+        "caption": "Caption",
+        "alt": "Alt text",
+        "words": "Write the words",
+        "markPosted": "Mark posted",
+        "keep": "Keep this day",
+        "skip": "Skip this year",
+        "openEvent": "Open its draft event",
+        "confirmDate": "Confirm this year’s date",
+        "channels": {
+          "instagram": "Instagram",
+          "linkedin": "LinkedIn",
+          "telegram": "Telegram",
+          "website": "The site"
+        },
+        "statuses": {
+          "choose": "To choose",
+          "planned": "Planned",
+          "ready": "Ready",
+          "posted": "Posted",
+          "skipped": "Skipped"
+        },
+        "kinds": {
+          "post": "A post",
+          "event": "An event",
+          "greeting": "A greeting"
+        },
+        "dueTitle": "Posts due this week",
+        "dueDetail": "Planned or ready, not yet posted",
+        "dueNone": "Nothing due this week",
+        "openCalendar": "Open the calendar"
+      },
+      "board": {
+        "title": "Board",
+        "lede": "Every story in this section, from the pitch to publication. Assign one, or pitch your own.",
+        "assign": "Make an assignment",
+        "pitch": "Pitch a story",
+        "angle": "The story",
+        "angleHint": "One line: what the story is, and its angle.",
+        "kind": "For",
+        "due": "Due",
+        "assignee": "Assigned to",
+        "untitled": "Untitled",
+        "dueOn": "due {date}",
+        "kinds": {
+          "writing": "Writing",
+          "photos": "Photos",
+          "art": "Art"
+        },
+        "stages": {
+          "pitched": "Pitched",
+          "assigned": "Assigned",
+          "drafting": "Drafting",
+          "editing": "Editing",
+          "copy": "Copy",
+          "ready": "Ready",
+          "published": "Published"
+        }
       }
     },
     "editor": {
@@ -5208,10 +5497,12 @@
       "what": "The agreements and consents you sign on the site (the Code of Conduct, a role agreement, a media release and the rest) are signed electronically: in the name on your account, with a copy of each emailed to you and kept in Documents. Do you agree to sign this way? You can withdraw it in Settings at any time.",
       "agree": "I agree to sign electronically",
       "notNow": "Not now",
-      "settingsTitle": "Signing electronically",
       "given": "You agreed to sign electronically on {date}.",
       "notGiven": "You have not agreed to sign electronically; each page you sign on asks you.",
-      "withdraw": "Withdraw my consent"
+      "withdraw": "Withdraw consent",
+      "withdrawConfirm": "Signing on the site stops until you agree again: each page you sign on will ask you first. What you have signed stays signed.",
+      "withdrawYes": "Withdraw consent",
+      "cancel": "Cancel"
     },
     "addresses": {
       "errors": {
@@ -5393,16 +5684,19 @@
         "linkedin": "LinkedIn"
       },
       "concern": "Raise a concern",
-      "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
+      "recognition": "A registered student organization at the",
       "address": "AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq",
-      "paperless": "Paperless by default. Books reused through Second Chapter.",
+      "paperless": "Paperless by default. Printed with purpose.",
       "pieces": "Each piece belongs to its writer, under the license shown on it.",
       "copyright": "© {years} AUIB Society of Arts and Letters. All rights reserved.",
       "help": "Help",
       "report": "Report a problem",
       "version": "Version {version}, build {build}",
       "local": "local",
-      "sundayPaper": "The Sunday Paper"
+      "sundayPaper": "The Sunday Paper",
+      "auib": "American University of Iraq – Baghdad",
+      "sundayPaperLine": "One email a month from Qirtas: the month’s pieces, the Society’s news and the roles open.",
+      "chooseEmails": "Choose your emails"
     },
     "home": {
       "metaTitle": "The paper and the pen",
@@ -5912,6 +6206,55 @@
         "titled": "Edition {number}: {title}",
         "untitled": "Edition {number}, {season}",
         "number": "Edition {number}"
+      },
+      "transparency": {
+        "title": "Transparency",
+        "lede": "Who owns Qirtas, how it is paid for, who decides what it publishes, and the standards it keeps.",
+        "parts": {
+          "owner": {
+            "title": "Who owns it",
+            "body": "Qirtas is the publication of the AUIB Society of Arts and Letters, a registered student organization at the American University of Iraq – Baghdad. No person or company owns a share of it."
+          },
+          "money": {
+            "title": "How it is paid for",
+            "body": "Qirtas has no money of its own: no budget, no paid advertising, no dues and no paid sponsors. The Office of Student Life provides what it needs, such as the printing of an Edition. Its editors and writers are students who are not paid."
+          },
+          "independence": {
+            "title": "Independence",
+            "body": "The editors decide what Qirtas publishes. Its views are its own and not those of the University, and no sponsor, partner or office reviews a piece before it is published."
+          },
+          "decides": {
+            "title": "Who decides",
+            "body": "The Editor-in-Chief leads Qirtas, with a Managing Editor and an editor for each section. The masthead lists them from the roles they hold.",
+            "link": "The masthead"
+          },
+          "standards": {
+            "title": "The standards it keeps",
+            "body": "The Editorial Standards and Stylebook (SAL-EDT-01) sets out its ethics, sourcing, corrections and house style. Every News piece shows what kind of work it is and how to reach the editors.",
+            "link": "Editorial Standards and Stylebook"
+          },
+          "corrections": {
+            "title": "Corrections",
+            "body": "Mistakes are corrected on the piece, with a note saying what changed and when. Every correction is listed in one place.",
+            "link": "Corrections"
+          },
+          "contact": {
+            "title": "How to reach it",
+            "body": "Write to the editors through the Society’s contact page. Letters to the editor are answered within a week.",
+            "link": "Contact"
+          }
+        },
+        "standard": "These disclosures follow the Journalism Trust Initiative’s standard, from Reporters Without Borders.",
+        "link": "Transparency"
+      },
+      "trust": {
+        "title": "About this piece",
+        "type": "Type of work: {type}.",
+        "news": "News reports facts the reporter gathered and the editors checked.",
+        "checked": "Facts checked before publication.",
+        "standards": "How Qirtas works",
+        "correct": "Report an error",
+        "transparency": "Who owns and pays for Qirtas"
       }
     },
     "about": {
@@ -6009,6 +6352,10 @@
         "credits": {
           "title": "Credits",
           "body": "The fonts, icons and software the site is made with."
+        },
+        "openData": {
+          "title": "Open data",
+          "body": "The Society’s public numbers as JSON and CSV, free to reuse."
         }
       },
       "spring2026": "Spring 2026",
@@ -6025,7 +6372,48 @@
       "independenceTitle": "Independence",
       "independence": "The AUIB Society of Arts and Letters is a registered student organization at the American University of Iraq – Baghdad. Its views and publications are its own and not those of the University.",
       "verseFirst": "الخيلُ والليلُ والبيداءُ تعرفني",
-      "verseSecond": "والسيفُ والرمحُ والقرطاسُ والقلمُ"
+      "verseSecond": "والسيفُ والرمحُ والقرطاسُ والقلمُ",
+      "sustainabilityTitle": "Sustainability",
+      "sustainabilityLede": "Paperless by default. Printed with purpose. The Society states only what it does and what the site can count.",
+      "paper": {
+        "signed": "Documents signed on the site",
+        "sheets": "Sheets not printed",
+        "wood": "Wood not used, in pounds",
+        "water": "Water not used, in gallons",
+        "co2e": "Greenhouse gas avoided, in pounds of CO2e"
+      },
+      "paperNote": "Counted by the site, at least one sheet for each signed document.",
+      "paperSource": "Converted with the Environmental Paper Network Paper Calculator v{version}, for copy paper with no recycled content.",
+      "practicesTitle": "What it does",
+      "practices": {
+        "digital": {
+          "title": "Digital first",
+          "body": "Forms, signatures and tickets are on the site; a printed copy is the exception."
+        },
+        "need": {
+          "title": "Print to the need",
+          "body": "Only what is confirmed: the RSVP count plus 10 percent, or the number asked for; booklets in multiples of four pages."
+        },
+        "editions": {
+          "title": "Paper for Editions",
+          "body": "Each Edition’s printing is asked for on FSC-certified or recycled paper, following Canopy’s guidance for publishers. The colophon names the paper only when the printer confirms it."
+        },
+        "reuse": {
+          "title": "Reuse",
+          "body": "No single-use decorations; books go round again through Second Chapter; trips share rides."
+        },
+        "days": {
+          "title": "The days it marks",
+          "body": "One Earth Day event each year, registered on EarthDay.org’s map; Earth Hour each March with WWF; World Cleanup Day each September with Student Life."
+        },
+        "web": {
+          "title": "A lighter site",
+          "body": "The site follows the W3C Web Sustainability Guidelines."
+        }
+      },
+      "greenTitle": "The green-event checklist",
+      "green": "Every event’s checklist carries the Society’s green-event items: waste and reuse, food and water, materials and printing, transport, and how the event is announced.",
+      "greenSources": "Adapted from the University of Illinois’s Certified Green Event program, Duke Sustainability’s Green Event Certification and UC Berkeley’s ASUC Green Events program."
     },
     "join": {
       "title": "Join the Society",
@@ -6800,6 +7188,26 @@
       "notIncluded": "Not included",
       "invalid": "This link has expired or isn’t right. Reply to the email and the Secretary will send a new one.",
       "failed": "That didn’t go through. Try again in a moment."
+    },
+    "openData": {
+      "title": "Open data",
+      "lede": "The Society’s public numbers, free for anyone to reuse.",
+      "titles": {
+        "society-numbers": "The Society by the numbers",
+        "paper-numbers": "Paperless, counted",
+        "events": "Public events",
+        "days-marked": "The days the Society marks"
+      },
+      "sets": {
+        "society-numbers": "Members of every class, public events held, pieces and Editions published.",
+        "paper-numbers": "Documents signed on the site and sheets not printed.",
+        "events": "Every published public event: its address, title and times (UTC).",
+        "days-marked": "The calendar of days the Society marks, with who sets each and how it is marked."
+      },
+      "json": "JSON",
+      "csv": "CSV",
+      "license": "Every dataset here is dedicated to the public domain:",
+      "cc0": "CC0 1.0"
     }
   }
 }

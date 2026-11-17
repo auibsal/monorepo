@@ -121,6 +121,7 @@ export const ReportProblem = () => {
         aria-hidden="true"
         autoComplete="off"
         className="hidden"
+        dir="auto"
         name="website"
         tabIndex={-1}
       />

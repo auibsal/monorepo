@@ -23,7 +23,7 @@ const MAX_IMAGES = 12;
  * no file, file address or download reaches a reader, and manuscripts never
  * leave the site (readers read the text on the page). The caller's own
  * journal.entry_text() decides: someone who may read the entry and has
- * taken the readers' pledge.
+ * taken the confidentiality agreement.
  */
 export const POST = async (request: Request) => {
   const headers = corsHeaders(request);

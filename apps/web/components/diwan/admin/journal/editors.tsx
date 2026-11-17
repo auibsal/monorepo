@@ -1,35 +1,33 @@
 "use client";
 
 import { Input } from "@repo/brand/components/ui/input";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/brand/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
+import { AddressLine } from "../address-line";
 import { ImageField } from "../image-field";
 import {
-  AdminHeading,
   BilingualField,
   ConfirmAction,
   DateTimeField,
   ErrorLine,
   Field,
+  RecordView,
   SaveButton,
   SelectInput,
 } from "../kit";
+import { DeleteRecord } from "../recently-deleted";
+import { RecordHistory } from "../record-history";
 import { EditionCalls, EditionContents } from "./edition-calls";
 
 type Status = "draft" | "scheduled" | "published";
@@ -101,6 +99,19 @@ const PublishControls = ({
 
 /** A number field's value, or null when it is empty (the pilot). */
 const optionalNumber = (value: string) => (value ? Number(value) : null);
+
+/**
+ * An Edition's address: from its title until it is published, then fixed
+ * (decisions.md, The site: addresses).
+ */
+const editionAddress = (
+  form: { number: string; slug: string; title: { ar: string; en: string } },
+  fixed: boolean
+) =>
+  fixed
+    ? form.slug
+    : slugFromTitle(form.title.en, form.title.ar) ||
+      `edition-${form.number || "1"}`;
 
 export const IssueEditor = () => {
   const te = useTranslations("diwan.admin.editionCalls");
@@ -204,7 +215,7 @@ export const IssueEditor = () => {
             : null,
         season_ar: form.season.ar || null,
         season_en: form.season.en || null,
-        slug: form.slug || `issue-${form.number}`,
+        slug: editionAddress(form, Boolean(existing.data?.published_at)),
         status: next,
         theme_ar: form.theme.ar || null,
         theme_en: form.theme.en || null,
@@ -281,18 +292,10 @@ export const IssueEditor = () => {
             />
           )}
         </Field>
-        <Field hint={tk("slugHint")} label={tk("slug")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              maxLength={80}
-              onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-              placeholder={`issue-${form.number || "1"}`}
-              value={form.slug}
-            />
-          )}
-        </Field>
+        <AddressLine
+          fixed={Boolean(existing.data?.published_at)}
+          path={`/qirtas/editions/${editionAddress(form, Boolean(existing.data?.published_at))}`}
+        />
       </div>
       <BilingualField
         label={t("issue.titleField")}
@@ -405,47 +408,43 @@ export const IssueEditor = () => {
     </form>
   );
 
+  const heading = existing.data
+    ? localized(existing.data, "title", locale)
+    : t("newIssue");
+  const statusLine = `${tk("status")}: ${tk(`statuses.${status}`)}`;
+  if (!issueId) {
+    return (
+      <RecordView back={back(tk("back"))} status={statusLine} title={heading}>
+        {publishForm}
+      </RecordView>
+    );
+  }
+  // The Edition's page is a workspace while its call is open: the call
+  // first (decisions.md, Qirtas), then its contents, publishing, History.
   return (
-    <div className="grid gap-8">
-      <AdminHeading
-        actions={
-          <>
-            {back(tk("back"))}
-            {existing.data?.slug && status === "published" ? (
-              <OnTheSite href={`/qirtas/editions/${existing.data.slug}`} />
-            ) : null}
-          </>
-        }
-        title={
-          existing.data
-            ? localized(existing.data, "title", locale)
-            : t("newIssue")
-        }
-      >
-        {`${tk("status")}: ${tk(`statuses.${status}`)}`}
-      </AdminHeading>
-      {issueId ? (
-        <Tabs defaultValue="call">
-          <TabsList className="flex-wrap">
-            {(["call", "contents", "publish"] as const).map((tab) => (
-              <TabsTrigger key={tab} value={tab}>
-                {te(`tabs.${tab}`)}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <TabsContent className="pt-6" value="call">
-            <EditionCalls issueId={issueId} />
-          </TabsContent>
-          <TabsContent className="pt-6" value="contents">
-            <EditionContents issueId={issueId} />
-          </TabsContent>
-          <TabsContent className="pt-6" value="publish">
-            {publishForm}
-          </TabsContent>
-        </Tabs>
-      ) : (
-        publishForm
-      )}
-    </div>
+    <RecordView
+      actions={
+        existing.data?.slug && status === "published" ? (
+          <OnTheSite href={`/qirtas/editions/${existing.data.slug}`} />
+        ) : undefined
+      }
+      back={back(tk("back"))}
+      history={<RecordHistory id={issueId} table="journal.issues" />}
+      menu={
+        <DeleteRecord id={issueId} kind="edition" then="/qirtas/editions" />
+      }
+      status={statusLine}
+      tabs={[
+        {
+          content: <EditionContents issueId={issueId} />,
+          id: "contents",
+          label: te("tabs.contents"),
+        },
+        { content: publishForm, id: "publish", label: te("tabs.publish") },
+      ]}
+      title={heading}
+    >
+      <EditionCalls issueId={issueId} />
+    </RecordView>
   );
 };

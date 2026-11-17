@@ -84,6 +84,7 @@ export const LibraryAdmin = () => {
       {list.isPending ? <SectionSpinner /> : null}
       {list.data ? (
         <RecordList
+          archived={(d) => d.status === "rescinded"}
           empty={
             <EmptyLine action={{ href: LIBRARY, label: tk("showAll") }}>
               {tk("noMatches")}

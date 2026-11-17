@@ -451,6 +451,231 @@ export type Database = {
   };
   content: {
     Tables: {
+      calendar_entries: {
+        Row: {
+          alt_ar: string | null;
+          alt_en: string | null;
+          caption_ar: string | null;
+          caption_en: string | null;
+          channel: string;
+          confirm_date: boolean;
+          created_at: string;
+          created_by: string | null;
+          day_key: string | null;
+          event_id: string | null;
+          id: string;
+          kind: string;
+          media_item_id: string | null;
+          note: string | null;
+          owner_role: string | null;
+          post_url: string | null;
+          posted_at: string | null;
+          posted_by: string | null;
+          publish_on: string;
+          status: string;
+          title_ar: string;
+          title_en: string;
+          year: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          alt_ar?: string | null;
+          alt_en?: string | null;
+          caption_ar?: string | null;
+          caption_en?: string | null;
+          channel?: string;
+          confirm_date?: boolean;
+          created_at?: string;
+          created_by?: string | null;
+          day_key?: string | null;
+          event_id?: string | null;
+          id?: string;
+          kind?: string;
+          media_item_id?: string | null;
+          note?: string | null;
+          owner_role?: string | null;
+          post_url?: string | null;
+          posted_at?: string | null;
+          posted_by?: string | null;
+          publish_on: string;
+          status?: string;
+          title_ar: string;
+          title_en: string;
+          year?: number | null;
+        };
+        Update: {
+          alt_ar?: string | null;
+          alt_en?: string | null;
+          caption_ar?: string | null;
+          caption_en?: string | null;
+          channel?: string;
+          confirm_date?: boolean;
+          created_at?: string;
+          created_by?: string | null;
+          day_key?: string | null;
+          event_id?: string | null;
+          id?: string;
+          kind?: string;
+          media_item_id?: string | null;
+          note?: string | null;
+          owner_role?: string | null;
+          post_url?: string | null;
+          posted_at?: string | null;
+          posted_by?: string | null;
+          publish_on?: string;
+          status?: string;
+          title_ar?: string;
+          title_en?: string;
+          year?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "calendar_entries_day_key_fkey";
+            columns: ["day_key"];
+            isOneToOne: false;
+            referencedRelation: "days_marked";
+            referencedColumns: ["key"];
+          },
+          {
+            foreignKeyName: "calendar_entries_media_item_id_fkey";
+            columns: ["media_item_id"];
+            isOneToOne: false;
+            referencedRelation: "media_items";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      days_marked: {
+        Row: {
+          approx_ar: string | null;
+          approx_en: string | null;
+          day: number | null;
+          key: string;
+          month: number | null;
+          name_ar: string;
+          name_en: string;
+          nth: number | null;
+          owner_role: string;
+          rule: string;
+          set_by: string | null;
+          sort: number;
+          tier: string;
+          weekday: number | null;
+          with_student_life: boolean;
+        };
+        ComputedFields: never;
+        Insert: {
+          approx_ar?: string | null;
+          approx_en?: string | null;
+          day?: number | null;
+          key: string;
+          month?: number | null;
+          name_ar: string;
+          name_en: string;
+          nth?: number | null;
+          owner_role: string;
+          rule: string;
+          set_by?: string | null;
+          sort?: number;
+          tier: string;
+          weekday?: number | null;
+          with_student_life?: boolean;
+        };
+        Update: {
+          approx_ar?: string | null;
+          approx_en?: string | null;
+          day?: number | null;
+          key?: string;
+          month?: number | null;
+          name_ar?: string;
+          name_en?: string;
+          nth?: number | null;
+          owner_role?: string;
+          rule?: string;
+          set_by?: string | null;
+          sort?: number;
+          tier?: string;
+          weekday?: number | null;
+          with_student_life?: boolean;
+        };
+        Relationships: [];
+      };
+      media_items: {
+        Row: {
+          alt_ar: string | null;
+          alt_en: string | null;
+          bucket: string;
+          bytes: number | null;
+          caption_ar: string | null;
+          caption_en: string | null;
+          created_at: string;
+          credit: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
+          event_id: string | null;
+          file_name: string;
+          height: number | null;
+          id: string;
+          kind: string;
+          license: string;
+          mime: string | null;
+          path: string;
+          release_id: string | null;
+          updated_at: string;
+          uploaded_by: string | null;
+          width: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          alt_ar?: string | null;
+          alt_en?: string | null;
+          bucket: string;
+          bytes?: number | null;
+          caption_ar?: string | null;
+          caption_en?: string | null;
+          created_at?: string;
+          credit?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
+          event_id?: string | null;
+          file_name: string;
+          height?: number | null;
+          id?: string;
+          kind?: string;
+          license?: string;
+          mime?: string | null;
+          path: string;
+          release_id?: string | null;
+          updated_at?: string;
+          uploaded_by?: string | null;
+          width?: number | null;
+        };
+        Update: {
+          alt_ar?: string | null;
+          alt_en?: string | null;
+          bucket?: string;
+          bytes?: number | null;
+          caption_ar?: string | null;
+          caption_en?: string | null;
+          created_at?: string;
+          credit?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
+          event_id?: string | null;
+          file_name?: string;
+          height?: number | null;
+          id?: string;
+          kind?: string;
+          license?: string;
+          mime?: string | null;
+          path?: string;
+          release_id?: string | null;
+          updated_at?: string;
+          uploaded_by?: string | null;
+          width?: number | null;
+        };
+        Relationships: [];
+      };
       newsletter_subscribers: {
         Row: {
           confirm_sends: number;
@@ -573,6 +798,14 @@ export type Database = {
           topic: string;
         }[];
       };
+      paper_numbers: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          documents_signed: number;
+          sheets_not_printed: number;
+        }[];
+      };
+      plan_year: { Args: { year: number }; Returns: number };
       save_sunday_paper: {
         Args: { letter_ar: string; letter_en: string; month: string };
         Returns: undefined;
@@ -712,6 +945,8 @@ export type Database = {
           body_en: string;
           created_at: string;
           created_by: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
           id: string;
           instagram_done_at: string | null;
           link_path: string | null;
@@ -728,6 +963,8 @@ export type Database = {
           body_en: string;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           id?: string;
           instagram_done_at?: string | null;
           link_path?: string | null;
@@ -743,6 +980,8 @@ export type Database = {
           body_en?: string;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           id?: string;
           instagram_done_at?: string | null;
           link_path?: string | null;
@@ -1079,6 +1318,43 @@ export type Database = {
         };
         Relationships: [];
       };
+      presets: {
+        Row: {
+          fields: NonNullable<Json>;
+          id: string;
+          key: string;
+          kind: string;
+          sort: number;
+          title_ar: string;
+          title_en: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          fields?: NonNullable<Json>;
+          id?: string;
+          key: string;
+          kind: string;
+          sort?: number;
+          title_ar: string;
+          title_en: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          fields?: NonNullable<Json>;
+          id?: string;
+          key?: string;
+          kind?: string;
+          sort?: number;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [];
+      };
       problem_reports: {
         Row: {
           created_at: string;
@@ -1301,6 +1577,34 @@ export type Database = {
           summary_ar?: string | null;
           summary_en?: string | null;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      record_versions: {
+        Row: {
+          fields: NonNullable<Json>;
+          id: number;
+          record_id: string;
+          record_table: string;
+          saved_at: string;
+          saved_by: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          fields: NonNullable<Json>;
+          id?: never;
+          record_id: string;
+          record_table: string;
+          saved_at?: string;
+          saved_by?: string | null;
+        };
+        Update: {
+          fields?: NonNullable<Json>;
+          id?: never;
+          record_id?: string;
+          record_table?: string;
+          saved_at?: string;
+          saved_by?: string | null;
         };
         Relationships: [];
       };
@@ -1716,6 +2020,16 @@ export type Database = {
         }[];
       };
       mark_notion_invited: { Args: { member: string }; Returns: undefined };
+      media_uses: {
+        Args: { item: string };
+        Returns: {
+          kind: string;
+          record_id: string;
+          ref: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       my_addresses: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1808,6 +2122,13 @@ export type Database = {
           user_agent: string;
         }[];
       };
+      my_todos: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          kind: string;
+          ref: string;
+        }[];
+      };
       my_topics: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1846,6 +2167,16 @@ export type Database = {
       };
       post_notice: { Args: { id: string; shown_at: string }; Returns: string };
       prove_merge: { Args: { code: string }; Returns: string };
+      recently_deleted: {
+        Args: { kind: string };
+        Returns: {
+          deleted_at: string;
+          id: string;
+          purges_at: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       record_history: {
         Args: { record_id: string; record_table: string };
         Returns: {
@@ -1855,8 +2186,13 @@ export type Database = {
           operation: string;
         }[];
       };
+      record_uses: { Args: { kind: string; record_id: string }; Returns: Json };
       remove_personal_email: {
         Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
+      replace_media: {
+        Args: { item: string; new_path: string };
         Returns: undefined;
       };
       report_leaving: { Args: { graduated: boolean }; Returns: string };
@@ -1864,6 +2200,10 @@ export type Database = {
       request_merge: { Args: { email: string }; Returns: undefined };
       request_personal_email: { Args: { email: string }; Returns: undefined };
       restore_account: { Args: Record<PropertyKey, never>; Returns: boolean };
+      restore_record: {
+        Args: { kind: string; record_id: string };
+        Returns: undefined;
+      };
       retention_due: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -2028,6 +2368,11 @@ export type Database = {
         }[];
       };
       telegram_whoami: { Args: { telegram_id: number }; Returns: Json };
+      trash_record: {
+        Args: { kind: string; record_id: string };
+        Returns: undefined;
+      };
+      unused_media: { Args: Record<PropertyKey, never>; Returns: string[] };
       update_my_profile: { Args: { change: Json }; Returns: undefined };
       withdraw_merge: { Args: Record<PropertyKey, never>; Returns: undefined };
     };
@@ -2082,6 +2427,54 @@ export type Database = {
             columns: ["rsvp_id"];
             isOneToOne: false;
             referencedRelation: "rsvps";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      checklist_items: {
+        Row: {
+          created_at: string;
+          done_at: string | null;
+          done_by: string | null;
+          event_id: string;
+          id: string;
+          label_ar: string;
+          label_en: string;
+          phase: string;
+          sort: number;
+          source: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          done_at?: string | null;
+          done_by?: string | null;
+          event_id: string;
+          id?: string;
+          label_ar: string;
+          label_en: string;
+          phase: string;
+          sort?: number;
+          source?: string;
+        };
+        Update: {
+          created_at?: string;
+          done_at?: string | null;
+          done_by?: string | null;
+          event_id?: string;
+          id?: string;
+          label_ar?: string;
+          label_en?: string;
+          phase?: string;
+          sort?: number;
+          source?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "checklist_items_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
             referencedColumns: ["id"];
           },
         ];
@@ -2188,6 +2581,8 @@ export type Database = {
           content_note_en: string | null;
           created_at: string;
           created_by: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
           ends_at: string | null;
           entry: string;
           format: string | null;
@@ -2200,10 +2595,13 @@ export type Database = {
           other_allergens_ar: string | null;
           other_allergens_en: string | null;
           partner_id: string | null;
+          preset_key: string | null;
           program_id: string | null;
+          promo_layout: string | null;
           published_at: string | null;
           questions: NonNullable<Json>;
           rsvp_enabled: boolean;
+          run_of_show: NonNullable<Json>;
           search: unknown;
           seating: string | null;
           served_ar: string | null;
@@ -2238,6 +2636,8 @@ export type Database = {
           content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           ends_at?: string | null;
           entry?: string;
           format?: string | null;
@@ -2250,10 +2650,13 @@ export type Database = {
           other_allergens_ar?: string | null;
           other_allergens_en?: string | null;
           partner_id?: string | null;
+          preset_key?: string | null;
           program_id?: string | null;
+          promo_layout?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
+          run_of_show?: NonNullable<Json>;
           search?: never;
           seating?: string | null;
           served_ar?: string | null;
@@ -2287,6 +2690,8 @@ export type Database = {
           content_note_en?: string | null;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           ends_at?: string | null;
           entry?: string;
           format?: string | null;
@@ -2299,10 +2704,13 @@ export type Database = {
           other_allergens_ar?: string | null;
           other_allergens_en?: string | null;
           partner_id?: string | null;
+          preset_key?: string | null;
           program_id?: string | null;
+          promo_layout?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
+          run_of_show?: NonNullable<Json>;
           search?: never;
           seating?: string | null;
           served_ar?: string | null;
@@ -2763,6 +3171,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      apply_event_preset: {
+        Args: { event: string; preset: string };
+        Returns: undefined;
+      };
       booking_terms: { Args: { event_id: string }; Returns: Json };
       calendar: {
         Args: { from_at: string; to_at: string };
@@ -3879,6 +4291,8 @@ export type Database = {
           contact_name: string | null;
           contact_role: string | null;
           created_at: string;
+          deleted_at: string | null;
+          deleted_by: string | null;
           description_ar: string | null;
           description_en: string | null;
           id: string;
@@ -3910,6 +4324,8 @@ export type Database = {
           contact_name?: string | null;
           contact_role?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           description_ar?: string | null;
           description_en?: string | null;
           id?: string;
@@ -3940,6 +4356,8 @@ export type Database = {
           contact_name?: string | null;
           contact_role?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           description_ar?: string | null;
           description_en?: string | null;
           id?: string;
@@ -5293,6 +5711,8 @@ export type Database = {
         Row: {
           cover_path: string | null;
           created_at: string;
+          deleted_at: string | null;
+          deleted_by: string | null;
           editors_note_ar: string | null;
           editors_note_en: string | null;
           id: string;
@@ -5321,6 +5741,8 @@ export type Database = {
         Insert: {
           cover_path?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           editors_note_ar?: string | null;
           editors_note_en?: string | null;
           id?: string;
@@ -5348,6 +5770,8 @@ export type Database = {
         Update: {
           cover_path?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           editors_note_ar?: string | null;
           editors_note_en?: string | null;
           id?: string;
@@ -5452,6 +5876,8 @@ export type Database = {
       };
       piece_credits: {
         Row: {
+          accepted_at: string | null;
+          added_by: string | null;
           contributor_id: string;
           piece_id: string;
           role: string;
@@ -5459,12 +5885,16 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          accepted_at?: string | null;
+          added_by?: string | null;
           contributor_id: string;
           piece_id: string;
           role: string;
           sort?: number;
         };
         Update: {
+          accepted_at?: string | null;
+          added_by?: string | null;
           contributor_id?: string;
           piece_id?: string;
           role?: string;
@@ -5703,11 +6133,11 @@ export type Database = {
           conflict_disclosure: string | null;
           contributor_id: string;
           created_at: string;
-          credit_ar: string | null;
-          credit_en: string | null;
           dated_at: string | null;
           deck_ar: string | null;
           deck_en: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
           desk: Database["journal"]["Enums"]["desk"] | null;
           edit_note: string | null;
           event_id: string | null;
@@ -5745,11 +6175,11 @@ export type Database = {
           conflict_disclosure?: string | null;
           contributor_id: string;
           created_at?: string;
-          credit_ar?: string | null;
-          credit_en?: string | null;
           dated_at?: string | null;
           deck_ar?: string | null;
           deck_en?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           desk?: never;
           edit_note?: string | null;
           event_id?: string | null;
@@ -5786,11 +6216,11 @@ export type Database = {
           conflict_disclosure?: string | null;
           contributor_id?: string;
           created_at?: string;
-          credit_ar?: string | null;
-          credit_en?: string | null;
           dated_at?: string | null;
           deck_ar?: string | null;
           deck_en?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           desk?: never;
           edit_note?: string | null;
           event_id?: string | null;
@@ -6039,6 +6469,28 @@ export type Database = {
           },
         ];
       };
+      reading_views: {
+        Row: {
+          entry_id: string;
+          id: number;
+          reader_id: string;
+          viewed_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          entry_id: string;
+          id?: never;
+          reader_id?: string;
+          viewed_at?: string;
+        };
+        Update: {
+          entry_id?: string;
+          id?: never;
+          reader_id?: string;
+          viewed_at?: string;
+        };
+        Relationships: [];
+      };
       scores: {
         Row: {
           archive_factor: number;
@@ -6126,6 +6578,63 @@ export type Database = {
             columns: ["submission_id"];
             isOneToOne: false;
             referencedRelation: "submissions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      story_assignments: {
+        Row: {
+          accepted_at: string | null;
+          angle: string;
+          assignee_id: string | null;
+          created_at: string;
+          created_by: string | null;
+          desk: Database["journal"]["Enums"]["desk"];
+          due_on: string | null;
+          id: string;
+          kind: string;
+          piece_id: string | null;
+          slug: string;
+          status: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          accepted_at?: string | null;
+          angle: string;
+          assignee_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          desk: Database["journal"]["Enums"]["desk"];
+          due_on?: string | null;
+          id?: string;
+          kind?: string;
+          piece_id?: string | null;
+          slug: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          accepted_at?: string | null;
+          angle?: string;
+          assignee_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          desk?: Database["journal"]["Enums"]["desk"];
+          due_on?: string | null;
+          id?: string;
+          kind?: string;
+          piece_id?: string | null;
+          slug?: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "story_assignments_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
             referencedColumns: ["id"];
           },
         ];
@@ -6373,6 +6882,10 @@ export type Database = {
           title: string;
         }[];
       };
+      answer_credit: {
+        Args: { accept: boolean; contributor: string; piece: string };
+        Returns: undefined;
+      };
       approve_piece: {
         Args: { kind: string; piece_id: string };
         Returns: string;
@@ -6424,6 +6937,18 @@ export type Database = {
         Returns: string;
       };
       delete_submissions: { Args: { ids: string[] }; Returns: number };
+      desk_board: {
+        Args: { for_desk: Database["journal"]["Enums"]["desk"] };
+        Returns: {
+          due_on: string;
+          id: string;
+          kind: string;
+          person: string;
+          stage: string;
+          title: string;
+          updated_at: string;
+        }[];
+      };
       desk_of: {
         Args: { category: Database["journal"]["Enums"]["category"] };
         Returns: Database["journal"]["Enums"]["desk"];
@@ -6559,6 +7084,16 @@ export type Database = {
           slug: string;
         }[];
       };
+      my_credits_to_accept: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          contributor_id: string;
+          piece_id: string;
+          role: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       my_reader_pledge: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6685,6 +7220,7 @@ export type Database = {
         Returns: string;
       };
       sign_reader_pledge: { Args: { esign_agreed: boolean }; Returns: string };
+      start_assignment: { Args: { assignment: string }; Returns: string };
       transition_submission: {
         Args: {
           id: string;
@@ -7924,6 +8460,8 @@ export type Database = {
           captions_en_path: string | null;
           chapters: NonNullable<Json>;
           created_at: string;
+          deleted_at: string | null;
+          deleted_by: string | null;
           duration_seconds: number | null;
           id: string;
           number: number | null;
@@ -7948,6 +8486,8 @@ export type Database = {
           captions_en_path?: string | null;
           chapters?: NonNullable<Json>;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           duration_seconds?: number | null;
           id?: string;
           number?: number | null;
@@ -7971,6 +8511,8 @@ export type Database = {
           captions_en_path?: string | null;
           chapters?: NonNullable<Json>;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           duration_seconds?: number | null;
           id?: string;
           number?: number | null;
@@ -8242,6 +8784,8 @@ export type Database = {
           closes_at: string | null;
           created_at: string;
           created_by: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
           eb_approved_at: string | null;
           eb_resolution: string | null;
           eligibility_ar: string | null;
@@ -8268,6 +8812,8 @@ export type Database = {
           closes_at?: string | null;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           eb_approved_at?: string | null;
           eb_resolution?: string | null;
           eligibility_ar?: string | null;
@@ -8293,6 +8839,8 @@ export type Database = {
           closes_at?: string | null;
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           eb_approved_at?: string | null;
           eb_resolution?: string | null;
           eligibility_ar?: string | null;
@@ -8389,6 +8937,8 @@ export type Database = {
         Row: {
           created_at: string;
           created_by: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
           id: string;
           is_public: boolean;
           kind: string;
@@ -8420,6 +8970,8 @@ export type Database = {
         Insert: {
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           id?: string;
           is_public?: boolean;
           kind?: string;
@@ -8450,6 +9002,8 @@ export type Database = {
         Update: {
           created_at?: string;
           created_by?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           id?: string;
           is_public?: boolean;
           kind?: string;

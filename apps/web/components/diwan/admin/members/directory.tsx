@@ -236,6 +236,11 @@ export const MembersDirectory = () => {
           (row.short_name_ar ?? "").includes(q) ||
           String(row.card_number ?? "") === q
         }
+        // A member not yet verified waits on Membership.
+        needsYou={{
+          date: (row) => row.member_since,
+          test: (row) => !row.verified_at,
+        }}
       >
         {(found) => (
           <>

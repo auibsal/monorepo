@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, productions, unwrap } from "@/lib/data";
+import { productionArchived } from "@/lib/data/archive";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermission } from "@/lib/rbac";
@@ -25,6 +26,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
 import { RecordHistory } from "../record-history";
 import { type ProductionTab, productionTabs } from "../tabs";
 import { AuditionsTab, CreditsTab, RehearsalsTab } from "./company";
@@ -238,6 +240,7 @@ export const ProductionsAdmin = () => {
       {list.isPending ? <SectionSpinner /> : null}
       {list.data ? (
         <RecordList
+          archived={productionArchived}
           empty={
             <EmptyLine
               action={
@@ -269,6 +272,7 @@ export const ProductionsAdmin = () => {
         </RecordList>
       ) : null}
       {canPropose ? <CreditedNames /> : null}
+      <RecentlyDeleted kind="production" />
     </div>
   );
 };
@@ -321,15 +325,14 @@ export const ProductionPage = ({
   return (
     <RecordView
       actions={production.is_public ? <OnTheSite href={base} /> : undefined}
+      archived={productionArchived(production)}
       back={
         <Link className="link" href="/company">
           {t("back")}
         </Link>
       }
-      history={
-        tab === "details" ? (
-          <RecordHistory id={production.id} table="programs.productions" />
-        ) : null
+      menu={
+        <DeleteRecord id={production.id} kind="production" then="/company" />
       }
       title={localized(production, "title", locale)}
     >
@@ -349,6 +352,13 @@ export const ProductionPage = ({
         <PerformancesTab production={production} />
       ) : null}
       {tab === "report" ? <ReportTab production={production} /> : null}
+      {tab === "history" ? (
+        <RecordHistory
+          id={production.id}
+          table="programs.productions"
+          versions="programs.productions"
+        />
+      ) : null}
     </RecordView>
   );
 };

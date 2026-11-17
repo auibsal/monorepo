@@ -33,8 +33,6 @@ import { memberName } from "../members/directory";
 
 const key = ["admin", "forms"];
 
-type Show = "open" | "closed" | "all";
-
 const FormName = ({ formKey }: { formKey: string }) => {
   const labels = useFormLabels(formKey);
   return <>{labels.title()}</>;
@@ -64,9 +62,6 @@ export const RequestQueue = ({
   // The filters live in the query string beside the find line
   // (decisions.md, The site: "One list").
   const [form, setForm] = useQueryState("form");
-  const [showParam, setShow] = useQueryState("show");
-  const show: Show =
-    showParam === "closed" || showParam === "all" ? showParam : "open";
 
   const handled = (types.data ?? []).filter(
     (ty) =>
@@ -107,8 +102,6 @@ export const RequestQueue = ({
   const rows = (list.data ?? []).filter(
     (s) =>
       (form === "" || s.form_key === form) &&
-      (show === "all" ||
-        (show === "closed" ? s.status === "closed" : s.status !== "closed")) &&
       // What you sent yourself is in Forms, not your queue.
       s.submitted_by !== user?.id
   );
@@ -176,45 +169,29 @@ export const RequestQueue = ({
       <RecordList
         empty={
           <EmptyLine
-            action={{ href: `${base}?show=all`, label: tk("showAll") }}
+            action={{ href: `${base}?view=all`, label: tk("showAll") }}
           >
             {t("empty")}
           </EmptyLine>
         }
         filters={
-          <>
-            <Field label={t("filterForm")}>
-              {(id) => (
-                <SelectInput
-                  className="w-56"
-                  id={id}
-                  onChange={(e) => setForm(e.target.value)}
-                  value={form}
-                >
-                  <option value="">{t("allForms")}</option>
-                  {handled.map((ty) => (
-                    <option key={ty.key} value={ty.key}>
-                      {localized(ty, "title", locale)}
-                    </option>
-                  ))}
-                </SelectInput>
-              )}
-            </Field>
-            <Field label={t("filterShow")}>
-              {(id) => (
-                <SelectInput
-                  className="w-44"
-                  id={id}
-                  onChange={(e) => setShow(e.target.value)}
-                  value={show}
-                >
-                  <option value="open">{t("show.open")}</option>
-                  <option value="closed">{t("show.closed")}</option>
-                  <option value="all">{t("show.all")}</option>
-                </SelectInput>
-              )}
-            </Field>
-          </>
+          <Field label={t("filterForm")}>
+            {(id) => (
+              <SelectInput
+                className="w-56"
+                id={id}
+                onChange={(e) => setForm(e.target.value)}
+                value={form}
+              >
+                <option value="">{t("allForms")}</option>
+                {handled.map((ty) => (
+                  <option key={ty.key} value={ty.key}>
+                    {localized(ty, "title", locale)}
+                  </option>
+                ))}
+              </SelectInput>
+            )}
+          </Field>
         }
         items={rows}
         matches={(s, q) =>
@@ -222,6 +199,11 @@ export const RequestQueue = ({
             v.toLowerCase().includes(q)
           )
         }
+        // What waits on this seat: every request not yet closed.
+        needsYou={{
+          date: (s) => s.submitted_at,
+          test: (s) => s.status !== "closed",
+        }}
       >
         {(found) => (
           <DataTable

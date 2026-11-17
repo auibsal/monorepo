@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 import { logoFiles } from "./lib/logos";
@@ -192,4 +192,32 @@ describe("SAL logos (packages/brand/assets/logos)", () => {
       );
     });
   }
+});
+
+// decisions.md, The site: "Where files live": AUIB's standard logo set is
+// in the brand kit; the site's public/institutions is its copy.
+describe("AUIB's logo set (packages/brand/assets/logos/auib)", () => {
+  const auibDir = join(brandTokensPath, "..", "logos", "auib");
+  const served = join(
+    import.meta.dirname,
+    "..",
+    "..",
+    "apps",
+    "web",
+    "public",
+    "institutions"
+  );
+  test("apps/web/public/institutions holds the set unchanged", () => {
+    const files = readdirSync(auibDir).filter((f) => f.endsWith(".svg"));
+    expect(files.length).toBeGreaterThan(0);
+    expect(readdirSync(served).sort()).toEqual(files.sort());
+    for (const file of files) {
+      expect(
+        readFileSync(join(served, file)).equals(
+          readFileSync(join(auibDir, file))
+        ),
+        file
+      ).toBe(true);
+    }
+  });
 });

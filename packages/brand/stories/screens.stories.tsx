@@ -3,6 +3,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
+import { dirOf } from "@repo/brand/lib/utils";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { ReactNode } from "react";
 
@@ -24,7 +25,7 @@ type Story = StoryObj<typeof meta>;
 type Lang = "ar" | "en";
 
 const Page = ({ children, lang }: { children: ReactNode; lang: Lang }) => (
-  <div dir={lang === "ar" ? "rtl" : "ltr"} lang={lang}>
+  <div dir={dirOf(lang)} lang={lang}>
     {children}
   </div>
 );

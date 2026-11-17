@@ -4,7 +4,6 @@ import { SalCard } from "@repo/brand/components/sal/card";
 import { Icon, type IconName } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import {
-  formatIqd,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
@@ -25,19 +24,13 @@ import { SecondOfficer } from "./second-officer";
 import { RecentActivity } from "./system/activity";
 import { AdvisorFindings } from "./system/advisors";
 import { StaffAlerts } from "./system/alerts";
+import { useDueThisWeek } from "./system/calendar";
 import { EmailDelivery } from "./system/email";
 import { NotionWorkspace } from "./system/notion";
 import { ScanFindings } from "./system/scan-findings";
 import { StudentLifeWeekPanel } from "./system/student-life-week";
 
 interface Overview {
-  campaigns?: {
-    campaign_id: string;
-    counted_iqd: number;
-    pending_iqd: number;
-    title_ar: string;
-    title_en: string;
-  }[];
   intake_oldest_at?: string | null;
   members?: number;
   next_event?: {
@@ -428,8 +421,26 @@ const untitledFigures = (
     value: 1,
   }));
 
+/** The Desk's calendar figure: posts due in the coming week (Media). */
+const dueFigures = (
+  t: ReturnType<typeof useTranslations<"diwan.admin.calendar">>,
+  count: number | undefined
+): FigureProps[] =>
+  count === undefined
+    ? []
+    : [
+        {
+          action: count ? t("openCalendar") : undefined,
+          detail: count ? t("dueDetail") : t("dueNone"),
+          href: "/media/channels",
+          label: t("dueTitle"),
+          value: count,
+        },
+      ];
+
 export const AdminOverview = () => {
   const t = useTranslations("diwan.admin.overview");
+  const tc = useTranslations("diwan.admin.calendar");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const grants = useGrants();
@@ -461,6 +472,8 @@ export const AdminOverview = () => {
   const managesPartners = hasPermissionAnywhere(grants.data, "partners.manage");
   const noLogo = useLogoCounts(grants.isSuccess && managesPartners);
   const managesQirtas = hasPermissionAnywhere(grants.data, "journal.manage");
+  const managesContent = hasPermissionAnywhere(grants.data, "content.manage");
+  const due = useDueThisWeek(grants.isSuccess && managesContent);
   const untitled = useUntitledEditions(grants.isSuccess && managesQirtas);
 
   if (overview.isPending || editing.isPending) {
@@ -476,6 +489,7 @@ export const AdminOverview = () => {
     ...editingFigures(t, editing.data),
     ...logoFigures(t, managesPartners ? noLogo.data : undefined),
     ...untitledFigures(t, locale, managesQirtas ? untitled.data : undefined),
+    ...dueFigures(tc, managesContent ? due.data : undefined),
   ];
   const can = (permission: Permission) =>
     hasPermissionAnywhere(grants.data, permission);
@@ -486,7 +500,7 @@ export const AdminOverview = () => {
         <AdminHeading actions={<QuickActions />} title={t("title")} />
         <PaperLinks />
       </div>
-      {figures.length === 0 && !o.campaigns ? (
+      {figures.length === 0 ? (
         <p className="type-body text-text-secondary">{t("nothing")}</p>
       ) : null}
       {figures.length > 0 ? (
@@ -498,37 +512,6 @@ export const AdminOverview = () => {
       ) : null}
       <Handover />
       <SecondOfficer />
-      {o.campaigns ? (
-        <DiwanSection id="campaigns" title={t("campaigns")}>
-          {o.campaigns.length === 0 ? (
-            <p className="type-body text-text-secondary">{t("noCampaigns")}</p>
-          ) : (
-            <ul className="gap-space-4 grid sm:grid-cols-2">
-              {o.campaigns.map((c) => (
-                <li key={c.campaign_id}>
-                  <SalCard>
-                    <p className="font-medium">
-                      {localized(c, "title", locale)}
-                    </p>
-                    <p className="text-text text-2xl font-light tabular-nums">
-                      {t("counted", {
-                        amount: formatIqd(c.counted_iqd, locale),
-                      })}
-                    </p>
-                    {c.pending_iqd > 0 ? (
-                      <p className="type-caption">
-                        {t("pending", {
-                          amount: formatIqd(c.pending_iqd, locale),
-                        })}
-                      </p>
-                    ) : null}
-                  </SalCard>
-                </li>
-              ))}
-            </ul>
-          )}
-        </DiwanSection>
-      ) : null}
       <DiwanSection id="alerts" title={t("alerts.title")}>
         <StaffAlerts />
         <ScanFindings />

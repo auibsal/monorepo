@@ -9,6 +9,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, programs, unwrap } from "@/lib/data";
+import { openingArchived } from "@/lib/data/archive";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { useQueryState } from "@/lib/diwan/use-query-param";
@@ -37,6 +38,8 @@ import {
   picks,
   type Reply,
 } from "../members/hiring";
+import { usePresets } from "../presets";
+import { RecentlyDeleted } from "../recently-deleted";
 
 /**
  * What an opening offers (decisions.md: open roles only): a team role
@@ -277,6 +280,7 @@ export const OpeningsAdmin = () => {
       {list.isPending ? <SectionSpinner /> : null}
       {list.data ? (
         <RecordList
+          archived={openingArchived}
           empty={
             <EmptyLine
               action={{ href: "/membership/openings/new", label: t("new") }}
@@ -326,6 +330,7 @@ export const OpeningsAdmin = () => {
           )}
         </RecordList>
       ) : null}
+      <RecentlyDeleted kind="opening" />
     </div>
   );
 };
@@ -342,6 +347,8 @@ const PlaceForm = ({
   readonly onDone: () => void;
 }) => {
   const t = useTranslations("diwan.admin.programs.openings");
+  const tp = useTranslations("diwan.admin.presets");
+  const presets = usePresets("opening");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -392,6 +399,38 @@ const PlaceForm = ({
               {(events.data ?? []).map((e) => (
                 <option key={e.id} value={e.id}>
                   {`${localized(e, "title", locale)} · ${formatLongDate(e.starts_at, locale)}`}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+      ) : null}
+      {(presets.data ?? []).length > 0 ? (
+        <Field label={tp("start")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) => {
+                const preset = presets.data?.find(
+                  (p) => p.key === e.target.value
+                );
+                if (preset) {
+                  setForm((f) => ({
+                    ...f,
+                    body: {
+                      ar: String(preset.fields.body_ar ?? ""),
+                      en: String(preset.fields.body_en ?? ""),
+                    },
+                    title: { ar: preset.title_ar, en: preset.title_en },
+                  }));
+                }
+              }}
+              value=""
+            >
+              <option value="">{tp("none")}</option>
+              {(presets.data ?? []).map((p) => (
+                <option key={p.key} value={p.key}>
+                  {localized({ ...p }, "title", locale)}
                 </option>
               ))}
             </SelectInput>

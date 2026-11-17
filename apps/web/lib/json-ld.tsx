@@ -110,6 +110,12 @@ export const articleLd = (
   image: a.image ?? undefined,
   inLanguage: locale,
   mainEntityOfPage: pageUrl(locale, a.path),
+  // The Trust Project's machine-readable indicators, on News pieces.
+  ...(a.news
+    ? {
+        publishingPrinciples: pageUrl(locale, "/library/editorial-standards"),
+      }
+    : {}),
   publisher: { "@id": `${project.url}/#organization` },
 });
 

@@ -1,10 +1,11 @@
-<!-- The brand's type for the Guide's pages (docs): Ubuntu, Ubuntu Mono and
-     Markazi Text from Google Fonts, and Ubuntu's Arabic files from the kit's
-     own fonts, under the one family name (decisions §14). -->
+<!-- The brand's type for the Guide's pages (docs): Ubuntu, Ubuntu Mono,
+     Markazi Text and the Arabic signature's Aref Ruqaa from Google Fonts,
+     and Ubuntu's Arabic files and the signature face from the kit's own
+     fonts, under the one family name (decisions §14). -->
 <link href="https://fonts.googleapis.com" rel="preconnect">
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
 <link
-  href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400..700&family=Ubuntu+Mono:wght@400;700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Markazi+Text:wght@400..700&family=Ubuntu+Mono:wght@400;700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap"
   rel="stylesheet"
 >
 
@@ -37,7 +38,14 @@
   unicode-range:
     U+0600-06FF, U+0750-077F, U+0870-08FF, U+FB50-FDFF, U+FE70-FEFF;
 }
+@font-face {
+  font-family: "Mrs Saint Delafield";
+  font-weight: 400;
+  src: url("brand-kit/fonts/MrsSaintDelafield-Regular.ttf") format("truetype");
+}
 :root {
+  --font-mrs-saint: "Mrs Saint Delafield";
+  --font-ruqaa: "Aref Ruqaa";
   --font-ubuntu: "Ubuntu";
   --font-ubuntu-arabic: "Ubuntu";
   --font-ubuntu-mono: "Ubuntu Mono";
