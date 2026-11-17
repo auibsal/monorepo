@@ -798,6 +798,13 @@ export type Database = {
           topic: string;
         }[];
       };
+      paper_numbers: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          documents_signed: number;
+          sheets_not_printed: number;
+        }[];
+      };
       plan_year: { Args: { year: number }; Returns: number };
       save_sunday_paper: {
         Args: { letter_ar: string; letter_en: string; month: string };

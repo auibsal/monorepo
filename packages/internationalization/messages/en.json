@@ -4229,7 +4229,8 @@
         },
         "open": "Presets",
         "start": "Start from a preset",
-        "none": "Start blank"
+        "none": "Start blank",
+        "standardNote": "Every event, whatever its preset, also carries the Events Manual’s standard items, the accessible-event checklist and the green-event checklist."
       },
       "calendar": {
         "title": "Content calendar",
@@ -6325,7 +6326,48 @@
       "independenceTitle": "Independence",
       "independence": "The AUIB Society of Arts and Letters is a registered student organization at the American University of Iraq – Baghdad. Its views and publications are its own and not those of the University.",
       "verseFirst": "الخيلُ والليلُ والبيداءُ تعرفني",
-      "verseSecond": "والسيفُ والرمحُ والقرطاسُ والقلمُ"
+      "verseSecond": "والسيفُ والرمحُ والقرطاسُ والقلمُ",
+      "sustainabilityTitle": "Sustainability",
+      "sustainabilityLede": "Paperless by default. Printed with purpose. The Society states only what it does and what the site can count.",
+      "paper": {
+        "signed": "Documents signed on the site",
+        "sheets": "Sheets not printed",
+        "wood": "Wood not used, in pounds",
+        "water": "Water not used, in gallons",
+        "co2e": "Greenhouse gas avoided, in pounds of CO2e"
+      },
+      "paperNote": "Counted by the site, at least one sheet for each signed document.",
+      "paperSource": "Converted with the Environmental Paper Network Paper Calculator v{version}, for copy paper with no recycled content.",
+      "practicesTitle": "What it does",
+      "practices": {
+        "digital": {
+          "title": "Digital first",
+          "body": "Forms, signatures and tickets are on the site; a printed copy is the exception."
+        },
+        "need": {
+          "title": "Print to the need",
+          "body": "Only what is confirmed: the RSVP count plus 10 percent, or the number asked for; booklets in multiples of four pages."
+        },
+        "editions": {
+          "title": "Paper for Editions",
+          "body": "Each Edition’s printing is asked for on FSC-certified or recycled paper, following Canopy’s guidance for publishers. The colophon names the paper only when the printer confirms it."
+        },
+        "reuse": {
+          "title": "Reuse",
+          "body": "No single-use decorations; books go round again through Second Chapter; trips share rides."
+        },
+        "days": {
+          "title": "The days it marks",
+          "body": "One Earth Day event each year, registered on EarthDay.org’s map; Earth Hour each March with WWF; World Cleanup Day each September with Student Life."
+        },
+        "web": {
+          "title": "A lighter site",
+          "body": "The site follows the W3C Web Sustainability Guidelines."
+        }
+      },
+      "greenTitle": "The green-event checklist",
+      "green": "Every event’s checklist carries the Society’s green-event items: waste and reuse, food and water, materials and printing, transport, and how the event is announced.",
+      "greenSources": "Adapted from the University of Illinois’s Certified Green Event program, Duke Sustainability’s Green Event Certification and UC Berkeley’s ASUC Green Events program."
     },
     "join": {
       "title": "Join the Society",

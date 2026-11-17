@@ -92,7 +92,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(7);
+select plan(9);
 
 -- decisions.md, The site: "Presets".
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
@@ -127,6 +127,21 @@ select ok(
   and (select count(*) from api.checklist_items
    where event_id = 'e0000000-0000-0000-0000-0000000000d1' and source = 'green') > 0,
   'Every event''s checklist carries the accessible-event and green-event items'
+);
+
+select is(
+  (select count(*)::int - count(distinct (source, label_en))::int from api.checklist_items
+   where event_id = 'e0000000-0000-0000-0000-0000000000d1'),
+  0, 'Starting from a preset adds no second copy of them'
+);
+select pg_temp.logout();
+insert into events.events (id, slug, title_en, title_ar, starts_at, status) values
+  ('e0000000-0000-0000-0000-0000000000d2', 'open-mic-2026-12-10', 'Open mic', 'أمسية مفتوحة',
+    now() + interval '22 days', 'draft');
+select ok(
+  (select count(*) from events.checklist_items
+   where event_id = 'e0000000-0000-0000-0000-0000000000d2' and source = 'access') > 0,
+  'An event made without a preset carries them too'
 );
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000f2');

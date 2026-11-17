@@ -5,6 +5,7 @@ import {
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader, RuledList, Section } from "@/components/section";
+import { PAPER_CALCULATOR } from "@/lib/data/paper";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
 
@@ -14,8 +15,9 @@ export const generateMetadata = sectionMetadata("web.about", "/about");
  * The About page (decisions.md, The site), in order: the one sentence, the
  * motto (al-Mutanabbi's whole verse with its translation, and the story of
  * the name Qirtas), what the Society does, how it is run, a short history,
- * the Society by the numbers, the Council, the independence statement and
- * the documents. AUIB's offices are listed on the partners page only.
+ * the Society by the numbers, the sustainability note (the footer's
+ * "Paperless by default" links here), the independence statement and the
+ * documents. AUIB's offices are listed on the partners page only.
  */
 
 /** The numbers counted by the site, in this order. */
@@ -53,6 +55,28 @@ const BEGAN = [
   ["founding", "2027-03-30"],
 ] as const;
 
+/** What the Society does for the environment (decisions.md, Sustainability). */
+const PRACTICES = [
+  "digital",
+  "need",
+  "editions",
+  "reuse",
+  "days",
+  "web",
+] as const;
+
+/** The paper the counted sheets stand for, once the calculator's figures are in. */
+const paperFigures = (sheets: number) => {
+  const per = PAPER_CALCULATOR.perSheet;
+  return per
+    ? ([
+        ["wood", per.woodLbs * sheets],
+        ["water", per.waterGallons * sheets],
+        ["co2e", per.co2eLbs * sheets],
+      ] as const)
+    : [];
+};
+
 /** The Society's own pages, in a row of three. */
 const HUB = [
   ["council", "/about/council"],
@@ -74,6 +98,16 @@ const AboutPage = async ({ params }: LocaleParams) => {
       const { data } = await c
         .schema("api")
         .rpc("society_numbers", undefined, { get: true });
+      return data?.[0] ?? null;
+    },
+    null
+  );
+  const paper = await readPublished(
+    ["about"],
+    async (c) => {
+      const { data } = await c
+        .schema("api")
+        .rpc("paper_numbers", undefined, { get: true });
       return data?.[0] ?? null;
     },
     null
@@ -182,6 +216,51 @@ const AboutPage = async ({ params }: LocaleParams) => {
           <p className="type-caption">{t("numbersNote")}</p>
         </Section>
       ) : null}
+
+      <Section id="sustainability" title={t("sustainabilityTitle")}>
+        <p className="type-body max-w-[60ch]">{t("sustainabilityLede")}</p>
+        {paper ? (
+          <>
+            <dl className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+              {(
+                [
+                  ["signed", paper.documents_signed],
+                  ["sheets", paper.sheets_not_printed],
+                  ...paperFigures(paper.sheets_not_printed),
+                ] as const
+              ).map(([key, value]) => (
+                <div className="border-line grid gap-1 border-t pt-3" key={key}>
+                  <dt className="type-caption text-text-secondary">
+                    {t(`paper.${key}`)}
+                  </dt>
+                  <dd className="text-4xl font-light">
+                    {formatNumber(Math.round(value), locale)}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <p className="type-caption">
+              {t("paperNote")}
+              {PAPER_CALCULATOR.perSheet
+                ? ` ${t("paperSource", { version: PAPER_CALCULATOR.version })}`
+                : ""}
+            </p>
+          </>
+        ) : null}
+        <RuledList
+          columns={3}
+          items={PRACTICES.map((key) => ({
+            body: t(`practices.${key}.body`),
+            key,
+            title: t(`practices.${key}.title`),
+          }))}
+        />
+        <div className="grid max-w-[60ch] gap-2">
+          <h3 className="type-heading">{t("greenTitle")}</h3>
+          <p className="type-body">{t("green")}</p>
+          <p className="type-caption">{t("greenSources")}</p>
+        </div>
+      </Section>
 
       <Section id="independence" title={t("independenceTitle")}>
         <p className="type-body max-w-[60ch]">{t("independence")}</p>
