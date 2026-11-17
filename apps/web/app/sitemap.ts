@@ -35,6 +35,7 @@ const staticPaths = [
   "/qirtas/games/anagram",
   "/qirtas/masthead",
   "/qirtas/corrections",
+  "/qirtas/transparency",
   "/qirtas/from-the-society",
   "/qirtas/archive",
   "/next-stop/episodes",
@@ -53,6 +54,7 @@ const staticPaths = [
   "/help",
   "/help/words",
   "/about/credits",
+  "/about/open-data",
 ];
 
 // `lastmod` only where the page's last change is known (an event, an issue,

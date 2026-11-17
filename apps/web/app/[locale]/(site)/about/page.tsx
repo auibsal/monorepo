@@ -85,6 +85,7 @@ const HUB = [
   ["contact", "/about/contact"],
   ["press", "/about/press"],
   ["verify", "/verify"],
+  ["openData", "/about/open-data"],
   ["credits", "/about/credits"],
 ] as const;
 

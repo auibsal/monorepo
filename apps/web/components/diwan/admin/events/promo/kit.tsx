@@ -22,13 +22,16 @@ const loadTools = async () => {
     { drawCard, drawProgram, drawSign, drawTent },
     { PDFDocument },
     { accessSentence },
+    { tagForPdfUa },
   ] = await Promise.all([
     import("./draw"),
     import("pdf-lib"),
     import("@repo/email/copy"),
+    import("@/lib/pdf-ua"),
   ]);
   return {
     accessSentence,
+    tagForPdfUa,
     drawCard,
     drawProgram,
     drawSign,
@@ -720,15 +723,49 @@ const buildKit = async (
           },
         ]
       : [];
+  const files = [...en, ...ar, ...sheets];
   return [
-    ...en,
-    ...ar,
-    ...sheets,
+    ...(await Promise.all(files.map((f) => accessible(tools, event, f)))),
     {
       blob: new Blob([captions(event)], { type: "text/plain;charset=utf-8" }),
       name: `${event.slug}-captions.txt`,
     },
   ];
+};
+
+/**
+ * Each PDF made accessible (PDF/UA): its title and language from the file,
+ * and each page's alternative text naming the event and what the page is.
+ */
+const accessible = async (
+  tools: Tools,
+  event: PromoEvent,
+  file: KitFile
+): Promise<KitFile> => {
+  if (!file.name.endsWith(".pdf")) {
+    return file;
+  }
+  const lang = file.name.includes(`-${LANG_TAG.ar}-`) ? "ar" : "en";
+  const title = lang === "ar" ? event.title_ar : event.title_en;
+  const what = file.name
+    .slice(event.slug.length + 1, -".pdf".length)
+    .replace(`${LANG_TAG[lang]}-`, "")
+    .replaceAll("-", " ");
+  const doc = await tools.PDFDocument.load(await file.blob.arrayBuffer());
+  const label = `${title} (${what})`;
+  tools.tagForPdfUa(doc, {
+    alt: doc
+      .getPages()
+      .map((_, i) => (doc.getPageCount() > 1 ? `${label}, ${i + 1}` : label)),
+    lang,
+    title: label,
+  });
+  return {
+    ...file,
+    blob: new Blob([new Uint8Array(await doc.save())], {
+      type: "application/pdf",
+    }),
+  };
 };
 
 /** A downloadable file, its address freed when the kit goes. */

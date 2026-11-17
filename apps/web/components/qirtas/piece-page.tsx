@@ -244,6 +244,13 @@ export const PieceArticle = async ({
         <IdentityLine locale={locale} piece={piece} />
         <PairedClip clipId={piece.clip_id} locale={locale} />
         <CorrectionNotes locale={locale} piece={piece} />
+        {desk === "news" ? (
+          <TrustNote
+            category={t(`categories.${category}`)}
+            checked={Boolean(piece.checked_at)}
+            locale={locale}
+          />
+        ) : null}
         <p className="type-caption mx-auto w-full max-w-3xl px-4">
           {t("firstPublished")}
         </p>
@@ -262,6 +269,49 @@ export const PieceArticle = async ({
       ) : null}
       <PieceEnd desk={desk} locale={locale} />
     </div>
+  );
+};
+
+/**
+ * The Trust Project's indicators on a News piece (decisions.md, Frameworks
+ * followed: Publishing): the type of work, how it was checked, the
+ * standards behind it, where to report an error, and who owns Qirtas.
+ * The byline and its corrections sit above it.
+ */
+const TrustNote = async ({
+  category,
+  checked,
+  locale,
+}: {
+  category: string;
+  checked: boolean;
+  locale: Locale;
+}) => {
+  const t = await getTranslations({ locale, namespace: "web.journal.trust" });
+  return (
+    <aside
+      aria-labelledby="about-this-piece"
+      className="border-line mx-auto grid w-full max-w-3xl gap-2 border-t px-4 pt-6 print:hidden"
+    >
+      <h2 className="type-label" id="about-this-piece">
+        {t("title")}
+      </h2>
+      <p className="type-body">
+        {`${t("type", { type: category })} ${t("news")}`}
+        {checked ? ` ${t("checked")}` : ""}
+      </p>
+      <p className="type-caption flex flex-wrap gap-x-5 gap-y-1">
+        <Link className="link" href="/library/editorial-standards">
+          {t("standards")}
+        </Link>
+        <Link className="link" href="/about/contact">
+          {t("correct")}
+        </Link>
+        <Link className="link" href="/qirtas/transparency">
+          {t("transparency")}
+        </Link>
+      </p>
+    </aside>
   );
 };
 

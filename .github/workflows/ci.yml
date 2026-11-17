@@ -112,6 +112,7 @@ jobs:
       - run: bun run typecheck
       - run: bun run test:coverage
       - run: bun run check:placeholders
+      - run: bun run check:pdf
       - run: bun run check:rtl
       - run: bun run check:credits
       - run: bun run check:permissions

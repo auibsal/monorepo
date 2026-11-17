@@ -1919,7 +1919,10 @@
           "captions": {
             "en": "English captions (WebVTT)",
             "ar": "Arabic captions (WebVTT)",
-            "remove": "Remove"
+            "remove": "Remove",
+            "problems": "These captions break the DCMP Captioning Key: at most two lines at once, each of at most {max} characters. Fix the file and choose it again.",
+            "long_line": "Caption {cue}: a line is too long (“{text}”).",
+            "too_many_lines": "Caption {cue}: more than two lines at once (“{text}”)."
           },
           "onCamera": {
             "title": "On camera",
@@ -6213,6 +6216,55 @@
         "titled": "Edition {number}: {title}",
         "untitled": "Edition {number}, {season}",
         "number": "Edition {number}"
+      },
+      "transparency": {
+        "title": "Transparency",
+        "lede": "Who owns Qirtas, how it is paid for, who decides what it publishes, and the standards it keeps.",
+        "parts": {
+          "owner": {
+            "title": "Who owns it",
+            "body": "Qirtas is the publication of the AUIB Society of Arts and Letters, a registered student organization at the American University of Iraq – Baghdad. No person or company owns a share of it."
+          },
+          "money": {
+            "title": "How it is paid for",
+            "body": "Qirtas has no money of its own: no budget, no paid advertising, no dues and no paid sponsors. The Office of Student Life provides what it needs, such as the printing of an Edition. Its editors and writers are students who are not paid."
+          },
+          "independence": {
+            "title": "Independence",
+            "body": "The editors decide what Qirtas publishes. Its views are its own and not those of the University, and no sponsor, partner or office reviews a piece before it is published."
+          },
+          "decides": {
+            "title": "Who decides",
+            "body": "The Editor-in-Chief leads Qirtas, with a Managing Editor and an editor for each section. The masthead lists them from the roles they hold.",
+            "link": "The masthead"
+          },
+          "standards": {
+            "title": "The standards it keeps",
+            "body": "The Editorial Standards and Stylebook (SAL-EDT-01) sets out its ethics, sourcing, corrections and house style. Every News piece shows what kind of work it is and how to reach the editors.",
+            "link": "Editorial Standards and Stylebook"
+          },
+          "corrections": {
+            "title": "Corrections",
+            "body": "Mistakes are corrected on the piece, with a note saying what changed and when. Every correction is listed in one place.",
+            "link": "Corrections"
+          },
+          "contact": {
+            "title": "How to reach it",
+            "body": "Write to the editors through the Society’s contact page. Letters to the editor are answered within a week.",
+            "link": "Contact"
+          }
+        },
+        "standard": "These disclosures follow the Journalism Trust Initiative’s standard, from Reporters Without Borders.",
+        "link": "Transparency"
+      },
+      "trust": {
+        "title": "About this piece",
+        "type": "Type of work: {type}.",
+        "news": "News reports facts the reporter gathered and the editors checked.",
+        "checked": "Facts checked before publication.",
+        "standards": "How Qirtas works",
+        "correct": "Report an error",
+        "transparency": "Who owns and pays for Qirtas"
       }
     },
     "about": {
@@ -6310,6 +6362,10 @@
         "credits": {
           "title": "Credits",
           "body": "The fonts, icons and software the site is made with."
+        },
+        "openData": {
+          "title": "Open data",
+          "body": "The Society’s public numbers as JSON and CSV, free to reuse."
         }
       },
       "spring2026": "Spring 2026",
@@ -7142,6 +7198,26 @@
       "notIncluded": "Not included",
       "invalid": "This link has expired or isn’t right. Reply to the email and the Secretary will send a new one.",
       "failed": "That didn’t go through. Try again in a moment."
+    },
+    "openData": {
+      "title": "Open data",
+      "lede": "The Society’s public numbers, free for anyone to reuse.",
+      "titles": {
+        "society-numbers": "The Society by the numbers",
+        "paper-numbers": "Paperless, counted",
+        "events": "Public events",
+        "days-marked": "The days the Society marks"
+      },
+      "sets": {
+        "society-numbers": "Members of every class, public events held, pieces and Editions published.",
+        "paper-numbers": "Documents signed on the site and sheets not printed.",
+        "events": "Every published public event: its address, title and times (UTC).",
+        "days-marked": "The calendar of days the Society marks, with who sets each and how it is marked."
+      },
+      "json": "JSON",
+      "csv": "CSV",
+      "license": "Every dataset here is dedicated to the public domain:",
+      "cc0": "CC0 1.0"
     }
   }
 }

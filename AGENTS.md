@@ -136,7 +136,7 @@ media do.
 - `docs/platform`: the platform runbooks (Markdown). There is no separate
   docs site.
 - `scripts/`: `check-placeholders.ts`, `check-rtl.ts`, `check-i18n.ts`,
-  `check-language.ts`, `check-forms-register.ts`.
+  `check-language.ts`, `check-forms-register.ts`, `check-pdf.ts`.
 
 ## Commands
 
@@ -150,6 +150,7 @@ bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
 bun run check:i18n          # UI text not in the messages files; the language standard
 bun run check:forms         # the register's kinds against SAL-EXB-01, by name (needs NOTION_TOKEN)
+bun run check:pdf           # every PDF the site makes is tagged for PDF/UA (lib/pdf-ua.ts)
 bun run check:unused        # unused files and dependencies (Knip)
 bun run db:start | db:reset | db:test | db:types
 bun run --cwd apps/e2e e2e   # Playwright journeys + axe (local stack running)

@@ -800,7 +800,7 @@ const cardColumns =
   "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, front_rank, video_url, image_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar, is_anonymous), media:piece_media(storage_path, alt_en, alt_ar, width, height, sort)";
 
 const fullColumns =
-  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, updated_at, front_rank, video_url, image_path, credit_en, credit_ar, issue_id, event_id, clip_id, reading_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar, is_anonymous), media:piece_media(storage_path, alt_en, alt_ar, caption_en, caption_ar, width, height, sort), issue:issues(slug, title_en, title_ar)";
+  "id, slug, desk, category, language, title_en, title_ar, deck_en, deck_ar, members_only, published_at, updated_at, checked_at, front_rank, video_url, image_path, credit_en, credit_ar, issue_id, event_id, clip_id, reading_path, contributor:contributors!pieces_contributor_id_fkey(slug, name_en, name_ar, is_anonymous), media:piece_media(storage_path, alt_en, alt_ar, caption_en, caption_ar, width, height, sort), issue:issues(slug, title_en, title_ar)";
 
 const publishedPieces = (client: Client) =>
   journal(client)

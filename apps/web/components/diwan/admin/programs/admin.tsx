@@ -25,6 +25,11 @@ import {
 import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, programs, unwrap } from "@/lib/data";
+import {
+  type CaptionProblem,
+  captionProblems,
+  MAX_LINE,
+} from "@/lib/data/captions";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermissionAnywhere } from "@/lib/rbac";
@@ -584,10 +589,22 @@ const CaptionsField = ({
   const t = useTranslations("diwan.admin.programs.episodes");
   const { supabase } = useAuth();
   const id = useId();
+  const [problems, setProblems] = useState<CaptionProblem[]>([]);
   const upload = useMutation({
-    mutationFn: async (file: File) =>
-      (await uploadMedia(supabase, "next-stop", file)).path,
-    onSuccess: onChange,
+    mutationFn: async (file: File) => {
+      // The DCMP Captioning Key's line rules, checked before the upload.
+      const found = captionProblems(await file.text());
+      setProblems(found);
+      if (found.length > 0) {
+        return null;
+      }
+      return (await uploadMedia(supabase, "next-stop", file)).path;
+    },
+    onSuccess: (path) => {
+      if (path) {
+        onChange(path);
+      }
+    },
   });
   return (
     <div className="grid gap-2">
@@ -615,6 +632,23 @@ const CaptionsField = ({
         }}
         type="file"
       />
+      {problems.length > 0 ? (
+        <div className="grid gap-1" role="alert">
+          <p className="type-body text-accent">
+            {t("captions.problems", { max: formatNumber(MAX_LINE) })}
+          </p>
+          <ul className="type-caption grid gap-0.5">
+            {problems.slice(0, 10).map((p) => (
+              <li dir="auto" key={`${p.cue}-${p.kind}-${p.text}`}>
+                {t(`captions.${p.kind}`, {
+                  cue: formatNumber(p.cue),
+                  text: p.text,
+                })}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <ErrorLine error={upload.error} />
     </div>
   );
