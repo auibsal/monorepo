@@ -2547,7 +2547,7 @@
           "title": "A call"
         },
         "pledge": {
-          "title": "The readers’ pledge",
+          "title": "The confidentiality agreement",
           "intro": "Before you read work sent to Qirtas, you agree that:",
           "points": {
             "confidential": "What you read here is confidential until it is published, and so is everything said about it.",
@@ -2555,7 +2555,7 @@
             "noSharing": "You don’t share, describe, or discuss it with anyone outside the review.",
             "stepAside": "If you know or can tell whose work it is, you step aside from it and tell the Editor-in-Chief."
           },
-          "agree": "Sign the pledge"
+          "agree": "Sign the agreement"
         },
         "room": {
           "note": "Read it here only. Your card number and today’s date are set across the work.",
@@ -5419,7 +5419,7 @@
       "concern": "Raise a concern",
       "recognition": "A registered student organization at the",
       "address": "AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq",
-      "paperless": "Paperless by default.",
+      "paperless": "Paperless by default. Printed with purpose.",
       "pieces": "Each piece belongs to its writer, under the license shown on it.",
       "copyright": "© {years} AUIB Society of Arts and Letters. All rights reserved.",
       "help": "Help",

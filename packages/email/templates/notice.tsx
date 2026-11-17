@@ -108,8 +108,8 @@ const NAME = {
  * CAN-SPAM asks; every email carries the same foot).
  */
 const FOOTER = {
-  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية، auibsal.org. الأصل عندنا: بلا ورق. جمعية الفنون والآداب في الجامعة الأمريكية، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في بغداد، طريق المطار، بغداد، العراق.",
-  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org. Paperless by default. AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq.",
+  ar: "أُرسلت من موقع جمعية الفنون والآداب في الجامعة الأمريكية، auibsal.org. الأصل عندنا: بلا ورق، ونطبع لغاية. جمعية الفنون والآداب في الجامعة الأمريكية، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في بغداد، طريق المطار، بغداد، العراق.",
+  en: "Sent by the website of the AUIB Society of Arts and Letters, auibsal.org. Paperless by default. Printed with purpose. AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq.",
 };
 
 /**

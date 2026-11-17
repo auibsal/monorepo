@@ -158,7 +158,7 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
       { blind_entry_id: entryId, read_number: 1, reader_id: readerId },
       { onConflict: "blind_entry_id,reader_id" }
     );
-  // A reader who hasn't signed confidentiality-agreement, the readers' pledge.
+  // A reader who hasn't signed confidentiality-agreement.
   await db
     .schema("api")
     .from("form_submissions")
@@ -178,12 +178,12 @@ test("a reader takes the pledge, then reads the work on the page and gets no fil
   await signInWithPassword(page, editor.email);
   await page.goto(`${urls.app}/qirtas/entries/${entryId}`);
   await expect(
-    page.getByRole("heading", { name: "The readers’ pledge" })
+    page.getByRole("heading", { name: "The confidentiality agreement" })
   ).toBeVisible();
   await expect(page.getByText("The kettle keeps")).toHaveCount(0);
   await expectAccessible(page);
   // Signed in their platform name, after agreeing to sign electronically.
-  const sign = page.getByRole("button", { name: "Sign the pledge" });
+  const sign = page.getByRole("button", { name: "Sign the agreement" });
   await expect(sign).toBeDisabled();
   await page.getByLabel(/I agree to sign electronically/u).check();
   await sign.click();

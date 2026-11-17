@@ -158,7 +158,7 @@ const Protected = ({
 };
 
 /**
- * A blind entry's text and images, after the readers' pledge. No file
+ * A blind entry's text and images, after the confidentiality agreement. No file
  * reaches the page: the text is the work as sent, and images are copies
  * marked with the reader's card number and the day.
  */

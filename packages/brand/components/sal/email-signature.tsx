@@ -10,13 +10,13 @@ const EMAIL_SIGNATURE = {
   ar: {
     links: "auibsal.org · @auibsal",
     motto: "والقرطاسُ والقلمُ.",
-    paperless: "الأصل عندنا: بلا ورق.",
+    paperless: "الأصل عندنا: بلا ورق، ونطبع لغاية.",
     society: "جمعية الفنون والآداب في الجامعة الأمريكية",
   },
   en: {
     links: "auibsal.org · @auibsal",
     motto: "The paper and the pen.",
-    paperless: "Paperless by default.",
+    paperless: "Paperless by default. Printed with purpose.",
     society: "AUIB Society of Arts and Letters",
   },
 } as const;

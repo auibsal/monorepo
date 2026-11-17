@@ -304,8 +304,8 @@ Supabase's general advice; where they differ, this file wins:
 - **Blind review.** Readers never receive an author's identity before a
   decision; verify against network responses, not the UI. Clients never
   read `contributors.user_id`, so a pen name can't be traced. Readers
-  read the work, never the file: after signing `confidentiality-agreement` (the readers'
-  pledge) on the reading page, the text on
+  read the work, never the file: after signing `confidentiality-agreement` (the
+  confidentiality agreement) on the reading page, the text on
   the page (`journal.entry_text`) and images marked with their card
   number (`/api/files/blind`); originals open by role through
   `journal.open_original`, each opening kept.
@@ -425,7 +425,7 @@ everywhere:
   first formal use, then "the Society" or "SAL", never "the club". The
   motto "The paper and the pen." is the short line; the endorsement line
   is "a Society of Arts and Letters program". Every email and the footer
-  carry "Paperless by default.", linked on the site to About's sustainability note.
+  carry "Paperless by default. Printed with purpose.", linked on the site to About's sustainability note.
 - **Content.** Don't invent names, dates, figures or quotes. Missing text
   is a `TODO(content): …` placeholder listed in `PROGRESS.md`.
 - **Formats.** Dates as "Tuesday, October 13", times as "6:00 p.m.": use

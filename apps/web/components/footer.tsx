@@ -28,7 +28,7 @@ const years = (year: number) =>
  * ink in both modes, in three bands: the Sunday Paper, full width; who the
  * Society is (logo, motto, the University) beside four short columns (The
  * Society; Take part; Read and watch; Policies); then the social links,
- * "Raise a concern", the postal address, "Paperless by default." and the
+ * "Raise a concern", the postal address, "Paperless by default. Printed with purpose." and the
  * copyright. `qirtas` adds that each piece belongs to its writer.
  */
 export const Footer = async ({
