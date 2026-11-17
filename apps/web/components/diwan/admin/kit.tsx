@@ -566,6 +566,10 @@ const namedReason = (error: unknown, code: string) => {
   if (error.message.includes("logo_too_small")) {
     return "logoTooSmall" as const;
   }
+  // A photo that carries its location (decisions.md, Media).
+  if (error.message.includes("has_location")) {
+    return "hasLocation" as const;
+  }
   return null;
 };
 

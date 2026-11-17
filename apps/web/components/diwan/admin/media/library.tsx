@@ -6,6 +6,7 @@ import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useId, useState } from "react";
+import { ContentCredentialsLink } from "@/components/content-credentials";
 import { FileInput } from "@/components/fields/file-input";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
@@ -41,6 +42,7 @@ interface MediaItem {
   readonly bucket: string;
   readonly caption_ar: string | null;
   readonly caption_en: string | null;
+  readonly content_credentials: boolean;
   readonly created_at: string;
   readonly credit: string | null;
   readonly event_id: string | null;
@@ -61,7 +63,7 @@ const useMediaItems = () => {
           .schema("api")
           .from("media_items")
           .select(
-            "id, bucket, path, file_name, kind, alt_en, alt_ar, caption_en, caption_ar, credit, license, event_id, created_at"
+            "id, bucket, path, file_name, kind, alt_en, alt_ar, caption_en, caption_ar, credit, license, event_id, created_at, content_credentials"
           )
           .order("created_at", { ascending: false })
       ) ?? []) as MediaItem[],
@@ -84,15 +86,21 @@ const MediaPreview = ({ item }: { readonly item: MediaItem }) => {
       </span>
     );
   }
+  const url = getMediaUrl(supabase, item.path);
   return (
-    // biome-ignore lint/performance/noImgElement: a preview from the media bucket, any size
-    <img
-      alt={item.alt_en ?? t("noAlt")}
-      className="h-20 w-auto max-w-40 object-contain"
-      height={80}
-      src={getMediaUrl(supabase, item.path)}
-      width={120}
-    />
+    <span className="grid justify-items-start gap-1">
+      {/* biome-ignore lint/performance/noImgElement: a preview from the media bucket, any size */}
+      <img
+        alt={item.alt_en ?? t("noAlt")}
+        className="h-20 w-auto max-w-40 object-contain"
+        height={80}
+        src={url}
+        width={120}
+      />
+      {item.content_credentials ? (
+        <ContentCredentialsLink photoUrl={url} />
+      ) : null}
+    </span>
   );
 };
 

@@ -607,6 +607,7 @@ export type Database = {
           bytes: number | null;
           caption_ar: string | null;
           caption_en: string | null;
+          content_credentials: boolean;
           created_at: string;
           credit: string | null;
           deleted_at: string | null;
@@ -632,6 +633,7 @@ export type Database = {
           bytes?: number | null;
           caption_ar?: string | null;
           caption_en?: string | null;
+          content_credentials?: boolean;
           created_at?: string;
           credit?: string | null;
           deleted_at?: string | null;
@@ -656,6 +658,7 @@ export type Database = {
           bytes?: number | null;
           caption_ar?: string | null;
           caption_en?: string | null;
+          content_credentials?: boolean;
           created_at?: string;
           credit?: string | null;
           deleted_at?: string | null;

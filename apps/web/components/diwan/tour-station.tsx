@@ -20,6 +20,7 @@ type Holder =
 /** The station's refusals it can explain. */
 const KNOWN = new Set([
   "card_not_live",
+  "has_location",
   "no_pending_request",
   "station_closed",
   "too_large",

@@ -5,6 +5,7 @@ import { authenticateRequest } from "@/lib/auth/verify";
 import { parseError } from "@/lib/observability/error";
 import { log } from "@/lib/observability/log";
 import { buckets, checkFile } from "@/lib/storage";
+import { hasLocation } from "@/lib/storage/photo-metadata";
 
 export const OPTIONS = preflight;
 
@@ -58,6 +59,11 @@ export const POST = async (request: Request) => {
   const problem = checkFile("tourPages", photo);
   if (problem) {
     return json({ error: problem }, 400);
+  }
+  // Kept as it came, so a photo carrying its location is refused
+  // (decisions.md, Media: Content Credentials).
+  if (hasLocation(new Uint8Array(await photo.arrayBuffer()))) {
+    return json({ error: "has_location" }, 400);
   }
   const cardCode = text(form, "card_code");
   const requestEmail = text(form, "request_email");

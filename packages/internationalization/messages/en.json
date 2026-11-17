@@ -82,7 +82,8 @@
       "signed": "Signed on {date}.",
       "signedRecord": "Signed on {date}. Record {record}.",
       "failed": "It wasn’t signed. Try again in a moment."
-    }
+    },
+    "contentCredentials": "Content Credentials"
   },
   "auth": {
     "signOut": "Sign out",
@@ -1173,7 +1174,8 @@
           "archived": "In the Archive: finished, kept to read. Nothing here can be changed."
         },
         "needsYou": "Needs you",
-        "archive": "Archive"
+        "archive": "Archive",
+        "hasLocation": "This photo carries where it was taken. Export it without location and upload that."
       },
       "overview": {
         "title": "Desk",
@@ -5310,7 +5312,8 @@
         "no_pending_request": "No waiting request for that email. Check it, or ask them to send the request first.",
         "station_closed": "The station closed with your shift. The page wasn’t kept.",
         "too_large": "The photo is too large. Take it again.",
-        "type_not_allowed": "Take the photo as a JPEG, PNG or WebP image."
+        "type_not_allowed": "Take the photo as a JPEG, PNG or WebP image.",
+        "has_location": "This photo carries where it was taken. Export it without location and send that."
       },
       "photoAlt": "The typed page, as the station photographed it",
       "seePage": "See the page"

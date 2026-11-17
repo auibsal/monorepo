@@ -7,6 +7,7 @@ import {
   objectPath,
   StorageError,
 } from "./files";
+import { hasContentCredentials, hasLocation } from "./photo-metadata";
 
 /**
  * File storage on Supabase Storage. Upload helpers take the caller's
@@ -116,6 +117,13 @@ export const uploadMedia = async (
   file: File
 ) => {
   assertAllowed("media", file);
+  // A photo is kept as it came (decisions.md, Media: Content Credentials):
+  // one that carries its location is refused, and its credentials noted.
+  const image = file.type.startsWith("image/");
+  const bytes = image ? new Uint8Array(await file.arrayBuffer()) : null;
+  if (bytes && hasLocation(bytes)) {
+    throw new StorageError("has_location", `${file.name}: has_location`);
+  }
   const stored = await upload(
     supabase,
     buckets.media.id,
@@ -129,6 +137,7 @@ export const uploadMedia = async (
       .insert({
         bucket: buckets.media.id,
         bytes: file.size,
+        content_credentials: bytes ? hasContentCredentials(bytes) : false,
         file_name: file.name.slice(0, 300) || stored.path,
         kind: mediaKind(area, file.type),
         mime: file.type,

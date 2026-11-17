@@ -7,6 +7,7 @@ import { parseError } from "@/lib/observability/error";
 import { log } from "@/lib/observability/log";
 import { buckets, checkFile } from "@/lib/storage";
 import { logoTallEnough } from "@/lib/storage/image-size";
+import { hasLocation } from "@/lib/storage/photo-metadata";
 
 export const OPTIONS = preflight;
 
@@ -47,6 +48,11 @@ export const POST = async (request: Request) => {
   const problem = checkFile("media", logo);
   if (problem || !EXTENSIONS[logo.type]) {
     return json({ error: problem ?? "file_type" }, 400);
+  }
+  // Kept as it came, so a photo carrying its location is refused
+  // (decisions.md, Media: Content Credentials).
+  if (hasLocation(new Uint8Array(await logo.arrayBuffer()))) {
+    return json({ error: "has_location" }, 400);
   }
   // At least 600 pixels high, read from the file itself (decisions.md,
   // Partners); SVG never reaches here (XSS), as the media bucket refuses it.

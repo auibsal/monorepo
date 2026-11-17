@@ -1,6 +1,10 @@
 import { type BucketKey, buckets } from "./buckets";
 
-export type FileProblem = "empty" | "too_large" | "type_not_allowed";
+export type FileProblem =
+  | "empty"
+  | "has_location"
+  | "too_large"
+  | "type_not_allowed";
 
 export class StorageError extends Error {
   readonly code: FileProblem | "not_found" | "request_failed" | "upload_failed";
