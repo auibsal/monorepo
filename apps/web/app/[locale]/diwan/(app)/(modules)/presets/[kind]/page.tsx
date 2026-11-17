@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import {
   PRESET_KINDS,
   type PresetKind,
-  PresetsAdmin,
-} from "@/components/diwan/admin/presets";
+} from "@/components/diwan/admin/preset-kinds";
+import { PresetsAdmin } from "@/components/diwan/admin/presets";
 import { titleFrom } from "@/lib/diwan/metadata";
 
 export const generateMetadata = titleFrom((t) =>

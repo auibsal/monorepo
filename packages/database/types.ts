@@ -451,6 +451,155 @@ export type Database = {
   };
   content: {
     Tables: {
+      calendar_entries: {
+        Row: {
+          alt_ar: string | null;
+          alt_en: string | null;
+          caption_ar: string | null;
+          caption_en: string | null;
+          channel: string;
+          confirm_date: boolean;
+          created_at: string;
+          created_by: string | null;
+          day_key: string | null;
+          event_id: string | null;
+          id: string;
+          kind: string;
+          media_item_id: string | null;
+          note: string | null;
+          owner_role: string | null;
+          post_url: string | null;
+          posted_at: string | null;
+          posted_by: string | null;
+          publish_on: string;
+          status: string;
+          title_ar: string;
+          title_en: string;
+          year: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          alt_ar?: string | null;
+          alt_en?: string | null;
+          caption_ar?: string | null;
+          caption_en?: string | null;
+          channel?: string;
+          confirm_date?: boolean;
+          created_at?: string;
+          created_by?: string | null;
+          day_key?: string | null;
+          event_id?: string | null;
+          id?: string;
+          kind?: string;
+          media_item_id?: string | null;
+          note?: string | null;
+          owner_role?: string | null;
+          post_url?: string | null;
+          posted_at?: string | null;
+          posted_by?: string | null;
+          publish_on: string;
+          status?: string;
+          title_ar: string;
+          title_en: string;
+          year?: number | null;
+        };
+        Update: {
+          alt_ar?: string | null;
+          alt_en?: string | null;
+          caption_ar?: string | null;
+          caption_en?: string | null;
+          channel?: string;
+          confirm_date?: boolean;
+          created_at?: string;
+          created_by?: string | null;
+          day_key?: string | null;
+          event_id?: string | null;
+          id?: string;
+          kind?: string;
+          media_item_id?: string | null;
+          note?: string | null;
+          owner_role?: string | null;
+          post_url?: string | null;
+          posted_at?: string | null;
+          posted_by?: string | null;
+          publish_on?: string;
+          status?: string;
+          title_ar?: string;
+          title_en?: string;
+          year?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "calendar_entries_day_key_fkey";
+            columns: ["day_key"];
+            isOneToOne: false;
+            referencedRelation: "days_marked";
+            referencedColumns: ["key"];
+          },
+          {
+            foreignKeyName: "calendar_entries_media_item_id_fkey";
+            columns: ["media_item_id"];
+            isOneToOne: false;
+            referencedRelation: "media_items";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      days_marked: {
+        Row: {
+          approx_ar: string | null;
+          approx_en: string | null;
+          day: number | null;
+          key: string;
+          month: number | null;
+          name_ar: string;
+          name_en: string;
+          nth: number | null;
+          owner_role: string;
+          rule: string;
+          set_by: string | null;
+          sort: number;
+          tier: string;
+          weekday: number | null;
+          with_student_life: boolean;
+        };
+        ComputedFields: never;
+        Insert: {
+          approx_ar?: string | null;
+          approx_en?: string | null;
+          day?: number | null;
+          key: string;
+          month?: number | null;
+          name_ar: string;
+          name_en: string;
+          nth?: number | null;
+          owner_role: string;
+          rule: string;
+          set_by?: string | null;
+          sort?: number;
+          tier: string;
+          weekday?: number | null;
+          with_student_life?: boolean;
+        };
+        Update: {
+          approx_ar?: string | null;
+          approx_en?: string | null;
+          day?: number | null;
+          key?: string;
+          month?: number | null;
+          name_ar?: string;
+          name_en?: string;
+          nth?: number | null;
+          owner_role?: string;
+          rule?: string;
+          set_by?: string | null;
+          sort?: number;
+          tier?: string;
+          weekday?: number | null;
+          with_student_life?: boolean;
+        };
+        Relationships: [];
+      };
       media_items: {
         Row: {
           alt_ar: string | null;
@@ -649,6 +798,7 @@ export type Database = {
           topic: string;
         }[];
       };
+      plan_year: { Args: { year: number }; Returns: number };
       save_sunday_paper: {
         Args: { letter_ar: string; letter_en: string; month: string };
         Returns: undefined;

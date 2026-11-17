@@ -20,15 +20,7 @@ import {
   Field,
   SaveButton,
 } from "./kit";
-
-export const PRESET_KINDS = [
-  "event",
-  "opening",
-  "call",
-  "announcement",
-  "letter",
-] as const;
-export type PresetKind = (typeof PRESET_KINDS)[number];
+import type { PresetKind } from "./preset-kinds";
 
 /** Where each kind's list is, for the way back. */
 const BACK: Record<PresetKind, string> = {

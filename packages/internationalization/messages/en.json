@@ -4195,6 +4195,49 @@
         "open": "Presets",
         "start": "Start from a preset",
         "none": "Start blank"
+      },
+      "calendar": {
+        "title": "Content calendar",
+        "lede": "What goes out where and when: each post with its image, captions and alt text. Mark a post posted with its link. Telegram’s posts go out on their own and aren’t listed here.",
+        "previous": "Previous month",
+        "next": "Next month",
+        "plan": "Plan {year}",
+        "planned": "{count, plural, one {{countText} entry added} other {{countText} entries added}}",
+        "empty": "Nothing planned this month.",
+        "copied": "Copied",
+        "copyEn": "Copy the English caption",
+        "copyAr": "Copy the Arabic caption",
+        "postUrl": "Link to the post",
+        "caption": "Caption",
+        "alt": "Alt text",
+        "words": "Write the words",
+        "markPosted": "Mark posted",
+        "keep": "Keep this day",
+        "skip": "Skip this year",
+        "openEvent": "Open its draft event",
+        "confirmDate": "Confirm this year’s date",
+        "channels": {
+          "instagram": "Instagram",
+          "linkedin": "LinkedIn",
+          "telegram": "Telegram",
+          "website": "The site"
+        },
+        "statuses": {
+          "choose": "To choose",
+          "planned": "Planned",
+          "ready": "Ready",
+          "posted": "Posted",
+          "skipped": "Skipped"
+        },
+        "kinds": {
+          "post": "A post",
+          "event": "An event",
+          "greeting": "A greeting"
+        },
+        "dueTitle": "Posts due this week",
+        "dueDetail": "Planned or ready, not yet posted",
+        "dueNone": "Nothing due this week",
+        "openCalendar": "Open the calendar"
       }
     },
     "editor": {

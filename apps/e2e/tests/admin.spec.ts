@@ -112,6 +112,21 @@ test("the media library lists every upload, filtered in the address", async ({
   await expectAccessible(page);
 });
 
+// decisions.md, Posting and Presets.
+test("the content calendar plans the days marked; presets are kept as data", async ({
+  page,
+}) => {
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/media/channels?month=2027-02`);
+  await expect(
+    page.getByRole("heading", { name: "Content calendar" })
+  ).toBeVisible();
+  await expectAccessible(page);
+  await page.goto(`${urls.app}/presets/event`);
+  await expect(page.getByText("A writing workshop")).toBeVisible();
+  await expectAccessible(page);
+});
+
 test("the design system is part of the Diwan, for officers only", async ({
   page,
   request,

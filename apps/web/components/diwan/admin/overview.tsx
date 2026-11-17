@@ -25,6 +25,7 @@ import { SecondOfficer } from "./second-officer";
 import { RecentActivity } from "./system/activity";
 import { AdvisorFindings } from "./system/advisors";
 import { StaffAlerts } from "./system/alerts";
+import { useDueThisWeek } from "./system/calendar";
 import { EmailDelivery } from "./system/email";
 import { NotionWorkspace } from "./system/notion";
 import { ScanFindings } from "./system/scan-findings";
@@ -428,8 +429,26 @@ const untitledFigures = (
     value: 1,
   }));
 
+/** The Desk's calendar figure: posts due in the coming week (Media). */
+const dueFigures = (
+  t: ReturnType<typeof useTranslations<"diwan.admin.calendar">>,
+  count: number | undefined
+): FigureProps[] =>
+  count === undefined
+    ? []
+    : [
+        {
+          action: count ? t("openCalendar") : undefined,
+          detail: count ? t("dueDetail") : t("dueNone"),
+          href: "/media/channels",
+          label: t("dueTitle"),
+          value: count,
+        },
+      ];
+
 export const AdminOverview = () => {
   const t = useTranslations("diwan.admin.overview");
+  const tc = useTranslations("diwan.admin.calendar");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const grants = useGrants();
@@ -461,6 +480,8 @@ export const AdminOverview = () => {
   const managesPartners = hasPermissionAnywhere(grants.data, "partners.manage");
   const noLogo = useLogoCounts(grants.isSuccess && managesPartners);
   const managesQirtas = hasPermissionAnywhere(grants.data, "journal.manage");
+  const managesContent = hasPermissionAnywhere(grants.data, "content.manage");
+  const due = useDueThisWeek(grants.isSuccess && managesContent);
   const untitled = useUntitledEditions(grants.isSuccess && managesQirtas);
 
   if (overview.isPending || editing.isPending) {
@@ -476,6 +497,7 @@ export const AdminOverview = () => {
     ...editingFigures(t, editing.data),
     ...logoFigures(t, managesPartners ? noLogo.data : undefined),
     ...untitledFigures(t, locale, managesQirtas ? untitled.data : undefined),
+    ...dueFigures(tc, managesContent ? due.data : undefined),
   ];
   const can = (permission: Permission) =>
     hasPermissionAnywhere(grants.data, permission);

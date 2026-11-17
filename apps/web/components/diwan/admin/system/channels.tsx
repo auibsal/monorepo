@@ -21,6 +21,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { ContentCalendar } from "./calendar";
 import { TelegramBot } from "./telegram";
 
 /** Where Hudhud posts, by purpose; in the Diwan group the brief and each
@@ -65,6 +66,7 @@ export const Channels = () => {
   return (
     <div className="grid gap-10">
       <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <ContentCalendar />
       {mailing ? <MailingCounts /> : null}
       {settings ? <TelegramBot /> : null}
       {settings ? <Groups /> : null}
