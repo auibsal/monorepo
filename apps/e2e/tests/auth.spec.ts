@@ -209,15 +209,13 @@ test("Settings changes the password with the current one", async ({ page }) => {
     await page.goto(`${urls.web}/account/settings`);
     const form = page.getByRole("region", { exact: true, name: "Password" });
     await form.getByLabel("New password").fill(NEW_PASSWORD);
-    // The local stack's config has no key for "Require current password";
-    // where the auth server enforces it, a wrong one is refused.
-    if (process.env.E2E_CURRENT_PASSWORD_REQUIRED) {
-      await form.getByLabel("Current password").fill("not-the-password-1");
-      await form.getByRole("button", { name: "Change the password" }).click();
-      await expect(form.getByRole("alert")).toContainText(
-        "isn’t your current password"
-      );
-    }
+    // The stack requires the current password, as production does
+    // (config.toml, require_current_password): a wrong one is refused.
+    await form.getByLabel("Current password").fill("not-the-password-1");
+    await form.getByRole("button", { name: "Change the password" }).click();
+    await expect(form.getByRole("alert")).toContainText(
+      "isn’t your current password"
+    );
     await form.getByLabel("Current password").fill(PASSWORD);
     await form.getByRole("button", { name: "Change the password" }).click();
     await expect(form.getByRole("status")).toContainText(

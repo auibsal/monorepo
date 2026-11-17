@@ -417,22 +417,6 @@
       },
       "roleChecklist": {
         "title": "Your first steps as {role}",
-        "lede": "The new role holder’s checklist. The site marks what it can see; tick the rest when it’s done.",
-        "done": "Done:",
-        "todo": "To do:",
-        "go": "Go there",
-        "tick": "Mark as done",
-        "steps": {
-          "email": "The role email, with what the role does and who it works with",
-          "pledge": "The role agreement signed: the Code of Conduct and the license for work made in the role (for Qirtas, the readers’ pledge too)",
-          "declaration": "The conflict-of-interest declaration",
-          "two_step": "Two-step sign-in or a passkey set up",
-          "diwan_group": "In the Diwan group on Telegram, through Hudhud",
-          "pages": "The role’s manual, Brand essentials and the role’s Diwan pages opened",
-          "handover": "The previous holder’s handover read and countersigned (Roles and service)",
-          "mailbox": "The seat’s mailbox received, with its password and two-step backup reset",
-          "notion": "Invited to Notion by the Secretary"
-        },
         "agreement": {
           "conduct": "The role agreement: you will keep the Code of Conduct in this role.",
           "readConduct": "Read the Code of Conduct",
@@ -441,7 +425,19 @@
           "failed": "It wasn’t signed. Try again in a moment.",
           "signAsLabel": "Sign as"
         },
-        "signAgreement": "Sign the role agreement: {role}"
+        "signAgreement": "Sign the role agreement: {role}",
+        "progress": "{done} of {total} done",
+        "actions": {
+          "email": "The role email arrives from the seat’s officer",
+          "pledge": "Sign the role agreement",
+          "declaration": "Make your conflict-of-interest declaration",
+          "two_step": "Set up two-step sign-in or a passkey",
+          "diwan_group": "Join the Diwan group through Hudhud",
+          "pages": "Open your role’s manual and Brand essentials",
+          "handover": "Read and countersign the handover",
+          "mailbox": "Open the seat’s mailbox",
+          "notion": "Open Notion"
+        }
       },
       "renewal": {
         "title": "I’m still here",
@@ -5208,10 +5204,12 @@
       "what": "The agreements and consents you sign on the site (the Code of Conduct, a role agreement, a media release and the rest) are signed electronically: in the name on your account, with a copy of each emailed to you and kept in Documents. Do you agree to sign this way? You can withdraw it in Settings at any time.",
       "agree": "I agree to sign electronically",
       "notNow": "Not now",
-      "settingsTitle": "Signing electronically",
       "given": "You agreed to sign electronically on {date}.",
       "notGiven": "You have not agreed to sign electronically; each page you sign on asks you.",
-      "withdraw": "Withdraw my consent"
+      "withdraw": "Withdraw consent",
+      "withdrawConfirm": "Signing on the site stops until you agree again: each page you sign on will ask you first. What you have signed stays signed.",
+      "withdrawYes": "Withdraw consent",
+      "cancel": "Cancel"
     },
     "addresses": {
       "errors": {
@@ -5393,16 +5391,19 @@
         "linkedin": "LinkedIn"
       },
       "concern": "Raise a concern",
-      "recognition": "A registered student organization of AUIB, recognized by the Office of Student Life.",
+      "recognition": "A registered student organization at the",
       "address": "AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq",
-      "paperless": "Paperless by default. Books reused through Second Chapter.",
+      "paperless": "Paperless by default.",
       "pieces": "Each piece belongs to its writer, under the license shown on it.",
       "copyright": "© {years} AUIB Society of Arts and Letters. All rights reserved.",
       "help": "Help",
       "report": "Report a problem",
       "version": "Version {version}, build {build}",
       "local": "local",
-      "sundayPaper": "The Sunday Paper"
+      "sundayPaper": "The Sunday Paper",
+      "auib": "American University of Iraq – Baghdad",
+      "sundayPaperLine": "One email a month from Qirtas: the month’s pieces, the Society’s news and the roles open.",
+      "chooseEmails": "Choose your emails"
     },
     "home": {
       "metaTitle": "The paper and the pen",

@@ -425,7 +425,7 @@ everywhere:
   first formal use, then "the Society" or "SAL", never "the club". The
   motto "The paper and the pen." is the short line; the endorsement line
   is "a Society of Arts and Letters program". Every email and the footer
-  carry "Paperless by default. Books reused through Second Chapter."
+  carry "Paperless by default.", linked on the site to About's sustainability note.
 - **Content.** Don't invent names, dates, figures or quotes. Missing text
   is a `TODO(content): …` placeholder listed in `PROGRESS.md`.
 - **Formats.** Dates as "Tuesday, October 13", times as "6:00 p.m.": use
