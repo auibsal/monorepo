@@ -1,3 +1,4 @@
+import { logoScale } from "../../lib/logo-scale";
 import { cn } from "../../lib/utils";
 
 /**
@@ -14,8 +15,9 @@ import { cn } from "../../lib/utils";
  * Only the names (with their logos) follow the line: no qualitative or
  * comparative words, prices or calls to buy (the IRS line between an
  * acknowledgment and advertising), so the components take names and
- * logos, never a sentence. Every logo is the same height, its width
- * following (decisions.md, Events). A logo that shows the name stands
+ * logos, never a sentence. Every logo fits one box, scaled so wide and
+ * tall logos look equally heavy, or on events one 40 px row (decisions.md,
+ * The site). A logo that shows the name stands
  * alone, the name its alt text and link label (WCAG 1.1.1, 2.4.4); a
  * symbol-only logo, or none, has the name in text beside it. A logo is
  * shown as the organization made it in both languages; only the alt text
@@ -31,8 +33,8 @@ export interface Acknowledged {
   /** Where the name links, if anywhere: the organization's own site. */
   readonly href?: string | null;
   /**
-   * Its logo, with the file's own width and height (shown 48 px high, the
-   * width following). AUIB's standard set has a white version for ink
+   * Its logo, with the file's own width and height (fitted to its box or
+   * row by OrganizationLogo). AUIB's standard set has a white version for ink
    * (`onInk`); an uploaded logo has one version and sits on a small
    * paper-colored tile on ink (`tile`), the same size everywhere.
    */
@@ -53,35 +55,51 @@ export interface Acknowledged {
 }
 
 /**
- * One organization's logo at the one height: on ink, AUIB's white version,
- * or an uploaded logo on its paper-colored tile. `alt` is its name when
- * the logo shows the name.
+ * One organization's logo: on ink, AUIB's white version, or an uploaded
+ * logo on its paper-colored tile. `alt` is its name when the logo shows the
+ * name. `size` "box" fits every logo to one box, 64 px tall on phones and
+ * 80 px on computers, scaled for equal weight (the partners page and the
+ * Diwan's register); "row" is the events' one row at 40 px.
  */
 export const OrganizationLogo = ({
   alt = "",
   className,
   logo,
+  size = "box",
 }: {
   readonly alt?: string;
   readonly className?: string;
   readonly logo: NonNullable<Acknowledged["logo"]>;
-}) =>
-  logo.onInk ? (
-    <span className={cn("inline-flex", className)}>
+  readonly size?: "box" | "row";
+}) => {
+  const box = size === "box";
+  const style = box
+    ? {
+        height: `calc(var(--logo-box) * ${logoScale(logo.width, logo.height).toFixed(3)})`,
+      }
+    : undefined;
+  const imageClass = box ? "w-auto max-w-full object-contain" : "h-10 w-auto";
+  const frame = box
+    ? "h-16 items-center [--logo-box:4rem] lg:h-20 lg:[--logo-box:5rem]"
+    : "";
+  return logo.onInk ? (
+    <span className={cn("inline-flex", frame, className)}>
       {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
       <img
         alt={alt}
-        className="on-ink:hidden h-12 w-auto"
+        className={cn("on-ink:hidden", imageClass)}
         height={logo.height}
         src={logo.src}
+        style={style}
         width={logo.width}
       />
       {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
       <img
         alt={alt}
-        className="on-ink:block hidden h-12 w-auto"
+        className={cn("on-ink:block hidden", imageClass)}
         height={logo.height}
         src={logo.onInk}
+        style={style}
         width={logo.width}
       />
     </span>
@@ -89,21 +107,24 @@ export const OrganizationLogo = ({
     <span
       className={cn(
         "inline-flex",
+        frame,
         logo.tile &&
-          "on-ink:h-16 on-ink:w-44 on-ink:items-center on-ink:justify-center on-ink:bg-paper on-ink:p-2",
+          "on-ink:items-center on-ink:justify-center on-ink:bg-paper on-ink:p-2",
         className
       )}
     >
       {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
       <img
         alt={alt}
-        className="h-12 w-auto max-w-full object-contain"
+        className={imageClass}
         height={logo.height}
         src={logo.src}
+        style={style}
         width={logo.width}
       />
     </span>
   );
+};
 
 interface AcknowledgmentProps {
   readonly className?: string;
@@ -140,7 +161,11 @@ const Names = ({
       const mark = (
         <span className="inline-flex items-center gap-3">
           {item.logo ? (
-            <OrganizationLogo alt={alone ? item.name : ""} logo={item.logo} />
+            <OrganizationLogo
+              alt={alone ? item.name : ""}
+              logo={item.logo}
+              size="row"
+            />
           ) : null}
           {alone ? null : (
             <span className={compact ? undefined : "type-body"}>

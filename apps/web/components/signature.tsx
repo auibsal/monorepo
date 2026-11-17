@@ -1,6 +1,7 @@
 "use client";
 
 import { Guilloche, seedFromText } from "@repo/brand/components/sal/guilloche";
+import { SignatureScript } from "@repo/brand/components/sal/signature-script";
 import { cn } from "@repo/brand/lib/utils";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
@@ -60,11 +61,10 @@ export const Signature = ({
   const when = date ?? new Date().toISOString();
   const seed = number ?? seedFromText(name);
   const shown = nameInLanguage(name, locale);
-  const arabic = ARABIC.test(shown);
   const figure = (
     <figure
       className={cn(
-        "border-line relative flex max-w-md items-center gap-4 overflow-hidden border-y py-3",
+        "border-line relative flex max-w-md items-center gap-4 border-y py-3",
         className
       )}
     >
@@ -73,17 +73,8 @@ export const Signature = ({
         number={seed}
         stroke="stroke-accent"
       />
-      <div className="grid min-w-0 gap-1">
-        <span
-          className={cn(
-            "font-signature text-text truncate leading-tight",
-            arabic ? "text-3xl" : "text-4xl"
-          )}
-          dir={arabic ? "rtl" : "ltr"}
-          lang={arabic ? "ar" : "en"}
-        >
-          {shown}
-        </span>
+      <div className="grid min-w-0 flex-1 gap-1">
+        <SignatureScript name={shown} />
         <figcaption className="type-caption text-text-secondary flex flex-wrap gap-x-3">
           {number === null ? null : (
             <span>{t("number", { number: cardNumber(number) })}</span>

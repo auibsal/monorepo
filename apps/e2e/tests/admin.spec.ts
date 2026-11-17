@@ -297,3 +297,44 @@ test("an officer who manages members corrects a member's name to the official on
   ).toBeVisible();
   await expectAccessible(page);
 });
+
+// decisions.md, Documents and forms: the signature block shows the whole
+// name, never cut, with room for the script's strokes, in both languages,
+// on a 360 px phone.
+test("a long name signs whole on a phone, in both languages", async ({
+  page,
+}) => {
+  await signInWithPassword(page, editor.email);
+  await page.setViewportSize({ height: 800, width: 360 });
+  await page.goto(
+    `${urls.web}/diwan/media/design/kit/iframe.html?id=components-brand--signature-longest-name&viewMode=story`
+  );
+  const names = page.locator("[data-signature-script]");
+  await expect(names).toHaveCount(2);
+  for (const name of await names.all()) {
+    const fits = await name.evaluate((el) => {
+      const box = el.getBoundingClientRect();
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const text = range.getBoundingClientRect();
+      const style = getComputedStyle(el);
+      const lines = Math.round(
+        text.height / Number.parseFloat(style.lineHeight)
+      );
+      return {
+        clipped: el.scrollWidth > el.clientWidth + 1,
+        ellipsis: style.textOverflow === "ellipsis",
+        inside:
+          text.top >= box.top - 1 &&
+          text.bottom <= box.bottom + 1 &&
+          text.left >= box.left - 1 &&
+          text.right <= box.right + 1,
+        lines,
+      };
+    });
+    expect(fits.ellipsis).toBe(false);
+    expect(fits.clipped).toBe(false);
+    expect(fits.inside).toBe(true);
+    expect(fits.lines).toBeLessThanOrEqual(2);
+  }
+});

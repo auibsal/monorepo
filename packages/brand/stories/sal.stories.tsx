@@ -18,6 +18,7 @@ import { Letter } from "@repo/brand/components/sal/letter";
 import { MembershipCard } from "@repo/brand/components/sal/membership-card";
 import { SectionHead } from "@repo/brand/components/sal/section-head";
 import { Shelf } from "@repo/brand/components/sal/shelf";
+import { SignatureScript } from "@repo/brand/components/sal/signature-script";
 import type { Meta, StoryObj } from "@storybook/react";
 
 /**
@@ -544,6 +545,22 @@ export const WhoItsWithStory: Story = {
         lang="ar"
       />
       <ThanksTo items={[{ name: "المركز العراقي للفيلم المستقل" }]} lang="ar" />
+    </div>
+  ),
+};
+
+/**
+ * The signature block's name (decisions.md, Documents and forms): the
+ * whole name, as long as the longest on the register and longer, at a
+ * phone's width in both languages. It scales down, then wraps; never cut.
+ */
+export const SignatureLongestName: Story = {
+  render: () => (
+    <div className="grid w-[360px] max-w-full gap-6 px-4" data-signatures>
+      <SignatureScript name="Abdulrahman Mohammedhussein Abdulkareem Al-Saadi" />
+      <div dir="rtl" lang="ar">
+        <SignatureScript name="عبدالرحمن محمدحسين عبدالكريم الساعدي" />
+      </div>
     </div>
   ),
 };
