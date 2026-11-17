@@ -12,13 +12,20 @@ import { DiwanSection, RowList } from "../page";
 import { ErrorLine } from "./kit";
 
 /** The records with a Recently deleted (decisions.md, The site). */
-export type TrashKind = "event" | "partner";
+export type TrashKind = "event" | "media" | "partner";
 
 /** How long Undo stays on the page after a delete. */
 const UNDO_SECONDS = 10;
 
 interface Use {
-  readonly kind: "event" | "memorandum";
+  readonly kind:
+    | "edition"
+    | "episode"
+    | "event"
+    | "memorandum"
+    | "partner"
+    | "piece"
+    | "production";
   readonly title_ar: string | null;
   readonly title_en: string | null;
 }

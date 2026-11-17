@@ -72,6 +72,27 @@ const retain = async (request: Request) => {
       }
     }
 
+    // Library items deleted more than 30 days ago: their files, then (in
+    // run_retention) their rows.
+    const mediaFiles = (due ?? [])
+      .filter((d) => d.kind === "media_file")
+      .map((d) => {
+        const at = d.ref.indexOf(":");
+        return { bucket: d.ref.slice(0, at), path: d.ref.slice(at + 1) };
+      });
+    for (const bucket of new Set(mediaFiles.map((f) => f.bucket))) {
+      const paths = mediaFiles
+        .filter((f) => f.bucket === bucket)
+        .map((f) => f.path);
+      // biome-ignore lint/performance/noAwaitInLoops: one bucket at a time
+      const { error: mediaError } = await admin.storage
+        .from(bucket)
+        .remove(paths);
+      if (mediaError) {
+        throw mediaError;
+      }
+    }
+
     const { data: run, error: runError } = await admin
       .schema("api")
       .rpc("run_retention");
@@ -91,6 +112,7 @@ const retain = async (request: Request) => {
 
     log.info("Retention", {
       guests: guests.length,
+      media: mediaFiles.length,
       photos: photos.length,
       run: JSON.stringify(run),
       submissions,

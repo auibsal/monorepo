@@ -451,6 +451,82 @@ export type Database = {
   };
   content: {
     Tables: {
+      media_items: {
+        Row: {
+          alt_ar: string | null;
+          alt_en: string | null;
+          bucket: string;
+          bytes: number | null;
+          caption_ar: string | null;
+          caption_en: string | null;
+          created_at: string;
+          credit: string | null;
+          deleted_at: string | null;
+          deleted_by: string | null;
+          event_id: string | null;
+          file_name: string;
+          height: number | null;
+          id: string;
+          kind: string;
+          license: string;
+          mime: string | null;
+          path: string;
+          release_id: string | null;
+          updated_at: string;
+          uploaded_by: string | null;
+          width: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          alt_ar?: string | null;
+          alt_en?: string | null;
+          bucket: string;
+          bytes?: number | null;
+          caption_ar?: string | null;
+          caption_en?: string | null;
+          created_at?: string;
+          credit?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
+          event_id?: string | null;
+          file_name: string;
+          height?: number | null;
+          id?: string;
+          kind?: string;
+          license?: string;
+          mime?: string | null;
+          path: string;
+          release_id?: string | null;
+          updated_at?: string;
+          uploaded_by?: string | null;
+          width?: number | null;
+        };
+        Update: {
+          alt_ar?: string | null;
+          alt_en?: string | null;
+          bucket?: string;
+          bytes?: number | null;
+          caption_ar?: string | null;
+          caption_en?: string | null;
+          created_at?: string;
+          credit?: string | null;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
+          event_id?: string | null;
+          file_name?: string;
+          height?: number | null;
+          id?: string;
+          kind?: string;
+          license?: string;
+          mime?: string | null;
+          path?: string;
+          release_id?: string | null;
+          updated_at?: string;
+          uploaded_by?: string | null;
+          width?: number | null;
+        };
+        Relationships: [];
+      };
       newsletter_subscribers: {
         Row: {
           confirm_sends: number;
@@ -1716,6 +1792,16 @@ export type Database = {
         }[];
       };
       mark_notion_invited: { Args: { member: string }; Returns: undefined };
+      media_uses: {
+        Args: { item: string };
+        Returns: {
+          kind: string;
+          record_id: string;
+          ref: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       my_addresses: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -1868,6 +1954,10 @@ export type Database = {
       record_uses: { Args: { kind: string; record_id: string }; Returns: Json };
       remove_personal_email: {
         Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
+      replace_media: {
+        Args: { item: string; new_path: string };
         Returns: undefined;
       };
       report_leaving: { Args: { graduated: boolean }; Returns: string };
@@ -2047,6 +2137,7 @@ export type Database = {
         Args: { kind: string; record_id: string };
         Returns: undefined;
       };
+      unused_media: { Args: Record<PropertyKey, never>; Returns: string[] };
       update_my_profile: { Args: { change: Json }; Returns: undefined };
       withdraw_merge: { Args: Record<PropertyKey, never>; Returns: undefined };
     };

@@ -7,9 +7,10 @@ import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
-import { type Client, events } from "@/lib/data";
+import { type Client, events, unwrap } from "@/lib/data";
 import { acknowledged } from "@/lib/institutions";
 import { mediaUrl } from "@/lib/media";
+import { uploadMedia } from "@/lib/storage";
 import { DiwanSection, RowList } from "../../../page";
 import type { Art, Content, Faces, Lang, Layout, Sign } from "./draw";
 import { goodToKnowLines, KIT_WORDS, type KitFacts } from "./words";
@@ -189,21 +190,64 @@ const contentFor = (event: PromoEvent, lang: Lang): Content => ({
   venue: (lang === "ar" ? event.venue_ar : event.venue_en) ?? "",
 });
 
+/** One language's caption: title, date and place, summary, address. */
+const captionIn = (event: PromoEvent, lang: "ar" | "en") => {
+  const c = contentFor(event, lang);
+  return [
+    c.title,
+    [c.date, c.venue].filter(Boolean).join(" · "),
+    c.summary,
+    c.url,
+  ]
+    .filter(Boolean)
+    .join("\n");
+};
+
 /** The captions: English, then Arabic (decisions.md, Events). */
 const captions = (event: PromoEvent) =>
-  (["en", "ar"] as const)
-    .map((lang) => {
-      const c = contentFor(event, lang);
-      return [
-        c.title,
-        [c.date, c.venue].filter(Boolean).join(" · "),
-        c.summary,
-        c.url,
-      ]
-        .filter(Boolean)
-        .join("\n");
-    })
-    .join("\n\n");
+  `${captionIn(event, "en")}\n\n${captionIn(event, "ar")}`;
+
+/**
+ * The kit's images and PDFs go into the media library under the event,
+ * with both captions, so they can be found, reused and rebuilt
+ * (decisions.md, The site: "One media library").
+ */
+const saveToLibrary = async (
+  client: Client,
+  event: PromoEvent,
+  files: readonly KitFile[]
+) => {
+  const caption_ar = captionIn(event, "ar").slice(0, 2200);
+  const caption_en = captionIn(event, "en").slice(0, 2200);
+  for (const file of files) {
+    if (
+      !(
+        file.blob.type.startsWith("image/") ||
+        file.blob.type === "application/pdf"
+      )
+    ) {
+      continue;
+    }
+    // biome-ignore lint/performance/noAwaitInLoops: one file at a time
+    const stored = await uploadMedia(
+      client,
+      `promo/${event.slug}`,
+      new File([file.blob], file.name, { type: file.blob.type })
+    );
+    unwrap(
+      await client
+        .schema("api")
+        .from("media_items")
+        .update({
+          caption_ar,
+          caption_en,
+          event_id: event.id,
+          kind: file.blob.type === "application/pdf" ? "pdf" : "promo",
+        })
+        .eq("path", stored.path)
+    );
+  }
+};
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
@@ -707,10 +751,15 @@ export const PromoKit = ({ event }: { readonly event: PromoEvent }) => {
   const { supabase } = useAuth();
   const [files, setFiles] = useState<KitFile[] | null>(null);
   const [state, setState] = useState<"idle" | "busy" | "failed">("idle");
+  const [saved, setSaved] = useState(false);
   const build = async () => {
     setState("busy");
+    setSaved(false);
     try {
-      setFiles(await buildKit(event, supabase));
+      const built = await buildKit(event, supabase);
+      setFiles(built);
+      await saveToLibrary(supabase, event, built);
+      setSaved(true);
       setState("idle");
     } catch {
       setState("failed");
@@ -733,6 +782,11 @@ export const PromoKit = ({ event }: { readonly event: PromoEvent }) => {
       {state === "failed" ? (
         <p className="text-sm" role="alert">
           {t("failed")}
+        </p>
+      ) : null}
+      {saved ? (
+        <p className="type-caption" role="status">
+          {t("savedToLibrary")}
         </p>
       ) : null}
       {files ? (

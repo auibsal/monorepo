@@ -97,6 +97,19 @@ test("an event's page is the one record page", async ({ page }) => {
   await expectAccessible(page);
 });
 
+// decisions.md, The site: "One media library".
+test("the media library lists every upload, filtered in the address", async ({
+  page,
+}) => {
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/media/library?use=unused`);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Library" })
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Where files live" })).toBeVisible();
+  await expectAccessible(page);
+});
+
 test("the design system is part of the Diwan, for officers only", async ({
   page,
   request,

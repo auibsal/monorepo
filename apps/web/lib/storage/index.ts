@@ -94,7 +94,22 @@ export const uploadLibraryFile = (
   );
 };
 
-/** Uploads a public image or PDF into an area of the media bucket. */
+/** What a library item is, from its area and type. */
+const mediaKind = (area: string, type: string) => {
+  if (type === "application/pdf") {
+    return "pdf";
+  }
+  if (type === "text/vtt") {
+    return "captions";
+  }
+  return area === "partners" ? "logo" : "image";
+};
+
+/**
+ * Uploads a public image or PDF into an area of the media bucket, and
+ * records it in the media library (decisions.md, The site: "One media
+ * library"). Avatars are personal and stay out of the library.
+ */
 export const uploadMedia = async (
   supabase: Client,
   area: string,
@@ -107,6 +122,19 @@ export const uploadMedia = async (
     objectPath(area, file.name),
     file
   );
+  if (area !== "avatars") {
+    await supabase
+      .schema("api")
+      .from("media_items")
+      .insert({
+        bucket: buckets.media.id,
+        bytes: file.size,
+        file_name: file.name.slice(0, 300) || stored.path,
+        kind: mediaKind(area, file.type),
+        mime: file.type,
+        path: stored.path,
+      });
+  }
   return { ...stored, url: getMediaUrl(supabase, stored.path) };
 };
 

@@ -1138,7 +1138,12 @@
           },
           "uses": {
             "event": "The event “{title}”",
-            "memorandum": "The memorandum {title}"
+            "memorandum": "The memorandum {title}",
+            "partner": "The partner “{title}”",
+            "edition": "The Edition “{title}”",
+            "piece": "The piece “{title}”",
+            "episode": "The episode “{title}”",
+            "production": "The production “{title}”"
           },
           "deleted": "Deleted. It waits 30 days in Recently deleted.",
           "undo": "Undo",
@@ -1708,7 +1713,8 @@
           "lede": "Built from this event’s fields, image and Program, in English and Arabic: the Instagram carousel (a cover, a card for each work and Good to know) and the stories (the cover, each work, Tomorrow and Today); the A3 poster and an A1 for easels, the A4 handout and a 1920 × 1080 version for campus screens; the A5 program and an A4 sheet of two, printed double-sided; the check-in and join table tents; the door signs; the thank-you card with the co-sponsors’ logos; the Telegram image, the link preview and the captions. Save each file you need; Media posts them.",
           "build": "Build the promo kit",
           "building": "Building…",
-          "failed": "The kit could not be built. Check the event’s image, then try again."
+          "failed": "The kit could not be built. Check the event’s image, then try again.",
+          "savedToLibrary": "Saved to the media library under this event, with its captions."
         },
         "classesHint": "Tick all four for Everyone. Anyone whose class isn’t ticked sees whom the event is for.",
         "format": "Kind",
@@ -3620,7 +3626,8 @@
           "invitations": "Invitations",
           "announcements": "Announcements",
           "sundayPaper": "The Sunday Paper",
-          "channels": "Channels"
+          "channels": "Channels",
+          "mediaLibrary": "Library"
         },
         "council": "The Council",
         "media": "Media",
@@ -4077,6 +4084,55 @@
         "call": "Call",
         "callLede": "This Edition’s one call, its reading period for Letters, Gallery and Video. It opens the day the previous Edition’s call closes, so one call is always open; work sent after its deadline goes to the next Edition. Its title is the Edition’s, and it can’t be published until the Edition has its title.",
         "addCall": "Open this Edition’s call"
+      },
+      "media": {
+        "title": "Library",
+        "lede": "Every file uploaded on the site: its words, where it’s used, and the files no record uses, for the yearly audit.",
+        "find": "Find",
+        "kind": "Kind",
+        "use": "Use",
+        "allKinds": "All kinds",
+        "allUses": "In use or not",
+        "inUse": "In use",
+        "unusedFilter": "Not used",
+        "unused": "Not used anywhere",
+        "empty": "Nothing here yet.",
+        "emptyKind": "The library has no file of this kind yet. Upload one below.",
+        "noAlt": "No alt text yet",
+        "altEn": "Alt text in English",
+        "altAr": "Alt text in Arabic",
+        "altHint": "What the picture shows, for people who can’t see it.",
+        "credit": "Credit",
+        "license": "License or release",
+        "describe": "Describe",
+        "replace": "Replace the file everywhere it’s used",
+        "replacing": "Replacing…",
+        "choose": "Choose from library",
+        "whereTitle": "Where files live",
+        "where": "Uploads (images, partners’ logos, covers, photos and PDFs that belong to records) are kept here, in the site’s storage, as JPG, PNG, WebP or PDF, never SVG. The Society’s own logos, icons, fonts and templates are in the design system. Video and audio masters stay on the Society’s drives.",
+        "kinds": {
+          "image": "Image",
+          "logo": "Logo",
+          "pdf": "PDF",
+          "captions": "Captions",
+          "promo": "Promo kit"
+        },
+        "licenses": {
+          "own": "Our own",
+          "release": "Under a media release",
+          "partner": "A partner’s",
+          "licensed": "Licensed",
+          "public_domain": "Public domain"
+        },
+        "uses": {
+          "event": "Event",
+          "partner": "Partner",
+          "edition": "Edition",
+          "piece": "Piece",
+          "episode": "Episode",
+          "production": "Production",
+          "memorandum": "Memorandum"
+        }
       }
     },
     "editor": {
