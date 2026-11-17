@@ -133,7 +133,7 @@ Every chat in this project follows this file. Where an older document, project d
   - **First season** (targets the Council sets once the Artistic Director is appointed): a staged reading around Wed Nov 17, 2027, and a full production around Wed–Thu Apr 26–27, 2028 (desk work in Ramadan, blocking after Eid al-Fitr, finished before Eid al-Adha and finals).
   - **Plays suggested to the panel,** with an original student play first if one is ready: Ahmad Shawqi's "Majnun Layla" (Arabic, the reading) and Oscar Wilde's "The Importance of Being Earnest" (English, the production).
   - **Its Notion project** is "The Company: first season". Rights are kept on the site ("no rights, no show").
-- **Next Stop** is the Society's video show, made by the Director of Media's team (a producer and the host): episodes of 12 to 20 minutes, six a season released every other week on the same day and time, longer specials and reels cut from every episode, a reality-sitcom about AUIB. It is not part of Qirtas, and it can become its own club if it outgrows the Society. A pilot episode is released Wed Dec 9, 2026, and the first season runs in spring 2027, set by Media. The Secretary sends the pilot's filming request to Student Life by Sun Nov 15. Guests and pitches come in through nextstop@.
+- **Next Stop** is the Society's video show, made by the Director of Media's team (a producer and the host): episodes of 12 to 20 minutes, six a season released every other week on the same day and time, longer specials and reels cut from every episode, a reality-sitcom about AUIB. It is not part of Qirtas. Like the Society's other parts, it stays part of the one Society and does not register as a club of its own. A pilot episode is released Wed Dec 9, 2026, and the first season runs in spring 2027, set by Media. The Secretary sends the pilot's filming request to Student Life by Sun Nov 15. Guests and pitches come in through nextstop@.
   - **Its name is "Next Stop"** only (never "Next Stop @ AUIB"), and its title shows the name alone; the host is credited, never added to the title.
   - **Its package,** built once in the brand kit (§15): an illustrated paper collage in natural colors, uncluttered and grown-up, never childish, with no real places or photographs.
     - **An episode runs:** the Society's sound logo; the cold open; the opening titles; four parts, each opened by a ticket card (The ride, The task, The long way home, The exit); the credits; the end screen.
@@ -204,7 +204,7 @@ Every chat in this project follows this file. Where an older document, project d
   - **Associate Members are 18 or older,** except a student who leaves AUIB before 18, who becomes an Associate with the under-18 rules still on.
   - **Honorary Members** join by invitation after the Council's vote.
   - **Guests** sign up themselves or by invitation.
-  - **One sign-up for everyone** (/sign-up; /join explains and links to it). The class follows the address, with no question: an AUIB address ending in a student number (1241295@, name.1241295@) is a student's, a Member; any other AUIB address is faculty or staff, an Associate; any other address is a Guest. A student number of an unusual shape gets a warning, never a refusal. "Wrong address?" on the confirmation screen deletes the account just made.
+  - **One sign-up for everyone** (/sign-up; /join explains and links to it). The class follows the address, with no question: an AUIB address ending in a student number (1234567@, name.1234567@) is a student's, a Member; any other AUIB address is faculty or staff, an Associate; any other address is a Guest. A student number of an unusual shape gets a warning, never a refusal. "Wrong address?" on the confirmation screen deletes the account just made.
   - **Addresses and classes change with the person:** an AUIB address added later (in Settings with a six-digit code, or by the Director of Membership) becomes the sign-in and the class follows it; leaving AUIB, said in Settings or recorded by Membership, makes an Associate, with a confirmed personal email as the sign-in; two accounts of one person, proven by a code and approved by the Director of Membership, become one, keeping the older number. Every invitation (Associate, Honorary, a partner's team or guests, a parent's consent link, Qalam) opens the same page with the address filled in and its role attached on top, never a separate form.
   - **No link or invitation ever grants a role or a seat** (§8).
 - **One invitation system:** every invitation that gives access (Associate or Honorary membership, a partner's team, a guest) is a single-use email invitation to a named person.
@@ -220,7 +220,7 @@ Every chat in this project follows this file. Where an older document, project d
   - **Entered once, at sign-up** (or on the invitation or consent link that makes the account), and locked at once. The Director of Membership checks AUIB people's against AUIB's records. Nobody changes it themselves: only the Director of Membership corrects it, on request or after the check, with a reason and a second officer's approval (§7).
   - **The forms the site builds:**
     - **Full** (every part, «الاسم الرباعي»): signature blocks, certificates, service letters and lists for Student Life.
-    - **Short** (two parts): everywhere else a name shows (the card, the account menu, bylines, credits, captions, the masthead, team lists, the Diwan, minutes and ballots). The person chooses in Settings between the given name with the father's (the default, "Hassan Sadeq") and the given name with the fourth name ("Shaheen Farjo"), never typed.
+    - **Short** (two parts): everywhere else a name shows (the card, the account menu, bylines, credits, captions, the masthead, team lists, the Diwan, minutes and ballots). The person chooses in Settings between the given name with the father's (the default) and the given name with the fourth name, never typed.
     - **First name:** email greetings and Hudhud.
     - **Under 18:** the first name and the initial of the father's name, everywhere outside the full form's uses.
   - **Two exceptions, never typed by the person:** a pen name or "Anonymous" for a Qirtas byline (§9); and a credited name for people on screen or on stage (Next Stop's host and guests, the Company's cast), set by the Director of Media or the Artistic Director and used only in credits, captions and playbills, as US film and theater credit performers. Signatures always use the full official name.
@@ -286,7 +286,7 @@ Every chat in this project follows this file. Where an older document, project d
   - **Prices** appear only on the sign at the sale, never in a document or Notion page, and there is no money target.
 
 ## 6. Money: the Society has none
-- **No money at all:** the Society holds no budget, account or money, charges no dues and has no Treasurer. The Office of Student Life provides what it needs, through Ali Najm, Campus Recreation Officer, to the best of its ability.
+- **No money at all:** the Society holds no budget, account or money, charges no dues and has no Treasurer. The Office of Student Life provides what it needs, through its Campus Recreation Officer, to the best of its ability.
 - **Needs, not numbers.** Every event, the Company, Next Stop, the Tour, Second Chapter, Qirtas, Qalam and the Council keep a needs list: the item, the quantity, the date needed, and what it is for. No document, page or form shows budgets, costs, prices, spending limits, ledgers, claims or reimbursements.
   - **Who gathers needs:** the Director of Events (events), the Director of Membership (the Tour), the Director of Partnerships (Second Chapter), the Editor-in-Chief (the paper and Qalam) and the Director of Media (Next Stop).
   - **Who asks Student Life:** the Secretary sends every request from the Diwan, and logs what was asked, provided and when. Anything not provided is dropped or found through a partner, with the Council's approval.
@@ -374,7 +374,7 @@ Every chat in this project follows this file. Where an older document, project d
 ### Advisors and Student Life
 - **The Faculty Advisor:** required, invited through Student Life.
 - **The Advisory Board:** five to seven faculty, alumni and people from partner organizations (as individuals), chaired by the Faculty Advisor. They are invited by the Council for two years, have no vote, and meet once a semester.
-- **Student Life:** Ali Najm, Campus Recreation Officer, is the Society's staff contact (registration, approvals, rooms, needs, the volunteer log), and Jelena Zivkovic is Director of Student Life. Both are Associate Members with the "Student Life" role, in the members' group only, marked with the "Student Life" member tag (not as admins), and exempt from Hudhud's removals.
+- **Student Life:** the Campus Recreation Officer is the Society's staff contact (registration, approvals, rooms, needs, the volunteer log), under the Director of Student Life. Both are Associate Members with the "Student Life" role, in the members' group only, marked with the "Student Life" member tag (not as admins), and exempt from Hudhud's removals.
 - **Requests to Student Life go by secure link (the American standard where there is no campus system).** At US universities, the student-activities office answers its clubs' requests in a campus system. With none at AUIB, each request goes to Student Life by email from the Secretary's address (secretary@), with a single-use link to answer it without an account. The answer is recorded on the site, the Secretary sees its status, and a reminder follows after 3 days. The requests:
   - **a need:** provided, provided in part, or not provided;
   - **a trip:** approved or not, signed electronically, which records the approval on the event;
@@ -384,15 +384,9 @@ Every chat in this project follows this file. Where an older document, project d
   - **volunteers for an event's open shifts:** five days before an event, the shifts members haven't filled go to Student Life, which finds volunteers; each takes the place on the event with their own account (an AUIB address makes it at once), and the answer is "filled", "filled in part" or "not filled".
   Student Life's staff answer from their Associate accounts with the "Student Life" role (§4); the single-use link still works.
 
-### Holders on record (the founding team, until October 2027)
-Wherever a name is shown (the site, credits, captions, the masthead), it is the holder's short name from the site (§4). The President's uses the fourth name, "Shaheen Farjo" («شاهين فرجو»); the host is credited on screen as "Hassan Sadeq" («حسن صادق»), set by Media; the others show the default.
-- **President:** Shaheen Farjo (also covers Events and the Artistic Director).
-- **Vice President:** Fejer Saif Khalid Ezzet (also covers Partnerships).
-- **Secretary:** Yaqoob Ghassan Mahmood Hussein (also covers Membership).
-- **Editor-in-Chief:** Mohammed-Ali Ehsan Ohmaid.
-- **Managing Editor:** Mia Hakimi.
-- **Director of Media:** Ali Hayder.
-- **Next Stop host:** Hasan Sadeq (credited on screen as Hassan Sadeq).
+### The founding team (until October 2027)
+This file names seats, never holders. Who holds each seat is on the site (the Council page, About → Our people and the masthead), shown by the holder's short name (§4); the Next Stop host's credited name is set by Media (§4).
+- **Filled:** President (also covers Events and the Artistic Director), Vice President (also covers Partnerships), Secretary (also covers Membership), Editor-in-Chief, Managing Editor, Director of Media and the Next Stop host.
 - **Faculty Advisor:** none yet.
 - **The Tour lead for 2027** is appointed.
 - **The President is abroad Jan 24 – May 15, 2027.** There is no Acting President.
@@ -459,7 +453,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **The director open call:** four openings, one per seat (Artistic Director, Events, Partnerships, Membership), to which one application can go with seats ranked by preference.
   - **Timing:** they open after the Executive Board approves them and close Thu Dec 10. Interviews come before finals or in the first week of January, and appointments are approved by Thu Jan 14, 2027.
 - **Qirtas postings now:** the News, Voices, Gallery and Video editors, a Copy Chief and readers. The Letters editor is filled. The Games editor and the Qalam lead wait.
-- **The eight May applicants:** the President writes to each in the language they applied in, inviting them to join and apply by Sun Nov 22; the spreadsheet is then deleted.
+- **The eight May applicants:** the President writes to each in the language they applied in, on the day the openings are posted, inviting them to join and apply by Thu Dec 10 like everyone; the spreadsheet is then deleted.
 
 ## 9. Qirtas
 - **Independence:** Qirtas has its own masthead (auibsal.org/qirtas/masthead, built from the roles people hold). The President, as Publisher, never selects work, and Media promotes Qirtas but never decides its content.
@@ -515,7 +509,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **The 15 about AUIB news since spring 2026** (Mar 31 to Oct 14) go through the staff lane. Each is assigned to a staff writer, who reports and writes it anew from the Qirtas chat's fact sheet and AUIB's own announcement. It runs under the writer's byline, dated on or close to its event (the owner's choice against SPJ, which dates a piece by its publication). Piece 5 (the Times Higher Education shortlist; KAUST won on Nov 4) and piece 15 (the plan to 2031, with no event) are left to the News editor, as new items or not at all. The AI text is deleted once each piece is rewritten.
   - **The Society's posts** become two "From the Society" notices dated Nov 8: "auibsal.org is open" and "The Society's documents are online" (the Member Handbook among them). Charter Day is out.
   - **Deleted:** the three pre-2026 pieces.
-- **The May applicants** (a Microsoft Form) each get a letter from president@ inviting them to join and apply on Get involved by Sun Nov 22, with the role the Editor-in-Chief has in mind. The form, its responses and any copies are deleted now.
+- **The May applicants** (a Microsoft Form) each get a letter from president@, sent the day the openings are posted, inviting them to join and apply on Get involved by Thu Dec 10, with the role the Editor-in-Chief has in mind. The form, its responses and any copies are deleted now.
 - **Online** as pieces are ready.
 - **The Sunday Paper:** the monthly newsletter, sent by hand on the first Sunday, from qirtas@ with replies there. It is one of the two topics of the Society's mailing list (§14).
   - **Each issue,** in this order: the editor's letter; the month's pieces; "From the Society" (the month's announcements, one line each with a link); Events (the coming month's); the open roles; a call to write. Everything but the letter is filled in from the site when it is sent.
@@ -599,7 +593,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **The spring 2026 pages:** scanned, with consent from the import file. The slips are shredded, and the originals are offered back at the membership table; any not collected are shredded at the end of fall 2026. Pages with no email stay private: a writer claims one through Help Desk and an editor attaches it by hand. Pages still unclaimed after the spring 2027 Tour are deleted.
 - **The spring 2026 invitation:** sent from the site on Sat Nov 7, 2026 by the President, to the Tour writers (168 sent, 13 bounced, 155 delivered).
   - **Ten of the 13 bounces were typing errors,** corrected on Nov 11. Two of those writers had already joined, and their pages are attached. The other eight got the invitation as their own list ("Typewriter Tour, spring 2026: corrected addresses"), tested on the President and sent on Nov 11.
-  - **Three addresses are still unknown** (amer.1241347, asmaa.1241540, murtada.1230198). Those pages stay private and claimable through Help Desk.
+  - **Three addresses are still unknown.** Those pages stay private and claimable through Help Desk.
 - **The fall 2026 club fair sign-ups** get the same invitation once their paper sheets are logged on the site; the sheets are then shredded. Their list keeps its place, empty, until then.
 - **The invitation lists are temporary.** Once the fall list is sent, the lists, the Tour import and their test-and-send page are removed from the site. Later invitations to join go out as announcements to the mailing list. From 2027, any such invitation is sent by the Director of Membership.
 - **Everyone invited is on the mailing list** (§14). A page keeps its words and stop on the site, under the writer's control. Only the invitation's extra copy of words and stop, and the Tour invitation's Resend segment, are deleted 30 days after the send (Dec 7 for the Tour list).
@@ -673,7 +667,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **The card and certificate** keep the live site's designs: the card's guilloche and live QR panel, and the certificate's rosette seal from the serial with a QR to /verify.
 - **Letters** (service letters, thank-you letters, invitations and the rest) share one American business-letter template:
   - **Date:** no weekday ("November 7, 2026" / «7 تشرين الثاني 2026»).
-  - **Greeting:** "Dear Mr. Najm:" (a comma only in personal letters to members, "Dear Lina,"); Arabic «السيد علي نجم المحترم،» or «عزيزتي لينا،».
+  - **Greeting:** "Dear Mr. <family name>:" (a comma only in personal letters to members, "Dear <first name>,"); Arabic «السيد <الاسم> المحترم،» or «عزيزتي <الاسم>،».
   - **Closing:** "Sincerely," / «مع خالص التحية،», then the signer's name and seat.
   - **Foot:** room for a verification code and QR.
 - **Certificates:** two kinds (finishing Qalam, and the Mutanabbi Prize in each category), A4 landscape, each with a verification code and check page. A Qalam student's check page shows only the first name, father's initial, school and year. Service is a letter, and honorary membership an invitation.
@@ -866,7 +860,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **The first sends:** Haven's call is the first announcement, sent once the list is built and by Sun Nov 22; the first Sunday Paper goes on Sun Dec 6 (put together from Nov 30, tested Dec 3).
   - **Bounces and complaints** are suppressed automatically.
 - **Email (Zoho Mail free, owned by the Society; the American standard for student organizations):**
-  - **Role addresses only.** Mail follows the seat, never a person's name. No personal-name aliases (no shaheen@). Bots have no address: Hudhud points people to Help Desk or hello@.
+  - **Role addresses only.** Mail follows the seat, never a person's name. No personal-name aliases. Bots have no address: Hudhud points people to Help Desk or hello@.
   - **Five mailboxes,** one person each, passed on with the seat: president@, vp@, secretary@, editor@ (the Editor-in-Chief) and media@ (the Director of Media). The password and two-step backup are reset at each handover. The free plan has no IMAP, so mail is read on the web or in Zoho's app.
   - **Groups,** which use no mailbox; each lists who receives it, and every member can send as the group:
     - **hello@** (the front door for the public, partners and appeals): the Vice President and the Secretary. Anyone can send to it.
@@ -939,8 +933,9 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **Instagram (@auibsal):** for publicity only. Sign-ups, RSVPs and questions are pointed to Help Desk or hello@.
   - **Bio:** "The paper and the pen at @auibaghdad.", with the links auibsal.org, /events and /join.
   - **Six highlights,** in order: Events, Qirtas, The Company, Next Stop, Join (with the Tour), Partners (with Second Chapter). Covers are plain crimson with the icon only.
-  - **The launch sequence:** day 1 "Come in" (carousel and a story linking to /join); day 2 the Haven carousel (a story linking to auibsal.org/haven); day 4 the launch film; day 5 Qirtas's reel (vertical, about 15 seconds, on-screen text only: the nameplate, the six sections, then "Send your work" to Haven's call and the sound logo), made by Media from the brand kit; day 6 "Get involved", once the openings are up. The launch sequence goes out before any event's own posts (the screening's first post follows it). Haven's call is also the first email announcement, once the mailing list is built.
-  - **The launch film** (vertical, about 27 seconds; in English, with Arabic in the caption; on-screen text only, no voice), remade to feel made for students, impressive, literary and fun at once: the motto typed on paper; "Submit to Qirtas." over the live submit page; "Ride with Next Stop." as the bus pulls in; "Take the stage." as the Company's curtain opens; a montage of Qirtas's sections; then "Join the Society at auibsal.org/join", the page pulled out onto crimson and the sound logo. It keeps the original score, with every scene on the beat. The owner approves it and Media posts it.
+  - **The launch is one post: Haven's carousel.** Six items: a film made for the launch, then the four numbered Haven slides and the name, with a story linking to auibsal.org/haven. It goes out before any event's own posts (the screening's first post follows it). Haven's call is also the first email announcement, once the mailing list is built. "Come in" and "Get involved" are not posted now: both go out at the start of spring, and the openings are announced by email and Hudhud when they open. Qirtas's reel is dropped from the launch; Qirtas gets its reel with Edition 1.
+  - **Haven's film** (1080 × 1350, about 60 seconds, the carousel's first item): al-Mutanabbi's verse as a short animated story. He appears as a rider and a poet with no face; his verse is in Arabic with the About page's translation; the only other words on screen are the dates and the title. It ends on Qirtas's nameplate, with no Haven card, no Society frame and no sound logo, since the slides follow it. The owner approves it before it is posted.
+  - **The Society's film** (not part of Haven's launch; the owner decides when it runs; vertical, about 27 seconds; in English, with Arabic in the caption; on-screen text only, no voice), remade to feel made for students, impressive, literary and fun at once: the motto typed on paper; "Submit to Qirtas." over the live submit page; "Ride with Next Stop." as the bus pulls in; "Take the stage." as the Company's curtain opens; a montage of Qirtas's sections; then "Join the Society at auibsal.org/join", the page pulled out onto crimson and the sound logo. It keeps the original score, with every scene on the beat. The owner approves it and Media posts it.
   - **No "free" anywhere public:** the Society's videos, posts, site and emails never sell membership as free; everyone knows it is.
   - **The kit:** a "Submit to Qirtas" post is added, and the old Edition's-call post is retired.
   - **Posts:** each event gets its own post, titled for what it is, once its room is confirmed. There is no standing weekly post. The semester calendar goes out once as a "This spring's events" carousel, and "Get involved" goes with the open call. A story may go out on an event's day.
@@ -985,7 +980,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **Type:** Ubuntu, called "Ubuntu" in both languages (never "Ubuntu Arabic"); the Arabic files are served under the one family name with an Arabic unicode-range. Markazi Text is used for the reading text of Qirtas pieces in both languages, replacing Literata; headlines, the nameplate and the interface stay Ubuntu, and the Diwan uses Ubuntu. Mrs Saint Delafield is for signatures only, and Aref Ruqaa for Arabic signatures; a signature shows the name in the page's language. The Society's mark stays off the sign-in, sign-up and other account screens, and stays on documents, the card, certificates and letters. Qirtas's nameplate shows its name in the page's language only.
 - **Video (the American standard for student media):**
   - **The sound logo:** the Society's own sound, rebuilt for it from the typewriter ending of the fall 2026 club fair video and kept in the brand kit (never a stock sound): the carriage slides, clunks and rings its bell, with no music under it (about 2 seconds). It plays with the logo alone on crimson: the Bookmark slides in on the carriage and lands on the bell. A reel's call to action (such as auibsal.org/join) comes just before it.
-  - **The end card:** every vertical video ends on it, with the sound logo.
+  - **The end card:** every vertical video ends on it, with the sound logo. A video that opens a carousel is the exception: it takes the carousel's shape (1080 × 1350) and has no end card or sound logo, since the slides after it close the post.
   - **Format:** everything at 25 frames per second (Iraq's 50 Hz lighting, so no flicker); landscape 1920 × 1080; vertical 1080 × 1920, with text kept clear of the top 220 and bottom 400 pixels; sound mixed to −14 LUFS with true peaks at or below −1 dBTP; captions burned in on vertical videos, and as a caption file in each language on YouTube.
   - **The kit's video files:** the sound logo as a 48 kHz, 24-bit WAV and as two clips, vertical and 16:9 (held for 3 seconds to open landscape productions), and Next Stop's package (§3): the opening titles, the four part cards, the take card and the two verdicts, the name captions (landscape and vertical, with transparency), the credits and end screen, the reel ending and the thumbnail template, each in English and Arabic.
   - **Openings:** one sound logo, two placements. Vertical videos (Reels, Shorts, stories) have no intro: they open on the hook and end on the sound logo. Landscape productions (Next Stop episodes, the Company's recorded productions, YouTube films) open with it, held for 3 seconds on flat crimson, then their cold open and their own title, and end on their credits and end screen.
@@ -1072,15 +1067,15 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **Fall 2026:**
   - **Sun Nov 15:** Next Stop's filming request goes to Student Life (the Secretary).
   - **Sun Nov 22, 2:15–3:45 p.m.: the first Council meeting,** moved from Wed Nov 18 (the agenda sent Mon Nov 16 stands, with the cancellation and new date sent by the Secretary from secretary@), with every role holder invited to attend and speak; only the Council votes. It ratifies the founding team's actions and every decision in this file up to the meeting; sets the semester calendar and the room; plans general meetings; records the President's absence; approves the open call; and covers the founding team's GPA check, the Faculty Advisor invitation and the Founding Proposal's timeline. The launch is reported, not decided.
-  - **Sun Nov 22:** the May applicants' deadline to apply on Get involved; two-step sign-in set up at the next sign-in by every role that sees personal data; Haven's call sent as the first announcement (by this date).
+  - **Sun Nov 22:** two-step sign-in set up at the next sign-in by every role that sees personal data; Haven's call sent as the first announcement (by this date).
   - **Wed Nov 25:** the founding team's GPA list goes to Student Life, and the Faculty Advisor invitation goes out.
-  - **Wed Nov 25, 2:00–4:00 p.m.:** the Iraqi short films screening, with American Space and the Iraqi Independent Film Center, moved from Sun Nov 22; its posts follow the launch sequence (§14).
+  - **Wed Nov 25, 2:00–4:00 p.m.:** the Iraqi short films screening, with American Space and the Iraqi Independent Film Center, moved from Sun Nov 22; its posts follow the launch (§14).
   - **Tue Dec 1, 2:30–4:00 p.m.: the pilot,** a reading with a guest (the station access is tested).
   - **Wed Dec 2, 2:15–3:00 p.m.:** general meeting.
   - **Sun Dec 6:** the first Sunday Paper; Haven's submissions close at 11:59 p.m.
   - **Tue Dec 8, 2:30–4:00 p.m.:** a writing workshop. Its room, and the pilot's, is confirmed on Nov 22.
   - **Wed Dec 9, 2:15 p.m.:** Council meeting. Next Stop's pilot episode is released the same day.
-  - **Thu Dec 10:** the director openings close.
+  - **Thu Dec 10:** the director openings close, and it is the May applicants' deadline to apply on Get involved.
   - **Wed Dec 16:** Haven, Qirtas's pilot, is published.
   - **Sun Dec 20:** the President's notice to Student Life.
 - **Spring 2027** (assuming classes start Sun Feb 7):
