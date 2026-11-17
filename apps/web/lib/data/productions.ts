@@ -191,19 +191,13 @@ export const cancelAudition = async (client: Client, auditionId: string) =>
       .rpc("cancel_audition", { audition_id: auditionId })
   );
 
-/** The Company's public productions, the newest first (rights cleared). */
+/**
+ * The Company's public productions, the newest first (listed, rights
+ * cleared), through programs.public_productions: the public may not read
+ * the productions table itself.
+ */
 export const publicProductions = async (client: Client) =>
-  unwrap(
-    await client
-      .schema("api")
-      .from("productions")
-      .select(
-        "id, slug, kind, stage, title_en, title_ar, summary_en, summary_ar, playwright"
-      )
-      .eq("is_public", true)
-      .eq("rights_status", "cleared")
-      .order("created_at", { ascending: false })
-  ) ?? [];
+  unwrap(await client.schema("api").rpc("public_productions")) ?? [];
 
 /**
  * A production's playbill: everyone holding a role scoped to it, in the

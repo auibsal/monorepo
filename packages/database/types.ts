@@ -9023,6 +9023,20 @@ export type Database = {
           url: string;
         }[];
       };
+      public_productions: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          kind: string;
+          playwright: string;
+          slug: string;
+          stage: string;
+          summary_ar: string;
+          summary_en: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       qalam_consent_link: {
         Args: { note?: string; parent_email: string; teacher_email: string };
         Returns: string;
