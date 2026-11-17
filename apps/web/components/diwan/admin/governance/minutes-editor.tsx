@@ -10,7 +10,7 @@ import { localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { ErrorState, SectionSpinner } from "../../states";
-import { AdminHeading, ConfirmAction, ErrorLine, Field } from "../kit";
+import { ConfirmAction, ErrorLine, Field, RecordView } from "../kit";
 import { NotionManaged } from "../notion-managed";
 import { TextView } from "../pipeline/text-view";
 import { MeetingResolutions } from "./admin";
@@ -74,26 +74,21 @@ export const MinutesEditor = () => {
   const adopted = minutes.status === "approved";
 
   return (
-    <div className="grid gap-8">
-      <AdminHeading
-        actions={
-          <Link
-            className="text-sm underline underline-offset-4"
-            href="/council"
-          >
-            {tk("back")}
-          </Link>
-        }
-        title={localized(minutes, "title", locale)}
-      />
+    <RecordView
+      back={
+        <Link className="link" href="/council">
+          {tk("back")}
+        </Link>
+      }
+      status={adopted ? t("minutes.locked") : undefined}
+      title={localized(minutes, "title", locale)}
+    >
       <NotionManaged kind="minutes" recordId={minutesId} />
       <div className="grid max-w-4xl gap-6">
         <TextView html={minutes.text_en} lang="en" />
         <TextView html={minutes.text_ar} lang="ar" />
       </div>
-      {adopted ? (
-        <p className="type-caption">{t("minutes.locked")}</p>
-      ) : (
+      {adopted ? null : (
         <div className="flex flex-wrap items-end gap-3">
           <Field className="w-44" label={t("minutes.adoptedOn")}>
             {(id) => (
@@ -118,6 +113,6 @@ export const MinutesEditor = () => {
       <ErrorLine error={adopt.error} />
       {/* The resolutions this meeting adopted. */}
       <MeetingResolutions meetingId={minutesId} />
-    </div>
+    </RecordView>
   );
 };

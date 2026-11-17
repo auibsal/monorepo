@@ -3919,7 +3919,10 @@
         "oneAWeek": "An announcement email went out in the last seven days: one a week at most. Post this one to From the Society only, or let it wait for the Sunday Paper.",
         "instagramToDo": "Media: make the Instagram post or story from it.",
         "instagramMade": "Instagram post made",
-        "instagramDone": "Instagram post made {date}."
+        "instagramDone": "Instagram post made {date}.",
+        "words": "The words",
+        "draft": "Draft",
+        "notFound": "No announcement with this link."
       },
       "sundayPaper": {
         "title": "The Sunday Paper",

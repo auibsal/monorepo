@@ -11,11 +11,24 @@ import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
+import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermission } from "@/lib/rbac";
-import { AdminHeading, DateTimeField, ErrorLine } from "../kit";
+import { RowList } from "../../page";
+import { SectionSpinner } from "../../states";
+import {
+  AdminHeading,
+  DateTimeField,
+  ErrorLine,
+  NewLink,
+  RecordPage,
+  RecordView,
+  SaveButton,
+} from "../kit";
 import { PresetStart } from "../presets";
 import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
+import { EditableSection } from "../record";
+import { RecordHistory } from "../record-history";
 
 const key = ["admin", "council", "announcements"];
 
@@ -71,7 +84,7 @@ const Editor = ({
   onSaved,
 }: {
   draft: Draft;
-  onSaved: () => Promise<void>;
+  onSaved: (id: string) => Promise<void> | void;
 }) => {
   const t = useTranslations("diwan.admin.announcements");
   const { supabase } = useAuth();
@@ -90,7 +103,7 @@ const Editor = ({
           title_en: form.title_en,
         })
       ),
-    onSuccess: onSaved,
+    onSuccess: (id) => onSaved(id ?? form.id ?? ""),
   });
   const complete =
     form.title_en.trim() &&
@@ -183,14 +196,11 @@ const Editor = ({
           />
         )}
       </Field>
-      <Button
-        className="justify-self-start"
-        disabled={!complete || save.isPending}
-        type="submit"
-        variant="outline"
-      >
-        {t("save")}
-      </Button>
+      <SaveButton
+        disabled={!complete}
+        pending={save.isPending}
+        success={save.isSuccess}
+      />
       <ErrorLine error={save.error} />
     </form>
   );
@@ -400,91 +410,156 @@ const Stream = ({
   );
 };
 
+const useNotice = (id: string) => {
+  const notices = useNotices();
+  return {
+    ...notices,
+    data: notices.data?.find((notice) => notice.id === id) ?? null,
+  };
+};
+
 /**
- * The Council → Announcements (decisions.md, Channels and email): the President writes a
- * notice in English and Arabic, sends its test to themselves, then says
- * go: one Resend Broadcast per language to the Sunday Paper's readers,
- * and Hudhud in the members' group and to linked members.
+ * The Council → Announcements (decisions.md, Channels and email): the
+ * President writes a notice in English and Arabic, sends its test to
+ * themselves, then says go: one Resend Broadcast per language to the
+ * Sunday Paper's readers, and Hudhud in the members' group and to linked
+ * members. Each notice is a record with its own page.
  */
 export const Announcements = () => {
   const t = useTranslations("diwan.admin.announcements");
   const locale = useLocale();
-  const queryClient = useQueryClient();
   const notices = useNotices();
-  const grants = useGrants();
-  // The President sends; Media writes and posts to the stream.
-  const president = hasPermission(grants.data, "roles.assign");
-  const [adding, setAdding] = useState(false);
-  const refresh = () => queryClient.invalidateQueries({ queryKey: key });
   return (
     <div className="grid gap-8">
       <AdminHeading
         actions={
-          adding ? null : (
-            <button
-              className="link text-sm"
-              onClick={() => setAdding(true)}
-              type="button"
-            >
-              {t("new")}
-            </button>
-          )
+          <NewLink href="/council/announcements/new">{t("new")}</NewLink>
         }
         title={t("title")}
       />
-      {adding ? (
-        <section className="border-line grid gap-4 border-y py-6">
-          <Editor
-            draft={BLANK}
-            onSaved={async () => {
-              setAdding(false);
-              await refresh();
-            }}
-          />
-        </section>
-      ) : null}
       <ErrorLine error={notices.error} />
-      {notices.data?.length === 0 && !adding ? (
+      {notices.data?.length === 0 ? (
         <p className="type-body">{t("none")}</p>
       ) : null}
-      <ul className="divide-line border-line grid divide-y border-y">
+      <RowList>
         {(notices.data ?? []).map((notice) => (
-          <li className="grid gap-4 py-6" key={notice.id}>
-            {notice.sent_at ? (
-              <>
-                <h2 className="type-heading">
-                  {locale === "ar" ? notice.title_ar : notice.title_en}
-                </h2>
-                <p className="type-caption text-text-secondary">
-                  {t("sentOn", {
+          <li className="grid gap-1" key={notice.id}>
+            <Link
+              className="hover:text-accent type-body font-medium"
+              href={`/council/announcements/${notice.id}`}
+            >
+              {locale === "ar" ? notice.title_ar : notice.title_en}
+            </Link>
+            <span className="type-caption text-text-secondary">
+              {notice.sent_at
+                ? t("sentOn", {
                     date: formatLongDate(new Date(notice.sent_at), locale),
-                  })}
-                </p>
-                <Instagram notice={notice} refresh={refresh} />
-              </>
-            ) : (
-              <>
-                <Editor
-                  draft={{ ...notice, link_path: notice.link_path ?? "" }}
-                  key={`${notice.id}-${notice.tested_at ?? ""}`}
-                  onSaved={refresh}
-                />
-                {president ? (
-                  <Sending notice={notice} refresh={refresh} />
-                ) : null}
-                <Stream notice={notice} refresh={refresh} />
-                <Instagram notice={notice} refresh={refresh} />
-                <DeleteRecord
-                  id={notice.id}
-                  kind="announcement"
-                  onDeleted={refresh}
-                />
-              </>
-            )}
+                  })
+                : t("draft")}
+            </span>
           </li>
         ))}
-      </ul>
+      </RowList>
       <RecentlyDeleted kind="announcement" />
     </div>
+  );
+};
+
+/** A new notice: written, then opened on its own page. */
+const NewAnnouncement = () => {
+  const t = useTranslations("diwan.admin.announcements");
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  return (
+    <RecordPage
+      back="/council/announcements"
+      backLabel={t("title")}
+      title={t("new")}
+    >
+      <Editor
+        draft={BLANK}
+        onSaved={async (id) => {
+          await queryClient.invalidateQueries({ queryKey: key });
+          router.push(`/council/announcements/${id}`);
+        }}
+      />
+    </RecordPage>
+  );
+};
+
+/**
+ * One notice's record page (decisions.md, The site: "One record page"):
+ * its words, edited in place until it is sent; sending, the stream and
+ * Instagram; History last.
+ */
+export const AnnouncementRecord = ({ id }: { readonly id: string }) => {
+  const t = useTranslations("diwan.admin.announcements");
+  const locale = useLocale();
+  const queryClient = useQueryClient();
+  const grants = useGrants();
+  const notice = useNotice(id);
+  // The President sends; Media writes and posts to the stream.
+  const president = hasPermission(grants.data, "roles.assign");
+  const refresh = () => queryClient.invalidateQueries({ queryKey: key });
+  if (id === "new") {
+    return <NewAnnouncement />;
+  }
+  if (notice.isPending) {
+    return <SectionSpinner />;
+  }
+  const record = notice.data;
+  if (!record) {
+    return <p className="type-body">{t("notFound")}</p>;
+  }
+  const ar = locale === "ar";
+  return (
+    <RecordView
+      back={
+        <Link className="link" href="/council/announcements">
+          {t("title")}
+        </Link>
+      }
+      history={<RecordHistory id={record.id} table="core.announcements" />}
+      menu={
+        record.sent_at ? undefined : (
+          <DeleteRecord
+            id={record.id}
+            kind="announcement"
+            then="/council/announcements"
+          />
+        )
+      }
+      status={
+        record.sent_at
+          ? t("sentOn", {
+              date: formatLongDate(new Date(record.sent_at), locale),
+            })
+          : t("draft")
+      }
+      title={ar ? record.title_ar : record.title_en}
+    >
+      <EditableSection
+        form={
+          record.sent_at ? undefined : (
+            <Editor
+              draft={{ ...record, link_path: record.link_path ?? "" }}
+              key={`${record.id}-${record.tested_at ?? ""}`}
+              onSaved={refresh}
+            />
+          )
+        }
+        id="words"
+        title={t("words")}
+      >
+        <p className="type-body whitespace-pre-wrap">
+          {ar ? record.body_ar : record.body_en}
+        </p>
+      </EditableSection>
+      {president && !record.sent_at ? (
+        <Sending notice={record} refresh={refresh} />
+      ) : null}
+      {record.sent_at ? null : <Stream notice={record} refresh={refresh} />}
+      <Instagram notice={record} refresh={refresh} />
+    </RecordView>
   );
 };
