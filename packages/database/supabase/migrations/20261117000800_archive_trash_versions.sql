@@ -238,6 +238,41 @@ begin
 end;
 $$;
 
+-- Each area's Recently deleted, as one plain query over every area (so
+-- the linter can check it), newest first; only what the caller may
+-- restore.
+create or replace function private.recently_deleted(kind text)
+returns table (id uuid, title_en text, title_ar text, deleted_at timestamptz, purges_at timestamptz)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select d.id, d.title_en, d.title_ar, d.deleted_at, d.deleted_at + interval '30 days'
+  from (
+  select 'event', r.id, r.title_en, r.title_ar, r.deleted_at from events.events r where r.deleted_at is not null
+  union all
+  select 'partner', r.id, r.name_en, r.name_ar, r.deleted_at from governance.partners r where r.deleted_at is not null
+  union all
+  select 'media', r.id, r.file_name, r.file_name, r.deleted_at from content.media_items r where r.deleted_at is not null
+  union all
+  select 'piece', r.id, r.title_en, r.title_ar, r.deleted_at from journal.pieces r where r.deleted_at is not null
+  union all
+  select 'edition', r.id, r.title_en, r.title_ar, r.deleted_at from journal.issues r where r.deleted_at is not null
+  union all
+  select 'production', r.id, r.title_en, r.title_ar, r.deleted_at from programs.productions r where r.deleted_at is not null
+  union all
+  select 'episode', r.id, r.title_en, r.title_ar, r.deleted_at from programs.episodes r where r.deleted_at is not null
+  union all
+  select 'opening', r.id, r.title_en, r.title_ar, r.deleted_at from programs.openings r where r.deleted_at is not null
+  union all
+  select 'announcement', r.id, r.title_en, r.title_ar, r.deleted_at from core.announcements r where r.deleted_at is not null
+  ) as d (kind, id, title_en, title_ar, deleted_at)
+  where d.kind = recently_deleted.kind
+    and private.may_delete(d.kind, d.id)
+  order by d.deleted_at desc;
+$$;
+
 -- ── Every edit in History ─────────────────────────────────────────────
 create trigger log_activity after insert or update or delete on programs.openings
   for each row execute function private.log_activity();

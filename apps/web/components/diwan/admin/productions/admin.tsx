@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, productions, unwrap } from "@/lib/data";
+import { productionArchived } from "@/lib/data/archive";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermission } from "@/lib/rbac";
@@ -36,17 +37,6 @@ import { type ProductionRow, productionsKey } from "./shared";
 type Stage = productions.ProductionStage;
 type Kind = productions.ProductionKind;
 type Origin = productions.ScriptOrigin;
-
-/**
- * A production is in the Archive once canceled, or closed with its report
- * signed (decisions.md, The site: "Archive").
- */
-const productionArchived = (p: {
-  readonly report_signed_at: string | null;
-  readonly stage: string;
-}) =>
-  p.stage === "canceled" ||
-  (p.stage === "closed" && Boolean(p.report_signed_at));
 
 const useProductionList = () => {
   const { supabase } = useAuth();

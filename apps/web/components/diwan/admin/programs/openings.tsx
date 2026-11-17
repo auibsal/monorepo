@@ -9,6 +9,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, programs, unwrap } from "@/lib/data";
+import { openingArchived } from "@/lib/data/archive";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { useQueryState } from "@/lib/diwan/use-query-param";
@@ -527,14 +528,3 @@ export const NewOpeningPage = () => {
     </RecordPage>
   );
 };
-
-/**
- * An opening is in the Archive a month after it closed, once its replies
- * have had their answer (decisions.md, The site: "Archive").
- */
-export const openingArchived = (
-  o: { readonly closes_at: string | null; readonly is_open: boolean },
-  now = Date.now()
-) =>
-  !o.is_open &&
-  now - new Date(o.closes_at ?? 0).getTime() > 30 * 24 * 60 * 60 * 1000;

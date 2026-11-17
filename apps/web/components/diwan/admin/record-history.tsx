@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
+import { versionPreview } from "@/lib/data/versions";
 import { DiwanSection, RowList } from "../page";
 import { ErrorLine } from "./kit";
 import { useMemberNames } from "./member-picker";
@@ -168,21 +169,6 @@ const VERSION_TARGETS = {
   "programs.productions": ["productions", "id"],
 } as const satisfies Record<VersionTable, readonly [string, string]>;
 
-const PREVIEW = 200;
-
-/** The opening words of a saved version, in the page's language first. */
-const preview = (fields: Record<string, unknown>, locale: Locale) => {
-  const values = Object.entries(fields)
-    .sort(
-      ([a], [b]) =>
-        Number(b.endsWith(`_${locale}`)) - Number(a.endsWith(`_${locale}`))
-    )
-    .map(([, v]) => (typeof v === "string" ? v : ""))
-    .filter(Boolean);
-  const text = (values[0] ?? "").replace(/<[^>]+>/gu, " ").trim();
-  return text.length > PREVIEW ? `${text.slice(0, PREVIEW)}…` : text;
-};
-
 /**
  * Earlier versions of a record's text (decisions.md, The site: "History"):
  * each save keeps the words it replaced, the last 50; Restore saves one
@@ -244,7 +230,7 @@ const EarlierVersions = ({
                 })}
               </p>
               <p className="type-body" dir="auto">
-                {preview(v.fields as Record<string, unknown>, locale)}
+                {versionPreview(v.fields as Record<string, unknown>, locale)}
               </p>
               <button
                 className="link justify-self-start"

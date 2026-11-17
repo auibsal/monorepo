@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
 import { events, localized, unwrap } from "@/lib/data";
+import { eventArchived } from "@/lib/data/archive";
 import { Link } from "@/lib/diwan/navigation";
 import { DiwanSection } from "../../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../../states";
@@ -194,9 +195,7 @@ export const EventsList = () => {
       {failed ? <ErrorState onRetry={() => failed.refetch()} /> : null}
       {loading || failed ? null : (
         <RecordList
-          archived={({ kind, row }) =>
-            kind === "past" || row.status === "canceled"
-          }
+          archived={({ row }) => eventArchived(row)}
           empty={
             <EmptyLine action={{ href: "/events", label: tk("showAll") }}>
               {tk("noMatches")}

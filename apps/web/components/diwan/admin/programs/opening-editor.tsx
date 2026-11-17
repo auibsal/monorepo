@@ -11,6 +11,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, programs, unwrap } from "@/lib/data";
+import { openingArchived } from "@/lib/data/archive";
 import { Link } from "@/lib/diwan/navigation";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, PageSpinner } from "../../states";
@@ -28,7 +29,7 @@ import { MemberPicker, type Person, useMemberNames } from "../member-picker";
 import { DeleteRecord } from "../recently-deleted";
 import { EditableSection, Fact, Facts } from "../record";
 import { RecordHistory } from "../record-history";
-import { openingArchived, type openingKinds } from "./openings";
+import type { openingKinds } from "./openings";
 
 /** The appointed director seats: they open after the Executive Board's approval. */
 const DIRECTOR_ROLES = new Set([

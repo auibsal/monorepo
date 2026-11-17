@@ -56,22 +56,3 @@ export const useProgramOptions = (
 
 export const adminEventColumns =
   "id, slug, program_id, title_en, title_ar, starts_at, ends_at, classes, entry, capacity, rsvp_enabled, status";
-
-/** The days after an event its team still writes the debrief and minutes. */
-const AFTER_DAYS = 30;
-
-/**
- * An event is in the Archive once it is canceled, or its After is done
- * (decisions.md, The site: "Archive").
- */
-export const eventArchived = (
-  event: {
-    readonly ends_at: string | null;
-    readonly starts_at: string;
-    readonly status: string;
-  },
-  now = Date.now()
-) =>
-  event.status === "canceled" ||
-  now - new Date(event.ends_at ?? event.starts_at).getTime() >
-    AFTER_DAYS * 24 * 60 * 60 * 1000;
