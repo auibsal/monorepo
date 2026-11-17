@@ -1931,6 +1931,13 @@ export type Database = {
           user_agent: string;
         }[];
       };
+      my_todos: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          kind: string;
+          ref: string;
+        }[];
+      };
       my_topics: {
         Args: Record<PropertyKey, never>;
         Returns: {

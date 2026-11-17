@@ -127,8 +127,24 @@ export const RoleChecklist = () => {
         []) as Step[],
     queryKey: key,
   });
+  // A role whose agreement is its own to-do (UnsignedRoleAgreements) leaves
+  // the signing step out here, so it never shows twice (core.my_todos).
+  const unsigned = useQuery({
+    enabled: Boolean(user),
+    queryFn: async () =>
+      new Set(
+        (
+          (unwrap(
+            await supabase.schema("api").rpc("my_unsigned_role_agreements")
+          ) ?? []) as Unsigned[]
+        ).map((r) => r.assignment_id)
+      ),
+    queryKey: ["home", "unsigned-role-agreements", "ids", user?.id],
+  });
   const byRole = new Map<string, Step[]>();
-  for (const step of steps.data ?? []) {
+  for (const step of (steps.data ?? []).filter(
+    (s) => !(s.step === "pledge" && unsigned.data?.has(s.assignment_id))
+  )) {
     byRole.set(step.assignment_id, [
       ...(byRole.get(step.assignment_id) ?? []),
       step,

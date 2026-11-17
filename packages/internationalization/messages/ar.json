@@ -480,7 +480,9 @@
           "declinedTitle": "رُفض طلبك للعضوية المنتسبة",
           "declinedBody": "لم يتمكن مدير العضوية من التحقق من دراستك في الجامعة الأمريكية في بغداد، ويبقى حسابك حساب ضيف. إن رأيت في ذلك خطأً، فراسل <email>⁦{address}⁩</email>."
         }
-      }
+      },
+      "toDoNone": "لا شيء عليك الآن.",
+      "toDoCount": "{count, plural, one {مهمة واحدة} two {مهمتان} few {{countText} مهام} other {{countText} مهمة}}"
     },
     "events": {
       "title": "الفعاليات",

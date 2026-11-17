@@ -480,7 +480,9 @@
           "declinedTitle": "Your request for Associate membership was declined",
           "declinedBody": "The Director of Membership could not confirm that you studied at AUIB, and your account stays a guest’s. If you think this is a mistake, write to <email>{address}</email>."
         }
-      }
+      },
+      "toDoNone": "Nothing to do. You’re all set.",
+      "toDoCount": "{count, plural, one {{countText} thing to do} other {{countText} things to do}}"
     },
     "events": {
       "title": "Events",
