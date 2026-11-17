@@ -3,6 +3,7 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 import {
   formatLongDate,
   formatNumber,
@@ -291,6 +292,7 @@ const QueueWork = ({ item }: { item: QueueRow }) => {
           dangerouslySetInnerHTML={{
             __html: sanitizeRichText(work.data.body_html),
           }}
+          dir={dirOf(item.language)}
           lang={item.language === "ar" ? "ar" : "en"}
         />
       ) : null}

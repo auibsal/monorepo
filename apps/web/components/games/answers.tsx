@@ -2,6 +2,7 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import { Input } from "@repo/brand/components/ui/input";
+import { dirOf } from "@repo/internationalization/config";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import {
@@ -141,7 +142,7 @@ export const AnswersGame = ({
   const solved = states.filter((s) => s === "solved").length;
   const closed = states.filter((s) => s !== "open").length;
   return (
-    <div className="grid max-w-3xl gap-8" dir={lang === "ar" ? "rtl" : "ltr"}>
+    <div className="grid max-w-3xl gap-8" dir={dirOf(lang)}>
       <ol className="grid gap-8">
         {items.map((item, i) => (
           <Answer

@@ -1,5 +1,6 @@
 import { DocumentHeader } from "@repo/brand/components/sal/document-header";
 import { type Locale, localizedPath } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 import { formatPlainDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import type { Metadata } from "next";
@@ -111,6 +112,7 @@ const DocumentLine = async ({ doc, locale }: { doc: Doc; locale: Locale }) => {
           {" · "}
           <a
             className="link"
+            dir={dirOf(other)}
             href={localizedPath(other, documents.documentPath(doc.slug))}
             lang={other}
           >

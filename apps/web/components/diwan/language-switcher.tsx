@@ -2,7 +2,7 @@
 
 import { Icon } from "@repo/brand/components/sal/icon";
 import { cn } from "@repo/brand/lib/utils";
-import { type Locale, locales } from "@repo/internationalization/config";
+import { dirOf, type Locale, locales } from "@repo/internationalization/config";
 import { usePathname, useRouter } from "@repo/internationalization/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { mastheadLink } from "@/components/masthead";
@@ -23,6 +23,7 @@ export const LanguageSwitcher = () => {
   return (
     <button
       className={cn(mastheadLink, "inline-flex items-center gap-1.5")}
+      dir={dirOf(other)}
       lang={other}
       onClick={() => {
         router.replace(`${pathname}${window.location.search}`, {

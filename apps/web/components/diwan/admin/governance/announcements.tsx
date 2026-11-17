@@ -104,7 +104,7 @@ const Editor = ({
       }}
     >
       <div className="grid gap-5 md:grid-cols-2">
-        <div className="grid content-start gap-4" lang="en">
+        <div className="grid content-start gap-4" dir="ltr" lang="en">
           <Field label={t("titleEn")}>
             {(id) => (
               <Input
@@ -129,7 +129,7 @@ const Editor = ({
             )}
           </Field>
         </div>
-        <div className="grid content-start gap-4" lang="ar">
+        <div className="grid content-start gap-4" dir="rtl" lang="ar">
           <Field label={t("titleAr")}>
             {(id) => (
               <Input

@@ -1,5 +1,6 @@
 import { Icon, type IconName } from "@repo/brand/components/sal/icon";
 import { SocialPost } from "@repo/brand/components/sal/social-post";
+import { dirOf } from "@repo/brand/lib/utils";
 import type { Meta, StoryObj } from "@storybook/react";
 
 /**
@@ -131,11 +132,7 @@ const Slide = ({
   num: string;
   title: string;
 }) => (
-  <div
-    className="sal-post sal-post--white"
-    dir={lang === "ar" ? "rtl" : "ltr"}
-    lang={lang}
-  >
+  <div className="sal-post sal-post--white" dir={dirOf(lang)} lang={lang}>
     <div className="sal-post__frame">
       <p className="sal-post__num">{num}</p>
       <h3 className="sal-post__title">{title}</h3>
@@ -147,7 +144,7 @@ const Slide = ({
 const Wordmark = ({ lang }: { lang: "ar" | "en" }) => (
   <div
     className="sal-post sal-post--white sal-post--end"
-    dir={lang === "ar" ? "rtl" : "ltr"}
+    dir={dirOf(lang)}
     lang={lang}
   >
     <div className="sal-post__frame">

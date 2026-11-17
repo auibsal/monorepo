@@ -4,6 +4,7 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -213,7 +214,7 @@ export const ReadingRoom = ({
         {work?.source_text ? (
           <>
             <h3 className="font-medium">{t("submission.source")}</h3>
-            <p className="whitespace-pre-wrap" lang={lang}>
+            <p className="whitespace-pre-wrap" dir={dirOf(lang)} lang={lang}>
               {work.source_text}
             </p>
           </>

@@ -1,4 +1,5 @@
 import type { Locale } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 import {
   formatLongDate,
   formatNumber,
@@ -130,7 +131,7 @@ const FiguresAfter = ({ piece }: { piece: Full }) => {
   const [first] = texts(piece);
   const lang = first?.lang ?? "en";
   return rest.length > 0 ? (
-    <div dir={lang === "ar" ? "rtl" : "ltr"} lang={lang}>
+    <div dir={dirOf(lang)} lang={lang}>
       {rest.map((figure) => (
         <PieceFigure figure={figure} key={figure.id} lang={lang} />
       ))}
@@ -332,7 +333,12 @@ const LongReadBody = async ({ piece }: { piece: Full }) => {
         className="font-sans lg:sticky lg:top-24 lg:self-start print:hidden"
       >
         {parts.map((part) => (
-          <div className="grid gap-3" key={part.lang} lang={part.lang}>
+          <div
+            className="grid gap-3"
+            dir={dirOf(part.lang)}
+            key={part.lang}
+            lang={part.lang}
+          >
             <p className="type-label">{t("contents")}</p>
             <ol className="border-line grid gap-2 border-s ps-4">
               {part.contents.map((item) => (

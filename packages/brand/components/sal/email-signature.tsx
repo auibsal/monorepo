@@ -1,4 +1,4 @@
-import { cn } from "../../lib/utils";
+import { cn, dirOf } from "../../lib/utils";
 
 /**
  * The email signature for hello@auibsal.org and officers' Society email
@@ -65,7 +65,7 @@ export const EmailSignature = ({
   return (
     <div
       className={cn("grid max-w-md gap-3 text-sm leading-relaxed", className)}
-      dir={lang === "ar" ? "rtl" : "ltr"}
+      dir={dirOf(lang)}
       lang={lang}
     >
       <div>

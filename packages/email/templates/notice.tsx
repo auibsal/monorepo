@@ -13,6 +13,7 @@ import {
   Text,
 } from "@react-email/components";
 import { siteUrl } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 
 // Brand colors (packages/brand/assets/tokens.json). Email clients need inline styles.
 const CRIMSON = "#9c213e";
@@ -302,7 +303,7 @@ export const Notice = ({
     textAlign: first === "ar" ? ("right" as const) : ("left" as const),
   };
   return (
-    <Html dir={first === "ar" ? "rtl" : "ltr"} lang={first}>
+    <Html dir={dirOf(first)} lang={first}>
       <Head>
         {/* The brand is white paper: dark-mode mail apps leave it as it is. */}
         <meta content="light only" name="color-scheme" />

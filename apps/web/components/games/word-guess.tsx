@@ -3,6 +3,7 @@
 import { Button } from "@repo/brand/components/ui/button";
 import { cn } from "@repo/brand/lib/utils";
 import { localizedPath } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShareLink } from "@/components/share";
@@ -164,7 +165,7 @@ export const WordGuess = ({ lang }: { lang: GameLang }) => {
   return (
     <div
       className="grid justify-items-center gap-6"
-      dir={lang === "ar" ? "rtl" : "ltr"}
+      dir={dirOf(lang)}
       lang={lang}
     >
       <h2 className="sr-only">{t("guess.board")}</h2>

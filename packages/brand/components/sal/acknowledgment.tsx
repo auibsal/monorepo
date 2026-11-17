@@ -1,5 +1,5 @@
 import { logoScale } from "../../lib/logo-scale";
-import { cn } from "../../lib/utils";
+import { cn, dirOf } from "../../lib/utils";
 
 /**
  * Who it's with (decisions.md, Partners; Events), fixed in both languages
@@ -175,7 +175,7 @@ const Names = ({
         </span>
       );
       return (
-        <li key={item.name} lang={lang}>
+        <li dir={dirOf(lang)} key={item.name} lang={lang}>
           {item.href ? (
             <a
               className="hover:underline"

@@ -2,6 +2,7 @@
 
 import { Textarea } from "@repo/brand/components/ui/textarea";
 import type { Locale } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 import { formatLongDate } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -163,7 +164,7 @@ export const MyPiece = () => {
             className="prose max-w-none"
             // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized with the one rich-text policy
             dangerouslySetInnerHTML={{ __html: sanitizeRichText(text.html) }}
-            dir={text.lang === "ar" ? "rtl" : "ltr"}
+            dir={dirOf(text.lang)}
             key={text.lang}
             lang={text.lang}
           />

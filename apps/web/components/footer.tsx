@@ -119,7 +119,6 @@ export const Footer = async ({
             <a
               className={linkClass}
               href={AUIB_URL}
-              lang={locale === "ar" ? "ar" : "en"}
               rel="noopener"
               target="_blank"
             >

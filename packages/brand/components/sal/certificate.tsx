@@ -1,5 +1,5 @@
 import QRCode from "react-qr-code";
-import { cn } from "../../lib/utils";
+import { cn, dirOf } from "../../lib/utils";
 import { BrandLogo } from "../brand-logo";
 import { Guilloche, seedFromText } from "./guilloche";
 
@@ -77,7 +77,7 @@ export const Certificate = ({
       className
     )}
     data-theme="light"
-    dir={locale === "ar" ? "rtl" : "ltr"}
+    dir={dirOf(locale)}
     lang={locale}
   >
     <header className="grid justify-items-center gap-2">

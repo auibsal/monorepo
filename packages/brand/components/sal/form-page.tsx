@@ -141,6 +141,7 @@ export const FormPage = ({
               aria-invalid={signature.invalid}
               autoComplete="name"
               className="border-text font-signature text-text focus-visible:border-accent h-11 w-full border-b bg-transparent text-2xl outline-none"
+              dir="auto"
               id="form-signature"
               maxLength={200}
               name="signature"

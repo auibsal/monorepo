@@ -1,5 +1,6 @@
 import { Icon } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 import { formatClock, formatDayParts } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import type { ReactNode } from "react";
@@ -88,6 +89,7 @@ export const DatedList = ({
                     ? "text-text-secondary group-hover:text-accent text-base leading-snug"
                     : "group-hover:text-accent text-xl leading-snug font-normal"
                 }
+                dir={dirOf(item.lang)}
                 lang={item.lang}
               >
                 {item.title}

@@ -191,7 +191,9 @@ export const MonthCalendar = async ({
                           key={row.id}
                           rel="noopener"
                         >
-                          <span lang="en">{row.title}</span>
+                          <span dir="ltr" lang="en">
+                            {row.title}
+                          </span>
                           <span className="type-caption">
                             {universityWhen(row)} · {t("auib")}
                           </span>

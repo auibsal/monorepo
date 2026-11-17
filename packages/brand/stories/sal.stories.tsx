@@ -144,6 +144,7 @@ export const FormPageStory: Story = {
         <input
           className="border-text text-text focus-visible:border-accent h-11 w-full border-b bg-transparent outline-none"
           defaultValue="Lina Hassan"
+          dir="auto"
           id="release-name"
           type="text"
         />
@@ -152,6 +153,7 @@ export const FormPageStory: Story = {
         <input
           className="border-text text-text focus-visible:border-accent h-11 w-full border-b bg-transparent outline-none"
           defaultValue="Writing workshop, Tuesday, November 17"
+          dir="auto"
           id="release-event"
           type="text"
         />
