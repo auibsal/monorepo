@@ -9,6 +9,8 @@ interface TeamMember {
   readonly key: string;
   /** Empty when the place is open. */
   readonly name: string | null;
+  /** What an empty place says instead of "Open" ("Covered by …"). */
+  readonly note?: string;
   readonly title: string;
 }
 
@@ -46,7 +48,7 @@ export const TeamList = ({
                   member.name ? "type-body" : "type-body text-text-secondary"
                 }
               >
-                {member.name ?? open}
+                {member.name ?? member.note ?? open}
               </dd>
             </div>
           ))}
