@@ -397,7 +397,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **The Tour lead for 2027** is appointed.
 - **The President is abroad Jan 24 – May 15, 2027.** There is no Acting President.
   - **The Vice President acts:** under Constitution 4.4, the Vice President performs the President's duties while the President is recorded absent, with the President's administrative powers on the site for that period, and covers any director seat still open on Jan 24.
-  - **The record:** the Council records the absence on Nov 18. The President's notice to Student Life (signed electronically, acknowledged by the Vice President) goes by Sun Dec 20.
+  - **The record:** the Council records the absence on Sun Nov 22. The President's notice to Student Life (signed electronically, acknowledged by the Vice President) goes by Sun Dec 20.
 ### How the Council works
 - **Agendas** go out two days before every meeting; **draft minutes** within seven days, approved at the next meeting; approved minutes are open to all members; decisions are recorded in the Diwan the same day.
 - **A one-page guide** to how meetings work (motions, voting, speaking), from "Robert's Rules in Brief", in both languages.
@@ -939,7 +939,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **Instagram (@auibsal):** for publicity only. Sign-ups, RSVPs and questions are pointed to Help Desk or hello@.
   - **Bio:** "The paper and the pen at @auibaghdad.", with the links auibsal.org, /events and /join.
   - **Six highlights,** in order: Events, Qirtas, The Company, Next Stop, Join (with the Tour), Partners (with Second Chapter). Covers are plain crimson with the icon only.
-  - **The launch sequence:** day 1 "Come in" (carousel and a story linking to /join); day 2 the Haven carousel (a story linking to auibsal.org/haven); day 4 the launch film; day 5 Qirtas's reel (vertical, about 15 seconds, on-screen text only: the nameplate, the six sections, then "Send your work" to Haven's call and the sound logo), made by Media from the brand kit; day 6 "Get involved", once the openings are up. Haven's call is also the first email announcement, once the mailing list is built.
+  - **The launch sequence:** day 1 "Come in" (carousel and a story linking to /join); day 2 the Haven carousel (a story linking to auibsal.org/haven); day 4 the launch film; day 5 Qirtas's reel (vertical, about 15 seconds, on-screen text only: the nameplate, the six sections, then "Send your work" to Haven's call and the sound logo), made by Media from the brand kit; day 6 "Get involved", once the openings are up. The launch sequence goes out before any event's own posts (the screening's first post follows it). Haven's call is also the first email announcement, once the mailing list is built.
   - **The launch film** (vertical, about 27 seconds; in English, with Arabic in the caption; on-screen text only, no voice), remade to feel made for students, impressive, literary and fun at once: the motto typed on paper; "Submit to Qirtas." over the live submit page; "Ride with Next Stop." as the bus pulls in; "Take the stage." as the Company's curtain opens; a montage of Qirtas's sections; then "Join the Society at auibsal.org/join", the page pulled out onto crimson and the sound logo. It keeps the original score, with every scene on the beat. The owner approves it and Media posts it.
   - **No "free" anywhere public:** the Society's videos, posts, site and emails never sell membership as free; everyone knows it is.
   - **The kit:** a "Submit to Qirtas" post is added, and the old Edition's-call post is retired.
@@ -1071,13 +1071,14 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
 - **AUIB's week:** classes run Sunday to Wednesday, 8:00 a.m. to 2:00 p.m. (some until 5:00 p.m.). On Thursdays only ELA students and some labs are on campus. Friday is off, and Saturday is only for invited or RSVP events. The Society schedules around it, and holds no events in finals week (fall 2026 finals end Thu Dec 17).
 - **Fall 2026:**
   - **Sun Nov 15:** Next Stop's filming request goes to Student Life (the Secretary).
-  - **Wed Nov 18, 2:15–3:45 p.m.: the first Council meeting** (agenda sent Mon Nov 16). It ratifies the founding team's actions and every decision in this file up to the meeting; sets the semester calendar and the room; plans general meetings; records the President's absence; approves the open call; and covers the founding team's GPA check, the Faculty Advisor invitation and the Founding Proposal's timeline. The launch is reported, not decided.
+  - **Sun Nov 22, 2:15–3:45 p.m.: the first Council meeting,** moved from Wed Nov 18 (the agenda sent Mon Nov 16 stands, with the cancellation and new date sent by the Secretary from secretary@), with every role holder invited to attend and speak; only the Council votes. It ratifies the founding team's actions and every decision in this file up to the meeting; sets the semester calendar and the room; plans general meetings; records the President's absence; approves the open call; and covers the founding team's GPA check, the Faculty Advisor invitation and the Founding Proposal's timeline. The launch is reported, not decided.
   - **Sun Nov 22:** the May applicants' deadline to apply on Get involved; two-step sign-in set up at the next sign-in by every role that sees personal data; Haven's call sent as the first announcement (by this date).
   - **Wed Nov 25:** the founding team's GPA list goes to Student Life, and the Faculty Advisor invitation goes out.
+  - **Wed Nov 25, 2:00–4:00 p.m.:** the Iraqi short films screening, with American Space and the Iraqi Independent Film Center, moved from Sun Nov 22; its posts follow the launch sequence (§14).
   - **Tue Dec 1, 2:30–4:00 p.m.: the pilot,** a reading with a guest (the station access is tested).
   - **Wed Dec 2, 2:15–3:00 p.m.:** general meeting.
   - **Sun Dec 6:** the first Sunday Paper; Haven's submissions close at 11:59 p.m.
-  - **Tue Dec 8, 2:30–4:00 p.m.:** a writing workshop. Its room, and the pilot's, is confirmed on Nov 18.
+  - **Tue Dec 8, 2:30–4:00 p.m.:** a writing workshop. Its room, and the pilot's, is confirmed on Nov 22.
   - **Wed Dec 9, 2:15 p.m.:** Council meeting. Next Stop's pilot episode is released the same day.
   - **Thu Dec 10:** the director openings close.
   - **Wed Dec 16:** Haven, Qirtas's pilot, is published.
