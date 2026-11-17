@@ -13,6 +13,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { journal, unwrap } from "@/lib/data";
+import { liveTopics, useLive } from "@/lib/diwan/live";
 import { SectionSpinner } from "../../states";
 import {
   AdminHeading,
@@ -55,6 +56,10 @@ const MyReads = ({ issueId }: { issueId: string }) => {
       ) ?? [],
     queryKey: [...pipelineKey, "reads", issueId, user?.id],
   });
+  // A new read arrives in the queue as it is assigned.
+  useLive(user ? liveTopics.reading(user.id) : null, [
+    [...pipelineKey, "reads", issueId, user?.id],
+  ]);
   type Row = NonNullable<typeof reads.data>[number];
   const columns: Column<Row>[] = [
     {

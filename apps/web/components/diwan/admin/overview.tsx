@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
+import { liveTopics, useLive } from "@/lib/diwan/live";
 import { Link } from "@/lib/diwan/navigation";
 import { useNotionHandbook, useTeamWorkspace } from "@/lib/diwan/notion";
 import { useGrants } from "@/lib/diwan/queries";
@@ -440,6 +441,8 @@ const dueFigures = (
 
 export const AdminOverview = () => {
   const t = useTranslations("diwan.admin.overview");
+  // The Desk's counts move as requests come in (decisions.md, The site).
+  useLive(liveTopics.desk(), [["admin", "overview"]]);
   const tc = useTranslations("diwan.admin.calendar");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();

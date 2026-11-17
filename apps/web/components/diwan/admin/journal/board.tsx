@@ -9,6 +9,7 @@ import { useState } from "react";
 import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { type journal, unwrap } from "@/lib/data";
+import { liveTopics, useLive } from "@/lib/diwan/live";
 import { Link } from "@/lib/diwan/navigation";
 import { DiwanSection } from "../../page";
 import { AddInPlace, ErrorLine, Field, SaveButton, SelectInput } from "../kit";
@@ -148,6 +149,9 @@ export const DeskBoard = ({
   const t = useTranslations("diwan.admin.board");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
+  // Editors working the same board see each piece move (decisions.md, The
+  // site: Realtime where people share a screen).
+  useLive(liveTopics.newsroom(), [boardKey(desk)]);
   const board = useQuery({
     enabled: edits,
     queryFn: async () =>

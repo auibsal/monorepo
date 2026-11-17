@@ -800,6 +800,7 @@ export const QirtasPieceEditor = () => {
           <DeleteRecord id={piece.id} kind="piece" then="/qirtas" />
         )
       }
+      room={{ id: piece.id, kind: "piece" }}
       tabs={[
         {
           content: (

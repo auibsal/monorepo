@@ -13,6 +13,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useRoom } from "@/lib/diwan/room";
 import { useQueryState } from "@/lib/diwan/use-query-param";
 import { DiwanSection } from "../page";
 import { SectionFormContext } from "./section-form";
@@ -168,6 +169,20 @@ export const EditableSection = ({
   const [bar, setBar] = useState<HTMLElement | null>(null);
   const editButton = useRef<HTMLButtonElement>(null);
   const region = useRef<HTMLDivElement>(null);
+  // Who else is editing this section, and whether someone saved the
+  // record since this edit began (decisions.md, The site: Realtime).
+  const room = useRoom();
+  const savesAtStart = useRef(0);
+  const others = (room?.editors ?? []).filter((e) => e.section === id);
+  const stale =
+    editing && room ? room.savedElsewhere > savesAtStart.current : false;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: follows editing only
+  useEffect(() => {
+    if (editing) {
+      savesAtStart.current = room?.savedElsewhere ?? 0;
+    }
+    room?.track(editing ? id : null);
+  }, [editing]);
 
   // A browser reload or a closed tab asks before changes are lost.
   useEffect(() => {
@@ -195,7 +210,11 @@ export const EditableSection = ({
     setAsking(false);
     requestAnimationFrame(() => editButton.current?.focus());
   }, []);
-  const context = useMemo(() => ({ bar, saved: close }), [bar, close]);
+  const savedHere = useCallback(() => {
+    room?.saved();
+    close();
+  }, [close, room]);
+  const context = useMemo(() => ({ bar, saved: savedHere }), [bar, savedHere]);
 
   return (
     <DiwanSection
@@ -214,6 +233,13 @@ export const EditableSection = ({
       id={id}
       title={title}
     >
+      {others.length > 0 ? (
+        <p className="type-caption text-text-secondary" role="status">
+          {t("othersEditing", {
+            names: others.map((e) => e.name).join(", "),
+          })}
+        </p>
+      ) : null}
       {editing && form ? (
         <SectionFormContext.Provider value={context}>
           <div
@@ -225,7 +251,17 @@ export const EditableSection = ({
             {form}
           </div>
           <div className="border-line bg-surface sticky bottom-0 z-10 -mx-1 flex flex-wrap items-center gap-x-5 gap-y-2 border-t px-1 py-3">
-            {asking ? (
+            {stale ? (
+              <>
+                <p className="type-body" role="alert">
+                  {t("stale")}
+                </p>
+                <Button onClick={close} size="sm" variant="outline">
+                  {t("reviewTheirs")}
+                </Button>
+              </>
+            ) : null}
+            {!stale && asking ? (
               <>
                 <p className="type-body" role="alert">
                   {t("discardAsk")}
@@ -241,7 +277,8 @@ export const EditableSection = ({
                   {t("keepEditing")}
                 </button>
               </>
-            ) : (
+            ) : null}
+            {stale || asking ? null : (
               <>
                 <span className="contents" ref={setBar} />
                 <button

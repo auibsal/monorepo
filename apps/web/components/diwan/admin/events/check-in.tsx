@@ -20,6 +20,7 @@ import {
   isOffline,
   readQueue,
 } from "@/lib/diwan/door-queue";
+import { liveTopics, useLive } from "@/lib/diwan/live";
 import { Link } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { RowList } from "../../page";
@@ -155,6 +156,12 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
     queryKey: ["admin", "check-in-count", eventId],
   });
   const results = useAttendeeSearch(eventId, query);
+  // Two devices at one door see each other's check-ins (decisions.md, The
+  // site: Realtime where people share a screen).
+  useLive(liveTopics.checkIn(eventId), [
+    ["admin", "check-in-count", eventId],
+    ["admin", "find-attendee", eventId],
+  ]);
 
   // One check-in, by ticket, card or name.
   const send = useCallback(

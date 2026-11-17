@@ -540,6 +540,7 @@ export const AnnouncementRecord = ({ id }: { readonly id: string }) => {
           />
         )
       }
+      room={{ id: record.id, kind: "announcement" }}
       status={
         record.sent_at
           ? t("sentOn", {

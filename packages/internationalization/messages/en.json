@@ -1178,7 +1178,10 @@
           "no": "No",
           "membership": "Membership",
           "roles": "Roles",
-          "archived": "In the Archive: finished, kept to read. Nothing here can be changed."
+          "archived": "In the Archive: finished, kept to read. Nothing here can be changed.",
+          "othersEditing": "{names} is editing this section.",
+          "stale": "Someone changed this; review their version.",
+          "reviewTheirs": "Review their version"
         },
         "needsYou": "Needs you",
         "archive": "Archive",

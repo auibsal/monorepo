@@ -38,6 +38,7 @@ import { useAuth } from "@/lib/auth/provider";
 import { DataError } from "@/lib/data";
 import { useMarkDeepPage } from "@/lib/deep-page";
 import { ApiError, callApiText } from "@/lib/diwan/api";
+import { RecordRoom, type RoomKind } from "@/lib/diwan/room";
 import { useQueryState } from "@/lib/diwan/use-query-param";
 import { useAppLink } from "@/lib/link-context";
 import { ChoiceInput } from "./choice-input";
@@ -164,6 +165,7 @@ export const RecordView = ({
   history,
   menu,
   narrow = false,
+  room,
   status,
   tabs,
   title,
@@ -181,6 +183,8 @@ export const RecordView = ({
   /** Everything but the main action, under More. */
   readonly menu?: ReactNode;
   readonly narrow?: boolean;
+  /** The record's room: who is editing which section, and saves. */
+  readonly room?: { readonly id: string; readonly kind: RoomKind };
   readonly status?: ReactNode;
   /** The record's other tabs, between Overview and History. */
   readonly tabs?: readonly RecordTab[];
@@ -199,7 +203,7 @@ export const RecordView = ({
     ) : (
       content
     );
-  return (
+  const page = (
     <div className={cn("grid gap-10", narrow && "max-w-3xl")}>
       <div className="grid gap-3">
         {back ? <div className="type-caption">{back}</div> : null}
@@ -239,6 +243,13 @@ export const RecordView = ({
         readOnly(children)
       )}
     </div>
+  );
+  return room ? (
+    <RecordRoom id={room.id} kind={room.kind}>
+      {page}
+    </RecordRoom>
+  ) : (
+    page
   );
 };
 

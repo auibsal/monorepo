@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
+import { liveTopics, useLive } from "@/lib/diwan/live";
 import { useMyMembership, useProfile } from "@/lib/diwan/queries";
 import { DiwanPage } from "../page";
 import { Handovers } from "../service/roles";
@@ -109,6 +110,9 @@ const useGreeting = () => {
  * page.
  */
 export const MemberHome = () => {
+  const { user: me } = useAuth();
+  // Today's counts move as things happen (decisions.md, The site).
+  useLive(me ? liveTopics.me(me.id) : null, [["home"], ["account"]]);
   const t = useTranslations("diwan.home");
   const locale = useLocale();
   const profile = useProfile();
