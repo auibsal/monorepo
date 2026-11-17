@@ -311,6 +311,8 @@ test("a long name signs whole on a phone, in both languages", async ({
   );
   const names = page.locator("[data-signature-script]");
   await expect(names).toHaveCount(2);
+  // Measured in the signature faces, not the fallback shown while they load.
+  await page.evaluate(() => document.fonts.ready);
   for (const name of await names.all()) {
     const fits = await name.evaluate((el) => {
       const box = el.getBoundingClientRect();
