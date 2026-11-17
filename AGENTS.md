@@ -149,6 +149,7 @@ bun run test                # Vitest in every workspace
 bun run check:placeholders
 bun run check:rtl           # physical Tailwind utilities (--fix rewrites them)
 bun run check:i18n          # UI text not in the messages files; the language standard
+bun run check:copy          # say it once, say it short (--report for the totals)
 bun run check:forms         # the register's kinds against SAL-EXB-01, by name (needs NOTION_TOKEN)
 bun run check:pdf           # every PDF the site makes is tagged for PDF/UA (lib/pdf-ua.ts)
 bun run check:unused        # unused files and dependencies (Knip)

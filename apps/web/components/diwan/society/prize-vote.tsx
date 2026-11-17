@@ -42,7 +42,7 @@ export const PrizeVote = () => {
     return null;
   }
   return (
-    <DiwanSection description={t("lede")} id="prize" title={t("title")}>
+    <DiwanSection id="prize" title={t("title")}>
       {journal.PRIZE_CATEGORIES.map((category) => {
         const works = ballot.data?.filter((w) => w.category === category) ?? [];
         if (works.length === 0) {

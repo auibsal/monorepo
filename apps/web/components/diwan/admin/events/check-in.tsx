@@ -271,11 +271,7 @@ const EventDoor = ({ eventId }: { readonly eventId: string }) => {
           </Link>
         }
         title={`${t("title")}: ${localized(event.data, "title", locale)}`}
-      >
-        {formatLongDate(event.data.starts_at, locale)},{" "}
-        {formatClock(event.data.starts_at, locale)}
-      </AdminHeading>
-      <p className="type-body text-text-secondary">{t("lede")}</p>
+      />
       <p className="text-text font-medium" role="status">
         {t("count", { count: formatNumber(count.data ?? 0) })}
       </p>

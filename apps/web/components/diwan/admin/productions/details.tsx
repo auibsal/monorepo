@@ -281,7 +281,6 @@ export const RightsTab = ({ production }: { production: ProductionRow }) => {
 
   return (
     <div className="grid max-w-3xl gap-6 pt-4">
-      <p className="type-body">{t("lede")}</p>
       <div className="grid gap-1">
         <p className="type-label">{t("status")}</p>
         <p className="font-medium">

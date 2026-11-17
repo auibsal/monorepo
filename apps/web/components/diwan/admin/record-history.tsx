@@ -217,7 +217,7 @@ const EarlierVersions = ({
     return null;
   }
   return (
-    <DiwanSection description={t("lede")} id="versions" title={t("title")}>
+    <DiwanSection id="versions" title={t("title")}>
       <RowList>
         {versions.data.map((v) => {
           const person = names.data?.find((n) => n.id === v.saved_by);

@@ -41,7 +41,7 @@ export const EnrollmentCheck = () => {
     }
   };
   return (
-    <DiwanSection description={t("lede")} id="enrollment" title={t("title")}>
+    <DiwanSection id="enrollment" title={t("title")}>
       <form className="grid max-w-2xl gap-3" onSubmit={submit}>
         <Field hint={t("hint")} label={t("list")}>
           {(id) => (
@@ -108,11 +108,7 @@ export const IncompleteNames = () => {
     return <ErrorLine error={list.error} />;
   }
   return (
-    <DiwanSection
-      description={t("lede")}
-      id="incomplete-names"
-      title={t("title")}
-    >
+    <DiwanSection id="incomplete-names" title={t("title")}>
       <RowList>
         {list.data.map((row) => (
           <li className="grid gap-1" key={row.user_id}>
@@ -170,7 +166,7 @@ export const MergeRequests = () => {
       .filter(Boolean)
       .join(" · ");
   return (
-    <DiwanSection description={t("lede")} id="merges" title={t("title")}>
+    <DiwanSection id="merges" title={t("title")}>
       {rows.length === 0 ? (
         <p className="type-caption">{t("none")}</p>
       ) : (

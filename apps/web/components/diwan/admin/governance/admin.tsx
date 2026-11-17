@@ -295,9 +295,7 @@ export const ResolutionPage = ({
           </>
         }
         title={row ? localized(row, "title", locale) : t("resolutions.new")}
-      >
-        {`${t(`bodies.${meeting.body as governance.MeetingBody}`)} · ${formatLongDate(meeting.meeting_on, locale, true)}`}
-      </AdminHeading>
+      />
       <ResolutionEditor
         back={back}
         initial={row ? formOf(row) : blankResolution()}
@@ -501,11 +499,7 @@ export const SocietyView = ({ view }: { readonly view: SocietyViewKey }) => {
   return (
     <div className="grid gap-6">
       {/* The Library's own page has its heading. */}
-      {view === "library" ? null : (
-        <AdminHeading title={t(`${view}.title`)}>
-          {t(`${view}.lede`)}
-        </AdminHeading>
-      )}
+      {view === "library" ? null : <AdminHeading title={t(`${view}.title`)} />}
       {view === "meetings" ? (
         <>
           <MeetingsList />

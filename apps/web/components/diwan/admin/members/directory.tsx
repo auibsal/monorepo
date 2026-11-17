@@ -188,9 +188,7 @@ export const MembersDirectory = () => {
           ) : null
         }
         title={t("title")}
-      >
-        {t("lede")}
-      </AdminHeading>
+      />
       <RecordList
         empty={
           <EmptyLine action={{ href: "/membership", label: tk("showAll") }}>

@@ -223,7 +223,7 @@ export const DesignSystem = ({ entryId }: { entryId: string | null }) => {
   const first = (g: Group) => all.find((e) => groupOf(e) === g);
 
   return (
-    <DiwanPage lede={t("lede")} title={t("title")}>
+    <DiwanPage title={t("title")}>
       {entries.isPending ? <SectionSpinner /> : null}
       {entries.isPending || all.length > 0 ? null : (
         <p className="type-caption">{t("notBuilt")}</p>

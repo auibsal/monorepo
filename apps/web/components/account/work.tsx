@@ -8,7 +8,7 @@ import { DiwanPage } from "@/components/diwan/page";
 export const WorkPage = () => {
   const t = useTranslations("diwan.journal.write");
   return (
-    <DiwanPage lede={t("yourWorkLede")} title={t("yourWork")}>
+    <DiwanPage title={t("yourWork")}>
       <YourWork />
     </DiwanPage>
   );

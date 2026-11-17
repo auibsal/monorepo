@@ -58,7 +58,6 @@ const LetterWriter = () => {
   return (
     <div className="grid gap-8">
       <div className="grid max-w-3xl gap-4 print:hidden">
-        <p className="type-body">{t("lede")}</p>
         <Field label={t("form")}>
           {(id) => (
             <SelectInput

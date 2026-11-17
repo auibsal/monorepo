@@ -544,8 +544,7 @@ export const MySubmission = () => {
   return (
     <RecordView
       back={back}
-      lede={tj(`categories.${row.category}`)}
-      status={t(`flow.${journal.writerStatus(row.status)}`)}
+      status={`${tj(`categories.${row.category}`)} · ${t(`flow.${journal.writerStatus(row.status)}`)}`}
       title={row.title}
     >
       {row.status === "intake_check" && row.intake_returned_at ? (

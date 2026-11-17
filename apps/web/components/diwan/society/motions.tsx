@@ -52,7 +52,6 @@ export const Motions = () => {
           {t("propose")}
         </Link>
       }
-      description={t("lede")}
       id="motions"
       title={t("title")}
     >

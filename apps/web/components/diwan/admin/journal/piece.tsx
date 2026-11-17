@@ -91,9 +91,7 @@ const NewPiece = () => {
   const tk = useTranslations("diwan.admin.kit");
   return (
     <div className="grid gap-8">
-      <AdminHeading actions={back(tk("back"))} title={t("newPiece")}>
-        {t("newPieceLede")}
-      </AdminHeading>
+      <AdminHeading actions={back(tk("back"))} title={t("newPiece")} />
       <PieceForm record={null} />
     </div>
   );
@@ -508,7 +506,6 @@ const Media = ({ record }: { record: PieceRecord }) => {
   return (
     <section className="grid gap-4">
       <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-caption">{t("lede")}</p>
       <ol className="grid gap-4">
         {record.media.map((m, index) => {
           const alt = captions[m.id]?.alt ?? { ar: m.alt_ar, en: m.alt_en };
@@ -798,7 +795,6 @@ export const QirtasPieceEditor = () => {
           versions="journal.piece_bodies"
         />
       }
-      lede={`${tj(`desks.${piece.desk as journal.Desk}`)} · ${tj(`categories.${category}`)}`}
       menu={
         piece.status === "published" ? undefined : (
           <DeleteRecord id={piece.id} kind="piece" then="/qirtas" />

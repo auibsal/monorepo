@@ -213,7 +213,6 @@ const ActivitySection = ({ userId }: { userId: string }) => {
   return (
     <section className="grid gap-4">
       <h2 className="type-heading">{t("activity")}</h2>
-      <p className="type-body text-text-secondary">{t("activityLede")}</p>
       {records.isPending ? <SectionSpinner /> : null}
       {records.data ? (
         <DataTable columns={columns} rowKey={(r) => r.id} rows={records.data} />
@@ -395,7 +394,6 @@ const RolesSection = ({ name, userId }: { name: string; userId: string }) => {
   return (
     <section className="grid gap-4">
       <h2 className="type-heading">{t("roles")}</h2>
-      <p className="type-body text-text-secondary">{t("rolesLede")}</p>
       {canAssign ? (
         <AddInPlace label={t("assign")}>
           {(close) => <AssignRole name={name} onDone={close} userId={userId} />}
@@ -666,7 +664,7 @@ const TwoStepReset = ({ name, userId }: { name: string; userId: string }) => {
       <div>
         <ConfirmAction
           confirmLabel={t("confirm")}
-          description={t("description", { name })}
+          description={t("confirm", { name })}
           disabled={reset.isPending}
           onConfirm={() => reset.mutate()}
         >
@@ -1114,7 +1112,6 @@ export const MemberDetail = () => {
           {tk("back")}
         </Link>
       }
-      lede={<MemberLine row={row} />}
       tabs={[
         ...(canManage
           ? [

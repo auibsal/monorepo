@@ -289,9 +289,7 @@ export const PresetsAdmin = ({ kind }: { readonly kind: PresetKind }) => {
           </Link>
         }
         title={t(`titles.${kind}`)}
-      >
-        {t("lede")}
-      </AdminHeading>
+      />
       {kind === "event" ? (
         <p className="type-body max-w-[60ch]">{t("standardNote")}</p>
       ) : null}

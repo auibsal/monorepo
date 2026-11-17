@@ -89,11 +89,7 @@ export const Passkeys = () => {
   const list = passkeys.data ?? [];
 
   return (
-    <DiwanSection
-      description={t("description")}
-      id="passkeys"
-      title={t("title")}
-    >
+    <DiwanSection id="passkeys" title={t("title")}>
       <div className="grid gap-3">
         {list.length > 0 ? (
           <ul className="grid gap-3">

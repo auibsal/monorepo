@@ -123,7 +123,6 @@ export const AuibAddress = () => {
     send.isError && membership.addressError(send.error) === "email_has_account";
   return (
     <div className="grid gap-4">
-      <p className="type-caption max-w-[60ch]">{t("why")}</p>
       {data.auib_pending ? (
         <div className="grid gap-3">
           <p className="type-body" role="status">
@@ -198,7 +197,6 @@ export const MergeAccounts = () => {
   }
   return (
     <div className="grid gap-4">
-      <p className="type-caption max-w-[60ch]">{t("why")}</p>
       {data.merge_pending ? (
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           <p className="type-body" role="status">
@@ -278,7 +276,6 @@ export const LeavingAuib = () => {
   }
   return (
     <div className="grid gap-3">
-      <p className="type-caption max-w-[60ch]">{t("why")}</p>
       {open ? (
         <div className="grid gap-3">
           <p className="type-body max-w-[60ch]">

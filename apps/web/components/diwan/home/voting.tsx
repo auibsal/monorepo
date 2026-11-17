@@ -25,7 +25,7 @@ export const VotingEligibility = () => {
   const count = status.data?.activities ?? 0;
 
   return (
-    <Section description={t("rule")} id="voting" title={t("title")}>
+    <Section id="voting" title={t("title")}>
       <div className="grid gap-2">
         <p className="type-body">
           {t("progress", { count: formatNumber(Math.min(count, 99)) })}

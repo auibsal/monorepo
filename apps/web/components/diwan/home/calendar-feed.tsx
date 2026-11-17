@@ -44,7 +44,6 @@ export const CalendarFeed = () => {
 
   return (
     <Section id="calendar" title={t("title")}>
-      <p className="type-body">{t("description")}</p>
       <Input
         aria-label={t("title")}
         className="font-mono text-xs"

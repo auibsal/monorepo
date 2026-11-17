@@ -1091,7 +1091,6 @@ const WriteHeading = ({
 }) => {
   const t = useTranslations("diwan.journal.write");
   const tj = useTranslations("diwan.admin.journal");
-  const desk = journal.deskOf(type);
   return (
     <AdminHeading
       actions={
@@ -1103,11 +1102,7 @@ const WriteHeading = ({
         </Link>
       }
       title={tj(`categories.${type}`)}
-    >
-      {t(`lead.${desk === "voices" || desk === "video" ? desk : "blind"}`, {
-        section: tj(`desks.${desk}`),
-      })}
-    </AdminHeading>
+    />
   );
 };
 

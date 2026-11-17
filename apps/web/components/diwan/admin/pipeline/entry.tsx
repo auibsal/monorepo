@@ -401,11 +401,16 @@ export const EntryView = () => {
 
   return (
     <div className="grid gap-8">
-      <AdminHeading actions={back} title={entry.title}>
-        <span className="type-code">{entry.blind_id}</span> ·{" "}
-        {tj(`categories.${entry.category as Category}`)} ·{" "}
-        {tj(`languages.${entry.language}`)} · {ts(entry.status)}
-      </AdminHeading>
+      <AdminHeading
+        actions={back}
+        status={[
+          entry.blind_id,
+          tj(`categories.${entry.category as Category}`),
+          tj(`languages.${entry.language}`),
+          ts(entry.status),
+        ].join(" · ")}
+        title={entry.title}
+      />
 
       {decision ? (
         <section className="border-line grid gap-2 border-t p-4">

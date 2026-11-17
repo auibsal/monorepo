@@ -319,7 +319,7 @@ export const MediaLibrary = () => {
   );
   return (
     <div className="grid gap-8">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <AdminHeading title={t("title")} />
       <div className="flex flex-wrap items-end gap-4">
         <Field label={t("find")}>
           {(id) => (

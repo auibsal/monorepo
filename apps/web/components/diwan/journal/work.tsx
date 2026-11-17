@@ -107,15 +107,13 @@ export const MyPiece = () => {
             ) : null}
           </>
         }
+        status={`${tj(`categories.${piece.category as journal.Category}`)} · ${tw(`statuses.${status}`)}`}
         title={localized(piece, "title", locale) || t("pieceTitle")}
-      >
-        {`${tj(`categories.${piece.category as journal.Category}`)} · ${tw(`statuses.${status}`)}`}
-      </AdminHeading>
+      />
 
       {status === "editing" ? (
         <section className="border-line grid max-w-3xl gap-3 border-t p-4">
           <h2 className="type-subheading">{t("finalCheck")}</h2>
-          <p>{t("finalCheckLede")}</p>
           <div>
             <ConfirmAction
               confirmLabel={t("approve")}

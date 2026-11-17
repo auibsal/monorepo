@@ -47,7 +47,6 @@ import { useSectionForm } from "./section-form";
 
 interface AdminHeadingProps {
   readonly actions?: ReactNode;
-  readonly children?: ReactNode;
   /** A record's status, under its title ("Status: Published"). */
   readonly status?: ReactNode;
   readonly title: string;
@@ -58,20 +57,10 @@ interface AdminHeadingProps {
  * "Pages and actions"): its title, one sentence, its main action, then
  * everything else.
  */
-export const AdminHeading = ({
-  actions,
-  children,
-  status,
-  title,
-}: AdminHeadingProps) => (
+export const AdminHeading = ({ actions, status, title }: AdminHeadingProps) => (
   <header className="grid gap-3">
     <h1 className="type-title font-light text-balance">{title}</h1>
     {status ? <p className="type-label">{status}</p> : null}
-    {children ? (
-      <div className="type-lede text-text-secondary max-w-[60ch]">
-        {children}
-      </div>
-    ) : null}
     {actions ? (
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         {actions}
@@ -172,7 +161,6 @@ export const RecordView = ({
   back,
   children,
   history,
-  lede,
   menu,
   narrow = false,
   status,
@@ -189,7 +177,6 @@ export const RecordView = ({
   readonly children: ReactNode;
   /** The record's History, its last tab. */
   readonly history?: ReactNode;
-  readonly lede?: ReactNode;
   /** Everything but the main action, under More. */
   readonly menu?: ReactNode;
   readonly narrow?: boolean;
@@ -223,9 +210,7 @@ export const RecordView = ({
           }
           status={status}
           title={title}
-        >
-          {lede}
-        </AdminHeading>
+        />
         {archived ? <p className="type-caption">{t("archived")}</p> : null}
       </div>
       {tabbed ? (
@@ -261,13 +246,11 @@ export const RecordPage = ({
   back,
   backLabel,
   children,
-  lede,
   title,
 }: {
   readonly back: string;
   readonly backLabel: string;
   readonly children: ReactNode;
-  readonly lede?: ReactNode;
   readonly title: string;
 }) => {
   const AppLink = useAppLink();
@@ -278,7 +261,6 @@ export const RecordPage = ({
           {backLabel}
         </AppLink>
       }
-      lede={lede}
       narrow
       title={title}
     >

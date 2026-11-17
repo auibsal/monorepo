@@ -1,13 +1,12 @@
 "use client";
 
 import type { Locale } from "@repo/internationalization";
-import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
-import { type governance, localized, unwrap } from "@/lib/data";
+import { localized, unwrap } from "@/lib/data";
 import { Link } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { ErrorState, SectionSpinner } from "../../states";
@@ -86,13 +85,7 @@ export const MinutesEditor = () => {
           </Link>
         }
         title={localized(minutes, "title", locale)}
-      >
-        {`${t(`bodies.${minutes.body as governance.MeetingBody}`)} · ${formatLongDate(minutes.meeting_on, locale, true)} · ${
-          adopted && minutes.adopted_on
-            ? `${t("statuses.adopted")}, ${formatLongDate(minutes.adopted_on, locale, true)}`
-            : t("statuses.draft")
-        }`}
-      </AdminHeading>
+      />
       <NotionManaged kind="minutes" recordId={minutesId} />
       <div className="grid max-w-4xl gap-6">
         <TextView html={minutes.text_en} lang="en" />

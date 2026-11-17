@@ -67,7 +67,8 @@ export const EventChecklist = ({ eventId }: { readonly eventId: string }) => {
   const ticked = rows.filter((r) => r.done_at).length;
   return (
     <DiwanSection
-      description={
+      id="checklist"
+      meta={
         rows.length > 0
           ? t("progress", {
               done: formatNumber(ticked),
@@ -75,7 +76,6 @@ export const EventChecklist = ({ eventId }: { readonly eventId: string }) => {
             })
           : undefined
       }
-      id="checklist"
       title={t("title")}
     >
       {rows.length === 0 && items.data ? (

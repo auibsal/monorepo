@@ -416,9 +416,7 @@ export const Announcements = () => {
           )
         }
         title={t("title")}
-      >
-        {t("lede")}
-      </AdminHeading>
+      />
       {adding ? (
         <section className="border-line grid gap-4 border-y py-6">
           <Editor

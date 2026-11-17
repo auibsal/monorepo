@@ -215,10 +215,9 @@ export const PipelineAdmin = ({ embedded = false }: { embedded?: boolean }) => {
       {embedded ? (
         <div className="grid gap-2">
           <h2 className="type-heading font-light">{t("title")}</h2>
-          <p className="type-body text-text-secondary max-w-3xl">{t("lede")}</p>
         </div>
       ) : (
-        <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+        <AdminHeading title={t("title")} />
       )}
       {issues.data ? null : <SectionSpinner />}
       {issues.data && !issue ? <p>{t("noIssues")}</p> : null}

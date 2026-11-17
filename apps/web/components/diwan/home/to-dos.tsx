@@ -37,7 +37,7 @@ export const EsignToDo = () => {
     return null;
   }
   return (
-    <Section description={t("lede")} id="esign" title={t("title")}>
+    <Section id="esign" title={t("title")}>
       <p className="type-body max-w-[60ch]">{t("what")}</p>
       <div className="flex flex-wrap items-center gap-4">
         <Button
@@ -90,7 +90,7 @@ export const ArabicFormToDo = () => {
     return null;
   }
   return (
-    <Section description={t("lede")} id="arabic-form" title={t("title")}>
+    <Section id="arabic-form" title={t("title")}>
       <div className="flex flex-wrap items-center gap-4">
         {(["masculine", "feminine"] as const).map((form) => (
           <Button

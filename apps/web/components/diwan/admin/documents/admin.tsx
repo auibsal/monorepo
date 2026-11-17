@@ -78,9 +78,10 @@ export const LibraryAdmin = () => {
 
   return (
     <div className="grid gap-8">
-      <AdminHeading actions={<OnTheSite href="/library" />} title={t("title")}>
-        {t("lede")}
-      </AdminHeading>
+      <AdminHeading
+        actions={<OnTheSite href="/library" />}
+        title={t("title")}
+      />
       {list.isPending ? <SectionSpinner /> : null}
       {list.data ? (
         <RecordList
@@ -228,9 +229,7 @@ const EditorForm = ({
           </>
         }
         title={doc.title_en}
-      >
-        {doc.code}
-      </AdminHeading>
+      />
       <div className="grid gap-4 sm:grid-cols-3">
         <Field label={t("fields.status")}>
           {(fieldId) => (

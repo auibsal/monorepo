@@ -220,7 +220,7 @@ export const RequireModule = ({
     const elsewhere = here ?? sections[0];
     return (
       <div className="grid gap-6">
-        <AdminHeading title={t("noAccessTitle")}>{t("noAccess")}</AdminHeading>
+        <AdminHeading title={t("noAccessTitle")} />
         {elsewhere ? (
           <p>
             <Link className="link" href={elsewhere.path}>

@@ -60,11 +60,7 @@ export const CreditedNames = () => {
     }
   };
   return (
-    <DiwanSection
-      description={t("lede")}
-      id="credited-names"
-      title={t("title")}
-    >
+    <DiwanSection id="credited-names" title={t("title")}>
       {list.data?.length ? (
         <RowList>
           {list.data.map((row) => (

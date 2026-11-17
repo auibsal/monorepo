@@ -40,7 +40,7 @@ export const Renewal = () => {
     return null;
   }
   return (
-    <DiwanSection description={t("lede")} id="renewal" title={t("title")}>
+    <DiwanSection id="renewal" title={t("title")}>
       <p className="type-body">
         {t("conduct")}{" "}
         <Link className="link" href="/code-of-conduct">

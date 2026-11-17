@@ -234,9 +234,7 @@ export const ProductionsAdmin = () => {
           </>
         }
         title={t("title")}
-      >
-        {t("lede")}
-      </AdminHeading>
+      />
       {list.isPending ? <SectionSpinner /> : null}
       {list.data ? (
         <RecordList

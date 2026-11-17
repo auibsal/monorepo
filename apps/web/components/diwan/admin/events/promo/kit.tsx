@@ -804,7 +804,6 @@ export const PromoKit = ({ event }: { readonly event: PromoEvent }) => {
   };
   return (
     <DiwanSection id="promo" title={t("title")}>
-      <p className="type-body">{t("lede")}</p>
       <div className="flex flex-wrap items-center gap-3">
         <Button
           disabled={state === "busy"}

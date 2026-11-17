@@ -54,7 +54,7 @@ export const Handover = () => {
   };
 
   return (
-    <DiwanSection description={t("lede")} id="handover" title={t("title")}>
+    <DiwanSection id="handover" title={t("title")}>
       {waiting.length === 0 ? (
         <p className="type-body text-text-secondary">{t("nothing")}</p>
       ) : (

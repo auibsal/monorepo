@@ -274,9 +274,7 @@ export const OpeningsAdmin = () => {
       <AdminHeading
         actions={<NewLink href="/membership/openings/new">{t("new")}</NewLink>}
         title={t("listTitle")}
-      >
-        {t("listLede")}
-      </AdminHeading>
+      />
       {list.isPending ? <SectionSpinner /> : null}
       {list.data ? (
         <RecordList

@@ -4,8 +4,9 @@ import { DiwanSection } from "../page";
 interface SectionProps {
   readonly action?: ReactNode;
   readonly children: ReactNode;
-  readonly description?: ReactNode;
   readonly id: string;
+  /** Data only, such as "5 of 9 done". */
+  readonly meta?: ReactNode;
   readonly title: string;
 }
 

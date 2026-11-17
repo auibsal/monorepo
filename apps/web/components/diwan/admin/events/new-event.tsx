@@ -15,12 +15,7 @@ export const NewEvent = () => {
   const tk = useTranslations("diwan.admin.kit");
   return (
     <RequireModule module="events">
-      <RecordPage
-        back="/events"
-        backLabel={tk("back")}
-        lede={t("newLede")}
-        title={t("newTitle")}
-      >
+      <RecordPage back="/events" backLabel={tk("back")} title={t("newTitle")}>
         <NewEventSteps />
       </RecordPage>
     </RequireModule>

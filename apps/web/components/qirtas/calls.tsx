@@ -128,9 +128,9 @@ export const CallTerms = async ({
     ? [
         [t("terms.what"), `${tw("rules.length")} ${t("themeNote")}`],
         [t("terms.entries"), tw("rules.entries")],
-        [t("terms.new"), tw("rules.new")],
+        [t("terms.new"), t("simultaneous")],
         [t("terms.who"), tw("rules.who")],
-        [t("terms.own"), tw("rules.own")],
+        [t("terms.own"), t("own")],
       ]
     : [
         [t("terms.what"), theme ? `${theme} ${t("themeNote")}` : desks],

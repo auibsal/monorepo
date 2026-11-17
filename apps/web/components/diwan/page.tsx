@@ -3,29 +3,31 @@ import { cn } from "@repo/brand/lib/utils";
 import type { ReactNode } from "react";
 
 /**
- * A Diwan page: the Light display title, one line on what the page is for,
- * an optional row of text links, then the sections. Every page starts at
- * the same edge as the masthead; `narrow` keeps forms and reading to a
- * comfortable measure without centering them.
+ * A page in Your account or the Diwan: its title only (decisions.md, The
+ * site: "Say it once, say it short"; how a workflow runs lives in the
+ * seat's manual), an optional row of text links, then the sections. Every
+ * page starts at the same edge as the masthead; `narrow` keeps forms and
+ * reading to a comfortable measure without centering them.
  */
 export const DiwanPage = ({
   actions,
   children,
-  lede,
   narrow = false,
+  sentence,
   title,
 }: {
   readonly actions?: ReactNode;
   readonly children: ReactNode;
-  readonly lede?: ReactNode;
   readonly narrow?: boolean;
+  /** Public pages in this frame only (Get involved): one sentence. */
+  readonly sentence?: string;
   readonly title: ReactNode;
 }) => (
   <div className={cn("grid content-start gap-14", narrow && "max-w-3xl")}>
     <header className="grid gap-4">
       <h1 className="type-display text-balance">{title}</h1>
-      {lede ? (
-        <p className="type-lede text-text-secondary max-w-[48ch]">{lede}</p>
+      {sentence ? (
+        <p className="type-lede text-text-secondary max-w-[48ch]">{sentence}</p>
       ) : null}
       {actions ? (
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -38,23 +40,24 @@ export const DiwanPage = ({
 );
 
 /**
- * A section in the account or the Diwan: a 28 px Light title (the site's section head
- * at the portal's size), an optional line on what it holds, an optional
- * text link at the end of the title, then the content.
+ * A section in the account or the Diwan: a 28 px Light title (the site's
+ * section head at the portal's size), an optional text link at the end of
+ * the title, then the content. No line explains it; `meta` is data only,
+ * such as "5 of 9 done".
  */
 export const DiwanSection = ({
   action,
   children,
   className,
-  description,
   id,
+  meta,
   title,
 }: {
   readonly action?: ReactNode;
   readonly children: ReactNode;
   readonly className?: string;
-  readonly description?: ReactNode;
   readonly id: string;
+  readonly meta?: ReactNode;
   readonly title: ReactNode;
 }) => (
   <section
@@ -63,11 +66,7 @@ export const DiwanSection = ({
   >
     <div className="grid gap-2">
       <SectionHead action={action} size="heading" title={title} titleId={id} />
-      {description ? (
-        <p className="type-body text-text-secondary max-w-[60ch]">
-          {description}
-        </p>
-      ) : null}
+      {meta ? <p className="type-caption">{meta}</p> : null}
     </div>
     {children}
   </section>

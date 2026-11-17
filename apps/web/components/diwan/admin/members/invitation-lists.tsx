@@ -349,7 +349,6 @@ export const InvitationLists = () => {
     <div className="grid max-w-3xl gap-8">
       <header className="grid gap-2">
         <h2 className="type-heading">{t("title")}</h2>
-        <p className="type-body text-text-secondary">{t("lede")}</p>
       </header>
       {[...open, ...sent].map((list) => (
         <ListCard canSend={canSend} key={list.source} list={list} />

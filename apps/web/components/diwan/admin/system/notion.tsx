@@ -158,7 +158,6 @@ export const NotionWorkspace = () => {
   return (
     <SalCard>
       <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-body">{t("lede")}</p>
       {status.isPending ? <SectionSpinner /> : null}
       <ErrorLine error={status.error} />
       {data && !data.configured ? (

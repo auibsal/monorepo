@@ -415,8 +415,9 @@ export const SubmissionView = () => {
 
   return (
     <div className="grid gap-8">
-      <AdminHeading actions={back} title={row.title}>
-        {[
+      <AdminHeading
+        actions={back}
+        status={[
           author ? localized(author, "author_name", locale) : null,
           tj(`categories.${row.category as Category}`),
           tj(`languages.${row.language}`),
@@ -424,7 +425,8 @@ export const SubmissionView = () => {
         ]
           .filter(Boolean)
           .join(" · ")}
-      </AdminHeading>
+        title={row.title}
+      />
 
       <section className="grid gap-3">
         <h2 className="type-subheading">{t("submission.actions")}</h2>

@@ -162,7 +162,7 @@ export const DeskBoard = ({
     return person ? memberName(person, locale) : "";
   };
   return (
-    <DiwanSection description={t("lede")} id="board" title={t("title")}>
+    <DiwanSection id="board" title={t("title")}>
       <div className="flex flex-wrap gap-x-5 gap-y-2">
         {edits ? (
           <AddInPlace label={t("assign")}>

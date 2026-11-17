@@ -247,7 +247,6 @@ const EarlierRequests = () => {
   }
   return (
     <DiwanSection id="earlier" title={t("earlier")}>
-      <p className="type-body">{t("earlierLede")}</p>
       <ul className="gap-space-4 grid">
         {requests.data.map((request) => {
           const profile = profiles.data?.find((p) => p.id === request.user_id);
@@ -303,7 +302,6 @@ export const VerificationQueue = () => {
 
   return (
     <div className="grid gap-6">
-      <p className="type-body">{t("lede")}</p>
       {applications.data.length === 0 ? (
         <p className="type-body text-text-secondary">{t("empty")}</p>
       ) : (

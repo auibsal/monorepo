@@ -90,7 +90,8 @@ export const Invite = ({ code }: { code: string }) => {
   const found = invitation.data;
   if (!found?.usable) {
     return (
-      <DiwanPage lede={t("unusable")} narrow title={t("title")}>
+      <DiwanPage narrow title={t("title")}>
+        <p className="type-body">{t("unusable")}</p>
         <Link className="link justify-self-start" href="/partners">
           {t("partners")}
         </Link>
@@ -104,7 +105,8 @@ export const Invite = ({ code }: { code: string }) => {
 
   if (!user) {
     return (
-      <DiwanPage lede={lede} narrow title={t("title")}>
+      <DiwanPage narrow title={t("title")}>
+        <p className="type-body">{lede}</p>
         <p className="type-body">{t("signUp")}</p>
         <div className="grid gap-6">
           <SignUpForm
@@ -123,7 +125,8 @@ export const Invite = ({ code }: { code: string }) => {
   }
 
   return (
-    <DiwanPage lede={lede} narrow title={t("title")}>
+    <DiwanPage narrow title={t("title")}>
+      <p className="type-body">{lede}</p>
       {found.email && found.email !== user.email?.toLowerCase() ? (
         <p className="type-body">{t("otherAddress", { email: found.email })}</p>
       ) : (

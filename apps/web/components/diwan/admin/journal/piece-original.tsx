@@ -45,7 +45,6 @@ export const PieceOriginal = ({ record }: { record: PieceRecord }) => {
   return (
     <section className="grid gap-4">
       <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-body text-text-secondary">{t("lede")}</p>
       <form className="grid gap-4" onSubmit={submit}>
         <Field label={t("language")}>
           {(id) => (

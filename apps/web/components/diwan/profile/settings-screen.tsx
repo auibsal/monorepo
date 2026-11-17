@@ -32,7 +32,7 @@ import { TelegramLink } from "./telegram-link";
 export const NoticesScreen = () => {
   const t = useTranslations("diwan.settings");
   return (
-    <DiwanPage lede={t("noticesLede")} narrow title={t("notices")}>
+    <DiwanPage narrow title={t("notices")}>
       <DiwanSection id="email" title={t("noticesEmail")}>
         <AccountLanguage />
         <NoticeGrid />
@@ -55,7 +55,7 @@ export const SettingsScreen = () => {
   // ends at graduation).
   const member = useMyMembership().data?.kind === "member";
   return (
-    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+    <DiwanPage narrow title={t("title")}>
       <DiwanSection id="account" title={t("sections.account")}>
         <OfficialName />
         <ShortNameChoice />

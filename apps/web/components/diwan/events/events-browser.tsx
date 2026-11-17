@@ -309,7 +309,6 @@ export const EventsBrowser = () => {
           {t("whatsOn")}
         </Link>
       }
-      lede={t("lede")}
       title={t("title")}
     >
       {upcoming.data.length === 0 ? (

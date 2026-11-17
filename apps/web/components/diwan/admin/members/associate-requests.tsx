@@ -57,7 +57,6 @@ export const AssociateRequests = () => {
       <h2 className="type-heading" id="associate-requests">
         {t("title")}
       </h2>
-      <p className="type-body text-text-secondary">{t("lede")}</p>
       {requests.data?.length === 0 ? (
         <p className="type-caption">{t("empty")}</p>
       ) : null}

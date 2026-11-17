@@ -214,7 +214,6 @@ export const EditionCalls = ({ issueId }: { readonly issueId: string }) => {
   const call = calls.data?.[0] ?? null;
   return (
     <DiwanSection id="call" title={t("call")}>
-      <p className="type-body text-text-secondary max-w-3xl">{t("callLede")}</p>
       {call || adding ? (
         <CallForm call={call} issueId={issueId} />
       ) : (
@@ -259,10 +258,11 @@ export const EditionContents = ({ issueId }: { readonly issueId: string }) => {
   }
   const rows = pieces.data ?? [];
   return (
-    <DiwanSection id="contents" title={t("contents")}>
-      <p className="type-body text-text-secondary max-w-3xl">
-        {t("contentsLede", { count: formatNumber(rows.length) })}
-      </p>
+    <DiwanSection
+      id="contents"
+      meta={rows.length > 0 ? formatNumber(rows.length) : undefined}
+      title={t("contents")}
+    >
       {rows.length === 0 ? (
         <p className="type-body">{t("noContents")}</p>
       ) : (

@@ -32,7 +32,6 @@ export const AdvisorFindings = () => {
   return (
     <SalCard>
       <h2 className="type-subheading">{t("title")}</h2>
-      <p className="type-body">{t("lede")}</p>
       {findings.isSuccess && rows.length === 0 ? (
         <p className="type-caption" role="status">
           {t("clean")}

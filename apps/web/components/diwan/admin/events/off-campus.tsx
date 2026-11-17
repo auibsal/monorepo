@@ -75,7 +75,6 @@ export const EventOffCampus = ({
   const approvedOn = event.student_life_approved_on;
   return (
     <DiwanSection id="off-campus" title={t("title")}>
-      <p className="type-body text-text-secondary">{t("lede")}</p>
       <div className="flex items-start gap-3">
         <Checkbox
           checked={event.off_campus}

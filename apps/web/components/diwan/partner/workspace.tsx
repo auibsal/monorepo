@@ -69,7 +69,6 @@ const PartnerFrame = ({
   return (
     <DiwanPage
       actions={partner.is_listed ? <OnTheSite href="/partners" /> : null}
-      lede={t("lede")}
       title={localized(partner, "name", locale)}
     >
       <nav
@@ -168,7 +167,6 @@ const PartnerLogo = ({ row }: { row: PartnerRow }) => {
   return (
     <div className="grid gap-4">
       <h3 className="type-subheading">{t("title")}</h3>
-      <p className="type-caption">{t("lede")}</p>
       <div className="flex flex-wrap items-end gap-8">
         {row.logo_path ? (
           <figure className="grid gap-2">
@@ -1216,11 +1214,7 @@ export const PartnerGuests = () => {
   return (
     <PartnerFrame>
       {(partner) => (
-        <DiwanSection
-          description={t("guests.lede")}
-          id="guests"
-          title={t("guests.title")}
-        >
+        <DiwanSection id="guests" title={t("guests.title")}>
           <Guests partnerId={partner.id} />
           <InviteByEmail kind="guest" partnerId={partner.id} />
           <OpenInvitations kind="guest" partnerId={partner.id} />
@@ -1240,11 +1234,7 @@ export const PartnerTeam = () => {
     <PartnerFrame>
       {(partner) => (
         <>
-          <DiwanSection
-            description={t("team.lede")}
-            id="team"
-            title={t("team.title")}
-          >
+          <DiwanSection id="team" title={t("team.title")}>
             <Team partnerId={partner.id} />
           </DiwanSection>
           <DiwanSection id="profile" title={t("profile.title")}>

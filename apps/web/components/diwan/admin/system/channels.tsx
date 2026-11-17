@@ -65,7 +65,7 @@ export const Channels = () => {
   }
   return (
     <div className="grid gap-10">
-      <AdminHeading title={t("title")}>{t("lede")}</AdminHeading>
+      <AdminHeading title={t("title")} />
       <ContentCalendar />
       {mailing ? <MailingCounts /> : null}
       {settings ? <TelegramBot /> : null}
@@ -118,7 +118,6 @@ const MailingCounts = () => {
       }));
   return (
     <DiwanSection id="mailing" title={t("title")}>
-      <p className="type-body text-text-secondary max-w-prose">{t("lede")}</p>
       <RowList>
         {(["paper", "news"] as const).map((topic) => (
           <li className="grid gap-1" key={topic}>
@@ -175,7 +174,6 @@ const Groups = () => {
   });
   return (
     <DiwanSection id="groups" title={t("groups")}>
-      <p className="type-body text-text-secondary">{t("groupsLede")}</p>
       {list.isPending ? <SectionSpinner /> : null}
       {list.data?.length === 0 ? (
         <p className="type-body">{t("noGroups")}</p>
@@ -316,7 +314,6 @@ const Exempt = () => {
   });
   return (
     <DiwanSection id="exempt" title={t("exempt")}>
-      <p className="type-body text-text-secondary">{t("exemptLede")}</p>
       <AddInPlace label={t("add")}>
         {(close) => (
           <NewExempt

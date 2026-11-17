@@ -34,7 +34,7 @@ const GetInvolvedPage = async ({ params }: PageProps) => {
     []
   );
   return (
-    <DiwanPage lede={t("lede")} title={t("title")}>
+    <DiwanPage sentence={t("sentence")} title={t("title")}>
       <GetInvolvedLinks />
       <OpenPlaces locale={locale} places={places} />
     </DiwanPage>

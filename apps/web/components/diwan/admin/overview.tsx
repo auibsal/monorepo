@@ -529,7 +529,6 @@ export const AdminOverview = () => {
       ) : null}
       {can("settings.manage") ? (
         <DiwanSection id="connected" title={t("connected")}>
-          <p className="type-body">{t("connectedLede")}</p>
           <NotionWorkspace />
           <p className="type-body">
             {t("hudhudMoved")}{" "}

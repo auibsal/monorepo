@@ -108,7 +108,6 @@ export const SessionLinks = ({ eventId }: { readonly eventId: string }) => {
   });
   return (
     <DiwanSection id="links" title={t("title")}>
-      <p className="type-body text-text-secondary">{t("lede")}</p>
       <AddInPlace label={t("new")}>
         {(close) => <NewLink eventId={eventId} onDone={close} />}
       </AddInPlace>

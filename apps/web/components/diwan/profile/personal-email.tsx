@@ -55,7 +55,6 @@ export const PersonalEmail = () => {
 
   return (
     <div className="grid gap-4">
-      <p className="type-caption">{t("why")}</p>
       {data?.email ? (
         <div className="grid gap-1">
           <p className="font-medium" dir="ltr">

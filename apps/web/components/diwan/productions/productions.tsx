@@ -146,7 +146,7 @@ export const Productions = () => {
   };
 
   return (
-    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+    <DiwanPage narrow title={t("title")}>
       <DiwanSection id="auditionstitle" title={t("auditionsTitle")}>
         {auditioning.length === 0 ? (
           <EmptyLine action={{ href: "/get-involved", label: t("findShift") }}>

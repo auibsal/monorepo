@@ -78,11 +78,7 @@ export const YearSummary = ({ year }: { readonly year: number }) => {
 
   return (
     <div className="bg-surface text-text" data-theme="light">
-      <DiwanPage
-        lede={t("lede")}
-        narrow
-        title={t("title", { year: yearLabel(year) })}
-      >
+      <DiwanPage narrow title={t("title", { year: yearLabel(year) })}>
         <div className="grid gap-1">
           <p className="type-heading font-light">{name}</p>
           {s.card ? (
@@ -223,7 +219,6 @@ export const YearLinks = () => {
   const years = [current, current - 1].filter((y) => y >= FIRST_YEAR);
   return (
     <DiwanSection id="years" title={t("section")}>
-      <p className="type-body">{t("sectionLede")}</p>
       <ul className="flex flex-wrap gap-x-6 gap-y-2">
         {years.map((y) => (
           <li key={y}>

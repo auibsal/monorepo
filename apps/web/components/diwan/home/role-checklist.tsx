@@ -176,12 +176,12 @@ export const RoleChecklist = () => {
         const left = list.filter((s) => !s.done);
         return (
           <Section
-            description={t("progress", {
+            id={`role-${first.assignment_id}`}
+            key={first.assignment_id}
+            meta={t("progress", {
               done: formatNumber(done),
               total: formatNumber(list.length),
             })}
-            id={`role-${first.assignment_id}`}
-            key={first.assignment_id}
             title={t("title", { role })}
           >
             <RowList>

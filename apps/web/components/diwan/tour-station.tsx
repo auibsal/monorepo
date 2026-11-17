@@ -93,7 +93,7 @@ export const TourStation = () => {
       : null;
 
   return (
-    <DiwanPage lede={t("lede")} narrow title={t("title")}>
+    <DiwanPage narrow title={t("title")}>
       <div className="grid gap-6">
         <section className="grid gap-3">
           <h2 className="type-subheading">{t("step1")}</h2>
