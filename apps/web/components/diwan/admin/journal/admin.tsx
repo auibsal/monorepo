@@ -29,6 +29,7 @@ import {
 import { Needs } from "../needs";
 import { openSubmissionFile } from "../pipeline/data";
 import { PipelineAdmin } from "../pipeline/pipeline";
+import { DeskBoard } from "./board";
 import { GameChecks } from "./game-checks";
 import { FrontRank } from "./workflow";
 
@@ -720,6 +721,14 @@ export const QirtasNewsroom = ({ desk }: { readonly desk?: journal.Desk }) => {
     <div className="grid gap-14">
       <AdminHeading title={desk ? tj(`desks.${desk}`) : tt("newsroom")} />
       <SectionsNav />
+      {desk && desk !== "games" ? (
+        <DeskBoard
+          desk={desk}
+          edits={
+            has(`journal.edit.${desk}` as Permission) || has("journal.approve")
+          }
+        />
+      ) : null}
       {reads ? <Desks desk={desk} /> : null}
       {writes ? <Newsroom desk={desk} /> : null}
       {desk === "games" && puzzles ? <GameChecks /> : null}

@@ -47,6 +47,20 @@ test("a News desk editor starts a piece, and it waits in Editing, unpublished", 
   await expect(page.getByText(title)).toHaveCount(0);
 });
 
+test("a section's board takes a pitch into Pitched", async ({ page }) => {
+  const angle = `A pitch ${Date.now()}`;
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/qirtas/news`);
+  await expect(page.getByRole("heading", { name: "Board" })).toBeVisible();
+  await page.getByRole("button", { name: "Pitch a story" }).click();
+  await page.getByLabel("The story").fill(angle);
+  await page.getByRole("button", { name: "Save" }).first().click();
+  await expect(
+    page.getByRole("region", { name: /^Pitched/u }).getByText(angle)
+  ).toBeVisible();
+  await expectAccessible(page);
+});
+
 test("each event has its own check-in, and the Desk opens the next one", async ({
   page,
 }) => {

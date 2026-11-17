@@ -5829,6 +5829,8 @@ export type Database = {
       };
       piece_credits: {
         Row: {
+          accepted_at: string | null;
+          added_by: string | null;
           contributor_id: string;
           piece_id: string;
           role: string;
@@ -5836,12 +5838,16 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          accepted_at?: string | null;
+          added_by?: string | null;
           contributor_id: string;
           piece_id: string;
           role: string;
           sort?: number;
         };
         Update: {
+          accepted_at?: string | null;
+          added_by?: string | null;
           contributor_id?: string;
           piece_id?: string;
           role?: string;
@@ -6416,6 +6422,28 @@ export type Database = {
           },
         ];
       };
+      reading_views: {
+        Row: {
+          entry_id: string;
+          id: number;
+          reader_id: string;
+          viewed_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          entry_id: string;
+          id?: never;
+          reader_id?: string;
+          viewed_at?: string;
+        };
+        Update: {
+          entry_id?: string;
+          id?: never;
+          reader_id?: string;
+          viewed_at?: string;
+        };
+        Relationships: [];
+      };
       scores: {
         Row: {
           archive_factor: number;
@@ -6503,6 +6531,63 @@ export type Database = {
             columns: ["submission_id"];
             isOneToOne: false;
             referencedRelation: "submissions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      story_assignments: {
+        Row: {
+          accepted_at: string | null;
+          angle: string;
+          assignee_id: string | null;
+          created_at: string;
+          created_by: string | null;
+          desk: Database["journal"]["Enums"]["desk"];
+          due_on: string | null;
+          id: string;
+          kind: string;
+          piece_id: string | null;
+          slug: string;
+          status: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          accepted_at?: string | null;
+          angle: string;
+          assignee_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          desk: Database["journal"]["Enums"]["desk"];
+          due_on?: string | null;
+          id?: string;
+          kind?: string;
+          piece_id?: string | null;
+          slug: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          accepted_at?: string | null;
+          angle?: string;
+          assignee_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          desk?: Database["journal"]["Enums"]["desk"];
+          due_on?: string | null;
+          id?: string;
+          kind?: string;
+          piece_id?: string | null;
+          slug?: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "story_assignments_piece_id_fkey";
+            columns: ["piece_id"];
+            isOneToOne: false;
+            referencedRelation: "pieces";
             referencedColumns: ["id"];
           },
         ];
@@ -6750,6 +6835,10 @@ export type Database = {
           title: string;
         }[];
       };
+      answer_credit: {
+        Args: { accept: boolean; contributor: string; piece: string };
+        Returns: undefined;
+      };
       approve_piece: {
         Args: { kind: string; piece_id: string };
         Returns: string;
@@ -6801,6 +6890,18 @@ export type Database = {
         Returns: string;
       };
       delete_submissions: { Args: { ids: string[] }; Returns: number };
+      desk_board: {
+        Args: { for_desk: Database["journal"]["Enums"]["desk"] };
+        Returns: {
+          due_on: string;
+          id: string;
+          kind: string;
+          person: string;
+          stage: string;
+          title: string;
+          updated_at: string;
+        }[];
+      };
       desk_of: {
         Args: { category: Database["journal"]["Enums"]["category"] };
         Returns: Database["journal"]["Enums"]["desk"];
@@ -6936,6 +7037,16 @@ export type Database = {
           slug: string;
         }[];
       };
+      my_credits_to_accept: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          contributor_id: string;
+          piece_id: string;
+          role: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       my_reader_pledge: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -7062,6 +7173,7 @@ export type Database = {
         Returns: string;
       };
       sign_reader_pledge: { Args: { esign_agreed: boolean }; Returns: string };
+      start_assignment: { Args: { assignment: string }; Returns: string };
       transition_submission: {
         Args: {
           id: string;

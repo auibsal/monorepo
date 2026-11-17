@@ -15,6 +15,7 @@ import { PrizeVote } from "../society/prize-vote";
 import { ChildConsents } from "./child-consents";
 import { JournalSection } from "./journal";
 import { MembershipCard } from "./membership-card";
+import { AssignmentsToDo, CreditsToDo } from "./newsroom-todos";
 import { NextEvents } from "./next-events";
 import { Notices } from "./notices";
 import { OtherHome } from "./other-home";
@@ -145,6 +146,8 @@ export const MemberHome = () => {
             <UnsignedRoleAgreements />
             <Handovers />
             <RoleChecklist />
+            <AssignmentsToDo />
+            <CreditsToDo />
           </>
         ) : null}
       </div>

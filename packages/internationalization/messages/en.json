@@ -479,6 +479,24 @@
           "pendingBody": "You told us you studied at AUIB. The Director of Membership approves Associate membership for alumni 18 or older, and you’ll hear by email. Until then, your account is a guest’s.",
           "declinedTitle": "Your request for Associate membership was declined",
           "declinedBody": "The Director of Membership could not confirm that you studied at AUIB, and your account stays a guest’s. If you think this is a mistake, write to <email>{address}</email>."
+        },
+        "assignment": {
+          "title": "An assignment",
+          "due": "Due {date}",
+          "accept": "Accept",
+          "decline": "Decline",
+          "start": "Start writing",
+          "kinds": {
+            "writing": "Writing",
+            "photos": "Photos",
+            "art": "Art"
+          }
+        },
+        "credit": {
+          "title": "A credit to accept",
+          "line": "{role} on “{title}”",
+          "accept": "Accept the credit",
+          "decline": "Decline"
         }
       },
       "toDoNone": "Nothing to do. You’re all set.",
@@ -3367,7 +3385,10 @@
           "person": "Person",
           "choose": "Choose…",
           "role": "Role",
-          "add": "Add the credit"
+          "add": "Add the credit",
+          "waiting": "waiting for them to accept",
+          "byTheWork": "By the work they did",
+          "factCheck": "Fact-checked"
         },
         "queue": {
           "lede": "Work a section editor took up by name before October 31, until it is decided. Everything sent since is read blind above.",
@@ -4238,6 +4259,33 @@
         "dueDetail": "Planned or ready, not yet posted",
         "dueNone": "Nothing due this week",
         "openCalendar": "Open the calendar"
+      },
+      "board": {
+        "title": "Board",
+        "lede": "Every story in this section, from the pitch to publication. Assign one, or pitch your own.",
+        "assign": "Make an assignment",
+        "pitch": "Pitch a story",
+        "angle": "The story",
+        "angleHint": "One line: what the story is, and its angle.",
+        "kind": "For",
+        "due": "Due",
+        "assignee": "Assigned to",
+        "untitled": "Untitled",
+        "dueOn": "due {date}",
+        "kinds": {
+          "writing": "Writing",
+          "photos": "Photos",
+          "art": "Art"
+        },
+        "stages": {
+          "pitched": "Pitched",
+          "assigned": "Assigned",
+          "drafting": "Drafting",
+          "editing": "Editing",
+          "copy": "Copy",
+          "ready": "Ready",
+          "published": "Published"
+        }
       }
     },
     "editor": {

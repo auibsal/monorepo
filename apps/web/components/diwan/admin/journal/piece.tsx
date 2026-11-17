@@ -33,6 +33,8 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { useMemberNames } from "../member-picker";
+import { memberName } from "../members/directory";
 import { EditableSection } from "../record";
 import { RecordHistory } from "../record-history";
 import { useIssues } from "./admin";
@@ -106,7 +108,6 @@ const formFrom = (record: PieceRecord | null, desk: journal.Desk) => {
       journal.deskCategories(desk)[0] ??
       "report") as journal.Category,
     contributor_id: p?.contributor_id ?? "",
-    credit: { ar: p?.credit_ar ?? "", en: p?.credit_en ?? "" },
     deck: { ar: p?.deck_ar ?? "", en: p?.deck_en ?? "" },
     event_id: p?.event_id ?? "",
     issue_id: p?.issue_id ?? "",
@@ -187,8 +188,6 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
           .update({
             category: form.category,
             contributor_id: form.contributor_id,
-            credit_ar: form.credit.ar.trim() || null,
-            credit_en: form.credit.en.trim() || null,
             deck_ar: form.deck.ar.trim() || null,
             deck_en: form.deck.en.trim() || null,
             event_id: form.event_id || null,
@@ -366,12 +365,6 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
           path={`/qirtas/${desk}/${pieceFixed ? (piece?.slug ?? "") : slugFromTitle(form.title.en, form.title.ar)}`}
         />
       </div>
-      <BilingualField
-        label={tj("piece.credit")}
-        maxLength={300}
-        onChange={(credit) => set("credit", credit)}
-        value={form.credit}
-      />
       {needs.video ? (
         <Field hint={t("videoHint")} label={t("video")}>
           {(fieldId) => (
@@ -624,6 +617,42 @@ const Media = ({ record }: { record: PieceRecord }) => {
 };
 
 /** Reporters, photographers, illustrators and translators on the piece. */
+/**
+ * Who edited, copy edited and checked the piece, from the work itself (the
+ * approvals and the fact check), never typed (decisions.md, Qirtas:
+ * "Credits are never typed").
+ */
+const WorkCredits = ({ record }: { readonly record: PieceRecord }) => {
+  const t = useTranslations("diwan.admin.qirtas.credits");
+  const tw = useTranslations("diwan.admin.qirtas.approvals");
+  const locale = useLocale() as Locale;
+  const checker = record.piece?.checked_by ?? null;
+  const names = useMemberNames([
+    ...record.approvals.map((a) => a.approved_by),
+    checker,
+  ]);
+  const nameOf = (id: string | null) => {
+    const person = names.data?.find((p) => p.id === id);
+    return person ? memberName(person, locale) : "";
+  };
+  if (record.approvals.length === 0 && !checker) {
+    return null;
+  }
+  return (
+    <section className="grid gap-2">
+      <h3 className="type-label">{t("byTheWork")}</h3>
+      <ul className="type-body grid gap-1">
+        {record.approvals.map((a) => (
+          <li key={a.kind}>
+            {`${tw(a.kind as "desk")}: ${nameOf(a.approved_by)}`}
+          </li>
+        ))}
+        {checker ? <li>{`${t("factCheck")}: ${nameOf(checker)}`}</li> : null}
+      </ul>
+    </section>
+  );
+};
+
 const Credits = ({ record }: { record: PieceRecord }) => {
   const t = useTranslations("diwan.admin.qirtas.credits");
   const locale = useLocale() as Locale;
@@ -676,6 +705,7 @@ const Credits = ({ record }: { record: PieceRecord }) => {
             </span>
             <span className="type-caption">
               {t(`roles.${c.role as (typeof CREDIT_ROLES)[number]}`)}
+              {c.accepted_at ? null : ` · ${t("waiting")}`}
             </span>
             <Button
               disabled={remove.isPending}
@@ -807,6 +837,7 @@ export const QirtasPieceEditor = () => {
           content: (
             <>
               <Credits record={record.data} />
+              <WorkCredits record={record.data} />
               <PieceTopics pieceId={piece.id} />
             </>
           ),
