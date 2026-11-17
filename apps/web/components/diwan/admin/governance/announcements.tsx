@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
+import { DraftOffer, useAutosave } from "@/lib/diwan/autosave";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermission } from "@/lib/rbac";
@@ -89,6 +90,12 @@ const Editor = ({
   const t = useTranslations("diwan.admin.announcements");
   const { supabase } = useAuth();
   const [form, setForm] = useState(draft);
+  // Kept as it is typed until Save (decisions.md, The site: autosave).
+  const autosave = useAutosave({
+    initial: draft,
+    recordKey: `announcement:${draft.id ?? "new"}`,
+    value: form,
+  });
   const set = (field: keyof Draft) => (value: string) =>
     setForm((f) => ({ ...f, [field]: value }));
   const save = useMutation({
@@ -103,7 +110,10 @@ const Editor = ({
           title_en: form.title_en,
         })
       ),
-    onSuccess: (id) => onSaved(id ?? form.id ?? ""),
+    onSuccess: async (id) => {
+      await autosave.clear();
+      await onSaved(id ?? form.id ?? "");
+    },
   });
   const complete =
     form.title_en.trim() &&
@@ -118,6 +128,7 @@ const Editor = ({
         save.mutate();
       }}
     >
+      <DraftOffer autosave={autosave} onRestore={setForm} />
       {form.id ? null : (
         <PresetStart
           kind="announcement"

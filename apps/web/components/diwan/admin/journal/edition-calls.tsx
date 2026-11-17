@@ -6,9 +6,10 @@ import type { Locale } from "@repo/internationalization";
 import { formatNumber } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useMemo, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { type journal, localized, unwrap } from "@/lib/data";
+import { DraftOffer, useAutosave } from "@/lib/diwan/autosave";
 import { Link } from "@/lib/diwan/navigation";
 import { DiwanSection, RowList } from "../../page";
 import { SectionSpinner } from "../../states";
@@ -61,19 +62,29 @@ const CallForm = ({
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState(() => ({
-    closes_at: call?.closes_at ?? null,
-    decisions_at: call?.decisions_at ?? null,
-    desks: (call?.desks ?? [...EDITION_DESKS]) as journal.Desk[],
-    eligibility: {
-      ar: call?.eligibility_ar ?? "",
-      en: call?.eligibility_en ?? "",
-    },
-    is_published: call?.is_published ?? false,
-    max_per_person: String(call?.max_per_person ?? 2),
-    opens_at: call?.opens_at ?? new Date().toISOString(),
-    theme: { ar: call?.theme_ar ?? "", en: call?.theme_en ?? "" },
-  }));
+  const blankForm = useMemo(
+    () => ({
+      closes_at: call?.closes_at ?? null,
+      decisions_at: call?.decisions_at ?? null,
+      desks: (call?.desks ?? [...EDITION_DESKS]) as journal.Desk[],
+      eligibility: {
+        ar: call?.eligibility_ar ?? "",
+        en: call?.eligibility_en ?? "",
+      },
+      is_published: call?.is_published ?? false,
+      max_per_person: String(call?.max_per_person ?? 2),
+      opens_at: call?.opens_at ?? new Date().toISOString(),
+      theme: { ar: call?.theme_ar ?? "", en: call?.theme_en ?? "" },
+    }),
+    [call]
+  );
+  const [form, setForm] = useState(blankForm);
+  // Kept as it is typed until Save (decisions.md, The site: autosave).
+  const autosave = useAutosave({
+    initial: blankForm,
+    recordKey: `call:${call?.id ?? `new:${issueId}`}`,
+    value: form,
+  });
   const save = useMutation({
     mutationFn: async () => {
       const row = {
@@ -98,8 +109,10 @@ const CallForm = ({
           : await calls.insert({ ...row, issue_id: issueId })
       );
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: callsKey(issueId) }),
+    onSuccess: async () => {
+      await autosave.clear();
+      await queryClient.invalidateQueries({ queryKey: callsKey(issueId) });
+    },
   });
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -112,6 +125,7 @@ const CallForm = ({
     }));
   return (
     <form className="grid max-w-4xl gap-5" onSubmit={submit}>
+      <DraftOffer autosave={autosave} onRestore={setForm} />
       {call ? (
         <p className="type-subheading">{localized(call, "title", locale)}</p>
       ) : (

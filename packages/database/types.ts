@@ -1120,6 +1120,28 @@ export type Database = {
         };
         Relationships: [];
       };
+      drafts: {
+        Row: {
+          data: NonNullable<Json>;
+          record_key: string;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          data: NonNullable<Json>;
+          record_key: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          data?: NonNullable<Json>;
+          record_key?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       email_suppressions: {
         Row: {
           created_at: string;

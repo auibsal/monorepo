@@ -85,7 +85,11 @@
     },
     "contentCredentials": "Content Credentials",
     "breadcrumb": "You are here",
-    "backTo": "Back to {place}"
+    "backTo": "Back to {place}",
+    "autosave": {
+      "restore": "Restore your changes from {time}",
+      "discard": "Discard"
+    }
   },
   "auth": {
     "signOut": "Sign out",

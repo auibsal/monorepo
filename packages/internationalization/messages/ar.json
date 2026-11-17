@@ -85,7 +85,11 @@
     },
     "contentCredentials": "بيانات اعتماد المحتوى",
     "breadcrumb": "أنت هنا",
-    "backTo": "العودة إلى {place}"
+    "backTo": "العودة إلى {place}",
+    "autosave": {
+      "restore": "استعد تعديلاتك من الساعة {time}",
+      "discard": "تجاهلها"
+    }
   },
   "auth": {
     "signOut": "تسجيل الخروج",
