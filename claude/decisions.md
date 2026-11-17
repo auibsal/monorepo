@@ -57,16 +57,52 @@ Every chat in this project follows this file. Where an older document, project d
   - **For Qirtas:** SPJ's Code of Ethics, cited in EDT-01; the Student Press Law Center's resources; Google News (Publisher Center) and NewsArticle data on every piece; Internet Archive saving; and a Creative Commons license chosen by the writer for each piece.
   - **An ISSN for Qirtas:** Iraq has no national ISSN center, so the request goes to the ISSN International Centre through the ISSN Portal once Edition 1 is published. Any fee is asked of Student Life as a need.
   - **For the site:** WCAG 2.2 AA with automated checks on every change and a hands-on audit each September in both languages (VoiceOver and NVDA, keyboard only); Global Privacy Control honored; Mozilla Observatory and securityheaders.com A ratings; plain language in every document and page; RSS feeds for Qirtas and Events.
-  - **Days marked,** each as an ordinary event or post: International Mother Language Day (Feb 21), Student Press Freedom Day (late February), World Poetry Day (Mar 21), National Poetry Month (April), World Book and Copyright Day (Apr 23), International Literacy Day (Sep 8), Banned Books Week (late September), Arabic Language Day (Dec 18), Data Privacy Day (Jan 28), Global Accessibility Awareness Day (third Thursday of May), International Translation Day (Sep 30), National Hazing Prevention Week (late September), Free Speech Week (third week of October), National Day on Writing (Oct 20), Cybersecurity Awareness Month (October) and the International Day of Persons with Disabilities (Dec 3).
   - **Campaigns and checklists adopted** (each claimed only once done): the ADA National Network's accessible-event checklist, built into every event; It's On Us (bystander and consent education) and National Hazing Prevention Week, each run with Student Life; the Student Press Law Center's New Voices campaign, in a post and a Qirtas piece each year; the Society's own green-event checklist (§3).
   - **Frameworks followed** (each free, cited where it applies, claimed only once met):
     - **Publishing:** the Journalism Trust Initiative (Reporters Without Borders' standard; Qirtas publishes its transparency report from the free self-assessment, and seeks certification later); COPE's core practices for the Editions (corrections, retractions, authorship, complaints; no paid membership); the Trust Project's eight Trust Indicators on every News piece (membership applied for once Qirtas has a News editor); the DCMP Captioning Key for every video's captions; Content Credentials (C2PA, through the free Content Authenticity Initiative) on the Society's own photos, backing the no-AI-images rule.
     - **People:** the CDC's guide to preventing child sexual abuse in youth-serving organizations, built into EDT-03 and Qalam's mentor training; the APA's Inclusive Language Guide, beside Chicago in EDT-01; PDF/UA (ISO 14289) for every PDF the site makes; the seven Leave No Trace principles on trips.
     - **Security and privacy:** NIST's Cybersecurity Framework 2.0 as the frame for the September review; the CIS Controls' Implementation Group 1, checked in that review; the Fair Information Practice Principles, cited in GOV-04; Internet.nl's site and mail tests at 100%; Have I Been Pwned's alerts for the domain, to security@; the OpenSSF Best Practices badge for the repository.
     - **Governance and openness:** Independent Sector's Principles for Good Governance and Ethical Practice, checked each year in the annual report; the five measures and the annual report's numbers published each year as open data (CC0); the Website Carbon Calculator's grade for auibsal.org, shown on About beside the paper numbers, aiming for an A.
-    - **More days marked:** World Read Aloud Day (early February), Sunshine Week (mid-March), World Theatre Day (Mar 27), SPJ's Ethics Week (late April), World Press Freedom Day (May 3), World Photography Day (Aug 19), World Mental Health Day (Oct 10, pointing to AUIB's counseling) and International Volunteer Day (Dec 5, thanking the Society's volunteers).
   - **Pledges joined** (each free, each claimed only once done): the **UN SDG Publishers Compact** (the United Nations and the International Publishers Association; Qirtas signs as a publisher once the IPA confirms a student publication may, and keeps its ten commitments: a sustainability policy on About, a yearly report, a named lead (the Editor-in-Chief), and at least one goal acted on); **Earth Hour** (WWF), registered each March as an ordinary event; and **World Cleanup Day** (September), registered as an event with Student Life.
   - **Not joined:** paid memberships until Student Life can provide them; any green badge or claim the Society can't measure.
+- **The days the Society marks: one calendar, three tiers** (as US campuses keep an observance calendar). This table is the only list; the content calendar (§14) fills them in each year, with each date confirmed from the body that sets it.
+  - **Tier 1, an event** (an ordinary event with its own page); **tier 2, a post and a Qirtas piece**; **tier 3, a post only**; **greetings,** one post from a fixed design each year, in both languages.
+  - **Rules:** a day in finals week, on a Friday or in the summer drops to a post; at most two tier-2 or tier-3 days a month, the owner choosing which and the rest skipped that year (greetings don't count); nothing is marked without the Society's own reason (letters, the arts, the press, access, safety, the environment, data); a new day joins only by a change to this table. The Society posts no national-political or partisan days.
+
+| Day | Date | Set by | Tier | Owner |
+|---|---|---|---|---|
+| Data Privacy Day | Jan 28 | National Cybersecurity Alliance | 3 | Director of Media |
+| World Read Aloud Day | early February | LitWorld | 1 | Director of Events |
+| International Mother Language Day | Feb 21 | UNESCO | 1 | Director of Events |
+| Student Press Freedom Day (with New Voices) | late February | Student Press Law Center | 2 | Editor-in-Chief |
+| Sunshine Week | mid-March | News Leaders Association | 2 | Editor-in-Chief |
+| World Poetry Day | Mar 21 | UNESCO | 1 | Editor-in-Chief |
+| World Theatre Day | Mar 27 | International Theatre Institute | 1 | Artistic Director |
+| Earth Hour | late March | WWF | 1 | Director of Events |
+| National Poetry Month, with Poem in Your Pocket Day | April | Academy of American Poets | 2 | Editor-in-Chief |
+| It's On Us week of action | April | It's On Us | 1 (with Student Life) | Director of Membership |
+| Earth Day | Apr 22 (the 2027 trip is Apr 23) | EarthDay.org | 1 | Director of Events |
+| World Book and Copyright Day | Apr 23 | UNESCO | 1 | Director of Events |
+| SPJ Ethics Week | late April | Society of Professional Journalists | 2 | Editor-in-Chief |
+| World Press Freedom Day | May 3 | UNESCO | 2 | Editor-in-Chief |
+| Global Accessibility Awareness Day | third Thursday of May | GAAD Foundation | 3 | Director of Media |
+| World Photography Day | Aug 19 | World Photography Day | 3 | Director of Media |
+| International Literacy Day | Sep 8 | UNESCO | 2 | Editor-in-Chief |
+| World Cleanup Day | third Saturday of September | Let's Do It World | 1 (with Student Life) | Director of Events |
+| National Hazing Prevention Week | last full week of September | HazingPrevention.Org | 1 (with Student Life) | Director of Membership |
+| Banned Books Week | late September | the Banned Books Week Coalition | 1 | Director of Events |
+| International Translation Day | Sep 30 | the United Nations | 2 | Editor-in-Chief |
+| Cybersecurity Awareness Month | October | CISA and the National Cybersecurity Alliance | 3 | Director of Media |
+| World Mental Health Day (pointing to AUIB's counseling) | Oct 10 | WHO | 3 | Director of Media |
+| National Day on Writing | Oct 20 | National Council of Teachers of English | 1 | Editor-in-Chief |
+| Free Speech Week | third week of October | Free Speech Week | 2 | Editor-in-Chief |
+| International Day of Persons with Disabilities | Dec 3 | the United Nations | 3 | Director of Media |
+| International Volunteer Day (thanking the Society's volunteers) | Dec 5 | the United Nations | 3 | Director of Membership |
+| Arabic Language Day | Dec 18 | UNESCO | 1 | Director of Events |
+| Nowruz | Mar 21 | — | greeting | Director of Media |
+| Eid al-Fitr and Eid al-Adha | by the moon (AUIB's dates) | — | greeting | Director of Media |
+| Christmas | Dec 25 | — | greeting | Director of Media |
+| AUIB's own occasions: the first day of each semester, finals, commencement | AUIB's calendar | AUIB | greeting | Director of Media |
 - **More standards adopted** (each claimed only once it is done):
   - the Student Press Law Center's model student media policy, the basis of EDT-01's independence section;
   - a vulnerability disclosure policy from CISA's template, linked from security.txt;
@@ -119,7 +155,7 @@ Every chat in this project follows this file. Where an older document, project d
   - **Records:** consents and attendance are kept three years after the program and incident records seven years (or longer if AUIB requires).
   - **Data:** applications and the roster are kept in the staff area of the site, never in Notion.
 - **Sustainability:** the Society states only what it does.
-  - **Every email and the site footer** carry "Paperless by default." («الأصل عندنا: بلا ورق.»), linked on the site to the sustainability note on About, which gives the real counts the site keeps (documents signed on the site, nothing printed beyond the confirmed need) and repeats them in the annual report.
+  - **Every email and the site footer** carry "Paperless by default. Printed with purpose." («الأصل عندنا: بلا ورق، ونطبع لغاية.»), linked on the site to the sustainability note on About, which gives the real counts the site keeps (documents signed on the site, nothing printed beyond the confirmed need) and repeats them in the annual report.
   - **Paper for Editions:** each Edition's printing is asked of Student Life on FSC-certified or recycled paper, following Canopy's guidance for publishers; the colophon names the paper only when the printer confirms it.
   - **The real numbers on About:** the sustainability note shows the counts the site keeps (documents signed on the site, sheets not printed), converted into paper, wood and water saved with the Environmental Paper Network's Paper Calculator, plus the pledges and the checklist; the annual report repeats them.
   - **The green-event checklist** is the Society's own, adapted from the published programs of US universities for their student organizations (the University of Illinois's Certified Green Event program, Duke Sustainability's Green Event Certification and UC Berkeley's ASUC Green Events program), named as its sources on About. It is built into every event's checklist and preset: waste and reuse, food and water, materials and printing, transport, and how the event is announced.
@@ -748,7 +784,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **The public footer,** in three bands, as US university footers are built:
     - **The Sunday Paper,** full width: one line and "Sign up" (signed-in members see "Choose your emails", to Settings → Notifications).
     - **Who the Society is, then the links:** the logo, the motto and "A registered student organization at the American University of Iraq – Baghdad" with AUIB's logo linking to AUIB's site (AUIB appears here, never as a partner); beside it four short columns: The Society (About, the Council, Press, Partners, Contact); Take part (Join, Get involved, Events, Submit to Qirtas); Read and watch (Qirtas, Editions, Next Stop, The Company); Policies (Privacy, Terms, Accessibility, Code of Conduct, Security).
-    - **A bottom row:** the social links, "Raise a concern", the postal address, "Paperless by default." and "© 2026 AUIB Society of Arts and Letters. All rights reserved." (a range, 2026–<year>, from 2027). Qirtas's pages add that each piece belongs to its writer under the license shown on it.
+    - **A bottom row:** the social links, "Raise a concern", the postal address, "Paperless by default. Printed with purpose." and "© 2026 AUIB Society of Arts and Letters. All rights reserved." (a range, 2026–<year>, from 2027). Qirtas's pages add that each piece belongs to its writer under the license shown on it.
     - **Nothing else:** partners and sponsors never go in the footer.
   - **Private spaces** (Your account, the partner dashboard, the Diwan) are workspaces with a slim footer: Help, Privacy, Terms, Report a problem; the Diwan's also shows the site's version and build.
   - **The partner dashboard** stays its own workspace, like the Diwan but only for the partnership, with tabs for Events, Checklist, Guests, Team and Memorandum.
@@ -824,7 +860,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
     - **The public** sees only Society addresses; no personal address appears on the site or in a signature.
   - **What sends from where,** through Resend, always with replies to a monitored address (never "no-reply"): the site's emails and broadcasts from hello@, the Sunday Paper from qirtas@, and letters from the signer's seat address. The welcome is part of the confirmation email. Personal addresses are never used for Society business.
   - **Every bulk email** carries the postal address: "AUIB Society of Arts and Letters, c/o Office of Student Life, American University of Iraq – Baghdad, Airport Road, Baghdad, Iraq" («جمعية الفنون والآداب في الجامعة الأمريكية، بعناية مكتب شؤون الطلبة، الجامعة الأمريكية في بغداد، طريق المطار، بغداد، العراق»).
-  - **The signature,** in the email's language: the sender's name and seat; "AUIB Society of Arts and Letters"; "The paper and the pen."; "auibsal.org · @auibsal"; "Paperless by default."
+  - **The signature,** in the email's language: the sender's name and seat; "AUIB Society of Arts and Letters"; "The paper and the pen."; "auibsal.org · @auibsal"; "Paperless by default. Printed with purpose."
 - **The emails (the kit's templates, one catalog):**
   - **Grouping:** they are grouped as Account and security, Membership, Get involved, Events, Qirtas, Governance, Agreements and records, Mailing list, and Staff alerts, each named plainly in sentence case.
   - **Retired:** the standalone Welcome (it's part of the confirmation email); "Call Opened"; the Tour and plain invitations once the fall list is sent; "Reply Talking", "Reply Offered" and "Replies Digest", replaced by the application emails.
