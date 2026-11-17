@@ -1,11 +1,10 @@
 "use client";
 
-import { Button } from "@repo/brand/components/ui/button";
 import { formatNumber } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { MySignature } from "@/components/signature";
+import { Agreement } from "@/components/agreement";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
@@ -76,43 +75,29 @@ const RoleAgreement = ({
 }) => {
   const t = useTranslations("diwan.home.roleChecklist.agreement");
   const { supabase } = useAuth();
-  const name = useQuery({
-    queryFn: async () =>
-      unwrap(await supabase.schema("api").rpc("my_register_name")) ?? "",
-    queryKey: ["core", "register-name"],
-  });
-  const sign = useMutation({
-    mutationFn: async () =>
-      unwrap(
-        await supabase
-          .schema("api")
-          .rpc("sign_role_agreement", { assignment_id: assignmentId })
-      ),
-    onSuccess: onSigned,
-  });
   return (
-    <div className="border-line grid basis-full gap-2 border-s ps-4">
-      <p className="type-body max-w-[60ch]">{t("conduct")}</p>
-      <Link className="link justify-self-start text-sm" href="/code-of-conduct">
-        {t("readConduct")}
-      </Link>
-      <p className="type-body max-w-[60ch]">{t("license")}</p>
-      <MySignature label={t("signAsLabel")} />
-      <Button
-        className="justify-self-start"
-        disabled={sign.isPending || !name.data}
-        onClick={() => sign.mutate()}
-        size="sm"
-        variant="outline"
-      >
-        {t("sign", { name: name.data ?? "" })}
-      </Button>
-      {sign.error ? (
-        <p className="type-caption text-accent" role="alert">
-          {t("failed")}
-        </p>
-      ) : null}
-    </div>
+    <Agreement
+      full={
+        <>
+          <p>{t("conduct")}</p>
+          <p>{t("license")}</p>
+          <Link className="link justify-self-start" href="/code-of-conduct">
+            {t("readConduct")}
+          </Link>
+        </>
+      }
+      onSigned={onSigned}
+      sign={async () => {
+        unwrap(
+          await supabase
+            .schema("api")
+            .rpc("sign_role_agreement", { assignment_id: assignmentId })
+        );
+        return null;
+      }}
+      summary={[t("summary.conduct"), t("summary.license"), t("summary.ends")]}
+      title={t("title")}
+    />
   );
 };
 

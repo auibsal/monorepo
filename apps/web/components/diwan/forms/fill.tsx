@@ -125,7 +125,7 @@ const EsignAgreement = ({
   onChange: (value: boolean) => void;
   value: boolean;
 }) => {
-  const t = useTranslations("diwan.forms");
+  const t = useTranslations("common.agreement");
   return (
     <div className="flex items-start gap-2">
       <Checkbox
@@ -134,7 +134,7 @@ const EsignAgreement = ({
         onCheckedChange={(checked) => onChange(checked === true)}
       />
       <Label className="font-normal" htmlFor="esign">
-        {t("esignAgree")}
+        {t("esign")}
       </Label>
     </div>
   );
