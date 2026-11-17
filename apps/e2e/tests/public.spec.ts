@@ -18,7 +18,10 @@ test.describe("public site", () => {
     await expect(
       page.getByRole("heading", { name: "Sustainability" })
     ).toBeVisible();
-    await expect(page.getByText("Documents signed on the site")).toBeVisible();
+    // The counts show once they are more than zero; the practices always.
+    await expect(
+      page.getByRole("heading", { name: "The green-event checklist" })
+    ).toBeVisible();
     await expectAccessible(page);
   });
 

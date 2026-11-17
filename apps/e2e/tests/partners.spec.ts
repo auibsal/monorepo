@@ -138,7 +138,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
   // Memorandum.
   const tabs = applicant.getByRole("navigation", { name: "Partner" });
   await expect(
-    tabs.locator('[aria-current="page"]', { hasText: "Events" })
+    tabs.locator('[aria-current="page"]:visible', { hasText: "Events" })
   ).toBeVisible();
   for (const name of ["Checklist", "Guests", "Team", "Memorandum"]) {
     await expect(tabs.getByRole("link", { name })).toBeVisible();

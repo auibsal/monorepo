@@ -69,19 +69,15 @@ const Entry = ({
       ? "border-accent text-text"
       : "text-text-secondary hover:text-accent border-transparent"
   );
-  return (
-    <li>
-      {/* The page shown is named, never a link to itself. */}
-      {current ? (
-        <span aria-current="page" className={style}>
-          {label}
-        </span>
-      ) : (
-        <Link className={style} href={item.href}>
-          {label}
-        </Link>
-      )}
-    </li>
+  // The page shown is named, never a link to itself.
+  return current ? (
+    <span aria-current="page" className={style}>
+      {label}
+    </span>
+  ) : (
+    <Link className={style} href={item.href}>
+      {label}
+    </Link>
   );
 };
 
@@ -101,8 +97,10 @@ const List = ({
     <ul className="grid gap-0.5">
       {items.map((item) => {
         const open = item.key === here?.key;
+        const views = open && item.items && item.items.length > 1;
+        const view = views ? itemHere(item.items ?? [], pathname, root) : null;
         return (
-          <li className="contents" key={item.key}>
+          <li key={item.key}>
             <Entry
               item={item}
               link={link}
@@ -110,24 +108,20 @@ const List = ({
               open={open && pathname !== item.href}
               pathname={pathname}
             />
-            {open && item.items && item.items.length > 1 ? (
-              <li>
-                <ul className="grid gap-0.5">
-                  {item.items.map((child) => (
+            {views ? (
+              <ul className="grid gap-0.5">
+                {(item.items ?? []).map((child) => (
+                  <li key={child.key}>
                     <Entry
                       item={child}
-                      key={child.key}
                       link={link}
                       nested
-                      open={
-                        itemHere(item.items ?? [], pathname, root)?.key ===
-                          child.key && pathname !== child.href
-                      }
+                      open={view?.key === child.key && pathname !== child.href}
                       pathname={pathname}
                     />
-                  ))}
-                </ul>
-              </li>
+                  </li>
+                ))}
+              </ul>
             ) : null}
           </li>
         );

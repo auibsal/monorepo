@@ -1,5 +1,9 @@
 import { describe, expect, test } from "vitest";
-import { hasContentCredentials, hasLocation } from "./photo-metadata";
+import {
+  hasContentCredentials,
+  hasLocation,
+  verifyCredentialsUrl,
+} from "./photo-metadata";
 
 /** A little-endian TIFF block whose IFD0 points to a GPS IFD. */
 const tiff = (withGps: boolean) => {
@@ -51,5 +55,81 @@ describe("photo metadata", () => {
     );
     expect(hasContentCredentials(jpeg([[0xeb, jumbf]]))).toBe(true);
     expect(hasContentCredentials(jpeg([[0xe1, exif(false)]]))).toBe(false);
+  });
+});
+
+const be32 = (n: number) => [
+  Math.floor(n / 16_777_216) % 256,
+  Math.floor(n / 65_536) % 256,
+  Math.floor(n / 256) % 256,
+  n % 256,
+];
+const le32 = (n: number) => [...be32(n)].reverse();
+const ascii4 = (text: string) => Array.from(text, (c) => c.charCodeAt(0));
+
+/** A PNG with the given chunks (CRCs are not checked). */
+const png = (chunks: [string, Uint8Array][]) =>
+  new Uint8Array([
+    0x89,
+    ...ascii4("PNG"),
+    0x0d,
+    0x0a,
+    0x1a,
+    0x0a,
+    ...chunks.flatMap(([kind, data]) => [
+      ...be32(data.length),
+      ...ascii4(kind),
+      ...data,
+      0,
+      0,
+      0,
+      0,
+    ]),
+  ]);
+
+/** A WebP with the given chunks. */
+const webp = (chunks: [string, Uint8Array][]) => {
+  const body = chunks.flatMap(([kind, data]) => [
+    ...ascii4(kind),
+    ...le32(data.length),
+    ...data,
+    ...(data.length % 2 ? [0] : []),
+  ]);
+  return new Uint8Array([
+    ...ascii4("RIFF"),
+    ...le32(body.length + 4),
+    ...ascii4("WEBP"),
+    ...body,
+  ]);
+};
+
+describe("photo metadata in PNG and WebP", () => {
+  test("a PNG's eXIf location is found, and its caBX credentials", () => {
+    expect(hasLocation(png([["eXIf", tiff(true)]]))).toBe(true);
+    expect(hasLocation(png([["eXIf", tiff(false)]]))).toBe(false);
+    expect(hasContentCredentials(png([["caBX", new Uint8Array(4)]]))).toBe(
+      true
+    );
+    expect(hasContentCredentials(png([["IDAT", new Uint8Array(4)]]))).toBe(
+      false
+    );
+  });
+
+  test("a WebP's EXIF location is found, with or without its prefix", () => {
+    expect(hasLocation(webp([["EXIF", tiff(true)]]))).toBe(true);
+    expect(hasLocation(webp([["EXIF", exif(true)]]))).toBe(true);
+    expect(hasLocation(webp([["EXIF", tiff(false)]]))).toBe(false);
+    expect(hasContentCredentials(webp([["C2PA", new Uint8Array(2)]]))).toBe(
+      true
+    );
+  });
+
+  test("other files carry neither, and verifying links Content Credentials", () => {
+    const other = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+    expect(hasLocation(other)).toBe(false);
+    expect(hasContentCredentials(other)).toBe(false);
+    expect(verifyCredentialsUrl("https://auibsal.org/a b.jpg")).toBe(
+      "https://contentcredentials.org/verify?source=https%3A%2F%2Fauibsal.org%2Fa%20b.jpg"
+    );
   });
 });
