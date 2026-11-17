@@ -440,7 +440,6 @@ export type Database = {
         Args: { assignment_id: string; step: string };
         Returns: boolean;
       };
-      two_step_from: { Args: Record<PropertyKey, never>; Returns: string };
     };
     Enums: {
       [_ in never]: never;
@@ -2015,16 +2014,6 @@ export type Database = {
           isSetofReturn: false;
         };
       };
-      current_term: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          code: string;
-          ends_on: string;
-          name_ar: string;
-          name_en: string;
-          starts_on: string;
-        }[];
-      };
       drop_unconfirmed_sign_up: {
         Args: { email: string; sign_up_key: string };
         Returns: boolean;
@@ -2038,7 +2027,6 @@ export type Database = {
           waiting: number;
         }[];
       };
-      is_partner_guest: { Args: Record<PropertyKey, never>; Returns: boolean };
       mailing_recipients: {
         Args: { topic: string };
         Returns: {
@@ -2159,13 +2147,6 @@ export type Database = {
           ref: string;
         }[];
       };
-      my_topics: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          news: boolean;
-          paper: boolean;
-        }[];
-      };
       notion_to_invite: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -2197,13 +2178,6 @@ export type Database = {
           oldest_waiting: string;
           outbox_secret_set: boolean;
           waiting: number;
-        }[];
-      };
-      pledge_versions: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          key: string;
-          value: Json;
         }[];
       };
       post_notice: { Args: { id: string; shown_at: string }; Returns: string };
@@ -4823,15 +4797,6 @@ export type Database = {
           sent_to: string;
         }[];
       };
-      council_members: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          full_name_ar: string;
-          full_name_en: string;
-          titles_ar: string[];
-          titles_en: string[];
-        }[];
-      };
       council_seats: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -6924,20 +6889,6 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      accepted_unplaced: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          agreement_signed: boolean;
-          blind_entry_id: string;
-          blind_id: string;
-          category: Database["journal"]["Enums"]["category"];
-          decided_at: string;
-          decision: string;
-          issue_id: string;
-          language: Database["journal"]["Enums"]["language"];
-          title: string;
-        }[];
-      };
       answer_credit: {
         Args: { accept: boolean; contributor: string; piece: string };
         Returns: undefined;
@@ -7104,10 +7055,6 @@ export type Database = {
       };
       is_current_category: {
         Args: { category: Database["journal"]["Enums"]["category"] };
-        Returns: boolean;
-      };
-      is_edition_desk: {
-        Args: { desk: Database["journal"]["Enums"]["desk"] };
         Returns: boolean;
       };
       masthead: {
@@ -9709,13 +9656,6 @@ export type Database = {
       set_credited_name: {
         Args: { member: string; name_ar: string; name_en: string };
         Returns: undefined;
-      };
-      shift_places: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          shift_id: string;
-          taken: number;
-        }[];
       };
       sign_production_report: {
         Args: { production_id: string };

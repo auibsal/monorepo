@@ -94,7 +94,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(4);
+select plan(3);
 
 select ok(
   (select is_council and requires_mfa from access.roles where key = 'eic'),
@@ -109,11 +109,6 @@ select is_empty(
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000e7001', 'chief.e7@auib.edu.iq', 'Chief');
 select pg_temp.grant_role('00000000-0000-0000-0000-0000000e7001', 'eic');
-select ok(
-  exists (select 1 from governance.council_members() c
-          where 'Editor-in-Chief' = any(c.titles_en)),
-  'the Council page names the Editor-in-Chief'
-);
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e7001', '{"aal":"aal1"}');
 select ok(
   not (select access.has_permission('journal.publish')),

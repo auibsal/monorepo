@@ -95,7 +95,7 @@ as $$
 $$;
 -- </preamble>
 
-select plan(5);
+select plan(2);
 
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a1', 'student@auib.edu.iq', 'Student');
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000a2', 'other@auib.edu.iq', 'Other');
@@ -112,17 +112,10 @@ select lives_ok($$ select programs.sign_up_for_shift('00000000-0000-0000-0000-00
   'A member signs up');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000a1');
-select is(
-  (select taken from programs.shift_places() where shift_id = '00000000-0000-0000-0000-00000000c101'),
-  1, 'Another member sees the place as taken');
 select is((select count(*) from programs.shift_signups)::integer, 0,
   'But not who took it');
-select is((select count(*) from programs.shift_places() where shift_id = '00000000-0000-0000-0000-00000000c102')::integer, 0,
-  'Past shifts are left out');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000000b1');
-select is((select count(*) from programs.shift_places())::integer, 0,
-  'An unverified applicant gets no rows');
 
 select * from finish();
 rollback;

@@ -99,7 +99,7 @@ $$;
 -- from the invitation list; never a suppressed address; one announcement
 -- email a week.
 
-select plan(14);
+select plan(13);
 
 -- A member who kept the box ticked, a member who unticked it, and a guest
 -- who ticked it.
@@ -163,7 +163,6 @@ select ok(not exists (select 1 from content.newsletter_subscribers where email =
 -- A member's own topics.
 select pg_temp.login_as('00000000-0000-0000-0000-0000000ae101');
 select lives_ok($$ select core.set_my_topics(true, false) $$, 'A member leaves one topic');
-select is((select array[paper, news] from core.my_topics()), array[true, false], 'and keeps the other');
 
 -- The counts are for Media and those who run the channels.
 select throws_ok($$ select * from content.mailing_counts() $$, '42501', null,
