@@ -280,6 +280,7 @@ export const RecordList = <T,>({
   filters,
   items,
   matches,
+  needsYou,
 }: {
   /** The rows found, drawn by the page (a RowList or a DataTable). */
   readonly children: (found: readonly T[]) => ReactNode;
@@ -289,15 +290,70 @@ export const RecordList = <T,>({
   readonly items: readonly T[];
   /** Whether a row matches the find line (already lowercased). */
   readonly matches: (item: T, query: string) => boolean;
+  /**
+   * The list opens on "Needs you": what waits on this person or seat,
+   * oldest first; "All" shows everything, newest first (decisions.md, The
+   * site: "One list").
+   */
+  readonly needsYou?: {
+    readonly date: (item: T) => string | null | undefined;
+    readonly test: (item: T) => boolean;
+  };
 }) => {
   const t = useTranslations("diwan.admin.kit");
   const id = useId();
   const [query, setQuery] = useQueryState("q");
+  const [kept, keep] = useQueryState("view");
+  const [view, setView] = useState(kept === "all" ? "all" : "needs");
   const [typed, setTyped] = useState(query);
   const needle = typed.trim().toLowerCase();
-  const found = needle ? items.filter((item) => matches(item, needle)) : items;
+  const byDate = (direction: 1 | -1) => (x: T, y: T) =>
+    direction *
+    String(needsYou?.date(x) ?? "").localeCompare(
+      String(needsYou?.date(y) ?? "")
+    );
+  const waiting = needsYou ? items.filter(needsYou.test) : [];
+  let listed = items;
+  if (needsYou) {
+    listed =
+      view === "needs"
+        ? [...waiting].sort(byDate(1))
+        : [...items].sort(byDate(-1));
+  }
+  const found = needle
+    ? listed.filter((item) => matches(item, needle))
+    : listed;
+  const choose = (next: "all" | "needs") => {
+    setView(next);
+    keep(next === "all" ? "all" : "");
+  };
   return (
     <div className="grid gap-5">
+      {needsYou ? (
+        <div className="border-line flex flex-wrap gap-x-6 border-b">
+          {(["needs", "all"] as const).map((v) => (
+            <button
+              aria-pressed={view === v}
+              className={cn(
+                "hover:text-accent border-b-[1.5px] py-3 text-sm font-medium whitespace-nowrap",
+                view === v
+                  ? "border-accent text-text"
+                  : "text-text-secondary border-transparent"
+              )}
+              key={v}
+              onClick={() => choose(v)}
+              type="button"
+            >
+              {v === "needs" ? t("needsYou") : t("all")}
+              {v === "needs" && waiting.length > 0 ? (
+                <span className="text-accent ms-1.5">
+                  {formatNumber(waiting.length)}
+                </span>
+              ) : null}
+            </button>
+          ))}
+        </div>
+      ) : null}
       <div className="flex flex-wrap items-end gap-4">
         <div className="grid gap-2">
           <Label htmlFor={`${id}-q`}>{t("find")}</Label>

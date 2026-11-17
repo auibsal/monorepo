@@ -648,6 +648,11 @@ const Register = () => {
               .includes(q)
           )
         }
+        // A logo waiting for Partnerships.
+        needsYou={{
+          date: (row) => String(row.updated_at ?? row.created_at ?? ""),
+          test: (row) => Boolean(row.logo_pending_path),
+        }}
       >
         {(found) => (
           <DataTable

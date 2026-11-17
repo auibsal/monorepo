@@ -1174,7 +1174,8 @@
           "no": "No",
           "membership": "Membership",
           "roles": "Roles"
-        }
+        },
+        "needsYou": "Needs you"
       },
       "overview": {
         "title": "Desk",
@@ -1706,7 +1707,11 @@
           "hasImage": "An image is set",
           "noImage": "No image yet",
           "noLimit": "No limit",
-          "noLead": "No lead yet"
+          "noLead": "No lead yet",
+          "preset": "What kind of event",
+          "presetHint": "Its format from the Events Manual fills the duration, access, shifts, run of show and checklist. You can change anything after.",
+          "noPreset": "None of these",
+          "presetStep": "Kind"
         },
         "promo": {
           "title": "Promo kit",
@@ -1762,7 +1767,33 @@
         },
         "checkIn": "Check-in at the door",
         "debriefTitle": "Debrief",
-        "openPromo": "Open the promo kit"
+        "openPromo": "Open the promo kit",
+        "checklist": {
+          "title": "Checklist",
+          "progress": "{done} of {total} done",
+          "empty": "No checklist yet. Add an item below.",
+          "add": "Add an item",
+          "when": "When",
+          "item": "The item",
+          "phases": {
+            "before": "Before",
+            "night": "On the night",
+            "after": "After"
+          },
+          "sources": {
+            "access": "Accessible event (ADA National Network)",
+            "green": "Green event"
+          }
+        },
+        "runOfShow": {
+          "title": "Run of show",
+          "empty": "No run of show yet.",
+          "minutes": "{count} min",
+          "total": "{count} minutes in all",
+          "part": "Part {n}",
+          "length": "Minutes",
+          "addPart": "Add a part"
+        }
       },
       "checkIn": {
         "title": "Check-in",
@@ -4133,6 +4164,35 @@
           "production": "Production",
           "memorandum": "Memorandum"
         }
+      },
+      "presets": {
+        "title": "Presets",
+        "lede": "New records start from these. Change them as the way of working changes; records already made keep what they have.",
+        "back": "Back to the list",
+        "list": "Presets",
+        "empty": "No presets yet.",
+        "edit": "Edit",
+        "add": "Add a preset",
+        "name": "Name",
+        "duration": "Length in minutes",
+        "runOfShow": "Run of show",
+        "shifts": "Shifts",
+        "checklist": "Checklist",
+        "body": "Text",
+        "line": "Line {n}",
+        "minutes": "Minutes",
+        "addLine": "Add a line",
+        "removeLine": "Remove this line",
+        "titles": {
+          "event": "Event presets",
+          "opening": "Opening presets",
+          "call": "Edition call presets",
+          "announcement": "Announcement presets",
+          "letter": "Letter presets"
+        },
+        "open": "Presets",
+        "start": "Start from a preset",
+        "none": "Start blank"
       }
     },
     "editor": {

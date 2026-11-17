@@ -30,6 +30,7 @@ import { EditableSection, Fact, Facts } from "../record";
 import { RecordHistory } from "../record-history";
 import { AccessForm } from "./access-form";
 import { Attendance } from "./attendance";
+import { EventChecklist, RunOfShow } from "./checklist";
 import { DebriefField, EventFacts, StatusActions } from "./facts";
 import { EventFeedbackAdmin } from "./feedback";
 import { GuestInvitations } from "./guest-invitations";
@@ -169,6 +170,7 @@ const OverviewTab = ({ event }: { readonly event: EventRow }) => {
           </Link>
         </div>
       </EditableSection>
+      <EventChecklist eventId={event.id} />
       <NotionManaged kind="event" recordId={event.id} />
     </>
   );
@@ -427,7 +429,12 @@ export const EventEditor = () => {
           label: t("tabs.people"),
         },
         {
-          content: <EventProgramAdmin eventId={eventId} />,
+          content: (
+            <>
+              <RunOfShow eventId={eventId} value={event.run_of_show} />
+              <EventProgramAdmin eventId={eventId} />
+            </>
+          ),
           id: "program",
           label: t("tabs.program"),
         },

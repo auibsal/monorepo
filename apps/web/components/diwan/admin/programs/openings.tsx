@@ -37,6 +37,7 @@ import {
   picks,
   type Reply,
 } from "../members/hiring";
+import { usePresets } from "../presets";
 
 /**
  * What an opening offers (decisions.md: open roles only): a team role
@@ -342,6 +343,8 @@ const PlaceForm = ({
   readonly onDone: () => void;
 }) => {
   const t = useTranslations("diwan.admin.programs.openings");
+  const tp = useTranslations("diwan.admin.presets");
+  const presets = usePresets("opening");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -392,6 +395,38 @@ const PlaceForm = ({
               {(events.data ?? []).map((e) => (
                 <option key={e.id} value={e.id}>
                   {`${localized(e, "title", locale)} · ${formatLongDate(e.starts_at, locale)}`}
+                </option>
+              ))}
+            </SelectInput>
+          )}
+        </Field>
+      ) : null}
+      {(presets.data ?? []).length > 0 ? (
+        <Field label={tp("start")}>
+          {(id) => (
+            <SelectInput
+              id={id}
+              onChange={(e) => {
+                const preset = presets.data?.find(
+                  (p) => p.key === e.target.value
+                );
+                if (preset) {
+                  setForm((f) => ({
+                    ...f,
+                    body: {
+                      ar: String(preset.fields.body_ar ?? ""),
+                      en: String(preset.fields.body_en ?? ""),
+                    },
+                    title: { ar: preset.title_ar, en: preset.title_en },
+                  }));
+                }
+              }}
+              value=""
+            >
+              <option value="">{tp("none")}</option>
+              {(presets.data ?? []).map((p) => (
+                <option key={p.key} value={p.key}>
+                  {localized({ ...p }, "title", locale)}
                 </option>
               ))}
             </SelectInput>

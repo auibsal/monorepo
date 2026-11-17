@@ -11,7 +11,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useId, useState } from "react";
 import { eventSlug, isAddress } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
-import { events, sanitizeRichText, unwrap } from "@/lib/data";
+import { events, localized, sanitizeRichText, unwrap } from "@/lib/data";
 import { useRouter } from "@/lib/diwan/navigation";
 import { RichTextEditor } from "../../editor/rich-text";
 import { DiwanSection } from "../../page";
@@ -633,10 +633,28 @@ export const EventFacts = ({
 };
 
 /**
- * A new event in four short steps (decisions.md, The site: "One record
- * page"): the details, who can come, the people, then Review. Create saves
+ * A new event in short steps (decisions.md, The site: "One record page"):
+ * its format (a preset), the details, who can come, the people, then
+ * Review. Create saves
  * it as a draft and opens its page.
  */
+/** The Events Manual's formats, as presets (core.presets, kind "event"). */
+const useEventPresets = () => {
+  const { supabase } = useAuth();
+  return useQuery({
+    queryFn: async () =>
+      unwrap(
+        await supabase
+          .schema("api")
+          .from("presets")
+          .select("key, title_en, title_ar")
+          .eq("kind", "event")
+          .order("sort")
+      ) ?? [],
+    queryKey: ["admin", "presets", "event"],
+  });
+};
+
 export const NewEventSteps = () => {
   const t = useTranslations("diwan.admin.event");
   const tf = useTranslations("diwan.admin.event.facts");
@@ -652,14 +670,27 @@ export const NewEventSteps = () => {
   const detailsReady = Boolean(
     form.title.en && form.startsAt && isAddress(row.slug)
   );
+  const [preset, setPreset] = useState("");
+  const presets = useEventPresets();
   const create = useMutation({
-    mutationFn: async () =>
-      unwrap(
+    mutationFn: async () => {
+      const made = unwrap(
         await supabase
           .schema("api")
           .from("events")
           .insert({ ...row, status: "draft" })
-      ),
+          .select("id")
+          .single()
+      );
+      // The format's preset fills the rest (decisions.md, The site: Presets).
+      if (made && preset) {
+        unwrap(
+          await supabase
+            .schema("api")
+            .rpc("apply_event_preset", { event: made.id, preset })
+        );
+      }
+    },
     onSuccess: async () => {
       await client.invalidateQueries({ queryKey: ["admin", "events"] });
       router.push(`/events/${row.slug}`);
@@ -674,6 +705,28 @@ export const NewEventSteps = () => {
         creating={create.isPending}
         onCreate={() => create.mutate()}
         steps={[
+          {
+            content: (
+              <Field hint={tf("presetHint")} label={tf("preset")}>
+                {(id) => (
+                  <ChoiceInput
+                    id={id}
+                    onChange={(e) => setPreset(e.target.value)}
+                    value={preset}
+                  >
+                    <option value="">{tf("noPreset")}</option>
+                    {(presets.data ?? []).map((p) => (
+                      <option key={p.key} value={p.key}>
+                        {localized(p, "title", locale)}
+                      </option>
+                    ))}
+                  </ChoiceInput>
+                )}
+              </Field>
+            ),
+            ready: true,
+            title: tf("presetStep"),
+          },
           {
             content: part(<DetailsFields form={form} set={set} />),
             ready: detailsReady,

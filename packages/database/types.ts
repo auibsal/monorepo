@@ -1155,6 +1155,43 @@ export type Database = {
         };
         Relationships: [];
       };
+      presets: {
+        Row: {
+          fields: NonNullable<Json>;
+          id: string;
+          key: string;
+          kind: string;
+          sort: number;
+          title_ar: string;
+          title_en: string;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          fields?: NonNullable<Json>;
+          id?: string;
+          key: string;
+          kind: string;
+          sort?: number;
+          title_ar: string;
+          title_en: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          fields?: NonNullable<Json>;
+          id?: string;
+          key?: string;
+          kind?: string;
+          sort?: number;
+          title_ar?: string;
+          title_en?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [];
+      };
       problem_reports: {
         Row: {
           created_at: string;
@@ -2196,6 +2233,54 @@ export type Database = {
           },
         ];
       };
+      checklist_items: {
+        Row: {
+          created_at: string;
+          done_at: string | null;
+          done_by: string | null;
+          event_id: string;
+          id: string;
+          label_ar: string;
+          label_en: string;
+          phase: string;
+          sort: number;
+          source: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          done_at?: string | null;
+          done_by?: string | null;
+          event_id: string;
+          id?: string;
+          label_ar: string;
+          label_en: string;
+          phase: string;
+          sort?: number;
+          source?: string;
+        };
+        Update: {
+          created_at?: string;
+          done_at?: string | null;
+          done_by?: string | null;
+          event_id?: string;
+          id?: string;
+          label_ar?: string;
+          label_en?: string;
+          phase?: string;
+          sort?: number;
+          source?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "checklist_items_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       debriefs: {
         Row: {
           event_id: string;
@@ -2312,10 +2397,13 @@ export type Database = {
           other_allergens_ar: string | null;
           other_allergens_en: string | null;
           partner_id: string | null;
+          preset_key: string | null;
           program_id: string | null;
+          promo_layout: string | null;
           published_at: string | null;
           questions: NonNullable<Json>;
           rsvp_enabled: boolean;
+          run_of_show: NonNullable<Json>;
           search: unknown;
           seating: string | null;
           served_ar: string | null;
@@ -2364,10 +2452,13 @@ export type Database = {
           other_allergens_ar?: string | null;
           other_allergens_en?: string | null;
           partner_id?: string | null;
+          preset_key?: string | null;
           program_id?: string | null;
+          promo_layout?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
+          run_of_show?: NonNullable<Json>;
           search?: never;
           seating?: string | null;
           served_ar?: string | null;
@@ -2415,10 +2506,13 @@ export type Database = {
           other_allergens_ar?: string | null;
           other_allergens_en?: string | null;
           partner_id?: string | null;
+          preset_key?: string | null;
           program_id?: string | null;
+          promo_layout?: string | null;
           published_at?: string | null;
           questions?: NonNullable<Json>;
           rsvp_enabled?: boolean;
+          run_of_show?: NonNullable<Json>;
           search?: never;
           seating?: string | null;
           served_ar?: string | null;
@@ -2879,6 +2973,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      apply_event_preset: {
+        Args: { event: string; preset: string };
+        Returns: undefined;
+      };
       booking_terms: { Args: { event_id: string }; Returns: Json };
       calendar: {
         Args: { from_at: string; to_at: string };
