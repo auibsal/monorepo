@@ -74,7 +74,7 @@ export const RecordTabs = ({
     const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
     const key = event.key as keyof typeof STEP | "Home" | "End";
     const here = ordered.findIndex((each) => each.id === open);
-    let next = here;
+    let next: number;
     if (key === "Home") {
       next = 0;
     } else if (key === "End") {

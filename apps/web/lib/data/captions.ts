@@ -1,3 +1,5 @@
+import { withoutTags } from "@/lib/plain-text";
+
 /**
  * The DCMP Captioning Key's line rules for a WebVTT caption file
  * (decisions.md, Frameworks followed: Publishing; Next Stop: captions): at
@@ -14,8 +16,8 @@ export interface CaptionProblem {
   readonly text: string;
 }
 
-const TIMING = /-->/u;
-const TAGS = /<[^>]+>/gu;
+/** A cue's timing line: "00:00:01.000 --> 00:00:03.000". */
+const ARROW = " --> ";
 const BLANK_LINES = /\r?\n\s*\r?\n/u;
 const LINE = /\r?\n/u;
 
@@ -24,14 +26,14 @@ export const captionProblems = (vtt: string): CaptionProblem[] => {
   let cue = 0;
   for (const block of vtt.split(BLANK_LINES)) {
     const lines = block.split(LINE);
-    const at = lines.findIndex((line) => TIMING.test(line));
+    const at = lines.findIndex((line) => line.includes(ARROW));
     if (at === -1) {
       continue;
     }
     cue += 1;
     const text = lines
       .slice(at + 1)
-      .map((line) => line.replace(TAGS, "").trim())
+      .map((line) => withoutTags(line).trim())
       .filter(Boolean);
     if (text.length > MAX_LINES) {
       problems.push({ cue, kind: "too_many_lines", text: text.join(" / ") });

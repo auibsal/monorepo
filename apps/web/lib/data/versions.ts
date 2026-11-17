@@ -1,5 +1,6 @@
+import { withoutTags } from "@/lib/plain-text";
+
 const PREVIEW = 200;
-const TAG = /<[^>]+>/gu;
 const SPACES = /\s+/gu;
 
 /**
@@ -18,6 +19,8 @@ export const versionPreview = (
     )
     .map(([, value]) => (typeof value === "string" ? value : ""))
     .filter(Boolean);
-  const text = (values[0] ?? "").replace(TAG, " ").replace(SPACES, " ").trim();
+  const text = withoutTags(values[0] ?? "")
+    .replace(SPACES, " ")
+    .trim();
   return text.length > PREVIEW ? `${text.slice(0, PREVIEW)}…` : text;
 };
