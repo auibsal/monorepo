@@ -10,6 +10,8 @@ import { describe, expect, it } from "vitest";
  */
 const root = join(import.meta.dirname, "..", "..");
 const WORD = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
+const SOURCE = /\.tsx?$/u;
+const TEST = /\.test\.tsx?$/u;
 // Files served at their own names, and the folder the web's own standards
 // fix (security.txt lives under /.well-known).
 const FILE_ROUTES = new Set([
@@ -33,7 +35,7 @@ const sources = (dir: string): string[] =>
         ? []
         : sources(path);
     }
-    return /\.tsx?$/u.test(name) && !/\.test\.tsx?$/u.test(name) ? [path] : [];
+    return SOURCE.test(name) && !TEST.test(name) ? [path] : [];
   });
 
 // A path written as a link: href="/…", href={`/…`} or a Link's "/…".
