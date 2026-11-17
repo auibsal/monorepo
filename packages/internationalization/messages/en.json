@@ -1120,7 +1120,12 @@
         "exportAsked": "Asked. Download the list once a second officer approves it on the Desk.",
         "find": "Find",
         "findPlaceholder": "Find a title, a name or a number",
-        "showAll": "Show everything"
+        "showAll": "Show everything",
+        "address": {
+          "label": "Web address",
+          "made": "Made from the English title; fixed once published, since the address will be shared.",
+          "fixed": "Fixed: it’s published, and the address has been shared."
+        }
       },
       "overview": {
         "title": "Desk",
@@ -1635,7 +1640,7 @@
           "theSociety": "The Society",
           "image": "Image",
           "slug": "Web address",
-          "slugHint": "Latin letters, digits and hyphens. Left empty, it is made from the title and the date.",
+          "slugHint": "Made from the English title and the day; fixed once the event is published.",
           "slugFixed": "Fixed once the event is published, since the address has been shared.",
           "slugInvalid": "The web address takes only Latin letters, digits and hyphens.",
           "debrief": "Debrief (its page in Notion)",

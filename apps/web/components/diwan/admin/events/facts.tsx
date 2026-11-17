@@ -7,6 +7,7 @@ import { Label } from "@repo/brand/components/ui/label";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { eventSlug, isAddress } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { events, sanitizeRichText, unwrap } from "@/lib/data";
 import { useRouter } from "@/lib/diwan/navigation";
@@ -57,21 +58,6 @@ export interface EventFactsRow {
 }
 
 const FORMATS = ["screening", "performance"] as const;
-const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/u;
-const NOT_LATIN = /[^a-z0-9]+/gu;
-const EDGE_HYPHENS = /^-+|-+$/gu;
-
-/** A web address from the title and the date: writing-workshop-2027-04-13. */
-const slugFrom = (title: string, startsAt: string | null) => {
-  const base = title
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(NOT_LATIN, "-")
-    .replace(EDGE_HYPHENS, "")
-    .slice(0, 60);
-  const day = startsAt ? startsAt.slice(0, 10) : "";
-  return [base || "event", day].filter(Boolean).join("-");
-};
 
 const pair = (en: string | null, ar: string | null) => ({
   ar: ar ?? "",
@@ -88,6 +74,9 @@ const initial = (event: EventFactsRow | null) => ({
   image: event?.image_path ?? null,
   lead: event?.lead_id ?? null,
   partner: event?.partner_id ?? "",
+  // Generated from the title and the day until the event is published,
+  // then fixed (decisions.md, The site: addresses).
+  fixed: Boolean(event && event.status !== "draft"),
   slug: event?.slug ?? "",
   startsAt: event?.starts_at ?? null,
   summary: pair(event?.summary_en ?? null, event?.summary_ar ?? null),
@@ -113,7 +102,7 @@ const toRow = (f: Form) => ({
   image_path: f.image,
   lead_id: f.lead,
   partner_id: f.partner || null,
-  slug: f.slug || slugFrom(f.title.en, f.startsAt),
+  slug: f.fixed ? f.slug : eventSlug(f.title.en, f.title.ar, f.startsAt),
   starts_at: f.startsAt ?? "",
   summary_ar: f.summary.ar || null,
   summary_en: f.summary.en || null,
@@ -241,11 +230,9 @@ const AccessSettings = ({
 
 const Fields = ({
   form,
-  published,
   set,
 }: {
   readonly form: Form;
-  readonly published: boolean;
   readonly set: <K extends keyof Form>(key: K, value: Form[K]) => void;
 }) => {
   const t = useTranslations("diwan.admin.event");
@@ -358,21 +345,15 @@ const Fields = ({
         onChange={(v) => set("image", v)}
         value={form.image}
       />
-      <Field
-        hint={published ? tf("slugFixed") : tf("slugHint")}
-        label={tf("slug")}
-      >
-        {(id) => (
-          <Input
-            dir="ltr"
-            disabled={published}
-            id={id}
-            onChange={(e) => set("slug", e.target.value.toLowerCase())}
-            placeholder={slugFrom(form.title.en, form.startsAt)}
-            value={form.slug}
-          />
-        )}
-      </Field>
+      <div className="grid gap-1">
+        <span className="type-label">{tf("slug")}</span>
+        <p className="type-body" dir="ltr">
+          {`/events/${form.fixed ? form.slug : eventSlug(form.title.en, form.title.ar, form.startsAt)}`}
+        </p>
+        <p className="type-caption">
+          {form.fixed ? tf("slugFixed") : tf("slugHint")}
+        </p>
+      </div>
     </div>
   );
 };
@@ -543,7 +524,7 @@ export const EventFacts = ({
   const set = <K extends keyof Form>(key: K, value: Form[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
   const row = toRow(form);
-  const slugOk = SLUG.test(row.slug);
+  const slugOk = isAddress(row.slug);
   const refresh = () =>
     client.invalidateQueries({ queryKey: ["admin", "event", event?.id] });
 
@@ -575,11 +556,7 @@ export const EventFacts = ({
   return (
     <DiwanSection id="event" title={t("heading")}>
       <form className="grid gap-6" onSubmit={submit}>
-        <Fields
-          form={form}
-          published={event?.status === "published"}
-          set={set}
-        />
+        <Fields form={form} set={set} />
         {slugOk ? null : (
           <p className="text-sm" role="alert">
             {t("slugInvalid")}

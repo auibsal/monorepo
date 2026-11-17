@@ -10,6 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
 import { FileInput } from "@/components/fields/file-input";
+import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { journal, localized, sanitizeRichText, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
@@ -21,6 +22,7 @@ import { getMediaUrl, uploadMedia } from "@/lib/storage";
 import { RichTextEditor } from "../../editor/rich-text";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
+import { AddressLine } from "../address-line";
 import {
   AdminHeading,
   BilingualField,
@@ -31,7 +33,6 @@ import {
   SelectInput,
 } from "../kit";
 import { RecordHistory } from "../record-history";
-import { slugify } from "../slug";
 import { useIssues } from "./admin";
 import { BylinePicker } from "./byline";
 import { PieceExtras } from "./piece-extras";
@@ -118,7 +119,6 @@ const formFrom = (record: PieceRecord | null, desk: journal.Desk) => {
 const PieceForm = ({ record }: { record: PieceRecord | null }) => {
   const t = useTranslations("diwan.admin.qirtas");
   const tj = useTranslations("diwan.admin.journal");
-  const tk = useTranslations("diwan.admin.kit");
   const tc = useTranslations("diwan.admin.content");
   const locale = useLocale() as Locale;
   const id = useId();
@@ -153,6 +153,8 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
   });
   const desk = journal.deskOf(form.category);
   const needs = journal.typeNeeds(form.category);
+  // Published once means shared: the address stays (decisions.md, The site).
+  const pieceFixed = Boolean(piece?.published_at);
 
   useEffect(() => {
     if (record) {
@@ -191,11 +193,11 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
             issue_id: form.issue_id || null,
             language: form.language,
             members_only: form.members_only,
-            slug:
-              form.slug.trim() ||
-              slugify(form.title.en || form.title.ar) ||
-              piece?.slug ||
-              "",
+            slug: pieceFixed
+              ? (piece?.slug ?? "")
+              : slugFromTitle(form.title.en, form.title.ar) ||
+                piece?.slug ||
+                "",
             title_ar: form.title.ar.trim() || null,
             title_en: form.title.en.trim() || null,
             video_url: form.video_url.trim() || null,
@@ -357,17 +359,10 @@ const PieceForm = ({ record }: { record: PieceRecord | null }) => {
           onChange={(contributor) => set("contributor_id", contributor)}
           value={form.contributor_id}
         />
-        <Field hint={tk("slugHint")} label={tk("slug")}>
-          {(fieldId) => (
-            <Input
-              dir="ltr"
-              id={fieldId}
-              maxLength={80}
-              onChange={(e) => set("slug", e.target.value)}
-              value={form.slug}
-            />
-          )}
-        </Field>
+        <AddressLine
+          fixed={pieceFixed}
+          path={`/qirtas/${desk}/${pieceFixed ? (piece?.slug ?? "") : slugFromTitle(form.title.en, form.title.ar)}`}
+        />
       </div>
       <BilingualField
         label={tj("piece.credit")}

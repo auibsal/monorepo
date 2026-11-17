@@ -13,12 +13,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { DateInput } from "@/components/fields/date-input";
+import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
 import { Link, useRouter } from "@/lib/diwan/navigation";
 import { useQueryParam } from "@/lib/diwan/use-query-param";
 import { OnTheSite } from "../../site-links";
 import { ErrorState, SectionSpinner } from "../../states";
+import { AddressLine } from "../address-line";
 import { ImageField } from "../image-field";
 import {
   AdminHeading,
@@ -101,6 +103,19 @@ const PublishControls = ({
 
 /** A number field's value, or null when it is empty (the pilot). */
 const optionalNumber = (value: string) => (value ? Number(value) : null);
+
+/**
+ * An Edition's address: from its title until it is published, then fixed
+ * (decisions.md, The site: addresses).
+ */
+const editionAddress = (
+  form: { number: string; slug: string; title: { ar: string; en: string } },
+  fixed: boolean
+) =>
+  fixed
+    ? form.slug
+    : slugFromTitle(form.title.en, form.title.ar) ||
+      `edition-${form.number || "1"}`;
 
 export const IssueEditor = () => {
   const te = useTranslations("diwan.admin.editionCalls");
@@ -204,7 +219,7 @@ export const IssueEditor = () => {
             : null,
         season_ar: form.season.ar || null,
         season_en: form.season.en || null,
-        slug: form.slug || `issue-${form.number}`,
+        slug: editionAddress(form, Boolean(existing.data?.published_at)),
         status: next,
         theme_ar: form.theme.ar || null,
         theme_en: form.theme.en || null,
@@ -281,18 +296,10 @@ export const IssueEditor = () => {
             />
           )}
         </Field>
-        <Field hint={tk("slugHint")} label={tk("slug")}>
-          {(id) => (
-            <Input
-              dir="ltr"
-              id={id}
-              maxLength={80}
-              onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-              placeholder={`issue-${form.number || "1"}`}
-              value={form.slug}
-            />
-          )}
-        </Field>
+        <AddressLine
+          fixed={Boolean(existing.data?.published_at)}
+          path={`/qirtas/editions/${editionAddress(form, Boolean(existing.data?.published_at))}`}
+        />
       </div>
       <BilingualField
         label={t("issue.titleField")}

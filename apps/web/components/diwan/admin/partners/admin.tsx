@@ -14,6 +14,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, partners, unwrap } from "@/lib/data";
 import { callApi } from "@/lib/diwan/api";
@@ -26,6 +27,7 @@ import { buckets, getMediaUrl } from "@/lib/storage";
 import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
+import { AddressLine } from "../address-line";
 import { SectionTabs } from "../admin-shell";
 import { ImageField } from "../image-field";
 import {
@@ -450,18 +452,7 @@ const SocietyFields = ({
   const t = useTranslations("diwan.admin.partners.register");
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <Field hint={t("slugHint")} label={t("slug")}>
-        {(id) => (
-          <Input
-            dir="ltr"
-            id={id}
-            onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-            pattern="[a-z0-9]+(-[a-z0-9]+)*"
-            required
-            value={form.slug}
-          />
-        )}
-      </Field>
+      <AddressLine fixed path={`/diwan/partnerships/${form.slug}`} />
       {owned || form.relation === "partner" ? null : (
         <Field hint={t("relationHint")} label={t("relation")}>
           {(id) => (
@@ -668,9 +659,6 @@ const Register = () => {
   );
 };
 
-const SLUG_RUNS = /[^a-z0-9]+/gu;
-const SLUG_ENDS = /^-+|-+$/gu;
-
 /**
  * A campus partner or a sponsor in kind, added in place (decisions.md,
  * Partners): its two names here, the rest (logo, line, link) on its page.
@@ -684,10 +672,7 @@ const AddOrganization = () => {
   const [name, setName] = useState({ ar: "", en: "" });
   const add = useMutation({
     mutationFn: async () => {
-      const slug = name.en
-        .toLowerCase()
-        .replace(SLUG_RUNS, "-")
-        .replace(SLUG_ENDS, "");
+      const slug = slugFromTitle(name.en, name.ar);
       unwrap(
         await supabase
           .schema("api")

@@ -22,6 +22,7 @@ import {
   useId,
   useState,
 } from "react";
+import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, programs, unwrap } from "@/lib/data";
 import { Link, useRouter } from "@/lib/diwan/navigation";
@@ -31,6 +32,7 @@ import { uploadMedia } from "@/lib/storage";
 import { DiwanSection } from "../../page";
 import { OnTheSite } from "../../site-links";
 import { EmptyLine, SectionSpinner } from "../../states";
+import { AddressLine } from "../address-line";
 import { CreditedNames } from "../credited-names";
 import { useProgramOptions } from "../events/data";
 import { RequestQueue } from "../forms/admin";
@@ -51,7 +53,6 @@ import {
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { ProblemReports } from "../problem-reports";
-import { slugify } from "../slug";
 
 const invalidateKey = ["admin", "programs-module"];
 
@@ -66,6 +67,8 @@ interface EpisodeForm {
   captionsAr: string | null;
   captionsEn: string | null;
   chapters: ChapterRow[];
+  /** Published once, so its address no longer moves. */
+  fixed: boolean;
   id: string | null;
   number: string;
   releasedOn: string;
@@ -83,6 +86,7 @@ const blankEpisode: EpisodeForm = {
   captionsAr: null,
   captionsEn: null,
   chapters: [],
+  fixed: false,
   id: null,
   number: "",
   releasedOn: "",
@@ -222,6 +226,7 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
           time: programs.clockOf(c.at),
           title: { ar: c.title_ar, en: c.title_en },
         })),
+        fixed: Boolean(e.published_at),
         id: e.id,
         number: e.number ? String(e.number) : "",
         releasedOn: e.released_on ?? "",
@@ -263,7 +268,6 @@ const EpisodeEditor = ({
   readonly programId: string;
 }) => {
   const t = useTranslations("diwan.admin.programs.episodes");
-  const tk = useTranslations("diwan.admin.kit");
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -302,7 +306,9 @@ const EpisodeEditor = ({
         released_on: form.releasedOn || null,
         season: form.season ? Number(form.season) : null,
         segment: form.segment.trim() || null,
-        slug: form.slug || slugify(form.title.en),
+        slug: form.fixed
+          ? form.slug
+          : slugFromTitle(form.title.en, form.title.ar),
         summary_ar: form.summary.ar || null,
         summary_en: form.summary.en || null,
         thumbnail_path: form.thumbnail,
@@ -417,18 +423,10 @@ const EpisodeEditor = ({
           />
         )}
       </Field>
-      <Field hint={tk("slugHint")} label={tk("slug")}>
-        {(id) => (
-          <Input
-            dir="ltr"
-            id={id}
-            maxLength={80}
-            onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-            placeholder={slugify(form.title.en)}
-            value={form.slug}
-          />
-        )}
-      </Field>
+      <AddressLine
+        fixed={form.fixed}
+        path={`/next-stop/episodes/${form.fixed ? form.slug : slugFromTitle(form.title.en, form.title.ar)}`}
+      />
       <ImageField
         area="next-stop"
         label={t("thumbnail")}

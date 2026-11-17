@@ -5,6 +5,7 @@ import type { Locale } from "@repo/internationalization";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { slugFromTitle } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { localized, unwrap } from "@/lib/data";
 import { useGrants } from "@/lib/diwan/queries";
@@ -17,7 +18,6 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
-import { slugify } from "../slug";
 
 const keys = {
   all: ["admin", "journal", "topics"],
@@ -38,7 +38,7 @@ const NewTopic = ({ onDone }: { readonly onDone: (id: string) => void }) => {
           .insert({
             name_ar: name.ar.trim(),
             name_en: name.en.trim(),
-            slug: slugify(name.en),
+            slug: slugFromTitle(name.en, name.ar),
           })
           .select("id")
           .single()
@@ -58,7 +58,9 @@ const NewTopic = ({ onDone }: { readonly onDone: (id: string) => void }) => {
         value={name}
       />
       <SaveButton
-        disabled={!(name.en.trim() && name.ar.trim() && slugify(name.en))}
+        disabled={
+          !(name.en.trim() && name.ar.trim() && slugFromTitle(name.en, name.ar))
+        }
         pending={add.isPending}
       />
       <ErrorLine error={add.error} />
