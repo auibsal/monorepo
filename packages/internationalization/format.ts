@@ -303,14 +303,6 @@ export const formatDayParts = (
   };
 };
 
-/** "50,000 IQD" / «50,000 دينار». */
-export const formatIqd = (amount: number, locale: Locale = defaultLocale) => {
-  const digits = new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 0,
-  }).format(amount);
-  return locale === "ar" ? `${digits} دينار` : `${digits} IQD`;
-};
-
 // ── Form fields in Baghdad time ─────────────────────────────────────────────
 // <input type="datetime-local"> has no time zone. Admin forms show and take
 // times as Baghdad wall-clock time, whatever the browser's zone, and store

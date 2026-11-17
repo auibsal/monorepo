@@ -1209,10 +1209,6 @@
         "verificationPending": "Waiting for verification",
         "upcomingRsvps": "Bookings for upcoming events",
         "openSubmissions": "Open Qirtas submissions",
-        "campaigns": "Funds counted, active campaigns",
-        "counted": "{amount} counted",
-        "pending": "{amount} waiting for sign-off",
-        "noCampaigns": "No active campaign.",
         "nothing": "Your roles don’t include any of the overview figures.",
         "membersDetail": "{count, plural, =0 {None are Voting Members yet (two events or general meetings in the last 12 months).} one {{n} is a Voting Member (two events or general meetings in the last 12 months).} other {{n} are Voting Members (two events or general meetings in the last 12 months).}}",
         "verificationDetail": "The oldest has waited since {date}.",
@@ -3193,12 +3189,6 @@
         "overdue": "{count, plural, one {{countText} overdue} other {{countText} overdue}}",
         "filterForm": "Form",
         "allForms": "All forms",
-        "filterShow": "Show",
-        "show": {
-          "open": "Open",
-          "closed": "Closed",
-          "all": "All"
-        },
         "saveOffice": "Save office use",
         "acknowledge": "Acknowledge",
         "takeUp": "Mark as being handled",

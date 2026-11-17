@@ -11,7 +11,6 @@ import {
   formatDateTime,
   formatDayParts,
   formatFieldValue,
-  formatIqd,
   formatLongDate,
   formatMonthYear,
   formatRelativeTime,
@@ -120,11 +119,6 @@ describe("SAL copy rules", () => {
       weekday: "Tue",
     });
     expect(formatDayParts(evening, "ar").day).toBe("13");
-  });
-
-  test("money reads '50,000 IQD'", () => {
-    expect(formatIqd(50_000, "en")).toBe("50,000 IQD");
-    expect(formatIqd(50_000, "ar")).toBe("50,000 دينار");
   });
 });
 

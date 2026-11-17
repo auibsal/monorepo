@@ -124,9 +124,11 @@ insert into journal.submission_drafts (user_id, category, updated_at) values
 insert into journal.blind_entries (blind_id, call_id, category, language, title, updated_at)
 values ('W-E2AAAA', (select id from journal.calls limit 1), 'poetry', 'en', 'Orphan', now() - interval '13 months');
 -- An incident case closed three years ago, and one still open from eight
-insert into governance.form_submissions (form_key, submitted_by, status, created_at, submitted_at, signed_at, signer_name, closed_at, data) values
-  ('incident-report', '00000000-0000-0000-0000-0000000e2a02', 'closed', now() - interval '3 years', now() - interval '3 years', now() - interval '3 years', 'New Account', now() - interval '3 years', '{"case":"closed"}'),
-  ('incident-report', '00000000-0000-0000-0000-0000000e2a02', 'submitted', now() - interval '8 years', now() - interval '8 years', now() - interval '8 years', 'New Account', null, '{"case":"open"}');
+insert into events.events (id, slug, title_en, title_ar, starts_at, status) values
+  ('e0000000-0000-0000-0000-0000000e2a0e', 'old-reading-2019-01-01', 'An old reading', 'قراءة قديمة', now() - interval '8 years', 'published');
+insert into events.incident_reports (event_id, happened_at, what_happened, created_at, closed_at) values
+  ('e0000000-0000-0000-0000-0000000e2a0e', now() - interval '3 years', 'closed', now() - interval '3 years', now() - interval '3 years'),
+  ('e0000000-0000-0000-0000-0000000e2a0e', now() - interval '8 years', 'open', now() - interval '8 years', null);
 -- A reply decided over a year ago
 insert into programs.openings (id, program_id, role, title_en, title_ar)
 values ('0be00000-0000-0000-0000-0000000e2a0b', (select id from core.programs where slug = 'company'),
@@ -168,7 +170,7 @@ select is((select count(*)::integer from journal.submission_drafts where user_id
   'a recent draft stays');
 select is((select count(*)::integer from journal.blind_entries where blind_id = 'W-E2AAAA'), 0,
   'A blind copy with no submission is deleted after 12 months');
-select is((select array_agg(data ->> 'case') from governance.form_submissions where form_key = 'incident-report'),
+select is((select array_agg(what_happened) from events.incident_reports where event_id = 'e0000000-0000-0000-0000-0000000e2a0e'),
   array['open'], 'Incident records go two years after the case closes; an open case stays');
 select is((select array_agg(status) from programs.opening_replies where opening_id = '0be00000-0000-0000-0000-0000000e2a0b'),
   array['new'], 'A decided reply goes after 12 months; an open one stays');

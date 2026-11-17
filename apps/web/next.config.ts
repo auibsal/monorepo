@@ -3,105 +3,14 @@ import createNextIntlPlugin from "next-intl/plugin";
 import { env } from "@/env";
 import { formRedirects } from "@/lib/data/form-paths";
 import { config, withAnalyzer } from "@/lib/next-config";
+import { MOVED } from "@/lib/next-config/moved";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-// An address that was shared (in an email, a post, a poster or a QR code)
-// and then changed answers with a permanent redirect (308) to its new one;
-// an address never shared simply changes (decisions.md, The site).
-// www.auibsal.org → auibsal.org is a Vercel domain setting.
-// English has no prefix; Arabic is under /ar.
+// www.auibsal.org → auibsal.org is a Vercel domain setting. English has no
+// prefix; Arabic is under /ar. The moved addresses, each with why it
+// stays, are in lib/next-config/moved.ts.
 const LANGUAGE_PREFIXES = ["", "/ar"] as const;
-const MOVED: readonly [from: string, to: string][] = [
-  // Submit to Qirtas's door (Qirtas).
-  // Editions is the one door (decisions.md, Qirtas): every old address of
-  // Submit to Qirtas opens its open calls; /haven is Haven's own page.
-  ["/qirtas/write", "/qirtas/editions/open"],
-  ["/qirtas/write/:path*", "/qirtas/editions/open"],
-  ["/qirtas/submit", "/qirtas/editions/open"],
-  ["/qirtas/submit/:path*", "/qirtas/editions/open"],
-  ["/haven", "/qirtas/editions/haven"],
-  // The partner dashboard's five tabs (decisions.md, The site).
-  ["/partners/dashboard/people", "/partners/dashboard/guests"],
-  ["/partners/dashboard/events", "/partners/dashboard"],
-  ["/membership", "/account"],
-  ["/membership/:path*", "/account/:path*"],
-  ["/library/privacy", "/privacy"],
-  ["/library/terms-of-use", "/terms"],
-  ["/library/accessibility", "/accessibility"],
-  ["/library/security", "/security"],
-  ["/partners/join", "/partners/apply"],
-  // Your account's tabs match their pages (decisions §6).
-  ["/account/society", "/account"],
-  ["/account/society/stand/:position", "/account/elections/:position"],
-  // The tabs of decisions.md, Your account (the eighth prompt, 3).
-  ["/account/calendar", "/account/events"],
-  ["/account/settings/notices", "/account/settings/notifications"],
-  ["/account/settings/declarations", "/account/settings/disclosures"],
-  // The Diwan by Council seat (decisions §6).
-  ["/diwan/society/declarations", "/diwan/council/disclosures"],
-  ["/diwan/society", "/diwan/council"],
-  ["/diwan/society/:path*", "/diwan/council/:path*"],
-  ["/diwan/people/service/certificates", "/diwan/qirtas/certificates"],
-  [
-    "/diwan/people/service/certificates/:path*",
-    "/diwan/qirtas/certificates/:path*",
-  ],
-  ["/diwan/people/partners", "/diwan/partnerships"],
-  ["/diwan/people/partners/:path*", "/diwan/partnerships/:path*"],
-  ["/diwan/people", "/diwan/membership"],
-  ["/diwan/people/:path*", "/diwan/membership/:path*"],
-  ["/diwan/qirtas/video/episodes/:path*", "/diwan/media/episodes/:path*"],
-  ["/diwan/qirtas/video/reels/:path*", "/diwan/media/reels/:path*"],
-  ["/diwan/design", "/diwan/media/design"],
-  ["/diwan/events/pitches/:path*", "/diwan/events/proposals/:path*"],
-  ["/diwan/events/:ref/door", "/diwan/events/:ref/check-in"],
-  [
-    "/account/record/:ref([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
-    "/account/documents/certificates/:ref",
-  ],
-  // The tab is Documents (decisions.md, Documents and forms): certificate
-  // and letter emails linked to Record.
-  ["/account/record", "/account/documents"],
-  ["/account/record/:path*", "/account/documents/:path*"],
-  // Filters are query strings (decisions §6).
-  ["/events/:month(\\d{4}-\\d{2})", "/events?month=:month"],
-  ["/events/:month(\\d{4}-\\d{2})/society", "/events?month=:month"],
-  ["/company/:month(\\d{4}-\\d{2})", "/events?host=company&month=:month"],
-  ["/qirtas/archive/:month(\\d{4}-\\d{2})", "/qirtas/archive?month=:month"],
-  [
-    "/qirtas/archive/:month(\\d{4}-\\d{2})/:section",
-    "/qirtas/archive?month=:month&section=:section",
-  ],
-  ["/search/:q", "/search?q=:q"],
-  ["/qirtas/editions/list", "/qirtas/editions?view=list"],
-  // Qirtas's themed collections are Editions (decisions.md, Qirtas); the
-  // issues address of Nov 11 moves back.
-  ["/qirtas/issues", "/qirtas/editions"],
-  // The writing workshop moved to Tue Dec 8 (decisions.md, Events).
-  [
-    "/events/writing-workshop-2026-11-17",
-    "/events/writing-workshop-2026-12-08",
-  ],
-  ["/qirtas/issues/:slug", "/qirtas/editions/:slug"],
-  // Your account in six tabs (decisions.md, The site): the card and an open
-  // election are on Today, applications under Roles; Saved and the profile
-  // step are gone, and the name is no longer edited in Settings.
-  ["/account/card", "/account"],
-  ["/account/elections", "/account"],
-  ["/account/applications", "/account/roles"],
-  ["/account/saved", "/account"],
-  ["/account/settings/profile", "/account/settings"],
-  ["/welcome", "/account"],
-  ["/welcome/:path*", "/account"],
-  // One sign-up on one screen (decisions.md, Members).
-  ["/sign-up/guest", "/sign-up"],
-  // Nothing about members is public but bylines and role holders.
-  ["/qirtas/authors/:slug", "/qirtas"],
-  ["/contact", "/about/contact"],
-  ["/diwan/qirtas/issues", "/diwan/qirtas/editions"],
-  ["/diwan/qirtas/issues/:ref", "/diwan/qirtas/editions/:ref"],
-];
 //
 // The design system (packages/brand, `bun run build:site`) is built into
 // apps/web/design. The Diwan's page /diwan/media/design shows its entries;

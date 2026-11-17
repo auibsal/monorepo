@@ -234,7 +234,7 @@ export const samples = {
       APP
     ),
   RequestAcknowledged: (l) =>
-    requestUpdated(l, "charity-collection-count", "acknowledged", PIECE, APP),
+    requestUpdated(l, "concern", "acknowledged", PIECE, APP),
   RequestClosed: (l) =>
     requestUpdated(l, "members-meeting-motion", "closed", PIECE, APP),
   ReturnedForFormatting: (l) =>

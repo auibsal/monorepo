@@ -6133,8 +6133,6 @@ export type Database = {
           conflict_disclosure: string | null;
           contributor_id: string;
           created_at: string;
-          credit_ar: string | null;
-          credit_en: string | null;
           dated_at: string | null;
           deck_ar: string | null;
           deck_en: string | null;
@@ -6177,8 +6175,6 @@ export type Database = {
           conflict_disclosure?: string | null;
           contributor_id: string;
           created_at?: string;
-          credit_ar?: string | null;
-          credit_en?: string | null;
           dated_at?: string | null;
           deck_ar?: string | null;
           deck_en?: string | null;
@@ -6220,8 +6216,6 @@ export type Database = {
           conflict_disclosure?: string | null;
           contributor_id?: string;
           created_at?: string;
-          credit_ar?: string | null;
-          credit_en?: string | null;
           dated_at?: string | null;
           deck_ar?: string | null;
           deck_en?: string | null;

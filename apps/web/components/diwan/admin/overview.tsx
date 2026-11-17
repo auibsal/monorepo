@@ -4,7 +4,6 @@ import { SalCard } from "@repo/brand/components/sal/card";
 import { Icon, type IconName } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
 import {
-  formatIqd,
   formatLongDate,
   formatNumber,
 } from "@repo/internationalization/format";
@@ -32,13 +31,6 @@ import { ScanFindings } from "./system/scan-findings";
 import { StudentLifeWeekPanel } from "./system/student-life-week";
 
 interface Overview {
-  campaigns?: {
-    campaign_id: string;
-    counted_iqd: number;
-    pending_iqd: number;
-    title_ar: string;
-    title_en: string;
-  }[];
   intake_oldest_at?: string | null;
   members?: number;
   next_event?: {
@@ -508,7 +500,7 @@ export const AdminOverview = () => {
         <AdminHeading actions={<QuickActions />} title={t("title")} />
         <PaperLinks />
       </div>
-      {figures.length === 0 && !o.campaigns ? (
+      {figures.length === 0 ? (
         <p className="type-body text-text-secondary">{t("nothing")}</p>
       ) : null}
       {figures.length > 0 ? (
@@ -520,37 +512,6 @@ export const AdminOverview = () => {
       ) : null}
       <Handover />
       <SecondOfficer />
-      {o.campaigns ? (
-        <DiwanSection id="campaigns" title={t("campaigns")}>
-          {o.campaigns.length === 0 ? (
-            <p className="type-body text-text-secondary">{t("noCampaigns")}</p>
-          ) : (
-            <ul className="gap-space-4 grid sm:grid-cols-2">
-              {o.campaigns.map((c) => (
-                <li key={c.campaign_id}>
-                  <SalCard>
-                    <p className="font-medium">
-                      {localized(c, "title", locale)}
-                    </p>
-                    <p className="text-text text-2xl font-light tabular-nums">
-                      {t("counted", {
-                        amount: formatIqd(c.counted_iqd, locale),
-                      })}
-                    </p>
-                    {c.pending_iqd > 0 ? (
-                      <p className="type-caption">
-                        {t("pending", {
-                          amount: formatIqd(c.pending_iqd, locale),
-                        })}
-                      </p>
-                    ) : null}
-                  </SalCard>
-                </li>
-              ))}
-            </ul>
-          )}
-        </DiwanSection>
-      ) : null}
       <DiwanSection id="alerts" title={t("alerts.title")}>
         <StaffAlerts />
         <ScanFindings />

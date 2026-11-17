@@ -79,7 +79,6 @@ export const PieceArticle = async ({
   const desk = piece.desk as journal.Desk;
   const category = piece.category as journal.Category;
   const deck = localized(piece, "deck", locale);
-  const credit = localized(piece, "credit", locale);
   const words = texts(piece).reduce(
     (sum, text) => sum + journal.wordCount(text.html),
     0
@@ -205,7 +204,6 @@ export const PieceArticle = async ({
                 .join(" · ")}
             </p>
           ) : null}
-          {credit ? <p className="type-caption">{credit}</p> : null}
           <TopicsLine
             label={t("topics")}
             locale={locale}
