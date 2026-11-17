@@ -92,7 +92,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(7);
+select plan(8);
 
 -- decisions.md, Posting and The days the Society marks.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
@@ -118,6 +118,12 @@ select ok(
   'A date its setter announces is marked to confirm'
 );
 select is(content.plan_year(2026) > 0, true, 'Another year plans as well');
+select pg_temp.logout();
+select ok(
+  (select count(*) from journal.story_assignments
+   where slug = 'world-press-freedom-day-2027' and desk = 'voices' and status = 'pitched') = 1,
+  'A tier-2 day is pitched once on Voices'' board'
+);
 
 select * from finish();
 rollback;
