@@ -95,7 +95,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(30);
+select plan(32);
 
 -- a1 is credited, a5 auditions, a4 leads one production, a6 is the Vice
 -- President (who clears rights), a2 the President.
@@ -307,6 +307,27 @@ update programs.productions set report_people_reached = 80, report_what_happened
 where id = '00000000-0000-0000-0000-00000000f001';
 select programs.sign_production_report('00000000-0000-0000-0000-00000000f001');
 
+
+-- ── The Company's public list ──
+select pg_temp.logout();
+insert into programs.productions (id, slug, title_en, title_ar, is_public, rights_status, rights_note,
+  rights_cleared_by, rights_cleared_at) values
+  ('00000000-0000-0000-0000-00000000f0a1', 'listed-cleared', 'Listed', 'مدرجة', true, 'cleared', 'Private note',
+   '00000000-0000-0000-0000-0000000000a6', now()),
+  ('00000000-0000-0000-0000-00000000f0a2', 'listed-pending', 'Pending', 'معلقة', false, 'pending', null, null, null);
+select pg_temp.login_anon();
+select is(
+  (select array_agg(slug order by slug) from programs.public_productions()
+   where slug in ('listed-cleared', 'listed-pending')),
+  array['listed-cleared'],
+  'The public list shows only listed productions, whose rights are cleared'
+);
+select ok(
+  pg_get_function_result('programs.public_productions()'::regprocedure) !~ 'rights'
+  and has_function_privilege('anon', 'programs.public_productions()', 'execute'),
+  'The public list never carries the rights, and visitors may read it'
+);
+select pg_temp.logout();
 
 select * from finish();
 rollback;
