@@ -380,7 +380,8 @@ Every chat in this project follows this file. Where an older document, project d
   - **a trip:** approved or not, signed electronically, which records the approval on the event;
   - **the GPA list:** "eligible" or "not eligible" for each name, nothing more;
   - **an event's guest list** for Security, two weeks ahead;
-  - **a room booking.**
+  - **a room booking;**
+  - **volunteers for an event's open shifts:** five days before an event, the shifts members haven't filled go to Student Life, which finds volunteers; each takes the place on the event with their own account (an AUIB address makes it at once), and the answer is "filled", "filled in part" or "not filled".
   Student Life's staff answer from their Associate accounts with the "Student Life" role (§4); the single-use link still works.
 
 ### Holders on record (the founding team, until October 2027)
@@ -560,7 +561,7 @@ Wherever a name is shown (the site, credits, captions, the masthead), it is the 
   - **Capacity:** RSVPs close at the room's posted capacity, with a waitlist.
   - **Debriefs:** each event links its debrief, kept in Notion without names.
 - **Booking:** RSVPs ask only about accessibility needs, and diet when food is served. A released place goes to the next on the waitlist by email until two hours before the start; after that, places are filled at the door. Unclaimed places are released 10 minutes before the start.
-- **One-event jobs** (box custodians, cashiers, ushers, check-in) are volunteer shifts on the event, signed up for with no application, as US volunteer slots are. Only an event lead and a Company production role are appointed through Get involved.
+- **One-event jobs** (box custodians, cashiers, ushers, check-in) are volunteer shifts on the event, signed up for with no application, as US volunteer slots are. Members have first claim; five days before the event, places still open are asked of Student Life (§7). Only an event lead and a Company production role are appointed through Get involved.
 - **Publishing:** an event is published only with a lead and a confirmed place. Leads:
   - the Secretary for Council and general meetings and the Founding Meeting;
   - the President for the Dec 1 pilot;
