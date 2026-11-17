@@ -326,11 +326,6 @@ export const ProductionPage = ({
           {t("back")}
         </Link>
       }
-      history={
-        tab === "details" ? (
-          <RecordHistory id={production.id} table="programs.productions" />
-        ) : null
-      }
       title={localized(production, "title", locale)}
     >
       <SectionTabs
@@ -349,6 +344,9 @@ export const ProductionPage = ({
         <PerformancesTab production={production} />
       ) : null}
       {tab === "report" ? <ReportTab production={production} /> : null}
+      {tab === "history" ? (
+        <RecordHistory id={production.id} table="programs.productions" />
+      ) : null}
     </RecordView>
   );
 };

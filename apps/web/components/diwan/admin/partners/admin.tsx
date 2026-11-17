@@ -48,6 +48,7 @@ import { useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { VerificationQueue } from "../members/verification";
 import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
+import { EditableSection, Fact, Facts } from "../record";
 import { RecordHistory } from "../record-history";
 import { CouncilVote } from "./council-vote";
 import {
@@ -814,13 +815,11 @@ const partnerRef = (row: PartnerRow) => String(row.slug || row.id);
  * possible match), then the form; on a partner's own entry, its people
  * from their accounts.
  */
-const PartnerPageBody = ({ row }: { readonly row: PartnerRow }) => {
-  const router = useRouter();
+const PartnerOverview = ({ row }: { readonly row: PartnerRow }) => {
   const owned = usePartnerOwned(row.id);
   if (owned.isPending) {
     return <SectionSpinner />;
   }
-  const isOwned = owned.data === true;
   return (
     <>
       <RegisterLogo
@@ -830,7 +829,7 @@ const PartnerPageBody = ({ row }: { readonly row: PartnerRow }) => {
       {row.logo_pending_path ? (
         <PendingLogo partnerId={row.id} path={String(row.logo_pending_path)} />
       ) : null}
-      {isOwned ? (
+      {owned.data === true ? (
         <PendingListing
           current={{
             description_ar: (row.description_ar as string | null) ?? null,
@@ -840,18 +839,67 @@ const PartnerPageBody = ({ row }: { readonly row: PartnerRow }) => {
           partnerId={row.id}
         />
       ) : null}
-      <PartnerForm
-        initial={row}
-        onDone={() => router.push("/partnerships")}
-        owned={isOwned}
-      />
-      {isOwned ? <PartnerPeople partnerId={row.id} /> : null}
+    </>
+  );
+};
+
+/** The entry's details, read as text, with Edit opening the form. */
+const PartnerDetails = ({ row }: { readonly row: PartnerRow }) => {
+  const t = useTranslations("diwan.admin.partners.register");
+  const tr = useTranslations("diwan.admin.kit.record");
+  const owned = usePartnerOwned(row.id);
+  const text = (column: string) => (row[column] as string | null) ?? "";
+  return (
+    <EditableSection
+      form={
+        <PartnerForm
+          initial={row}
+          onDone={() => undefined}
+          owned={owned.data === true}
+        />
+      }
+      id="details"
+      title={tr("details")}
+    >
+      <Facts>
+        <Fact label={t("name")}>
+          <span className="block" dir="ltr" lang="en">
+            {text("name_en")}
+          </span>
+          {text("name_ar") ? (
+            <span className="block" dir="rtl" lang="ar">
+              {text("name_ar")}
+            </span>
+          ) : null}
+        </Fact>
+        <Fact label={t("url")}>
+          {text("url") ? <bdi dir="ltr">{text("url")}</bdi> : t("no")}
+        </Fact>
+        <Fact label={t("listedShort")}>
+          {row.is_listed ? t("yes") : t("no")}
+        </Fact>
+      </Facts>
+    </EditableSection>
+  );
+};
+
+/** On a partner's own entry, its people from their accounts; its guests. */
+const PartnerPeopleTab = ({ row }: { readonly row: PartnerRow }) => {
+  const t = useTranslations("diwan.admin.partners.register");
+  const owned = usePartnerOwned(row.id);
+  return (
+    <>
+      {owned.data === true ? <PartnerPeople partnerId={row.id} /> : null}
+      <DiwanSection id="guests" title={t("guests")}>
+        <Affiliations partnerId={row.id} />
+      </DiwanSection>
     </>
   );
 };
 
 export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
   const t = useTranslations("diwan.admin.partners.register");
+  const tr = useTranslations("diwan.admin.kit.record");
   const locale = useLocale() as Locale;
   const register = usePartners();
   const router = useRouter();
@@ -871,29 +919,35 @@ export const PartnerPage = ({ partnerRef: ref }: { partnerRef: string }) => {
   }
   return (
     <RecordView
-      actions={row?.is_listed ? <OnTheSite href="/partners" /> : undefined}
+      actions={row.is_listed ? <OnTheSite href="/partners" /> : undefined}
       back={
         <Link className="link" href="/partnerships">
           {t("back")}
         </Link>
       }
-      history={
-        row ? <RecordHistory id={row.id} table="governance.partners" /> : null
+      history={<RecordHistory id={row.id} table="governance.partners" />}
+      menu={
+        <DeleteRecord
+          id={row.id}
+          kind="partner"
+          onDeleted={() => router.push("/partnerships")}
+        />
       }
-      narrow
+      tabs={[
+        {
+          content: <PartnerDetails row={row} />,
+          id: "details",
+          label: tr("details"),
+        },
+        {
+          content: <PartnerPeopleTab row={row} />,
+          id: "people",
+          label: tr("people"),
+        },
+      ]}
       title={localized(row, "name", locale)}
     >
-      <PartnerPageBody row={row} />
-      {row ? (
-        <DiwanSection id="guests" title={t("guests")}>
-          <Affiliations partnerId={row.id} />
-        </DiwanSection>
-      ) : null}
-      <DeleteRecord
-        id={row.id}
-        kind="partner"
-        onDeleted={() => router.push("/partnerships")}
-      />
+      <PartnerOverview row={row} />
     </RecordView>
   );
 };
@@ -1171,15 +1225,23 @@ export const AgreementPage = ({ id }: { id: string }) => {
     ? partnerName(agreement.data.partner_id)
     : t("missing");
   return (
-    <div className="grid max-w-3xl gap-8">
-      <AdminHeading
-        actions={
-          <Link className="link" href={back}>
-            {t("back")}
-          </Link>
-        }
-        title={title}
-      />
+    <RecordView
+      back={
+        <Link className="link" href={back}>
+          {t("back")}
+        </Link>
+      }
+      history={
+        agreement.data ? (
+          <RecordHistory
+            id={agreement.data.id}
+            table="governance.partner_agreements"
+          />
+        ) : undefined
+      }
+      narrow
+      title={title}
+    >
       {agreement.data?.status === "draft" ? (
         <CouncilVote
           agreementId={agreement.data.id}
@@ -1187,7 +1249,7 @@ export const AgreementPage = ({ id }: { id: string }) => {
           onDone={done}
         />
       ) : null}
-    </div>
+    </RecordView>
   );
 };
 

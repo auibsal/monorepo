@@ -5,6 +5,7 @@ import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
+import { dirOf } from "@repo/internationalization/config";
 import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -32,6 +33,7 @@ import {
   SaveButton,
   SelectInput,
 } from "../kit";
+import { EditableSection } from "../record";
 import { RecordHistory } from "../record-history";
 import { useIssues } from "./admin";
 import { BylinePicker } from "./byline";
@@ -727,6 +729,7 @@ export const QirtasPieceEditor = () => {
   const t = useTranslations("diwan.admin.qirtas");
   const tj = useTranslations("diwan.admin.journal");
   const tk = useTranslations("diwan.admin.kit");
+  const tp = useTranslations("diwan.admin.qirtas.pieceTabs");
   const locale = useLocale() as Locale;
   const pieceId = useQueryParam("id");
   const record = usePieceRecord(pieceId);
@@ -748,6 +751,7 @@ export const QirtasPieceEditor = () => {
   }
   const category = piece.category as journal.Category;
   const needs = journal.typeNeeds(category);
+  const media = needs.media || piece.desk === "news";
   return (
     <RecordView
       actions={
@@ -758,27 +762,113 @@ export const QirtasPieceEditor = () => {
       back={back(tk("back"))}
       history={<RecordHistory id={piece.id} table="journal.pieces" />}
       lede={`${tj(`desks.${piece.desk as journal.Desk}`)} · ${tj(`categories.${category}`)}`}
+      tabs={[
+        {
+          content: (
+            <>
+              <EditableSection
+                form={<PieceForm record={record.data} />}
+                id="writing"
+                title={tp("writing")}
+              >
+                <PieceReading record={record.data} />
+              </EditableSection>
+              {category === "translation" ? (
+                <PieceOriginal
+                  key={record.data.body?.original_lang ?? ""}
+                  record={record.data}
+                />
+              ) : null}
+              {piece.desk === "video" ? null : (
+                <PieceExtras record={record.data} />
+              )}
+            </>
+          ),
+          id: "writing",
+          label: tp("writing"),
+        },
+        ...(media || category === "explainer"
+          ? [
+              {
+                content: (
+                  <>
+                    {media ? <Media record={record.data} /> : null}
+                    {category === "explainer" ? (
+                      <PieceFigures pieceId={piece.id} />
+                    ) : null}
+                  </>
+                ),
+                id: "media",
+                label: tp("media"),
+              },
+            ]
+          : []),
+        {
+          content: (
+            <>
+              <Credits record={record.data} />
+              <PieceTopics pieceId={piece.id} />
+            </>
+          ),
+          id: "credits",
+          label: tp("credits"),
+        },
+        ...(piece.status === "published"
+          ? [
+              {
+                content: <Corrections record={record.data} />,
+                id: "corrections",
+                label: tp("corrections"),
+              },
+            ]
+          : []),
+      ]}
       title={localized(piece, "title", locale) || t("untitled")}
     >
       <Workflow record={record.data} />
-      <PieceForm record={record.data} />
-      {needs.media || piece.desk === "news" ? (
-        <Media record={record.data} />
-      ) : null}
-      {category === "translation" ? (
-        <PieceOriginal
-          key={record.data.body?.original_lang ?? ""}
-          record={record.data}
-        />
-      ) : null}
-      {piece.desk === "video" ? null : <PieceExtras record={record.data} />}
-      {category === "explainer" ? <PieceFigures pieceId={piece.id} /> : null}
-      <PieceTopics pieceId={piece.id} />
-      <Credits record={record.data} />
-      {piece.status === "published" ? (
-        <Corrections record={record.data} />
-      ) : null}
       <Thread pieceId={piece.id} />
     </RecordView>
+  );
+};
+
+/** The piece as written, read on its page until Edit opens the form. */
+const PieceReading = ({ record }: { readonly record: PieceRecord }) => {
+  const t = useTranslations("diwan.admin.qirtas");
+  const { piece } = record;
+  const languages = (["en", "ar"] as const).filter(
+    (lang) => piece?.[`title_${lang}`] || record.body?.[`body_${lang}`]
+  );
+  if (languages.length === 0) {
+    return <p className="type-body text-text-secondary">{t("notWritten")}</p>;
+  }
+  return (
+    <div className="grid gap-10">
+      {languages.map((lang) => (
+        <article
+          className="grid gap-3"
+          dir={dirOf(lang)}
+          key={lang}
+          lang={lang}
+        >
+          <h3 className="type-heading font-light">
+            {piece?.[`title_${lang}`]}
+          </h3>
+          {piece?.[`deck_${lang}`] ? (
+            <p className="type-lede text-text-secondary">
+              {piece[`deck_${lang}`]}
+            </p>
+          ) : null}
+          {record.body?.[`body_${lang}`] ? (
+            <div
+              className="reading prose max-w-[65ch]"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized rich text
+              dangerouslySetInnerHTML={{
+                __html: sanitizeRichText(record.body[`body_${lang}`] ?? ""),
+              }}
+            />
+          ) : null}
+        </article>
+      ))}
+    </div>
   );
 };

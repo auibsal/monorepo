@@ -265,6 +265,8 @@ test("an officer who manages members corrects a member's name to the official on
   await signInWithPassword(page, editor2.email);
   await page.goto(`${urls.app}/membership/${memberId}`);
   await setUpTwoStep(page);
+  // Membership's changes are in the record's Membership tab.
+  await page.getByRole("tab", { name: "Membership" }).click();
   await expect(page.getByRole("heading", { name: "Their name" })).toBeVisible();
 
   const english = page.getByRole("group", { name: "In English" });

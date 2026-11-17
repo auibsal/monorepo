@@ -5,6 +5,7 @@ import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
 import type { Locale } from "@repo/internationalization";
+import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useState } from "react";
@@ -20,9 +21,11 @@ import {
   DateTimeField,
   ErrorLine,
   Field,
+  RecordView,
   SaveButton,
 } from "../kit";
 import { MemberPicker, type Person, useMemberNames } from "../member-picker";
+import { EditableSection, Fact, Facts } from "../record";
 import type { openingKinds } from "./openings";
 
 /** The appointed director seats: they open after the Executive Board's approval. */
@@ -248,139 +251,156 @@ export const OpeningEditor = ({ back, id }: OpeningEditorProps) => {
     save.mutate();
   };
 
-  return (
-    <div className="grid max-w-3xl gap-8">
-      <AdminHeading
-        actions={
-          <>
-            <Link className="link" href={back}>
-              {t("back")}
-            </Link>
-            {/* Where everyone reads it: Get involved. */}
-            <OnTheSite href="/get-involved" />
-          </>
-        }
-        title={localized(row, "title", locale) || t("untitled")}
-      >
-        {[t(`kinds.${kind}`), row.is_open ? t("open") : t("closed")].join(
-          " · "
-        )}
-      </AdminHeading>
-
-      <form className="grid gap-4" onSubmit={submit}>
-        <BilingualField
-          label={t("title")}
-          maxLength={200}
-          onChange={(title) => setForm((f) => ({ ...f, title }))}
-          required={kind !== "role"}
-          value={form.title}
-        />
-        <BilingualField
-          label={t("body")}
-          maxLength={2000}
-          multiline
-          onChange={(body) => setForm((f) => ({ ...f, body }))}
-          rows={4}
-          value={form.body}
-        />
-        <BilingualField
-          label={t("eligibility")}
-          maxLength={600}
-          multiline
-          onChange={(eligibility) => setForm((f) => ({ ...f, eligibility }))}
-          rows={2}
-          value={form.eligibility}
-        />
-        <QuestionsEditor
-          onChange={(questions) => setForm((f) => ({ ...f, questions }))}
-          value={form.questions}
-        />
-        <div className="flex items-start gap-3">
-          <Checkbox
-            checked={form.asks_files}
-            id={`${id}-files`}
-            onCheckedChange={(v) =>
-              setForm((f) => ({ ...f, asks_files: v === true }))
-            }
-          />
-          <Label className="leading-normal" htmlFor={`${id}-files`}>
-            {t("asksFiles")}
-          </Label>
-        </div>
-        <MemberPicker
-          label={t("secondReviewer")}
-          onChange={(second_reviewer) =>
-            setForm((f) => ({ ...f, second_reviewer }))
-          }
-          value={form.second_reviewer}
-        />
-        {director ? (
-          <Field hint={t("ebHint")} label={t("ebResolution")}>
-            {(fieldId) => (
-              <Input
-                className="max-w-xs"
-                dir="ltr"
-                id={fieldId}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, eb_resolution: e.target.value }))
-                }
-                placeholder={t("ebPlaceholder")}
-                value={form.eb_resolution}
-              />
-            )}
-          </Field>
-        ) : null}
-        {kind === "role" ? null : (
-          <Field label={t("places")}>
-            {(fieldId) => (
-              <Input
-                className="max-w-xs"
-                dir="ltr"
-                id={fieldId}
-                max={100}
-                min={1}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, places: e.target.value }))
-                }
-                type="number"
-                value={form.places}
-              />
-            )}
-          </Field>
-        )}
-        <DateTimeField
-          label={t("closes")}
-          onChange={(closes_at) => setForm((f) => ({ ...f, closes_at }))}
-          value={form.closes_at}
-        />
-        <SaveButton pending={save.isPending} success={save.isSuccess} />
-        <ErrorLine error={save.error} />
-      </form>
-
-      <div className="border-line pt-space-4 grid gap-2 border-t">
-        {row.is_open ? (
-          <ConfirmAction
-            confirmLabel={t("close")}
-            description={t("closeConfirm")}
-            disabled={toggle.isPending}
-            onConfirm={() => toggle.mutate(false)}
-            variant="ghost"
-          >
-            {t("close")}
-          </ConfirmAction>
-        ) : (
-          <Button
-            className="justify-self-start"
-            disabled={toggle.isPending}
-            onClick={() => toggle.mutate(true)}
-            size="sm"
-            variant="ghost"
-          >
-            {t("reopen")}
-          </Button>
-        )}
-        <ErrorLine error={toggle.error} />
-      </div>
+  const openToggle = (
+    <div className="grid gap-2">
+      {row.is_open ? (
+        <ConfirmAction
+          confirmLabel={t("close")}
+          description={t("closeConfirm")}
+          disabled={toggle.isPending}
+          onConfirm={() => toggle.mutate(false)}
+          variant="ghost"
+        >
+          {t("close")}
+        </ConfirmAction>
+      ) : (
+        <Button
+          className="justify-self-start"
+          disabled={toggle.isPending}
+          onClick={() => toggle.mutate(true)}
+          size="sm"
+        >
+          {t("reopen")}
+        </Button>
+      )}
+      <ErrorLine error={toggle.error} />
     </div>
+  );
+  const editForm = (
+    <form className="grid gap-4" onSubmit={submit}>
+      <BilingualField
+        label={t("title")}
+        maxLength={200}
+        onChange={(title) => setForm((f) => ({ ...f, title }))}
+        required={kind !== "role"}
+        value={form.title}
+      />
+      <BilingualField
+        label={t("body")}
+        maxLength={2000}
+        multiline
+        onChange={(body) => setForm((f) => ({ ...f, body }))}
+        rows={4}
+        value={form.body}
+      />
+      <BilingualField
+        label={t("eligibility")}
+        maxLength={600}
+        multiline
+        onChange={(eligibility) => setForm((f) => ({ ...f, eligibility }))}
+        rows={2}
+        value={form.eligibility}
+      />
+      <QuestionsEditor
+        onChange={(questions) => setForm((f) => ({ ...f, questions }))}
+        value={form.questions}
+      />
+      <div className="flex items-start gap-3">
+        <Checkbox
+          checked={form.asks_files}
+          id={`${id}-files`}
+          onCheckedChange={(v) =>
+            setForm((f) => ({ ...f, asks_files: v === true }))
+          }
+        />
+        <Label className="leading-normal" htmlFor={`${id}-files`}>
+          {t("asksFiles")}
+        </Label>
+      </div>
+      <MemberPicker
+        label={t("secondReviewer")}
+        onChange={(second_reviewer) =>
+          setForm((f) => ({ ...f, second_reviewer }))
+        }
+        value={form.second_reviewer}
+      />
+      {director ? (
+        <Field hint={t("ebHint")} label={t("ebResolution")}>
+          {(fieldId) => (
+            <Input
+              className="max-w-xs"
+              dir="ltr"
+              id={fieldId}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, eb_resolution: e.target.value }))
+              }
+              placeholder={t("ebPlaceholder")}
+              value={form.eb_resolution}
+            />
+          )}
+        </Field>
+      ) : null}
+      {kind === "role" ? null : (
+        <Field label={t("places")}>
+          {(fieldId) => (
+            <Input
+              className="max-w-xs"
+              dir="ltr"
+              id={fieldId}
+              max={100}
+              min={1}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, places: e.target.value }))
+              }
+              type="number"
+              value={form.places}
+            />
+          )}
+        </Field>
+      )}
+      <DateTimeField
+        label={t("closes")}
+        onChange={(closes_at) => setForm((f) => ({ ...f, closes_at }))}
+        value={form.closes_at}
+      />
+      <SaveButton pending={save.isPending} success={save.isSuccess} />
+      <ErrorLine error={save.error} />
+    </form>
+  );
+  return (
+    <RecordView
+      actions={openToggle}
+      back={
+        <Link className="link" href={back}>
+          {t("back")}
+        </Link>
+      }
+      // Where everyone reads it: Get involved.
+      menu={<OnTheSite href="/get-involved" />}
+      narrow
+      status={[t(`kinds.${kind}`), row.is_open ? t("open") : t("closed")].join(
+        " · "
+      )}
+      title={localized(row, "title", locale) || t("untitled")}
+    >
+      <EditableSection form={editForm} id="opening" title={t("title")}>
+        <Facts>
+          <Fact label={t("title")}>
+            {localized(row, "title", locale) || t("untitled")}
+          </Fact>
+          <Fact label={t("body")}>
+            <span className="whitespace-pre-line">
+              {localized(row, "body", locale)}
+            </span>
+          </Fact>
+          <Fact label={t("eligibility")}>
+            {localized(row, "eligibility", locale)}
+          </Fact>
+          <Fact label={t("closes")}>
+            {row.closes_at ? formatLongDate(row.closes_at, locale) : "—"}
+          </Fact>
+        </Facts>
+      </EditableSection>
+    </RecordView>
   );
 };

@@ -1162,7 +1162,13 @@
           "review": "Review",
           "tabsLabel": "Sections of this record",
           "overview": "Overview",
-          "history": "History"
+          "history": "History",
+          "details": "Details",
+          "people": "People",
+          "yes": "Yes",
+          "no": "No",
+          "membership": "Membership",
+          "roles": "Roles"
         }
       },
       "overview": {
@@ -2989,7 +2995,8 @@
           "credits": "Company",
           "rehearsals": "Rehearsals",
           "performances": "Performances",
-          "report": "Report"
+          "report": "Report",
+          "history": "History"
         },
         "rightsTab": {
           "lede": "Record what the right to perform the script rests on. Someone other than whoever records it clears it.",
@@ -3460,7 +3467,14 @@
           "edit": "Edit",
           "remove": "Remove",
           "removeConfirm": "Remove this figure? A paragraph naming it in the text will show nothing."
-        }
+        },
+        "pieceTabs": {
+          "writing": "Writing",
+          "media": "Images and video",
+          "credits": "Credits and topics",
+          "corrections": "Corrections"
+        },
+        "notWritten": "Nothing written yet"
       },
       "needs": {
         "lede": "What this event needs from Student Life: the item, how many, by when and what for. No costs. The Secretary sends each request and records what was provided.",

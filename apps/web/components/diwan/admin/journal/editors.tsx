@@ -1,12 +1,6 @@
 "use client";
 
 import { Input } from "@repo/brand/components/ui/input";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/brand/components/ui/tabs";
 import type { Locale } from "@repo/internationalization";
 import { formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -23,15 +17,16 @@ import { ErrorState, SectionSpinner } from "../../states";
 import { AddressLine } from "../address-line";
 import { ImageField } from "../image-field";
 import {
-  AdminHeading,
   BilingualField,
   ConfirmAction,
   DateTimeField,
   ErrorLine,
   Field,
+  RecordView,
   SaveButton,
   SelectInput,
 } from "../kit";
+import { RecordHistory } from "../record-history";
 import { EditionCalls, EditionContents } from "./edition-calls";
 
 type Status = "draft" | "scheduled" | "published";
@@ -412,47 +407,40 @@ export const IssueEditor = () => {
     </form>
   );
 
+  const heading = existing.data
+    ? localized(existing.data, "title", locale)
+    : t("newIssue");
+  const statusLine = `${tk("status")}: ${tk(`statuses.${status}`)}`;
+  if (!issueId) {
+    return (
+      <RecordView back={back(tk("back"))} status={statusLine} title={heading}>
+        {publishForm}
+      </RecordView>
+    );
+  }
+  // The Edition's page is a workspace while its call is open: the call
+  // first (decisions.md, Qirtas), then its contents, publishing, History.
   return (
-    <div className="grid gap-8">
-      <AdminHeading
-        actions={
-          <>
-            {back(tk("back"))}
-            {existing.data?.slug && status === "published" ? (
-              <OnTheSite href={`/qirtas/editions/${existing.data.slug}`} />
-            ) : null}
-          </>
-        }
-        title={
-          existing.data
-            ? localized(existing.data, "title", locale)
-            : t("newIssue")
-        }
-      >
-        {`${tk("status")}: ${tk(`statuses.${status}`)}`}
-      </AdminHeading>
-      {issueId ? (
-        <Tabs defaultValue="call">
-          <TabsList className="flex-wrap">
-            {(["call", "contents", "publish"] as const).map((tab) => (
-              <TabsTrigger key={tab} value={tab}>
-                {te(`tabs.${tab}`)}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <TabsContent className="pt-6" value="call">
-            <EditionCalls issueId={issueId} />
-          </TabsContent>
-          <TabsContent className="pt-6" value="contents">
-            <EditionContents issueId={issueId} />
-          </TabsContent>
-          <TabsContent className="pt-6" value="publish">
-            {publishForm}
-          </TabsContent>
-        </Tabs>
-      ) : (
-        publishForm
-      )}
-    </div>
+    <RecordView
+      actions={
+        existing.data?.slug && status === "published" ? (
+          <OnTheSite href={`/qirtas/editions/${existing.data.slug}`} />
+        ) : undefined
+      }
+      back={back(tk("back"))}
+      history={<RecordHistory id={issueId} table="journal.issues" />}
+      status={statusLine}
+      tabs={[
+        {
+          content: <EditionContents issueId={issueId} />,
+          id: "contents",
+          label: te("tabs.contents"),
+        },
+        { content: publishForm, id: "publish", label: te("tabs.publish") },
+      ]}
+      title={heading}
+    >
+      <EditionCalls issueId={issueId} />
+    </RecordView>
   );
 };

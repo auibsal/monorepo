@@ -26,13 +26,7 @@ import { Needs } from "../needs";
 import { NotionManaged } from "../notion-managed";
 import { Shifts } from "../programs/admin";
 import { DeleteRecord } from "../recently-deleted";
-import {
-  EditableSection,
-  Fact,
-  Facts,
-  RecordMenu,
-  RecordTabs,
-} from "../record";
+import { EditableSection, Fact, Facts } from "../record";
 import { RecordHistory } from "../record-history";
 import { AccessForm } from "./access-form";
 import { Attendance } from "./attendance";
@@ -372,7 +366,6 @@ const AfterTab = ({ event }: { readonly event: EventRow }) => {
 export const EventEditor = () => {
   const t = useTranslations("diwan.admin.event");
   const tk = useTranslations("diwan.admin.kit");
-  const tr = useTranslations("diwan.admin.kit.record");
   const router = useRouter();
   const locale = useLocale() as Locale;
   const client = useQueryClient();
@@ -394,77 +387,64 @@ export const EventEditor = () => {
 
   return (
     <RecordView
-      actions={
-        <>
-          <StatusActions event={event} onDone={refresh} />
-          <RecordMenu>
-            <PublicPage slug={event.slug} status={event.status} />
-            <Link className="link" href={`/events/${event.slug}/check-in`}>
-              {t("checkIn")}
-            </Link>
-            {event.status === "draft" ? (
-              <DeleteRecord
-                id={eventId}
-                kind="event"
-                onDeleted={() => router.push("/events")}
-              />
-            ) : null}
-          </RecordMenu>
-        </>
-      }
+      actions={<StatusActions event={event} onDone={refresh} />}
       back={
         <Link className="link" href="/events">
           {tk("back")}
         </Link>
       }
+      history={<RecordHistory id={eventId} table="events.events" />}
+      menu={
+        <>
+          <PublicPage slug={event.slug} status={event.status} />
+          <Link className="link" href={`/events/${event.slug}/check-in`}>
+            {t("checkIn")}
+          </Link>
+          {event.status === "draft" ? (
+            <DeleteRecord
+              id={eventId}
+              kind="event"
+              onDeleted={() => router.push("/events")}
+            />
+          ) : null}
+        </>
+      }
       status={`${tk("status")}: ${tk(`statuses.${event.status as "draft"}`)}`}
+      tabs={[
+        {
+          content: <DetailsTab event={event} />,
+          id: "details",
+          label: t("tabs.details"),
+        },
+        {
+          content: <AccessTab event={event} />,
+          id: "access",
+          label: t("tabs.access"),
+        },
+        {
+          content: <PeopleTab event={event} />,
+          id: "people",
+          label: t("tabs.people"),
+        },
+        {
+          content: <EventProgramAdmin eventId={eventId} />,
+          id: "program",
+          label: t("tabs.program"),
+        },
+        {
+          content: <PromoKit event={event} />,
+          id: "promotion",
+          label: t("tabs.promotion"),
+        },
+        {
+          content: <AfterTab event={event} />,
+          id: "after",
+          label: t("tabs.after"),
+        },
+      ]}
       title={localized(event, "title", locale)}
     >
-      <RecordTabs
-        label={tr("tabsLabel")}
-        tabs={[
-          {
-            content: <OverviewTab event={event} />,
-            id: "overview",
-            label: t("tabs.overview"),
-          },
-          {
-            content: <DetailsTab event={event} />,
-            id: "details",
-            label: t("tabs.details"),
-          },
-          {
-            content: <AccessTab event={event} />,
-            id: "access",
-            label: t("tabs.access"),
-          },
-          {
-            content: <PeopleTab event={event} />,
-            id: "people",
-            label: t("tabs.people"),
-          },
-          {
-            content: <EventProgramAdmin eventId={eventId} />,
-            id: "program",
-            label: t("tabs.program"),
-          },
-          {
-            content: <PromoKit event={event} />,
-            id: "promotion",
-            label: t("tabs.promotion"),
-          },
-          {
-            content: <AfterTab event={event} />,
-            id: "after",
-            label: t("tabs.after"),
-          },
-          {
-            content: <RecordHistory id={eventId} table="events.events" />,
-            id: "history",
-            label: t("tabs.history"),
-          },
-        ]}
-      />
+      <OverviewTab event={event} />
     </RecordView>
   );
 };

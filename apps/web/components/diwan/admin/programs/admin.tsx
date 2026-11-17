@@ -47,12 +47,14 @@ import {
   Field,
   NewLink,
   RecordPage,
+  RecordView,
   SaveButton,
   SelectInput,
 } from "../kit";
 import { MemberPicker, useMemberNames } from "../member-picker";
 import { memberName } from "../members/directory";
 import { ProblemReports } from "../problem-reports";
+import { RecordHistory } from "../record-history";
 
 const invalidateKey = ["admin", "programs-module"];
 
@@ -189,6 +191,7 @@ const Episodes = ({ programId }: { programId: string }) => {
 /** One Next Stop episode on its own page, by its slug; new for a blank one. */
 export const EpisodePage = ({ slug }: { readonly slug: string }) => {
   const t = useTranslations("diwan.admin.programs.episodes");
+  const tr = useTranslations("diwan.admin.kit.record");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const options = useProgramOptions(null);
@@ -240,23 +243,39 @@ export const EpisodePage = ({ slug }: { readonly slug: string }) => {
         youtubeAr: e.youtube_id_ar ?? "",
       }
     : blankEpisode;
+  if (!e) {
+    return (
+      <RecordPage back={back} backLabel={t("back")} title={t("new")}>
+        <EpisodeEditor initial={initial} programId={programId} />
+      </RecordPage>
+    );
+  }
   return (
-    <div className="grid max-w-3xl gap-8">
-      <AdminHeading
-        actions={
-          <>
-            <Link className="link" href={back}>
-              {t("back")}
-            </Link>
-            {e?.published_at ? <OnTheSite href="/next-stop" /> : null}
-          </>
-        }
-        title={e ? localized(e, "title", locale) : t("new")}
-      />
+    <RecordView
+      actions={e.published_at ? <OnTheSite href="/next-stop" /> : undefined}
+      back={
+        <Link className="link" href={back}>
+          {t("back")}
+        </Link>
+      }
+      history={<RecordHistory id={e.id} table="programs.episodes" />}
+      narrow
+      tabs={[
+        {
+          content: (
+            <>
+              <OnCamera episodeId={e.id} />
+              <EpisodeCredits episodeId={e.id} />
+            </>
+          ),
+          id: "people",
+          label: tr("people"),
+        },
+      ]}
+      title={localized(e, "title", locale)}
+    >
       <EpisodeEditor initial={initial} programId={programId} />
-      {e ? <OnCamera episodeId={e.id} /> : null}
-      {e ? <EpisodeCredits episodeId={e.id} /> : null}
-    </div>
+    </RecordView>
   );
 };
 

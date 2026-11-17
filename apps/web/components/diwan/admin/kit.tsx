@@ -40,6 +40,7 @@ import { ApiError, callApiText } from "@/lib/diwan/api";
 import { useQueryState } from "@/lib/diwan/use-query-param";
 import { useAppLink } from "@/lib/link-context";
 import { ChoiceInput } from "./choice-input";
+import { RecordMenu, type RecordTab, RecordTabs } from "./record";
 import { useSectionForm } from "./section-form";
 
 // ── Page heading ────────────────────────────────────────────────────────────
@@ -171,33 +172,67 @@ export const RecordView = ({
   children,
   history,
   lede,
+  menu,
   narrow = false,
   status,
+  tabs,
   title,
 }: {
-  /** The main action, then any link out ("On the site"). */
+  /** The one main action, then any link out ("On the site"). */
   readonly actions?: ReactNode;
   /** The way back to its list, a link. */
   readonly back?: ReactNode;
+  /** The record's Overview. */
   readonly children: ReactNode;
-  /** The record's History, shown last. */
+  /** The record's History, its last tab. */
   readonly history?: ReactNode;
   readonly lede?: ReactNode;
+  /** Everything but the main action, under More. */
+  readonly menu?: ReactNode;
   readonly narrow?: boolean;
   readonly status?: ReactNode;
+  /** The record's other tabs, between Overview and History. */
+  readonly tabs?: readonly RecordTab[];
   readonly title: string;
-}) => (
-  <div className={cn("grid gap-10", narrow && "max-w-3xl")}>
-    <div className="grid gap-3">
-      {back ? <div className="type-caption">{back}</div> : null}
-      <AdminHeading actions={actions} status={status} title={title}>
-        {lede}
-      </AdminHeading>
+}) => {
+  const t = useTranslations("diwan.admin.kit.record");
+  const tabbed = Boolean(history || tabs?.length);
+  return (
+    <div className={cn("grid gap-10", narrow && "max-w-3xl")}>
+      <div className="grid gap-3">
+        {back ? <div className="type-caption">{back}</div> : null}
+        <AdminHeading
+          actions={
+            actions || menu ? (
+              <>
+                {actions}
+                {menu ? <RecordMenu>{menu}</RecordMenu> : null}
+              </>
+            ) : undefined
+          }
+          status={status}
+          title={title}
+        >
+          {lede}
+        </AdminHeading>
+      </div>
+      {tabbed ? (
+        <RecordTabs
+          label={t("tabsLabel")}
+          tabs={[
+            { content: children, id: "overview", label: t("overview") },
+            ...(tabs ?? []),
+            ...(history
+              ? [{ content: history, id: "history", label: t("history") }]
+              : []),
+          ]}
+        />
+      ) : (
+        children
+      )}
     </div>
-    {children}
-    {history}
-  </div>
-);
+  );
+};
 
 /**
  * A new or edited record's own page: the same record page, with the way
