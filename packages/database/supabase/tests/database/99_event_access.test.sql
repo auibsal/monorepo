@@ -93,7 +93,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(25);
+select plan(26);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ac01', 'member.ac@auib.edu.iq', 'Member');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ac02', 'associate.ac@auib.edu.iq', 'Associate');
@@ -273,6 +273,15 @@ select throws_ok(
   $$ insert into events.program_items (event_id, title_en, credit) values ('e0000000-0000-0000-0000-00000000ac01', 'A film', 'A director') $$,
   '42501', null,
   'A member does not write an event''s program'
+);
+
+-- ── Saving the event ────────────────────────────────────────────────────────
+
+select ok(
+  (select bool_and(has_column_privilege('authenticated', 'events.events', c, p))
+   from unnest(array['classes', 'format', 'access_detail_en', 'access_detail_ar']) c,
+     unnest(array['INSERT', 'UPDATE']) p),
+  'Staff may write the event''s access and format (Row Level Security decides which events)'
 );
 
 select * from finish();
