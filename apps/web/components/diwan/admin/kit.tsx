@@ -36,6 +36,7 @@ import { createPortal } from "react-dom";
 import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
 import { DataError } from "@/lib/data";
+import { useMarkDeepPage } from "@/lib/deep-page";
 import { ApiError, callApiText } from "@/lib/diwan/api";
 import { useQueryState } from "@/lib/diwan/use-query-param";
 import { useAppLink } from "@/lib/link-context";
@@ -186,6 +187,9 @@ export const RecordView = ({
   readonly title: string;
 }) => {
   const t = useTranslations("diwan.admin.kit.record");
+  // A record's page is a deep page: the shell shows the way back instead
+  // of the side menu (decisions.md, The site).
+  useMarkDeepPage();
   const tabbed = Boolean(history || tabs?.length);
   const readOnly = (content: ReactNode) =>
     archived ? (

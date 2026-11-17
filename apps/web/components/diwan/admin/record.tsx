@@ -97,7 +97,7 @@ export const RecordTabs = ({
     <div className="grid gap-8">
       <div
         aria-label={label}
-        className="border-line flex flex-wrap gap-x-6 border-b"
+        className="border-line flex gap-x-6 overflow-x-auto border-b"
         onKeyDown={onKeyDown}
         role="tablist"
       >

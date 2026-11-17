@@ -83,7 +83,9 @@
       "signedRecord": "Signed on {date}. Record {record}.",
       "failed": "It wasn’t signed. Try again in a moment."
     },
-    "contentCredentials": "Content Credentials"
+    "contentCredentials": "Content Credentials",
+    "breadcrumb": "You are here",
+    "backTo": "Back to {place}"
   },
   "auth": {
     "signOut": "Sign out",
@@ -249,7 +251,8 @@
       "designSystem": "Design system",
       "work": "Work",
       "documents": "Documents",
-      "roles": "Roles and service"
+      "roles": "Roles and service",
+      "requests": "What you sent"
     },
     "errors": {
       "loadFailed": "We couldn’t load this. Check your connection and try again.",

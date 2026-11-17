@@ -83,7 +83,9 @@
       "signedRecord": "وُقّع في {date}. رقم السجل {record}.",
       "failed": "لم يُوقَّع. حاول مجددًا بعد قليل."
     },
-    "contentCredentials": "بيانات اعتماد المحتوى"
+    "contentCredentials": "بيانات اعتماد المحتوى",
+    "breadcrumb": "أنت هنا",
+    "backTo": "العودة إلى {place}"
   },
   "auth": {
     "signOut": "تسجيل الخروج",
@@ -249,7 +251,8 @@
       "designSystem": "نظام التصميم",
       "work": "أعمالك",
       "documents": "المستندات",
-      "roles": "الأدوار والخدمة"
+      "roles": "الأدوار والخدمة",
+      "requests": "ما أرسلته"
     },
     "errors": {
       "loadFailed": "تعذّر التحميل. تحقّق من اتصالك وحاول مرة أخرى.",
