@@ -62,7 +62,7 @@ const refuse = async (
 
 interface Draft {
   body: governance.MeetingBody;
-  event_id: string | null;
+  event_id: string;
   meeting_on: string;
   text_ar?: string;
   text_en: string;
@@ -119,9 +119,10 @@ const readDraft = async (
       "Make the meeting's event in the Diwan first and link its row (Event); its day becomes the meeting's date."
     );
   }
-  const meetingOn = read.date(page, "When")?.start?.slice(0, 10) ?? null;
-  if (!(meetingOn || eventId)) {
-    problems.push("Link the meeting's event in Event, or set When to its day.");
+  if (!(linked[0] || eventId)) {
+    problems.push(
+      "Link the meeting's event in Event: its day is the meeting's date."
+    );
   }
   const title = read.text(page, "Name");
   if (!title) {
@@ -140,9 +141,9 @@ const readDraft = async (
     );
   }
   // One home for the date (decisions.md, Where things live): the event's
-  // day on the site; Notion's When only for a meeting with no event.
-  const day = facts?.day ?? meetingOn ?? null;
-  if (problems.length > 0 || !(body && day && text)) {
+  // day on the site. Notion's When shows it and never sets it.
+  const day = facts?.day ?? null;
+  if (problems.length > 0 || !(body && day && eventId && text)) {
     return { problems };
   }
   const arabic = await arabicMinutes(ctx, page);
@@ -208,6 +209,8 @@ const sendMinutes = async (
   await saveLink(ctx, "minutes", page.id, data.id, marker);
   await ctx.notion.updatePage(page.id, {
     "Diwan ID": prop.text(data.id),
+    // The event's day, shown here; the site never reads it back.
+    When: prop.date(draft.meeting_on),
     "Minutes (Diwan)": prop.url(`${ctx.appUrl}/council/meetings/${data.id}`),
     "Platform note": prop.text(
       `In the Diwan since ${stamp()}, waiting for the Council to adopt them. Changes here update the draft until then.`

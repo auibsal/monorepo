@@ -3892,7 +3892,7 @@ export type Database = {
           body: string;
           created_at: string;
           created_by: string | null;
-          event_id: string | null;
+          event_id: string;
           id: string;
           meeting_on: string;
           status: string;
@@ -3908,7 +3908,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           created_by?: string | null;
-          event_id?: string | null;
+          event_id: string;
           id?: string;
           meeting_on: string;
           status?: string;
@@ -3923,7 +3923,7 @@ export type Database = {
           body?: string;
           created_at?: string;
           created_by?: string | null;
-          event_id?: string | null;
+          event_id?: string;
           id?: string;
           meeting_on?: string;
           status?: string;
