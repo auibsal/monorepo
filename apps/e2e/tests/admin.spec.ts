@@ -74,6 +74,29 @@ test("a record in the Diwan opens its own page, one step under its list", async 
   await expectAccessible(page);
 });
 
+// decisions.md, The site: "One record page": tabs with Overview first and
+// History last, each section read as text with its own Edit, and one Save.
+test("an event's page is the one record page", async ({ page }) => {
+  await signInWithPassword(page, editor.email);
+  await page.goto(`${urls.app}/events/${event.slug}`);
+  const tabs = page.getByRole("tablist", { name: "Sections of this record" });
+  await expect(tabs.getByRole("tab").first()).toHaveText("Overview");
+  await expect(tabs.getByRole("tab").last()).toHaveText("History");
+  await tabs.getByRole("tab", { name: "Details" }).click();
+  await expect(page).toHaveURL(/[?&]tab=details/u);
+  // Read as text; no Save until Edit.
+  await expect(page.getByRole("button", { name: "Save" })).toHaveCount(0);
+  await page
+    .getByRole("tabpanel")
+    .getByRole("button", { name: "Edit" })
+    .first()
+    .click();
+  await expect(page.getByRole("button", { name: "Save" })).toHaveCount(1);
+  await page.getByRole("button", { exact: true, name: "Cancel" }).click();
+  await expect(page.getByRole("button", { name: "Save" })).toHaveCount(0);
+  await expectAccessible(page);
+});
+
 test("the design system is part of the Diwan, for officers only", async ({
   page,
   request,

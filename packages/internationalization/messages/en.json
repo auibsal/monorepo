@@ -1146,6 +1146,23 @@
           "lede": "Restore anything deleted in the last 30 days. After that it is removed for good.",
           "purges": "Removed on {date}",
           "restore": "Restore"
+        },
+        "record": {
+          "edit": "Edit",
+          "cancel": "Cancel",
+          "discard": "Discard changes",
+          "discardAsk": "Your changes aren’t saved. Discard them?",
+          "keepEditing": "Keep editing",
+          "more": "More",
+          "stepOf": "Step {step} of {count}:",
+          "create": "Create",
+          "creating": "Creating…",
+          "next": "Next",
+          "back": "Back",
+          "review": "Review",
+          "tabsLabel": "Sections of this record",
+          "overview": "Overview",
+          "history": "History"
         }
       },
       "overview": {
@@ -1672,7 +1689,13 @@
           "backToDraft": "Make it a draft again",
           "needsLead": "An event is published only with a lead and a confirmed place: pick the lead and set the venue, then publish.",
           "newTitle": "New event",
-          "newLede": "Saved as a draft with the standard volunteer shifts (check-in, the membership table, and refreshments when food is served). Finish it on its page, then publish."
+          "newLede": "Saved as a draft with the standard volunteer shifts (check-in, the membership table, and refreshments when food is served). Finish it on its page, then publish.",
+          "noVenue": "No place yet",
+          "notWritten": "Not written yet",
+          "hasImage": "An image is set",
+          "noImage": "No image yet",
+          "noLimit": "No limit",
+          "noLead": "No lead yet"
         },
         "promo": {
           "title": "Promo kit",
@@ -1714,7 +1737,20 @@
           "edit": "Edit",
           "done": "Done",
           "remove": "Remove"
-        }
+        },
+        "tabs": {
+          "overview": "Overview",
+          "details": "Details",
+          "access": "Access",
+          "people": "People",
+          "program": "Program",
+          "promotion": "Promotion",
+          "after": "After",
+          "history": "History"
+        },
+        "checkIn": "Check-in at the door",
+        "debriefTitle": "Debrief",
+        "openPromo": "Open the promo kit"
       },
       "checkIn": {
         "title": "Check-in",

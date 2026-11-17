@@ -4,9 +4,11 @@ import { Button } from "@repo/brand/components/ui/button";
 import { Checkbox } from "@repo/brand/components/ui/checkbox";
 import { Input } from "@repo/brand/components/ui/input";
 import { Label } from "@repo/brand/components/ui/label";
+import type { Locale } from "@repo/internationalization";
+import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
-import { type FormEvent, useId, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { type FormEvent, type ReactNode, useId, useState } from "react";
 import { eventSlug, isAddress } from "@/lib/addresses";
 import { useAuth } from "@/lib/auth/provider";
 import { events, sanitizeRichText, unwrap } from "@/lib/data";
@@ -24,6 +26,7 @@ import {
   SaveButton,
 } from "../kit";
 import { MemberPicker, type Person, useMemberNames } from "../member-picker";
+import { Fact, Facts, NewRecordSteps } from "../record";
 
 /**
  * Everything that makes an event (decisions.md, Events: made and edited
@@ -228,18 +231,39 @@ const AccessSettings = ({
   );
 };
 
+/** The parts of the facts each section of the event's page edits. */
+export type FactsPart = "access" | "details" | "people";
+
 const Fields = ({
   form,
+  part,
   set,
 }: {
   readonly form: Form;
+  /** One section's fields; a new event shows them all. */
+  readonly part?: FactsPart;
   readonly set: <K extends keyof Form>(key: K, value: Form[K]) => void;
 }) => {
-  const t = useTranslations("diwan.admin.event");
-  const tf = useTranslations("diwan.admin.event.facts");
-  const partners = usePartners();
+  const show = (p: FactsPart) => !part || part === p;
   return (
     <div className="grid max-w-4xl gap-5">
+      {show("details") ? <DetailsFields form={form} set={set} /> : null}
+      {show("access") ? <AccessFields form={form} set={set} /> : null}
+      {show("people") ? <PeopleFields form={form} set={set} /> : null}
+    </div>
+  );
+};
+
+interface PartProps {
+  readonly form: Form;
+  readonly set: <K extends keyof Form>(key: K, value: Form[K]) => void;
+}
+
+const DetailsFields = ({ form, set }: PartProps) => {
+  const t = useTranslations("diwan.admin.event");
+  const tf = useTranslations("diwan.admin.event.facts");
+  return (
+    <>
       <BilingualField
         label={tf("title")}
         maxLength={200}
@@ -287,12 +311,6 @@ const Fields = ({
         onChange={(v) => set("venue", v)}
         value={form.venue}
       />
-      <AccessSettings
-        classes={form.classes}
-        entry={form.entry}
-        onClasses={(v) => set("classes", v)}
-        onEntry={(v) => set("entry", v)}
-      />
       <Field hint={t("formatHint")} label={t("format")}>
         {(id) => (
           <ChoiceInput
@@ -304,36 +322,6 @@ const Fields = ({
             {FORMATS.map((format) => (
               <option key={format} value={format}>
                 {t(`formats.${format}`)}
-              </option>
-            ))}
-          </ChoiceInput>
-        )}
-      </Field>
-      <Field label={t("capacity")}>
-        {(id) => (
-          <Input
-            className="max-w-40"
-            id={id}
-            inputMode="numeric"
-            min={1}
-            onChange={(e) => set("capacity", e.target.value)}
-            type="number"
-            value={form.capacity}
-          />
-        )}
-      </Field>
-      <LeadField onChange={(v) => set("lead", v)} value={form.lead} />
-      <Field hint={tf("hostHint")} label={tf("host")}>
-        {(id) => (
-          <ChoiceInput
-            id={id}
-            onChange={(e) => set("partner", e.target.value)}
-            value={form.partner}
-          >
-            <option value="">{tf("theSociety")}</option>
-            {(partners.data ?? []).map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name_en}
               </option>
             ))}
           </ChoiceInput>
@@ -354,7 +342,60 @@ const Fields = ({
           {form.fixed ? tf("slugFixed") : tf("slugHint")}
         </p>
       </div>
-    </div>
+    </>
+  );
+};
+
+const AccessFields = ({ form, set }: PartProps) => {
+  const t = useTranslations("diwan.admin.event");
+  return (
+    <>
+      <AccessSettings
+        classes={form.classes}
+        entry={form.entry}
+        onClasses={(v) => set("classes", v)}
+        onEntry={(v) => set("entry", v)}
+      />
+      <Field label={t("capacity")}>
+        {(id) => (
+          <Input
+            className="max-w-40"
+            id={id}
+            inputMode="numeric"
+            min={1}
+            onChange={(e) => set("capacity", e.target.value)}
+            type="number"
+            value={form.capacity}
+          />
+        )}
+      </Field>
+    </>
+  );
+};
+
+const PeopleFields = ({ form, set }: PartProps) => {
+  const tf = useTranslations("diwan.admin.event.facts");
+  const partners = usePartners();
+  return (
+    <>
+      <LeadField onChange={(v) => set("lead", v)} value={form.lead} />
+      <Field hint={tf("hostHint")} label={tf("host")}>
+        {(id) => (
+          <ChoiceInput
+            id={id}
+            onChange={(e) => set("partner", e.target.value)}
+            value={form.partner}
+          >
+            <option value="">{tf("theSociety")}</option>
+            {(partners.data ?? []).map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name_en}
+              </option>
+            ))}
+          </ChoiceInput>
+        )}
+      </Field>
+    </>
   );
 };
 
@@ -364,7 +405,7 @@ const isNeedsLead = (error: unknown) =>
   error instanceof Error && error.message.includes(NEEDS_LEAD);
 
 /** The event's debrief (a Notion page), linked for its staff only. */
-const DebriefField = ({ eventId }: { readonly eventId: string }) => {
+export const DebriefField = ({ eventId }: { readonly eventId: string }) => {
   const tf = useTranslations("diwan.admin.event.facts");
   const te = useTranslations("diwan.admin.event");
   const { supabase } = useAuth();
@@ -436,7 +477,7 @@ const DebriefField = ({ eventId }: { readonly eventId: string }) => {
 };
 
 /** Publishing and canceling: the page's one accent action. */
-const StatusActions = ({
+export const StatusActions = ({
   event,
   onDone,
 }: {
@@ -513,8 +554,11 @@ const StatusActions = ({
  */
 export const EventFacts = ({
   event,
+  part,
 }: {
   readonly event: EventFactsRow | null;
+  /** On the event's page, the section's fields only, as its form. */
+  readonly part?: FactsPart;
 }) => {
   const t = useTranslations("diwan.admin.event.facts");
   const { supabase } = useAuth();
@@ -553,25 +597,31 @@ export const EventFacts = ({
     save.mutate();
   };
 
+  const factsForm = (
+    <form className="grid gap-6" onSubmit={submit}>
+      <Fields form={form} part={part} set={set} />
+      {slugOk ? null : (
+        <p className="text-sm" role="alert">
+          {t("slugInvalid")}
+        </p>
+      )}
+      <div className="flex flex-wrap items-center gap-3">
+        <SaveButton
+          disabled={!(slugOk && form.title.en && form.startsAt)}
+          pending={save.isPending}
+          quiet={Boolean(event)}
+          success={save.isSuccess}
+        />
+      </div>
+      <ErrorLine error={save.error} />
+    </form>
+  );
+  if (part) {
+    return factsForm;
+  }
   return (
     <DiwanSection id="event" title={t("heading")}>
-      <form className="grid gap-6" onSubmit={submit}>
-        <Fields form={form} set={set} />
-        {slugOk ? null : (
-          <p className="text-sm" role="alert">
-            {t("slugInvalid")}
-          </p>
-        )}
-        <div className="flex flex-wrap items-center gap-3">
-          <SaveButton
-            disabled={!(slugOk && form.title.en && form.startsAt)}
-            pending={save.isPending}
-            quiet={Boolean(event)}
-            success={save.isSuccess}
-          />
-        </div>
-        <ErrorLine error={save.error} />
-      </form>
+      {factsForm}
       {event ? (
         <div className="grid gap-6">
           <DebriefField eventId={event.id} />
@@ -579,5 +629,93 @@ export const EventFacts = ({
         </div>
       ) : null}
     </DiwanSection>
+  );
+};
+
+/**
+ * A new event in four short steps (decisions.md, The site: "One record
+ * page"): the details, who can come, the people, then Review. Create saves
+ * it as a draft and opens its page.
+ */
+export const NewEventSteps = () => {
+  const t = useTranslations("diwan.admin.event");
+  const tf = useTranslations("diwan.admin.event.facts");
+  const tr = useTranslations("diwan.admin.kit.record");
+  const locale = useLocale() as Locale;
+  const { supabase } = useAuth();
+  const client = useQueryClient();
+  const router = useRouter();
+  const [form, setForm] = useState(() => initial(null));
+  const set = <K extends keyof Form>(key: K, value: Form[K]) =>
+    setForm((f) => ({ ...f, [key]: value }));
+  const row = toRow(form);
+  const detailsReady = Boolean(
+    form.title.en && form.startsAt && isAddress(row.slug)
+  );
+  const create = useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await supabase
+          .schema("api")
+          .from("events")
+          .insert({ ...row, status: "draft" })
+      ),
+    onSuccess: async () => {
+      await client.invalidateQueries({ queryKey: ["admin", "events"] });
+      router.push(`/events/${row.slug}`);
+    },
+  });
+  const part = (fields: ReactNode) => (
+    <div className="grid max-w-4xl gap-5">{fields}</div>
+  );
+  return (
+    <div className="grid gap-4">
+      <NewRecordSteps
+        creating={create.isPending}
+        onCreate={() => create.mutate()}
+        steps={[
+          {
+            content: part(<DetailsFields form={form} set={set} />),
+            ready: detailsReady,
+            title: t("tabs.details"),
+          },
+          {
+            content: part(<AccessFields form={form} set={set} />),
+            ready: true,
+            title: t("tabs.access"),
+          },
+          {
+            content: part(<PeopleFields form={form} set={set} />),
+            ready: true,
+            title: t("tabs.people"),
+          },
+          {
+            content: (
+              <Facts>
+                <Fact label={tf("title")}>{form.title.en}</Fact>
+                <Fact label={t("starts")}>
+                  {form.startsAt
+                    ? `${formatLongDate(form.startsAt, locale)}, ${formatClock(form.startsAt, locale)}`
+                    : ""}
+                </Fact>
+                <Fact label={t("venue")}>
+                  {(locale === "ar" ? form.venue.ar : form.venue.en) ||
+                    tf("noVenue")}
+                </Fact>
+                <Fact label={t("capacity")}>
+                  {form.capacity || tf("noLimit")}
+                </Fact>
+                <Fact label={tf("slug")}>
+                  <bdi dir="ltr">{`/events/${row.slug}`}</bdi>
+                </Fact>
+              </Facts>
+            ),
+            ready: detailsReady,
+            title: tr("review"),
+          },
+        ]}
+      />
+      <ErrorLine error={create.error} />
+    </div>
   );
 };

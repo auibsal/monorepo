@@ -32,6 +32,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import { DateInput } from "@/components/fields/date-input";
 import { useAuth } from "@/lib/auth/provider";
 import { DataError } from "@/lib/data";
@@ -39,6 +40,7 @@ import { ApiError, callApiText } from "@/lib/diwan/api";
 import { useQueryState } from "@/lib/diwan/use-query-param";
 import { useAppLink } from "@/lib/link-context";
 import { ChoiceInput } from "./choice-input";
+import { useSectionForm } from "./section-form";
 
 // ── Page heading ────────────────────────────────────────────────────────────
 
@@ -523,11 +525,43 @@ export const SaveButton = ({
   success = false,
 }: SaveButtonProps) => {
   const t = useTranslations("common");
+  const section = useSectionForm();
+  const anchor = useRef<HTMLSpanElement>(null);
+  const wasSaving = useRef(false);
+  // Inside a section being edited, a finished save closes the form.
+  useEffect(() => {
+    if (pending) {
+      wasSaving.current = true;
+    } else if (success && wasSaving.current) {
+      wasSaving.current = false;
+      section?.saved();
+    }
+  }, [pending, success, section]);
   let label = t("save");
   if (pending) {
     label = t("saving");
   } else if (success) {
     label = t("saved");
+  }
+  if (section) {
+    // The one Save, in the section's sticky bar; it submits this form.
+    return (
+      <>
+        <span hidden ref={anchor} />
+        {section.bar
+          ? createPortal(
+              <Button
+                disabled={disabled || pending}
+                onClick={() => anchor.current?.closest("form")?.requestSubmit()}
+                type="button"
+              >
+                {label}
+              </Button>,
+              section.bar
+            )
+          : null}
+      </>
+    );
   }
   return (
     <Button
