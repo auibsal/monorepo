@@ -44,7 +44,11 @@ const Form = () => {
       <DraftOffer autosave={autosave} onRestore={setText} />
       <label>
         Title
-        <input onChange={(e) => setText(e.target.value)} value={text} />
+        <input
+          dir="auto"
+          onChange={(e) => setText(e.target.value)}
+          value={text}
+        />
       </label>
       <button onClick={() => autosave.clear()} type="button">
         Save
