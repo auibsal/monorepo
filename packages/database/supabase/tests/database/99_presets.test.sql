@@ -92,7 +92,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(9);
+select plan(10);
 
 -- decisions.md, The site: "Presets".
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
@@ -101,6 +101,12 @@ select pg_temp.make_user('00000000-0000-0000-0000-0000000000f2', 'reader@auib.ed
 
 select is((select count(*)::int from core.presets where kind = 'event'), 9,
   'Each of the Events Manual''s nine formats is a preset');
+select is(
+  (select count(distinct kind)::int from core.presets
+   where kind in ('opening', 'call', 'announcement', 'letter')),
+  4,
+  'Openings, Edition calls, announcements and letters each start from a preset'
+);
 
 insert into events.events (id, slug, title_en, title_ar, starts_at, status) values
   ('e0000000-0000-0000-0000-0000000000d1', 'writing-workshop-2026-12-08', 'Writing workshop', 'ورشة كتابة',

@@ -38,7 +38,7 @@ import {
   picks,
   type Reply,
 } from "../members/hiring";
-import { usePresets } from "../presets";
+import { PresetStart } from "../presets";
 import { RecentlyDeleted } from "../recently-deleted";
 
 /**
@@ -345,8 +345,6 @@ const PlaceForm = ({
   readonly onDone: () => void;
 }) => {
   const t = useTranslations("diwan.admin.programs.openings");
-  const tp = useTranslations("diwan.admin.presets");
-  const presets = usePresets("opening");
   const locale = useLocale() as Locale;
   const { supabase } = useAuth();
   const queryClient = useQueryClient();
@@ -403,38 +401,10 @@ const PlaceForm = ({
           )}
         </Field>
       ) : null}
-      {(presets.data ?? []).length > 0 ? (
-        <Field label={tp("start")}>
-          {(id) => (
-            <SelectInput
-              id={id}
-              onChange={(e) => {
-                const preset = presets.data?.find(
-                  (p) => p.key === e.target.value
-                );
-                if (preset) {
-                  setForm((f) => ({
-                    ...f,
-                    body: {
-                      ar: String(preset.fields.body_ar ?? ""),
-                      en: String(preset.fields.body_en ?? ""),
-                    },
-                    title: { ar: preset.title_ar, en: preset.title_en },
-                  }));
-                }
-              }}
-              value=""
-            >
-              <option value="">{tp("none")}</option>
-              {(presets.data ?? []).map((p) => (
-                <option key={p.key} value={p.key}>
-                  {localized({ ...p }, "title", locale)}
-                </option>
-              ))}
-            </SelectInput>
-          )}
-        </Field>
-      ) : null}
+      <PresetStart
+        kind="opening"
+        onPick={({ body, title }) => setForm((f) => ({ ...f, body, title }))}
+      />
       <BilingualField
         label={t("title")}
         maxLength={200}

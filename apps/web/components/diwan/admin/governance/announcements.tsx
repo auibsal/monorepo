@@ -14,6 +14,7 @@ import { callApi } from "@/lib/diwan/api";
 import { useGrants } from "@/lib/diwan/queries";
 import { hasPermission } from "@/lib/rbac";
 import { AdminHeading, DateTimeField, ErrorLine } from "../kit";
+import { PresetStart } from "../presets";
 import { DeleteRecord, RecentlyDeleted } from "../recently-deleted";
 
 const key = ["admin", "council", "announcements"];
@@ -104,6 +105,20 @@ const Editor = ({
         save.mutate();
       }}
     >
+      {form.id ? null : (
+        <PresetStart
+          kind="announcement"
+          onPick={({ body, title }) =>
+            setForm((f) => ({
+              ...f,
+              body_ar: body.ar,
+              body_en: body.en,
+              title_ar: title.ar,
+              title_en: title.en,
+            }))
+          }
+        />
+      )}
       <div className="grid gap-5 md:grid-cols-2">
         <div className="grid content-start gap-4" dir="ltr" lang="en">
           <Field label={t("titleEn")}>

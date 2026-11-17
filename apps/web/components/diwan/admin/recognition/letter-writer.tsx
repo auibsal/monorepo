@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useProfile } from "@/lib/diwan/queries";
 import { Field, RecordPage, SelectInput } from "../kit";
+import { PresetStart } from "../presets";
 
 /**
  * The letters of the register (SAL-EXB-01) other than service letters,
@@ -85,6 +86,13 @@ const LetterWriter = () => {
             </SelectInput>
           )}
         </Field>
+        <PresetStart
+          kind="letter"
+          onPick={(words) => {
+            setSubject(words.title[lang]);
+            setBody(words.body[lang]);
+          }}
+        />
         <Field hint={t("recipientHint")} label={t("recipient")}>
           {(id) => (
             <Textarea

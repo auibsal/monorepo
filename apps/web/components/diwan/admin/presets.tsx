@@ -19,6 +19,7 @@ import {
   ErrorLine,
   Field,
   SaveButton,
+  SelectInput,
 } from "./kit";
 import type { PresetKind } from "./preset-kinds";
 
@@ -317,5 +318,60 @@ export const PresetsAdmin = ({ kind }: { readonly kind: PresetKind }) => {
         </AddInPlace>
       </DiwanSection>
     </div>
+  );
+};
+
+/** What a new record takes from its preset: the name and the words. */
+export interface PresetWords {
+  readonly body: { readonly ar: string; readonly en: string };
+  readonly title: { readonly ar: string; readonly en: string };
+}
+
+/**
+ * "Start from" on a new record (decisions.md, The site: "Presets"): picking
+ * a preset fills the record's name and words, and anything can change
+ * after. Nothing shows while the kind has no presets.
+ */
+export const PresetStart = ({
+  kind,
+  onPick,
+}: {
+  readonly kind: PresetKind;
+  readonly onPick: (words: PresetWords) => void;
+}) => {
+  const t = useTranslations("diwan.admin.presets");
+  const locale = useLocale() as Locale;
+  const presets = usePresets(kind);
+  if ((presets.data ?? []).length === 0) {
+    return null;
+  }
+  return (
+    <Field label={t("start")}>
+      {(id) => (
+        <SelectInput
+          id={id}
+          onChange={(e) => {
+            const preset = presets.data?.find((p) => p.key === e.target.value);
+            if (preset) {
+              onPick({
+                body: {
+                  ar: String(preset.fields.body_ar ?? ""),
+                  en: String(preset.fields.body_en ?? ""),
+                },
+                title: { ar: preset.title_ar, en: preset.title_en },
+              });
+            }
+          }}
+          value=""
+        >
+          <option value="">{t("none")}</option>
+          {(presets.data ?? []).map((p) => (
+            <option key={p.key} value={p.key}>
+              {localized({ ...p }, "title", locale)}
+            </option>
+          ))}
+        </SelectInput>
+      )}
+    </Field>
   );
 };

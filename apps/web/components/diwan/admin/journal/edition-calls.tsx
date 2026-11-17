@@ -19,6 +19,7 @@ import {
   Field,
   SaveButton,
 } from "../kit";
+import { PresetStart } from "../presets";
 
 const EDITION_DESKS = ["letters", "gallery", "video"] as const;
 
@@ -113,7 +114,12 @@ const CallForm = ({
     <form className="grid max-w-4xl gap-5" onSubmit={submit}>
       {call ? (
         <p className="type-subheading">{localized(call, "title", locale)}</p>
-      ) : null}
+      ) : (
+        <PresetStart
+          kind="call"
+          onPick={({ body }) => setForm((f) => ({ ...f, theme: body }))}
+        />
+      )}
       <BilingualField
         label={t("theme")}
         maxLength={2000}
