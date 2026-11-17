@@ -6103,7 +6103,6 @@
           "body": "Events all year, at least one a month each semester, on one calendar: among them the Typewriter Tour in the spring club fair week and Second Chapter, a book drive and sale for a charity, at the fall club fair."
         }
       },
-      "runTitle": "How it is run",
       "run": {
         "open": {
           "title": "Open to every student",
@@ -6135,48 +6134,13 @@
         }
       },
       "nonPartisan": "Our Society is non-partisan and non-sectarian. Your writing and art can explore anything human. The Society itself takes no side in party or sect.",
-      "beganTitle": "How it began",
       "began": {
         "registered": "The Society registers as a club with the Office of Student Life.",
         "tour": "The first Typewriter Tour, four days at four places on campus.",
         "fair": "Its first table at the club fair.",
         "fall": "Registered again for the fall, at the fall club fair.",
+        "launch": "auibsal.org launches; joining and sending work to Qirtas open.",
         "founding": "The Founding Meeting, where members adopt the Constitution and Bylaws."
-      },
-      "hubTitle": "The Society",
-      "hub": {
-        "council": {
-          "title": "The Council",
-          "body": "Who leads the Society this year, seat by seat."
-        },
-        "library": {
-          "title": "The Library",
-          "body": "The Constitution, the rules and plans that follow from it, and this website’s policies."
-        },
-        "partners": {
-          "title": "Partners",
-          "body": "The organizations the Society works with, and how to become one."
-        },
-        "contact": {
-          "title": "Contact",
-          "body": "How to reach the Society, and how to raise a concern."
-        },
-        "press": {
-          "title": "Press kit",
-          "body": "The logos, colors and words to use when writing about the Society."
-        },
-        "verify": {
-          "title": "Verify",
-          "body": "Check a membership card or a certificate the Society issued."
-        },
-        "credits": {
-          "title": "Credits",
-          "body": "The fonts, icons and software the site is made with."
-        },
-        "openData": {
-          "title": "Open data",
-          "body": "The Society’s public numbers as JSON and CSV, free to reuse."
-        }
       },
       "spring2026": "Spring 2026",
       "verseTranslation": "The horses, the night and the desert know me, and the sword, the lance, the paper and the pen.",
@@ -6193,8 +6157,6 @@
       "independence": "The AUIB Society of Arts and Letters is a registered student organization at the American University of Iraq – Baghdad. Its views and publications are its own and not those of the University.",
       "verseFirst": "الخيلُ والليلُ والبيداءُ تعرفني",
       "verseSecond": "والسيفُ والرمحُ والقرطاسُ والقلمُ",
-      "sustainabilityTitle": "Sustainability",
-      "sustainabilityLede": "What the Society does to use less paper, and only what the site can count.",
       "paper": {
         "signed": "Documents signed on the site",
         "sheets": "Sheets not printed",
@@ -6233,7 +6195,17 @@
       },
       "greenTitle": "The green-event checklist",
       "green": "Every event’s checklist carries the Society’s green-event items: waste and reuse, food and water, materials and printing, transport, and how the event is announced.",
-      "greenSources": "Adapted from the University of Illinois’s Certified Green Event program, Duke Sustainability’s Green Event Certification and UC Berkeley’s ASUC Green Events program."
+      "greenSources": "Adapted from the University of Illinois’s Certified Green Event program, Duke Sustainability’s Green Event Certification and UC Berkeley’s ASUC Green Events program.",
+      "more": {
+        "label": "More about the Society",
+        "howRun": "How it’s run",
+        "people": "Our people",
+        "sustainability": "Sustainability",
+        "history": "History",
+        "library": "The Library",
+        "openData": "Open data",
+        "credits": "Credits"
+      }
     },
     "join": {
       "title": "Join the Society",
@@ -6241,38 +6213,36 @@
       "steps": {
         "register": {
           "title": "Register",
-          "body": "Sign up with your AUIB email and acknowledge the Code of Conduct."
+          "body": "Sign up with your AUIB email and agree to the Code of Conduct."
         },
         "commonRoom": {
           "title": "Join the members’ group on Telegram",
-          "body": "The members’ group, where reminders and room changes go first. Link your account and you’re let in."
+          "body": "Link your account and you’re let in; reminders and room changes go there first."
         },
         "twoThings": {
           "title": "Come to two things",
-          "body": "Attend two events or general meetings in the 12 months before an election and you are a Voting Member: you vote, and after a semester as a member you can stand for office."
+          "body": "Two events or general meetings in the year before an election make you a Voting Member."
         }
       },
       "gives": {
         "title": "What membership gives you",
         "card": {
           "title": "A live card",
-          "body": "Your membership card on your phone and in Google Wallet. Its code changes every 30 seconds, so it gets you in at the door and can be checked by anyone, but never copied."
+          "body": "On your phone and in Google Wallet; its code changes every 30 seconds, so anyone can check it and no one can copy it."
         },
         "record": {
           "title": "A record",
-          "body": "The events you came to, the hours you gave and your certificates, in one place. Each certificate has its own check."
+          "body": "Your events, hours and certificates in one place."
         },
         "vote": {
           "title": "A vote",
-          "body": "Attend two events or general meetings in 12 months and you are a Voting Member: you vote in elections, and after a semester as a member you can stand for office."
+          "body": "A vote in the Society’s elections and, after a semester as a member, the right to stand."
         }
       },
       "tiersTitle": "Kinds of membership",
       "tiersYou": "You are a…",
       "tiersIf": "if you…",
       "tiersCan": "you can…",
-      "firstMonthTitle": "Your first month",
-      "firstMonth": "Sign up · join the members’ group on Telegram · come to an event with a friend · tell us after your second event what you would like to do here.",
       "cta": "Sign up",
       "ctaHint": "Use your AUIB email address.",
       "others": "Not at AUIB? Sign up with any address to come to events and submit work to Qirtas as a guest; an organization applies to partner.",
@@ -6315,6 +6285,11 @@
       "associateRequest": {
         "title": "Faculty, staff and alumni",
         "lede": "Associate membership is for AUIB faculty, staff and alumni 18 or older; the Director of Membership approves alumni."
+      },
+      "otherWaysLine": "Faculty, staff, alumni, guests and partners join another way.",
+      "otherWays": {
+        "title": "Other ways in",
+        "lede": "Every kind of membership, and how faculty, staff, alumni, guests and partners join."
       }
     },
     "contact": {
@@ -7027,6 +7002,29 @@
       "csv": "CSV",
       "license": "Every dataset here is dedicated to the public domain:",
       "cc0": "CC0 1.0"
+    },
+    "howRun": {
+      "title": "How it’s run",
+      "lede": "Who may join, how the Council is chosen, and the rules the Society keeps."
+    },
+    "history": {
+      "title": "History",
+      "lede": "How the Society began, as it happened."
+    },
+    "sustainability": {
+      "title": "Sustainability",
+      "lede": "What the Society does to use less paper, and only what the site can count."
+    },
+    "people": {
+      "title": "Our people",
+      "lede": "Each department’s team, under the Council seat it answers to.",
+      "departments": {
+        "eic": "Qirtas",
+        "media_director": "Media",
+        "events_director": "Events",
+        "partnerships_director": "Partnerships",
+        "membership_director": "Membership"
+      }
     }
   }
 }

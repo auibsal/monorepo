@@ -1,23 +1,19 @@
-import {
-  formatLongDate,
-  formatNumber,
-} from "@repo/internationalization/format";
+import { formatNumber } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader, RuledList, Section } from "@/components/section";
-import { PAPER_CALCULATOR } from "@/lib/data/paper";
 import { type LocaleParams, sectionMetadata } from "@/lib/page";
 import { readPublished } from "@/lib/supabase";
 
 export const generateMetadata = sectionMetadata("web.about", "/about");
 
 /**
- * The About page (decisions.md, The site), in order: the one sentence, the
- * motto (al-Mutanabbi's whole verse with its translation, and the story of
- * the name Qirtas), what the Society does, how it is run, a short history,
- * the Society by the numbers, the sustainability note (the footer's
- * "Paperless by default" links here), the independence statement and the
- * documents. AUIB's offices are listed on the partners page only.
+ * The About page, short (decisions.md, The site: About), in order: the one
+ * sentence, the motto (al-Mutanabbi's whole verse with its translation,
+ * and the story of the name Qirtas), what the Society does, the numbers
+ * (each once it is more than zero), the independence statement, then one
+ * line to its own pages. The Council, Press, Partners and Contact are in
+ * the footer and aren't repeated here.
  */
 
 /** The numbers counted by the site, in this order. */
@@ -31,60 +27,13 @@ const DOES = [
   ["events", "/events"],
 ] as const;
 
-/** How it is run (decisions §2–§3), in the order a newcomer asks. */
-const RUN = [
-  "open",
-  "council",
-  "elections",
-  "editors",
-  "money",
-  "process",
-  "rules",
-] as const;
-
-/**
- * Where the Society stands (decisions §0), a dated line each. The Society
- * is founded at the Founding Meeting; nothing here dates an adoption before
- * it.
- */
-const BEGAN = [
-  ["registered", null],
-  ["tour", "2026-02-08"],
-  ["fair", "2026-02-23"],
-  ["fall", "2026-10-05"],
-  ["founding", "2027-03-30"],
-] as const;
-
-/** What the Society does for the environment (decisions.md, Sustainability). */
-const PRACTICES = [
-  "digital",
-  "need",
-  "editions",
-  "reuse",
-  "days",
-  "web",
-] as const;
-
-/** The paper the counted sheets stand for, once the calculator's figures are in. */
-const paperFigures = (sheets: number) => {
-  const per = PAPER_CALCULATOR.perSheet;
-  return per
-    ? ([
-        ["wood", per.woodLbs * sheets],
-        ["water", per.waterGallons * sheets],
-        ["co2e", per.co2eLbs * sheets],
-      ] as const)
-    : [];
-};
-
-/** The Society's own pages, in a row of three. */
-const HUB = [
-  ["council", "/about/council"],
+/** About's own pages, one line (decisions.md, The site: About). */
+const MORE = [
+  ["howRun", "/about/how-its-run"],
+  ["people", "/about/people"],
+  ["sustainability", "/about/sustainability"],
+  ["history", "/about/history"],
   ["library", "/library"],
-  ["partners", "/partners"],
-  ["contact", "/about/contact"],
-  ["press", "/about/press"],
-  ["verify", "/verify"],
   ["openData", "/about/open-data"],
   ["credits", "/about/credits"],
 ] as const;
@@ -103,16 +52,8 @@ const AboutPage = async ({ params }: LocaleParams) => {
     },
     null
   );
-  const paper = await readPublished(
-    ["about"],
-    async (c) => {
-      const { data } = await c
-        .schema("api")
-        .rpc("paper_numbers", undefined, { get: true });
-      return data?.[0] ?? null;
-    },
-    null
-  );
+  // Each number shows once it is more than zero (decisions.md, The site: About).
+  const counted = NUMBERS.filter((key) => (numbers?.[key] ?? 0) > 0);
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-20 px-4 py-16 sm:py-24">
@@ -163,53 +104,16 @@ const AboutPage = async ({ params }: LocaleParams) => {
         />
       </Section>
 
-      <Section id="run" title={t("runTitle")}>
-        <RuledList
-          columns={3}
-          items={RUN.map((key) => ({
-            body: t(`run.${key}.body`),
-            key,
-            title: t(`run.${key}.title`),
-          }))}
-        />
-        <p className="type-body pt-space-4 max-w-[60ch]">{t("nonPartisan")}</p>
-      </Section>
-
-      <Section id="began" title={t("beganTitle")}>
-        <ol className="border-line grid border-b">
-          {BEGAN.map(([key, day]) => (
-            <li
-              className="border-line grid gap-1 border-t py-3 sm:grid-cols-[16rem_1fr] sm:gap-x-6"
-              key={key}
-            >
-              {day ? (
-                <time
-                  className="type-caption text-text-secondary"
-                  dateTime={day}
-                >
-                  {formatLongDate(`${day}T12:00:00+03:00`, locale, true)}
-                </time>
-              ) : (
-                <span className="type-caption text-text-secondary">
-                  {t("spring2026")}
-                </span>
-              )}
-              <span className="type-body">{t(`began.${key}`)}</span>
-            </li>
-          ))}
-        </ol>
-      </Section>
-
-      {numbers ? (
+      {counted.length > 0 ? (
         <Section id="numbers" title={t("numbersTitle")}>
           <dl className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {NUMBERS.map((key) => (
+            {counted.map((key) => (
               <div className="border-line grid gap-1 border-t pt-3" key={key}>
                 <dt className="type-caption text-text-secondary">
                   {t(`numbers.${key}`)}
                 </dt>
                 <dd className="text-4xl font-light">
-                  {formatNumber(numbers[key], locale)}
+                  {formatNumber(numbers?.[key] ?? 0, locale)}
                 </dd>
               </div>
             ))}
@@ -218,69 +122,21 @@ const AboutPage = async ({ params }: LocaleParams) => {
         </Section>
       ) : null}
 
-      <Section id="sustainability" title={t("sustainabilityTitle")}>
-        <p className="type-body max-w-[60ch]">{t("sustainabilityLede")}</p>
-        {paper ? (
-          <>
-            <dl className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-              {(
-                [
-                  ["signed", paper.documents_signed],
-                  ["sheets", paper.sheets_not_printed],
-                  ...paperFigures(paper.sheets_not_printed),
-                ] as const
-              ).map(([key, value]) => (
-                <div className="border-line grid gap-1 border-t pt-3" key={key}>
-                  <dt className="type-caption text-text-secondary">
-                    {t(`paper.${key}`)}
-                  </dt>
-                  <dd className="text-4xl font-light">
-                    {formatNumber(Math.round(value), locale)}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-            <p className="type-caption">
-              {t("paperNote")}
-              {PAPER_CALCULATOR.perSheet
-                ? ` ${t("paperSource", { version: PAPER_CALCULATOR.version })}`
-                : ""}
-            </p>
-          </>
-        ) : null}
-        <RuledList
-          columns={3}
-          items={PRACTICES.map((key) => ({
-            body: t(`practices.${key}.body`),
-            key,
-            title: t(`practices.${key}.title`),
-          }))}
-        />
-        <div className="grid max-w-[60ch] gap-2">
-          <h3 className="type-heading">{t("greenTitle")}</h3>
-          <p className="type-body">{t("green")}</p>
-          <p className="type-caption">{t("greenSources")}</p>
-        </div>
-      </Section>
-
       <Section id="independence" title={t("independenceTitle")}>
         <p className="type-body max-w-[60ch]">{t("independence")}</p>
       </Section>
 
-      <Section id="society" title={t("hubTitle")}>
-        <RuledList
-          columns={3}
-          items={HUB.map(([key, href]) => ({
-            body: t(`hub.${key}.body`),
-            key,
-            title: (
-              <Link className="hover:text-accent" href={href}>
-                {t(`hub.${key}.title`)}
+      <nav aria-label={t("more.label")}>
+        <ul className="flex flex-wrap gap-x-6 gap-y-2">
+          {MORE.map(([key, href]) => (
+            <li key={key}>
+              <Link className="link" href={href}>
+                {t(`more.${key}`)}
               </Link>
-            ),
-          }))}
-        />
-      </Section>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   );
 };

@@ -62,5 +62,9 @@ export const adoptedResolutions = async (client: Client) =>
   ) ?? [];
 
 /** Who was elected in each published election (no other candidates). */
+/** About → Our people: each department's team under its seat. */
+export const societyPeople = async (client: Client) =>
+  unwrap(await client.schema("api").rpc("society_people")) ?? [];
+
 export const publicElectionResults = async (client: Client) =>
   unwrap(await client.schema("api").rpc("public_election_results")) ?? [];

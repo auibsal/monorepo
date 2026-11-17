@@ -169,7 +169,7 @@ export const Footer = async ({
           </ul>
           <p>{t("address")}</p>
           <p>
-            <Link className={linkClass} href="/about#sustainability">
+            <Link className={linkClass} href="/about/sustainability">
               {t("paperless")}
             </Link>
           </p>

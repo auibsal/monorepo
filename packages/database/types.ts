@@ -5210,6 +5210,17 @@ export type Database = {
         };
         Returns: string;
       };
+      society_people: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          name_ar: string;
+          name_en: string;
+          role: string;
+          seat: string;
+          title_ar: string;
+          title_en: string;
+        }[];
+      };
       spend_export: {
         Args: { name: string; params: Json; who: string };
         Returns: boolean;
