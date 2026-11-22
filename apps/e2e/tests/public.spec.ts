@@ -173,7 +173,7 @@ test.describe("public site", () => {
     expect(retired?.status()).toBe(404);
     // No date is published before its room is confirmed (decisions §7).
     const unplaced = await page.goto(
-      `${urls.web}/events/reading-with-a-guest-2027-02-16`
+      `${urls.web}/events/reading-with-a-guest-2`
     );
     expect(unplaced?.status()).toBe(404);
     await page.goto(`${urls.web}/events/${event.slug}`);
@@ -277,9 +277,11 @@ test("a shared address that changed redirects to its new one, in both languages"
       // Forms live in their flows; the old numbered addresses go on.
       ["/forms/21", "/about/contact/concern"],
       ["/forms/F-45", "/consent/trip"],
+      ["/events/writing-workshop-2026-11-17", "/events/writing-workshop"],
+      // An event's address carries no date; the dated ones go on.
       [
-        "/events/writing-workshop-2026-11-17",
-        "/events/writing-workshop-2026-12-08",
+        "/events/iraqi-short-films-screening-2026-11-22",
+        "/events/iraqi-short-films-screening",
       ],
     ]) {
       const response = await request.get(`${urls.web}${prefix}${from}`, {

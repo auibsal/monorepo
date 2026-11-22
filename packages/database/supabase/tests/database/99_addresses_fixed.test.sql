@@ -120,7 +120,7 @@ select lives_ok(
   'The server''s own key may move an address, with its redirect in the code'
 );
 
--- The owner, Nov 22, 2026: an address carries no date; a repeated title is numbered.
+-- An address carries no date; a repeated title is numbered.
 insert into events.events (id, slug, title_en, title_ar, starts_at) values
   ('e0000000-0000-0000-0000-0000000000b1', 'open-mic-2027-01-05', 'Open mic', 'أمسية مفتوحة', now() + interval '20 days'),
   ('e0000000-0000-0000-0000-0000000000b2', 'open-mic-2027-02-05', 'Open mic', 'أمسية مفتوحة', now() + interval '50 days');

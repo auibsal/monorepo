@@ -118,28 +118,28 @@ select hasnt_table('events', 'series_rules', 'No repeat rules: the term calendar
 select is(
   (select count(*)::integer from events.events e
     where e.program_id is null and e.status = 'published'
-      and e.slug ~ '^(writing-workshop|reading-with-a-guest|book-discussion|listening-session|founding-meeting)-'
+      and e.slug ~ '^(writing-workshop|reading-with-a-guest|book-discussion|listening-session|founding-meeting)(-[0-9]+)?$'
       and (e.starts_at at time zone 'Asia/Baghdad')::time = '16:00'
       and extract(isodow from e.starts_at at time zone 'Asia/Baghdad') = 2),
   0,
   'No Tuesday event is published until its room is confirmed (decisions §7, §10)'
 );
 select is(
-  (select (ends_at at time zone 'Asia/Baghdad')::time from events.events where slug = 'founding-meeting-2027-03-30'),
+  (select (ends_at at time zone 'Asia/Baghdad')::time from events.events where slug = 'founding-meeting'),
   '18:00'::time,
   'The Founding Meeting on March 30 runs to 6:00 PM'
 );
 select is(
-  (select count(*)::int from events.events where slug = 'book-circle-2027-04-09'),
+  (select count(*)::int from events.events where slug ~ '^book-circle(-[0-9]+)?$'),
   0,
   'The April 9 trip, canceled in Notion, is gone (decisions.md)'
 );
 
 select is(
   (select array_agg(e.slug order by e.starts_at) from events.events e
-    where e.slug like 'listening-session-%'),
-  array['listening-session-2027-03-16', 'listening-session-2027-05-11'],
-  'The listening sessions are March 16 and May 11, at their Notion Slugs'
+    where e.slug ~ '^listening-session(-[0-9]+)?$'),
+  array['listening-session', 'listening-session-2'],
+  'The listening sessions are March 16 and May 11, numbered by date'
 );
 select is(
   (select count(*) from core.settings where key = 'journal.award_names_public')::integer,

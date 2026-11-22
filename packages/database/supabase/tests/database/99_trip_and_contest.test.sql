@@ -111,7 +111,7 @@ select pg_temp.grant_role('00000000-0000-0000-0000-0000000e7001', 'program_lead'
 
 select is(
   (select count(*)::int from events.events
-   where off_campus and slug like 'trip-to-al-mutanabbi-street-2027-04-%'),
+   where off_campus and slug = 'trip-to-al-mutanabbi-street'),
   1, 'the Earth Day trip (April 23) is off campus; the April 9 trip was canceled (decisions.md)');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000e7001');
