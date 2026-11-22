@@ -116,11 +116,13 @@ export const slugFromTitle = (en: string, ar = "") => {
     .replace(EDGES, "");
 };
 
-/** An event's address: its title and its day, /events/<title>-<yyyy-mm-dd>. */
-export const eventSlug = (en: string, ar: string, startsAt: string | null) => {
-  const day = startsAt ? startsAt.slice(0, 10) : "";
-  return [slugFromTitle(en, ar) || "event", day].filter(Boolean).join("-");
-};
+/**
+ * An event's address: its title alone, /events/<title>, with no date, so
+ * moving the event never stales it (the owner, Nov 22, 2026). The database
+ * numbers a repeated title (writing-workshop-2; private.event_address).
+ */
+export const eventSlug = (en: string, ar: string) =>
+  slugFromTitle(en, ar) || "event";
 
 /** Whether an address follows the pattern: lowercase words and hyphens. */
 export const isAddress = (slug: string) => ADDRESS.test(slug);

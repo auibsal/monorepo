@@ -105,7 +105,7 @@ const toRow = (f: Form) => ({
   image_path: f.image,
   lead_id: f.lead,
   partner_id: f.partner || null,
-  slug: f.fixed ? f.slug : eventSlug(f.title.en, f.title.ar, f.startsAt),
+  slug: f.fixed ? f.slug : eventSlug(f.title.en, f.title.ar),
   starts_at: f.startsAt ?? "",
   summary_ar: f.summary.ar || null,
   summary_en: f.summary.en || null,
@@ -336,7 +336,7 @@ const DetailsFields = ({ form, set }: PartProps) => {
       <div className="grid gap-1">
         <span className="type-label">{tf("slug")}</span>
         <p className="type-body" dir="ltr">
-          {`/events/${form.fixed ? form.slug : eventSlug(form.title.en, form.title.ar, form.startsAt)}`}
+          {`/events/${form.fixed ? form.slug : eventSlug(form.title.en, form.title.ar)}`}
         </p>
         <p className="type-caption">
           {form.fixed ? tf("slugFixed") : tf("slugHint")}

@@ -154,7 +154,7 @@ describe("the one-time import from Notion (Nov 16, 2026)", () => {
         When: when("2027-04-13T18:00:00.000+03:00"),
       })
     );
-    expect(v?.slug).toBe("writing-workshop-2027-04-13");
+    expect(v?.slug).toBe("writing-workshop");
     expect(v?.entry).toBe("rsvp");
   });
 

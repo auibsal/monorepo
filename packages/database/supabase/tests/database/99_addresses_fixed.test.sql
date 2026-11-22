@@ -92,7 +92,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(3);
+select plan(6);
 
 -- decisions.md, The site: addresses are generated, readable and permanent.
 select pg_temp.make_user('00000000-0000-0000-0000-0000000000f1', 'founder@auib.edu.iq', 'Founder');
@@ -112,12 +112,33 @@ select throws_ok(
 );
 select lives_ok(
   $$ update events.events set slug = 'drafted-night-2026-12-02' where id = 'e0000000-0000-0000-0000-0000000000a2' $$,
-  'A draft''s address follows its title and date'
+  'A draft''s address follows its title'
 );
 select pg_temp.logout();
 select lives_ok(
   $$ update events.events set slug = 'reading-night-moved-2026-12-01' where id = 'e0000000-0000-0000-0000-0000000000a1' $$,
   'The server''s own key may move an address, with its redirect in the code'
+);
+
+-- The owner, Nov 22, 2026: an address carries no date; a repeated title is numbered.
+insert into events.events (id, slug, title_en, title_ar, starts_at) values
+  ('e0000000-0000-0000-0000-0000000000b1', 'open-mic-2027-01-05', 'Open mic', 'أمسية مفتوحة', now() + interval '20 days'),
+  ('e0000000-0000-0000-0000-0000000000b2', 'open-mic-2027-02-05', 'Open mic', 'أمسية مفتوحة', now() + interval '50 days');
+select is(
+  (select slug from events.events where id = 'e0000000-0000-0000-0000-0000000000b1'),
+  'open-mic',
+  'An event''s address drops its date'
+);
+select is(
+  (select slug from events.events where id = 'e0000000-0000-0000-0000-0000000000b2'),
+  'open-mic-2',
+  'A repeated title takes the next number'
+);
+update events.events set slug = 'open-mic' where id = 'e0000000-0000-0000-0000-0000000000b2';
+select is(
+  (select slug from events.events where id = 'e0000000-0000-0000-0000-0000000000b2'),
+  'open-mic-2',
+  'Saving a draft again keeps its number'
 );
 
 select * from finish();

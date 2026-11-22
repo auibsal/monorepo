@@ -154,9 +154,9 @@ export const rowValues = (
   }
   const endsAt = toInstant(when?.end);
   const given = read.text(page, "Slug").toLowerCase();
-  const slug = SLUG.test(given)
-    ? given
-    : `${slugify(title) || "event"}-${startsAt.slice(0, 10)}`;
+  // No date in the address (the owner, Nov 22, 2026): slugFree numbers a
+  // repeated title.
+  const slug = SLUG.test(given) ? given : slugify(title) || "event";
   const host = read.select(page, "Host") ?? read.text(page, "Host");
   const debrief = read.url(page, "Debrief");
   return {

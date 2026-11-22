@@ -66,10 +66,41 @@ export const MOVED: readonly (readonly [
   // Qirtas's themed collections are Editions (decisions.md, Qirtas).
   ["/qirtas/issues", "/qirtas/editions", PUBLIC],
   ["/qirtas/issues/:slug", "/qirtas/editions/:slug", PUBLIC],
-  // The writing workshop moved to Tue Dec 8 (decisions.md, Events).
+  // An event's address is its title, with no date (the owner, Nov 22,
+  // 2026; migration 20261122000100): every dated address that was public.
+  // The first moved before that, with the writing workshop to Tue Dec 8.
+  ["/events/writing-workshop-2026-11-17", "/events/writing-workshop", PUBLIC],
   [
-    "/events/writing-workshop-2026-11-17",
-    "/events/writing-workshop-2026-12-08",
+    "/events/iraqi-short-films-screening-2026-11-22",
+    "/events/iraqi-short-films-screening",
+    PUBLIC,
+  ],
+  [
+    "/events/reading-with-a-guest-2026-12-01",
+    "/events/reading-with-a-guest",
+    PUBLIC,
+  ],
+  ["/events/writing-workshop-2026-12-08", "/events/writing-workshop", PUBLIC],
+  [
+    "/events/reading-with-a-guest-2027-02-16",
+    "/events/reading-with-a-guest-2",
+    PUBLIC,
+  ],
+  ["/events/book-discussion-2027-02-23", "/events/book-discussion", PUBLIC],
+  ["/events/writing-workshop-2027-03-02", "/events/writing-workshop-2", PUBLIC],
+  ["/events/listening-session-2027-03-16", "/events/listening-session", PUBLIC],
+  ["/events/book-discussion-2027-03-23", "/events/book-discussion-2", PUBLIC],
+  ["/events/founding-meeting-2027-03-30", "/events/founding-meeting", PUBLIC],
+  [
+    "/events/reading-with-a-guest-2027-04-06",
+    "/events/reading-with-a-guest-3",
+    PUBLIC,
+  ],
+  ["/events/book-discussion-2027-04-27", "/events/book-discussion-3", PUBLIC],
+  ["/events/writing-workshop-2027-05-04", "/events/writing-workshop-4", PUBLIC],
+  [
+    "/events/listening-session-2027-05-11",
+    "/events/listening-session-2",
     PUBLIC,
   ],
   // Your account in six tabs: the card and an open election are on Today,

@@ -17,10 +17,9 @@ describe("addresses made from titles", () => {
     expect(transliterate("هدهد")).toBe("hudhud");
   });
 
-  it("dates an event's address from its day", () => {
-    expect(eventSlug("Writing workshop", "", "2026-12-08T15:00:00.000Z")).toBe(
-      "writing-workshop-2026-12-08"
-    );
+  it("makes an event's address from its title alone, with no date", () => {
+    expect(eventSlug("Writing workshop", "")).toBe("writing-workshop");
+    expect(eventSlug("", "")).toBe("event");
   });
 
   it("never ends on a hyphen when cut short", () => {
