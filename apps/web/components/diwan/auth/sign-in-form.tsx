@@ -216,6 +216,7 @@ export const StartedEmail = ({
       {/* For password managers: the account the password belongs to. */}
       <input
         autoComplete="username"
+        dir="ltr"
         hidden
         readOnly
         type="email"
