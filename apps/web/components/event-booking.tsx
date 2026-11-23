@@ -48,6 +48,8 @@ export const EventBooking = ({
   const t = useTranslations("web.events");
   const locale = useLocale() as Locale;
   const calendar = `${localizedPath(locale, "/account/events")}#${slug}`;
+  // The ticket is on Today, beside the booking.
+  const ticket = `${localizedPath(locale, "/account")}#next-events`;
   // The event's own .ics, so the person's calendar reminds them too.
   const ics = apiPath(`/calendar/events/${slug}.ics?lang=${locale}`);
   const [signedIn, setSignedIn] = useState(false);
@@ -98,11 +100,26 @@ export const EventBooking = ({
     }
   }, [eventId]);
 
+  // Read when shown (again, too: Next keeps a page visited mounted) and
+  // whenever the tab comes back, so a booking made or given back in your
+  // account shows here.
   useEffect(() => {
-    if (hasSessionCookie(document.cookie)) {
-      setSignedIn(true);
-      load().catch(() => setStatus("none"));
+    if (!hasSessionCookie(document.cookie)) {
+      return;
     }
+    setSignedIn(true);
+    const read = () => load().catch(() => setStatus("none"));
+    read();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        read();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      setNotice(null);
+    };
   }, [load]);
 
   const run = async (task: () => Promise<Notice>) => {
@@ -188,7 +205,13 @@ export const EventBooking = ({
         {notice ? t(`notices.${notice}`) : null}
         {notice ? null : <StatusLine heldUntil={heldUntil} status={status} />}
       </span>
-      {/* Right after booking, and while booked: the confirmation's link. */}
+      {/* Right after booking, and while booked: the ticket (a member's; a
+          Guest shows the card at the door) and the confirmation's link. */}
+      {status === "booked" && terms?.class !== "guest" ? (
+        <a className="link type-body" href={ticket}>
+          {t("ticket")}
+        </a>
+      ) : null}
       {status === "booked" || status === "reminded" ? (
         <a className="link type-body" href={ics}>
           {t("addToCalendar")}

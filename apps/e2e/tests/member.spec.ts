@@ -31,6 +31,49 @@ test("a member books a place and gives it back", async ({ page }) => {
   await expect(card.getByRole("status")).toContainText("Done");
 });
 
+// Next keeps the pages visited mounted (Activity), so going back shows
+// your account as it was: it must read the booking made meanwhile.
+test("a booking made on the event's page shows in your account, with its ticket", async ({
+  page,
+}) => {
+  await signInWithPassword(page, member.email);
+  await page.goto(`${urls.web}/account/events`);
+  const card = page.locator(`li#${event.slug}`);
+  const giveBack = card.getByRole("button", { name: "Give my place back" });
+  await expect(card).toBeVisible();
+  if (await giveBack.isVisible()) {
+    await giveBack.click();
+    await giveBack.click();
+    await expect(card.getByRole("status")).toContainText("Done");
+  }
+  await expect(
+    card.getByRole("button", { name: "Book a place" })
+  ).toBeVisible();
+  // To the event's page through the site's own links, as a member would.
+  await page
+    .getByRole("banner")
+    .getByRole("link", { exact: true, name: "Events" })
+    .first()
+    .click();
+  await page.locator(`a[href="/events/${event.slug}"]`).first().click();
+  await page.getByRole("button", { name: "Book a place" }).click();
+  await expect(
+    page.getByText("Booked. A confirmation is on its way.")
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Show my ticket" })
+  ).toHaveAttribute("href", "/account#next-events");
+  await page.goBack();
+  await page.goBack();
+  await expect(page).toHaveURL(/\/account\/events/u);
+  await expect(
+    card.getByRole("link", { name: "Show my ticket" })
+  ).toBeVisible();
+  await giveBack.click();
+  await giveBack.click();
+  await expect(card.getByRole("status")).toContainText("Done");
+});
+
 test("a member sends work to Qirtas and sees the reading timeline", async ({
   page,
 }) => {
