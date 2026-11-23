@@ -12,7 +12,18 @@ as $$ select '[]'::jsonb $$;
 comment on function private.standard_questions(boolean) is
   'The booking''s questions: none; booking is one tap.';
 
+-- And a booking keeps no answers: whatever a client sends is dropped.
+create or replace function private.booking_answers(event_id uuid, answers jsonb)
+returns jsonb
+language sql
+immutable
+security definer
+set search_path = ''
+as $$ select '{}'::jsonb $$;
+
 -- Every event's questions follow (the trigger sets them from the rule).
 update events.events set questions = '[]'::jsonb where questions <> '[]'::jsonb;
+update events.rsvps set answers = '{}'::jsonb where answers <> '{}'::jsonb;
+update events.waitlist set answers = '{}'::jsonb where answers <> '{}'::jsonb;
 
 select private.build_api();
