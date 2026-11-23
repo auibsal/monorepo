@@ -1,15 +1,10 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import {
-  namesInLine,
-  tidyEnglishName,
-  typedName,
-  wordsInLine,
-} from "@/lib/data/names";
+import { tidyEnglishName, typedName } from "@/lib/data/names";
 
 /**
- * Property tests (fuzzing) for the official name's line: whatever is typed
- * or pasted, the line stays in its own script and no word is lost
+ * Property tests (fuzzing) for a name as typed: whatever is typed
+ * or pasted, the line stays in its own script
  * (decisions.md, Members; AGENTS.md, Accounts).
  */
 const language = fc.constantFrom("en" as const, "ar" as const);
@@ -45,21 +40,6 @@ describe("typing a name, whatever is typed", () => {
         const tidy = tidyEnglishName(typedName(value, "en"));
         expect(tidyEnglishName(tidy)).toBe(tidy);
       })
-    );
-  });
-
-  it("joins words into names without losing one", () => {
-    fc.assert(
-      fc.property(
-        fc.string({ unit: "grapheme" }),
-        language,
-        fc.uniqueArray(fc.nat(8)),
-        (value, lang, gaps) => {
-          const typed = typedName(value, lang);
-          const names = namesInLine(typed, lang, new Set(gaps));
-          expect(names.join(" ")).toBe(wordsInLine(typed).join(" "));
-        }
-      )
     );
   });
 });

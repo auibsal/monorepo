@@ -107,7 +107,7 @@
       "user_exists": "An account already uses this address. Sign in instead.",
       "weak_password": "Use at least 12 characters.",
       "captcha_failed": "We couldn’t confirm you’re a person. Reload the page and try again.",
-      "names_required": "Give your official name in both languages: the four parts, or your given and family names.",
+      "name_required": "Give your name.",
       "email_reserved": "This address is already a member’s personal email, so it can’t start a new account. Sign in with your own address, or use another one.",
       "invalid_code": "That code doesn’t match or has expired. Check the newest email, or ask for a new one.",
       "no_account": "No account uses this address. Check it, or create your account if you study at AUIB.",
@@ -129,6 +129,15 @@
       "passkey": "Sign in with a passkey",
       "idle": "You were signed out of the Diwan after an hour without use. Sign in to pick up where you left off."
     },
+    "start": {
+      "title": "Sign in or join",
+      "description": "Start with your email. If it has an account, we ask for your password; if not, a few details make one.",
+      "continue": "Continue",
+      "checking": "Checking…",
+      "change": "Change",
+      "passwordTitle": "Welcome back",
+      "newAccount": "This address has no account yet: a few details make one."
+    },
     "signUp": {
       "title": "Join the Society",
       "description": "One account for everyone. An AUIB address makes you a member or an Associate; any other address, a guest.",
@@ -138,9 +147,8 @@
       "checkInboxBody": "We sent a confirmation email to {email}. Open its link, or type its code below to finish signing up.",
       "haveAccount": "Already have an account?",
       "signIn": "Sign in",
-      "nameEn": "Your four names in English",
-      "nameAr": "Your four names in Arabic",
-      "namesHint": "Your official name in both languages, as on your papers: your name, your father’s, your grandfather’s and the fourth, with a space between each. It can’t be changed afterward except by the Director of Membership.",
+      "name": "Your name",
+      "nameHint": "In English letters, as you’d like it shown. The Director of Membership adds your official name in both languages later.",
       "resend": "Send the email again",
       "resendIn": "Send the email again in {seconds} s",
       "resent": "Sent. Check your inbox and spam folder.",
@@ -159,20 +167,8 @@
       "wrongAddress": "Wrong address? Fix it",
       "wrongAddressFailed": "That didn’t work. Sign up again with the right address; the other one is deleted after seven days if it isn’t confirmed.",
       "numberCheck": "AUIB student numbers usually have 7 digits and start with the year you joined. Check your address; you can still go on.",
-      "nameHintEn": "Letters only, each name with a capital, as on your papers. If one of your names is two words (Mohammed Ali), tap between them below to join them.",
-      "nameHintAr": "Arabic letters only, as on your papers. If one of your names is two words («محمد علي»), tap between them below to join them; «أبو» and «عبد» come joined.",
-      "nameProblems": {
-        "count": "Four names, please: this reads as {count}.",
-        "letters": "Letters only, with no numbers or symbols.",
-        "capitals": "Start each name with a capital letter.",
-        "tooMany": "This reads as {count} names. If one of your names is two words, tap between them to join them."
-      },
       "under18": "Under 18?",
-      "tooYoung": "An account is for people 13 or older.",
-      "nameWords": "The words of your name: tap between two words to join or separate them",
-      "nameJoin": "Join {first} and {second} as one name",
-      "nameSeparate": "Separate {first} and {second}",
-      "nameFull": "Four names only. If one of them is two words, like Mohammed Ali, tap · between the two to make them one, then go on."
+      "tooYoung": "An account is for people 13 or older."
     },
     "forgot": {
       "title": "Reset your password",
@@ -465,8 +461,8 @@
           "title": "The Arabic form of your titles"
         },
         "name": {
-          "title": "Part of your official name is missing",
-          "body": "Your account was made before the site asked for the full name. Write to the Director of Membership with your name as on your papers, and they will add it. Until then, your signatures and certificates carry the name on record."
+          "title": "Your official name",
+          "body": "The Director of Membership adds your official name in English and in Arabic, as on your papers: write to them with it. Until then, your signatures and certificates carry the name you signed up with."
         },
         "personalEmail": {
           "title": "Add a personal email",

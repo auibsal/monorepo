@@ -180,10 +180,7 @@ test("an organization applies, the Council votes, and its dashboard opens", asyn
     guestEmail
   );
   await guest.getByLabel("Password").fill(PASSWORD);
-  await guest
-    .getByLabel("Your four names in English")
-    .fill("Guest Ali Omar Writer");
-  await guest.getByLabel("Your four names in Arabic").fill("ضيف علي عمر كاتب");
+  await guest.getByLabel("Your name").fill("Guest Writer");
   await guest.getByLabel("I’m 18 or older").check();
   const sentAt = Date.now();
   await guest.getByRole("button", { name: "Create account" }).click();

@@ -1,12 +1,13 @@
 import { Suspense } from "react";
-import { SignInForm } from "@/components/diwan/auth/sign-in-form";
+import { AccountStart } from "@/components/diwan/auth/account-start";
 import { titleFrom } from "@/lib/diwan/metadata";
 
-export const generateMetadata = titleFrom((t) => t("auth.signIn.title"));
+export const generateMetadata = titleFrom((t) => t("auth.start.title"));
 
+/** The one way in: /sign-in and /sign-up show the same page. */
 const SignInPage = () => (
   <Suspense>
-    <SignInForm />
+    <AccountStart />
   </Suspense>
 );
 

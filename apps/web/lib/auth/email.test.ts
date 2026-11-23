@@ -10,6 +10,9 @@ import {
   unusualStudentNumber,
 } from "./email";
 
+/** An official-name part column, as the sign-up would send it. */
+const NAME_PART = /^(first|father|grandfather|last)_name_/u;
+
 describe("email helpers", () => {
   test("recognizes AUIB addresses in any case", () => {
     expect(isAuibEmail("Student@AUIB.edu.iq ")).toBe(true);
@@ -112,19 +115,10 @@ describe("signing up", () => {
     );
     return { signUp, supabase: { auth: { signUp } } as never };
   };
-  const names = {
-    ar: { father: "كريم", first: "لينا", grandfather: "حسن", last: "التميمي" },
-    en: {
-      father: "Kareem",
-      first: "Lina",
-      grandfather: "Hasan",
-      last: "Tamimi",
-    },
-  };
   const base = {
     adult: true,
     locale: "en" as const,
-    names,
+    name: "Lina Tamimi",
     password: "a-long-password",
     redirectTo: "https://x/cb",
   };
@@ -175,8 +169,7 @@ describe("signing up", () => {
     expect(sentData(signUp)).not.toHaveProperty("class");
     expect(sentData(signUp)).toMatchObject({
       agreed_at: expect.any(String),
-      first_name_en: "Lina",
-      last_name_ar: "التميمي",
+      full_name_en: "Lina Tamimi",
       title_form: "feminine",
     });
     // The sign-up line is the consent: no separate e-sign box.
@@ -195,33 +188,30 @@ describe("signing up", () => {
     expect(sentData(signUp)).not.toHaveProperty("class");
   });
 
-  test("everyone gives the official name: four parts, or given and family", async () => {
+  test("everyone gives a name, in any number of words; Membership adds the official one", async () => {
     const { signUp, supabase } = client();
-    const short = {
-      ar: { father: "", first: "لينا", grandfather: "", last: "" },
-      en: { father: "", first: "Lina", grandfather: "", last: "" },
-    };
     expect(
       await signUpWithEmail(supabase, {
         ...base,
         email: "s@gmail.com",
-        names: short,
+        name: " ",
       })
-    ).toEqual({ code: "names_required", ok: false });
+    ).toEqual({ code: "name_required", ok: false });
     expect(signUp).not.toHaveBeenCalled();
-    const twoNames = {
-      ar: { ...short.ar, last: "التميمي" },
-      en: { ...short.en, last: "Tamimi" },
-    };
     expect(
       (
         await signUpWithEmail(supabase, {
           ...base,
           email: "s@gmail.com",
-          names: twoNames,
+          name: "Lina",
         })
       ).ok
     ).toBe(true);
+    // No official-name parts at sign-up, in either language.
+    expect(
+      Object.keys(sentData(signUp)).filter((k) => NAME_PART.test(k))
+    ).toEqual([]);
+    expect(sentData(signUp)).toMatchObject({ full_name_en: "Lina" });
   });
 
   test("an invitation uses the same sign-up and is attached", async () => {

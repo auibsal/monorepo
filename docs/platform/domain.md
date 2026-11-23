@@ -132,7 +132,12 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `core.my_private_profile`) gives the feminine form
   (`access.roles.name_ar_feminine`) on the Council page, the masthead,
   the card's role line and letters; documents keep the glossary's form.
-- **Names** (decisions.md, Members). The **legal name** is kept in parts
+- **Names** (decisions.md, Members). Sign-up asks one name, in English
+  letters and any number of words (`signup_name_en`, shown until the
+  official name is there); it asks no Arabic name and no parts. The
+  Director of Membership adds the official name in both languages later
+  (`membership.correct_name`; Today's "Your official name" to-do until
+  then). The **legal name** is kept in parts
   in each language (`first_name_en` … `last_name_ar`): the given,
   father's and grandfather's names are required, the family name only
   where there is one; English parts in Latin letters and Arabic parts in

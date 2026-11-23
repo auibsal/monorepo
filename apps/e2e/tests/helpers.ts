@@ -52,8 +52,10 @@ const setUpButton = (page: Page) =>
     .getByRole("button", { name: "Set up my authenticator" });
 
 export const signInWithPassword = async (page: Page, email: string) => {
+  // The one way in: the address, then its password.
   await page.goto(`${urls.web}/sign-in`);
   await page.getByLabel("Email").fill(email);
+  await page.getByRole("button", { name: "Continue" }).click();
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
   await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
