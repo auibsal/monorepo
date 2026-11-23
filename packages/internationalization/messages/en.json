@@ -1674,7 +1674,7 @@
           "theSociety": "The Society",
           "image": "Image",
           "slug": "Web address",
-          "slugHint": "Made from the English title, numbered if the title repeats; fixed once the event is published.",
+          "slugHint": "Made from the English title and the day; fixed once the event is published.",
           "slugFixed": "Fixed once the event is published, since the address has been shared.",
           "slugInvalid": "The web address takes only Latin letters, digits and hyphens.",
           "debrief": "Debrief (its page in Notion)",
