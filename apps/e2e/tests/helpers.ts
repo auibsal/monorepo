@@ -42,6 +42,15 @@ const keepKey = (email: string, key: string) => {
 
 const signedInAs = new WeakMap<Page, string>();
 
+/**
+ * The page's own step, where a role needs it (not Settings' offer to set
+ * one up, which anyone may ignore).
+ */
+const setUpButton = (page: Page) =>
+  page
+    .getByRole("region", { name: "Set up two-step sign-in" })
+    .getByRole("button", { name: "Set up my authenticator" });
+
 export const signInWithPassword = async (page: Page, email: string) => {
   await page.goto(`${urls.web}/sign-in`);
   await page.getByLabel("Email").fill(email);
@@ -50,21 +59,26 @@ export const signInWithPassword = async (page: Page, email: string) => {
   await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
   signedInAs.set(page, email);
   // Wherever a page asks for the second step, give it, as the person would.
+  await page.addLocatorHandler(setUpButton(page), async () => {
+    await setUpTwoStep(page);
+  });
   await page.addLocatorHandler(
-    page.getByRole("button", { name: "Set up my authenticator" }),
+    page.getByRole("region", { name: "Enter your sign-in code" }),
     async () => {
-      await setUpTwoStep(page);
-    }
-  );
-  await page.addLocatorHandler(
-    page.getByText("Enter your sign-in code", { exact: true }),
-    async () => {
+      // While a new authenticator is set up the page shows its key, and
+      // the setup gives the code itself.
       const key = readKeys()[email];
-      if (!key) {
+      const settingUp = page.getByAltText(
+        "QR code to add SAL to an authenticator app"
+      );
+      if (!key || (await settingUp.isVisible())) {
         return;
       }
       await page.getByLabel("Six-digit code").fill(totp(key));
       await page.getByRole("button", { name: "Confirm" }).click();
+      await expect(page.getByLabel("Six-digit code")).toBeHidden({
+        timeout: 15_000,
+      });
     }
   );
 };
@@ -120,7 +134,7 @@ const totp = (secret: string, at = Date.now()) => {
  * would type it into the app.
  */
 export const setUpTwoStep = async (page: Page) => {
-  const start = page.getByRole("button", { name: "Set up my authenticator" });
+  const start = setUpButton(page);
   // The sign-in's own handler may have set it up already.
   if (!(await start.isVisible())) {
     return;
@@ -133,4 +147,8 @@ export const setUpTwoStep = async (page: Page) => {
   }
   await page.getByLabel("Six-digit code").fill(totp(key));
   await page.getByRole("button", { name: "Confirm" }).click();
+  // Done once the step is accepted and the page goes on.
+  await expect(page.getByLabel("Six-digit code")).toBeHidden({
+    timeout: 15_000,
+  });
 };
