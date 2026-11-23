@@ -125,6 +125,10 @@ select throws_ok(
 );
 
 select pg_temp.logout();
+-- The Events Lead's role counts only with two-step sign-in from Nov 22, 2026
+-- (requires_mfa_from), so the lead has an authenticator.
+insert into auth.mfa_factors (id, user_id, friendly_name, factor_type, status, created_at, updated_at)
+values (gen_random_uuid(), '00000000-0000-0000-0000-00000000e001', 'Authenticator', 'totp', 'verified', now(), now());
 set local role service_role;
 select is(
   access.notion_publisher('Events.Lead@auib.edu.iq', 'events.manage'),
