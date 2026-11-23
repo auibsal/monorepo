@@ -282,7 +282,7 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   from two hours before, the door fills places; places not claimed 10
   minutes before are released; check-in keeps working without a
   connection, `lib/diwan/door-queue.ts`), "Good to know" under
-  the date and place (`components/good-to-know.tsx`: who can come and
+  the picture and the description (`components/good-to-know.tsx`: who can come and
   places left once under 20, read live; the `language`; step-free access
   and `seating` with "Ask for an accommodation by", `accommodation_by` or
   three days before, to hello@; food and drink, `served_*`, with the nine

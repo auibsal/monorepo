@@ -189,20 +189,6 @@ const EventView = async ({
           </p>
         ) : null}
       </header>
-      {canceled ? null : <GoodToKnow event={event} locale={locale} />}
-      {canceled || !upcoming ? null : (
-        <ActionBar>
-          <EventBooking
-            entry={event.entry}
-            eventId={event.id}
-            forClasses={t("forClasses", {
-              classes: await classesText(event.classes, locale, "list"),
-            })}
-            guestsBy={events.guestsBookBy(event)}
-            slug={event.slug}
-          />
-        </ActionBar>
-      )}
       {canceled ? (
         <p
           className="type-body border-line border-s-4 border-t p-4"
@@ -231,6 +217,8 @@ const EventView = async ({
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
       ) : null}
+      {/* The practical facts once the reader knows what the event is. */}
+      {canceled ? null : <GoodToKnow event={event} locale={locale} />}
       {/* Rendered before the start too: the page checks the time and the
           person, so the question shows from the start without a rebuild.
           After the event, the night's links follow it. */}
@@ -251,6 +239,20 @@ const EventView = async ({
         label={ti("thanksTo")}
         lang={locale}
       />
+      {/* Last, so it stays at the foot of the screen until the page ends. */}
+      {canceled || !upcoming ? null : (
+        <ActionBar>
+          <EventBooking
+            entry={event.entry}
+            eventId={event.id}
+            forClasses={t("forClasses", {
+              classes: await classesText(event.classes, locale, "list"),
+            })}
+            guestsBy={events.guestsBookBy(event)}
+            slug={event.slug}
+          />
+        </ActionBar>
+      )}
     </article>
   );
 };

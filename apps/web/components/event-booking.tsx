@@ -25,9 +25,8 @@ type Notice = "booked" | "waitlisted" | "canceled" | "reminded" | "failed";
 /**
  * Booking on the event's own page (audit C8): a signed-in member books,
  * joins the waitlist or cancels right here, and an open event's "Remind
- * me" works the same way. Someone signed out, or an event with booking
- * questions, goes to their calendar, where the questions are asked. The
- * page stays the same for everyone (cached); this reads the person's own
+ * me" works the same way; booking asks nothing. Someone signed out goes to
+ * sign in. The page stays the same for everyone (cached); this reads the person's own
  * booking after the first render, and the database decides (events.rsvp).
  */
 export const EventBooking = ({
@@ -54,7 +53,6 @@ export const EventBooking = ({
   const [signedIn, setSignedIn] = useState(false);
   const [status, setStatus] = useState<Status | null>(null);
   const [terms, setTerms] = useState<BookingTerms | null>(null);
-  const [asks, setAsks] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<Notice | null>(null);
   // A released place held for them (decisions.md, Events): until when.
@@ -63,7 +61,7 @@ export const EventBooking = ({
   const load = useCallback(async () => {
     const client = await loadClient();
     const supabase = client.schema("api");
-    const [rsvp, waiting, reminder, event, standing] = await Promise.all([
+    const [rsvp, waiting, reminder, standing] = await Promise.all([
       supabase
         .from("rsvps")
         .select("id")
@@ -81,22 +79,9 @@ export const EventBooking = ({
         .select("event_id")
         .eq("event_id", eventId)
         .maybeSingle(),
-      supabase
-        .from("events")
-        .select("questions")
-        .eq("id", eventId)
-        .maybeSingle(),
       (await loadEvents()).bookingTerms(client, eventId),
     ]);
     setTerms(standing);
-    // Only a required question sends the member to the calendar; the
-    // booking's own questions (accessibility, diet) are optional.
-    setAsks(
-      Array.isArray(event.data?.questions) &&
-        event.data.questions.some(
-          (q) => (q as { required?: boolean } | null)?.required === true
-        )
-    );
     const held =
       waiting.data?.status === "offered" ? waiting.data.offered_until : null;
     setHeldUntil(held);
@@ -180,8 +165,8 @@ export const EventBooking = ({
   if (terms?.guests_closed && guestsBy && status === "none") {
     return <p className="type-body">{t("guestsClosed")}</p>;
   }
-  // Still loading, or a required question: the calendar asks.
-  if (status === null || (asks && !open && status === "none")) {
+  // Still loading: the calendar's link until the booking is known.
+  if (status === null) {
     return (
       <Button asChild>
         <a href={calendar}>{open ? t("remind") : t("rsvp")}</a>
