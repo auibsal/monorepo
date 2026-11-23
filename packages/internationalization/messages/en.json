@@ -2734,7 +2734,9 @@
             "same": "Same organization as {name}",
             "newEntry": "New entry"
           },
-          "typedContact": "Contact typed before the partner had a Lead"
+          "typedContact": "Contact typed before the partner had a Lead",
+          "logoWhite": "White logo (optional)",
+          "logoWhiteHint": "The logo in white, for the promo kit’s pictures on ink. Without it, the kit names the organization in words."
         },
         "agreements": {
           "empty": "No memoranda yet.",
@@ -5746,7 +5748,11 @@
       "program": {
         "title": "Program",
         "length": "{n, plural, one {{shown} minute} other {{shown} minutes}}"
-      }
+      },
+      "coming": "Coming up",
+      "past": "Past events",
+      "byMonth": "By month",
+      "noneComing": "Nothing is announced yet."
     },
     "journal": {
       "title": "Qirtas",

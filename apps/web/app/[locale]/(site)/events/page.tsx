@@ -39,7 +39,7 @@ const EventsPage = async ({ params, searchParams }: EventsProps) => {
     <WhatsOn
       host={isHost(host) ? host : undefined}
       locale={locale}
-      month={monthFrom(month, now)}
+      month={month ? monthFrom(month, now) : undefined}
     />
   );
 };

@@ -111,7 +111,7 @@ test.describe("public site", () => {
         header.getByText(/^(Book a place|احجز مكانًا)$/u)
       ).toHaveCount(0);
       const range = await header
-        .locator("p.type-caption span")
+        .locator("p[data-when] span")
         .nth(1)
         .textContent();
       if (edition.locale === "ar") {

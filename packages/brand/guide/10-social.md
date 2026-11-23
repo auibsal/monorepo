@@ -25,7 +25,7 @@ Paperless by default: print only to the confirmed need (the RSVP count plus 10%,
 
 A carousel reads as one piece, on one ground, in both languages: each English slide is followed by the same slide in Arabic (decisions §13). A story is a post set for a tall screen.
 
-- **Cover:** a post, and the only slide with the logo (the English cover, then the Arabic).
+- **Cover:** a post. An event's carousel carries no logo on any slide (Instagram names the account beside each) and ends on the wordmark alone (08-events.md, One look for an event's pictures).
 - **Inside slides:** a large Light number ("01") in accent, a short title with a full stop, one to three lines.
 - **The last slides:** the wordmark alone, English then Arabic. No symbol, no text, no handle.
 - The semester calendar goes out once, as the "Events this spring" carousel; there is no standing weekly post, and each event gets its own post once its room is confirmed.

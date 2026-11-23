@@ -118,6 +118,21 @@ const EventView = async ({
   // checked in (decisions.md, Events); the page checks the person.
   const asking = !canceled && now < events.feedbackWindow(event).closes;
 
+  // After the event, the booking area gives way to "How was it?" (for who
+  // checked in) and the links from the night.
+  const feedback = asking ? (
+    <EventFeedback
+      closes={formatLongDate(
+        new Date(events.feedbackWindow(event).closes).toISOString(),
+        locale
+      )}
+      endsAt={event.ends_at}
+      eventId={event.id}
+      slug={event.slug}
+      startsAt={event.starts_at}
+    />
+  ) : null;
+
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-16">
       {canceled ? null : (
@@ -150,7 +165,7 @@ const EventView = async ({
             {t("hostedBy", { partner: localized(host, "name", locale) })}
           </p>
         ) : null}
-        <p className="type-caption flex flex-wrap gap-x-4 gap-y-1">
+        <p className="type-body flex flex-wrap gap-x-4 gap-y-1" data-when>
           <span className="inline-flex items-center gap-1.5">
             <Icon name="calendar" />
             {formatLongDate(event.starts_at, locale)}
@@ -216,20 +231,13 @@ const EventView = async ({
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
       ) : null}
-      {asking ? (
-        <EventFeedback
-          closes={formatLongDate(
-            new Date(events.feedbackWindow(event).closes).toISOString(),
-            locale
-          )}
-          endsAt={event.ends_at}
-          eventId={event.id}
-          slug={event.slug}
-          startsAt={event.starts_at}
-        />
-      ) : null}
+      {/* Rendered before the start too: the page checks the time and the
+          person, so the question shows from the start without a rebuild.
+          After the event, the night's links follow it. */}
+      {feedback}
+      {upcoming ? null : <EventParts event={event} locale={locale} />}
       <EventProgram eventId={event.id} locale={locale} />
-      <EventParts event={event} locale={locale} />
+      {upcoming ? <EventParts event={event} locale={locale} /> : null}
       <CoSponsoredBy
         className="border-line pt-space-4 border-t"
         dir={getDirection(locale)}

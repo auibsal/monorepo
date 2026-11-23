@@ -3,8 +3,6 @@ import {
   formatClock,
   formatLongDate,
   formatMonth,
-  formatWeekday,
-  toZonedDateValue,
 } from "@repo/internationalization/format";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations } from "next-intl/server";
@@ -13,20 +11,30 @@ import { type DatedItem, DatedList } from "@/components/event-list";
 import { events, localized } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 import { roughlyNow } from "@/lib/this-year";
-import {
-  byDay,
-  type Month,
-  monthParam,
-  monthWeeks,
-  shiftMonth,
-  weekdayColumns,
-} from "@/lib/whats-on";
+import { type Month, monthParam, shiftMonth } from "@/lib/whats-on";
 
 type Row = events.CalendarEvent;
 type UniversityRow = events.UniversityEvent;
 
 /** Where a row leads: the event's page, which says who can come. */
 const rowHref = (row: Row) => `/events/${row.slug}`;
+
+/** The Society's events as dated rows: the title, how to come, where, when. */
+export const calendarItems = async (
+  rows: readonly Row[],
+  locale: Locale
+): Promise<DatedItem[]> => {
+  const t = await getTranslations({ locale, namespace: "web.events" });
+  return rows.map((row) => ({
+    at: row.starts_at,
+    href: rowHref(row),
+    key: row.id,
+    line: t(`ways.${wayOf(row)}`),
+    time: formatClock(row.starts_at, locale),
+    title: localized(row, "title", locale),
+    venue: localized(row, "venue", locale) || null,
+  }));
+};
 
 type WayKey = "canceled" | "members" | "open" | "rsvp" | "invite";
 
@@ -72,7 +80,7 @@ export const nextAfter = async (
 };
 
 /**
- * The month as a grid (wide screens) and as a dated list (phones): the
+ * A month as a dated list on every screen (the USWDS collection): the
  * Society's events, and AUIB's own dates beside them, quieter, each linking
  * to the University's page. AUIB publishes its calendar in English only, so
  * those titles keep their language on the Arabic pages.
@@ -92,9 +100,6 @@ export const MonthCalendar = async ({
   university?: readonly UniversityRow[];
 }) => {
   const t = await getTranslations({ locale, namespace: "web.events" });
-  const days = byDay(rows);
-  const universityDays = byDay(university);
-  const today = toZonedDateValue(new Date(await roughlyNow()));
   const universityWhen = (row: UniversityRow) =>
     row.all_day ? t("allDay") : formatClock(row.starts_at, locale);
   const universityItems: DatedItem[] = university.map((row) => ({
@@ -140,78 +145,7 @@ export const MonthCalendar = async ({
     );
   }
 
-  return (
-    <>
-      <table className="hidden w-full table-fixed border-collapse md:table">
-        <caption className="sr-only">{formatMonth(month.from, locale)}</caption>
-        <thead>
-          <tr>
-            {weekdayColumns().map((day) => (
-              <th
-                className="type-label pb-space-2 text-text-secondary text-start font-medium"
-                key={day.toISOString()}
-                scope="col"
-              >
-                {formatWeekday(day, locale, "short")}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {monthWeeks(month).map((week) => (
-            <tr className="border-line border-t" key={week.join()}>
-              {week.map((day, index) => (
-                <td className="h-28 align-top" key={day ?? `empty-${index}`}>
-                  {day ? (
-                    <div className="py-space-2 pe-space-2 grid content-start gap-1">
-                      <span
-                        aria-current={day === today ? "date" : undefined}
-                        className="aria-[current=date]:text-accent text-2xl leading-none font-light"
-                      >
-                        {Number(day.slice(8))}
-                      </span>
-                      {(days.get(day) ?? []).map((row) => (
-                        <Link
-                          className="hover:text-accent grid text-sm leading-snug"
-                          href={rowHref(row)}
-                          key={row.id}
-                        >
-                          <span>{localized(row, "title", locale)}</span>
-                          <span className="type-caption text-text-secondary">
-                            {formatClock(row.starts_at, locale)} ·{" "}
-                            {t(`ways.${wayOf(row)}`)}
-                          </span>
-                        </Link>
-                      ))}
-                      {(universityDays.get(day) ?? []).map((row) => (
-                        <a
-                          aria-label={t("auibLink", { title: row.title })}
-                          className="text-text-secondary hover:text-accent grid text-sm leading-snug"
-                          href={row.url ?? "https://auib.edu.iq/events/"}
-                          key={row.id}
-                          rel="noopener"
-                        >
-                          <span dir="ltr" lang="en">
-                            {row.title}
-                          </span>
-                          <span className="type-caption">
-                            {universityWhen(row)} · {t("auib")}
-                          </span>
-                        </a>
-                      ))}
-                    </div>
-                  ) : null}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="md:hidden">
-        <DatedList items={items} locale={locale} />
-      </div>
-    </>
-  );
+  return <DatedList items={items} locale={locale} />;
 };
 
 type Href = ComponentProps<typeof Link>["href"];

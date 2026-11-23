@@ -117,6 +117,7 @@ const societyFields = (form: PartnerFormState) => ({
   kind: form.kind,
   logo_path: form.logo_path,
   logo_shows_name: form.logo_shows_name,
+  logo_white_path: form.logo_white_path,
   notes: form.notes.trim() || null,
   reach: form.reach,
   slug: form.slug,
@@ -135,6 +136,7 @@ const initialForm = (initial: PartnerRow) => ({
   kind: initial.kind as (typeof partners.partnerKinds)[number],
   logo_path: (initial.logo_path as string | null) ?? null,
   logo_shows_name: initial.logo_shows_name !== false,
+  logo_white_path: (initial.logo_white_path as string | null) ?? null,
   name: { ar: initial.name_ar ?? "", en: initial.name_en },
   notes: String(initial.notes ?? ""),
   reach: initial.reach as (typeof partners.partnerReach)[number],
@@ -186,6 +188,16 @@ const LogoFields = ({
         <Label htmlFor="partner-logo-name">{t("logoShowsName")}</Label>
       </div>
       <p className="type-caption">{t("logoShowsNameHint")}</p>
+      <ImageField
+        area="partners"
+        kind="logo"
+        label={t("logoWhite")}
+        onChange={(logo_white_path) =>
+          setForm((f) => ({ ...f, logo_white_path }))
+        }
+        value={form.logo_white_path}
+      />
+      <p className="type-caption">{t("logoWhiteHint")}</p>
     </fieldset>
   );
 };
