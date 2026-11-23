@@ -5,8 +5,9 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 
 /**
  * The page's main action (the plan's rule: one solid button, under the
- * title). On phones, once it scrolls out of view, the same action stays in
- * a bar at the bottom of the screen, within thumb reach.
+ * title). Once it scrolls out of view, the same action stays in a bar at
+ * the bottom of the screen (within thumb reach on a phone) until the
+ * footer comes into view.
  */
 export const ActionBar = ({
   children,
@@ -17,6 +18,18 @@ export const ActionBar = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [away, setAway] = useState(false);
+  const [atFooter, setAtFooter] = useState(false);
+  useEffect(() => {
+    const footer = document.querySelector("footer");
+    if (!footer || typeof IntersectionObserver === "undefined") {
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) =>
+      setAtFooter(entry?.isIntersecting ?? false)
+    );
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
   useEffect(() => {
     const node = ref.current;
     if (!node || typeof IntersectionObserver === "undefined") {
@@ -41,9 +54,9 @@ export const ActionBar = ({
       >
         {children}
       </div>
-      {away ? (
-        <div className="border-line bg-surface fixed inset-x-0 bottom-0 z-30 border-t px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden print:hidden">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+      {away && !atFooter ? (
+        <div className="border-line bg-surface fixed inset-x-0 bottom-0 z-30 border-t px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] print:hidden">
+          <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center gap-x-6 gap-y-2">
             {children}
           </div>
         </div>
