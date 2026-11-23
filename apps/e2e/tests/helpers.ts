@@ -60,7 +60,7 @@ export const signInWithPassword = async (page: Page, email: string) => {
   signedInAs.set(page, email);
   // Wherever a page asks for the second step, give it, as the person would.
   await page.addLocatorHandler(setUpButton(page), async () => {
-    await setUpTwoStep(page);
+    await setUpNow(page);
   });
   await page.addLocatorHandler(
     page.getByRole("region", { name: "Enter your sign-in code" }),
@@ -133,14 +133,13 @@ const totp = (secret: string, at = Date.now()) => {
  * where the Diwan asks for it, reading the key off the screen as they
  * would type it into the app.
  */
-export const setUpTwoStep = async (page: Page) => {
-  const start = setUpButton(page);
-  // The sign-in's own handler may have set it up already.
-  if (!(await start.isVisible())) {
-    return;
-  }
-  await start.click();
-  const key = ((await page.locator("code").first().textContent()) ?? "").trim();
+/** Sets the authenticator up: its key read off the screen, its first code. */
+const setUpNow = async (page: Page) => {
+  await setUpButton(page).click();
+  // The key written out beside the QR code (not any other code on the page).
+  const key = (
+    (await page.locator("code.break-all").first().textContent()) ?? ""
+  ).trim();
   const email = signedInAs.get(page);
   if (email) {
     keepKey(email, key);
@@ -151,4 +150,11 @@ export const setUpTwoStep = async (page: Page) => {
   await expect(page.getByLabel("Six-digit code")).toBeHidden({
     timeout: 15_000,
   });
+};
+
+export const setUpTwoStep = async (page: Page) => {
+  // The sign-in's own handler may have set it up already.
+  if (await setUpButton(page).isVisible()) {
+    await setUpNow(page);
+  }
 };
