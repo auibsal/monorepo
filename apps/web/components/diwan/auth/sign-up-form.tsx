@@ -29,6 +29,7 @@ import { ChoiceInput } from "../admin/choice-input";
 import { EmailCode } from "./email-code";
 import { useHumanCheck } from "./human-check";
 import { ResendConfirmation } from "./resend-confirmation";
+import { StartedEmail, type StartedWith } from "./sign-in-form";
 
 /**
  * What an invitation or a partner application brings to the one sign-up
@@ -46,6 +47,8 @@ interface SignUpFormProps {
   /** Where the confirmation link brings them back to. */
   readonly next?: string;
   readonly outside?: OutsideSignUp;
+  /** The address asked on the first step (AccountStart), with "Change". */
+  readonly start?: StartedWith;
 }
 
 /** A birth year for someone under 18: four digits. */
@@ -215,7 +218,7 @@ export const SignUpForm = (props: SignUpFormProps) => {
   const { next, outside, partner } = useSignUpContext(props);
   const id = useId();
   const [values, setValues] = useState({
-    email: outside?.email ?? "",
+    email: outside?.email ?? props.start?.email ?? "",
     password: "",
   });
   const email = values.email.trim().toLowerCase();
@@ -320,35 +323,16 @@ export const SignUpForm = (props: SignUpFormProps) => {
       ) : null}
       {outside ? null : (
         <FormHeader title={t("signUp.title")}>
-          {t("signUp.description")}
+          {props.start ? t("start.newAccount") : t("signUp.description")}
         </FormHeader>
       )}
       <form className="grid gap-4" noValidate onSubmit={submit}>
-        <div className="grid gap-2">
-          <Label htmlFor={`${id}-email`}>{t("email")}</Label>
-          <Input
-            aria-describedby={`${id}-email-hint`}
-            autoCapitalize="none"
-            autoComplete="email"
-            dir="ltr"
-            id={`${id}-email`}
-            inputMode="email"
-            onChange={set("email")}
-            readOnly={Boolean(outside?.email)}
-            required
-            spellCheck={false}
-            type="email"
-            value={values.email}
-          />
-          <p className="type-caption" id={`${id}-email-hint`}>
-            {t("signUp.emailHint", { domain: AUIB_DOMAIN })}
-          </p>
-          {unusualStudentNumber(email) ? (
-            <p className="type-caption text-text" role="status">
-              {t("signUp.numberCheck")}
-            </p>
-          ) : null}
-        </div>
+        <SignUpEmail
+          email={values.email}
+          fixed={Boolean(outside?.email)}
+          onChange={set("email")}
+          start={props.start}
+        />
         <div className="grid gap-2">
           <Label htmlFor={`${id}-password`}>{t("password")}</Label>
           <PasswordInput
@@ -536,15 +520,70 @@ export const SignUpForm = (props: SignUpFormProps) => {
           {human.label(pending, t("signUp.submit"), t("signUp.submitting"))}
         </Button>
       </form>
-      <p className="type-body">
-        {t("signUp.haveAccount")}{" "}
-        <Link
-          className="link"
-          href={{ pathname: "/sign-in", query: next ? { next } : {} }}
-        >
-          {t("signUp.signIn")}
-        </Link>
-      </p>
+      {props.start ? null : <HaveAccount next={next} />}
     </>
+  );
+};
+
+/** The address: asked here, or shown from the first step with "Change". */
+const SignUpEmail = ({
+  email,
+  fixed,
+  onChange,
+  start,
+}: {
+  readonly email: string;
+  /** An invitation's own address. */
+  readonly fixed: boolean;
+  readonly onChange: (event: { target: { value: string } }) => void;
+  readonly start?: StartedWith;
+}) => {
+  const t = useTranslations("auth");
+  const id = useId();
+  if (start) {
+    return <StartedEmail email={start.email} onChange={start.onChangeEmail} />;
+  }
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={`${id}-email`}>{t("email")}</Label>
+      <Input
+        aria-describedby={`${id}-email-hint`}
+        autoCapitalize="none"
+        autoComplete="email"
+        dir="ltr"
+        id={`${id}-email`}
+        inputMode="email"
+        onChange={onChange}
+        readOnly={fixed}
+        required
+        spellCheck={false}
+        type="email"
+        value={email}
+      />
+      <p className="type-caption" id={`${id}-email-hint`}>
+        {t("signUp.emailHint", { domain: AUIB_DOMAIN })}
+      </p>
+      {unusualStudentNumber(email.trim().toLowerCase()) ? (
+        <p className="type-caption text-text" role="status">
+          {t("signUp.numberCheck")}
+        </p>
+      ) : null}
+    </div>
+  );
+};
+
+/** For an invitation's page: an account already, then sign in. */
+const HaveAccount = ({ next }: { readonly next?: string | null }) => {
+  const t = useTranslations("auth.signUp");
+  return (
+    <p className="type-body">
+      {t("haveAccount")}{" "}
+      <Link
+        className="link"
+        href={{ pathname: "/sign-in", query: next ? { next } : {} }}
+      >
+        {t("signIn")}
+      </Link>
+    </p>
   );
 };

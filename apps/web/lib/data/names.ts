@@ -177,5 +177,5 @@ export const tidyEnglishName = (value: string) =>
     .join(" ");
 
 /** The words of a line, in order. */
-export const wordsInLine = (value: string) =>
+const wordsInLine = (value: string) =>
   value.trim().replace(AROUND_HYPHEN, "-").split(SPACES).filter(Boolean);

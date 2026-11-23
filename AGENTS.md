@@ -29,8 +29,9 @@ media do.
     Components prerenders each page around what a request needs (the
     time through `roughlyNow`, never `new Date()` in a page).
   - `app/[locale]/(account)`: **your account**, the members' pages on the
-    site: `/sign-in`, `/sign-up` (one page for everyone, invitations
-    included), `/sign-out`, `/auth/*`, `/get-involved` (public), each form at its place in its
+    site: `/sign-in` and `/sign-up`, one way in for everyone (`AccountStart`:
+    the address first, then its password, or a new account; invitations
+    use the same sign-up), `/sign-out`, `/auth/*`, `/get-involved` (public), each form at its place in its
     flow (`formPaths` in `lib/data/forms.ts`: `/about/contact/concern`,
     `/consent/<kind>` …; every old `/forms` address redirects),
     `/invite/<code>`, `/partners/apply` and `/partners/dashboard`, and, for

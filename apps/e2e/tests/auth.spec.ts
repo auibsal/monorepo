@@ -6,7 +6,7 @@ import { expectAccessible, latestMail, signInWithPassword } from "./helpers";
 // No button offers a sign-in link by email.
 const LINK = /link/iu;
 
-test("one sign-up page: the address, the class, the official name, one line", async ({
+test("one way in: a new address makes an account with one name and one line", async ({
   page,
 }) => {
   const email = `e2e-${Date.now()}@auib.edu.iq`;
@@ -15,7 +15,12 @@ test("one sign-up page: the address, the class, the official name, one line", as
   await page.setViewportSize({ height: 640, width: 390 });
   await page.goto(`${urls.web}/sign-up`);
   await expectAccessible(page);
+  // The one way in: a new address goes on to make an account.
   await page.getByLabel("Email").fill(email);
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Join the Society" })
+  ).toBeVisible();
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   // The address says the class (a student's ends in a number): no question.
   await expect(page.getByRole("radiogroup", { name: "You are" })).toHaveCount(
@@ -64,6 +69,7 @@ test("a mistyped address is put right from the inbox screen, with no second acco
   await expect(page.getByText(/usually have 7 digits/u)).toBeVisible();
   await page.getByLabel("Email").fill(typo);
   await expect(page.getByText(/usually have 7 digits/u)).toHaveCount(0);
+  await page.getByRole("button", { name: "Continue" }).click();
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   const english = page.getByLabel("Your name");
   await english.fill("typo member");
@@ -75,8 +81,11 @@ test("a mistyped address is put right from the inbox screen, with no second acco
 
   await page.getByRole("button", { name: "Wrong address? Fix it" }).click();
   // The form is back with everything typed, and the address is free.
-  await expect(page.getByLabel("Email")).toHaveValue(typo);
+  await expect(page.getByText(typo)).toBeVisible();
   await expect(english).toHaveValue("Typo Member");
+  // "Change" goes back to the address, as typed.
+  await page.getByRole("button", { name: "Change" }).click();
+  await expect(page.getByLabel("Email")).toHaveValue(typo);
   const { count } = await admin()
     .schema("api")
     .rpc("user_by_email", { email: typo })
@@ -92,24 +101,25 @@ test("a partner signs up on the one page, then comes back to the memorandum", as
   await expect(
     page.getByRole("heading", { name: "Partner with the Society" })
   ).toBeVisible();
-  // Signing in instead keeps the way back.
-  await expect(
-    page.getByRole("main").getByRole("link", { exact: true, name: "Sign in" })
-  ).toHaveAttribute("href", /next=%2Fpartners%2Fapply/u);
+  // One way in for both: the address first, whichever it is.
+  await expect(page.getByLabel("Email")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continue" })).toBeVisible();
 });
 
-// A6: the site never says whether an address has an account.
-test("signing in with an address that has no account says only that it doesn't match", async ({
-  page,
-}) => {
+// An address with an account goes on to its password; a wrong one says
+// only that the password doesn't match.
+test("an address with an account is asked its password", async ({ page }) => {
   await page.goto(`${urls.web}/sign-in`);
-  await page.getByLabel("Email").fill(`nobody-${Date.now()}@auib.edu.iq`);
-  await page.getByLabel("Password").fill(PASSWORD);
+  await page.getByLabel("Email").fill(member.email);
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Welcome back" })
+  ).toBeVisible();
+  await page.getByLabel("Password").fill(`${PASSWORD}-wrong`);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
   await expect(
     page.getByText("That email and password don’t match.")
   ).toBeVisible();
-  await expect(page.getByText("No account uses this address.")).toHaveCount(0);
 });
 
 test("an AUIB address signs in by password; no sign-in link is offered", async ({
@@ -148,7 +158,7 @@ test("a name from before the four parts is a to-do on Today, not a block", async
     await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
     await expect(
       page.getByRole("heading", {
-        name: "Part of your official name is missing",
+        name: "Your official name",
       })
     ).toBeVisible();
   } finally {

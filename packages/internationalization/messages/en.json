@@ -129,6 +129,15 @@
       "passkey": "Sign in with a passkey",
       "idle": "You were signed out of the Diwan after an hour without use. Sign in to pick up where you left off."
     },
+    "start": {
+      "title": "Sign in or join",
+      "description": "Start with your email. If it has an account, we ask for your password; if not, a few details make one.",
+      "continue": "Continue",
+      "checking": "Checking…",
+      "change": "Change",
+      "passwordTitle": "Welcome back",
+      "newAccount": "This address has no account yet: a few details make one."
+    },
     "signUp": {
       "title": "Join the Society",
       "description": "One account for everyone. An AUIB address makes you a member or an Associate; any other address, a guest.",
