@@ -2623,17 +2623,17 @@ export type Database = {
           classes: string[];
           content_note_ar: string | null;
           content_note_en: string | null;
-          discussion: Json;
-          image_alt_ar: string | null;
-          image_alt_en: string | null;
           created_at: string;
           created_by: string | null;
           deleted_at: string | null;
           deleted_by: string | null;
+          discussion: NonNullable<Json>;
           ends_at: string | null;
           entry: string;
           format: string | null;
           id: string;
+          image_alt_ar: string | null;
+          image_alt_en: string | null;
           image_path: string | null;
           language: string | null;
           lead_id: string | null;
@@ -2681,17 +2681,17 @@ export type Database = {
           classes?: string[];
           content_note_ar?: string | null;
           content_note_en?: string | null;
-          discussion?: Json;
-          image_alt_ar?: string | null;
-          image_alt_en?: string | null;
           created_at?: string;
           created_by?: string | null;
           deleted_at?: string | null;
           deleted_by?: string | null;
+          discussion?: NonNullable<Json>;
           ends_at?: string | null;
           entry?: string;
           format?: string | null;
           id?: string;
+          image_alt_ar?: string | null;
+          image_alt_en?: string | null;
           image_path?: string | null;
           language?: string | null;
           lead_id?: string | null;
@@ -2738,17 +2738,17 @@ export type Database = {
           classes?: string[];
           content_note_ar?: string | null;
           content_note_en?: string | null;
-          discussion?: Json;
-          image_alt_ar?: string | null;
-          image_alt_en?: string | null;
           created_at?: string;
           created_by?: string | null;
           deleted_at?: string | null;
           deleted_by?: string | null;
+          discussion?: NonNullable<Json>;
           ends_at?: string | null;
           entry?: string;
           format?: string | null;
           id?: string;
+          image_alt_ar?: string | null;
+          image_alt_en?: string | null;
           image_path?: string | null;
           language?: string | null;
           lead_id?: string | null;
@@ -3297,7 +3297,6 @@ export type Database = {
         }[];
       };
       feedback_summary: { Args: { event_id: string }; Returns: Json };
-      my_feedback_open: { Args: { event_id: string }; Returns: boolean };
       find_attendee: {
         Args: { event_id: string; query: string };
         Returns: {
@@ -3308,6 +3307,7 @@ export type Database = {
           user_id: string;
         }[];
       };
+      my_feedback_open: { Args: { event_id: string }; Returns: boolean };
       my_joint_events: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4356,11 +4356,11 @@ export type Database = {
           lead_id: string | null;
           link_decided_at: string | null;
           logo_path: string | null;
-          logo_white_path: string | null;
           logo_pending_at: string | null;
           logo_pending_path: string | null;
           logo_shows_name: boolean;
           logo_static: string | null;
+          logo_white_path: string | null;
           logo_width: number | null;
           name_ar: string | null;
           name_en: string;
@@ -4390,11 +4390,11 @@ export type Database = {
           lead_id?: string | null;
           link_decided_at?: string | null;
           logo_path?: string | null;
-          logo_white_path?: string | null;
           logo_pending_at?: string | null;
           logo_pending_path?: string | null;
           logo_shows_name?: boolean;
           logo_static?: string | null;
+          logo_white_path?: string | null;
           logo_width?: number | null;
           name_ar?: string | null;
           name_en: string;
@@ -4423,11 +4423,11 @@ export type Database = {
           lead_id?: string | null;
           link_decided_at?: string | null;
           logo_path?: string | null;
-          logo_white_path?: string | null;
           logo_pending_at?: string | null;
           logo_pending_path?: string | null;
           logo_shows_name?: boolean;
           logo_static?: string | null;
+          logo_white_path?: string | null;
           logo_width?: number | null;
           name_ar?: string | null;
           name_en?: string;
