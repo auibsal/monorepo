@@ -5,6 +5,8 @@ type MetadataGenerator = Omit<Metadata, "description" | "title"> & {
   title: string;
   description: string;
   image?: string;
+  /** The image's text alternative (og:image:alt); the title otherwise. */
+  imageAlt?: string;
   locale?: SupportedLocale;
 };
 
@@ -51,6 +53,7 @@ export const createMetadata = ({
   title,
   description,
   image,
+  imageAlt,
   locale = project.locale.default,
   ...properties
 }: MetadataGenerator): Metadata => {
@@ -88,7 +91,7 @@ export const createMetadata = ({
   if (image && metadata.openGraph) {
     metadata.openGraph.images = [
       {
-        alt: title,
+        alt: imageAlt || title,
         height: 630,
         url: image,
         width: 1200,

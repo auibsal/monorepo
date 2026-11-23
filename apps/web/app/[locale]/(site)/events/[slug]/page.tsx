@@ -5,7 +5,7 @@ import {
 import { ActionBar } from "@repo/brand/components/sal/action-bar";
 import { Icon } from "@repo/brand/components/sal/icon";
 import type { Locale } from "@repo/internationalization";
-import { apiPath, getDirection } from "@repo/internationalization";
+import { getDirection } from "@repo/internationalization";
 import {
   formatClock,
   formatClockRange,
@@ -66,6 +66,7 @@ export const generateMetadata = async ({
   return localizedMetadata(locale, `/events/${event.slug}`, {
     description: localized(event, "summary", locale),
     image: mediaUrl(event.image_path) ?? undefined,
+    imageAlt: localized(event, "image_alt", locale) || undefined,
     title: localized(event, "title", locale),
   });
 };
@@ -113,8 +114,24 @@ const EventView = async ({
     withOrgs.filter((o) => o.line === line).map((o) => acknowledged(o, locale));
   const now = await roughlyNow();
   const upcoming = new Date(event.starts_at).getTime() > now;
-  // "How was it?" from the end for 14 days (decisions.md, Events).
-  const asking = !canceled && events.feedbackOpen(event, now);
+  // "How was it?" from the start until 14 days after the end, to who
+  // checked in (decisions.md, Events); the page checks the person.
+  const asking = !canceled && now < events.feedbackWindow(event).closes;
+
+  // After the event, the booking area gives way to "How was it?" (for who
+  // checked in) and the links from the night.
+  const feedback = asking ? (
+    <EventFeedback
+      closes={formatLongDate(
+        new Date(events.feedbackWindow(event).closes).toISOString(),
+        locale
+      )}
+      endsAt={event.ends_at}
+      eventId={event.id}
+      slug={event.slug}
+      startsAt={event.starts_at}
+    />
+  ) : null;
 
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-16">
@@ -148,7 +165,7 @@ const EventView = async ({
             {t("hostedBy", { partner: localized(host, "name", locale) })}
           </p>
         ) : null}
-        <p className="type-caption flex flex-wrap gap-x-4 gap-y-1">
+        <p className="type-body flex flex-wrap gap-x-4 gap-y-1" data-when>
           <span className="inline-flex items-center gap-1.5">
             <Icon name="calendar" />
             {formatLongDate(event.starts_at, locale)}
@@ -184,12 +201,6 @@ const EventView = async ({
             guestsBy={events.guestsBookBy(event)}
             slug={event.slug}
           />
-          <a
-            className="link type-body"
-            href={apiPath(`/calendar/events/${event.slug}.ics?lang=${locale}`)}
-          >
-            {t("addToCalendar")}
-          </a>
         </ActionBar>
       )}
       {canceled ? (
@@ -202,7 +213,13 @@ const EventView = async ({
       ) : null}
       {image ? (
         // biome-ignore lint/performance/noImgElement: a published image from the media bucket
-        <img alt="" className="w-full" height={630} src={image} width={1200} />
+        <img
+          alt={localized(event, "image_alt", locale)}
+          className="w-full"
+          height={630}
+          src={image}
+          width={1200}
+        />
       ) : null}
       {localized(event, "summary", locale) ? (
         <p className="type-lede">{localized(event, "summary", locale)}</p>
@@ -214,20 +231,13 @@ const EventView = async ({
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
       ) : null}
-      {asking ? (
-        <EventFeedback
-          closes={formatLongDate(
-            new Date(events.feedbackWindow(event).closes).toISOString(),
-            locale
-          )}
-          endsAt={event.ends_at}
-          eventId={event.id}
-          slug={event.slug}
-          startsAt={event.starts_at}
-        />
-      ) : null}
+      {/* Rendered before the start too: the page checks the time and the
+          person, so the question shows from the start without a rebuild.
+          After the event, the night's links follow it. */}
+      {feedback}
+      {upcoming ? null : <EventParts event={event} locale={locale} />}
       <EventProgram eventId={event.id} locale={locale} />
-      <EventParts event={event} locale={locale} />
+      {upcoming ? <EventParts event={event} locale={locale} /> : null}
       <CoSponsoredBy
         className="border-line pt-space-4 border-t"
         dir={getDirection(locale)}

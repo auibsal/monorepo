@@ -12,11 +12,20 @@ export const KIT_WORDS: Record<
     checkIn: string;
     checkInText: string;
     contentNote: string;
+    coSponsoredBy: string;
+    foldAndTear: string;
+    forConversation: string;
+    howWasIt: string;
+    /** "A note to the filmmakers" (a screening) or "to the writers". */
+    noteTo: (films: boolean) => string;
+    runTime: (n: number) => string;
+    thanksTo: string;
+    /** "Turn over: a note to the filmmakers". */
+    turnOver: (films: boolean) => string;
+    wellness: string;
     goodToKnow: string;
     inProgress: string;
     inProgressText: string;
-    join: string;
-    joinText: string;
     minutes: (n: number) => string;
     photos: string;
     photosText: string;
@@ -30,12 +39,22 @@ export const KIT_WORDS: Record<
     checkIn: "سجّلوا حضوركم هنا",
     checkInText: "اعرضوا التذكرة من حسابكم، أو گولوا اسمكم.",
     contentNote: "انتبهوا للمحتوى",
+    coSponsoredBy: "برعاية مشتركة مع",
+    foldAndTear: "اطوِ واقطع",
+    forConversation: "للنقاش",
+    howWasIt: "كيف كانت؟",
+    noteTo: (films) => (films ? "رسالة إلى صنّاع الأفلام" : "رسالة إلى الكتّاب"),
+    runTime: (n) => `مدة العرض: ${n} دقيقة`,
+    thanksTo: "شكر وتقدير",
+    turnOver: (films) =>
+      films
+        ? "اقلب الورقة: رسالة إلى صنّاع الأفلام"
+        : "اقلب الورقة: رسالة إلى الكتّاب",
+    wellness:
+      "إن بقي معك شيء مما شاهدته، فمركز العافية في الجامعة موجود لتتحدث إليه.",
     goodToKnow: "معلومات مفيدة",
     inProgress: "الفعالية بلّشت",
     inProgressText: "ادخلوا بهدوء رجاءً.",
-    join: "انضمّوا للجمعية",
-    joinText:
-      "العضوية مفتوحة لكل طالب بالجامعة، وبلا اشتراك. امسحوا الرمز وسجّلوا.",
     minutes: (n) => `${n} دقيقة`,
     photos: "دا نصوّر الفعالية",
     photosText: "إذن النشر الإعلامي للجمعية يشمل كل الحاضرين.",
@@ -48,12 +67,23 @@ export const KIT_WORDS: Record<
     checkIn: "Check in here",
     checkInText: "Show the ticket in your account, or give your name.",
     contentNote: "Content note",
+    coSponsoredBy: "Co-sponsored by",
+    foldAndTear: "Fold and tear",
+    forConversation: "For the conversation",
     goodToKnow: "Good to know",
+    howWasIt: "How was it?",
+    noteTo: (films) =>
+      films ? "A note to the filmmakers" : "A note to the writers",
+    runTime: (n) => `Run time: ${n} minutes`,
+    thanksTo: "Thanks to",
+    turnOver: (films) =>
+      films
+        ? "Turn over: a note to the filmmakers"
+        : "Turn over: a note to the writers",
+    wellness:
+      "If something stays with you, AUIB’s Wellness Center is there to talk to.",
     inProgress: "Event in progress",
     inProgressText: "Please come in quietly.",
-    join: "Join the Society",
-    joinText:
-      "Membership is open to every AUIB student, with no dues. Scan the code to join.",
     minutes: (n) => `${n} min.`,
     photos: "Photos are taken",
     photosText: "The Society’s media release covers everyone at the event.",

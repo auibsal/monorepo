@@ -1,7 +1,11 @@
 "use client";
 
 import { Button } from "@repo/brand/components/ui/button";
-import { type Locale, localizedPath } from "@repo/internationalization";
+import {
+  apiPath,
+  type Locale,
+  localizedPath,
+} from "@repo/internationalization";
 import { formatClock, formatLongDate } from "@repo/internationalization/format";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
@@ -45,6 +49,8 @@ export const EventBooking = ({
   const t = useTranslations("web.events");
   const locale = useLocale() as Locale;
   const calendar = `${localizedPath(locale, "/account/events")}#${slug}`;
+  // The event's own .ics, so the person's calendar reminds them too.
+  const ics = apiPath(`/calendar/events/${slug}.ics?lang=${locale}`);
   const [signedIn, setSignedIn] = useState(false);
   const [status, setStatus] = useState<Status | null>(null);
   const [terms, setTerms] = useState<BookingTerms | null>(null);
@@ -160,6 +166,9 @@ export const EventBooking = ({
           <a href={calendar}>{entry === "open" ? t("remind") : t("rsvp")}</a>
         </Button>
         <span className="type-caption">{t("rsvpHint")}</span>
+        <a className="link type-body" href={ics}>
+          {t("addToCalendar")}
+        </a>
       </>
     );
   }
@@ -169,11 +178,7 @@ export const EventBooking = ({
   }
   // A Guest after the 14 days before an event on campus.
   if (terms?.guests_closed && guestsBy && status === "none") {
-    return (
-      <p className="type-body">
-        {t("guestsClosed", { date: formatLongDate(guestsBy, locale) })}
-      </p>
-    );
+    return <p className="type-body">{t("guestsClosed")}</p>;
   }
   // Still loading, or a required question: the calendar asks.
   if (status === null || (asks && !open && status === "none")) {
@@ -198,6 +203,12 @@ export const EventBooking = ({
         {notice ? t(`notices.${notice}`) : null}
         {notice ? null : <StatusLine heldUntil={heldUntil} status={status} />}
       </span>
+      {/* Right after booking, and while booked: the confirmation's link. */}
+      {status === "booked" || status === "reminded" ? (
+        <a className="link type-body" href={ics}>
+          {t("addToCalendar")}
+        </a>
+      ) : null}
     </>
   );
 };

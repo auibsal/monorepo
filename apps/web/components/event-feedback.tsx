@@ -14,14 +14,22 @@ const loadClient = async () =>
   (await import("@/lib/diwan/supabase")).getSupabase();
 const loadEvents = async () => await import("@/lib/data/events");
 
-type State = "loading" | "signedOut" | "asking" | "answered" | "thanks";
+type State =
+  | "loading"
+  | "hidden"
+  | "signedOut"
+  | "asking"
+  | "answered"
+  | "thanks";
 
 /**
- * "How was it?" (decisions.md, Events): once an event has ended, for 14
- * days, anyone signed in answers once, with five choices and an optional
- * comment. The event's team reads the count, the average and the
- * comments, never who wrote them. `/events/<slug>#feedback` leads here
- * (the "Thanks for coming" email and the kit's QR codes).
+ * "How was it?" (decisions.md, Events): from the event's start until 14
+ * days after its end, someone checked in to it answers once, with five
+ * choices and an optional comment; everyone else sees nothing of it
+ * (private.feedback_open decides). The event's team reads the count, the
+ * average and the comments, never who wrote them.
+ * `/events/<slug>#feedback` leads here (the printed program's code and
+ * "Thanks for coming"): there, someone signed out is asked to sign in.
  */
 export const EventFeedback = ({
   closes,
@@ -45,23 +53,31 @@ export const EventFeedback = ({
   const [comment, setComment] = useState("");
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [open, setOpen] = useState(true);
 
   useEffect(() => {
-    setOpen(feedbackOpen({ ends_at: endsAt, starts_at: startsAt }, Date.now()));
+    if (!feedbackOpen({ ends_at: endsAt, starts_at: startsAt }, Date.now())) {
+      setState("hidden");
+      return;
+    }
     if (!hasSessionCookie(document.cookie)) {
-      setState("signedOut");
+      // Only someone who came by the program's code or the email's link.
+      setState(window.location.hash === "#feedback" ? "signedOut" : "hidden");
       return;
     }
     (async () => {
       const [client, events] = await Promise.all([loadClient(), loadEvents()]);
+      if (!(await events.myFeedbackOpen(client, eventId))) {
+        setState("hidden");
+        return;
+      }
       const mine = await events.myFeedback(client, eventId);
       setState(mine ? "answered" : "asking");
-    })().catch(() => setState("asking"));
+    })().catch(() => setState("hidden"));
   }, [endsAt, eventId, startsAt]);
 
-  if (!open) {
-    return null;
+  if (state === "loading" || state === "hidden") {
+    // Keeps the place the program's code points at.
+    return <span className="sr-only" id="feedback" />;
   }
 
   const send = async (event: FormEvent) => {

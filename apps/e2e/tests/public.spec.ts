@@ -22,6 +22,8 @@ test.describe("public site", () => {
     await expect(
       page.getByRole("heading", { name: "The green-event checklist" })
     ).toBeVisible();
+    // A link within the site swaps the title after the page shows.
+    await expect(page).toHaveTitle(/Sustainability/u);
     await expectAccessible(page);
   });
 
@@ -111,7 +113,7 @@ test.describe("public site", () => {
         header.getByText(/^(Book a place|احجز مكانًا)$/u)
       ).toHaveCount(0);
       const range = await header
-        .locator("p.type-caption span")
+        .locator("p[data-when] span")
         .nth(1)
         .textContent();
       if (edition.locale === "ar") {

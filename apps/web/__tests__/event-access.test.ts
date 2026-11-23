@@ -66,19 +66,20 @@ describe("How was it? (decisions.md, Events)", () => {
     starts_at: "2026-11-22T11:00:00Z",
   };
 
-  test("opens when the event ends and closes 14 days later", () => {
+  test("opens at the start and closes 14 days after the end", () => {
     const { closes, opens } = feedbackWindow(event);
-    expect(new Date(opens).toISOString()).toBe("2026-11-22T13:00:00.000Z");
+    expect(new Date(opens).toISOString()).toBe("2026-11-22T11:00:00.000Z");
     expect(new Date(closes).toISOString()).toBe("2026-12-06T13:00:00.000Z");
-    expect(feedbackOpen(event, Date.parse("2026-11-22T12:00:00Z"))).toBe(false);
+    expect(feedbackOpen(event, Date.parse("2026-11-22T10:59:00Z"))).toBe(false);
+    expect(feedbackOpen(event, Date.parse("2026-11-22T12:00:00Z"))).toBe(true);
     expect(feedbackOpen(event, Date.parse("2026-11-23T06:00:00Z"))).toBe(true);
     expect(feedbackOpen(event, Date.parse("2026-12-07T00:00:00Z"))).toBe(false);
   });
 
-  test("with no end, it opens two hours after the start", () => {
+  test("with no end, it closes 14 days after two hours past the start", () => {
     expect(
-      feedbackWindow({ ends_at: null, starts_at: event.starts_at }).opens
-    ).toBe(Date.parse("2026-11-22T13:00:00Z"));
+      feedbackWindow({ ends_at: null, starts_at: event.starts_at }).closes
+    ).toBe(Date.parse("2026-12-06T13:00:00Z"));
   });
 
   test("“Thanks for coming” links to the question on the event's page", () => {

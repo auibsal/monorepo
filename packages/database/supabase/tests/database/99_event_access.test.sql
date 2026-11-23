@@ -93,7 +93,7 @@ as $$
   returning id;
 $$;
 -- </preamble>
-select plan(26);
+select plan(30);
 
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ac01', 'member.ac@auib.edu.iq', 'Member');
 select pg_temp.make_user('00000000-0000-0000-0000-00000000ac02', 'associate.ac@auib.edu.iq', 'Associate');
@@ -196,12 +196,36 @@ select is(events.rsvp('e0000000-0000-0000-0000-00000000ac05'), 'confirmed',
   'The invited Guest books the invitation-only event');
 
 -- ── How was it? ─────────────────────────────────────────────────────────────
+-- Open from the start until 14 days after the end, to who checked in only.
+
+select pg_temp.logout();
+insert into events.events (id, slug, title_en, title_ar, starts_at, ends_at, status, entry)
+values ('e0000000-0000-0000-0000-00000000ac08', 'ac-now', 'Now', 'الآن',
+  now() - interval '30 minutes', now() + interval '1 hour', 'published', 'open');
+insert into events.check_ins (event_id, user_id, method) values
+  ('e0000000-0000-0000-0000-00000000ac06', '00000000-0000-0000-0000-00000000ac01', 'manual'),
+  ('e0000000-0000-0000-0000-00000000ac06', '00000000-0000-0000-0000-00000000ac03', 'manual'),
+  ('e0000000-0000-0000-0000-00000000ac07', '00000000-0000-0000-0000-00000000ac01', 'manual'),
+  ('e0000000-0000-0000-0000-00000000ac08', '00000000-0000-0000-0000-00000000ac01', 'manual');
+
+select pg_temp.login_as('00000000-0000-0000-0000-00000000ac05');
+select throws_ok(
+  $$ insert into events.feedback (event_id, rating) values ('e0000000-0000-0000-0000-00000000ac06', 4) $$,
+  '42501', null,
+  'Someone who did not check in cannot answer'
+);
+select is(events.my_feedback_open('e0000000-0000-0000-0000-00000000ac06'), false,
+  'and the page shows them nothing of it');
 
 select pg_temp.login_as('00000000-0000-0000-0000-00000000ac01');
 select lives_ok(
+  $$ insert into events.feedback (event_id, rating) values ('e0000000-0000-0000-0000-00000000ac08', 5) $$,
+  'Who checked in answers from the start, while the event is on'
+);
+select lives_ok(
   $$ insert into events.feedback (event_id, rating, comment)
      values ('e0000000-0000-0000-0000-00000000ac06', 5, 'The second film stayed with me.') $$,
-  'Anyone signed in answers once the event has ended'
+  'and after it ends'
 );
 select throws_ok(
   $$ insert into events.feedback (event_id, rating) values ('e0000000-0000-0000-0000-00000000ac06', 4) $$,
@@ -216,7 +240,7 @@ select throws_ok(
 select throws_ok(
   $$ insert into events.feedback (event_id, rating) values ('e0000000-0000-0000-0000-00000000ac01', 4) $$,
   '42501', null,
-  'and is not open before it ends'
+  'and is not open before it starts'
 );
 select throws_ok(
   $$ select events.feedback_summary('e0000000-0000-0000-0000-00000000ac06') $$,
@@ -243,8 +267,9 @@ update events.events set starts_at = (date_trunc('day', now() at time zone 'Asia
   where id = 'e0000000-0000-0000-0000-00000000ac06';
 insert into events.rsvps (event_id, user_id) values
   ('e0000000-0000-0000-0000-00000000ac06', '00000000-0000-0000-0000-00000000ac02');
-insert into events.check_ins (event_id, user_id, method) values
-  ('e0000000-0000-0000-0000-00000000ac06', '00000000-0000-0000-0000-00000000ac01', 'manual');
+delete from events.check_ins
+  where event_id = 'e0000000-0000-0000-0000-00000000ac06'
+    and user_id = '00000000-0000-0000-0000-00000000ac03';
 select private.thanks_for_coming();
 select is(
   (select array_agg(payload ->> 'user_id') from core.outbox where kind = 'events.thanks'),
@@ -264,6 +289,19 @@ select is(
 select ok(
   (select bool_or(e ->> 'slug' = 'ac-near') from jsonb_array_elements(core.telegram_staff_brief() -> 'empty_shifts') e),
   'The daily brief flags an event within five days with an empty shift'
+);
+
+-- Moving the event moves its shifts, keeping their offsets.
+create temporary table shift_times as
+  select id, starts_at, ends_at from programs.shifts
+  where event_id = 'e0000000-0000-0000-0000-00000000ac01';
+update events.events set starts_at = starts_at + interval '3 days'
+  where id = 'e0000000-0000-0000-0000-00000000ac01';
+select ok(
+  (select bool_and(s.starts_at = t.starts_at + interval '3 days'
+      and s.ends_at is not distinct from t.ends_at + interval '3 days')
+   from programs.shifts s join shift_times t on t.id = s.id),
+  'When an event moves, its shifts move with it'
 );
 
 -- ── The program ─────────────────────────────────────────────────────────────

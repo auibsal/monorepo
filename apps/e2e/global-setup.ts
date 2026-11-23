@@ -1,3 +1,4 @@
+import { rmSync } from "node:fs";
 import {
   admin,
   editor,
@@ -6,6 +7,7 @@ import {
   member,
   PASSWORD,
   president,
+  TWO_STEP_KEYS,
   universityDate,
 } from "./fixtures";
 
@@ -157,6 +159,16 @@ export default async function globalSetup() {
       ],
       { ignoreDuplicates: true }
     );
+  // Officers' and partners' roles need two-step sign-in (from Nov 22,
+  // 2026): each run sets their authenticators up afresh, the keys kept in
+  // TWO_STEP_KEYS by the sign-in helper.
+  rmSync(TWO_STEP_KEYS, { force: true });
+  const editorFactors = await db.auth.admin.mfa.listFactors({
+    userId: editorId,
+  });
+  for (const factor of editorFactors.data?.factors ?? []) {
+    await db.auth.admin.mfa.deleteFactor({ id: factor.id, userId: editorId });
+  }
   // The co-editing journey's officers (minutes are theirs alone). Their
   // roles need two-step sign-in, which the journey sets up afresh each run.
   for (const [userId, role] of [

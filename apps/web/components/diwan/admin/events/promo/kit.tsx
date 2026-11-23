@@ -8,18 +8,32 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth/provider";
 import { type Client, events, unwrap } from "@/lib/data";
-import { acknowledged } from "@/lib/institutions";
 import { mediaUrl } from "@/lib/media";
 import { uploadMedia } from "@/lib/storage";
 import { DiwanSection, RowList } from "../../../page";
-import type { Art, Content, Faces, Lang, Layout, Sign } from "./draw";
+import type {
+  Art,
+  Content,
+  Faces,
+  Lang,
+  Layout,
+  PartnerRow,
+  Sign,
+} from "./draw";
 import { goodToKnowLines, KIT_WORDS, type KitFacts } from "./words";
 
 /** The drawing code, the QR and the PDF writer load only when a kit is built. */
 type Tools = Awaited<ReturnType<typeof loadTools>>;
 const loadTools = async () => {
   const [
-    { drawCard, drawProgram, drawSign, drawTent },
+    {
+      drawCard,
+      drawProgramBack,
+      drawProgramFront,
+      drawSign,
+      drawTent,
+      drawWordmark,
+    },
     { PDFDocument },
     { accessSentence },
     { tagForPdfUa },
@@ -33,9 +47,11 @@ const loadTools = async () => {
     accessSentence,
     tagForPdfUa,
     drawCard,
-    drawProgram,
+    drawProgramBack,
+    drawProgramFront,
     drawSign,
     drawTent,
+    drawWordmark,
     PDFDocument,
   };
 };
@@ -43,19 +59,27 @@ const loadTools = async () => {
 /**
  * The promo kit (decisions.md, Events): one button on the event's page in
  * the Diwan builds everything from the event's own fields, image and
- * Program, and the brand kit's templates, in English and Arabic:
+ * Program, in English and Arabic, in one look (decided Nov 22–23, 2026):
+ * the image at the top fading into ink, nothing written on it; the title,
+ * date and place below on solid ink; the lockup on the picture's darkened
+ * top on the poster, the A4 sheets, the Telegram image and the campus
+ * screen, never on Instagram; the partners' white logos along the foot on
+ * the poster, the Instagram cover, the Telegram image, the campus screen,
+ * the thank-you post and the last slide. Every printed piece keeps a
+ * 10 mm white margin. The files:
  * - the Instagram carousel: a cover, one card per work in the Program
- *   (its still, or its number when it has none) and "Good to know";
+ *   (its still, or its number when it has none), "Good to know" and the
+ *   wordmark alone;
  * - the stories: the cover, one per work, "Tomorrow" and "Today" (text
  *   clear of the top 220 and bottom 400 pixels);
- * - the A3 poster and an A1 for easels (a 10 mm white margin and the QR to
- *   the event's page), the A4 two-sided handout, and a 1920 × 1080 version
- *   for campus screens;
- * - the A5 program, one page per language, and an A4 sheet with two
- *   programs, printed double-sided (English, then Arabic);
- * - the check-in and join table tents (folded A4);
+ * - the A3 poster and an A1 for easels, the A4 two-sided handout, and a
+ *   1920 × 1080 version for campus screens;
+ * - for an event with a Program, the A4 program, both sides, flipped on
+ *   the long edge: the works, "How was it?", and on the back "For the
+ *   conversation" and the note to tear off for the box at the door;
+ * - the check-in table tent (folded A4); no "Join" on printed matter;
  * - the door signs: in progress, photos and the content note;
- * - the "Thanks for coming" card, with the co-sponsors' logos;
+ * - the thank-you post, with the partners;
  * - the Telegram image, the link preview and the captions.
  * Each file downloads on its own. Media posts them; nothing is uploaded.
  */
@@ -63,8 +87,12 @@ const loadTools = async () => {
 export interface PromoEvent extends KitFacts {
   body_ar: string | null;
   body_en: string | null;
+  discussion?: unknown;
   ends_at: string | null;
+  format?: string | null;
   id: string;
+  image_alt_ar?: string | null;
+  image_alt_en?: string | null;
   image_path: string | null;
   slug: string;
   starts_at: string;
@@ -85,9 +113,15 @@ interface KitFile {
 const mm = (n: number, dpi = 200) => Math.round((n * dpi) / 25.4);
 const PT_PER_MM = 72 / 25.4;
 
+/**
+ * Every printed piece keeps a 10 mm white margin: the university's copiers
+ * can't print to the edge, and nothing needs cutting.
+ */
 const print = (wmm: number, hmm: number, dpi = 200): Layout => ({
+  border: mm(10, dpi),
   height: mm(hmm, dpi),
   imageShare: 0.42,
+  logo: true,
   margin: mm(10, dpi),
   qr: true,
   safeBottom: 0,
@@ -95,16 +129,14 @@ const print = (wmm: number, hmm: number, dpi = 200): Layout => ({
   width: mm(wmm, dpi),
 });
 
-/** A poster with its 10 mm white margin and the type set 10 mm inside it. */
+/** A poster: the type set 12 mm inside its white margin. */
 const poster = (wmm: number, hmm: number, dpi = 200): Layout => ({
   ...print(wmm, hmm, dpi),
-  border: mm(10, dpi),
   margin: mm(12, dpi),
 });
 
 const LAYOUTS = {
   a1: poster(594, 841, 100),
-  a5: print(148, 210),
   carousel: {
     height: 1350,
     imageShare: 0.42,
@@ -120,15 +152,18 @@ const LAYOUTS = {
   preview: {
     height: 630,
     imageShare: 0.45,
+    logo: true,
     margin: 56,
     qr: false,
     safeBottom: 0,
     safeTop: 0,
     width: 1200,
   },
+  program: print(210, 297),
   screen: {
     height: 1080,
     imageShare: 0.45,
+    logo: true,
     margin: 80,
     qr: true,
     qrWide: true,
@@ -148,6 +183,7 @@ const LAYOUTS = {
   telegram: {
     height: 1350,
     imageShare: 0.42,
+    logo: true,
     margin: 80,
     qr: false,
     safeBottom: 0,
@@ -332,8 +368,8 @@ const pdf = async (
 const LANG_TAG = { ar: "AR", en: "EN" } as const;
 
 interface Extras {
-  /** The co-sponsors' logos, for the thank-you card. */
-  logos: (CanvasImageSource & { height: number; width: number })[];
+  /** The partners along the foot, by line, in white or in words. */
+  partners: Record<Lang, PartnerRow[]>;
   /** The Program's works, with their stills (or none). */
   program: {
     item: events.ProgramItem;
@@ -379,6 +415,14 @@ const paintSign = (
   return canvas;
 };
 
+/** The discussion questions in one language. */
+const questionsIn = (event: PromoEvent, lang: Lang) =>
+  (Array.isArray(event.discussion) ? event.discussion : [])
+    .map((q) => (q as { ar?: string; en?: string } | null)?.[lang] ?? "")
+    .map((q) => q.trim())
+    .filter(Boolean);
+
+/** The A4 program's two sides, for an event with a Program. */
 const paintProgram = (
   tools: Tools,
   event: PromoEvent,
@@ -386,48 +430,72 @@ const paintProgram = (
   art: Art,
   lang: Lang
 ) => {
-  const layout = LAYOUTS.a5;
-  const canvas = document.createElement("canvas");
-  canvas.width = layout.width;
-  canvas.height = layout.height;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    throw new Error("canvas");
-  }
+  const layout = LAYOUTS.program;
+  const words = KIT_WORDS[lang];
+  const films = event.format === "screening";
+  const sheet = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = layout.width;
+    canvas.height = layout.height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("canvas");
+    }
+    return { canvas, ctx };
+  };
   const c = contentFor(event, lang);
-  tools.drawProgram(
-    ctx,
+  const minutes = extras.program.reduce(
+    (sum, { item }) => sum + (item.length_minutes ?? 0),
+    0
+  );
+  const note = lang === "ar" ? event.content_note_ar : event.content_note_en;
+  const front = sheet();
+  tools.drawProgramFront(
+    front.ctx,
     layout,
     {
       date: c.date,
-      items: extras.program.map(({ item }) => ({
+      feedback: { label: words.howWasIt, url: `${c.url}#feedback` },
+      items: extras.program.map(({ item, still }) => ({
         facts: facts(item, lang),
         line: [own(item, "line", lang), own(item, "award", lang)]
           .filter(Boolean)
           .join(" "),
+        still,
         title: own(item, "title", lang),
       })),
+      notes: [
+        minutes > 0 ? words.runTime(minutes) : "",
+        note ? `${words.contentNote}: ${note}` : "",
+        note ? words.wellness : "",
+      ].filter(Boolean),
+      partners: extras.partners[lang].map(
+        (row) =>
+          `${row.label}: ${new Intl.ListFormat(lang === "ar" ? "ar" : "en-US", {
+            type: "conjunction",
+          }).format(row.items.map((i) => i.name))}.`
+      ),
       title: c.title,
+      turnOver: words.turnOver(films),
       venue: c.venue,
     },
     art,
     lang
   );
-  return canvas;
-};
-
-/** Two A5 programs side by side on one A4 sheet (landscape). */
-const twoUp = (program: HTMLCanvasElement) => {
-  const canvas = document.createElement("canvas");
-  canvas.width = program.width * 2;
-  canvas.height = program.height;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    throw new Error("canvas");
-  }
-  ctx.drawImage(program, 0, 0);
-  ctx.drawImage(program, program.width, 0);
-  return canvas;
+  const back = sheet();
+  tools.drawProgramBack(
+    back.ctx,
+    layout,
+    {
+      conversation: words.forConversation,
+      foldAndTear: words.foldAndTear,
+      note: words.noteTo(films),
+      questions: questionsIn(event, lang),
+    },
+    art,
+    lang
+  );
+  return [front.canvas, back.canvas];
 };
 
 /** Every file of the kit for one language. */
@@ -445,11 +513,15 @@ const filesFor = async (
     ...c,
     summary: plain(lang === "ar" ? event.body_ar : event.body_en) || c.summary,
   };
-  const noImage = { ...art, image: null };
+  // The partners go only on the pieces that carry them (decisions.md,
+  // Events: one look); everywhere else, none.
+  const bare: Art = { ...art, partners: undefined };
+  const withPartners: Art = { ...art, partners: extras.partners[lang] };
+  const noImage = { ...bare, image: null };
   const items = listItems(lang === "ar" ? event.body_ar : event.body_en);
   // A work's card: its still, or its number; the facts in the date's place.
   const works = extras.program.map(({ item, still }, i) => ({
-    art: { ...art, image: still },
+    art: { ...bare, image: still },
     content: {
       ...c,
       date: facts(item, lang),
@@ -467,8 +539,15 @@ const filesFor = async (
     title: words.goodToKnow,
   };
   const time = formatClock(event.starts_at, lang);
+  const last = document.createElement("canvas");
+  last.width = LAYOUTS.carousel.width;
+  last.height = LAYOUTS.carousel.height;
+  const lastCtx = last.getContext("2d");
+  if (lastCtx) {
+    tools.drawWordmark(lastCtx, LAYOUTS.carousel, withPartners, lang);
+  }
   const slides = [
-    paint(tools, LAYOUTS.carousel, c, art, lang),
+    paint(tools, LAYOUTS.carousel, c, withPartners, lang),
     ...works.map((w) => paint(tools, LAYOUTS.carousel, w.content, w.art, lang)),
     // Without a Program, a list in the description still gets its slides.
     ...(works.length === 0
@@ -477,22 +556,23 @@ const filesFor = async (
         )
       : []),
     paint(tools, LAYOUTS.carousel, goodToKnow, noImage, lang),
+    last,
   ];
   const stories = [
-    paint(tools, LAYOUTS.story, c, art, lang),
+    paint(tools, LAYOUTS.story, c, bare, lang),
     ...works.map((w) => paint(tools, LAYOUTS.story, w.content, w.art, lang)),
     paint(
       tools,
       LAYOUTS.story,
       { ...c, date: `${words.tomorrow} · ${time}` },
-      art,
+      bare,
       lang
     ),
     paint(
       tools,
       LAYOUTS.story,
       { ...c, date: `${words.today} · ${time}` },
-      art,
+      bare,
       lang
     ),
   ];
@@ -515,7 +595,7 @@ const filesFor = async (
   ];
   const program =
     extras.program.length > 0
-      ? paintProgram(tools, event, extras, art, lang)
+      ? paintProgram(tools, event, extras, bare, lang)
       : null;
   const pngs = (list: HTMLCanvasElement[], name: string) =>
     Promise.all(
@@ -528,7 +608,7 @@ const filesFor = async (
     {
       blob: await pdf(
         tools,
-        [paint(tools, LAYOUTS.poster, c, art, lang)],
+        [paint(tools, LAYOUTS.poster, c, withPartners, lang)],
         297,
         420
       ),
@@ -537,7 +617,7 @@ const filesFor = async (
     {
       blob: await pdf(
         tools,
-        [paint(tools, LAYOUTS.a1, c, art, lang)],
+        [paint(tools, LAYOUTS.a1, c, withPartners, lang)],
         594,
         841
       ),
@@ -547,7 +627,7 @@ const filesFor = async (
       blob: await pdf(
         tools,
         [
-          paint(tools, LAYOUTS.handout, c, art, lang),
+          paint(tools, LAYOUTS.handout, c, bare, lang),
           paint(tools, LAYOUTS.handout, detail, noImage, lang),
         ],
         210,
@@ -558,15 +638,15 @@ const filesFor = async (
     ...(program
       ? [
           {
-            blob: await pdf(tools, [program], 148, 210),
-            name: `${base}-program-A5.pdf`,
+            blob: await pdf(tools, program, 210, 297),
+            name: `${base}-program-A4-double-sided.pdf`,
           },
         ]
       : []),
     ...(await pngs(slides, "carousel")),
     ...(await pngs(stories, "story")),
     {
-      blob: await png(paint(tools, LAYOUTS.screen, c, art, lang)),
+      blob: await png(paint(tools, LAYOUTS.screen, c, withPartners, lang)),
       name: `${base}-screen-1920x1080.png`,
     },
     {
@@ -587,28 +667,6 @@ const filesFor = async (
       ),
       name: `${base}-tent-check-in.pdf`,
     },
-    {
-      blob: await pdf(
-        tools,
-        [
-          paintSign(
-            tools,
-            LAYOUTS.tent,
-            {
-              heading: words.join,
-              qr: siteUrl(lang, "/join"),
-              text: words.joinText,
-            },
-            art,
-            lang,
-            true
-          ),
-        ],
-        297,
-        210
-      ),
-      name: `${base}-tent-join.pdf`,
-    },
     ...(await Promise.all(
       doors.map(async ([name, sign]) => ({
         blob: await pdf(
@@ -626,22 +684,22 @@ const filesFor = async (
           tools,
           LAYOUTS.thanks,
           {
+            dark: true,
             heading: words.thanks,
-            logos: extras.logos,
             text: `${c.title}. ${words.thanksText}`,
           },
-          art,
+          withPartners,
           lang
         )
       ),
       name: `${base}-thank-you.png`,
     },
     {
-      blob: await png(paint(tools, LAYOUTS.telegram, c, art, lang)),
+      blob: await png(paint(tools, LAYOUTS.telegram, c, withPartners, lang)),
       name: `${base}-telegram.png`,
     },
     {
-      blob: await png(paint(tools, LAYOUTS.preview, c, art, lang)),
+      blob: await png(paint(tools, LAYOUTS.preview, c, bare, lang)),
       name: `${base}-preview.png`,
     },
   ];
@@ -649,6 +707,28 @@ const filesFor = async (
 
 const maybeImage = (src: string | null) =>
   src ? loadImage(src).catch(() => null) : Promise.resolve(null);
+
+/** The partners' white logos, by address, from the register. */
+const whiteLogos = async (client: Client, slugs: string[]) => {
+  if (slugs.length === 0) {
+    return new Map<string, string>();
+  }
+  const rows =
+    unwrap(
+      await client
+        .schema("api")
+        .from("partners")
+        .select("slug, logo_white_path")
+        .in("slug", slugs)
+    ) ?? [];
+  return new Map(
+    rows
+      .filter((r) => r.logo_white_path)
+      .map((r) => [r.slug, r.logo_white_path as string])
+  );
+};
+
+const LINES = ["cosponsor", "thanks"] as const;
 
 const buildKit = async (
   event: PromoEvent,
@@ -660,70 +740,70 @@ const buildKit = async (
     events.programItems(client, event.id),
     events.eventOrganizations(client, event.slug),
   ]);
-  const [image, lockupEn, lockupAr, stills, sponsorLogos] = await Promise.all([
+  const white = await whiteLogos(
+    client,
+    withOrgs.map((o) => o.slug)
+  );
+  const [
+    image,
+    lockupEn,
+    lockupAr,
+    darkEn,
+    darkAr,
+    markEn,
+    markAr,
+    stills,
+    partnerLogos,
+  ] = await Promise.all([
     maybeImage(mediaUrl(event.image_path)),
     loadImage(logos.horizontal.onLight),
     loadImage(logos["horizontal-ar"].onLight),
+    loadImage(logos.horizontal.onDark),
+    loadImage(logos["horizontal-ar"].onDark),
+    loadImage("/brand/sal-wordmark-en-reversed.svg"),
+    loadImage("/brand/sal-wordmark-ar-reversed.svg"),
     Promise.all(program.map((item) => maybeImage(mediaUrl(item.still_path)))),
     Promise.all(
-      withOrgs
-        .filter((o) => o.line === "cosponsor")
-        .map((o) => maybeImage(acknowledged(o, "en").logo?.src ?? null))
+      withOrgs.map((o) => maybeImage(mediaUrl(white.get(o.slug) ?? null)))
     ),
   ]);
+  // The white logo where the register has one; the name in words otherwise.
+  const rowsIn = (lang: Lang): PartnerRow[] =>
+    LINES.map((line) => ({
+      items: withOrgs.flatMap((o, i) =>
+        o.line === line
+          ? [
+              {
+                logo: partnerLogos[i] ?? null,
+                name: (lang === "ar" ? o.name_ar : o.name_en) || o.name_en,
+              },
+            ]
+          : []
+      ),
+      label:
+        line === "cosponsor"
+          ? KIT_WORDS[lang].coSponsoredBy
+          : KIT_WORDS[lang].thanksTo,
+    })).filter((row) => row.items.length > 0);
   const extras: Extras = {
-    logos: sponsorLogos.filter((l): l is HTMLImageElement => l !== null),
+    partners: { ar: rowsIn("ar"), en: rowsIn("en") },
     program: program.map((item, i) => ({ item, still: stills[i] ?? null })),
   };
   const en = await filesFor(
     tools,
     event,
     "en",
-    { faces, image, lockup: lockupEn },
+    { faces, image, lockup: lockupEn, lockupDark: darkEn, wordmark: markEn },
     extras
   );
   const ar = await filesFor(
     tools,
     event,
     "ar",
-    { faces, image, lockup: lockupAr },
+    { faces, image, lockup: lockupAr, lockupDark: darkAr, wordmark: markAr },
     extras
   );
-  // The A4 sheet of two programs, double-sided: English, then Arabic.
-  const sheets =
-    program.length > 0
-      ? [
-          {
-            blob: await pdf(
-              tools,
-              [
-                twoUp(
-                  paintProgram(
-                    tools,
-                    event,
-                    extras,
-                    { faces, image, lockup: lockupEn },
-                    "en"
-                  )
-                ),
-                twoUp(
-                  paintProgram(
-                    tools,
-                    event,
-                    extras,
-                    { faces, image, lockup: lockupAr },
-                    "ar"
-                  )
-                ),
-              ],
-              296,
-              210
-            ),
-            name: `${event.slug}-programs-A4-double-sided.pdf`,
-          },
-        ]
-      : [];
-  const files = [...en, ...ar, ...sheets];
+  const files = [...en, ...ar];
   return [
     ...(await Promise.all(files.map((f) => accessible(tools, event, f)))),
     {
@@ -752,11 +832,16 @@ const accessible = async (
     .replace(`${LANG_TAG[lang]}-`, "")
     .replaceAll("-", " ");
   const doc = await tools.PDFDocument.load(await file.blob.arrayBuffer());
+  // The event's image, described (its alt text), where the piece shows it.
+  const alt = lang === "ar" ? event.image_alt_ar : event.image_alt_en;
   const label = `${title} (${what})`;
+  const described = alt && event.image_path ? `${label}. ${alt}` : label;
   tools.tagForPdfUa(doc, {
     alt: doc
       .getPages()
-      .map((_, i) => (doc.getPageCount() > 1 ? `${label}, ${i + 1}` : label)),
+      .map((_, i) =>
+        doc.getPageCount() > 1 ? `${described}, ${i + 1}` : described
+      ),
     lang,
     title: label,
   });

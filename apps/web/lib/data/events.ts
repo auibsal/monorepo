@@ -153,7 +153,7 @@ export const publicEvent = async (client: Client, eventSlug: string) =>
     await events(client)
       .from("events")
       .select(
-        `${eventColumns}, body_en, body_ar, questions, ${goodToKnowColumns}`
+        `${eventColumns}, body_en, body_ar, questions, image_alt_en, image_alt_ar, ${goodToKnowColumns}`
       )
       .eq("slug", eventSlug)
       .neq("entry", "invite")
@@ -358,6 +358,15 @@ export const feedbackSchema = z.object({
   comment: z.string().trim().max(500).optional(),
   rating: z.number().int().min(1).max(5),
 });
+
+/**
+ * Whether "How was it?" is open to the person: checked in, from the start
+ * to 14 days after the end (private.feedback_open).
+ */
+export const myFeedbackOpen = async (client: Client, eventId: string) =>
+  Boolean(
+    unwrap(await events(client).rpc("my_feedback_open", { event_id: eventId }))
+  );
 
 /** The person's own answer, if they gave one. */
 export const myFeedback = async (client: Client, eventId: string) =>

@@ -2627,10 +2627,13 @@ export type Database = {
           created_by: string | null;
           deleted_at: string | null;
           deleted_by: string | null;
+          discussion: NonNullable<Json>;
           ends_at: string | null;
           entry: string;
           format: string | null;
           id: string;
+          image_alt_ar: string | null;
+          image_alt_en: string | null;
           image_path: string | null;
           language: string | null;
           lead_id: string | null;
@@ -2682,10 +2685,13 @@ export type Database = {
           created_by?: string | null;
           deleted_at?: string | null;
           deleted_by?: string | null;
+          discussion?: NonNullable<Json>;
           ends_at?: string | null;
           entry?: string;
           format?: string | null;
           id?: string;
+          image_alt_ar?: string | null;
+          image_alt_en?: string | null;
           image_path?: string | null;
           language?: string | null;
           lead_id?: string | null;
@@ -2736,10 +2742,13 @@ export type Database = {
           created_by?: string | null;
           deleted_at?: string | null;
           deleted_by?: string | null;
+          discussion?: NonNullable<Json>;
           ends_at?: string | null;
           entry?: string;
           format?: string | null;
           id?: string;
+          image_alt_ar?: string | null;
+          image_alt_en?: string | null;
           image_path?: string | null;
           language?: string | null;
           lead_id?: string | null;
@@ -3298,6 +3307,7 @@ export type Database = {
           user_id: string;
         }[];
       };
+      my_feedback_open: { Args: { event_id: string }; Returns: boolean };
       my_joint_events: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -4350,6 +4360,7 @@ export type Database = {
           logo_pending_path: string | null;
           logo_shows_name: boolean;
           logo_static: string | null;
+          logo_white_path: string | null;
           logo_width: number | null;
           name_ar: string | null;
           name_en: string;
@@ -4383,6 +4394,7 @@ export type Database = {
           logo_pending_path?: string | null;
           logo_shows_name?: boolean;
           logo_static?: string | null;
+          logo_white_path?: string | null;
           logo_width?: number | null;
           name_ar?: string | null;
           name_en: string;
@@ -4415,6 +4427,7 @@ export type Database = {
           logo_pending_path?: string | null;
           logo_shows_name?: boolean;
           logo_static?: string | null;
+          logo_white_path?: string | null;
           logo_width?: number | null;
           name_ar?: string | null;
           name_en?: string;

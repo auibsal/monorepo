@@ -136,6 +136,10 @@ test("a member books on the event's own page", async ({ page }) => {
   await expect(
     page.getByText("Booked. A confirmation is on its way.")
   ).toBeVisible();
+  // The confirmation offers the event's .ics, so their calendar reminds them.
+  await expect(
+    page.getByRole("link", { name: "Add to calendar" })
+  ).toHaveAttribute("href", /\/calendar\/events\/.+\.ics/u);
   await expect(giveBack).toBeVisible();
   await page.reload();
   await expect(page.getByText("You have a place.")).toBeVisible();

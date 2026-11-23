@@ -142,10 +142,10 @@ update events.rsvps set status = 'canceled' where event_id = 'e00000b0-0000-0000
 select is(private.promote_waitlist('e00000b0-0000-0000-0000-000000000002'), 0,
   'and a released place is not offered from the waitlist');
 
--- Ten minutes before, unclaimed places are released.
-insert into events.rsvps (event_id, user_id) values
-  ('e00000b0-0000-0000-0000-000000000003', '00000000-0000-0000-0000-0000000b0a01'),
-  ('e00000b0-0000-0000-0000-000000000003', '00000000-0000-0000-0000-0000000b0a02');
+-- Ten minutes before, unclaimed places booked before then are released.
+insert into events.rsvps (event_id, user_id, created_at) values
+  ('e00000b0-0000-0000-0000-000000000003', '00000000-0000-0000-0000-0000000b0a01', now() - interval '1 day'),
+  ('e00000b0-0000-0000-0000-000000000003', '00000000-0000-0000-0000-0000000b0a02', now() - interval '1 day');
 insert into events.check_ins (event_id, user_id, method) values
   ('e00000b0-0000-0000-0000-000000000003', '00000000-0000-0000-0000-0000000b0a01', 'manual');
 select is(private.release_unclaimed(), 1, 'Ten minutes before, the unclaimed place is released');

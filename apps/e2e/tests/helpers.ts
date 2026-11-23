@@ -1,7 +1,8 @@
 import { createHmac } from "node:crypto";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page } from "@playwright/test";
-import { MAILPIT_URL, PASSWORD } from "../fixtures";
+import { MAILPIT_URL, PASSWORD, TWO_STEP_KEYS } from "../fixtures";
 import { urls } from "../playwright.config";
 
 /** No WCAG 2.1 A or AA violation of any impact on the page as shown. */
@@ -16,12 +17,70 @@ export const expectAccessible = async (page: Page) => {
   ).toEqual([]);
 };
 
+/**
+ * Each account's authenticator key, for the whole run: officers' and
+ * partners' roles need two-step sign-in (from Nov 22, 2026), so the first
+ * page that asks sets one up and later sign-ins give its code. Kept in a
+ * file (TWO_STEP_KEYS), since a worker can restart; global-setup empties it.
+ */
+const readKeys = (): Record<string, string> => {
+  try {
+    return existsSync(TWO_STEP_KEYS)
+      ? (JSON.parse(readFileSync(TWO_STEP_KEYS, "utf8")) as Record<
+          string,
+          string
+        >)
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+const keepKey = (email: string, key: string) => {
+  writeFileSync(TWO_STEP_KEYS, JSON.stringify({ ...readKeys(), [email]: key }));
+};
+
+const signedInAs = new WeakMap<Page, string>();
+
+/**
+ * The page's own step, where a role needs it (not Settings' offer to set
+ * one up, which anyone may ignore).
+ */
+const setUpButton = (page: Page) =>
+  page
+    .getByRole("region", { name: "Set up two-step sign-in" })
+    .getByRole("button", { name: "Set up my authenticator" });
+
 export const signInWithPassword = async (page: Page, email: string) => {
   await page.goto(`${urls.web}/sign-in`);
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
   await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
+  signedInAs.set(page, email);
+  // Wherever a page asks for the second step, give it, as the person would.
+  await page.addLocatorHandler(setUpButton(page), async () => {
+    await setUpNow(page);
+  });
+  await page.addLocatorHandler(
+    page.getByRole("region", { name: "Enter your sign-in code" }),
+    async () => {
+      // While a new authenticator is set up the page shows its key, and
+      // the setup gives the code itself.
+      const key = readKeys()[email];
+      const settingUp = page.getByAltText(
+        "QR code to add SAL to an authenticator app"
+      );
+      if (!key || (await settingUp.isVisible())) {
+        return;
+      }
+      await page.getByLabel("Six-digit code").fill(totp(key));
+      await page.getByRole("button", { name: "Confirm" }).click();
+      await expect(page.getByLabel("Six-digit code")).toBeHidden({
+        timeout: 15_000,
+      });
+    }
+  );
 };
 
 /** The newest email to an address, from the local stack's Mailpit. */
@@ -74,9 +133,28 @@ const totp = (secret: string, at = Date.now()) => {
  * where the Diwan asks for it, reading the key off the screen as they
  * would type it into the app.
  */
-export const setUpTwoStep = async (page: Page) => {
-  await page.getByRole("button", { name: "Set up my authenticator" }).click();
-  const key = (await page.locator("code").first().textContent()) ?? "";
-  await page.getByLabel("Six-digit code").fill(totp(key.trim()));
+/** Sets the authenticator up: its key read off the screen, its first code. */
+const setUpNow = async (page: Page) => {
+  await setUpButton(page).click();
+  // The key written out beside the QR code (not any other code on the page).
+  const key = (
+    (await page.locator("code.break-all").first().textContent()) ?? ""
+  ).trim();
+  const email = signedInAs.get(page);
+  if (email) {
+    keepKey(email, key);
+  }
+  await page.getByLabel("Six-digit code").fill(totp(key));
   await page.getByRole("button", { name: "Confirm" }).click();
+  // Done once the step is accepted and the page goes on.
+  await expect(page.getByLabel("Six-digit code")).toBeHidden({
+    timeout: 15_000,
+  });
+};
+
+export const setUpTwoStep = async (page: Page) => {
+  // The sign-in's own handler may have set it up already.
+  if (await setUpButton(page).isVisible()) {
+    await setUpNow(page);
+  }
 };

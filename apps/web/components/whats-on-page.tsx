@@ -2,10 +2,16 @@ import { project } from "@repo/config";
 import type { Locale } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { getTranslations } from "next-intl/server";
+import { DatedList } from "@/components/event-list";
 import { ManageLinks } from "@/components/manage-links";
 import { PageHeader } from "@/components/section";
 import { loadProgram } from "@/components/series";
-import { MonthCalendar, MonthSection, nextAfter } from "@/components/whats-on";
+import {
+  calendarItems,
+  MonthCalendar,
+  MonthSection,
+  nextAfter,
+} from "@/components/whats-on";
 import { events } from "@/lib/data";
 import { readPublished } from "@/lib/supabase";
 import { roughlyNow } from "@/lib/this-year";
@@ -33,11 +39,17 @@ export const whatsOnPath = (month: Month, host?: Host) => {
   return `/events?${query.toString()}`;
 };
 
+const YEAR_MS = 366 * 86_400_000;
+/** How many past events the collection lists. */
+const PAST = 12;
+
 /**
- * Events: the Society's events in one calendar, a month at a time. The
- * public see members-only events as teasers; members book from the
- * members' events page. AUIB's own calendar is one link, not dates beside
- * the Society's (decisions §10).
+ * Events (decisions §6; the U.S. Web Design System's collection, its
+ * calendar display): the events to come as a dated list, then the past
+ * ones, on every screen. A month is a filter (/events?month=2026-11), the
+ * same list for that month. The public see members-only events as
+ * teasers; members book from the members' events page. AUIB's own
+ * calendar is one link, not dates beside the Society's (decisions §10).
  */
 export const WhatsOn = async ({
   host,
@@ -46,18 +58,25 @@ export const WhatsOn = async ({
 }: {
   host?: Host;
   locale: Locale;
-  month: Month;
+  /** A month asked for in the address; none shows what is coming. */
+  month?: Month;
 }) => {
   const now = new Date(await roughlyNow());
   const t = await getTranslations({ locale, namespace: "web.events" });
   const hostId = host ? (await loadProgram(host))?.id : undefined;
+  const from = month?.from ?? new Date(now.getTime() - YEAR_MS);
+  const to = month?.to ?? new Date(now.getTime() + YEAR_MS);
   const all = await readPublished(
     ["events"],
-    (c) => events.calendar(c, month.from, month.to),
+    (c) => events.calendar(c, from, to),
     []
   );
   const rows = hostId ? all.filter((row) => row.program_id === hostId) : all;
-  const upcoming = rows.length === 0 ? await nextAfter(month, hostId) : null;
+  const started = (row: { starts_at: string }) =>
+    Date.parse(row.starts_at) < now.getTime();
+  const coming = rows.filter((row) => !started(row));
+  const past = rows.filter(started).reverse().slice(0, PAST);
+  const thisMonth = monthFrom(undefined, now);
   const feed = `${project.url.replace(HTTP_SCHEME, "webcal:")}/calendar.ics?lang=${locale}`;
   const href = (next: Month) => whatsOnPath(next, host);
 
@@ -73,7 +92,10 @@ export const WhatsOn = async ({
 
       <p className="flex flex-wrap gap-x-5 gap-y-2">
         {host ? (
-          <Link className="link type-caption" href={whatsOnPath(month)}>
+          <Link
+            className="link type-caption"
+            href={month ? whatsOnPath(month) : "/events"}
+          >
             {t("allEvents")}
           </Link>
         ) : null}
@@ -82,18 +104,55 @@ export const WhatsOn = async ({
         </a>
       </p>
 
-      <MonthSection
-        hrefFor={(m) => href(monthFrom(m, now))}
-        locale={locale}
-        month={month}
-      >
-        <MonthCalendar
+      {month ? (
+        <MonthSection
+          hrefFor={(m) => href(monthFrom(m, now))}
           locale={locale}
           month={month}
-          next={upcoming}
-          rows={rows}
-        />
-      </MonthSection>
+        >
+          <MonthCalendar
+            locale={locale}
+            month={month}
+            next={rows.length === 0 ? await nextAfter(month, hostId) : null}
+            rows={rows}
+          />
+        </MonthSection>
+      ) : (
+        <>
+          <section aria-labelledby="coming" className="gap-space-5 grid">
+            <div className="border-line pt-space-4 flex flex-wrap items-baseline justify-between gap-4 border-t">
+              <h2 className="type-title font-light" id="coming">
+                {t("coming")}
+              </h2>
+              <Link className="link type-caption" href={href(thisMonth)}>
+                {t("byMonth")}
+              </Link>
+            </div>
+            {coming.length > 0 ? (
+              <DatedList
+                items={await calendarItems(coming, locale)}
+                locale={locale}
+              />
+            ) : (
+              <p className="type-body text-text-secondary">{t("noneComing")}</p>
+            )}
+          </section>
+          {past.length > 0 ? (
+            <section aria-labelledby="past" className="gap-space-5 grid">
+              <h2
+                className="type-title border-line pt-space-4 border-t font-light"
+                id="past"
+              >
+                {t("past")}
+              </h2>
+              <DatedList
+                items={await calendarItems(past, locale)}
+                locale={locale}
+              />
+            </section>
+          ) : null}
+        </>
+      )}
 
       <p className="type-caption border-line pt-space-4 border-t">
         <a className="link" href={feed}>

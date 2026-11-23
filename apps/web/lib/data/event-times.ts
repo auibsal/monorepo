@@ -20,8 +20,9 @@ export const guestsBookBy = (event: {
     : new Date(new Date(event.starts_at).getTime() - 14 * DAY_MS).toISOString();
 
 /**
- * "How was it?" (decisions.md, Events): open from the event's end (two
- * hours after the start when it has none) for 14 days.
+ * "How was it?" (decisions.md, Events): open from the event's start until
+ * 14 days after its end (two hours after the start when it has none), to
+ * who checked in.
  */
 export const FEEDBACK_DAYS = 14;
 const DEFAULT_LENGTH_MS = 2 * 3_600_000;
@@ -33,7 +34,10 @@ export const feedbackWindow = (event: {
   const end = event.ends_at
     ? new Date(event.ends_at).getTime()
     : new Date(event.starts_at).getTime() + DEFAULT_LENGTH_MS;
-  return { closes: end + FEEDBACK_DAYS * DAY_MS, opens: end };
+  return {
+    closes: end + FEEDBACK_DAYS * DAY_MS,
+    opens: new Date(event.starts_at).getTime(),
+  };
 };
 
 export const feedbackOpen = (

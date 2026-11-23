@@ -1674,8 +1674,8 @@
           "theSociety": "The Society",
           "image": "Image",
           "slug": "Web address",
-          "slugHint": "Made from the English title and the day; fixed once the event is published.",
-          "slugFixed": "Fixed once the event is published, since the address has been shared.",
+          "slugHint": "Made from the English title and the day. Set when first published; it never changes.",
+          "slugFixed": "Set when first published; it never changes.",
           "slugInvalid": "The web address takes only Latin letters, digits and hyphens.",
           "debrief": "Debrief (its page in Notion)",
           "debriefHint": "Kept in Notion, without names; linked here for the event’s staff only.",
@@ -1694,7 +1694,14 @@
           "preset": "What kind of event",
           "presetHint": "Its format from the Events Manual fills the duration, access, shifts, run of show and checklist. You can change anything after.",
           "noPreset": "None of these",
-          "presetStep": "Kind"
+          "presetStep": "Kind",
+          "imageAlt": "Describe the image",
+          "imageAltHint": "Required with an image: what it shows, for people who can’t see it. Used on the page, in link previews and in the promo kit.",
+          "discussion": "For the conversation",
+          "discussionHint": "Questions for the discussion, printed on the back of the program. Optional.",
+          "question": "Question {n}",
+          "addQuestion": "Add a question",
+          "removeQuestion": "Remove"
         },
         "promo": {
           "title": "Promo kit",
@@ -2727,7 +2734,9 @@
             "same": "Same organization as {name}",
             "newEntry": "New entry"
           },
-          "typedContact": "Contact typed before the partner had a Lead"
+          "typedContact": "Contact typed before the partner had a Lead",
+          "logoWhite": "White logo (optional)",
+          "logoWhiteHint": "The logo in white, for the promo kit’s pictures on ink. Without it, the kit names the organization in words."
         },
         "agreements": {
           "empty": "No memoranda yet.",
@@ -5670,7 +5679,8 @@
             "open": "Open",
             "rsvp": "Booking required"
           },
-          "guestsBy": "Guests book by {date}"
+          "guestsBy": "Guests book by {date}",
+          "guestsClosed": "Guests’ booking is closed"
         },
         "placesLeft": "Places left: {count}",
         "language": {
@@ -5688,7 +5698,8 @@
             "standing": "Standing",
             "mixed": "Some seats, some standing"
           },
-          "accommodation": "Ask for an accommodation by {date}"
+          "accommodation": "Ask for an accommodation by {date}",
+          "accommodationLate": "For an accommodation, write to {email}"
         },
         "food": {
           "label": "Food and drink",
@@ -5713,7 +5724,7 @@
         }
       },
       "forClasses": "This event is for {classes}.",
-      "guestsClosed": "Guests book by {date}.",
+      "guestsClosed": "Guests’ booking is closed.",
       "feedback": {
         "title": "How was it?",
         "ratings": {
@@ -5737,7 +5748,11 @@
       "program": {
         "title": "Program",
         "length": "{n, plural, one {{shown} minute} other {{shown} minutes}}"
-      }
+      },
+      "coming": "Coming up",
+      "past": "Past events",
+      "byMonth": "By month",
+      "noneComing": "Nothing is announced yet."
     },
     "journal": {
       "title": "Qirtas",

@@ -29,3 +29,15 @@ Both use the standard event page; their names are set like any title, in Light.
 - Carries the Society's lockup, or the line "a Society of Arts and Letters program" (in Arabic: «من برامج جمعية الفنون والآداب»), in the piece's language.
 - Tags @auibsal on every post.
 - Prints only to the confirmed need: the RSVP count plus 10%. Tickets, sign-ups and forms are on the site.
+
+## One look for an event's pictures
+
+Decided Nov 22–23, 2026, in place of the earlier rules for event posts, posters and the promo kit (the Diwan's event page builds them all). Every event uses the same system; only the content changes (the title, the image, the program), never the layout.
+
+- **The picture:** the event's image at the top, fading into ink at its foot, with no words, credits or labels on it. The title, date and place go below it, on solid ink. For an event with a program of several works (a screening, a reading), the image may show them all side by side; the kit uses the uploaded image as it is.
+- **Our logo:** at the top, on the side the language reads from, directly on the picture's darkened top (no band behind it), on the poster, the A4 sheets, the Telegram image and the campus screen. Nothing posted on Instagram carries it (the cover, the carousel's slides, the stories: Instagram names the account beside each); a carousel still ends on the wordmark alone.
+- **Partners' logos:** their white versions along the foot, at one height, with no tiles, under "Co-sponsored by" and "Thanks to", on the poster, the Instagram cover, the Telegram image, the campus screen, the thank-you post and the carousel's last slide; in color on the event's page. Not on stories, inside slides, the works' sheets, signs or the program, which names them in words. A partner with no white logo is named in words until it supplies one (the register keeps an optional white logo for each entry).
+- **QR codes:** a code's label is never wider than the code; it wraps under it.
+- **Print:** every printed piece keeps a 10 mm white margin, since the university's copiers can't print to the edge; nothing needs cutting.
+- **The printed program** (an event with a program of works): one A4 sheet, both sides, flipped on the long edge. The front: the lockup, the title, the date and place, each work with a small image, its title, credit line and one line, the run time and the content note with the Wellness Center, the "How was it?" code to the event's page, and the partners in words; its bottom 62 mm hold only "Turn over: a note to the filmmakers" (or "to the writers"). The back: "For the conversation", the event's discussion questions with room to write, and in the bottom 62 mm, behind a dashed "Fold and tear" line, the note, unsigned, for the box at the door.
+- **No "Join" on an event's printed matter:** a student who books with an AUIB address is already a Member. Joining is asked in the closing words, on the last slide and in "Thanks for coming".
