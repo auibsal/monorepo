@@ -5615,6 +5615,7 @@
       "rsvp": "Book a place",
       "rsvpHint": "Sign in to book a place.",
       "addToCalendar": "Add to calendar",
+      "ticket": "Show my ticket",
       "everything": "Everything",
       "previous": "Previous month: {month}",
       "next": "Next month: {month}",
