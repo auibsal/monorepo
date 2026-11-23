@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { env } from "@/env";
 import { events } from "@/lib/data";
+import { roughlyNow } from "@/lib/this-year";
 import { classesText } from "./event-classes";
 import { PlacesLeft } from "./places-left";
 
@@ -91,9 +92,13 @@ const accessText = async (event: GoodToKnowEvent, locale: Locale) => {
   if (isSeating(event.seating)) {
     parts.push(t(`seating.${event.seating}`));
   }
-  const ask = t("accommodation", {
-    date: formatLongDate(accommodationDay(event), locale),
-  });
+  // Once the day has passed, what it means now: write to us (a later
+  // request is still met where it can be).
+  const day = accommodationDay(event);
+  const ask =
+    new Date(day).getTime() < (await roughlyNow())
+      ? t("accommodationLate", { email: project.mailboxes.hello })
+      : t("accommodation", { date: formatLongDate(day, locale) });
   const detail = own(event, "access_detail", locale);
   return (
     <>
@@ -122,13 +127,16 @@ const whoCanCome = async (event: GoodToKnowEvent, locale: Locale) => {
   }
   const how = t(event.entry === "open" ? "how.open" : "how.rsvp");
   const guestsBy = events.guestsBookBy(event);
-  return [
-    await classesText(event.classes, locale, "only"),
-    how,
-    guestsBy && event.classes.includes("guest")
-      ? t("guestsBy", { date: formatLongDate(guestsBy, locale) })
-      : null,
-  ]
+  // Once the day has passed, what it means now.
+  const guestsClosed =
+    guestsBy !== null && new Date(guestsBy).getTime() < (await roughlyNow());
+  let guestsLine: string | null = null;
+  if (guestsBy && event.classes.includes("guest")) {
+    guestsLine = guestsClosed
+      ? t("guestsClosed")
+      : t("guestsBy", { date: formatLongDate(guestsBy, locale) });
+  }
+  return [await classesText(event.classes, locale, "only"), how, guestsLine]
     .filter(Boolean)
     .join(" · ");
 };

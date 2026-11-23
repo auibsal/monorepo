@@ -10,6 +10,8 @@ interface PageMetadata {
   feed?: string;
   /** A share image; otherwise one is drawn from the title (`/[locale]/og`). */
   image?: string;
+  /** The share image's text alternative (og:image:alt). */
+  imageAlt?: string;
   /** The languages the page exists in, when not every one (a piece). */
   languages?: readonly Locale[];
   title: string;

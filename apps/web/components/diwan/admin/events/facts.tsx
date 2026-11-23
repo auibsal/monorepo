@@ -42,10 +42,13 @@ export interface EventFactsRow {
   body_en: string | null;
   capacity: number | null;
   classes: string[];
+  discussion?: unknown;
   ends_at: string | null;
   entry: string;
   format: string | null;
   id: string;
+  image_alt_ar?: string | null;
+  image_alt_en?: string | null;
   image_path: string | null;
   lead_id: string | null;
   partner_id: string | null;
@@ -67,14 +70,32 @@ const pair = (en: string | null, ar: string | null) => ({
   en: en ?? "",
 });
 
+/** The discussion questions, as stored: [{ en, ar }]. */
+const questionsOf = (value: unknown) =>
+  Array.isArray(value)
+    ? value.map((q) =>
+        pair(
+          (q as { en?: string } | null)?.en ?? null,
+          (q as { ar?: string } | null)?.ar ?? null
+        )
+      )
+    : [];
+
+/** The image and its description, both languages. */
+const imageOf = (event: EventFactsRow | null) => ({
+  image: event?.image_path ?? null,
+  imageAlt: pair(event?.image_alt_en ?? null, event?.image_alt_ar ?? null),
+});
+
 const initial = (event: EventFactsRow | null) => ({
+  ...imageOf(event),
   body: pair(event?.body_en ?? null, event?.body_ar ?? null),
   capacity: event?.capacity ? String(event.capacity) : "",
   classes: event?.classes ?? [...events.CLASSES],
   endsAt: event?.ends_at ?? null,
   entry: event?.entry ?? "rsvp",
   format: event?.format ?? "",
-  image: event?.image_path ?? null,
+  discussion: questionsOf(event?.discussion),
   lead: event?.lead_id ?? null,
   partner: event?.partner_id ?? "",
   // Generated from the title and the day until the event is published,
@@ -102,6 +123,11 @@ const toRow = (f: Form) => ({
   ends_at: f.endsAt,
   entry: f.entry,
   format: f.format || null,
+  discussion: f.discussion
+    .map((q) => ({ ar: q.ar.trim(), en: q.en.trim() }))
+    .filter((q) => q.en || q.ar),
+  image_alt_ar: f.image ? f.imageAlt.ar.trim() || null : null,
+  image_alt_en: f.image ? f.imageAlt.en.trim() || null : null,
   image_path: f.image,
   lead_id: f.lead,
   partner_id: f.partner || null,
@@ -333,6 +359,22 @@ const DetailsFields = ({ form, set }: PartProps) => {
         onChange={(v) => set("image", v)}
         value={form.image}
       />
+      {form.image ? (
+        <div className="grid gap-1">
+          <BilingualField
+            label={tf("imageAlt")}
+            maxLength={300}
+            onChange={(v) => set("imageAlt", v)}
+            required
+            value={form.imageAlt}
+          />
+          <p className="type-caption">{tf("imageAltHint")}</p>
+        </div>
+      ) : null}
+      <DiscussionFields
+        onChange={(v) => set("discussion", v)}
+        value={form.discussion}
+      />
       <div className="grid gap-1">
         <span className="type-label">{tf("slug")}</span>
         <p className="type-body" dir="ltr">
@@ -345,6 +387,62 @@ const DetailsFields = ({ form, set }: PartProps) => {
     </>
   );
 };
+
+/**
+ * "For the conversation" (the printed program's back): the event's
+ * discussion questions, both languages, added and removed in place.
+ */
+const DiscussionFields = ({
+  onChange,
+  value,
+}: {
+  readonly onChange: (value: Form["discussion"]) => void;
+  readonly value: Form["discussion"];
+}) => {
+  const tf = useTranslations("diwan.admin.event.facts");
+  return (
+    <fieldset className="grid gap-3">
+      <legend className="type-label mb-2">{tf("discussion")}</legend>
+      <p className="type-caption">{tf("discussionHint")}</p>
+      {value.map((q, i) => (
+        <div
+          className="border-line grid gap-2 border-t pt-3"
+          // biome-ignore lint/suspicious/noArrayIndexKey: rows are edited in place, in order
+          key={i}
+        >
+          <BilingualField
+            label={tf("question", { n: String(i + 1) })}
+            maxLength={300}
+            onChange={(v) => onChange(value.map((x, j) => (j === i ? v : x)))}
+            value={q}
+          />
+          <div className="flex flex-wrap gap-3">
+            <Button
+              onClick={() => onChange(value.filter((_, j) => j !== i))}
+              type="button"
+              variant="link"
+            >
+              {tf("removeQuestion")}
+            </Button>
+          </div>
+        </div>
+      ))}
+      {value.length < MAX_QUESTIONS ? (
+        <div className="flex flex-wrap gap-3">
+          <Button
+            onClick={() => onChange([...value, pair(null, null)])}
+            type="button"
+            variant="link"
+          >
+            {tf("addQuestion")}
+          </Button>
+        </div>
+      ) : null}
+    </fieldset>
+  );
+};
+
+const MAX_QUESTIONS = 8;
 
 const AccessFields = ({ form, set }: PartProps) => {
   const t = useTranslations("diwan.admin.event");
@@ -569,6 +667,8 @@ export const EventFacts = ({
     setForm((f) => ({ ...f, [key]: value }));
   const row = toRow(form);
   const slugOk = isAddress(row.slug);
+  // An uploaded image needs its text alternative in both languages.
+  const altOk = !form.image || Boolean(row.image_alt_en && row.image_alt_ar);
   const refresh = () =>
     client.invalidateQueries({ queryKey: ["admin", "event", event?.id] });
 
@@ -607,7 +707,7 @@ export const EventFacts = ({
       )}
       <div className="flex flex-wrap items-center gap-3">
         <SaveButton
-          disabled={!(slugOk && form.title.en && form.startsAt)}
+          disabled={!(slugOk && altOk && form.title.en && form.startsAt)}
           pending={save.isPending}
           quiet={Boolean(event)}
           success={save.isSuccess}
@@ -668,7 +768,10 @@ export const NewEventSteps = () => {
     setForm((f) => ({ ...f, [key]: value }));
   const row = toRow(form);
   const detailsReady = Boolean(
-    form.title.en && form.startsAt && isAddress(row.slug)
+    form.title.en &&
+      form.startsAt &&
+      isAddress(row.slug) &&
+      (!form.image || (row.image_alt_en && row.image_alt_ar))
   );
   const [preset, setPreset] = useState("");
   const presets = useEventPresets();

@@ -65,6 +65,8 @@ export interface PromoEvent extends KitFacts {
   body_en: string | null;
   ends_at: string | null;
   id: string;
+  image_alt_ar?: string | null;
+  image_alt_en?: string | null;
   image_path: string | null;
   slug: string;
   starts_at: string;
@@ -752,11 +754,16 @@ const accessible = async (
     .replace(`${LANG_TAG[lang]}-`, "")
     .replaceAll("-", " ");
   const doc = await tools.PDFDocument.load(await file.blob.arrayBuffer());
+  // The event's image, described (its alt text), where the piece shows it.
+  const alt = lang === "ar" ? event.image_alt_ar : event.image_alt_en;
   const label = `${title} (${what})`;
+  const described = alt && event.image_path ? `${label}. ${alt}` : label;
   tools.tagForPdfUa(doc, {
     alt: doc
       .getPages()
-      .map((_, i) => (doc.getPageCount() > 1 ? `${label}, ${i + 1}` : label)),
+      .map((_, i) =>
+        doc.getPageCount() > 1 ? `${described}, ${i + 1}` : described
+      ),
     lang,
     title: label,
   });
