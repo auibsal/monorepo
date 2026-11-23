@@ -149,17 +149,37 @@ export const RequireMember = ({ children }: GateProps) => {
  */
 export const RequirePartner = ({ children }: GateProps) => {
   const grants = useGrants();
+  const twoStep = useTwoStep();
   const router = useRouter();
   const holds = (grants.data ?? []).some(
     (g) => g.permission === "partners.own"
   );
+  // A partner's roles need two-step sign-in (decisions.md, Members): until
+  // it is given they grant nothing, so the dashboard asks for it here
+  // rather than sending its holder to their account.
+  const waiting = Boolean(twoStep.data?.needs && !twoStep.data.done);
+  const settled =
+    grants.isSuccess &&
+    twoStep.isSuccess &&
+    !grants.isFetching &&
+    !twoStep.isFetching;
   useEffect(() => {
-    if (grants.isSuccess && !grants.isFetching && !holds) {
+    if (settled && !(holds || waiting)) {
       router.replace("/account");
     }
-  }, [grants.isFetching, grants.isSuccess, holds, router]);
-  if (grants.isError) {
-    return <ErrorState onRetry={() => grants.refetch()} />;
+  }, [holds, router, settled, waiting]);
+  if (grants.isError || twoStep.isError) {
+    return (
+      <ErrorState
+        onRetry={() => {
+          grants.refetch();
+          twoStep.refetch();
+        }}
+      />
+    );
+  }
+  if (waiting) {
+    return <TwoStepPanel />;
   }
   return grants.isSuccess && holds ? children : <PageSpinner />;
 };
