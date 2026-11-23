@@ -274,8 +274,8 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   ticked sees whom the event is for (`events.booking_terms`). The event's
   page shows every published event but the invitation-only ones. Then
   RSVP and
-  check-in (the booking asks only about accessibility needs, and diet
-  when `serves_food`; a released place is held for the next on the
+  check-in (booking is one tap and asks nothing: an accommodation is
+  asked for by writing to hello@auibsal.org, as the page says; a released place is held for the next on the
   waitlist for 12 hours or until two hours before the start, whichever is
   sooner, and passes on if unclaimed or declined (`events.waitlist.status`
   `offered`, `offered_until`; `private.expire_offers` every five minutes);

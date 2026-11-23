@@ -109,18 +109,17 @@ insert into events.events (id, slug, title_en, title_ar, starts_at, capacity, st
   ('e00000b0-0000-0000-0000-000000000002', 'book-soon', 'Soon', 'قريبًا', now() + interval '1 hour', 1, 'published', 'rsvp', false, '[]'),
   ('e00000b0-0000-0000-0000-000000000003', 'book-now', 'Now', 'الآن', now() + interval '5 minutes', 5, 'published', 'rsvp', false, '[]');
 
-select is(
-  (select array_agg(q ->> 'id') from events.events e, jsonb_array_elements(e.questions) q where e.slug = 'book-later'),
-  array['access', 'diet'], 'With food, the booking asks about accessibility and diet, and nothing typed');
-select is(
-  (select array_agg(q ->> 'id') from events.events e, jsonb_array_elements(e.questions) q where e.slug = 'book-soon'),
-  array['access'], 'Without food, only accessibility');
+-- Booking asks nothing (Nov 23, 2026): one tap books a place.
+select is((select questions from events.events where slug = 'book-later'), '[]'::jsonb,
+  'With food, the booking asks nothing, and nothing typed is kept');
+select is((select questions from events.events where slug = 'book-soon'), '[]'::jsonb,
+  'Without food, nothing either');
 
 select pg_temp.login_as('00000000-0000-0000-0000-0000000b0a01');
 select is(events.rsvp('e00000b0-0000-0000-0000-000000000001', '{"access": "Step-free seat", "diet": "Vegetarian", "shoe": "44"}'),
   'confirmed', 'A booking');
 select is((select answers from events.rsvps where user_id = '00000000-0000-0000-0000-0000000b0a01'),
-  '{"access": "Step-free seat", "diet": "Vegetarian"}'::jsonb, 'keeps only the two answers');
+  '{}'::jsonb, 'keeps no answers');
 select is(events.rsvp('e00000b0-0000-0000-0000-000000000002', '{"diet": "Vegan"}'), 'confirmed', 'At an event without food');
 select is((select answers from events.rsvps where user_id = '00000000-0000-0000-0000-0000000b0a01' and event_id = 'e00000b0-0000-0000-0000-000000000002'),
   '{}'::jsonb, 'diet is not kept');

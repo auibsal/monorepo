@@ -2,16 +2,6 @@
 
 import { Button } from "@repo/brand/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@repo/brand/components/ui/dialog";
-import { Input } from "@repo/brand/components/ui/input";
-import { Label } from "@repo/brand/components/ui/label";
-import {
   formatClock,
   formatLongDate,
   formatNumber,
@@ -19,7 +9,7 @@ import {
 import { Link } from "@repo/internationalization/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { InlineConfirm } from "@/components/frame/inline-confirm";
 import { useAuth } from "@/lib/auth/provider";
 import { events, localized, unwrap } from "@/lib/data";
@@ -28,20 +18,12 @@ import {
   useMyMembership,
   useMyRsvps,
   useMyWaitlist,
-  useProfile,
 } from "@/lib/diwan/queries";
 import { CalendarFeed } from "../home/calendar-feed";
 import { SixWords } from "../home/six-words";
 import { VotingEligibility } from "../home/voting";
 import { DiwanPage, DiwanSection } from "../page";
 import { EmptyLine, ErrorState, SectionSpinner } from "../states";
-
-interface Question {
-  id: string;
-  label_ar?: string;
-  label_en?: string;
-  required?: boolean;
-}
 
 /**
  * Upcoming events the member can see (RLS adds members-only ones), with
@@ -57,7 +39,7 @@ const useUpcomingEvents = () => {
           await supabase
             .schema("api")
             .from("events")
-            .select(`${events.eventColumns}, questions`)
+            .select(events.eventColumns)
             .in("status", ["published", "canceled"])
             .gte(
               "starts_at",
@@ -81,9 +63,6 @@ const useUpcomingEvents = () => {
       return rows.map((row, index) => ({
         ...row,
         confirmed: counts[index] ?? null,
-        questions: (Array.isArray(row.questions)
-          ? row.questions
-          : []) as unknown as Question[],
       }));
     },
     queryKey: ["upcoming-events"],
@@ -165,13 +144,7 @@ const errorKey = (error: unknown): NoticeKey => {
 export const EventsBrowser = () => {
   const t = useTranslations("diwan.events");
   const ta = useTranslations("diwan.next");
-  const locale = useLocale() as "en" | "ar";
-  // A booking is in the member's name on the platform; a question asking for
-  // a name is answered with it (decisions.md).
-  const profile = useProfile();
-  const myName = profile.data
-    ? localized(profile.data, "full_name", locale)
-    : "";
+  const _locale = useLocale() as "en" | "ar";
   const { supabase, user } = useAuth();
   const queryClient = useQueryClient();
   const upcoming = useUpcomingEvents();
@@ -181,7 +154,6 @@ export const EventsBrowser = () => {
     queryFn: () => events.myReminders(supabase),
     queryKey: ["event-reminders"],
   });
-  const [asking, setAsking] = useState<UpcomingEvent | null>(null);
   const [notice, setNotice] = useState<{ id: string; key: NoticeKey } | null>(
     null
   );
@@ -219,7 +191,6 @@ export const EventsBrowser = () => {
     }) => events.rsvp(supabase, id, answers),
     onError: (error, { id }) => setNotice({ id, key: errorKey(error) }),
     onSuccess: async (result, { id }) => {
-      setAsking(null);
       setNotice({ id, key: result === "waitlisted" ? "waitlisted" : "booked" });
       await refresh();
     },
@@ -273,26 +244,11 @@ export const EventsBrowser = () => {
   const mine = (upcoming.data ?? []).filter(isMine);
   const others = (upcoming.data ?? []).filter((event) => !isMine(event));
 
+  // One tap books a place: booking asks nothing (an accommodation is asked
+  // for by email, as the event's page says).
   const start = (event: UpcomingEvent) => {
     setNotice(null);
-    // Claiming a held place keeps the answers given when they joined the line.
-    if (event.questions.length > 0 && !held.has(event.id)) {
-      setAsking(event);
-    } else {
-      book.mutate({ answers: {}, id: event.id });
-    }
-  };
-
-  const submitAnswers = (form: FormEvent<HTMLFormElement>) => {
-    form.preventDefault();
-    if (!asking) {
-      return;
-    }
-    const data = new FormData(form.currentTarget);
-    const answers = Object.fromEntries(
-      asking.questions.map((q) => [q.id, String(data.get(q.id) ?? "").trim()])
-    );
-    book.mutate({ answers, id: asking.id });
+    book.mutate({ answers: {}, id: event.id });
   };
 
   if (upcoming.isPending) {
@@ -357,52 +313,6 @@ export const EventsBrowser = () => {
           </DiwanSection>
         ) : null
       )}
-
-      <Dialog
-        onOpenChange={(open) => (open ? null : setAsking(null))}
-        open={asking !== null}
-      >
-        <DialogContent>
-          <form className="grid gap-4" onSubmit={submitAnswers}>
-            <DialogHeader>
-              <DialogTitle>
-                {asking ? localized(asking, "title", locale) : ""}
-              </DialogTitle>
-              <DialogDescription>
-                {myName ? t("bookingAs", { name: myName }) : t("questions")}
-              </DialogDescription>
-            </DialogHeader>
-            {asking?.questions.map((question) => (
-              <div className="grid gap-2" key={question.id}>
-                <Label htmlFor={`q-${question.id}`}>
-                  {(locale === "ar" ? question.label_ar : question.label_en) ??
-                    question.label_en ??
-                    question.id}
-                </Label>
-                {events.asksForName(question) && myName ? (
-                  <Input
-                    defaultValue={myName}
-                    id={`q-${question.id}`}
-                    name={question.id}
-                    readOnly
-                  />
-                ) : (
-                  <Input
-                    id={`q-${question.id}`}
-                    name={question.id}
-                    required={question.required}
-                  />
-                )}
-              </div>
-            ))}
-            <DialogFooter>
-              <Button disabled={book.isPending} type="submit">
-                {t("book")}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
 
       {/* Two events make a voting member: the count lives with the events. */}
       <VotingEligibility />
