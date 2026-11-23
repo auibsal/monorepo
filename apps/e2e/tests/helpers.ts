@@ -1,7 +1,8 @@
 import { createHmac } from "node:crypto";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page } from "@playwright/test";
-import { MAILPIT_URL, PASSWORD } from "../fixtures";
+import { MAILPIT_URL, PASSWORD, TWO_STEP_KEYS } from "../fixtures";
 import { urls } from "../playwright.config";
 
 /** No WCAG 2.1 A or AA violation of any impact on the page as shown. */
@@ -16,12 +17,56 @@ export const expectAccessible = async (page: Page) => {
   ).toEqual([]);
 };
 
+/**
+ * Each account's authenticator key, for the whole run: officers' and
+ * partners' roles need two-step sign-in (from Nov 22, 2026), so the first
+ * page that asks sets one up and later sign-ins give its code. Kept in a
+ * file (TWO_STEP_KEYS), since a worker can restart; global-setup empties it.
+ */
+const readKeys = (): Record<string, string> => {
+  try {
+    return existsSync(TWO_STEP_KEYS)
+      ? (JSON.parse(readFileSync(TWO_STEP_KEYS, "utf8")) as Record<
+          string,
+          string
+        >)
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+const keepKey = (email: string, key: string) => {
+  writeFileSync(TWO_STEP_KEYS, JSON.stringify({ ...readKeys(), [email]: key }));
+};
+
+const signedInAs = new WeakMap<Page, string>();
+
 export const signInWithPassword = async (page: Page, email: string) => {
   await page.goto(`${urls.web}/sign-in`);
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { exact: true, name: "Sign in" }).click();
   await expect(page).toHaveURL(new RegExp(`${urls.web}/account/?$`, "u"));
+  signedInAs.set(page, email);
+  // Wherever a page asks for the second step, give it, as the person would.
+  await page.addLocatorHandler(
+    page.getByRole("button", { name: "Set up my authenticator" }),
+    async () => {
+      await setUpTwoStep(page);
+    }
+  );
+  await page.addLocatorHandler(
+    page.getByText("Enter your sign-in code", { exact: true }),
+    async () => {
+      const key = readKeys()[email];
+      if (!key) {
+        return;
+      }
+      await page.getByLabel("Six-digit code").fill(totp(key));
+      await page.getByRole("button", { name: "Confirm" }).click();
+    }
+  );
 };
 
 /** The newest email to an address, from the local stack's Mailpit. */
@@ -75,8 +120,17 @@ const totp = (secret: string, at = Date.now()) => {
  * would type it into the app.
  */
 export const setUpTwoStep = async (page: Page) => {
-  await page.getByRole("button", { name: "Set up my authenticator" }).click();
-  const key = (await page.locator("code").first().textContent()) ?? "";
-  await page.getByLabel("Six-digit code").fill(totp(key.trim()));
+  const start = page.getByRole("button", { name: "Set up my authenticator" });
+  // The sign-in's own handler may have set it up already.
+  if (!(await start.isVisible())) {
+    return;
+  }
+  await start.click();
+  const key = ((await page.locator("code").first().textContent()) ?? "").trim();
+  const email = signedInAs.get(page);
+  if (email) {
+    keepKey(email, key);
+  }
+  await page.getByLabel("Six-digit code").fill(totp(key));
   await page.getByRole("button", { name: "Confirm" }).click();
 };

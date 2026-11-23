@@ -22,6 +22,8 @@ test.describe("public site", () => {
     await expect(
       page.getByRole("heading", { name: "The green-event checklist" })
     ).toBeVisible();
+    // A link within the site swaps the title after the page shows.
+    await expect(page).toHaveTitle(/Sustainability/u);
     await expectAccessible(page);
   });
 

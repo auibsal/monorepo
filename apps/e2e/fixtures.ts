@@ -1,3 +1,5 @@
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = process.env.SUPABASE_URL ?? "http://127.0.0.1:54321";
@@ -34,3 +36,9 @@ export const universityDate = {
   uid: "e2e-auib-withdraw@auib.edu.iq",
   url: "https://auib.edu.iq/event/e2e-withdraw/",
 };
+
+/**
+ * Each account's authenticator key for the run (the sign-in helper writes
+ * it; global-setup empties it).
+ */
+export const TWO_STEP_KEYS = join(tmpdir(), "sal-e2e-two-step.json");
