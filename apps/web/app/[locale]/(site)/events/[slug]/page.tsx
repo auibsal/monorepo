@@ -190,19 +190,6 @@ const EventView = async ({
         ) : null}
       </header>
       {canceled ? null : <GoodToKnow event={event} locale={locale} />}
-      {canceled || !upcoming ? null : (
-        <ActionBar>
-          <EventBooking
-            entry={event.entry}
-            eventId={event.id}
-            forClasses={t("forClasses", {
-              classes: await classesText(event.classes, locale, "list"),
-            })}
-            guestsBy={events.guestsBookBy(event)}
-            slug={event.slug}
-          />
-        </ActionBar>
-      )}
       {canceled ? (
         <p
           className="type-body border-line border-s-4 border-t p-4"
@@ -251,6 +238,20 @@ const EventView = async ({
         label={ti("thanksTo")}
         lang={locale}
       />
+      {/* Last, so it stays at the foot of the screen until the page ends. */}
+      {canceled || !upcoming ? null : (
+        <ActionBar>
+          <EventBooking
+            entry={event.entry}
+            eventId={event.id}
+            forClasses={t("forClasses", {
+              classes: await classesText(event.classes, locale, "list"),
+            })}
+            guestsBy={events.guestsBookBy(event)}
+            slug={event.slug}
+          />
+        </ActionBar>
+      )}
     </article>
   );
 };

@@ -179,8 +179,8 @@ export const FailedPage: Story = {
   ),
 };
 
-/** The page's one solid button; on a phone it stays at the bottom of the
- * screen once the page scrolls past it. */
+/** The page's one solid button, kept at the bottom of the
+ * screen from the first view until the page ends. */
 export const MainAction: Story = {
   render: () => (
     <ActionBar>
