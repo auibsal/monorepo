@@ -189,7 +189,6 @@ const EventView = async ({
           </p>
         ) : null}
       </header>
-      {canceled ? null : <GoodToKnow event={event} locale={locale} />}
       {canceled ? (
         <p
           className="type-body border-line border-s-4 border-t p-4"
@@ -218,6 +217,8 @@ const EventView = async ({
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(body) }}
         />
       ) : null}
+      {/* The practical facts once the reader knows what the event is. */}
+      {canceled ? null : <GoodToKnow event={event} locale={locale} />}
       {/* Rendered before the start too: the page checks the time and the
           person, so the question shows from the start without a rebuild.
           After the event, the night's links follow it. */}
