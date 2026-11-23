@@ -524,7 +524,6 @@
       "claim": "Claim your place",
       "decline": "Let it go",
       "declineAsk": "Let the place go to the next person?",
-      "questions": "The organizers ask a few questions before booking.",
       "state": {
         "booked": "You have a place.",
         "waiting": "You’re on the waitlist. We’ll email you if a place opens.",
@@ -553,7 +552,6 @@
       "whatsOn": "Events",
       "cancelAsk": "Give your place to someone else?",
       "leaveWaitlistAsk": "Leave the waiting list?",
-      "bookingAs": "Booking as {name}. A few questions first.",
       "sections": {
         "mine": "Yours",
         "others": "Everything else coming up"

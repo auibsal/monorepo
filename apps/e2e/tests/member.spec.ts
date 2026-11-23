@@ -18,14 +18,9 @@ test("a member books a place and gives it back", async ({ page }) => {
     await card.getByRole("button", { name: "Give my place back" }).click();
     await expect(card.getByRole("status")).toBeVisible();
   }
+  // One tap books a place: the booking asks nothing.
   await card.getByRole("button", { name: "Book a place" }).click();
-  // The booking asks only about accessibility needs (and diet when food is
-  // served), both optional.
-  const asking = page.getByRole("dialog");
-  await asking
-    .getByLabel("Accessibility needs (optional)")
-    .fill("Step-free seat");
-  await asking.getByRole("button", { name: "Book a place" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(card.getByRole("status")).toContainText("Booked");
   await expect(card.getByText("You have a place.")).toBeVisible();
   await card.getByRole("button", { name: "Give my place back" }).click();
