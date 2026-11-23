@@ -66,8 +66,8 @@ export const MOVED: readonly (readonly [
   // Qirtas's themed collections are Editions (decisions.md, Qirtas).
   ["/qirtas/issues", "/qirtas/editions", PUBLIC],
   ["/qirtas/issues/:slug", "/qirtas/editions/:slug", PUBLIC],
-  // An event's address is its title, with no date (migration
-  // 20261122000100): every dated address that was public.
+  // An event's address is its title, with no date (the owner, Nov 22,
+  // 2026; migration 20261122000100): every dated address that was public.
   // The first moved before that, with the writing workshop to Tue Dec 8.
   ["/events/writing-workshop-2026-11-17", "/events/writing-workshop", PUBLIC],
   [

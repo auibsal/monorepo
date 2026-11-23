@@ -118,7 +118,7 @@ export const slugFromTitle = (en: string, ar = "") => {
 
 /**
  * An event's address: its title alone, /events/<title>, with no date, so
- * moving the event never stales it. The database
+ * moving the event never stales it (the owner, Nov 22, 2026). The database
  * numbers a repeated title (writing-workshop-2; private.event_address).
  */
 export const eventSlug = (en: string, ar: string) =>
