@@ -3,6 +3,7 @@
  * id before a decision. Checks the raw API responses a reader can get.
  * Needs a local stack: SUPABASE_INTEGRATION=1 API_URL=… PUBLISHABLE_KEY=… SECRET_KEY=…
  */
+import { createHmac } from "node:crypto";
 import type { Database } from "@repo/database";
 import { createClient } from "@supabase/supabase-js";
 import { beforeAll, describe, expect, test } from "vitest";
@@ -12,6 +13,29 @@ const publishableKey = process.env.PUBLISHABLE_KEY ?? "";
 // createClient needs a key even when the suite is skipped.
 const placeholderKey = "skipped";
 const secretKey = process.env.SECRET_KEY ?? "";
+const PADDING = /[=]+$/u;
+const BYTES = /.{8}/gu;
+
+/** An authenticator's six digits for a base32 key (RFC 6238). */
+const authenticatorCode = (secret: string, at = Date.now()) => {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  let bits = "";
+  for (const char of secret.replace(PADDING, "").toUpperCase()) {
+    bits += alphabet.indexOf(char).toString(2).padStart(5, "0");
+  }
+  const key = Buffer.from(
+    (bits.match(BYTES) ?? []).map((byte) => Number.parseInt(byte, 2))
+  );
+  const counter = Buffer.alloc(8);
+  counter.writeBigUInt64BE(BigInt(Math.floor(at / 30_000)));
+  const mac = createHmac("sha1", key).update(counter).digest();
+  // biome-ignore lint/suspicious/noBitwiseOperators: RFC 4226 truncation
+  const offset = (mac.at(-1) ?? 0) & 0x0f;
+  // biome-ignore lint/suspicious/noBitwiseOperators: RFC 4226 truncation
+  const value = (mac.readUInt32BE(offset) & 0x7f_ff_ff_ff) % 1_000_000;
+  return String(value).padStart(6, "0");
+};
+
 const enabled = Boolean(
   process.env.SUPABASE_INTEGRATION && publishableKey && secretKey
 );
@@ -30,6 +54,19 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
     );
     const { error } = await client.auth.signInWithPassword({ email, password });
     expect(error).toBeNull();
+    return client;
+  };
+  // Roles that see personal data count only with two-step sign-in (from
+  // Nov 22, 2026): the officer sets up an authenticator and gives a code.
+  const withTwoSteps = async (email: string) => {
+    const client = await as(email);
+    const enrolled = await client.auth.mfa.enroll({ factorType: "totp" });
+    expect(enrolled.error).toBeNull();
+    const verified = await client.auth.mfa.challengeAndVerify({
+      code: authenticatorCode(enrolled.data?.totp.secret ?? ""),
+      factorId: enrolled.data?.id ?? "",
+    });
+    expect(verified.error).toBeNull();
     return client;
   };
   const people = {
@@ -134,7 +171,7 @@ describe.skipIf(!enabled)("blind review over the Data API", () => {
     expect(submission.error).toBeNull();
     const submissionId = submission.data?.id ?? "";
 
-    const manager = await as(people.manager.email);
+    const manager = await withTwoSteps(people.manager.email);
     const journal = manager.schema("api");
     await journal.rpc("transition_submission", {
       id: submissionId,
