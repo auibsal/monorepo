@@ -231,13 +231,13 @@ Supabase's general advice; where they differ, this file wins:
   breaches by k-anonymity (`lib/password.ts`, `/api/password-check`), with
   a Show button (`PasswordInput`). Sign-up records the Terms and Privacy
   Notice agreement (`core.profiles.agreed_at`, one line), one tick for 18
-  or older ("Under 18?" opens the parent's address), and the official
-  name as one line of four names per language: each line takes only its
-  own script's letters (and the hyphen), and a fifth name is
-  refused, showing the words with a tap between each two to join a name
-  of two words ("Mohammed Ali"; `typedName`, `roomForNames`,
-  `lineProblem`, `joinsFor` in `lib/data/names.ts`; locked at once; the short name is
-  a choice in Settings, `core.profiles.short_name`). The mailing box is
+  or older ("Under 18?" opens the parent's address), and one name to
+  show, in English letters and any number of words (`typedName`,
+  `tidyEnglishName` in `lib/data/names.ts`; `signup_name_en`). No Arabic
+  name and no four parts at sign-up: the Director of Membership adds the
+  official name in both languages later (`membership.correct_name`), and
+  it is locked from the account; the short name is a choice in Settings
+  (`core.profiles.short_name`). The mailing box is
   ticked for everyone; the Arabic form is a to-do on Today; the
   Cloudflare check shows only when Cloudflare needs a click. The class comes from the address, never asked:
   an AUIB address ending in a number (`1241295@`, `name.1241295@`) is a

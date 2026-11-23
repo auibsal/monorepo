@@ -24,26 +24,13 @@ test("one sign-up page: the address, the class, the official name, one line", as
   await expect(
     page.getByRole("radio", { name: "An AUIB student" })
   ).toHaveCount(0);
-  // The official name in both languages, four parts, on the same page.
-  // Four names in one line per language: a fifth is refused, and a name of
-  // two words written with a space is joined by a tap.
-  const english = page.getByLabel("Your four names in English");
-  await english.fill("new mohammed ali kareem");
-  await english.press("End");
-  await english.press("Space");
-  await expect(page.getByText(/Four names only/u)).toBeVisible();
-  await expect(english).toHaveValue("new mohammed ali kareem");
-  await page
-    .getByRole("button", { name: "Join Mohammed and Ali as one name" })
-    .click();
-  await english.press("End");
-  await english.pressSequentially(" member");
-  await english.blur();
-  await expect(english).toHaveValue("New Mohammed Ali Kareem Member");
-  await expect(
-    page.getByRole("button", { name: "Separate Mohammed and Ali" })
-  ).toBeVisible();
-  await page.getByLabel("Your four names in Arabic").fill("عضو كريم حسن جديد");
+  // One name, in English letters; Membership adds the official name in
+  // both languages later.
+  const name = page.getByLabel("Your name");
+  await name.fill("new member");
+  await name.blur();
+  await expect(name).toHaveValue("New Member");
+  await expect(page.getByLabel(/in Arabic/u)).toHaveCount(0);
   await page.getByLabel("I’m 18 or older").check();
   // One line by the button; no boxes to agree, no signature.
   await expect(
@@ -78,12 +65,10 @@ test("a mistyped address is put right from the inbox screen, with no second acco
   await page.getByLabel("Email").fill(typo);
   await expect(page.getByText(/usually have 7 digits/u)).toHaveCount(0);
   await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
-  // Four names in one line per language, read back before sending.
-  const english = page.getByLabel("Your four names in English");
-  await english.fill("typo kareem hasan member");
+  const english = page.getByLabel("Your name");
+  await english.fill("typo member");
   await english.blur();
-  await expect(english).toHaveValue("Typo Kareem Hasan Member");
-  await page.getByLabel("Your four names in Arabic").fill("عضو كريم حسن جديد");
+  await expect(english).toHaveValue("Typo Member");
   await page.getByLabel("I’m 18 or older").check();
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.getByText("Check your inbox")).toBeVisible();
@@ -91,7 +76,7 @@ test("a mistyped address is put right from the inbox screen, with no second acco
   await page.getByRole("button", { name: "Wrong address? Fix it" }).click();
   // The form is back with everything typed, and the address is free.
   await expect(page.getByLabel("Email")).toHaveValue(typo);
-  await expect(english).toHaveValue("Typo Kareem Hasan Member");
+  await expect(english).toHaveValue("Typo Member");
   const { count } = await admin()
     .schema("api")
     .rpc("user_by_email", { email: typo })

@@ -9,7 +9,7 @@ import { apiPath } from "@repo/internationalization";
 import { Link } from "@repo/internationalization/navigation";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, type ReactNode, useId, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 import { PasswordInput } from "@/components/fields/password-input";
 import {
   AUIB_DOMAIN,
@@ -206,128 +206,6 @@ const WrongAddress = ({
   );
 };
 
-/** Capitalized, hyphens closed up: what an English line is saved as. */
-const tidyName = nameParts.tidyEnglishName;
-
-/**
- * One line of four names in one language (decisions.md, Members): as on
- * the person's papers, letters only. Under it the words are shown back
- * with a tap between each two: a name of two words written with a space
- * ("Mohammed Ali", «أبو بكر») is joined by tapping between them. «أبو»
- * and «عبد» come joined in Arabic. The line under that says what is
- * missing, or that the four are ready.
- */
-const NameLine = ({
-  choices,
-  describedBy,
-  joins,
-  language,
-  onChange,
-  onJoin,
-  value,
-}: {
-  readonly choices: nameParts.JoinChoices;
-  readonly describedBy: string;
-  readonly joins: nameParts.Joins;
-  readonly language: "ar" | "en";
-  readonly onChange: (value: string) => void;
-  readonly onJoin: (key: string, joined: boolean) => void;
-  readonly value: string;
-}) => {
-  const t = useTranslations("auth.signUp");
-  const id = useId();
-  // A fifth name was refused: the words show, to join two of one name.
-  const [full, setFull] = useState(false);
-  const [left, setLeft] = useState(false);
-  const words = nameParts.wordsInLine(value);
-  const problem =
-    words.length > 0 ? nameParts.lineProblem(value, language, joins) : null;
-  const names = nameParts.namesInLine(value, language, joins);
-  let caption: ReactNode = t(language === "en" ? "nameHintEn" : "nameHintAr");
-  if (full) {
-    caption = t("nameFull");
-  } else if (problem && left) {
-    caption = t(`nameProblems.${problem}`, { count: String(names.length) });
-  }
-  const type = (raw: string) => {
-    const next = nameParts.typedName(raw, language);
-    if (!nameParts.roomForNames(next, language, choices)) {
-      setFull(true);
-      return;
-    }
-    setFull(false);
-    onChange(next);
-  };
-  const dir = language === "en" ? "ltr" : "rtl";
-  return (
-    <div className="grid gap-2">
-      <Label htmlFor={id}>
-        {language === "en" ? t("nameEn") : t("nameAr")}
-      </Label>
-      <Input
-        aria-describedby={`${describedBy} ${id}-read`}
-        aria-invalid={problem && left ? true : undefined}
-        autoCapitalize={language === "en" ? "words" : "none"}
-        autoComplete="off"
-        dir={dir}
-        id={id}
-        lang={language}
-        onBlur={() => {
-          setLeft(true);
-          if (language === "en") {
-            onChange(tidyName(value));
-          }
-        }}
-        onChange={(event) => type(event.target.value)}
-        spellCheck={false}
-        value={value}
-      />
-      {words.length > 1 && (full || joins.size > 0) ? (
-        <ol
-          aria-label={t("nameWords")}
-          className="flex flex-wrap items-center"
-          dir={dir}
-          lang={language}
-        >
-          {words.map((word, i) => (
-            <li
-              className="flex items-center"
-              // The same words whatever the capitals (English is
-              // capitalized when the field is left), so a tap isn't lost.
-              key={words
-                .slice(0, i + 1)
-                .join(" ")
-                .toLowerCase()}
-            >
-              <span>{word}</span>
-              {i < words.length - 1 ? (
-                <button
-                  aria-label={t(joins.has(i) ? "nameSeparate" : "nameJoin", {
-                    first: word,
-                    second: words[i + 1] ?? "",
-                  })}
-                  aria-pressed={joins.has(i)}
-                  className="text-text-secondary hover:text-text min-h-11 min-w-11 px-2"
-                  onClick={() => {
-                    setFull(false);
-                    onJoin(nameParts.gapKey(words, i), !joins.has(i));
-                  }}
-                  type="button"
-                >
-                  {joins.has(i) ? "‿" : "·"}
-                </button>
-              ) : null}
-            </li>
-          ))}
-        </ol>
-      ) : null}
-      <p className="type-caption" id={`${id}-read`} role="status">
-        {caption}
-      </p>
-    </div>
-  );
-};
-
 export const SignUpForm = (props: SignUpFormProps) => {
   const t = useTranslations("auth");
   const tp = useTranslations("diwan.partnerJoin");
@@ -343,21 +221,10 @@ export const SignUpForm = (props: SignUpFormProps) => {
   const email = values.email.trim().toLowerCase();
   const auib = email.endsWith(`@${AUIB_DOMAIN}`);
   const invited = Boolean(outside && "invitation" in outside.reason);
-  // The official name (decisions.md, Members): four names in each
-  // language as on the person's papers, one line each, locked once the
-  // account is made.
-  const [lines, setLines] = useState({ ar: "", en: "" });
-  // Two words of one name ("Mohammed Ali"), joined by a tap.
-  const [choices, setChoices] = useState<
-    Record<"ar" | "en", nameParts.JoinChoices>
-  >({ ar: new Map(), en: new Map() });
-  const joins = {
-    ar: nameParts.joinsFor(lines.ar, "ar", choices.ar),
-    en: nameParts.joinsFor(lines.en, "en", choices.en),
-  };
-  const named =
-    nameParts.lineProblem(lines.en, "en", joins.en) === null &&
-    nameParts.lineProblem(lines.ar, "ar", joins.ar) === null;
+  // A name to show until Membership adds the official name in both
+  // languages (decisions.md, Members): one line, in English letters.
+  const [name, setName] = useState("");
+  const named = name.trim() !== "";
   // An AUIB address says which it is: a student is a Member; faculty,
   // staff or alumni are Associates. Any other address is a Guest, and
   // "I studied at AUIB" asks for Associate membership.
@@ -403,10 +270,7 @@ export const SignUpForm = (props: SignUpFormProps) => {
       locale: locale === "ar" ? "ar" : "en",
       mailing: mailingOn,
       minor: minorDetails(adult, minorAllowed, minor),
-      names: {
-        ar: nameParts.partsFromLine(lines.ar, "ar", joins.ar),
-        en: nameParts.partsFromLine(tidyName(lines.en), "en", joins.en),
-      },
+      name: nameParts.tidyEnglishName(name),
       outside: outside?.reason,
       password: values.password,
       // The confirmation link brings the person back to what they started.
@@ -518,29 +382,25 @@ export const SignUpForm = (props: SignUpFormProps) => {
             </div>
           </div>
         ) : null}
-        <div className="grid gap-4">
-          <p className="type-caption" id={`${id}-names-hint`}>
-            {t("signUp.namesHint")}
+        <div className="grid gap-2">
+          <Label htmlFor={`${id}-name`}>{t("signUp.name")}</Label>
+          <Input
+            aria-describedby={`${id}-name-hint`}
+            autoCapitalize="words"
+            autoComplete="name"
+            dir="ltr"
+            id={`${id}-name`}
+            lang="en"
+            onBlur={() => setName(nameParts.tidyEnglishName(name))}
+            onChange={(event) =>
+              setName(nameParts.typedName(event.target.value, "en"))
+            }
+            spellCheck={false}
+            value={name}
+          />
+          <p className="type-caption" id={`${id}-name-hint`}>
+            {t("signUp.nameHint")}
           </p>
-          {(["en", "ar"] as const).map((lang) => (
-            <NameLine
-              choices={choices[lang]}
-              describedBy={`${id}-names-hint`}
-              joins={joins[lang]}
-              key={lang}
-              language={lang}
-              onChange={(value) =>
-                setLines((current) => ({ ...current, [lang]: value }))
-              }
-              onJoin={(key, joined) =>
-                setChoices((current) => ({
-                  ...current,
-                  [lang]: new Map(current[lang]).set(key, joined),
-                }))
-              }
-              value={lines[lang]}
-            />
-          ))}
         </div>
         <div className="grid gap-4">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
@@ -581,9 +441,9 @@ export const SignUpForm = (props: SignUpFormProps) => {
                   }
                   value={minor.month}
                 >
-                  {monthNames(locale).map((name, index) => (
-                    <option key={name} value={String(index + 1)}>
-                      {name}
+                  {monthNames(locale).map((month, index) => (
+                    <option key={month} value={String(index + 1)}>
+                      {month}
                     </option>
                   ))}
                 </ChoiceInput>

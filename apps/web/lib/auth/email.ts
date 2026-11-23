@@ -112,7 +112,7 @@ export type EmailAuthErrorCode =
   | "signups_disabled"
   | "unknown"
   | "user_exists"
-  | "names_required"
+  | "name_required"
   | "age_required"
   | "no_account"
   | "email_reserved"
@@ -211,11 +211,10 @@ export interface SignUpDetails {
    */
   minor?: { birthMonth: number; birthYear: number; parentEmail: string };
   /**
-   * The official name in English and in Arabic (decisions.md, Members):
-   * the four parts as on the person's papers, or the given and family
-   * names where the papers don't use four. Locked at once.
+   * A name to show, in English letters, until the Director of Membership
+   * adds the official name in both languages (decisions.md, Members).
    */
-  names: Record<"ar" | "en", NameParts>;
+  name: string;
   /**
    * What an invitation or a partner application attaches (decisions.md,
    * Members): every invitation uses this one sign-up and adds its role.
@@ -231,17 +230,6 @@ export interface SignUpDetails {
   /** The Arabic form of a title that names the person, one tap. */
   titleForm?: "masculine" | "feminine";
 }
-
-const NAME_PARTS = ["first", "father", "grandfather", "last"] as const;
-
-/** One language's name: given, father's, grandfather's and family. */
-type NameParts = Record<(typeof NAME_PARTS)[number], string>;
-
-/** The official name is complete: four parts, or given and family. */
-const nameComplete = (parts: NameParts) => {
-  const has = (part: keyof NameParts) => parts[part].trim() !== "";
-  return has("first") && ((has("father") && has("grandfather")) || has("last"));
-};
 
 /** What an invitation or a partner application attaches, for the trigger. */
 const outsideMetadata = (outside: SignUpDetails["outside"]) => {
@@ -276,9 +264,7 @@ const signUpRefusal = (
   if (!(details.adult || (details.minor && (student || invited)))) {
     return "age_required";
   }
-  return nameComplete(details.names.en) && nameComplete(details.names.ar)
-    ? null
-    : "names_required";
+  return details.name.trim() === "" ? "name_required" : null;
 };
 
 /**
@@ -302,21 +288,13 @@ export const signUpWithEmail = async (
   if (refused) {
     return { code: refused, ok: false };
   }
-  const parts = Object.fromEntries(
-    (["en", "ar"] as const).flatMap((language) =>
-      NAME_PARTS.map((part) => [
-        `${part}_name_${language}`,
-        details.names[language][part].trim(),
-      ])
-    )
-  );
-
   const { data, error } = await supabase.auth.signUp({
     email,
     options: {
       ...captcha(details.captchaToken),
       data: {
-        ...parts,
+        // Shown until Membership adds the official name's parts.
+        full_name_en: details.name.trim(),
         ...outsideMetadata(details.outside),
         // The sign-up line (decisions.md, Members): the Terms, the Privacy
         // Notice, the Code of Conduct and signing electronically. The
