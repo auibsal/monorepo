@@ -95,7 +95,7 @@ export const imageHeight = (bytes: Uint8Array): number | null =>
 /** The register's rules for an organization's logo (decisions.md, Partners). */
 const LOGO_MIN_HEIGHT = 600;
 /** A wordmark or a lockup may be wide, up to six times its height. */
-export const LOGO_MAX_RATIO = 6;
+const LOGO_MAX_RATIO = 6;
 
 /**
  * What is wrong with a file as an organization's logo, or null: under 600
