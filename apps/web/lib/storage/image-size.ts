@@ -1,24 +1,30 @@
 /**
- * An uploaded image's pixel height, read from its header (PNG, JPEG or
+ * An uploaded image's pixel size, read from its header (PNG, JPEG or
  * WebP), with no image library. Used for the register's logos
- * (decisions.md, Partners: at least 600 pixels high) in the browser and
- * again in the API route. Returns null for anything it can't read.
+ * (decisions.md, Partners: at least 600 pixels high, at most six times as
+ * wide as high) in the browser and again in the API route. Returns null for
+ * anything it can't read.
  */
+interface Size {
+  readonly height: number;
+  readonly width: number;
+}
+
 const FOURTEEN_BITS = 2 ** 14;
 
 const ascii = (bytes: Uint8Array, at: number, length: number) =>
   String.fromCharCode(...bytes.subarray(at, at + length));
 
-// PNG: the IHDR chunk's height, big-endian, at byte 20.
-const pngHeight = (bytes: Uint8Array, view: DataView) =>
+// PNG: the IHDR chunk's width and height, big-endian, at bytes 16 and 20.
+const pngSize = (bytes: Uint8Array, view: DataView): Size | null =>
   bytes.length >= 24 &&
   ascii(bytes, 1, 3) === "PNG" &&
   ascii(bytes, 12, 4) === "IHDR"
-    ? view.getUint32(20)
+    ? { height: view.getUint32(20), width: view.getUint32(16) }
     : null;
 
 // WebP: RIFF…WEBP, then VP8 (lossy), VP8L (lossless) or VP8X (extended).
-const webpHeight = (bytes: Uint8Array, view: DataView) => {
+const webpSize = (bytes: Uint8Array, view: DataView): Size | null => {
   if (
     bytes.length < 30 ||
     ascii(bytes, 0, 4) !== "RIFF" ||
@@ -28,19 +34,25 @@ const webpHeight = (bytes: Uint8Array, view: DataView) => {
   }
   const chunk = ascii(bytes, 12, 4);
   if (chunk === "VP8 ") {
-    return view.getUint16(28, true) % FOURTEEN_BITS;
+    return {
+      height: view.getUint16(28, true) % FOURTEEN_BITS,
+      width: view.getUint16(26, true) % FOURTEEN_BITS,
+    };
   }
   if (chunk === "VP8L") {
     const bits = view.getUint32(21, true);
-    return (Math.floor(bits / FOURTEEN_BITS) % FOURTEEN_BITS) + 1;
+    return {
+      height: (Math.floor(bits / FOURTEEN_BITS) % FOURTEEN_BITS) + 1,
+      width: (bits % FOURTEEN_BITS) + 1,
+    };
   }
   if (chunk === "VP8X") {
-    return (
-      view.getUint8(27) +
-      view.getUint8(28) * 256 +
-      view.getUint8(29) * 65_536 +
-      1
-    );
+    const three = (at: number) =>
+      view.getUint8(at) +
+      view.getUint8(at + 1) * 256 +
+      view.getUint8(at + 2) * 65_536 +
+      1;
+    return { height: three(27), width: three(24) };
   }
   return null;
 };
@@ -53,8 +65,8 @@ const isFrame = (marker: number) =>
   marker !== 0xc8 &&
   marker !== 0xcc;
 
-// JPEG: the first start-of-frame marker's height.
-const jpegHeight = (bytes: Uint8Array, view: DataView) => {
+// JPEG: the first start-of-frame marker's height and width.
+const jpegSize = (bytes: Uint8Array, view: DataView): Size | null => {
   if (
     bytes.length < 4 ||
     view.getUint8(0) !== 0xff ||
@@ -65,26 +77,37 @@ const jpegHeight = (bytes: Uint8Array, view: DataView) => {
   let at = 2;
   while (at + 9 < bytes.length && view.getUint8(at) === 0xff) {
     if (isFrame(view.getUint8(at + 1))) {
-      return view.getUint16(at + 5);
+      return { height: view.getUint16(at + 5), width: view.getUint16(at + 7) };
     }
     at += 2 + view.getUint16(at + 2);
   }
   return null;
 };
 
-export const imageHeight = (bytes: Uint8Array): number | null => {
+export const imageSize = (bytes: Uint8Array): Size | null => {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  return (
-    pngHeight(bytes, view) ?? webpHeight(bytes, view) ?? jpegHeight(bytes, view)
-  );
+  return pngSize(bytes, view) ?? webpSize(bytes, view) ?? jpegSize(bytes, view);
 };
 
-/** The register's rule for an organization's logo (decisions.md, Partners). */
-const LOGO_MIN_HEIGHT = 600;
+export const imageHeight = (bytes: Uint8Array): number | null =>
+  imageSize(bytes)?.height ?? null;
 
-/** Whether a file is tall enough to be an organization's logo. */
-export const logoTallEnough = async (file: Blob) => {
+/** The register's rules for an organization's logo (decisions.md, Partners). */
+const LOGO_MIN_HEIGHT = 600;
+/** A wordmark or a lockup may be wide, up to six times its height. */
+export const LOGO_MAX_RATIO = 6;
+
+/**
+ * What is wrong with a file as an organization's logo, or null: under 600
+ * pixels high, wider than six to one, or not an image the site can read.
+ */
+export const logoProblem = async (
+  file: Blob
+): Promise<"too_short" | "too_wide" | null> => {
   const head = new Uint8Array(await file.slice(0, 256 * 1024).arrayBuffer());
-  const height = imageHeight(head);
-  return height !== null && height >= LOGO_MIN_HEIGHT;
+  const size = imageSize(head);
+  if (!size || size.height < LOGO_MIN_HEIGHT) {
+    return "too_short";
+  }
+  return size.width > size.height * LOGO_MAX_RATIO ? "too_wide" : null;
 };

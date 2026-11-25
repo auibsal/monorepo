@@ -18,7 +18,7 @@ import { localized, partners, unwrap } from "@/lib/data";
 import { callApiForm } from "@/lib/diwan/api";
 import { type MyPartner, useMyPartners } from "@/lib/diwan/partners";
 import { getMediaUrl } from "@/lib/storage";
-import { logoTallEnough } from "@/lib/storage/image-size";
+import { logoProblem } from "@/lib/storage/image-size";
 import { hasLocation } from "@/lib/storage/photo-metadata";
 import {
   type InviteeLanguage,
@@ -123,8 +123,11 @@ const PartnerLogo = ({ row }: { row: PartnerRow }) => {
       if (!file) {
         return;
       }
-      if (!(await logoTallEnough(file))) {
-        throw new Error("logo_too_small");
+      const wrong = await logoProblem(file);
+      if (wrong) {
+        throw new Error(
+          wrong === "too_wide" ? "logo_too_wide" : "logo_too_small"
+        );
       }
       if (hasLocation(new Uint8Array(await file.arrayBuffer()))) {
         throw new Error("has_location");

@@ -208,7 +208,9 @@ describe("AUIB's logo set (packages/brand/assets/logos/auib)", () => {
     "institutions"
   );
   test("apps/web/public/institutions holds the set unchanged", () => {
-    const files = readdirSync(auibDir).filter((f) => f.endsWith(".svg"));
+    const files = readdirSync(auibDir).filter(
+      (f) => f.endsWith(".svg") || f.endsWith(".png")
+    );
     expect(files.length).toBeGreaterThan(0);
     expect(readdirSync(served).sort()).toEqual(files.sort());
     for (const file of files) {

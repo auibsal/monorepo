@@ -152,8 +152,8 @@ type SetPartnerForm = (
 ) => void;
 
 /**
- * Each entry's one logo (decisions.md, Partners; Events), which sits on a
- * paper-colored tile in dark mode, and "The logo shows the name". On a partner's own
+ * Each entry's one logo (decisions.md, Partners; Events), shown on a white
+ * band in dark mode, and "The logo shows the name". On a partner's own
  * entry a change here is logged and the Lead is told.
  */
 const LogoFields = ({

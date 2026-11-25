@@ -44,7 +44,7 @@ export const RegisterLogo = ({
   const entry = acknowledged(org, locale);
   return entry.logo ? (
     <OrganizationLogo
-      alt={entry.showsName ? entry.name : ""}
+      alt={entry.showsName ? (entry.logoAlt ?? entry.name) : ""}
       logo={entry.logo}
     />
   ) : (

@@ -8,7 +8,7 @@ import { FileInput } from "@/components/fields/file-input";
 import { useAuth } from "@/lib/auth/provider";
 import { getMediaUrl, uploadMedia } from "@/lib/storage";
 import { StorageError } from "@/lib/storage/files";
-import { logoTallEnough } from "@/lib/storage/image-size";
+import { logoProblem } from "@/lib/storage/image-size";
 import { LibraryPicker } from "./media/library";
 
 interface ImageFieldProps {
@@ -16,8 +16,8 @@ interface ImageFieldProps {
   readonly area: string;
   /**
    * "pdf" takes a PDF (issue PDFs) and shows a link instead of a preview;
-   * "logo" an organization's logo, at least 600 pixels high (decisions.md,
-   * Partners), with the rule shown under the field.
+   * "logo" an organization's logo, at least 600 pixels high and at most six
+   * times as wide (decisions.md, Partners), with the rule under the field.
    */
   readonly kind?: "image" | "logo" | "pdf";
   readonly label?: string;
@@ -63,8 +63,9 @@ export const ImageField = ({
     setBusy(true);
     setProblem(null);
     try {
-      if (kind === "logo" && !(await logoTallEnough(file))) {
-        setProblem(t("uploadFailed", { reason: t("fileReasons.too_short") }));
+      const wrong = kind === "logo" ? await logoProblem(file) : null;
+      if (wrong) {
+        setProblem(t("uploadFailed", { reason: t(`fileReasons.${wrong}`) }));
         return;
       }
       const stored = await uploadMedia(supabase, area, file);

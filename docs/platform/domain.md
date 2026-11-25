@@ -406,10 +406,15 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   `relation`: a partner (by application and memorandum), a campus partner
   (AUIB's own offices, which aren't partners) or a sponsor in kind; its
   kind, both names, one logo (an upload, PNG, JPG or WebP at least 600
-  pixels high and never SVG, kept in the media storage; or AUIB's
-  standard set, `logo_static`, SVG with white versions in
-  `apps/web/public/institutions`), "The logo shows the name", one line and
-  link. In dark mode an uploaded logo sits on a small paper-colored tile.
+  pixels high, at most six times as wide as high, and never SVG, kept in
+  the media storage; or AUIB's standard set, `logo_static`, in
+  `apps/web/public/institutions`, the American Space's one PNG lockup
+  among them), "The logo shows the name", one line and link. Logos in a
+  row stand at one height, their width following, never cropped, padded
+  or boxed, and never wider than the row; in dark mode the row sits on one
+  white band across its section, every logo in its own colors and the
+  label in ash (`CoSponsoredBy`, `ThanksTo`, `CampusPartners`), and a
+  card's logo on /partners on a white band across the card.
   A contact typed before a partner had a Lead stays as the Society's
   internal note until its Lead signs up (`private.drop_typed_contact`). Partnerships adds campus partners and
   sponsors there and edits every entry. /partners lists the partners by
