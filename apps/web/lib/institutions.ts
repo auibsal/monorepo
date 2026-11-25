@@ -27,12 +27,12 @@ const ONE_FILE: Record<
 > = {
   "american-space": {
     alt: {
-      ar: "المساحة الأمريكية: علم الولايات المتحدة، وختم بعثة الولايات المتحدة في العراق، وشعار المساحات الأمريكية",
-      en: "American Space: the U.S. flag, the seal of the United States Mission Iraq and the American Spaces logo",
+      ar: "المساحة الأمريكية: علم الولايات المتحدة، وختم بعثة الولايات المتحدة في العراق، وشعار المساحات الأمريكية، وشعار الجامعة الأمريكية في العراق – بغداد",
+      en: "American Space: the U.S. flag, the seal of the United States Mission Iraq, the American Spaces logo and AUIB’s logo",
     },
     height: 600,
     src: "/institutions/american-space-logo-color.png",
-    width: 3017,
+    width: 3832,
   },
 };
 

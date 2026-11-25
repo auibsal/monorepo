@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { logoScale } from "../../lib/logo-scale";
 import { cn, dirOf } from "../../lib/utils";
 
@@ -200,17 +201,8 @@ const Line = ({
   lang = "en",
 }: AcknowledgmentProps & { kind: keyof typeof ACKNOWLEDGMENT_LINES }) =>
   items.length === 0 ? null : (
-    // In dark mode, one white band across the section (into the page's
-    // gutter, the logos still in line with the text): every logo in its own
-    // colors, the label in ash. A light sheet, as paper is; light mode is
-    // unchanged.
     <section
-      className={cn(
-        "grid gap-3",
-        className,
-        "dark:bg-surface dark:-mx-4 dark:px-4 dark:py-4"
-      )}
-      data-theme="light"
+      className={cn("grid gap-3", className)}
       dir={dir ?? (lang === "ar" ? "rtl" : "ltr")}
       lang={lang}
     >
@@ -220,6 +212,32 @@ const Line = ({
       <Names compact={compact} items={items} lang={lang} />
     </section>
   );
+
+/**
+ * Where rows of logos stand: in dark mode, one white band across them all
+ * ("Co-sponsored by" over "Thanks to", with no ink between), into the
+ * page's gutter with the logos still in line with the text. A light
+ * sheet, as paper is: every logo in its own colors, the labels in ash.
+ * Light mode is unchanged.
+ */
+export const LogoBand = ({
+  children,
+  className,
+}: {
+  readonly children: ReactNode;
+  readonly className?: string;
+}) => (
+  <div
+    className={cn(
+      "grid gap-8",
+      className,
+      "dark:bg-surface dark:-mx-4 dark:px-4 dark:py-4"
+    )}
+    data-theme="light"
+  >
+    {children}
+  </div>
+);
 
 /** "Co-sponsored by": the partners and campus partners an event is run with. */
 export const CoSponsoredBy = (props: AcknowledgmentProps) => (

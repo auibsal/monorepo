@@ -412,8 +412,9 @@ disagrees; the conventions for every change are in `AGENTS.md`.
   among them), "The logo shows the name", one line and link. Logos in a
   row stand at one height, their width following, never cropped, padded
   or boxed, and never wider than the row; in dark mode the row sits on one
-  white band across its section, every logo in its own colors and the
-  label in ash (`CoSponsoredBy`, `ThanksTo`, `CampusPartners`), and a
+  white band (`LogoBand`; an event's "Co-sponsored by" over "Thanks to" on
+  one band, with no ink between), every logo in its own colors and the
+  labels in ash, and a
   card's logo on /partners on a white band across the card.
   A contact typed before a partner had a Lead stays as the Society's
   internal note until its Lead signs up (`private.drop_typed_contact`). Partnerships adds campus partners and

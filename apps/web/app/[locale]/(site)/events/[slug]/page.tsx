@@ -1,5 +1,6 @@
 import {
   CoSponsoredBy,
+  LogoBand,
   ThanksTo,
 } from "@repo/brand/components/sal/acknowledgment";
 import { ActionBar } from "@repo/brand/components/sal/action-bar";
@@ -226,19 +227,22 @@ const EventView = async ({
       {upcoming ? null : <EventParts event={event} locale={locale} />}
       <EventProgram eventId={event.id} locale={locale} />
       {upcoming ? <EventParts event={event} locale={locale} /> : null}
-      <CoSponsoredBy
-        className="border-line pt-space-4 border-t"
-        dir={getDirection(locale)}
-        items={rowOf("cosponsor")}
-        label={ti("coSponsoredBy")}
-        lang={locale}
-      />
-      <ThanksTo
-        dir={getDirection(locale)}
-        items={rowOf("thanks")}
-        label={ti("thanksTo")}
-        lang={locale}
-      />
+      {rowOf("cosponsor").length + rowOf("thanks").length > 0 ? (
+        <LogoBand className="border-line pt-space-4 border-t">
+          <CoSponsoredBy
+            dir={getDirection(locale)}
+            items={rowOf("cosponsor")}
+            label={ti("coSponsoredBy")}
+            lang={locale}
+          />
+          <ThanksTo
+            dir={getDirection(locale)}
+            items={rowOf("thanks")}
+            label={ti("thanksTo")}
+            lang={locale}
+          />
+        </LogoBand>
+      ) : null}
       {/* Last, so it stays at the foot of the screen until the page ends. */}
       {canceled || !upcoming ? null : (
         <ActionBar>

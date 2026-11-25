@@ -1,4 +1,7 @@
-import { CampusPartners as CampusLine } from "@repo/brand/components/sal/acknowledgment";
+import {
+  CampusPartners as CampusLine,
+  LogoBand,
+} from "@repo/brand/components/sal/acknowledgment";
 import { getDirection, type Locale } from "@repo/internationalization";
 import { getTranslations } from "next-intl/server";
 import { partners } from "@/lib/data";
@@ -27,13 +30,14 @@ export const CampusPartners = async ({
     .filter((p) => p.relation === "campus")
     .map((p) => acknowledged(p, locale))
     .sort((a, b) => a.name.localeCompare(b.name, locale));
-  return (
-    <CampusLine
-      className={className}
-      dir={getDirection(locale)}
-      items={campus}
-      label={t("campusPartners")}
-      lang={locale}
-    />
+  return campus.length === 0 ? null : (
+    <LogoBand className={className}>
+      <CampusLine
+        dir={getDirection(locale)}
+        items={campus}
+        label={t("campusPartners")}
+        lang={locale}
+      />
+    </LogoBand>
   );
 };
