@@ -6,7 +6,7 @@ import { authenticateRequest } from "@/lib/auth/verify";
 import { parseError } from "@/lib/observability/error";
 import { log } from "@/lib/observability/log";
 import { buckets, checkFile } from "@/lib/storage";
-import { logoTallEnough } from "@/lib/storage/image-size";
+import { logoProblem } from "@/lib/storage/image-size";
 import { hasLocation } from "@/lib/storage/photo-metadata";
 
 export const OPTIONS = preflight;
@@ -54,9 +54,14 @@ export const POST = async (request: Request) => {
   if (hasLocation(new Uint8Array(await logo.arrayBuffer()))) {
     return json({ error: "has_location" }, 400);
   }
-  // At least 600 pixels high, read from the file itself (decisions.md,
-  // Partners); SVG never reaches here (XSS), as the media bucket refuses it.
-  if (!(await logoTallEnough(logo))) {
+  // At least 600 pixels high and at most six times as wide, read from the
+  // file itself (decisions.md, Partners); SVG never reaches here (XSS), as
+  // the media bucket refuses it.
+  const wrong = await logoProblem(logo);
+  if (wrong === "too_wide") {
+    return json({ error: "logo_too_wide" }, 400);
+  }
+  if (wrong) {
     return json({ error: "logo_too_small" }, 400);
   }
   if (!(await hasPermission(session, "partners.own", "partner", partner))) {

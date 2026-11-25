@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { logoScale } from "../../lib/logo-scale";
 import { cn, dirOf } from "../../lib/utils";
 
@@ -16,8 +17,11 @@ import { cn, dirOf } from "../../lib/utils";
  * comparative words, prices or calls to buy (the IRS line between an
  * acknowledgment and advertising), so the components take names and
  * logos, never a sentence. Every logo fits one box, scaled so wide and
- * tall logos look equally heavy, or on events one 40 px row (decisions.md,
- * The site). A logo that shows the name stands
+ * tall logos look equally heavy, or in a row one height, 40 px, its width
+ * following, never cropped, padded or fitted to a square, and never wider
+ * than the row (decisions.md, The site). In dark mode a row sits on one
+ * white band across its section, every logo in its own colors and the label
+ * in ash; light mode is unchanged. A logo that shows the name stands
  * alone, the name its alt text and link label (WCAG 1.1.1, 2.4.4); a
  * symbol-only logo, or none, has the name in text beside it. A logo is
  * shown as the organization made it in both languages; only the alt text
@@ -34,17 +38,16 @@ export interface Acknowledged {
   readonly href?: string | null;
   /**
    * Its logo, with the file's own width and height (fitted to its box or
-   * row by OrganizationLogo). AUIB's standard set has a white version for ink
-   * (`onInk`); an uploaded logo has one version and sits on a small
-   * paper-colored tile on ink (`tile`), the same size everywhere.
+   * row by OrganizationLogo). One version only: in dark mode it stands on
+   * a white band, in its own colors.
    */
   readonly logo?: {
     readonly height: number;
-    readonly onInk?: string | null;
     readonly src: string;
-    readonly tile?: boolean;
     readonly width: number;
   } | null;
+  /** The logo's own alt text, when it says more than the name. */
+  readonly logoAlt?: string | null;
   /** Its name in the line's language, exactly as on its own materials. */
   readonly name: string;
   /**
@@ -55,11 +58,12 @@ export interface Acknowledged {
 }
 
 /**
- * One organization's logo: on ink, AUIB's white version, or an uploaded
- * logo on its paper-colored tile. `alt` is its name when the logo shows the
- * name. `size` "box" fits every logo to one box, 64 px tall on phones and
- * 80 px on computers, scaled for equal weight (the partners page and the
- * Diwan's register); "row" is the events' one row at 40 px.
+ * One organization's logo, in its own colors. `alt` is its name (or its own
+ * alt text) when the logo shows the name. `size` "box" fits every logo to
+ * one box, 64 px tall on phones and 80 px on computers, scaled for equal
+ * weight (the partners page and the Diwan's register), on a white band
+ * across its card in dark mode; "row" is a row's one height, 40 px, the
+ * width following and never wider than the row.
  */
 export const OrganizationLogo = ({
   alt = "",
@@ -78,50 +82,38 @@ export const OrganizationLogo = ({
         height: `calc(var(--logo-box) * ${logoScale(logo.width, logo.height).toFixed(3)})`,
       }
     : undefined;
-  const imageClass = box ? "w-auto max-w-full object-contain" : "h-10 w-auto";
-  const frame = box
-    ? "h-16 items-center [--logo-box:4rem] lg:h-20 lg:[--logo-box:5rem]"
-    : "";
-  return logo.onInk ? (
-    <span className={cn("inline-flex", frame, className)}>
-      {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
-      <img
-        alt={alt}
-        className={cn("on-ink:hidden", imageClass)}
-        height={logo.height}
-        src={logo.src}
-        style={style}
-        width={logo.width}
-      />
-      {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
-      <img
-        alt={alt}
-        className={cn("on-ink:block hidden", imageClass)}
-        height={logo.height}
-        src={logo.onInk}
-        style={style}
-        width={logo.width}
-      />
-    </span>
-  ) : (
+  const imageClass = box
+    ? "w-auto max-w-full object-contain"
+    : "h-auto max-h-10 w-auto max-w-full";
+  const image = (
+    // biome-ignore lint/performance/noImgElement: a supplied logo file
+    <img
+      alt={alt}
+      className={imageClass}
+      height={logo.height}
+      src={logo.src}
+      style={style}
+      width={logo.width}
+    />
+  );
+  if (!box) {
+    return (
+      <span className={cn("inline-flex max-w-full", className)}>{image}</span>
+    );
+  }
+  // A card's logo: in dark mode on a white band across the card.
+  return (
     <span
       className={cn(
-        "inline-flex",
-        frame,
-        logo.tile &&
-          "on-ink:items-center on-ink:justify-center on-ink:bg-paper on-ink:p-2",
-        className
+        "flex max-w-full",
+        className,
+        "dark:bg-surface dark:justify-self-stretch dark:px-4 dark:py-3"
       )}
+      data-theme="light"
     >
-      {/* biome-ignore lint/performance/noImgElement: a supplied logo file */}
-      <img
-        alt={alt}
-        className={imageClass}
-        height={logo.height}
-        src={logo.src}
-        style={style}
-        width={logo.width}
-      />
+      <span className="inline-flex h-16 max-w-full items-center [--logo-box:4rem] lg:h-20 lg:[--logo-box:5rem]">
+        {image}
+      </span>
     </span>
   );
 };
@@ -159,10 +151,10 @@ const Names = ({
     {items.map((item) => {
       const alone = Boolean(item.logo && item.showsName !== false);
       const mark = (
-        <span className="inline-flex items-center gap-3">
+        <span className="inline-flex max-w-full items-center gap-3">
           {item.logo ? (
             <OrganizationLogo
-              alt={alone ? item.name : ""}
+              alt={alone ? (item.logoAlt ?? item.name) : ""}
               logo={item.logo}
               size="row"
             />
@@ -175,7 +167,12 @@ const Names = ({
         </span>
       );
       return (
-        <li dir={dirOf(lang)} key={item.name} lang={lang}>
+        <li
+          className="max-w-full"
+          dir={dirOf(lang)}
+          key={item.name}
+          lang={lang}
+        >
           {item.href ? (
             <a
               className="hover:underline"
@@ -215,6 +212,32 @@ const Line = ({
       <Names compact={compact} items={items} lang={lang} />
     </section>
   );
+
+/**
+ * Where rows of logos stand: in dark mode, one white band across them all
+ * ("Co-sponsored by" over "Thanks to", with no ink between), into the
+ * page's gutter with the logos still in line with the text. A light
+ * sheet, as paper is: every logo in its own colors, the labels in ash.
+ * Light mode is unchanged.
+ */
+export const LogoBand = ({
+  children,
+  className,
+}: {
+  readonly children: ReactNode;
+  readonly className?: string;
+}) => (
+  <div
+    className={cn(
+      "grid gap-8",
+      className,
+      "dark:bg-surface dark:-mx-4 dark:px-4 dark:py-4"
+    )}
+    data-theme="light"
+  >
+    {children}
+  </div>
+);
 
 /** "Co-sponsored by": the partners and campus partners an event is run with. */
 export const CoSponsoredBy = (props: AcknowledgmentProps) => (

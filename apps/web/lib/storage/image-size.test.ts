@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { imageHeight } from "./image-size";
+import { imageHeight, imageSize, logoProblem } from "./image-size";
 
-const png = (height: number) => {
+const png = (height: number, width = 800) => {
   const bytes = new Uint8Array(33);
   bytes.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], 0);
   bytes.set([0, 0, 0, 13], 8);
   bytes.set([0x49, 0x48, 0x44, 0x52], 12);
-  new DataView(bytes.buffer).setUint32(16, 800);
+  new DataView(bytes.buffer).setUint32(16, width);
   new DataView(bytes.buffer).setUint32(20, height);
   return bytes;
 };
@@ -45,5 +45,23 @@ describe("imageHeight", () => {
     expect(
       imageHeight(new TextEncoder().encode('<svg height="900"></svg>'))
     ).toBeNull();
+  });
+});
+
+describe("a logo's proportions (decisions.md, Partners)", () => {
+  const file = (bytes: Uint8Array) => new Blob([bytes as BlobPart]);
+  it("reads a PNG's width with its height", () => {
+    expect(imageSize(png(600, 3017))).toEqual({ height: 600, width: 3017 });
+  });
+  it("reads a JPEG's width", () => {
+    expect(imageSize(jpeg(1200))?.width).toBe(900);
+  });
+  it("takes a wide lockup up to six to one", async () => {
+    expect(await logoProblem(file(png(600, 3017)))).toBeNull();
+    expect(await logoProblem(file(png(600, 3600)))).toBeNull();
+  });
+  it("refuses a wider one, and a short one", async () => {
+    expect(await logoProblem(file(png(600, 3832)))).toBe("too_wide");
+    expect(await logoProblem(file(png(500, 800)))).toBe("too_short");
   });
 });

@@ -1074,11 +1074,12 @@
           "too_large": "the file is too large.",
           "wrong_type": "this kind of file isn’t accepted here.",
           "other": "try again.",
-          "too_short": "the logo is under 600 pixels high."
+          "too_short": "the logo is under 600 pixels high.",
+          "too_wide": "the logo is more than six times as wide as it is high."
         },
         "imageAlt": "Current image",
         "noImageNote": "Use our own photos, taken with consent. No identifiable children, no stock images.",
-        "logoRule": "PNG with a transparent background, at least 600 pixels high.",
+        "logoRule": "PNG with a transparent background, at least 600 pixels high and at most six times as wide as it is high.",
         "slug": "Web address (slug)",
         "slugHint": "Lowercase letters, numbers and hyphens, for example the-return.",
         "program": "Part of",
@@ -1100,6 +1101,7 @@
         },
         "tripNeedsApproval": "An event off campus is published only once the Secretary records Student Life’s written approval, under Occasion.",
         "logoTooSmall": "The logo is under 600 pixels high. Send a larger PNG, with a transparent background.",
+        "logoTooWide": "The logo is more than six times as wide as it is high. Send a narrower version, such as the mark above the name, as a PNG with a transparent background.",
         "selection": {
           "choose": "Choose",
           "all": "Choose every row",

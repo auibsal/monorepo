@@ -140,7 +140,7 @@ const PartnersPage = async ({ params }: LocaleParams) => {
                   >
                     {entry.logo ? (
                       <OrganizationLogo
-                        alt={alone ? name : ""}
+                        alt={alone ? (entry.logoAlt ?? name) : ""}
                         className="justify-self-start"
                         logo={entry.logo}
                       />
